@@ -1,4 +1,5 @@
 # KK_Plugins
+Plugins for Koikatsu
 
 ## Installation
 1. Install [BepInEx](https://github.com/BepInEx/BepInEx/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases)
