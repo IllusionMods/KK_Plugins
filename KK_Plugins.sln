@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_GUIDMigration", "KK_GUID
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ForceHighPoly", "KK_ForceHighPoly\KK_ForceHighPoly.csproj", "{650F4B0A-BE99-495B-84B0-0999AFEC670D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_CutsceneLockupFix", "KK_CutsceneLockupFix\KK_CutsceneLockupFix.csproj", "{93F71A72-1D95-4D53-8EE0-5E35D94E0536}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{650F4B0A-BE99-495B-84B0-0999AFEC670D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{650F4B0A-BE99-495B-84B0-0999AFEC670D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{650F4B0A-BE99-495B-84B0-0999AFEC670D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93F71A72-1D95-4D53-8EE0-5E35D94E0536}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93F71A72-1D95-4D53-8EE0-5E35D94E0536}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93F71A72-1D95-4D53-8EE0-5E35D94E0536}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93F71A72-1D95-4D53-8EE0-5E35D94E0536}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
