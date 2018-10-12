@@ -23,6 +23,7 @@ Also attempts to fix cards saved with a blank GUID (Missing Mod []) by stripping
 
 <details><summary>Configuration</summary>
   
+Comes preconfigured with a whole bunch of migration info. Unless I stopped maintaining it you shouldn't need to mess with this stuff.  
 KK_GUIDMigration.csv is a comma separated file in the form Category,Old GUID,Old ID,New GUID,New ID.  
 Category is the internal one used by sideloader, not the numeric category.  
 When the category is * only GUID migration will be attempted and whatever you put for Old/New ID will be ignored. Use only in cases where a GUID changed and the IDs stay the same.
