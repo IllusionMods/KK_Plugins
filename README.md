@@ -11,7 +11,7 @@ Plays a sound when the Chara Maker finishes loading. Useful if you spend the loa
 #### KK_StudioSceneLoadedSound - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_StudioSceneLoadedSound.v1.0.zip)
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.
 
-#### KK_ForceHighPoly - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_ForceHighPoly.v1.0.zip)
+#### KK_ForceHighPoly - ~[Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_ForceHighPoly.v1.0.zip)~
 Forces all characters to load in high poly mode, even in the school exploration mode.
 
 Warning: May cause the game to lock up after special H scenes, use at your own risk.
