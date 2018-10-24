@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ForceHighPoly", "KK_Forc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_CutsceneLockupFix", "KK_CutsceneLockupFix\KK_CutsceneLockupFix.csproj", "{93F71A72-1D95-4D53-8EE0-5E35D94E0536}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_TestPlugin", "KK_TestPlugin\KK_TestPlugin.csproj", "{F9805D18-DD1B-4817-BBB0-5107873975F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ReloadCharaListOnChange", "KK_ReloadCharaListOnChange\KK_ReloadCharaListOnChange.csproj", "{C2C68AC3-CB8F-4BA7-91EA-9A242851294D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{93F71A72-1D95-4D53-8EE0-5E35D94E0536}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93F71A72-1D95-4D53-8EE0-5E35D94E0536}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93F71A72-1D95-4D53-8EE0-5E35D94E0536}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9805D18-DD1B-4817-BBB0-5107873975F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9805D18-DD1B-4817-BBB0-5107873975F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9805D18-DD1B-4817-BBB0-5107873975F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9805D18-DD1B-4817-BBB0-5107873975F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2C68AC3-CB8F-4BA7-91EA-9A242851294D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2C68AC3-CB8F-4BA7-91EA-9A242851294D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2C68AC3-CB8F-4BA7-91EA-9A242851294D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2C68AC3-CB8F-4BA7-91EA-9A242851294D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
