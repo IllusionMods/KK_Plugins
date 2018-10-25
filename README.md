@@ -16,7 +16,7 @@ Forces all characters to load in high poly mode, even in the school exploration 
 
 Warning: May cause the game to lock up after special H scenes, use at your own risk.
 
-#### KK_GUIDMigration - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_GUIDMigration.v1.0.zip)
+#### KK_GUIDMigration - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v3/KK_GUIDMigration.v1.0.1.zip)
 Migrates your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.
 
 Also attempts to fix cards saved with a blank GUID (Missing Mod []) by stripping the GUID and forcing sideloader to treat it as a hard mod. May not work 100%, so check your cards.
@@ -31,3 +31,6 @@ When the category is * only GUID migration will be attempted and whatever you pu
 
 #### KK_CutsceneLockupFix - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_CutsceneLockupFix.v1.0.zip)
 Adds some extra error handling to the game so certain hair mods wont lock up the whole game when they appear in a cutscene.
+
+#### KK_ReloadCharaListOnChange - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v3/KK_ReloadCharaListOnChange.v1.0.zip)
+Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.
