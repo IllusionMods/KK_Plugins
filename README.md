@@ -32,5 +32,5 @@ When the category is * only GUID migration will be attempted and whatever you pu
 #### KK_CutsceneLockupFix - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_CutsceneLockupFix.v1.0.zip)
 Adds some extra error handling to the game so certain hair mods wont lock up the whole game when they appear in a cutscene.
 
-#### KK_ReloadCharaListOnChange - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v3/KK_ReloadCharaListOnChange.v1.0.zip)
+#### KK_ReloadCharaListOnChange - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v4/KK_ReloadCharaListOnChange.v1.1.zip)
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.
