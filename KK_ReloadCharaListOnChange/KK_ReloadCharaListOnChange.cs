@@ -292,6 +292,8 @@ namespace KK_ReloadCharaListOnChange
             if (s.name == "CustomScene")
             {
                 InCharaMaker = false;
+                DoRefresh = false;
+                EventFromCharaMaker = false;
                 CardTimer.Dispose();
                 CharacterCardWatcher.Dispose();
                 CharacterCardEventList.Clear();
@@ -327,12 +329,12 @@ namespace KK_ReloadCharaListOnChange
         /// <summary>
         /// When saving the a new coordinate card in game set a flag
         /// </summary>
-        /// [HarmonyPrefix]
+        [HarmonyPrefix]
         [HarmonyPatch(typeof(ChaFileCoordinate), nameof(ChaFileCoordinate.SaveFile), new[] { typeof(string) })]
-        public static void SaveCoordinateFilePrefix()
+        public static void SaveCoordinateFilePrefix(string path)
         {
             if (InCharaMaker)
-                if (Singleton<CustomBase>.Instance.customCtrl.saveNew == true)
+                if (!File.Exists(path)) //saving new
                     EventFromCharaMaker = true;
         }
         /// <summary>
