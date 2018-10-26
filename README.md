@@ -34,3 +34,9 @@ Adds some extra error handling to the game so certain hair mods wont lock up the
 
 #### KK_ReloadCharaListOnChange - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v4/KK_ReloadCharaListOnChange.v1.1.zip)
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.
+
+
+<details><summary>Change Log</summary>
+  
+v1.1 Fix for new coordinates saved from within the game not handled correctly.
+</details>
