@@ -40,3 +40,6 @@ Reloads the list of characters and coordinates in the character maker when any c
   
 v1.1 Fix for new coordinates saved from within the game not handled correctly.
 </details>
+
+#### KK_InvisibleBody v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v6/KK_InvisibleBody.v1.0.zip)
+Select characters in the Studio workspace and press numpad+ (configurable) to toggle them between invisible and visible. Any worn clothes or accessories and any attached studio items will remain visible. Invisible state saves and loads with the scene. Can also be used to make girls invisible in H scenes but cannot be disabled except by exiting the scene.
