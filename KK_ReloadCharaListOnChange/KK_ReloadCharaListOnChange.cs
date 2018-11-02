@@ -11,8 +11,8 @@ using System.Threading;
 using Timer = System.Timers.Timer;
 
 /// <summary>
-/// Watches the character folders for changes and updates the character list in the chara maker.
-/// Probably should be expanded to support coordinates. Maybe the studio lists too.
+/// Watches the character folders for changes and updates the character/coordinate list in the chara maker.
+/// Probably should be expanded to support studio lists too.
 /// </summary>
 namespace KK_ReloadCharaListOnChange
 {
