@@ -195,6 +195,7 @@ namespace KK_ReloadCharaListOnChange
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error | LogLevel.Message, "An error occured attempting to refresh the character list. Please restart the chara maker.");
+                Logger.Log(LogLevel.Error, $"KK_ReloadCharaListOnChange error: {ex.Message}");
                 Logger.Log(LogLevel.Error, ex);
             }
             Sideloader.AutoResolver.Hooks.IsResolving = true;
@@ -254,6 +255,7 @@ namespace KK_ReloadCharaListOnChange
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error | LogLevel.Message, "An error occured attempting to refresh the coordinate list. Please restart the chara maker.");
+                Logger.Log(LogLevel.Error, $"KK_ReloadCharaListOnChange error: {ex.Message}");
                 Logger.Log(LogLevel.Error, ex);
             }
             Sideloader.AutoResolver.Hooks.IsResolving = true;
@@ -294,7 +296,8 @@ namespace KK_ReloadCharaListOnChange
                 InCharaMaker = false;
                 DoRefresh = false;
                 EventFromCharaMaker = false;
-                CardTimer.Dispose();
+                if (CardTimer != null)
+                    CardTimer.Dispose();
                 CharacterCardWatcher.Dispose();
                 CharacterCardEventList.Clear();
                 CoordinateCardWatcher.Dispose();
