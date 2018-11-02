@@ -32,14 +32,19 @@ When the category is * only GUID migration will be attempted and whatever you pu
 #### KK_CutsceneLockupFix - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_CutsceneLockupFix.v1.0.zip)
 Adds some extra error handling to the game so certain hair mods wont lock up the whole game when they appear in a cutscene.
 
-#### KK_ReloadCharaListOnChange v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v4/KK_ReloadCharaListOnChange.v1.1.zip)
+#### KK_ReloadCharaListOnChange v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v7/KK_ReloadCharaListOnChange.v1.2.zip)
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.
-
 
 <details><summary>Change Log</summary>
   
-v1.1 Fix for new coordinates saved from within the game not handled correctly.
+v1.1 Fixed new coordinates saved from within the game not being handled correctly  
+v1.2 Fixed error when exiting the chara maker
 </details>
 
-#### KK_InvisibleBody v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v6/KK_InvisibleBody.v1.0.zip)
+#### KK_InvisibleBody v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v7/KK_InvisibleBody.v1.1.zip)
 Select characters in the Studio workspace and press numpad+ (configurable) to toggle them between invisible and visible. Any worn clothes or accessories and any attached studio items will remain visible. Invisible state saves and loads with the scene. Can also be used to make girls invisible in H scenes but cannot be disabled except by exiting the scene.
+
+<details><summary>Change Log</summary>
+  
+v1.1 Fixed studio items becoming visible when they were toggled off in the workspace
+</details>
