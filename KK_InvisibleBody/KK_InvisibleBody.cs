@@ -16,7 +16,7 @@ using ExtensibleSaveFormat;
 namespace KK_InvisibleBody
 {
     [BepInDependency("com.bepis.bepinex.extendedsave")]
-    [BepInPlugin("com.deathweasel.bepinex.invisiblebody", "Invisible Body", "1.0")]
+    [BepInPlugin("com.deathweasel.bepinex.invisiblebody", "Invisible Body", "1.1")]
     public class KK_InvisibleBody : BaseUnityPlugin
     {
         private static bool LoadOrImportClicked = false;
@@ -108,43 +108,48 @@ namespace KK_InvisibleBody
                 Visible = forceVisibleState;
             else if (toggleVisible)
                 Visible = !Visible;
+
             if (saveVisibleState)
             {
                 ExtendedData.data["Visible"] = Visible;
                 ExtendedSave.SetExtendedDataById(chaControl.chaFile, "KK_InvisibleBody", ExtendedData);
             }
 
-            Transform cf_j_root = CharacterObject.transform.Find("BodyTop/p_cf_body_bone/cf_j_root");
-            if (cf_j_root != null)
-                IterateVisible(cf_j_root.gameObject, Visible);
+            //No need to IterateVisible for visible characters that haven't changed
+            if (!(Visible == true && toggleVisible == false && forceVisible == false))
+            {
+                Transform cf_j_root = CharacterObject.transform.Find("BodyTop/p_cf_body_bone/cf_j_root");
+                if (cf_j_root != null)
+                    IterateVisible(cf_j_root.gameObject, Visible);
 
-            //female
-            Transform cf_o_rootf = CharacterObject.transform.Find("BodyTop/p_cf_body_00/cf_o_root/");
-            if (cf_o_rootf != null)
-                IterateVisible(cf_o_rootf.gameObject, Visible);
+                //female
+                Transform cf_o_rootf = CharacterObject.transform.Find("BodyTop/p_cf_body_00/cf_o_root/");
+                if (cf_o_rootf != null)
+                    IterateVisible(cf_o_rootf.gameObject, Visible);
 
-            //male
-            Transform cf_o_rootm = CharacterObject.transform.Find("BodyTop/p_cm_body_00/cf_o_root/");
-            if (cf_o_rootm != null)
-                IterateVisible(cf_o_rootm.gameObject, Visible);
+                //male
+                Transform cf_o_rootm = CharacterObject.transform.Find("BodyTop/p_cm_body_00/cf_o_root/");
+                if (cf_o_rootm != null)
+                    IterateVisible(cf_o_rootm.gameObject, Visible);
+            }
         }
         /// <summary>
         /// Sets the visible state of the game object and all it's children.
         /// </summary>
         private static void IterateVisible(GameObject go, bool Visible)
         {
+            //Logger.Log(LogLevel.Info, $"Game Object:{DebugFullObjectPath(go)}");
             for (int i = 0; i < go.transform.childCount; i++)
             {
-                //Logger.Log(LogLevel.Info, $"Game Object:{DebugFullObjectPath(go)}");
-
-                if (Visible)
-                    IterateVisible(go.transform.GetChild(i).gameObject, Visible); //always set everything visible
-                else if (HideHairAccessories.Value && go.name.StartsWith("a_n_") && go.transform.parent.gameObject.name == "ct_hairB")
-                    IterateVisible(go.transform.GetChild(i).gameObject, Visible); //hide hair accessory
+                if (HideHairAccessories.Value && go.name.StartsWith("a_n_") && go.transform.parent.gameObject.name == "ct_hairB")
+                    //change visibility of accessories built in to back hairs
+                    IterateVisible(go.transform.GetChild(i).gameObject, Visible);
                 else if (go.name.StartsWith("a_n_"))
-                    Logger.Log(LogLevel.None, $"not hiding attached items for {go.name}"); //keep accessories and studio items visible
+                    //do not change visibility of attached items such as studio items and character accessories
+                    Logger.Log(LogLevel.None, $"not hiding attached items for {go.name}");
                 else
-                    IterateVisible(go.transform.GetChild(i).gameObject, Visible); //set everything else invisible
+                    //change visibility of everything else
+                    IterateVisible(go.transform.GetChild(i).gameObject, Visible);
             }
 
             if (go.GetComponent<Renderer>())
