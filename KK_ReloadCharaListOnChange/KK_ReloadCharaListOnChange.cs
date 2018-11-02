@@ -17,7 +17,7 @@ using Timer = System.Timers.Timer;
 namespace KK_ReloadCharaListOnChange
 {
     [BepInDependency("com.bepis.bepinex.sideloader")]
-    [BepInPlugin("com.deathweasel.bepinex.reloadcharalistonchange", "Reload Chara List On Change", "1.0")]
+    [BepInPlugin("com.deathweasel.bepinex.reloadcharalistonchange", "Reload Chara List On Change", "1.1")]
     public class KK_ReloadCharaListOnChange : BaseUnityPlugin
     {
         private static FileSystemWatcher CharacterCardWatcher;
