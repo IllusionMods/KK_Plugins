@@ -5,13 +5,13 @@ Plugins for Koikatsu
 1. Install [BepInEx](https://github.com/BepInEx/BepInEx/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases)
 2. Extract the plugin .zip file to your Koikatu folder
 
-#### KK_CharaMakerLoadedSound - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip)
+#### KK_CharaMakerLoadedSound v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip)
 Plays a sound when the Chara Maker finishes loading. Useful if you spend the load time alt-tabbed.
 
-#### KK_StudioSceneLoadedSound - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_StudioSceneLoadedSound.v1.0.zip)
+#### KK_StudioSceneLoadedSound v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_StudioSceneLoadedSound.v1.0.zip)
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.
 
-#### KK_ForceHighPoly - ~[Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_ForceHighPoly.v1.0.zip)~
+#### KK_ForceHighPoly v1.0 - ~[Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_ForceHighPoly.v1.0.zip)~
 Forces all characters to load in high poly mode, even in the school exploration mode.
 
 Warning: May cause the game to lock up after special H scenes, use at your own risk.
@@ -29,7 +29,7 @@ Category is the internal one used by sideloader, not the numeric category.
 When the category is * only GUID migration will be attempted and whatever you put for Old/New ID will be ignored. Use only in cases where a GUID changed and the IDs stay the same.
 </details>
 
-#### KK_CutsceneLockupFix - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_CutsceneLockupFix.v1.0.zip)
+#### KK_CutsceneLockupFix v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_CutsceneLockupFix.v1.0.zip)
 Adds some extra error handling to the game so certain hair mods wont lock up the whole game when they appear in a cutscene.
 
 #### KK_ReloadCharaListOnChange v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v7/KK_ReloadCharaListOnChange.v1.2.zip)
@@ -48,3 +48,6 @@ Select characters in the Studio workspace and press numpad+ (configurable) to to
   
 v1.1 Fixed studio items becoming visible when they were toggled off in the workspace
 </details>
+
+#### KK_InputHotkeyBlock v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v8/KK_InputHotkeyBlock.v1.0.zip)
+Blocks mod hotkeys from triggering while typing in input fields.
