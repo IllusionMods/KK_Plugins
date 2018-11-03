@@ -50,4 +50,4 @@ v1.1 Fixed studio items becoming visible when they were toggled off in the works
 </details>
 
 #### KK_InputHotkeyBlock v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v8/KK_InputHotkeyBlock.v1.0.zip)
-Blocks mod hotkeys from triggering while typing in input fields.
+Blocks mod hotkeys from triggering while typing in input fields. Original Honey Select version kisama.dll by Essu.
