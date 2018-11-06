@@ -38,7 +38,7 @@ namespace KK_GUIDMigration
         /// <summary>
         /// Look through all the GUIDs, compare it to the MigrationInfoList, and do migration when necessary
         /// </summary>
-        private static IEnumerable<ResolveInfo> MigrateGUID(IEnumerable<ResolveInfo> extInfo)
+        private static IEnumerable<ResolveInfo> MigrateGUID(IEnumerable<ResolveInfo> extInfo, string characterName)
         {
             List<ResolveInfo> extInfoNew = new List<ResolveInfo>();
             bool DidBlankGUIDMessage = false;
@@ -55,7 +55,7 @@ namespace KK_GUIDMigration
                         //Don't add empty GUID to the new list, this way CompatibilityResolve will treat it as a hard mod and attempt to find a match
                         if (!DidBlankGUIDMessage) //No need to spam it for every single thing
                         {
-                            Logger.Log(LogLevel.Warning | LogLevel.Message, "Blank GUID detected, attempting Compatibility Resolve");
+                            Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{characterName}] Blank GUID detected, attempting Compatibility Resolve");
                             DidBlankGUIDMessage = true;
                         }
                     }
@@ -204,9 +204,9 @@ namespace KK_GUIDMigration
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Hooks), "IterateCardPrefixes")]
-        public static void IterateCardPrefixesPrefix(ref IEnumerable<ResolveInfo> extInfo)
+        public static void IterateCardPrefixesPrefix(ref IEnumerable<ResolveInfo> extInfo, ChaFile file)
         {
-            extInfo = MigrateGUID(extInfo);
+            extInfo = MigrateGUID(extInfo, file.parameter.fullname.Trim());
         }
     }
 }
