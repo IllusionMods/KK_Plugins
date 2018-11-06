@@ -11,11 +11,6 @@ Plays a sound when the Chara Maker finishes loading. Useful if you spend the loa
 #### KK_StudioSceneLoadedSound v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_StudioSceneLoadedSound.v1.0.zip)
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.
 
-#### KK_ForceHighPoly v1.0 - ~[Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_ForceHighPoly.v1.0.zip)~
-Forces all characters to load in high poly mode, even in the school exploration mode.
-
-Warning: May cause the game to lock up after special H scenes, use at your own risk.
-
 #### KK_GUIDMigration v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v9/KK_GUIDMigration.v1.1.zip)
 Migrates your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.
 
