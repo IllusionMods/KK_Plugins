@@ -11,7 +11,7 @@ using Sideloader.AutoResolver;
 namespace KK_GUIDMigration
 {
     [BepInDependency("com.bepis.bepinex.sideloader")]
-    [BepInPlugin("com.deathweasel.bepinex.guidmigration", "GUID Migration", "1.0")]
+    [BepInPlugin("com.deathweasel.bepinex.guidmigration", "GUID Migration", "1.1")]
     public class KK_GUIDMigration : BaseUnityPlugin
     {
         private static List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
