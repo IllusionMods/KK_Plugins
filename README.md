@@ -16,11 +16,16 @@ Forces all characters to load in high poly mode, even in the school exploration 
 
 Warning: May cause the game to lock up after special H scenes, use at your own risk.
 
-#### KK_GUIDMigration v1.0.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v5/KK_GUIDMigration.v1.0.2.zip)
+#### KK_GUIDMigration v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v9/KK_GUIDMigration.v1.1.zip)
 Migrates your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.
 
 Also attempts to fix cards saved with a blank GUID (Missing Mod []) by stripping the GUID and forcing sideloader to treat it as a hard mod. May not work 100%, so check your cards.
 
+
+<details><summary>Change Log</summary>
+  
+v1.1 Added character name for blank GUID messages
+</details>
 <details><summary>Configuration</summary>
   
 Comes preconfigured with a whole bunch of migration info. Unless I stopped maintaining it you shouldn't need to mess with this stuff.  
