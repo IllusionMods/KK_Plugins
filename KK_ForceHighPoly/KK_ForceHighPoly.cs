@@ -10,6 +10,7 @@ namespace KK_ForceHighPoly
     [BepInPlugin("com.deathweasel.bepinex.forcehighpoly", "Force High Poly", "1.1")]
     public class KK_ForceHighPoly : BaseUnityPlugin
     {
+        [Category("Settings")]
         [DisplayName("High poly mode")]
         [Description("Whether or not to load high poly assets. May require exiting to main menu to take effect.")]
         public static ConfigWrapper<bool> Enabled { get; private set; }
