@@ -58,3 +58,6 @@ v1.1 Fixed studio items becoming visible when they were toggled off in the works
 
 #### KK_InputHotkeyBlock v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v8/KK_InputHotkeyBlock.v1.0.zip)
 Blocks mod hotkeys from triggering while typing in input fields. Based on kisama.dll by Essu.
+
+#### KK_PersonalityCorrector v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v11/KK_PersonalityCorrector.v1.0.zip)
+Replaces any cards with the modded story character personalities with the default "Pure" personality when attempting to added them to the class to prevent the game from breaking.
