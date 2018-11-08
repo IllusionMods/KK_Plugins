@@ -6,7 +6,7 @@ using System.Collections.Generic;
 /// </summary>
 namespace KK_PersonalityCorrector
 {
-    [BepInPlugin("com.deathweasel.bepinex.personalitycorrector", "Personality Corrector", "1.0")]
+    [BepInPlugin("com.deathweasel.bepinex.personalitycorrector", "Personality Corrector", "1.1")]
     public class KK_PersonalityCorrector : BaseUnityPlugin
     {
         public static int DefaultPersonality = 8; //Pure
@@ -27,19 +27,19 @@ namespace KK_PersonalityCorrector
             {
                 switch (x.Value.parameter.personality)
                 {
-                    case 30:
+                    case 30: //0727 DLC
                         if (!AssetBundleCheck.IsFile("etcetra/list/config/14.unity3d"))
                             x.Value.parameter.personality = DefaultPersonality;
                         break;
-                    case 31:
+                    case 31: //0727 Paid DLC
                         if (!AssetBundleCheck.IsFile("etcetra/list/config/15.unity3d"))
                             x.Value.parameter.personality = DefaultPersonality;
                         break;
-                    case 32:
+                    case 32: //0727 Paid DLC
                         if (!AssetBundleCheck.IsFile("etcetra/list/config/16.unity3d"))
                             x.Value.parameter.personality = DefaultPersonality;
                         break;
-                    case 33:
+                    case 33: //0727 Paid DLC
                         if (!AssetBundleCheck.IsFile("etcetra/list/config/17.unity3d"))
                             x.Value.parameter.personality = DefaultPersonality;
                         break;
@@ -49,7 +49,7 @@ namespace KK_PersonalityCorrector
                     case 83:
                     case 84:
                     case 85:
-                    case 86:
+                    case 86: //Story character personalities added by a mod
                         x.Value.parameter.personality = DefaultPersonality;
                         break;
                 }
