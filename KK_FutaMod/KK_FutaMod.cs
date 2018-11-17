@@ -4,10 +4,13 @@ using Logger = BepInEx.Logger;
 using Harmony;
 using UnityEngine;
 using System;
+using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
 using ExtensibleSaveFormat;
 using ChaCustom;
+using MakerAPI;
+using UniRx;
 /// <summary>
 /// Futa mod. Adds dicks to girls which save and load along with the card.
 /// </summary>
@@ -17,38 +20,41 @@ namespace KK_FutaMod
     [BepInPlugin("com.deathweasel.bepinex.futamod", "Futa Mod", "0.1")]
     public class KK_FutaMod : BaseUnityPlugin
     {
-        [DisplayName("Futa Hotkey")]
-        [Description("Futa hotkey")]
-        public static SavedKeyboardShortcut FutaHotkey { get; private set; }
         private static bool ListOverride = false;
         private static bool DoingLoadFileLimited = false;
+        private MakerToggle FutaToggle;
 
         void Main()
         {
             var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.futamod");
             harmony.PatchAll(typeof(KK_FutaMod));
-            FutaHotkey = new SavedKeyboardShortcut("FutaHotkey", "KK_FutaMod", new KeyboardShortcut(KeyCode.KeypadMinus));
             ExtendedSave.CardBeingLoaded += ExtendedCardLoad;
             ExtendedSave.CardBeingSaved += ExtendedCardSave;
+            MakerAPI.MakerAPI.Instance.RegisterCustomSubCategories += AddCategory;
         }
         /// <summary>
-        /// Replace this with a GUI
+        /// Register the futa checkbox with MakerAPI
         /// </summary>
-        void Update()
+        private void AddCategory(object sender, RegisterSubCategoriesEvent args)
         {
-            if (FutaHotkey.IsDown() && Singleton<CustomBase>.IsInstance() && Singleton<CustomBase>.Instance.chaCtrl != null)
+            if (Singleton<CustomBase>.Instance.modeSex == 0) return;
+
+            FutaToggle = args.AddControl(new MakerToggle(MakerConstants.Body.All, "ふたなり", this));
+            void ToggleFuta(bool IsFuta)
             {
-                bool IsFuta = !Singleton<CustomBase>.Instance.chaCtrl.chaFile.status.visibleSonAlways;
                 Singleton<CustomBase>.Instance.chaCtrl.chaFile.status.visibleSonAlways = IsFuta;
                 PluginData ExtendedData = new PluginData();
                 ExtendedData.data = new Dictionary<string, object> { { "Futa", IsFuta } };
                 ExtendedSave.SetExtendedDataById(Singleton<CustomBase>.Instance.chaCtrl.chaFile, "KK_FutaMod", ExtendedData);
             }
+            var obs = Observer.Create<bool>(ToggleFuta);
+            FutaToggle.ValueChanged.Subscribe(obs);
+            FutaToggle.Value = Singleton<CustomBase>.Instance.chaCtrl.chaFile.status.visibleSonAlways;
         }
         /// <summary>
         /// Card loading
         /// </summary>
-        private static void ExtendedCardLoad(ChaFile file)
+        private void ExtendedCardLoad(ChaFile file)
         {
             if (ListOverride) return;
 
@@ -62,18 +68,13 @@ namespace KK_FutaMod
             }
 
             //Loading a card while in chara maker
-            if (Singleton<CustomBase>.IsInstance() && Singleton<CustomBase>.Instance.chaCtrl != null && DoingLoadFileLimited)
-            {
-                ExtendedData = new PluginData();
-                ExtendedData.data = new Dictionary<string, object> { { "Futa", IsFuta } };
-                ExtendedSave.SetExtendedDataById(Singleton<CustomBase>.Instance.chaCtrl.chaFile, "KK_FutaMod", ExtendedData);
-                Singleton<CustomBase>.Instance.chaCtrl.chaFile.status.visibleSonAlways = IsFuta;
-            }
+            if (Singleton<CustomBase>.IsInstance() && Singleton<CustomBase>.Instance.modeSex == 1 && Singleton<CustomBase>.Instance.chaCtrl != null && DoingLoadFileLimited)
+                FutaToggle.Value = IsFuta;
         }
         /// <summary>
         /// Card saving
         /// </summary>
-        private static void ExtendedCardSave(ChaFile file)
+        private void ExtendedCardSave(ChaFile file)
         {
             PluginData ExtendedData = ExtendedSave.GetExtendedDataById(file, "KK_FutaMod");
 
@@ -138,32 +139,5 @@ namespace KK_FutaMod
         public static void CustomScenePrefix() => ListOverride = true;
         [HarmonyPostfix, HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
         public static void CustomScenePostfix() => ListOverride = false;
-
-        ///// <summary>
-        ///// Normal asset loading. Replace the male body name with the female one.
-        ///// </summary>
-        //[HarmonyPrefix]
-        //[HarmonyBefore(new string[] { "com.bepis.bepinex.resourceredirector" })]
-        //[HarmonyPatch(typeof(AssetBundleManager), nameof(AssetBundleManager.LoadAsset), new[] { typeof(string), typeof(string), typeof(Type), typeof(string) })]
-        //public static void LoadAssetPrefix(ref string assetName)
-        //{
-        //    if (assetName == "p_cm_body_00_low")
-        //        assetName = "p_cf_body_00_low";
-        //    else if (assetName == "p_cm_body_00")
-        //        assetName = "p_cf_body_00";
-        //}
-        ///// <summary>
-        ///// Async asset loading. Probably only used in the intro sequence.
-        ///// </summary>
-        //[HarmonyPrefix]
-        //[HarmonyBefore(new string[] { "com.bepis.bepinex.resourceredirector" })]
-        //[HarmonyPatch(typeof(AssetBundleManager), nameof(AssetBundleManager.LoadAssetAsync), new[] { typeof(string), typeof(string), typeof(Type), typeof(string) })]
-        //public static void LoadAssetAsyncPrefix(ref string assetName)
-        //{
-        //    if (assetName == "p_cm_body_00_low")
-        //        assetName = "p_cf_body_00_low";
-        //    else if (assetName == "p_cm_body_00")
-        //        assetName = "p_cf_body_00";
-        //}
     }
 }
