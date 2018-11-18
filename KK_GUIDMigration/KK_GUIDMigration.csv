@@ -12,6 +12,8 @@
 ChaFileClothes.ClothesPants,<not set>,93,com.Quokka.thighhighs,93
 ChaFileClothes.ClothesBra,com.mysto.mechabikini,6548,com.mysto.modpack,6548
 ChaFileClothes.ClothesTop,com.mysto.demongodnochainmail,8960,com.mysto.modpack,45346747
+ChaFileClothes.ClothesTop,com.mysto.heartshirt,45346750,com.mysto.modpack,45346750
+ChaFileClothes.ClothesGloves,com.mysto.mizoreclothes,8934574,com.mysto.modpack,8934574
 ChaFileBody.PaintID1,com.mysto.taimaninheartwombtattoo,56435,com.mysto.modpack,56402
 ChaFileBody.PaintID2,com.mysto.taimaninheartwombtattoo,56435,com.mysto.modpack,56402
 ChaFileBody.PaintID1,com.gf.collection,100000,com.gf.collection,8205562
@@ -115,3 +117,11 @@ ChaFileAccessory.PartsInfo.id,yamadamod.acchairP,550,yamadamod.acchairP.rev4,550
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairP,551,yamadamod.acchairP.rev4,551
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairP,552,yamadamod.acchairP.rev4,552
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairP,553,yamadamod.acchairP.rev4,553
+ChaFileClothes.ClothesBot,Mint_E403.SuperMiniTightSkirt,781,Mint_E403.SuperMiniTightSkirt,2821
+ChaFileClothes.ClothesBot,Mint_E403.SuperMiniTightSkirt,782,Mint_E403.SuperMiniTightSkirt,2822
+ChaFileClothes.ClothesBot,Mint_E403.SuperMiniTightSkirt,783,Mint_E403.SuperMiniTightSkirt,2823
+ChaFileClothes.ClothesBot,Mint_E403.SuperMiniTightSkirt,784,Mint_E403.SuperMiniTightSkirt,2824
+ChaFileClothes.ClothesTop,Mint_E403.NakedCoat,741,Mint_E403.NakedCoat,2831
+ChaFileClothes.ClothesTop,Mint_E403.NakedCoat,742,Mint_E403.NakedCoat,2832
+ChaFileFace.eyelineUpId,RikkaEyeline,180008,mm.RikkaEyeline,180008
+ChaFileFace.eyelineUpId,RikkaEyeline,180009,mm.RikkaEyeline,180011
