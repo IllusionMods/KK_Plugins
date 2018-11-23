@@ -1,15 +1,15 @@
 ﻿using BepInEx;
 using Harmony;
 using Illusion.Game;
-
+/// <summary>
+/// When Chara Maker starts, wait a bit for lag to stop then play a sound
+/// </summary>
 namespace KK_CharaMakerLoadedSound
 {
-    /// <summary>
-    /// When Chara Maker starts, wait a bit for lag to stop then play a sound
-    /// </summary>
-    [BepInPlugin("com.deathweasel.bepinex.charamakerloadedsound", "Chara Maker Load Sound", "1.0")]
+    [BepInPlugin("com.deathweasel.bepinex.charamakerloadedsound", "Chara Maker Load Sound", Version)]
     public class KK_CharaMakerLoadedSound : BaseUnityPlugin
     {
+        public const string Version = "1.0";
         private static int Counter = 0;
 
         void Main()
@@ -36,9 +36,9 @@ namespace KK_CharaMakerLoadedSound
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CustomScene), "Start")]
-        public static void StartPostHook()
+        public static void StartPostfix()
         {
-            KK_CharaMakerLoadedSound.Counter = 1;
+            Counter = 1;
         }
     }
 }

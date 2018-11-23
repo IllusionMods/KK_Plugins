@@ -11,9 +11,10 @@ using Sideloader.AutoResolver;
 namespace KK_GUIDMigration
 {
     [BepInDependency("com.bepis.bepinex.sideloader")]
-    [BepInPlugin("com.deathweasel.bepinex.guidmigration", "GUID Migration", "1.1")]
+    [BepInPlugin("com.deathweasel.bepinex.guidmigration", "GUID Migration", Version)]
     public class KK_GUIDMigration : BaseUnityPlugin
     {
+        public const string Version = "1.1";
         private static List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
         private static string GUIDMigrationFilePath = Path.Combine(Paths.GameRootPath, "bepinex\\KK_GUIDMigration.csv");
         private static bool DoMigration = false;

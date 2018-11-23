@@ -9,7 +9,6 @@ using ChaCustom;
 using UnityEngine.SceneManagement;
 using System.Threading;
 using Timer = System.Timers.Timer;
-
 /// <summary>
 /// Watches the character folders for changes and updates the character/coordinate list in the chara maker.
 /// Probably should be expanded to support studio lists too.
@@ -17,9 +16,10 @@ using Timer = System.Timers.Timer;
 namespace KK_ReloadCharaListOnChange
 {
     [BepInDependency("com.bepis.bepinex.sideloader")]
-    [BepInPlugin("com.deathweasel.bepinex.reloadcharalistonchange", "Reload Chara List On Change", "1.1")]
+    [BepInPlugin("com.deathweasel.bepinex.reloadcharalistonchange", "Reload Chara List On Change", Version)]
     public class KK_ReloadCharaListOnChange : BaseUnityPlugin
     {
+        public const string Version = "1.1";
         private static FileSystemWatcher CharacterCardWatcher;
         private static FileSystemWatcher CoordinateCardWatcher;
         private static string FemaleCardPath = Path.Combine(Paths.GameRootPath, "UserData\\chara\\female");

@@ -8,9 +8,11 @@ using UnityEngine;
 /// </summary>
 namespace KK_CutsceneLockupFix
 {
-    [BepInPlugin("com.deathweasel.bepinex.cutscenelockupfix", "Cutscene Lockup Fix", "1.0")]
+    [BepInPlugin("com.deathweasel.bepinex.cutscenelockupfix", "Cutscene Lockup Fix", Version)]
     public class KK_CutsceneLockupFix : BaseUnityPlugin
     {
+        public const string Version = "1.0";
+
         public void Main()
         {
             var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.cutscenelockupfix");

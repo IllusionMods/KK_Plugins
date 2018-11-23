@@ -7,9 +7,10 @@ using System.ComponentModel;
 /// </summary>
 namespace KK_ForceHighPoly
 {
-    [BepInPlugin("com.deathweasel.bepinex.forcehighpoly", "Force High Poly", "1.1")]
+    [BepInPlugin("com.deathweasel.bepinex.forcehighpoly", "Force High Poly", Version)]
     public class KK_ForceHighPoly : BaseUnityPlugin
     {
+        public const string Version = "1.1";
         [Category("Settings")]
         [DisplayName("High poly mode")]
         [Description("Whether or not to load high poly assets. May require exiting to main menu to take effect.")]

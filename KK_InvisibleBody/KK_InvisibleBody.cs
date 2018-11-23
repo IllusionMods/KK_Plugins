@@ -16,9 +16,10 @@ using ExtensibleSaveFormat;
 namespace KK_InvisibleBody
 {
     [BepInDependency("com.bepis.bepinex.extendedsave")]
-    [BepInPlugin("com.deathweasel.bepinex.invisiblebody", "Invisible Body", "1.1")]
+    [BepInPlugin("com.deathweasel.bepinex.invisiblebody", "Invisible Body", Version)]
     public class KK_InvisibleBody : BaseUnityPlugin
     {
+        public const string Version = "1.1";
         private static bool LoadOrImportClicked = false;
         private static bool ChangeCharaVisibleState = true;
         [DisplayName("Invisibility Hotkey")]

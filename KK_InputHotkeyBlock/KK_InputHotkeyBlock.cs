@@ -8,9 +8,11 @@ using UnityEngine.UI;
 /// </summary>
 namespace KK_InputHotkeyBlock
 {
-    [BepInPlugin("com.deathweasel.bepinex.inputhotkeyblock", "Input Hotkey Block", "1.0")]
+    [BepInPlugin("com.deathweasel.bepinex.inputhotkeyblock", "Input Hotkey Block", Version)]
     public class KK_InputHotkeyBlock : BaseUnityPlugin
     {
+        public const string Version = "1.0";
+
         void Main()
         {
             var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.inputhotkeyblock");
@@ -35,44 +37,18 @@ namespace KK_InputHotkeyBlock
                 return true;
             }
         }
-        /// <summary>
-        /// GetKey hooks. When HotkeyBlock returns false the GetKey function will be prevented from running.
-        /// </summary>
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Input), nameof(Input.GetKey), new[] { typeof(KeyCode) })]
-        public static bool GetKeyCode(KeyCode key)
-        {
-            return HotkeyBlock;
-        }
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Input), nameof(Input.GetKey), new[] { typeof(string) })]
-        public static bool GetKeyString(string name)
-        {
-            return HotkeyBlock;
-        }
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(KeyCode) })]
-        public static bool GetKeyDownCode(KeyCode key)
-        {
-            return HotkeyBlock;
-        }
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(string) })]
-        public static bool GetKeyDownString(string name)
-        {
-            return HotkeyBlock;
-        }
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), new[] { typeof(KeyCode) })]
-        public static bool GetKeyUpCode(KeyCode key)
-        {
-            return HotkeyBlock;
-        }
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), new[] { typeof(string) })]
-        public static bool GetKeyUpString(string name)
-        {
-            return HotkeyBlock;
-        }
+        //GetKey hooks. When HotkeyBlock returns false the GetKey functions will be prevented from running.
+        [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKey), new[] { typeof(KeyCode) })]
+        public static bool GetKeyCode(KeyCode key) => HotkeyBlock;
+        [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKey), new[] { typeof(string) })]
+        public static bool GetKeyString(string name) => HotkeyBlock;
+        [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(KeyCode) })]
+        public static bool GetKeyDownCode(KeyCode key) => HotkeyBlock;
+        [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(string) })]
+        public static bool GetKeyDownString(string name) => HotkeyBlock;
+        [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), new[] { typeof(KeyCode) })]
+        public static bool GetKeyUpCode(KeyCode key) => HotkeyBlock;
+        [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), new[] { typeof(string) })]
+        public static bool GetKeyUpString(string name) => HotkeyBlock;
     }
 }

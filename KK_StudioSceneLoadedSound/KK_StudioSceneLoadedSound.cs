@@ -8,9 +8,10 @@ namespace KK_StudioSceneLoadedSound
     /// <summary>
     /// When a Studio scene is loaded or imported, play a sound
     /// </summary>
-    [BepInPlugin("com.deathweasel.bepinex.studiosceneloadedsound", "Studio Scene Loaded Sound", "1.0")]
+    [BepInPlugin("com.deathweasel.bepinex.studiosceneloadedsound", "Studio Scene Loaded Sound", Version)]
     public class KK_StudioSceneLoadedSound : BaseUnityPlugin
     {
+        public const string Version = "1.0";
         private static bool LoadOrImportClicked = false;
 
         void Main()

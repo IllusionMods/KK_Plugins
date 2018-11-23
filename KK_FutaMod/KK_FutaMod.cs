@@ -17,9 +17,10 @@ using UniRx;
 namespace KK_FutaMod
 {
     [BepInProcess("Koikatu")] //Not for Studio since you can add dicks whenever you want there
-    [BepInPlugin("com.deathweasel.bepinex.futamod", "Futa Mod", "0.1")]
+    [BepInPlugin("com.deathweasel.bepinex.futamod", "Futa Mod", Version)]
     public class KK_FutaMod : BaseUnityPlugin
     {
+        public const string Version = "0.2";
         private static bool ListOverride = false;
         private static bool DoingLoadFileLimited = false;
         private MakerToggle FutaToggle;

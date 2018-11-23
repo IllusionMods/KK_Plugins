@@ -9,12 +9,15 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-
+/// <summary>
+/// Proof of concept plugin for assigning uncensors to characters individually
+/// </summary>
 namespace KK_UncensorSelector
 {
-    [BepInPlugin("com.deathweasel.bepinex.uncensorselector", "Uncensor Selector", "0.1")]
+    [BepInPlugin("com.deathweasel.bepinex.uncensorselector", "Uncensor Selector", Version)]
     public class KK_UncensorSelector : BaseUnityPlugin
     {
+        public const string Version = "0.1";
         private static string CharacterName = "";
 
         void Main()
