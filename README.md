@@ -67,7 +67,12 @@ Replaces any cards with the modded story character personalities with the defaul
 v1.1 Updated to support missing DLC personalities
 </details>
 
-#### KK_FutaMod BETA - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v13/KK_FutaMod.v0.1.zip)
+#### KK_FutaMod BETA 2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v15/KK_FutaMod.v0.2.zip)
 Adds dicks to girls. Requires MakerAPI, currently available as part of [ABMX](https://github.com/ManlyMarco/KKABMX#readme).
 
 More features soon, hopefully.
+
+<details><summary>Change Log</summary>
+  
+BETA 2 Updated for MakerAPI compatibility
+</details>
