@@ -16,13 +16,13 @@ namespace KK_GUIDMigration
     {
         public const string Version = "1.1";
         private static List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
-        private static string GUIDMigrationFilePath = Path.Combine(Paths.GameRootPath, "bepinex\\KK_GUIDMigration.csv");
+        private static string GUIDMigrationFilePath = Path.Combine(Paths.PluginPath, "KK_GUIDMigration.csv");
         private static bool DoMigration = false;
 
         void Main()
         {
             //Don't even bother if there's no mods directory
-            if (Directory.Exists(Path.Combine(Paths.GameRootPath, "mods")) && Directory.Exists(Path.Combine(Paths.GameRootPath, "bepinex")))
+            if (Directory.Exists(Path.Combine(Paths.GameRootPath, "mods")) && Directory.Exists(Paths.PluginPath))
             {
                 var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.guidmigration");
                 harmony.PatchAll(typeof(KK_GUIDMigration));
