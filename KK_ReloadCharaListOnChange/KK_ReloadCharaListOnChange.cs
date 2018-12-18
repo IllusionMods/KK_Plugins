@@ -1,14 +1,14 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using ChaCustom;
 using Harmony;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ChaCustom;
-using UnityEngine.SceneManagement;
 using System.Threading;
+using UnityEngine.SceneManagement;
 using Timer = System.Timers.Timer;
 
 namespace KK_ReloadCharaListOnChange
@@ -21,12 +21,12 @@ namespace KK_ReloadCharaListOnChange
     [BepInPlugin("com.deathweasel.bepinex.reloadcharalistonchange", "Reload Chara List On Change", Version)]
     public class KK_ReloadCharaListOnChange : BaseUnityPlugin
     {
-        public const string Version = "1.2";
+        public const string Version = "1.3";
         private static FileSystemWatcher CharacterCardWatcher;
         private static FileSystemWatcher CoordinateCardWatcher;
-        private static string FemaleCardPath = Path.Combine(Paths.GameRootPath, "UserData\\chara\\female");
-        private static string MaleCardPath = Path.Combine(Paths.GameRootPath, "UserData\\chara\\male");
-        private static string CoordinateCardPath = Path.Combine(Paths.GameRootPath, "UserData\\coordinate");
+        private static readonly string FemaleCardPath = Path.Combine(Paths.GameRootPath, "UserData\\chara\\female");
+        private static readonly string MaleCardPath = Path.Combine(Paths.GameRootPath, "UserData\\chara\\male");
+        private static readonly string CoordinateCardPath = Path.Combine(Paths.GameRootPath, "UserData\\coordinate");
         private static List<CardEventInfo> CharacterCardEventList = new List<CardEventInfo>();
         private static List<CardEventInfo> CoordinateCardEventList = new List<CardEventInfo>();
         private static bool DoRefresh = false;
@@ -37,7 +37,6 @@ namespace KK_ReloadCharaListOnChange
         private static List<CustomFileInfo> lstFileInfoCoordinate;
         private static Timer CardTimer;
         private static ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim();
-        private static int ModeSex = 0;
 
         public void Main()
         {
@@ -195,11 +194,7 @@ namespace KK_ReloadCharaListOnChange
                             DateTime CardTime = File.GetLastWriteTime(CardEvent.CardPath);
 
                             //Find the highest index to use for our new index
-                            int Index;
-                            if (lstFileInfoCoordinate.Count == 0)
-                                Index = 0;
-                            else
-                                Index = lstFileInfoCoordinate.Max(x => x.index) + 1;
+                            int Index = lstFileInfoCoordinate.Count == 0 ? 0 : lstFileInfoCoordinate.Max(x => x.index) + 1;
 
                             listCtrlCoordinate.AddList(Index, AddedCoordinate.coordinateName, string.Empty, string.Empty, CardEvent.CardPath, CardEvent.CardName, CardTime);
                             DidAddOrRemove = true;
@@ -253,8 +248,7 @@ namespace KK_ReloadCharaListOnChange
                 InCharaMaker = false;
                 DoRefresh = false;
                 EventFromCharaMaker = false;
-                if (CardTimer != null)
-                    CardTimer.Dispose();
+                CardTimer?.Dispose();
                 CharacterCardWatcher.Dispose();
                 CharacterCardEventList.Clear();
                 CoordinateCardWatcher.Dispose();
@@ -324,16 +318,11 @@ namespace KK_ReloadCharaListOnChange
         [HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
         public static void CustomCharaFileInitializePrefix(CustomCharaFile __instance)
         {
-            ModeSex = Singleton<CustomBase>.Instance.modeSex;
-
             //Get some references to fields we'll be using later on
             listCtrlCharacter = __instance;
 
             CharacterCardWatcher = new FileSystemWatcher();
-            if (ModeSex == 0)
-                CharacterCardWatcher.Path = MaleCardPath;
-            else
-                CharacterCardWatcher.Path = FemaleCardPath;
+            CharacterCardWatcher.Path = Singleton<CustomBase>.Instance.modeSex == 0 ? MaleCardPath : FemaleCardPath;
             CharacterCardWatcher.NotifyFilter = NotifyFilters.FileName;
             CharacterCardWatcher.Filter = "*.png";
             CharacterCardWatcher.EnableRaisingEvents = true;

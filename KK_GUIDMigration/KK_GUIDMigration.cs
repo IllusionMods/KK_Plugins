@@ -16,7 +16,7 @@ namespace KK_GUIDMigration
     {
         public const string Version = "1.1";
         private static List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
-        private static string GUIDMigrationFilePath = Path.Combine(Paths.PluginPath, "KK_GUIDMigration.csv");
+        private static readonly string GUIDMigrationFilePath = Path.Combine(Paths.PluginPath, "KK_GUIDMigration.csv");
         private static bool DoMigration = false;
 
         void Main()
