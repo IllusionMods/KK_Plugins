@@ -5,21 +5,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using ChaCustom;
 using UnityEngine.SceneManagement;
 using System.Threading;
 using Timer = System.Timers.Timer;
-/// <summary>
-/// Watches the character folders for changes and updates the character/coordinate list in the chara maker.
-/// Probably should be expanded to support studio lists too.
-/// </summary>
+
 namespace KK_ReloadCharaListOnChange
 {
+    /// <summary>
+    /// Watches the character folders for changes and updates the character/coordinate list in the chara maker.
+    /// Probably should be expanded to support studio lists too.
+    /// </summary>
     [BepInDependency("com.bepis.bepinex.sideloader")]
     [BepInPlugin("com.deathweasel.bepinex.reloadcharalistonchange", "Reload Chara List On Change", Version)]
     public class KK_ReloadCharaListOnChange : BaseUnityPlugin
     {
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         private static FileSystemWatcher CharacterCardWatcher;
         private static FileSystemWatcher CoordinateCardWatcher;
         private static string FemaleCardPath = Path.Combine(Paths.GameRootPath, "UserData\\chara\\female");
@@ -30,8 +32,7 @@ namespace KK_ReloadCharaListOnChange
         private static bool DoRefresh = false;
         private static bool EventFromCharaMaker = false;
         private static bool InCharaMaker = false;
-        private static CustomFileListCtrl listCtrlCharacter;
-        private static List<CustomFileInfo> lstFileInfoCharacter;
+        private static CustomCharaFile listCtrlCharacter;
         private static CustomFileListCtrl listCtrlCoordinate;
         private static List<CustomFileInfo> lstFileInfoCoordinate;
         private static Timer CardTimer;
@@ -81,7 +82,7 @@ namespace KK_ReloadCharaListOnChange
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, ex);
-                CardTimer.Dispose();
+                CardTimer?.Dispose();
                 CharacterCardEventList.Clear();
             }
             finally
@@ -125,7 +126,7 @@ namespace KK_ReloadCharaListOnChange
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, ex);
-                CardTimer.Dispose();
+                CardTimer?.Dispose();
                 CharacterCardEventList.Clear();
             }
             finally
@@ -138,59 +139,12 @@ namespace KK_ReloadCharaListOnChange
         /// </summary>
         private static void RefreshCharacterList()
         {
-            bool DidAddOrRemove = false;
-
-            //Turn off resolving to prevent spam since modded stuff isn't relevent for making this list.
-            Sideloader.AutoResolver.Hooks.IsResolving = false;
-
             try
             {
-                foreach (CardEventInfo CardEvent in CharacterCardEventList)
-                {
-                    if (CardEvent.EventType == WatcherChangeTypes.Deleted)
-                    {
-                        CustomFileInfo CardInfo = lstFileInfoCharacter.FirstOrDefault(x => x.FileName == CardEvent.CardName);
-                        if (CardInfo == null)
-                            Logger.Log(LogLevel.Warning, $"{CardEvent.CardName}.png was removed from the folder but could not be found on character list, skipping.");
-                        else
-                        {
-                            listCtrlCharacter.RemoveList(CardInfo.index);
-                            DidAddOrRemove = true;
-                        }
-                    }
-                    else if (CardEvent.EventType == WatcherChangeTypes.Created)
-                    {
-                        ChaFileControl AddedCharacter = new ChaFileControl();
-                        if (!AddedCharacter.LoadCharaFile(CardEvent.CardPath))
-                        {
-                            Logger.Log(LogLevel.Warning | LogLevel.Message, $"{CardEvent.CardName}.png is not a character card.");
-                        }
-                        else
-                        {
-                            if (AddedCharacter.parameter.sex != ModeSex)
-                            {
-                                Logger.Log(LogLevel.Warning | LogLevel.Message, $"{CardEvent.CardName}.png is not a {((ModeSex == 0) ? "male" : "female")} card.");
-                                continue;
-                            }
+                //Turn off resolving to prevent spam since modded stuff isn't relevent for making this list.
+                Sideloader.AutoResolver.Hooks.IsResolving = false;
 
-                            string CardClub = Manager.Game.ClubInfos.TryGetValue(AddedCharacter.parameter.clubActivities, out ClubInfo.Param ClubParam) ? ClubParam.Name : "不明";
-                            string CardPersonality = Singleton<Manager.Voice>.Instance.voiceInfoDic.TryGetValue(AddedCharacter.parameter.personality, out VoiceInfo.Param PersonalityParam) ? PersonalityParam.Personality : "不明";
-                            DateTime CardTime = File.GetLastWriteTime(CardEvent.CardPath);
-
-                            //Find the highest index to use for our new index
-                            int Index;
-                            if (lstFileInfoCharacter.Count == 0)
-                                Index = 0;
-                            else
-                                Index = lstFileInfoCharacter.Max(x => x.index) + 1;
-
-                            listCtrlCharacter.AddList(Index, AddedCharacter.parameter.fullname, CardClub, CardPersonality, CardEvent.CardPath, CardEvent.CardName, CardTime);
-                            DidAddOrRemove = true;
-                        }
-                    }
-                }
-                if (DidAddOrRemove)
-                    listCtrlCharacter.ReCreate();
+                typeof(CustomCharaFile).GetMethod("Initialize", BindingFlags.NonPublic | BindingFlags.Instance)?.Invoke(listCtrlCharacter, null);
             }
             catch (Exception ex)
             {
@@ -198,7 +152,10 @@ namespace KK_ReloadCharaListOnChange
                 Logger.Log(LogLevel.Error, $"KK_ReloadCharaListOnChange error: {ex.Message}");
                 Logger.Log(LogLevel.Error, ex);
             }
-            Sideloader.AutoResolver.Hooks.IsResolving = true;
+            finally
+            {
+                Sideloader.AutoResolver.Hooks.IsResolving = true;
+            }
         }
         /// <summary>
         /// Add or remove the cards from the list, then refresh the list
@@ -370,8 +327,7 @@ namespace KK_ReloadCharaListOnChange
             ModeSex = Singleton<CustomBase>.Instance.modeSex;
 
             //Get some references to fields we'll be using later on
-            listCtrlCharacter = Traverse.Create(__instance).Field("listCtrl").GetValue<CustomFileListCtrl>();
-            lstFileInfoCharacter = Traverse.Create(listCtrlCharacter).Field("lstFileInfo").GetValue<List<CustomFileInfo>>();
+            listCtrlCharacter = __instance;
 
             CharacterCardWatcher = new FileSystemWatcher();
             if (ModeSex == 0)
@@ -383,6 +339,7 @@ namespace KK_ReloadCharaListOnChange
             CharacterCardWatcher.EnableRaisingEvents = true;
             CharacterCardWatcher.Created += new FileSystemEventHandler(CreateCharacterEventLists);
             CharacterCardWatcher.Deleted += new FileSystemEventHandler(CreateCharacterEventLists);
+            CharacterCardWatcher.IncludeSubdirectories = true;
 
             InCharaMaker = true;
         }
