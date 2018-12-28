@@ -28,20 +28,27 @@ namespace KK_PersonalityCorrector
             {
                 switch (x.Value.parameter.personality)
                 {
-                    case 30: //0727 DLC
+                    case 30: //0727 Free DLC
                         if (!AssetBundleCheck.IsFile("etcetra/list/config/14.unity3d"))
                             x.Value.parameter.personality = DefaultPersonality;
                         break;
-                    case 31: //0727 Paid DLC
+                    case 31: //0727 Paid DLC #1
                         if (!AssetBundleCheck.IsFile("etcetra/list/config/15.unity3d"))
                             x.Value.parameter.personality = DefaultPersonality;
                         break;
-                    case 32: //0727 Paid DLC
+                    case 32: //0727 Paid DLC #1
                         if (!AssetBundleCheck.IsFile("etcetra/list/config/16.unity3d"))
                             x.Value.parameter.personality = DefaultPersonality;
                         break;
-                    case 33: //0727 Paid DLC
+                    case 33: //0727 Paid DLC #1
                         if (!AssetBundleCheck.IsFile("etcetra/list/config/17.unity3d"))
+                            x.Value.parameter.personality = DefaultPersonality;
+                        break;
+                    case 34:
+                    case 35:
+                    case 36:
+                    case 37: //1221 Paid DLC #2
+                        if (!AssetBundleCheck.IsFile("etcetra/list/config/20.unity3d"))
                             x.Value.parameter.personality = DefaultPersonality;
                         break;
                     case 80:
