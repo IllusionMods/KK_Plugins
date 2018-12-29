@@ -9,7 +9,7 @@ namespace KK_PersonalityCorrector
     [BepInPlugin("com.deathweasel.bepinex.personalitycorrector", "Personality Corrector", Version)]
     public class KK_PersonalityCorrector : BaseUnityPlugin
     {
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         public static int DefaultPersonality = 8; //Pure
 
         void Main()
