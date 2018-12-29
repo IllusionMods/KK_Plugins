@@ -40,14 +40,15 @@ When the category is * only GUID migration will be attempted and whatever you pu
 #### KK_CutsceneLockupFix v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_CutsceneLockupFix.v1.0.zip)
 Adds some extra error handling to the game so certain hair mods wont lock up the whole game when they appear in a cutscene.
 
-#### KK_ReloadCharaListOnChange v1.3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v17/KK_ReloadCharaListOnChange.v1.3.zip)
+#### KK_ReloadCharaListOnChange v1.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v18/KK_ReloadCharaListOnChange.v1.4.zip)
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.
 
 <details><summary>Change Log</summary>
   
 v1.1 Fixed new coordinates saved from within the game not being handled correctly  
 v1.2 Fixed error when exiting the chara maker  
-v1.3 Updated for plugin compatibility
+v1.3 Updated for plugin compatibility  
+v1.4 Studio support
 </details>
 
 #### KK_InvisibleBody v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v7/KK_InvisibleBody.v1.1.zip)
@@ -61,12 +62,13 @@ v1.1 Fixed studio items becoming visible when they were toggled off in the works
 #### KK_InputHotkeyBlock v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v8/KK_InputHotkeyBlock.v1.0.zip)
 Blocks mod hotkeys from triggering while typing in input fields. Based on kisama.dll by Essu.
 
-#### KK_PersonalityCorrector v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v12/KK_PersonalityCorrector.v1.1.zip)
+#### KK_PersonalityCorrector v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v18/KK_PersonalityCorrector.v1.2.zip)
 Replaces any cards with the modded story character personalities with the default "Pure" personality when attempting to added them to the class to prevent the game from breaking. Also defaults to "Pure" for characters using paid DLC personalities if you don't have the paid DLC installed.
 
 <details><summary>Change Log</summary>
   
-v1.1 Updated to support missing DLC personalities
+v1.1 Updated to support missing DLC personalities  
+v1.2 Updated for 1221 DLC personalities
 </details>
 
 #### KK_FutaMod BETA 2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v15/KK_FutaMod.v0.2.zip)
