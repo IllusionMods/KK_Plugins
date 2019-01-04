@@ -71,6 +71,14 @@ v1.1 Updated to support missing DLC personalities
 v1.2 Updated for 1221 DLC personalities
 </details>
 
+#### KK_UncensorSelector v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v21/KK_UncensorSelector.v1.0.zip)
+Allows you to specify which uncensors individual characters use.  
+
+Usage: Edit KK_UncensorSelector.csv in the form: LastName FirstName,chara/oo_base_mod.unity3d  
+Characters with only one name still work: FirstName,chara/oo_base_mod2.unity3d  
+To specify an uncensor to be used on all characters: *,chara/oo_base_mod3.unity3d Note this only applies to characters that aren't otherwise listed in KK_UncensorSelector.csv. Characters listed will always use the uncensor assigned to them.  
+The uncensor file can be in a sideloader mod or placed directly in your abdata/chara folder.  
+
 #### KK_FutaMod BETA 2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v15/KK_FutaMod.v0.2.zip)
 Adds dicks to girls. Requires MakerAPI, currently available as part of [ABMX](https://github.com/ManlyMarco/KKABMX#readme).
 
