@@ -76,8 +76,10 @@ Allows you to specify which uncensors individual characters use.
 
 Usage: Edit KK_UncensorSelector.csv in the form: LastName FirstName,chara/oo_base_mod.unity3d  
 Characters with only one name still work: FirstName,chara/oo_base_mod2.unity3d  
-To specify an uncensor to be used on all characters: *,chara/oo_base_mod3.unity3d Note this only applies to characters that aren't otherwise listed in KK_UncensorSelector.csv. Characters listed will always use the uncensor assigned to them.  
+To specify a default uncensor to be used on all characters: *,chara/oo_base_mod3.unity3d Note this only applies to characters that aren't otherwise listed in KK_UncensorSelector.csv. Characters listed will always use the uncensor assigned to them.  
 The uncensor file can be in a sideloader mod or placed directly in your abdata/chara folder.  
+
+Note: Only what you have set as the default (*) will load in the character maker. If you need a specific one loaded (for example when working with more extreme body mods) make sure to change the default. Set it back after you're done.
 
 #### KK_FutaMod BETA 2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v15/KK_FutaMod.v0.2.zip)
 Adds dicks to girls. Requires MakerAPI, currently available as part of [ABMX](https://github.com/ManlyMarco/KKABMX#readme).
