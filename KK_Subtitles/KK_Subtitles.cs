@@ -104,8 +104,10 @@ namespace KK_Subtitles
 
             if (Singleton<HSceneProc>.IsInstance())
                 Caption.DisplayHSubtitle(__instance);
-            else if (ActionGameInfoInstance != null)
+            else if (ActionGameInfoInstance != null && WasTouched)
                 Caption.DisplayDialogueSubtitle(__instance);
+
+            WasTouched = false;
         }
 
         [HarmonyPostfix]

@@ -36,10 +36,6 @@ namespace KK_Subtitles
 
         internal static void DisplayDialogueSubtitle(LoadVoice voice)
         {
-            if (!KK_Subtitles.WasTouched)
-                return;
-            KK_Subtitles.WasTouched = false;
-
             string text = "";
             FindText();
             void FindText()
@@ -107,7 +103,6 @@ namespace KK_Subtitles
 
             string speaker = voice.voiceTrans.gameObject.GetComponentInParent<ChaControl>().chaFile.parameter.firstname;
 
-            Logger.Log(LogLevel.Info, text);
             DisplaySubtitle(voice, speaker, text);
         }
 
@@ -141,7 +136,7 @@ namespace KK_Subtitles
                 subtitleText.text = text;
             else
                 subtitleText.text = $"{speaker}:{text}";
-            Logger.Log(LogLevel.Info, text);
+            Logger.Log(LogLevel.Debug, $"KK_Subtitles:{text}");
 
             voice.OnDestroyAsObservable().Subscribe(delegate (Unit _)
             {

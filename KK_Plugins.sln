@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_UncensorSelector", "KK_U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_Subtitles", "KK_Subtitles\KK_Subtitles.csproj", "{AECDBBFB-B520-4589-AB30-EDB96F5354F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_TextDump", "KK_TextDump\KK_TextDump.csproj", "{98B3AD67-6608-420F-A3A4-D1ABD9402905}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{AECDBBFB-B520-4589-AB30-EDB96F5354F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AECDBBFB-B520-4589-AB30-EDB96F5354F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AECDBBFB-B520-4589-AB30-EDB96F5354F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98B3AD67-6608-420F-A3A4-D1ABD9402905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98B3AD67-6608-420F-A3A4-D1ABD9402905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98B3AD67-6608-420F-A3A4-D1ABD9402905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98B3AD67-6608-420F-A3A4-D1ABD9402905}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
