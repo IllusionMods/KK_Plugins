@@ -81,6 +81,9 @@ The uncensor file can be in a sideloader mod or placed directly in your abdata/c
 
 Note: Only what you have set as the default (*) will load in the character maker. If you need a specific one loaded (for example when working with more extreme body mods) make sure to change the default. Set it back after you're done.
 
+#### KK_Subtitles v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v22/KK_Subtitles.v1.0.zip)
+Subtitles for H scenes and spoken text in dialogues
+
 #### KK_FutaMod BETA 2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v15/KK_FutaMod.v0.2.zip)
 Adds dicks to girls. Requires MakerAPI, currently available as part of [ABMX](https://github.com/ManlyMarco/KKABMX#readme).
 
