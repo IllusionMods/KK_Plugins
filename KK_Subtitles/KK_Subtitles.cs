@@ -68,7 +68,7 @@ namespace KK_Subtitles
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_Subtitles));
 
-            showUntranslated = new ConfigWrapper<bool>("showUntranslated", PluginName, false);
+            showUntranslated = new ConfigWrapper<bool>("showUntranslated", PluginName, true);
             fontName = new ConfigWrapper<string>("fontName", PluginName, "Arial");
             fontSize = new ConfigWrapper<int>("fontSize", PluginName, -5);
             fontStyle = new ConfigWrapper<FontStyle>("fontStyle", PluginName, FontStyle.Bold);

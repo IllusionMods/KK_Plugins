@@ -66,7 +66,7 @@ namespace KK_Subtitles
 
             //string speaker = voice.voiceTrans.gameObject.GetComponentInParent<ChaControl>().chaFile.parameter.firstname;
 
-            DisplaySubtitle(voice, "", text);
+            DisplaySubtitle(voice, text);
         }
 
         internal static void DisplayHSubtitle(LoadVoice voice)
@@ -101,12 +101,12 @@ namespace KK_Subtitles
                     if (JPChars.Contains(x))
                         return;
 
-            string speaker = voice.voiceTrans.gameObject.GetComponentInParent<ChaControl>().chaFile.parameter.firstname;
+            //string speaker = voice.voiceTrans.gameObject.GetComponentInParent<ChaControl>().chaFile.parameter.firstname;
 
-            DisplaySubtitle(voice, speaker, text);
+            DisplaySubtitle(voice, text);
         }
 
-        internal static void DisplaySubtitle(LoadVoice voice, string speaker, string text)
+        internal static void DisplaySubtitle(LoadVoice voice, string text, string speaker="")
         {
             Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"{KK_Subtitles.fontName.Value}.ttf");
             int fsize = KK_Subtitles.fontSize.Value;
