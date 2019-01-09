@@ -71,8 +71,8 @@ namespace KK_Subtitles
 
         internal static void DisplayHSubtitle(LoadVoice voice)
         {
-            List<HActionBase> lstProc = (List<HActionBase>)AccessTools.Field(typeof(HSceneProc), "lstProc").GetValue(Singleton<HSceneProc>.Instance);
-            HActionBase mode = lstProc[(int)Singleton<HSceneProc>.Instance.flags.mode];
+            List<HActionBase> lstProc = (List<HActionBase>)AccessTools.Field(typeof(HSceneProc), "lstProc").GetValue(KK_Subtitles.HSceneProcInstance);
+            HActionBase mode = lstProc[(int)KK_Subtitles.HSceneProcInstance.flags.mode];
             HVoiceCtrl voicectrl = (HVoiceCtrl)AccessTools.Field(typeof(HActionBase), "voice").GetValue(mode);
 
             //At the start of the H scene, all the text was loaded. Look through the loaded stuff and find the text for the current spoken voice.

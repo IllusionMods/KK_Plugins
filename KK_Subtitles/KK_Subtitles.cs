@@ -18,6 +18,7 @@ namespace KK_Subtitles
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string Version = "1.0";
         internal static Info ActionGameInfoInstance;
+        internal static HSceneProc HSceneProcInstance;
         public static bool WasTouched = false;
 
         #region ConfigMgr
@@ -102,7 +103,7 @@ namespace KK_Subtitles
             if (__instance.audioSource == null || __instance.audioSource.clip == null || __instance.audioSource.loop)
                 return;
 
-            if (Singleton<HSceneProc>.IsInstance())
+            if (HSceneProcInstance != null)
                 Caption.DisplayHSubtitle(__instance);
             else if (ActionGameInfoInstance != null && WasTouched)
                 Caption.DisplayDialogueSubtitle(__instance);
@@ -124,7 +125,11 @@ namespace KK_Subtitles
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(HVoiceCtrl), "Init")]
-        public static void HVoiceCtrlInit() => Caption.InitGUI();
+        public static void HVoiceCtrlInit()
+        {
+            Caption.InitGUI();
+            HSceneProcInstance = FindObjectOfType<HSceneProc>();
+        }
     }
 }
 
