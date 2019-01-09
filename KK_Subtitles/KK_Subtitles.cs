@@ -16,7 +16,7 @@ namespace KK_Subtitles
     {
         public const string PluginName = "KK_Subtitles";
         public const string GUID = "com.deathweasel.bepinex.subtitles";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         internal static Info ActionGameInfoInstance;
         internal static HSceneProc HSceneProcInstance;
         public static bool WasTouched = false;
