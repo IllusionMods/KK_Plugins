@@ -108,6 +108,16 @@ namespace KK_Subtitles
             else if (ActionGameInfoInstance != null && WasTouched)
                 Caption.DisplayDialogueSubtitle(__instance);
 
+            //Captions for chara maker
+            //There doesn't appear to be any text for these spoken lines. May have to transcribe them manually or something
+
+            //assetBundleName:custom/samplevoice_00.unity3d assetName:csv_08_00
+            //if (__instance.assetBundleName == "custom/samplevoice_00.unity3d" && __instance.assetName == "csv_08_00")
+            //{
+            //    Caption.InitGUI();
+            //    Caption.DisplaySubtitle(__instance, "はじめまして、よろしくね！");
+            //}
+
             WasTouched = false;
         }
 
