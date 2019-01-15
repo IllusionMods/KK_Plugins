@@ -37,11 +37,55 @@ namespace KK_TranslationSync
             }
             else if (TranslationSyncHotkey.IsDown())
             {
+                //CountText();
                 SyncTLs(TLType.Scenario);
                 SyncTLs(TLType.Communication);
                 SyncTLs(TLType.H);
                 Logger.Log(LogLevel.Info, "Sync complete.");
             }
+        }
+
+        private void CountText()
+        {
+            HashSet<string> AllJPText = new HashSet<string>();
+
+            void CountJPText(string folder)
+            {
+                var FilePaths = Directory.GetFiles(folder, "*.txt", SearchOption.AllDirectories);
+                foreach (string FileName in FilePaths)
+                {
+                    string[] Lines = File.ReadAllLines(FileName);
+
+                    foreach (string Line in Lines)
+                    {
+                        string NewLine = Line;
+                        if (!NewLine.Contains("="))
+                            continue;
+
+                        if (NewLine.StartsWith(@"//"))
+                            NewLine = NewLine.Substring(2, NewLine.Length - 2);
+
+                        if (Line.Split('=')[0].IsNullOrEmpty())
+                            continue;
+
+                        AllJPText.Add(Line.Split('=')[0]);
+                    }
+                }
+            }
+
+            string FolderPath = Paths.PluginPath;
+            FolderPath = Path.Combine(FolderPath, @"translation\adv");
+            CountJPText(FolderPath);
+
+            FolderPath = Paths.PluginPath;
+            FolderPath = Path.Combine(FolderPath, @"translation\communication");
+            CountJPText(FolderPath);
+
+            FolderPath = Paths.PluginPath;
+            FolderPath = Path.Combine(FolderPath, @"translation\h");
+            CountJPText(FolderPath);
+
+            Logger.Log(LogLevel.Info, $"Total Japanese lines: {AllJPText.Count}");
         }
 
         private void SyncTLs(TLType translationType, bool ForceOverwrite = false)

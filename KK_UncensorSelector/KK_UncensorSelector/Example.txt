@@ -1,0 +1,49 @@
+//Uncensor Selector guide
+//Lines starting with // are comments and are ignored.
+//Uncensors are applied to characters by setting them up in a .txt file inside the KK_UncensorSelector folder.
+//All .txt files are read. If you create a body modification specific to a character, you can include
+//a KK_UncensorSelector .txt file along with the mod and card. Users can put the .txt file in without needing to manually
+//edit any files
+
+
+//First KK_UncensorSelector checks if an uncensor has been assigned to the character and applies it.
+//Uncensors are applied like so:
+
+//LastName FirstName,chara/oo_base_modded.unity3d
+
+//If a character only has one name it's fine to just use that:
+
+//FirstName,chara/oo_base_modded.unity3d
+//LastName,chara/oo_base_modded.unity3d
+
+
+//Obviously you must not include the // at the start of the line or it cannot work.
+//Second, if you have assigned a gender specific uncensor it will be applied:
+
+//Female,chara/oo_base_modded_female.unity3d
+//Male,chara/oo_base_modded_male.unity3d
+
+//or:
+
+//F,chara/oo_base_modded_female.unity3d
+//M,chara/oo_base_modded_male.unity3d
+
+
+//Third, if you specify a wild card (*) it will be applied to all characters that do not meet the above criteria:
+
+//*,chara/oo_base_modded.unity3d
+
+
+//Finally, if no wild card is specified and no other criteria is met the default oo_base is used.
+//Sideloader uncensors and hard mod uncensors that override or overwrite oo_base will be applied instead, if applicable.
+//A complete file may look something like this:
+
+//F,chara/oo_base_moderchan.unity3d
+//Bessie,chara/oo_base_KK_LO.unity3d
+//Michelle,chara/sacinnie.unity3d
+//Dawn,chara/sacmeaty.unity3d
+//Haruno Mecha,chara/oo_base_amputee.unity3d
+//Hailey,chara/oo_base_futa_no_balls.unity3d
+
+//You can find some KK_UncensorSelector compatible uncensors here:
+//https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!zoQVGARS

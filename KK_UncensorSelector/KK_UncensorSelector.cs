@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using Logger = BepInEx.Logger;
 /// <summary>
 /// Plugin for assigning uncensors to characters individually
@@ -16,9 +17,10 @@ namespace KK_UncensorSelector
     [BepInPlugin("com.deathweasel.bepinex.uncensorselector", "Uncensor Selector", Version)]
     public class KK_UncensorSelector : BaseUnityPlugin
     {
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         private static string CharacterName = "";
-        private static readonly string UncensorSelectorFilePath = Path.Combine(Paths.PluginPath, "KK_UncensorSelector.csv");
+        private static byte CharacterSex = 0;
+        private static readonly string UncensorSelectorPath = Path.Combine(Paths.PluginPath, "KK_UncensorSelector");
         private static Dictionary<string, string> UncensorList = new Dictionary<string, string>();
 
         void Main()
@@ -30,30 +32,62 @@ namespace KK_UncensorSelector
             MethodInfo LoadAsyncIteratorMoveNext = LoadAsyncIterator.GetMethod("MoveNext");
             harmony.Patch(LoadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(KK_UncensorSelector).GetMethod(nameof(LoadAsyncTranspiler), BindingFlags.Static | BindingFlags.Public)));
 
-            if (File.Exists(UncensorSelectorFilePath))
-                GenerateUncensorList();
+            GenerateUncensorList();
         }
         /// <summary>
-        /// Generate the dictionary of CharacterName,UncensorName from KK_UncensorSelector.csv
+        /// Generate the dictionary of CharacterName,UncensorName from KK_UncensorSelector.csv or KK_UncensorSelector folder
         /// </summary>
         private static void GenerateUncensorList()
         {
-            using (StreamReader reader = new StreamReader(UncensorSelectorFilePath))
+            void ReadFile(string UncensorSelectorFile)
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                using (StreamReader reader = new StreamReader(UncensorSelectorFile))
                 {
                     try
                     {
-                        string[] parts = line.Split(',');
-                        UncensorList.Add(parts[0], parts[1]);
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            if (line == "")
+                                continue;
+                            if (line.StartsWith(@"//"))
+                                continue;
+
+                            string[] parts = line.Split(',');
+                            if (parts[0].Trim().ToLower() == "m" || parts[0].Trim().ToLower() == "male" || parts[0].Trim() == "0")
+                                UncensorList["0"] = parts[1].Trim();
+                            else if (parts[0].Trim().ToLower() == "f" || parts[0].Trim().ToLower() == "female" || parts[0].Trim() == "1")
+                                UncensorList["1"] = parts[1].Trim();
+                            else
+                                UncensorList[parts[0].Trim()] = parts[1].Trim();
+                        }
                     }
                     catch
                     {
-                        Logger.Log(LogLevel.Error, $"Error reading KK_UncensorSelector.csv line, skipping.");
+                        StringBuilder sb = new StringBuilder("Error reading KK_UncensorSelector file.").Append(Environment.NewLine);
+                        sb.Append($"File: {UncensorSelectorFile}");
+                        Logger.Log(LogLevel.Error, sb.ToString());
                     }
                 }
             }
+
+            var AllowedExtensions = new[] { ".txt", ".csv" };
+
+            if (Directory.Exists(UncensorSelectorPath))
+            {
+                var Files = Directory
+                            .GetFiles(UncensorSelectorPath)
+                            .Where(file => AllowedExtensions.Any(file.ToLower().EndsWith))
+                            .ToList();
+
+                foreach (string UncensorSelectorFile in Files)
+                    ReadFile(UncensorSelectorFile);
+
+            }
+
+            foreach (string Extension in AllowedExtensions)
+                if (File.Exists($"{UncensorSelectorPath}{Extension}"))
+                    ReadFile($"{UncensorSelectorPath}{Extension}");
         }
 
         [HarmonyPrefix]
@@ -61,6 +95,15 @@ namespace KK_UncensorSelector
         public static void LoadAsyncPrefix(ChaControl __instance)
         {
             CharacterName = __instance.chaFile.parameter.fullname.Trim();
+            CharacterSex = __instance.chaFile.parameter.sex;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
+        public static void CreateBodyTexturePrefix(ChaControl __instance)
+        {
+            CharacterName = __instance.chaFile.parameter.fullname.Trim();
+            CharacterSex = __instance.chaFile.parameter.sex;
         }
 
         public static IEnumerable<CodeInstruction> LoadAsyncTranspiler(IEnumerable<CodeInstruction> instructions)
@@ -100,11 +143,19 @@ namespace KK_UncensorSelector
 
         private static string SetOOBase()
         {
+            //Characters will always use the uncensor assigned to them if it exists
             if (UncensorList.TryGetValue(CharacterName, out string Uncensor) && AssetBundleCheck.IsFile(Uncensor))
                 return Uncensor;
-            else if (UncensorList.TryGetValue("*", out string DefaultUncensor) && AssetBundleCheck.IsFile(DefaultUncensor))
-                return DefaultUncensor;
 
+            //Characters will use the uncensor assigned for their sex if one has been set
+            if (UncensorList.TryGetValue(CharacterSex.ToString(), out Uncensor) && AssetBundleCheck.IsFile(Uncensor))
+                return Uncensor;
+
+            //Characters will use the wildcard uncensor if one is set
+            if (UncensorList.TryGetValue("*", out Uncensor) && AssetBundleCheck.IsFile(Uncensor))
+                return Uncensor;
+
+            //If no other uncensor is defined, the default oo_base is used
             return "chara/oo_base.unity3d";
         }
     }
