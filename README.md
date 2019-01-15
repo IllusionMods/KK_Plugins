@@ -71,15 +71,18 @@ v1.1 Updated to support missing DLC personalities
 v1.2 Updated for 1221 DLC personalities
 </details>
 
-#### KK_UncensorSelector v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v21/KK_UncensorSelector.v1.0.zip)
+#### KK_UncensorSelector v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v24/KK_UncensorSelector.v1.1.zip)
 Allows you to specify which uncensors individual characters use.  
 
-Usage: Edit KK_UncensorSelector.csv in the form: LastName FirstName,chara/oo_base_mod.unity3d  
-Characters with only one name still work: FirstName,chara/oo_base_mod2.unity3d  
-To specify a default uncensor to be used on all characters: *,chara/oo_base_mod3.unity3d Note this only applies to characters that aren't otherwise listed in KK_UncensorSelector.csv. Characters listed will always use the uncensor assigned to them.  
-The uncensor file can be in a sideloader mod or placed directly in your abdata/chara folder.  
+Usage: See Example.txt in the BepInEx/KK_UncensorSelector folder for instructions.  
+Create a new .txt file in the BepInEx/KK_UncensorSelector folder and add your entries there.  
 
-Note: Only what you have set as the default (*) will load in the character maker. If you need a specific one loaded (for example when working with more extreme body mods) make sure to change the default. Set it back after you're done.
+Note: Only what you have set as the default for the character's gender or the wild card (*) will load in the character maker. If you need a specific one loaded (for example when working with more extreme body mods) make sure to change the default. Set it back after you're done.  
+
+<details><summary>Change Log</summary>
+  
+v1.1 Now reads .txt files. Reads all .txt and .csv files in BepInEx/KK_UncensorSelector folder. Loads body textures correctly when loading a scene with multiple characters. Can specify uncensors to apply only to one gender or the other.
+</details>
 
 #### KK_Subtitles v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v23/KK_Subtitles.v1.1.zip)
 Subtitles for H scenes and spoken text in dialogues
