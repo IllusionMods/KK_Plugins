@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_TextDump", "KK_TextDump\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_TranslationSync", "KK_TranslationSync\KK_TranslationSync.csproj", "{0C56DBC3-848C-42FD-B4F2-AB31863261F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_AnimationController", "KK_AnimationController\KK_AnimationController.csproj", "{6BAA3E18-20B2-41D3-BCFC-FE13E9D5C2C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{0C56DBC3-848C-42FD-B4F2-AB31863261F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C56DBC3-848C-42FD-B4F2-AB31863261F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C56DBC3-848C-42FD-B4F2-AB31863261F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BAA3E18-20B2-41D3-BCFC-FE13E9D5C2C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BAA3E18-20B2-41D3-BCFC-FE13E9D5C2C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BAA3E18-20B2-41D3-BCFC-FE13E9D5C2C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BAA3E18-20B2-41D3-BCFC-FE13E9D5C2C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
