@@ -22,8 +22,23 @@ namespace KK_AnimationController
 
         private static List<IKObjectInfo> IKObjectInfoList = new List<IKObjectInfo>();
 
-        public static readonly string[] IKParts = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R" };
-        private int IKPart = IKParts.Count() - 1;
+        private string IKPart = "";
+        public static readonly Dictionary<string, string> IKParts = new Dictionary<string, string>
+        {
+            ["cf_j_arm00_L"] = "Left arm",
+            ["cf_j_forearm01_L"] = "Left forearm",
+            ["cf_j_hand_L"] = "Left hand",
+            ["cf_j_arm00_R"] = "Right arm",
+            ["cf_j_forearm01_R"] = "Right forearm",
+            ["cf_j_hand_R"] = "Right hand",
+            ["cf_j_hips"] = "Hips",
+            ["cf_j_thigh00_L"] = "Left thigh",
+            ["cf_j_leg01_L"] = "Left knee",
+            ["cf_j_leg03_L"] = "Left foot",
+            ["cf_j_thigh00_R"] = "Right thigh",
+            ["cf_j_leg01_R"] = "Right knee",
+            ["cf_j_leg03_R"] = "Right foot"
+        };
 
         void Main()
         {
@@ -43,7 +58,7 @@ namespace KK_AnimationController
                         if (objectCtrlInfo is OCIChar ociChar)
                         {
                             IKObjectInfoList.RemoveAll(x => x.CharacterObject == GameObject.Find(ociChar.charInfo.name) &&
-                                                            x.IKTarget.boneObject.name == IKParts[IKPart]);
+                                                            x.IKTarget.boneObject.name == IKPart);
                         }
                     }
                 }
@@ -51,15 +66,24 @@ namespace KK_AnimationController
             //Shift + key to change the IK Node
             else if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && Input.GetKeyDown(AnimationControllerHotkey.Value.MainKey))
             {
-                if (IKPart == IKParts.Count() - 1)
-                    IKPart = 0;
+                if (IKPart == "")
+                    IKPart = IKParts.ElementAt(0).Key;
                 else
-                    IKPart++;
+                {
+                    int index = Array.IndexOf(IKParts.Keys.ToArray(), IKPart);
+                    if (index == IKParts.Count - 1)
+                        IKPart = IKParts.ElementAt(0).Key;
+                    else
+                        IKPart = IKParts.ElementAt(index + 1).Key;
+                }
                 Logger.Log(LogLevel.Info | LogLevel.Message, $"Selected IK Node:{IKParts[IKPart]}");
             }
             //Press key to link the selected character with the selected object (select both in workspace first)
             else if (AnimationControllerHotkey.IsDown())
             {
+                if (IKPart == "")
+                    Logger.Log(LogLevel.Info | LogLevel.Message, "Set an IK part first (shift+hotkey)");
+
                 IKObjectInfo IKObject = new IKObjectInfo();
                 TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
 
@@ -69,13 +93,13 @@ namespace KK_AnimationController
                     {
                         if (objectCtrlInfo is OCIItem ociItem)
                         {
-                            IKObject.SelectedObject = ociItem.objectItem;
+                            IKObject.SelectedObject = ociItem.childRoot.gameObject;
                         }
 
                         if (objectCtrlInfo is OCIChar ociChar)
                         {
                             IKObject.CharacterObject = GameObject.Find(ociChar.charInfo.name);
-                            IKObject.IKTarget = ociChar.listIKTarget.Where(x => x.boneObject.name == IKParts[IKPart]).First();
+                            IKObject.IKTarget = ociChar.listIKTarget.Where(x => x.boneObject.name == IKPart).First();
                         }
                     }
                 }
@@ -92,10 +116,12 @@ namespace KK_AnimationController
             for (int i = 0; i < IKObjectInfoList.Count;)
             {
                 if (IKObjectInfoList[i].CheckNull())
+                    //The character or the object it was attached to was deleted, remove it from the list
                     IKObjectInfoList.RemoveAt(i);
                 else
                 {
                     IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.pos = IKObjectInfoList[i].SelectedObject.transform.position - IKObjectInfoList[i].CharacterObject.transform.position;
+                    IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.rotation.eulerAngles;
                     i++;
                 }
             }
