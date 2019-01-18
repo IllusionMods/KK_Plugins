@@ -21,30 +21,16 @@ namespace KK_AnimationController
         public const string Version = "1.0";
         private static bool LoadClicked = false;
         public static SavedKeyboardShortcut AnimationControllerHotkey { get; private set; }
-
         private static List<IKObjectInfo> IKObjectInfoList = new List<IKObjectInfo>();
+        private bool GUIVisible = false;
 
-        private string IKPart = "";
-        public static readonly Dictionary<string, string> IKParts = new Dictionary<string, string>
-        {
-            ["cf_j_arm00_L"] = "Left arm",
-            ["cf_j_forearm01_L"] = "Left forearm",
-            ["cf_j_hand_L"] = "Left hand",
-            ["cf_j_arm00_R"] = "Right arm",
-            ["cf_j_forearm01_R"] = "Right forearm",
-            ["cf_j_hand_R"] = "Right hand",
-            ["cf_j_hips"] = "Hips",
-            ["cf_j_thigh00_L"] = "Left thigh",
-            ["cf_j_leg01_L"] = "Left knee",
-            ["cf_j_leg03_L"] = "Left foot",
-            ["cf_j_thigh00_R"] = "Right thigh",
-            ["cf_j_leg01_R"] = "Right knee",
-            ["cf_j_leg03_R"] = "Right foot"
-        };
+        int SelectedGuideObject = 0;
+        static readonly string[] IKGuideObjectsPretty = new string[] { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot" };
+        static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R" };
 
         void Main()
         {
-            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.invisiblebody");
+            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.animationcontroller");
             harmony.PatchAll(typeof(KK_AnimationController));
 
             AnimationControllerHotkey = new SavedKeyboardShortcut(PluginName, PluginName, new KeyboardShortcut(KeyCode.Minus));
@@ -54,81 +40,8 @@ namespace KK_AnimationController
 
         private void Update()
         {
-            //Control + key to remove the link between body part and object
-            if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(AnimationControllerHotkey.Value.MainKey))
-            {
-                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
-                for (int i = 0; i < selectNodes.Length; i++)
-                {
-                    if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
-                    {
-                        if (objectCtrlInfo is OCIChar ociChar)
-                        {
-                            IKObjectInfoList.RemoveAll(x => x.CharacterObject == GameObject.Find(ociChar.charInfo.name) &&
-                                                            x.IKTarget.boneObject.name == IKPart);
-                        }
-                    }
-                }
-            }
-            //Shift + key to change the IK Node
-            else if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && Input.GetKeyDown(AnimationControllerHotkey.Value.MainKey))
-            {
-                if (IKPart == "")
-                    IKPart = IKParts.ElementAt(0).Key;
-                else
-                {
-                    int index = Array.IndexOf(IKParts.Keys.ToArray(), IKPart);
-                    if (index == IKParts.Count - 1)
-                        IKPart = IKParts.ElementAt(0).Key;
-                    else
-                        IKPart = IKParts.ElementAt(index + 1).Key;
-                }
-                Logger.Log(LogLevel.Info | LogLevel.Message, $"Selected IK Node:{IKParts[IKPart]}");
-            }
-            //Press key to link the selected character with the selected object (select both in workspace first)
-            else if (AnimationControllerHotkey.IsDown())
-            {
-                if (IKPart == "")
-                    Logger.Log(LogLevel.Info | LogLevel.Message, "Set an IK part first (shift+hotkey)");
-
-                IKObjectInfo IKObject = new IKObjectInfo();
-                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
-
-                for (int i = 0; i < selectNodes.Length; i++)
-                {
-                    if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
-                    {
-                        switch (objectCtrlInfo)
-                        {
-                            case OCIItem Item:
-                                IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
-                                IKObject.SelectedObject = Item.childRoot.gameObject;
-                                break;
-                            case OCIFolder Folder:
-                                IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
-                                IKObject.SelectedObject = Folder.childRoot.gameObject;
-                                break;
-                            case OCIChar Character:
-                                IKObject.CharacterKey = objectCtrlInfo.objectInfo.dicKey;
-                                IKObject.CharacterObject = GameObject.Find(Character.charInfo.name);
-                                IKObject.IKTarget = Character.listIKTarget.Where(x => x.boneObject.name == IKPart).First();
-                                IKObject.IKPart = IKPart;
-                                break;
-                            case OCIRoute Route:
-                                IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
-                                IKObject.SelectedObject = Route.childRoot.gameObject;
-                                break;
-                        }
-                    }
-                }
-
-                if (IKObject.SelectedObject != null && IKObject.CharacterObject != null && IKObject.IKTarget != null)
-                {
-                    IKObjectInfoList.RemoveAll(x => x.CharacterObject == IKObject.CharacterObject &&
-                                                    x.IKTarget == IKObject.IKTarget);
-                    IKObjectInfoList.Add(IKObject);
-                }
-            }
+            if (AnimationControllerHotkey.IsDown())
+                GUIVisible = !GUIVisible;
 
             //Every update, match the part to the object
             for (int i = 0; i < IKObjectInfoList.Count;)
@@ -143,6 +56,77 @@ namespace KK_AnimationController
                     i++;
                 }
             }
+        }
+
+        private void LinkCharacterToObject()
+        {
+            IKObjectInfo IKObject = new IKObjectInfo();
+            TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+
+            if (selectNodes.Count() != 2)
+            {
+                Logger.Log(LogLevel.Info | LogLevel.Message, "Select both the character and object to link.");
+                return;
+            }
+
+            for (int i = 0; i < selectNodes.Length; i++)
+            {
+                if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
+                {
+                    switch (objectCtrlInfo)
+                    {
+                        case OCIChar Character:
+                            IKObject.CharacterKey = objectCtrlInfo.objectInfo.dicKey;
+                            IKObject.CharacterObject = GameObject.Find(Character.charInfo.name);
+                            IKObject.IKTarget = Character.listIKTarget.Where(x => x.boneObject.name == IKGuideObjects[SelectedGuideObject]).First();
+                            IKObject.IKPart = IKGuideObjects[SelectedGuideObject];
+                            break;
+                        case OCIItem Item:
+                            IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
+                            IKObject.SelectedObject = Item.childRoot.gameObject;
+                            break;
+                        case OCIFolder Folder:
+                            IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
+                            IKObject.SelectedObject = Folder.childRoot.gameObject;
+                            break;
+                        case OCIRoute Route:
+                            IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
+                            IKObject.SelectedObject = Route.childRoot.gameObject;
+                            break;
+                    }
+                }
+            }
+
+            if (IKObject.SelectedObject != null && IKObject.CharacterObject != null && IKObject.IKTarget != null)
+            {
+                IKObjectInfoList.RemoveAll(x => x.CharacterObject == IKObject.CharacterObject &&
+                                                x.IKTarget == IKObject.IKTarget);
+                IKObjectInfoList.Add(IKObject);
+            }
+            else
+            {
+                Logger.Log(LogLevel.Info | LogLevel.Message, "Select both the character and object to link.");
+            }
+        }
+
+        private void UnlinkCharacterToObject()
+        {
+            TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+            bool DidUnlink = false;
+            for (int i = 0; i < selectNodes.Length; i++)
+            {
+                if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
+                {
+                    if (objectCtrlInfo is OCIChar ociChar)
+                    {
+                        IKObjectInfoList.RemoveAll(x => x.CharacterObject == GameObject.Find(ociChar.charInfo.name) &&
+                                                        x.IKTarget.boneObject.name == IKGuideObjects[SelectedGuideObject]);
+                        DidUnlink = true;
+                    }
+                }
+            }
+            if (!DidUnlink)
+                Logger.Log(LogLevel.Info | LogLevel.Message, "Select a character.");
         }
 
         [HarmonyPrefix, HarmonyPatch(typeof(SceneLoadScene), "OnClickLoad")]
@@ -266,6 +250,27 @@ namespace KK_AnimationController
             public byte[] Serialize()
             {
                 return MessagePackSerializer.Serialize(this);
+            }
+        }
+
+        private Rect AnimGUI = new Rect(70, 220, 200, 400);
+        void OnGUI()
+        {
+            if (GUIVisible)
+                AnimGUI = GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
+        }
+        private void AnimWindow(int id)
+        {
+            GUILayout.Label("Select an IK Guide Object");
+            SelectedGuideObject = GUILayout.SelectionGrid(SelectedGuideObject, IKGuideObjectsPretty, 1, GUI.skin.toggle);
+            GUILayout.Label("Select both the character and the object in Workspace");
+            if (GUILayout.Button("Link"))
+            {
+                LinkCharacterToObject();
+            }
+            if (GUILayout.Button("Unlink"))
+            {
+                UnlinkCharacterToObject();
             }
         }
     }
