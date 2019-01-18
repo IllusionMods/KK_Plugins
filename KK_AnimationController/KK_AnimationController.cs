@@ -91,15 +91,21 @@ namespace KK_AnimationController
                 {
                     if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
                     {
-                        if (objectCtrlInfo is OCIItem ociItem)
+                        switch (objectCtrlInfo)
                         {
-                            IKObject.SelectedObject = ociItem.childRoot.gameObject;
-                        }
-
-                        if (objectCtrlInfo is OCIChar ociChar)
-                        {
-                            IKObject.CharacterObject = GameObject.Find(ociChar.charInfo.name);
-                            IKObject.IKTarget = ociChar.listIKTarget.Where(x => x.boneObject.name == IKPart).First();
+                            case OCIItem Item:
+                                IKObject.SelectedObject = Item.childRoot.gameObject;
+                                break;
+                            case OCIFolder Folder:
+                                IKObject.SelectedObject = Folder.childRoot.gameObject;
+                                break;
+                            case OCIChar Char:
+                                IKObject.CharacterObject = GameObject.Find(Char.charInfo.name);
+                                IKObject.IKTarget = Char.listIKTarget.Where(x => x.boneObject.name == IKPart).First();
+                                break;
+                            case OCIRoute Route:
+                                IKObject.SelectedObject = Route.childRoot.gameObject;
+                                break;
                         }
                     }
                 }
@@ -120,8 +126,8 @@ namespace KK_AnimationController
                     IKObjectInfoList.RemoveAt(i);
                 else
                 {
-                    IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.pos = IKObjectInfoList[i].SelectedObject.transform.position - IKObjectInfoList[i].CharacterObject.transform.position;
-                    IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.rotation.eulerAngles;
+                    IKObjectInfoList[i].IKTarget.guideObject.SetWorldPos(IKObjectInfoList[i].SelectedObject.transform.position);
+                    IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.localRotation.eulerAngles;
                     i++;
                 }
             }
