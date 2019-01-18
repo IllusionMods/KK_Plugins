@@ -13,6 +13,7 @@ using Logger = BepInEx.Logger;
 
 namespace KK_AnimationController
 {
+    [BepInProcess("CharaStudio")]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_AnimationController : BaseUnityPlugin
     {
