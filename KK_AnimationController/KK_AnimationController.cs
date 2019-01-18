@@ -1,13 +1,14 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using Harmony;
+using MessagePack;
 using Studio;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Logger = BepInEx.Logger;
 
 namespace KK_AnimationController
@@ -18,6 +19,7 @@ namespace KK_AnimationController
         public const string PluginName = "KK_AnimationController";
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
         public const string Version = "1.0";
+        private static bool LoadClicked = false;
         public static SavedKeyboardShortcut AnimationControllerHotkey { get; private set; }
 
         private static List<IKObjectInfo> IKObjectInfoList = new List<IKObjectInfo>();
@@ -42,7 +44,12 @@ namespace KK_AnimationController
 
         void Main()
         {
+            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.invisiblebody");
+            harmony.PatchAll(typeof(KK_AnimationController));
+
             AnimationControllerHotkey = new SavedKeyboardShortcut(PluginName, PluginName, new KeyboardShortcut(KeyCode.Minus));
+            ExtendedSave.SceneBeingSaved += ExtendedSceneSave;
+            SceneManager.sceneLoaded += SceneLoaded;
         }
 
         private void Update()
@@ -94,16 +101,21 @@ namespace KK_AnimationController
                         switch (objectCtrlInfo)
                         {
                             case OCIItem Item:
+                                IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
                                 IKObject.SelectedObject = Item.childRoot.gameObject;
                                 break;
                             case OCIFolder Folder:
+                                IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
                                 IKObject.SelectedObject = Folder.childRoot.gameObject;
                                 break;
-                            case OCIChar Char:
-                                IKObject.CharacterObject = GameObject.Find(Char.charInfo.name);
-                                IKObject.IKTarget = Char.listIKTarget.Where(x => x.boneObject.name == IKPart).First();
+                            case OCIChar Character:
+                                IKObject.CharacterKey = objectCtrlInfo.objectInfo.dicKey;
+                                IKObject.CharacterObject = GameObject.Find(Character.charInfo.name);
+                                IKObject.IKTarget = Character.listIKTarget.Where(x => x.boneObject.name == IKPart).First();
+                                IKObject.IKPart = IKPart;
                                 break;
                             case OCIRoute Route:
+                                IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
                                 IKObject.SelectedObject = Route.childRoot.gameObject;
                                 break;
                         }
@@ -133,13 +145,128 @@ namespace KK_AnimationController
             }
         }
 
+        [HarmonyPrefix, HarmonyPatch(typeof(SceneLoadScene), "OnClickLoad")]
+        public static void OnClickLoadPrefix() => LoadClicked = true;
+        /// <summary>
+        /// Scene has to be fully loaded for all characters and objects to exist in the game
+        /// </summary>
+        private void SceneLoaded(Scene s, LoadSceneMode lsm)
+        {
+            if (s.name == "StudioNotification" && LoadClicked)
+            {
+                LoadClicked = false;
+
+                try
+                {
+                    IKObjectInfoList.Clear();
+                    PluginData ExtendedData = ExtendedSave.GetSceneExtendedDataById(PluginName);
+
+                    if (ExtendedData != null && ExtendedData.data.ContainsKey("AnimationInfo"))
+                    {
+                        List<AnimationControllerInfo> AnimationControllerInfoList;
+
+                        AnimationControllerInfoList = ((object[])ExtendedData.data["AnimationInfo"]).Select(x => AnimationControllerInfo.Unserialize((byte[])x)).ToList();
+
+                        foreach (var AnimInfo in AnimationControllerInfoList)
+                        {
+                            IKObjectInfo LoadedAnimInfo = new IKObjectInfo();
+
+                            var Character = Singleton<Studio.Studio>.Instance.dicObjectCtrl.Where(x => x.Key == AnimInfo.CharDicKey).Select(x => x.Value as OCIChar).First();
+
+                            LoadedAnimInfo.CharacterKey = AnimInfo.CharDicKey;
+                            LoadedAnimInfo.CharacterObject = GameObject.Find(Character.charInfo.name);
+                            LoadedAnimInfo.IKPart = AnimInfo.IKPart;
+                            LoadedAnimInfo.IKTarget = Character.listIKTarget.Where(x => x.boneObject.name == AnimInfo.IKPart).First();
+
+                            var LinkedItem = Singleton<Studio.Studio>.Instance.dicObjectCtrl.Where(x => x.Key == AnimInfo.ItemDicKey).Select(x => x.Value).First();
+
+                            switch (LinkedItem)
+                            {
+                                case OCIItem Item:
+                                    LoadedAnimInfo.ObjectKey = Item.objectInfo.dicKey;
+                                    LoadedAnimInfo.SelectedObject = Item.childRoot.gameObject;
+                                    break;
+                                case OCIFolder Folder:
+                                    LoadedAnimInfo.ObjectKey = Folder.objectInfo.dicKey;
+                                    LoadedAnimInfo.SelectedObject = Folder.childRoot.gameObject;
+                                    break;
+                                case OCIRoute Route:
+                                    LoadedAnimInfo.ObjectKey = Route.objectInfo.dicKey;
+                                    LoadedAnimInfo.SelectedObject = Route.childRoot.gameObject;
+                                    break;
+                            }
+
+                            IKObjectInfoList.Add(LoadedAnimInfo);
+                        }
+                    }
+                    Logger.Log(LogLevel.Debug, "Loaded KK_AnimationController animations");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error | LogLevel.Message, "Could not load KK_AnimationController animations.");
+                    Logger.Log(LogLevel.Error, ex.ToString());
+                }
+            }
+        }
+
+        private static void ExtendedSceneSave(string path)
+        {
+            try
+            {
+                Dictionary<string, object> ExtendedData = new Dictionary<string, object>();
+                List<AnimationControllerInfo> AnimationControllerInfoList = new List<AnimationControllerInfo>();
+
+                foreach (var IKObj in IKObjectInfoList)
+                    AnimationControllerInfoList.Add(new AnimationControllerInfo { CharDicKey = IKObj.CharacterKey, ItemDicKey = IKObj.ObjectKey, IKPart = IKObj.IKPart });
+
+                if (AnimationControllerInfoList.Count == 0)
+                    ExtendedSave.SetSceneExtendedDataById(PluginName, null);
+                else
+                {
+                    ExtendedData.Add("AnimationInfo", AnimationControllerInfoList.Select(x => x.Serialize()).ToList());
+                    ExtendedSave.SetSceneExtendedDataById(PluginName, new PluginData { data = ExtendedData });
+                }
+                Logger.Log(LogLevel.Debug, "Saved KK_AnimationController animations");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error | LogLevel.Message, "Could not save KK_AnimationController animations.");
+                Logger.Log(LogLevel.Error, ex.ToString());
+            }
+        }
+
         private class IKObjectInfo
         {
             public GameObject SelectedObject;
             public GameObject CharacterObject;
             public OCIChar.IKInfo IKTarget;
+            public int CharacterKey;
+            public int ObjectKey;
+            public string IKPart;
 
             public bool CheckNull() => SelectedObject == null || CharacterObject == null || IKTarget == null ? true : false;
+        }
+
+        [Serializable]
+        [MessagePackObject]
+        public class AnimationControllerInfo
+        {
+            [Key("CharDicKey")]
+            public int CharDicKey { get; set; }
+            [Key("ItemDicKey")]
+            public int ItemDicKey { get; set; }
+            [Key("IKPart")]
+            public string IKPart { get; set; }
+
+            public static AnimationControllerInfo Unserialize(byte[] data)
+            {
+                return MessagePackSerializer.Deserialize<AnimationControllerInfo>(data);
+            }
+
+            public byte[] Serialize()
+            {
+                return MessagePackSerializer.Serialize(this);
+            }
         }
     }
 }
