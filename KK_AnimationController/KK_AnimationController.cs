@@ -19,7 +19,7 @@ namespace KK_AnimationController
     {
         public const string PluginName = "KK_AnimationController";
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         private static bool LoadClicked = false;
         public static SavedKeyboardShortcut AnimationControllerHotkey { get; private set; }
         private static List<IKObjectInfo> IKObjectInfoList = new List<IKObjectInfo>();
@@ -53,7 +53,11 @@ namespace KK_AnimationController
                 else
                 {
                     IKObjectInfoList[i].IKTarget.guideObject.SetWorldPos(IKObjectInfoList[i].SelectedObject.transform.position);
-                    IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.localRotation.eulerAngles;
+                    if (IKObjectInfoList[i].Version == "1.0")
+                        //Original version used the wrong rotation, keep using it so that scenes load properly
+                        IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.localRotation.eulerAngles;
+                    else
+                        IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.rotation.eulerAngles;
                     i++;
                 }
             }
@@ -102,6 +106,7 @@ namespace KK_AnimationController
             {
                 IKObjectInfoList.RemoveAll(x => x.CharacterObject == IKObject.CharacterObject &&
                                                 x.IKTarget == IKObject.IKTarget);
+                IKObject.Version = Version;
                 IKObjectInfoList.Add(IKObject);
             }
             else
@@ -161,6 +166,9 @@ namespace KK_AnimationController
                             LoadedAnimInfo.CharacterKey = AnimInfo.CharDicKey;
                             LoadedAnimInfo.CharacterObject = GameObject.Find(Character.charInfo.name);
                             LoadedAnimInfo.IKPart = AnimInfo.IKPart;
+                            LoadedAnimInfo.Version = AnimInfo.Version;
+                            if (LoadedAnimInfo.Version.IsNullOrEmpty())
+                                LoadedAnimInfo.Version = "1.0";
                             LoadedAnimInfo.IKTarget = Character.listIKTarget.Where(x => x.boneObject.name == AnimInfo.IKPart).First();
 
                             var LinkedItem = Singleton<Studio.Studio>.Instance.dicObjectCtrl.Where(x => x.Key == AnimInfo.ItemDicKey).Select(x => x.Value).First();
@@ -202,7 +210,7 @@ namespace KK_AnimationController
                 List<AnimationControllerInfo> AnimationControllerInfoList = new List<AnimationControllerInfo>();
 
                 foreach (var IKObj in IKObjectInfoList)
-                    AnimationControllerInfoList.Add(new AnimationControllerInfo { CharDicKey = IKObj.CharacterKey, ItemDicKey = IKObj.ObjectKey, IKPart = IKObj.IKPart });
+                    AnimationControllerInfoList.Add(new AnimationControllerInfo { CharDicKey = IKObj.CharacterKey, ItemDicKey = IKObj.ObjectKey, IKPart = IKObj.IKPart, Version = IKObj.Version });
 
                 if (AnimationControllerInfoList.Count == 0)
                     ExtendedSave.SetSceneExtendedDataById(PluginName, null);
@@ -228,6 +236,7 @@ namespace KK_AnimationController
             public int CharacterKey;
             public int ObjectKey;
             public string IKPart;
+            public string Version;
 
             public bool CheckNull() => SelectedObject == null || CharacterObject == null || IKTarget == null ? true : false;
         }
@@ -242,6 +251,8 @@ namespace KK_AnimationController
             public int ItemDicKey { get; set; }
             [Key("IKPart")]
             public string IKPart { get; set; }
+            [Key("Version")]
+            public string Version { get; set; }
 
             public static AnimationControllerInfo Unserialize(byte[] data)
             {
@@ -260,6 +271,7 @@ namespace KK_AnimationController
             if (GUIVisible)
                 AnimGUI = GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
         }
+
         private void AnimWindow(int id)
         {
             GUILayout.Label("Select an IK Guide Object");
