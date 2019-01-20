@@ -92,8 +92,13 @@ Subtitles for H scenes and spoken text in dialogues
 v1.1 Fixed H subs not working for some people  
 </details>
 
-#### KK_AnimationController v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v25/KK_AnimationController.v1.0.zip)
+#### KK_AnimationController v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v26/KK_AnimationController.v1.1.zip)
 Allows attaching IK nodes to objects to create custom animations  
+
+<details><summary>Change Log</summary>
+  
+v1.1 Gimmicks can now rotate hands and feet properly  
+</details>
 
 Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro 
 
