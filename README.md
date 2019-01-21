@@ -58,7 +58,7 @@ v1.1 Fixed studio items becoming visible when they were toggled off in the works
 #### KK_InputHotkeyBlock v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v28/KK_InputHotkeyBlock.v1.1.zip)
 Blocks mod hotkeys from triggering while typing in input fields. Based on kisama.dll by Essu.
 
-<details><summary>Change Log</summary> 
+<details><summary>Change Log</summary>
 v1.1 Blocks hotkeys in studio coordinate fields
 </details>
 
@@ -66,21 +66,19 @@ v1.1 Blocks hotkeys in studio coordinate fields
 Replaces any cards with the modded story character personalities with the default "Pure" personality when attempting to added them to the class to prevent the game from breaking. Also defaults to "Pure" for characters using paid DLC personalities if you don't have the paid DLC installed.
 
 <details><summary>Change Log</summary>
-  
-v1.1 Updated to support missing DLC personalities  
+v1.1 Updated to support missing DLC personalities<br/>
 v1.2 Updated for 1221 DLC personalities
 </details>
 
 #### KK_UncensorSelector v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v24/KK_UncensorSelector.v1.1.zip)
-Allows you to specify which uncensors individual characters use.  
+Allows you to specify which uncensors individual characters use.
 
-Usage: See Example.txt in the BepInEx/KK_UncensorSelector folder for instructions.  
+Usage: See Example.txt in the BepInEx/KK_UncensorSelector folder for instructions.<br/>
 Create a new .txt file in the BepInEx/KK_UncensorSelector folder and add your entries there.  
 
 Note: Only what you have set as the default for the character's gender or the wild card (*) will load in the character maker. If you need a specific one loaded (for example when working with more extreme body mods) make sure to change the default. Set it back after you're done.  
 
 <details><summary>Change Log</summary>
-  
 v1.1 Now reads .txt files. Reads all .txt and .csv files in BepInEx/KK_UncensorSelector folder. Loads body textures correctly when loading a scene with multiple characters. Can specify uncensors to apply only to one gender or the other.
 </details>
 
@@ -88,17 +86,17 @@ v1.1 Now reads .txt files. Reads all .txt and .csv files in BepInEx/KK_UncensorS
 Subtitles for H scenes and spoken text in dialogues
 
 <details><summary>Change Log</summary>
-v1.1 Fixed H subs not working for some people  
+v1.1 Fixed H subs not working for some people
 </details>
 
 #### KK_AnimationController v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v27/KK_AnimationController.v1.2.zip)
-Allows attaching IK nodes to objects to create custom animations  
+Allows attaching IK nodes to objects to create custom animations
 
 Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro  
 
 <details><summary>Change Log</summary>
-v1.1 Gimmicks can now rotate hands and feet properly  
-v1.2 Rotating characters doesn't break everything anymore  
+v1.1 Gimmicks can now rotate hands and feet properly<br/>
+v1.2 Rotating characters doesn't break everything anymore
 </details>
 
 #### KK_FutaMod BETA 3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v28/KK_FutaMod.v0.3.zip)
@@ -107,6 +105,6 @@ Adds dicks to girls. Requires MakerAPI, currently available as part of [ABMX](ht
 More features soon, hopefully.
 
 <details><summary>Change Log</summary>
-BETA 2 Updated for MakerAPI compatibility
+BETA 2 Updated for MakerAPI compatibility<br/>
 BETA 3 Enabled/Disabled toggle for plugin
 </details>
