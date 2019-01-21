@@ -92,7 +92,7 @@ Subtitles for H scenes and spoken text in dialogues
 v1.1 Fixed H subs not working for some people  
 </details>
 
-#### KK_AnimationController v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v25/KK_AnimationController.v1.0.zip)
+#### KK_AnimationController v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v26/KK_AnimationController.v1.1.zip)
 Allows attaching IK nodes to objects to create custom animations  
 
 <details><summary>Change Log</summary>
