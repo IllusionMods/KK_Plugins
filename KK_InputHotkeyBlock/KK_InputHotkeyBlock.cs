@@ -3,19 +3,22 @@ using Harmony;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-/// <summary>
-/// Intercepts GetKey to prevent hotkeys from mods from firing while typing in an input field
-/// </summary>
+
 namespace KK_InputHotkeyBlock
 {
-    [BepInPlugin("com.deathweasel.bepinex.inputhotkeyblock", "Input Hotkey Block", Version)]
+    /// <summary>
+    /// Intercepts GetKey to prevent hotkeys from mods from firing while typing in an input field
+    /// </summary>
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_InputHotkeyBlock : BaseUnityPlugin
     {
-        public const string Version = "1.0";
+        public const string PluginName = "Input Hotkey Block";
+        public const string GUID = "com.deathweasel.bepinex.inputhotkeyblock";
+        public const string Version = "1.1";
 
         void Main()
         {
-            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.inputhotkeyblock");
+            var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_InputHotkeyBlock));
         }
         /// <summary>
@@ -29,8 +32,8 @@ namespace KK_InputHotkeyBlock
                     return false; //UI elements from some mods
                 if (EventSystem.current.currentSelectedGameObject != null)
                 {
-                    if (EventSystem.current.currentSelectedGameObject.name == "InputField")
-                        return false; //Size fields in chara maker which don't have InputField component for some reason
+                    if (EventSystem.current.currentSelectedGameObject.GetComponent<TMPro.TMP_InputField>() != null)
+                        return false; //Size fields in chara maker, coordinate fields in Studio
                     if (EventSystem.current.currentSelectedGameObject.GetComponent<InputField>() != null)
                         return false; //All other InputFields
                 }
