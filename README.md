@@ -24,14 +24,14 @@ Migrates information on your character cards in cases where a mod's GUID or IDs 
 Also attempts to fix cards saved with a blank GUID (Missing Mod []) by stripping the GUID and forcing sideloader to treat it as a hard mod. May not work 100%, so check your cards.
 
 <details><summary>Change Log</summary>
-v1.1 Added character name for blank GUID messages  
+v1.1 Added character name for blank GUID messages<br/>
 v1.2 Fixed hard coded path
 </details>
+
 <details><summary>Configuration</summary>
-  
-Comes preconfigured with a whole bunch of migration info. Unless I stopped maintaining it you shouldn't need to mess with this stuff.  
-KK_GUIDMigration.csv is a comma separated file in the form Category,Old GUID,Old ID,New GUID,New ID.  
-Category is the internal one used by sideloader, not the numeric category.  
+Comes preconfigured with a whole bunch of migration info. Unless I stopped maintaining it you shouldn't need to mess with this stuff.<br/>
+KK_GUIDMigration.csv is a comma separated file in the form Category,Old GUID,Old ID,New GUID,New ID.<br/>
+Category is the internal one used by sideloader, not the numeric category.<br/>
 When the category is * only GUID migration will be attempted and whatever you put for Old/New ID will be ignored. Use only in cases where a GUID changed and the IDs stay the same.
 </details>
 
