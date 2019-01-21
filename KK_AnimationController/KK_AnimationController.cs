@@ -19,7 +19,7 @@ namespace KK_AnimationController
     {
         public const string PluginName = "KK_AnimationController";
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         private static bool LoadClicked = false;
         public static SavedKeyboardShortcut AnimationControllerHotkey { get; private set; }
         private static List<IKObjectInfo> IKObjectInfoList = new List<IKObjectInfo>();
@@ -57,8 +57,13 @@ namespace KK_AnimationController
                         //Original version used the wrong rotation, keep using it so that scenes load properly
                         IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.localRotation.eulerAngles;
                     else
-                        IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.rotation.eulerAngles;
-                        i++;
+                    {
+                        //Set the rotation of the linked body part to the rotation of the object
+                        IKObjectInfoList[i].IKTarget.targetObject.rotation = IKObjectInfoList[i].SelectedObject.transform.rotation;
+                        //Update the guide object cache so that unlinking and then rotating manually doesn't cause strange behavior
+                        IKObjectInfoList[i].IKTarget.guideObject.changeAmount.rot = IKObjectInfoList[i].IKTarget.targetObject.localRotation.eulerAngles;
+                    }
+                    i++;
                 } 
             }
         }
