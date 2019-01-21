@@ -23,13 +23,18 @@ namespace KK_FutaMod
     {
         public const string GUID = "com.deathweasel.bepinex.futamod";
         public const string PluginName = "Futa Mod";
-        public const string Version = "0.2";
+        public const string PluginNameInternal = "KK_FutaMod";
+        public const string Version = "0.3";
         private static bool ListOverride = false;
         private static bool DoingLoadFileLimited = false;
         private MakerToggle FutaToggle;
+        [DisplayName("Enabled")]
+        [Description("Can be used to disable the plugin without needing to uninstall it. Prevents futas from appearing outside the chara maker.")]
+        public static ConfigWrapper<bool> Enabled { get; private set; }
 
         void Main()
         {
+            Enabled = new ConfigWrapper<bool>("Enabled", PluginNameInternal, true);
             var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.futamod");
             harmony.PatchAll(typeof(KK_FutaMod));
             ExtendedSave.CardBeingLoaded += ExtendedCardLoad;
@@ -131,7 +136,7 @@ namespace KK_FutaMod
 
             PluginData ExtendedData = ExtendedSave.GetExtendedDataById(_chaFile, "KK_FutaMod");
 
-            if (ExtendedData != null && ExtendedData.data.ContainsKey("Futa"))
+            if (ExtendedData != null && ExtendedData.data.ContainsKey("Futa") && Enabled.Value)
                 __result.chaFile.status.visibleSonAlways = (bool)ExtendedData.data["Futa"];
         }
 
