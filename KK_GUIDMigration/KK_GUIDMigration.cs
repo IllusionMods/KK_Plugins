@@ -1,19 +1,24 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using Logger = BepInEx.Logger;
 using Harmony;
+using Sideloader.AutoResolver;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Sideloader.AutoResolver;
+using Logger = BepInEx.Logger;
 
 namespace KK_GUIDMigration
 {
+    /// <summary>
+    /// Modifies the GUID or ID of items saved to a card
+    /// </summary>
     [BepInDependency("com.bepis.bepinex.sideloader")]
-    [BepInPlugin("com.deathweasel.bepinex.guidmigration", "GUID Migration", Version)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_GUIDMigration : BaseUnityPlugin
     {
+        public const string GUID = "com.deathweasel.bepinex.guidmigration";
+        public const string PluginName = "GUID Migration";
         public const string Version = "1.1";
         private static List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
         private static readonly string GUIDMigrationFilePath = Path.Combine(Paths.PluginPath, "KK_GUIDMigration.csv");

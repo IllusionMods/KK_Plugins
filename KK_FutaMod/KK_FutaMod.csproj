@@ -75,4 +75,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if exist C:\Illusion\Koikatu\BepInEx (
+copy /y $(TargetPath) C:\illusion\Koikatu\BepInEx\$(TargetFileName)
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

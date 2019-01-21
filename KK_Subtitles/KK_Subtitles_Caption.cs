@@ -106,7 +106,7 @@ namespace KK_Subtitles
             DisplaySubtitle(voice, text);
         }
 
-        internal static void DisplaySubtitle(LoadVoice voice, string text, string speaker="")
+        internal static void DisplaySubtitle(LoadVoice voice, string text, string speaker = "")
         {
             Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"{KK_Subtitles.fontName.Value}.ttf");
             int fsize = KK_Subtitles.fontSize.Value;

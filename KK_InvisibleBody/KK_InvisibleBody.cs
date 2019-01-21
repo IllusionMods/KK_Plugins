@@ -1,14 +1,14 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using Logger = BepInEx.Logger;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+using ExtensibleSaveFormat;
 using Harmony;
 using Studio;
-using ExtensibleSaveFormat;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Logger = BepInEx.Logger;
 /// <summary>
 /// Sets the selected characters invisible in Studio. Invisible state saves and loads with the scene.
 /// Also sets female characters invisible in H scenes.
@@ -16,9 +16,12 @@ using ExtensibleSaveFormat;
 namespace KK_InvisibleBody
 {
     [BepInDependency("com.bepis.bepinex.extendedsave")]
-    [BepInPlugin("com.deathweasel.bepinex.invisiblebody", "Invisible Body", Version)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_InvisibleBody : BaseUnityPlugin
     {
+        public const string GUID = "com.deathweasel.bepinex.invisiblebody";
+        public const string PluginName = "Invisible Body";
+        public const string PluginNameInternal = "KK_InvisibleBody";
         public const string Version = "1.1";
         private static bool LoadOrImportClicked = false;
         private static bool ChangeCharaVisibleState = true;
@@ -34,11 +37,11 @@ namespace KK_InvisibleBody
 
         void Main()
         {
-            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.invisiblebody");
+            var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_InvisibleBody));
             SceneManager.sceneLoaded += SceneLoaded;
-            InvisibilityHotkey = new SavedKeyboardShortcut("InvisibilityHotkey", "KK_InvisibleBody", new KeyboardShortcut(KeyCode.KeypadPlus));
-            HideHairAccessories = new ConfigWrapper<bool>("HideHairAccessories", "KK_InvisibleBody", true);
+            InvisibilityHotkey = new SavedKeyboardShortcut("InvisibilityHotkey", PluginNameInternal, new KeyboardShortcut(KeyCode.KeypadPlus));
+            HideHairAccessories = new ConfigWrapper<bool>("HideHairAccessories", PluginNameInternal, true);
         }
 
         void Update()
@@ -95,8 +98,7 @@ namespace KK_InvisibleBody
                 Visible = true;
                 //character has no extended data, create some so it will save and load with the scene
                 ExtendedData = new PluginData();
-                Dictionary<string, object> dic = new Dictionary<string, object>();
-                dic.Add("Visible", Visible);
+                Dictionary<string, object> dic = new Dictionary<string, object> { { "Visible", Visible } };
                 ExtendedData.data = dic;
             }
             else
@@ -161,10 +163,7 @@ namespace KK_InvisibleBody
         /// </summary>
         private static string DebugFullObjectPath(GameObject go)
         {
-            if (go.transform.parent == null)
-                return go.name;
-            else
-                return DebugFullObjectPath(go.transform.parent.gameObject) + "/" + go.name;
+            return go.transform.parent == null ? go.name : DebugFullObjectPath(go.transform.parent.gameObject) + "/" + go.name;
         }
         /// <summary>
         /// Scene has fully loaded and all the characters exist in game. Set the visiblity state of each character.

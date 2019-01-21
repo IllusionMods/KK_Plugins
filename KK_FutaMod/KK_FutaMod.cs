@@ -1,25 +1,28 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using Logger = BepInEx.Logger;
-using Harmony;
-using UnityEngine;
-using System;
-using System.Linq;
-using System.ComponentModel;
-using System.Collections.Generic;
-using ExtensibleSaveFormat;
 using ChaCustom;
+using ExtensibleSaveFormat;
+using Harmony;
 using MakerAPI;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using UniRx;
-/// <summary>
-/// Futa mod. Adds dicks to girls which save and load along with the card.
-/// </summary>
+using UnityEngine;
+using Logger = BepInEx.Logger;
+
 namespace KK_FutaMod
 {
+    /// <summary>
+    /// Futa mod. Adds dicks to girls which save and load along with the card.
+    /// </summary>
     [BepInProcess("Koikatu")] //Not for Studio since you can add dicks whenever you want there
-    [BepInPlugin("com.deathweasel.bepinex.futamod", "Futa Mod", Version)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_FutaMod : BaseUnityPlugin
     {
+        public const string GUID = "com.deathweasel.bepinex.futamod";
+        public const string PluginName = "Futa Mod";
         public const string Version = "0.2";
         private static bool ListOverride = false;
         private static bool DoingLoadFileLimited = false;
@@ -38,7 +41,8 @@ namespace KK_FutaMod
         /// </summary>
         private void AddCategory(object sender, RegisterSubCategoriesEvent args)
         {
-            if (Singleton<CustomBase>.Instance.modeSex == 0) return;
+            if (Singleton<CustomBase>.Instance.modeSex == 0)
+                return;
 
             FutaToggle = args.AddControl(new MakerToggle(MakerConstants.Body.All, "ふたなり", this));
             void ToggleFuta(bool IsFuta)
@@ -57,7 +61,8 @@ namespace KK_FutaMod
         /// </summary>
         private void ExtendedCardLoad(ChaFile file)
         {
-            if (ListOverride) return;
+            if (ListOverride)
+                return;
 
             bool IsFuta = false;
             PluginData ExtendedData = ExtendedSave.GetExtendedDataById(file, "KK_FutaMod");
@@ -121,7 +126,8 @@ namespace KK_FutaMod
         [HarmonyPostfix, HarmonyPatch(typeof(Manager.Character), nameof(Manager.Character.CreateChara))]
         public static void CreateChara(ChaControl __result, ChaFileControl _chaFile, byte _sex)
         {
-            if (_sex == 0 || _chaFile == null) return;
+            if (_sex == 0 || _chaFile == null)
+                return;
 
             PluginData ExtendedData = ExtendedSave.GetExtendedDataById(_chaFile, "KK_FutaMod");
 

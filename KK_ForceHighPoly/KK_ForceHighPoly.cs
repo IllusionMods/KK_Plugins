@@ -2,14 +2,18 @@
 using Harmony;
 using System;
 using System.ComponentModel;
-/// <summary>
-/// Replaces all _low assets with normal assets, forcing everything to load as high poly
-/// </summary>
+
 namespace KK_ForceHighPoly
 {
-    [BepInPlugin("com.deathweasel.bepinex.forcehighpoly", "Force High Poly", Version)]
+    /// <summary>
+    /// Replaces all _low assets with normal assets, forcing everything to load as high poly
+    /// </summary>
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_ForceHighPoly : BaseUnityPlugin
     {
+        public const string GUID = "com.deathweasel.bepinex.forcehighpoly";
+        public const string PluginName = "Force High Poly";
+        public const string PluginNameInternal = "KK_ForceHighPoly";
         public const string Version = "1.1";
         [Category("Settings")]
         [DisplayName("High poly mode")]
@@ -18,9 +22,9 @@ namespace KK_ForceHighPoly
 
         void Main()
         {
-            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.forcehighpoly");
+            var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_ForceHighPoly));
-            Enabled = new ConfigWrapper<bool>("Enabled", "KK_ForceHighPoly", true);
+            Enabled = new ConfigWrapper<bool>("Enabled", PluginNameInternal, true);
         }
 
         [HarmonyPrefix]

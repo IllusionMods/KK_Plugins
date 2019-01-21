@@ -15,9 +15,11 @@ namespace KK_ReloadCharaListOnChange
     /// Watches the character folders for changes and updates the character/coordinate list in the chara maker and studio.
     /// </summary>
     [BepInDependency("com.bepis.bepinex.sideloader")]
-    [BepInPlugin("com.deathweasel.bepinex.reloadcharalistonchange", "Reload Chara List On Change", Version)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_ReloadCharaListOnChange : BaseUnityPlugin
     {
+        public const string GUID = "com.deathweasel.bepinex.reloadcharalistonchange";
+        public const string PluginName = "Reload Character List On Change";
         public const string Version = "1.4";
         private static FileSystemWatcher CharacterCardWatcher;
         private static FileSystemWatcher CoordinateCardWatcher;
@@ -43,7 +45,7 @@ namespace KK_ReloadCharaListOnChange
         {
             SceneManager.sceneUnloaded += SceneUnloaded;
 
-            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.reloadcharalistonchange");
+            var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_ReloadCharaListOnChange));
             harmony.Patch(typeof(Studio.MPCharCtrl).GetNestedType("CostumeInfo", BindingFlags.NonPublic).GetMethod("InitFileList", AccessTools.all),
                           new HarmonyMethod(typeof(KK_ReloadCharaListOnChange).GetMethod(nameof(StudioCoordinateListPrefix), AccessTools.all)), null);

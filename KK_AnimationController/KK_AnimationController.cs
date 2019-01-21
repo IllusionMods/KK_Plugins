@@ -13,6 +13,9 @@ using Logger = BepInEx.Logger;
 
 namespace KK_AnimationController
 {
+    /// <summary>
+    /// Allows attaching IK nodes to objects to create custom animations
+    /// </summary>
     [BepInProcess("CharaStudio")]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_AnimationController : BaseUnityPlugin

@@ -2,20 +2,22 @@
 using Harmony;
 using UnityEngine;
 
-/// <summary>
-/// Copy/pasted code from some functions from Assembly-CSharp.dll with added null checks so cutscenes don't lock up when using certain hair mods
-/// Will probably need to get updated if these functions ever change in a future patch
-/// </summary>
 namespace KK_CutsceneLockupFix
 {
-    [BepInPlugin("com.deathweasel.bepinex.cutscenelockupfix", "Cutscene Lockup Fix", Version)]
+    /// <summary>
+    /// Copy/pasted code from some functions from Assembly-CSharp.dll with added null checks so cutscenes don't lock up when using certain hair mods
+    /// Will probably need to get updated if these functions ever change in a future patch
+    /// </summary>
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_CutsceneLockupFix : BaseUnityPlugin
     {
+        public const string GUID = "com.deathweasel.bepinex.cutscenelockupfix";
+        public const string PluginName = "Cutscene Lockup Fix";
         public const string Version = "1.0";
 
         public void Main()
         {
-            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.cutscenelockupfix");
+            var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_CutsceneLockupFix));
         }
 

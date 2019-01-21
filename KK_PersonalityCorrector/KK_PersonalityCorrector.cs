@@ -6,9 +6,11 @@ using System.Collections.Generic;
 /// </summary>
 namespace KK_PersonalityCorrector
 {
-    [BepInPlugin("com.deathweasel.bepinex.personalitycorrector", "Personality Corrector", Version)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_PersonalityCorrector : BaseUnityPlugin
     {
+        public const string GUID = "com.deathweasel.bepinex.personalitycorrector";
+        public const string PluginName = "Personality Corrector";
         public const string Version = "1.2";
         public static int DefaultPersonality = 8; //Pure
 

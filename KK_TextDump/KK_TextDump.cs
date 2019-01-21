@@ -10,11 +10,14 @@ using Object = UnityEngine.Object;
 
 namespace KK_TextDump
 {
+    /// <summary>
+    /// Dumps untranslated text to .txt files
+    /// </summary>
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_TextDump : BaseUnityPlugin
     {
-        public const string PluginName = "KK_TextDump";
         public const string GUID = "com.deathweasel.bepinex.textdump";
+        public const string PluginName = "KK_TextDump";
         public const string Version = "1.0";
 
         void Main()

@@ -9,14 +9,17 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using Logger = BepInEx.Logger;
-/// <summary>
-/// Plugin for assigning uncensors to characters individually
-/// </summary>
+
 namespace KK_UncensorSelector
 {
-    [BepInPlugin("com.deathweasel.bepinex.uncensorselector", "Uncensor Selector", Version)]
+    /// <summary>
+    /// Plugin for assigning uncensors to characters individually
+    /// </summary>
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_UncensorSelector : BaseUnityPlugin
     {
+        public const string GUID = "com.deathweasel.bepinex.uncensorselector";
+        public const string PluginName = "Uncensor Selector";
         public const string Version = "1.1";
         private static string CharacterName = "";
         private static byte CharacterSex = 0;
@@ -25,7 +28,7 @@ namespace KK_UncensorSelector
 
         void Main()
         {
-            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.uncensorselector");
+            var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_UncensorSelector));
 
             Type LoadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).Where(x => x.Name.StartsWith("<LoadAsync>c__Iterator")).First();

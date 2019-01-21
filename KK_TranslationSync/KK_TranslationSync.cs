@@ -11,19 +11,23 @@ using Logger = BepInEx.Logger;
 
 namespace KK_TranslationSync
 {
+    /// <summary>
+    /// Copies translations from one .txt file to another for the same personality
+    /// </summary>
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_TranslationSync : BaseUnityPlugin
     {
-        public const string PluginName = "KK_TranslationSync";
         public const string GUID = "com.deathweasel.bepinex.translationsync";
+        public const string PluginName = "Translation Sync";
+        public const string PluginNameInternal = "KK_TranslationSync";
         public const string Version = "1.0";
         public static ConfigWrapper<string> Personality { get; private set; }
         public static SavedKeyboardShortcut TranslationSyncHotkey { get; private set; }
 
         void Main()
         {
-            Personality = new ConfigWrapper<string>("Personality", PluginName, "c00");
-            TranslationSyncHotkey = new SavedKeyboardShortcut(PluginName, PluginName, new KeyboardShortcut(KeyCode.Alpha0));
+            Personality = new ConfigWrapper<string>("Personality", PluginNameInternal, "c00");
+            TranslationSyncHotkey = new SavedKeyboardShortcut(PluginNameInternal, PluginNameInternal, new KeyboardShortcut(KeyCode.Alpha0));
         }
 
         void Update()

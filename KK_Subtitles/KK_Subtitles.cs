@@ -11,11 +11,15 @@ using Logger = BepInEx.Logger;
 
 namespace KK_Subtitles
 {
-    [BepInPlugin(GUID, PluginName, Version)]
+    /// <summary>
+    /// Displays subitles on screen for H scenes and in dialogues
+    /// </summary>
+    [BepInPlugin(GUID, PluginNameInternal, Version)]
     public class KK_Subtitles : BaseUnityPlugin
     {
-        public const string PluginName = "KK_Subtitles";
         public const string GUID = "com.deathweasel.bepinex.subtitles";
+        public const string PluginName = "Subtitles";
+        public const string PluginNameInternal = "KK_Subtitles";
         public const string Version = "1.1";
         internal static Info ActionGameInfoInstance;
         internal static HSceneProc HSceneProcInstance;
@@ -69,13 +73,13 @@ namespace KK_Subtitles
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_Subtitles));
 
-            showUntranslated = new ConfigWrapper<bool>("showUntranslated", PluginName, true);
-            fontName = new ConfigWrapper<string>("fontName", PluginName, "Arial");
-            fontSize = new ConfigWrapper<int>("fontSize", PluginName, -5);
-            fontStyle = new ConfigWrapper<FontStyle>("fontStyle", PluginName, FontStyle.Bold);
-            textAlign = new ConfigWrapper<TextAnchor>("textAlignment", PluginName, TextAnchor.LowerCenter);
-            textOffset = new ConfigWrapper<int>("textOffset", PluginName, 10);
-            outlineThickness = new ConfigWrapper<int>("outlineThickness", PluginName, 2);
+            showUntranslated = new ConfigWrapper<bool>("showUntranslated", PluginNameInternal, true);
+            fontName = new ConfigWrapper<string>("fontName", PluginNameInternal, "Arial");
+            fontSize = new ConfigWrapper<int>("fontSize", PluginNameInternal, -5);
+            fontStyle = new ConfigWrapper<FontStyle>("fontStyle", PluginNameInternal, FontStyle.Bold);
+            textAlign = new ConfigWrapper<TextAnchor>("textAlignment", PluginNameInternal, TextAnchor.LowerCenter);
+            textOffset = new ConfigWrapper<int>("textOffset", PluginNameInternal, 10);
+            outlineThickness = new ConfigWrapper<int>("outlineThickness", PluginNameInternal, 2);
         }
 
         public void Start()
@@ -90,8 +94,8 @@ namespace KK_Subtitles
             string Col2str(Color c) => ColorUtility.ToHtmlStringRGBA(c);
             Color str2Col(string s) => ColorUtility.TryParseHtmlString("#" + s, out Color c) ? c : Color.clear;
 
-            textColor = new ConfigWrapper<Color>("textColor", PluginName, str2Col, Col2str, Manager.Config.TextData.Font1Color);
-            outlineColor = new ConfigWrapper<Color>("outlineColor", PluginName, str2Col, Col2str, Color.black);
+            textColor = new ConfigWrapper<Color>("textColor", PluginNameInternal, str2Col, Col2str, Manager.Config.TextData.Font1Color);
+            outlineColor = new ConfigWrapper<Color>("outlineColor", PluginNameInternal, str2Col, Col2str, Color.black);
 
             yield return null;
         }

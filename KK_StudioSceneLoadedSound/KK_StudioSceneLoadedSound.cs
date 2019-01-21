@@ -8,15 +8,17 @@ namespace KK_StudioSceneLoadedSound
     /// <summary>
     /// When a Studio scene is loaded or imported, play a sound
     /// </summary>
-    [BepInPlugin("com.deathweasel.bepinex.studiosceneloadedsound", "Studio Scene Loaded Sound", Version)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public class KK_StudioSceneLoadedSound : BaseUnityPlugin
     {
+        public const string GUID = "com.deathweasel.bepinex.studiosceneloadedsound";
+        public const string PluginName = "Studio Scene Loaded Sound";
         public const string Version = "1.0";
         private static bool LoadOrImportClicked = false;
 
         void Main()
         {
-            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.studiosceneloadedsound");
+            var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_StudioSceneLoadedSound));
             //Add our own method to the sceneLoaded event
             SceneManager.sceneLoaded += SceneLoaded;
@@ -33,18 +35,9 @@ namespace KK_StudioSceneLoadedSound
             }
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Studio.SceneLoadScene), "OnClickLoad")]
-        public static void OnClickLoadPrefix()
-        {
-            LoadOrImportClicked = true;
-        }
-
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Studio.SceneLoadScene), "OnClickImport")]
-        public static void OnClickImportPrefix()
-        {
-            LoadOrImportClicked = true;
-        }
+        [HarmonyPrefix, HarmonyPatch(typeof(Studio.SceneLoadScene), "OnClickLoad")]
+        public static void OnClickLoadPrefix() => LoadOrImportClicked = true;
+        [HarmonyPrefix, HarmonyPatch(typeof(Studio.SceneLoadScene), "OnClickImport")]
+        public static void OnClickImportPrefix() => LoadOrImportClicked = true;
     }
 }
