@@ -15,7 +15,6 @@ Plays a sound when a Studio scene finishes loading or importing. Useful if you s
 Forces all characters to load in high poly mode, even in the school exploration mode.
 
 <details><summary>Change Log</summary>
-  
 v1.1 Fixed locking up the game after special H scenes. Added config option to disable high poly mode.
 </details>
 
@@ -25,15 +24,14 @@ Migrates information on your character cards in cases where a mod's GUID or IDs 
 Also attempts to fix cards saved with a blank GUID (Missing Mod []) by stripping the GUID and forcing sideloader to treat it as a hard mod. May not work 100%, so check your cards.
 
 <details><summary>Change Log</summary>
-  
-v1.1 Added character name for blank GUID messages  
+v1.1 Added character name for blank GUID messages<br/>
 v1.2 Fixed hard coded path
 </details>
+
 <details><summary>Configuration</summary>
-  
-Comes preconfigured with a whole bunch of migration info. Unless I stopped maintaining it you shouldn't need to mess with this stuff.  
-KK_GUIDMigration.csv is a comma separated file in the form Category,Old GUID,Old ID,New GUID,New ID.  
-Category is the internal one used by sideloader, not the numeric category.  
+Comes preconfigured with a whole bunch of migration info. Unless I stopped maintaining it you shouldn't need to mess with this stuff.<br/>
+KK_GUIDMigration.csv is a comma separated file in the form Category,Old GUID,Old ID,New GUID,New ID.<br/>
+Category is the internal one used by sideloader, not the numeric category.<br/>
 When the category is * only GUID migration will be attempted and whatever you put for Old/New ID will be ignored. Use only in cases where a GUID changed and the IDs stay the same.
 </details>
 
@@ -44,7 +42,6 @@ Adds some extra error handling to the game so certain hair mods wont lock up the
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.
 
 <details><summary>Change Log</summary>
-  
 v1.1 Fixed new coordinates saved from within the game not being handled correctly  
 v1.2 Fixed error when exiting the chara maker  
 v1.3 Updated for plugin compatibility  
@@ -54,33 +51,34 @@ v1.4 Studio support
 #### KK_InvisibleBody v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v7/KK_InvisibleBody.v1.1.zip)
 Select characters in the Studio workspace and press numpad+ (configurable) to toggle them between invisible and visible. Any worn clothes or accessories and any attached studio items will remain visible. Invisible state saves and loads with the scene. Can also be used to make girls invisible in H scenes but cannot be disabled except by exiting the scene.
 
-<details><summary>Change Log</summary>
-  
+<details><summary>Change Log</summary> 
 v1.1 Fixed studio items becoming visible when they were toggled off in the workspace
 </details>
 
-#### KK_InputHotkeyBlock v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v8/KK_InputHotkeyBlock.v1.0.zip)
+#### KK_InputHotkeyBlock v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v28/KK_InputHotkeyBlock.v1.1.zip)
 Blocks mod hotkeys from triggering while typing in input fields. Based on kisama.dll by Essu.
+
+<details><summary>Change Log</summary>
+v1.1 Blocks hotkeys in studio coordinate fields
+</details>
 
 #### KK_PersonalityCorrector v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v18/KK_PersonalityCorrector.v1.2.zip)
 Replaces any cards with the modded story character personalities with the default "Pure" personality when attempting to added them to the class to prevent the game from breaking. Also defaults to "Pure" for characters using paid DLC personalities if you don't have the paid DLC installed.
 
 <details><summary>Change Log</summary>
-  
-v1.1 Updated to support missing DLC personalities  
+v1.1 Updated to support missing DLC personalities<br/>
 v1.2 Updated for 1221 DLC personalities
 </details>
 
 #### KK_UncensorSelector v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v24/KK_UncensorSelector.v1.1.zip)
-Allows you to specify which uncensors individual characters use.  
+Allows you to specify which uncensors individual characters use.
 
-Usage: See Example.txt in the BepInEx/KK_UncensorSelector folder for instructions.  
+Usage: See Example.txt in the BepInEx/KK_UncensorSelector folder for instructions.<br/>
 Create a new .txt file in the BepInEx/KK_UncensorSelector folder and add your entries there.  
 
 Note: Only what you have set as the default for the character's gender or the wild card (*) will load in the character maker. If you need a specific one loaded (for example when working with more extreme body mods) make sure to change the default. Set it back after you're done.  
 
 <details><summary>Change Log</summary>
-  
 v1.1 Now reads .txt files. Reads all .txt and .csv files in BepInEx/KK_UncensorSelector folder. Loads body textures correctly when loading a scene with multiple characters. Can specify uncensors to apply only to one gender or the other.
 </details>
 
@@ -88,26 +86,25 @@ v1.1 Now reads .txt files. Reads all .txt and .csv files in BepInEx/KK_UncensorS
 Subtitles for H scenes and spoken text in dialogues
 
 <details><summary>Change Log</summary>
-  
-v1.1 Fixed H subs not working for some people  
+v1.1 Fixed H subs not working for some people
 </details>
 
 #### KK_AnimationController v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v27/KK_AnimationController.v1.2.zip)
-Allows attaching IK nodes to objects to create custom animations  
+Allows attaching IK nodes to objects to create custom animations
+
+Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro  
 
 <details><summary>Change Log</summary>
-v1.1 Gimmicks can now rotate hands and feet properly  
-v1.2 Rotating characters doesn't break everything anymore  
-</details>  
+v1.1 Gimmicks can now rotate hands and feet properly<br/>
+v1.2 Rotating characters doesn't break everything anymore
+</details>
 
-Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro 
-
-#### KK_FutaMod BETA 2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v15/KK_FutaMod.v0.2.zip)
+#### KK_FutaMod BETA 3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v28/KK_FutaMod.v0.3.zip)
 Adds dicks to girls. Requires MakerAPI, currently available as part of [ABMX](https://github.com/ManlyMarco/KKABMX#readme).
 
 More features soon, hopefully.
 
 <details><summary>Change Log</summary>
-  
-BETA 2 Updated for MakerAPI compatibility
+BETA 2 Updated for MakerAPI compatibility<br/>
+BETA 3 Enabled/Disabled toggle for plugin
 </details>
