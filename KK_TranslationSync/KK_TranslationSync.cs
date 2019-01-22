@@ -20,7 +20,7 @@ namespace KK_TranslationSync
         public const string GUID = "com.deathweasel.bepinex.translationsync";
         public const string PluginName = "Translation Sync";
         public const string PluginNameInternal = "KK_TranslationSync";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         public static ConfigWrapper<string> Personality { get; private set; }
         public static SavedKeyboardShortcut TranslationSyncHotkey { get; private set; }
 
@@ -166,6 +166,7 @@ namespace KK_TranslationSync
                     string Line1 = Lines1[i];
                     if (Line1.IsNullOrEmpty())
                         continue;
+
                     var Line1Split = Line1.Split('=');
 
                     if (CheckLineForErrors(Line1, File1, i + 1))
@@ -175,13 +176,17 @@ namespace KK_TranslationSync
                         continue;
 
                     if (FormatTLText(ref Line1Split[1]))
-                    {
-                        //Logger.Log(LogLevel.Info, $"Line {i + 1} was reformatted.");
-                        Lines1[i] = $"{Line1Split[0]}={Line1Split[1]}";
                         DidEdit1 = true;
-                    }
 
-                    TLLines.Add(Line1Split[0], Line1Split[1]);
+                    Lines1[i] = $"{Line1Split[0]}={Line1Split[1]}";
+                    try
+                    {
+                        TLLines.Add(Line1Split[0], Line1Split[1]);
+                    }
+                    catch (ArgumentException)
+                    {
+                        Logger.Log(LogLevel.Warning, $"Duplicate translation line detected, only the first will be used: {Line1Split[0]}");
+                    }
                 }
                 //foreach (var x in TLLines)
                 //    Logger.Log(LogLevel.Info, x);
@@ -280,14 +285,14 @@ namespace KK_TranslationSync
         {
             if (!line.Contains("="))
             {
-                Logger.Log(LogLevel.Error, $"File {fileName} Line {lineNumber } has no =");
+                Logger.Log(LogLevel.Warning, $"File {fileName} Line {lineNumber } has no =");
                 return true;
             }
 
             var Line2Split = line.Split('=');
             if (Line2Split.Count() > 2)
             {
-                Logger.Log(LogLevel.Error, $"File {fileName} Line {lineNumber} has more than one =");
+                Logger.Log(LogLevel.Warning, $"File {fileName} Line {lineNumber} has more than one =");
                 return true;
             }
 
