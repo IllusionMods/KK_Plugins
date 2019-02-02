@@ -20,7 +20,7 @@ namespace KK_TranslationSync
         public const string GUID = "com.deathweasel.bepinex.translationsync";
         public const string PluginName = "Translation Sync";
         public const string PluginNameInternal = "KK_TranslationSync";
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         public static ConfigWrapper<string> Personality { get; private set; }
         public static SavedKeyboardShortcut TranslationSyncHotkey { get; private set; }
 
@@ -178,6 +178,9 @@ namespace KK_TranslationSync
                     if (FormatTLText(ref Line1Split[1]))
                         DidEdit1 = true;
 
+                    if (FormatUnTLText(ref Line1Split[0]))
+                        DidEdit1 = true;
+
                     Lines1[i] = $"{Line1Split[0]}={Line1Split[1]}";
                     try
                     {
@@ -232,16 +235,19 @@ namespace KK_TranslationSync
                         if (CheckLineForErrors(Line2, File2, i + 1))
                             continue;
 
-                        if (FormatTLText(ref Line2Split[1]))
-                        {
-                            //Logger.Log(LogLevel.Info, $"Line {i + 1} was reformatted.");
-                            Lines2[i] = $"{Line2Split[0]}={Line2Split[1]}";
+                        if (FormatUnTLText(ref Line2Split[0]))
                             DidEdit2 = true;
-                        }
+
+                        if (FormatTLText(ref Line2Split[1]))
+                            DidEdit2 = true;
+
+                        Lines2[i] = $"{Line2Split[0]}={Line2Split[1]}";
 
                         string JPText = Line2Split[0];
                         if (JPText.StartsWith(@"//"))
                             JPText = JPText.Substring(2, Line2Split[0].Length - 2);
+                        JPText = JPText.Trim();
+
                         string TLText = Line2Split[1];
 
                         if (TLLines.TryGetValue(JPText, out string NewTLText))
@@ -343,5 +349,20 @@ namespace KK_TranslationSync
             return DidEdit;
         }
 
+        bool FormatUnTLText(ref string UnTLText)
+        {
+            bool DidEdit = false;
+            string NewUnTLText = UnTLText;
+
+            NewUnTLText = NewUnTLText.Trim();
+
+            if (NewUnTLText != UnTLText)
+            {
+                UnTLText = NewUnTLText;
+                DidEdit = true;
+            }
+
+            return DidEdit;
+        }
     }
 }
