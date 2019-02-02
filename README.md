@@ -90,7 +90,7 @@ v1.1 Fixed H subs not working for some people
 </details>
 
 #### KK_AnimationController v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v27/KK_AnimationController.v1.2.zip)
-Allows attaching IK nodes to objects to create custom animations
+Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.<br/>
 
 Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro  
 
