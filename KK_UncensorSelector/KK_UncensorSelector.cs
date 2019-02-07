@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using UnityEngine;
 using Logger = BepInEx.Logger;
 
 namespace KK_UncensorSelector
@@ -20,7 +21,7 @@ namespace KK_UncensorSelector
     {
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         private static string CharacterName = "";
         private static byte CharacterSex = 0;
         private static readonly string UncensorSelectorPath = Path.Combine(Paths.PluginPath, "KK_UncensorSelector");
@@ -160,6 +161,129 @@ namespace KK_UncensorSelector
 
             //If no other uncensor is defined, the default oo_base is used
             return "chara/oo_base.unity3d";
+        }
+
+        private static string GetOOBase(ChaControl Character)
+        {
+            //Characters will always use the uncensor assigned to them if it exists
+            if (UncensorList.TryGetValue(Character.chaFile.parameter.fullname.Trim(), out string Uncensor) && AssetBundleCheck.IsFile(Uncensor))
+                return Uncensor;
+
+            //Characters will use the uncensor assigned for their sex if one has been set
+            if (UncensorList.TryGetValue(Character.chaFile.parameter.sex.ToString(), out Uncensor) && AssetBundleCheck.IsFile(Uncensor))
+                return Uncensor;
+
+            //Characters will use the wildcard uncensor if one is set
+            if (UncensorList.TryGetValue("*", out Uncensor) && AssetBundleCheck.IsFile(Uncensor))
+                return Uncensor;
+
+            //If no other uncensor is defined, the default oo_base is used
+            return "chara/oo_base.unity3d";
+        }
+
+        //Color matching stuff
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ChaControl), "SetBodyBaseMaterial", null, null)]
+        public static void SetBodyBaseMaterial(ChaControl __instance)
+        {
+            SetDickMaterial(__instance);
+            SetBallsMaterial(__instance);
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload), null, null)]
+        public static void Reload(ChaControl __instance)
+        {
+            SetDickMaterial(__instance);
+            SetBallsMaterial(__instance);
+        }
+
+        public static void SetDickMaterial(ChaControl __instance)
+        {
+            string oo_base = GetOOBase(__instance);
+
+            //get main tex
+            string text_t = (__instance.sex == 0) ? "cm_dankon_00_t" : "cf_dankon_00_t";
+            Texture2D mainTexture = CommonLib.LoadAsset<Texture2D>(oo_base, text_t, false, string.Empty);
+            Singleton<Manager.Character>.Instance.AddLoadAssetBundle(oo_base, string.Empty);
+            if (mainTexture == null)
+                return;
+
+            //get color mask
+            string text_mc = (__instance.sex == 0) ? "cm_dankon_00_mc" : "cf_dankon_00_mc";
+            Texture2D colorMask = CommonLib.LoadAsset<Texture2D>(oo_base, text_mc, false, string.Empty);
+            Singleton<Manager.Character>.Instance.AddLoadAssetBundle(oo_base, string.Empty);
+            if (colorMask == null)
+                return;
+
+            //find the dick
+            FindAssist findAssist = new FindAssist();
+            findAssist.Initialize(__instance.objBody.transform);
+            GameObject objectFromName = findAssist.GetObjectFromName("o_dankon");
+            if (objectFromName == null)
+                return;
+
+            string drawMatName = (__instance.sex == 0) ? "cm_m_dankon" : "cf_m_dankon";
+            string createMatName = (__instance.sex == 0) ? "cm_m_dankon_create" : "cf_m_dankon_create";
+            var CustomTex = new CustomTextureControl(objectFromName.transform);
+            CustomTex.Initialize(oo_base, drawMatName, string.Empty, oo_base, createMatName, string.Empty, 2048, 2048, RenderTextureFormat.ARGB32);
+
+            CustomTex.SetMainTexture(mainTexture);
+            CustomTex.SetColor(ChaShader._Color, __instance.chaFile.custom.body.skinMainColor);
+
+            CustomTex.SetTexture(ChaShader._ColorMask, colorMask);
+            CustomTex.SetColor(ChaShader._Color2, __instance.chaFile.custom.body.skinSubColor);
+
+            //set the new texture
+            var NewTex = CustomTex.RebuildTextureAndSetMaterial();
+            if (NewTex == null)
+                return;
+
+            objectFromName.GetComponent<Renderer>().material.SetTexture(ChaShader._MainTex, NewTex);
+        }
+
+        public static void SetBallsMaterial(ChaControl __instance)
+        {
+            string oo_base = GetOOBase(__instance);
+
+            //get main tex
+            string text_t = (__instance.sex == 0) ? "cm_dan_f_00_t" : "cf_dan_f_00_t";
+            Texture2D mainTexture = CommonLib.LoadAsset<Texture2D>(oo_base, text_t, false, string.Empty);
+            Singleton<Manager.Character>.Instance.AddLoadAssetBundle(oo_base, string.Empty);
+            if (mainTexture == null)
+                return;
+
+            //get color mask
+            string text_mc = (__instance.sex == 0) ? "cm_dan_f_00_mc" : "cf_dan_f_00_mc";
+            Texture2D colorMask = CommonLib.LoadAsset<Texture2D>(oo_base, text_mc, false, string.Empty);
+            Singleton<Manager.Character>.Instance.AddLoadAssetBundle(oo_base, string.Empty);
+            if (colorMask == null)
+                return;
+
+            //find the balls
+            FindAssist findAssist = new FindAssist();
+            findAssist.Initialize(__instance.objBody.transform);
+            GameObject objectFromName = findAssist.GetObjectFromName("o_dan_f");
+            if (objectFromName == null)
+                return;
+
+            string drawMatName = (__instance.sex == 0) ? "cm_m_dan_f" : "cf_m_dan_f";
+            string createMatName = (__instance.sex == 0) ? "cm_m_dan_f_create" : "cf_m_dan_f_create";
+            var CustomTex = new CustomTextureControl(objectFromName.transform);
+            CustomTex.Initialize(oo_base, drawMatName, string.Empty, oo_base, createMatName, string.Empty, 2048, 2048, RenderTextureFormat.ARGB32);
+
+            CustomTex.SetMainTexture(mainTexture);
+            CustomTex.SetColor(ChaShader._Color, __instance.chaFile.custom.body.skinMainColor);
+
+            CustomTex.SetTexture(ChaShader._ColorMask, colorMask);
+            CustomTex.SetColor(ChaShader._Color2, __instance.chaFile.custom.body.skinSubColor);
+
+            //set the new texture
+            var NewTex = CustomTex.RebuildTextureAndSetMaterial();
+            if (NewTex == null)
+                return;
+
+            objectFromName.GetComponent<Renderer>().material.SetTexture(ChaShader._MainTex, NewTex);
         }
     }
 }
