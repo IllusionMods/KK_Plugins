@@ -70,8 +70,8 @@ v1.1 Updated to support missing DLC personalities<br/>
 v1.2 Updated for 1221 DLC personalities
 </details>
 
-#### KK_UncensorSelector v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v24/KK_UncensorSelector.v1.1.zip)
-Allows you to specify which uncensors individual characters use.
+#### KK_UncensorSelector v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v29/KK_UncensorSelector.v1.2.zip)
+Allows you to specify which uncensors individual characters use.<br/>
 
 Usage: See Example.txt in the BepInEx/KK_UncensorSelector folder for instructions.<br/>
 Create a new .txt file in the BepInEx/KK_UncensorSelector folder and add your entries there.  
@@ -79,7 +79,8 @@ Create a new .txt file in the BepInEx/KK_UncensorSelector folder and add your en
 Note: Only what you have set as the default for the character's gender or the wild card (*) will load in the character maker. If you need a specific one loaded (for example when working with more extreme body mods) make sure to change the default. Set it back after you're done.  
 
 <details><summary>Change Log</summary>
-v1.1 Now reads .txt files. Reads all .txt and .csv files in BepInEx/KK_UncensorSelector folder. Loads body textures correctly when loading a scene with multiple characters. Can specify uncensors to apply only to one gender or the other.
+v1.1 Now reads .txt files. Reads all .txt and .csv files in BepInEx/KK_UncensorSelector folder. Loads body textures correctly when loading a scene with multiple characters. Can specify uncensors to apply only to one gender or the other.<br/>
+v1.2 Support for color matching uncensors
 </details>
 
 #### KK_Subtitles v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v23/KK_Subtitles.v1.1.zip)
