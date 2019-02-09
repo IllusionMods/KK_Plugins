@@ -285,5 +285,42 @@ namespace KK_UncensorSelector
 
             objectFromName.GetComponent<Renderer>().material.SetTexture(ChaShader._MainTex, NewTex);
         }
+
+        //LineMask texture assigned to the material, toggled on and off for the dick/balls along with the body
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.VisibleAddBodyLine))]
+        public static void VisibleAddBodyLine(ChaControl __instance)
+        {
+            FindAssist findAssist = new FindAssist();
+            findAssist.Initialize(__instance.objBody.transform);
+            GameObject o_dankon = findAssist.GetObjectFromName("o_dankon");
+            if (o_dankon != null)
+                o_dankon.GetComponent<Renderer>().material.SetFloat(ChaShader._linetexon, __instance.chaFile.custom.body.drawAddLine ? 1f : 0f);
+
+            findAssist = new FindAssist();
+            findAssist.Initialize(__instance.objBody.transform);
+            GameObject o_dan_f = findAssist.GetObjectFromName("o_dan_f");
+            if (o_dan_f != null)
+                o_dan_f.GetComponent<Renderer>().material.SetFloat(ChaShader._linetexon, __instance.chaFile.custom.body.drawAddLine ? 1f : 0f);
+        }
+
+        //Skin gloss slider level, as assigned in the character maker.
+        //This corresponds to the red coloring in the DetailMask texture assigned to the dick/balls material
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingSkinGlossPower))]
+        public static void ChangeSettingSkinGlossPower(ChaControl __instance)
+        {
+            FindAssist findAssist = new FindAssist();
+            findAssist.Initialize(__instance.objBody.transform);
+            GameObject o_dankon = findAssist.GetObjectFromName("o_dankon");
+            if (o_dankon != null)
+                o_dankon.GetComponent<Renderer>().material.SetFloat(ChaShader._SpecularPower, Mathf.Lerp(__instance.chaFile.custom.body.skinGlossPower, 1f, __instance.chaFile.status.skinTuyaRate));
+
+            findAssist = new FindAssist();
+            findAssist.Initialize(__instance.objBody.transform);
+            GameObject o_dan_f = findAssist.GetObjectFromName("o_dan_f");
+            if (o_dan_f != null)
+                o_dan_f.GetComponent<Renderer>().material.SetFloat(ChaShader._SpecularPower, Mathf.Lerp(__instance.chaFile.custom.body.skinGlossPower, 1f, __instance.chaFile.status.skinTuyaRate));
+        }
     }
 }
