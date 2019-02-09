@@ -322,5 +322,26 @@ namespace KK_UncensorSelector
             if (o_dan_f != null)
                 o_dan_f.GetComponent<Renderer>().material.SetFloat(ChaShader._SpecularPower, Mathf.Lerp(__instance.chaFile.custom.body.skinGlossPower, 1f, __instance.chaFile.status.skinTuyaRate));
         }
+        /// <summary>
+        /// For traps and futas, set the normals for the chest area
+        /// This prevents strange shadowing around flat-chested trap/futa characters
+        /// Currently only works on files that end with _trap or _futa. Probably needs a better implementation.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomBodyWithoutCustomTexture))]
+        public static void ChangeCustomBodyWithoutCustomTexture(ChaControl __instance)
+        {
+            string oo_base = GetOOBase(__instance);
+
+            if (__instance.sex == 0 && __instance.hiPoly && (oo_base.ToLower().EndsWith("_trap.unity3d") || oo_base.ToLower().EndsWith("_futa.unity3d")))
+            {
+                if (__instance.dictBustNormal.TryGetValue(ChaControl.BustNormalKind.NmlBody, out BustNormal bustNormal))
+                    bustNormal.Release();
+
+                bustNormal = new BustNormal();
+                bustNormal.Init(__instance.objBody, oo_base, "p_cf_body_00_Nml", string.Empty);
+                __instance.dictBustNormal[ChaControl.BustNormalKind.NmlBody] = bustNormal;
+            }
+        }
     }
 }
