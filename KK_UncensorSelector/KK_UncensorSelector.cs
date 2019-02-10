@@ -21,7 +21,7 @@ namespace KK_UncensorSelector
     {
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
-        public const string Version = "1.2";
+        public const string Version = "1.3";
         private static string CharacterName = "";
         private static byte CharacterSex = 0;
         private static readonly string UncensorSelectorPath = Path.Combine(Paths.PluginPath, "KK_UncensorSelector");
@@ -333,7 +333,7 @@ namespace KK_UncensorSelector
         {
             string oo_base = GetOOBase(__instance);
 
-            if (__instance.sex == 0 && __instance.hiPoly && (oo_base.ToLower().EndsWith("_trap.unity3d") || oo_base.ToLower().EndsWith("_futa.unity3d")))
+            if (__instance.sex == 0 && __instance.hiPoly && (oo_base.ToLower().Contains("_trap") || oo_base.ToLower().Contains("_futa")))
             {
                 if (__instance.dictBustNormal.TryGetValue(ChaControl.BustNormalKind.NmlBody, out BustNormal bustNormal))
                     bustNormal.Release();
