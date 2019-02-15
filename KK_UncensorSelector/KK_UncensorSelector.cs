@@ -1,6 +1,13 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using Harmony;
+using KKAPI;
+using KKAPI.Chara;
+using KKAPI.Maker;
+using KKAPI.Maker.UI;
+using KKAPI.Studio;
+using Manager;
 using Sideloader;
 using System;
 using System.Collections.Generic;
@@ -11,6 +18,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using UniRx;
 using UnityEngine;
 using Logger = BepInEx.Logger;
 
@@ -25,139 +33,259 @@ namespace KK_UncensorSelector
     {
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
-        public const string Version = "1.3";
-        private static string CharacterName = "";
-        private static byte CharacterSex = 0;
-        private static readonly string UncensorSelectorPath = Path.Combine(Paths.PluginPath, "KK_UncensorSelector");
-        private static Dictionary<string, string> CharacterUncensorList = new Dictionary<string, string>();
-        private static Dictionary<string, UncensorData> UncensorList = new Dictionary<string, UncensorData>();
+        public const string PluginNameInternal = "KK_UncensorSelector";
+        public const string Version = "2.0";
+        private static ChaControl CurrentCharacter;
+        private static ChaFileControl CurrentChaFile;
+        private static readonly string UncensorSelectorPath = Path.Combine(Paths.PluginPath, PluginNameInternal);
+        public static readonly Dictionary<string, UncensorData> UncensorDictionary = new Dictionary<string, UncensorData>();
+        public static readonly List<string> UncensorList = new List<string>();
+        public static readonly List<string> UncensorListDisplay = new List<string>();
         public static readonly string modDirectory = Path.Combine(Paths.GameRootPath, "mods");
+        private static MakerDropdown UncensorDropdown;
+        private static MakerToggle BallsToggle;
+        private static bool DoUncensorDropdownEvents = false;
+        private static bool DoingForcedReload = false;
+        public static UncensorData SelectedUncensor => MakerAPI.InsideAndLoaded ? UncensorDropdown.Value == 0 ? null : UncensorDictionary[UncensorList[UncensorDropdown.Value]] : null;
 
         void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_UncensorSelector));
 
+            MethodInfo ChaControlInit = typeof(ChaControl).GetMethod("Initialize");
+            harmony.Patch(ChaControlInit, new HarmonyMethod(typeof(KK_UncensorSelector).GetMethod(nameof(InitializePrefix), BindingFlags.Static | BindingFlags.Public)), null);
+
             Type LoadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).Where(x => x.Name.StartsWith("<LoadAsync>c__Iterator")).First();
             MethodInfo LoadAsyncIteratorMoveNext = LoadAsyncIterator.GetMethod("MoveNext");
             harmony.Patch(LoadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(KK_UncensorSelector).GetMethod(nameof(LoadAsyncTranspiler), BindingFlags.Static | BindingFlags.Public)));
 
             GenerateUncensorList();
-            GenerateCharacterUncensorList();
+
+            MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
+            MakerAPI.MakerExiting += (object sender, EventArgs e) => DoUncensorDropdownEvents = false;
+            CharacterApi.RegisterExtraBehaviour<UncensorSelectorController>(GUID);
+        }
+
+        private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
+        {
+
+            //Logger.Log(LogLevel.Info, $"Register Controls");
+            UncensorDropdown = e.AddControl(new MakerDropdown("Uncensor", UncensorListDisplay.ToArray(), MakerConstants.Body.All, 0, this));
+            UncensorDropdown.ValueChanged.Subscribe(Observer.Create<int>(UncensorDropdownChanged));
+            void UncensorDropdownChanged(int UncensorID)
+            {
+                if (DoUncensorDropdownEvents == false)
+                {
+                    DoUncensorDropdownEvents = true;
+                    return;
+                }
+
+                //Logger.Log(LogLevel.Info, $"UncensorDropdownChanged: {UncensorList[UncensorID]}");
+
+                DoingForcedReload = true;
+                UpdateUncensor(MakerAPI.GetMakerBase().chaCtrl, SelectedUncensor);
+                DoingForcedReload = false;
+                SetBallsVisibility(MakerAPI.GetMakerBase().chaCtrl, BallsToggle.Value);
+            }
+
+            BallsToggle = e.AddControl(new MakerToggle(MakerConstants.Body.All, "Display balls", this));
+            BallsToggle.ValueChanged.Subscribe(Observer.Create<bool>(BallsToggleChanged));
+            BallsToggle.Value = MakerAPI.GetMakerSex() == 0 ? true : false;
+            void BallsToggleChanged(bool value)
+            {
+                //Logger.Log(LogLevel.Info, $"BallsToggleChanged: {value}");
+
+                SetBallsVisibility(MakerAPI.GetMakerBase().chaCtrl, BallsToggle.Value);
+            }
+        }
+
+        public static void SetBallsVisibility(ChaControl Character, bool Visible)
+        {
+            var balls = Character?.gameObject?.GetComponentsInChildren<SkinnedMeshRenderer>(true).Where(x => x?.name == "o_dan_f").FirstOrDefault();
+            if (balls != null)
+                balls.gameObject.GetComponent<Renderer>().enabled = Visible;
+        }
+
+        private static void UpdateUncensor(ChaControl chaControl, UncensorData Uncensor)
+        {
+            //Logger.Log(LogLevel.Info, $"UpdateUncensor Uncensor:{Uncensor?.GUID}");
+            //System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
+            //Logger.Log(LogLevel.Info, t);
+
+            ChaControl chaControlTemp = Singleton<Character>.Instance.CreateChara(chaControl.sex, null, 9846215, chaControl.chaFile, chaControl.hiPoly);
+            chaControlTemp.Load(false);
+            foreach (var mesh in chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            {
+                if (mesh.name == "o_body_a")
+                    UpdateMeshRenderer(chaControlTemp.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).Where(x => x.name == mesh.name)?.FirstOrDefault(), mesh, true);
+                else if (mesh.name == "o_dankon" || mesh.name == "o_dan_f" || mesh.name == "o_mnpa" || mesh.name == "o_mnpb")
+                    UpdateMeshRenderer(chaControlTemp.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).Where(x => x.name == mesh.name)?.FirstOrDefault(), mesh, true);
+                else if (Uncensor != null)
+                    foreach (var part in Uncensor.ColorMatchList)
+                        if (mesh.name == part.Object)
+                            UpdateMeshRenderer(chaControlTemp.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().Where(x => x.name == part.Object)?.FirstOrDefault(), mesh, true);
+            }
+
+            Singleton<Character>.Instance.DeleteChara(chaControlTemp);
+            CurrentCharacter = chaControl;
+
+            UpdateSkin(chaControl, Uncensor);
+            SetChestNormals(chaControl, Uncensor);
+        }
+
+        private static void UpdateSkin(ChaControl chaControl, UncensorData Uncensor)
+        {
+            int num = chaControl.hiPoly ? 2048 : 512;
+            string mat = chaControl.sex == 0 ? "cm_m_body" : "cf_m_body";
+            string mmbase = Uncensor?.MMBase ?? Defaults.MMBase;
+            chaControl.customTexCtrlBody.Initialize(mmbase, mat, string.Empty, mmbase, "cf_m_body_create", string.Empty, num, num, RenderTextureFormat.ARGB32);
+
+            chaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
+            chaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
+            chaControl.AddUpdateCMBodyLayoutFlags(true, true);
+            chaControl.SetBodyBaseMaterial();
+            chaControl.CreateBodyTexture();
+            chaControl.ChangeCustomBodyWithoutCustomTexture();
+        }
+
+        private static void UpdateMeshRenderer(SkinnedMeshRenderer src, SkinnedMeshRenderer dst, bool copyMaterials = false)
+        {
+            if (src == null || dst == null)
+                return;
+
+            //Copy the mesh
+            dst.sharedMesh = src.sharedMesh;
+
+            Transform[] originalBones = dst.bones;
+
+            //Sort the bones
+            List<Transform> newBones = new List<Transform>();
+            for (int boneOrder = 0; boneOrder < src.bones.Length; boneOrder++)
+            {
+                try
+                {
+                    newBones.Add(Array.Find(originalBones, c => c.name == src.bones[boneOrder].name));
+                }
+                catch { }
+            }
+            dst.bones = newBones.ToArray();
+
+            if (copyMaterials)
+                dst.materials = src.materials;
         }
         /// <summary>
         /// Read all the manifest.xml files and generate a dictionary of uncensors
         /// </summary>
         private void GenerateUncensorList()
         {
+            UncensorList.Add("None");
+            UncensorListDisplay.Add("None");
+
             var manifests = AccessTools.Field(typeof(Sideloader.Sideloader), "LoadedManifests").GetValue(GetComponent<Sideloader.Sideloader>()) as List<Manifest>;
             foreach (var manifest in manifests)
             {
                 XDocument ManifestDocument = AccessTools.Field(typeof(Manifest), "manifestDocument").GetValue(manifest) as XDocument;
-                XElement UncensorSelectorElement = ManifestDocument.Root?.Element("KK_UncensorSelector");
+                XElement UncensorSelectorElement = ManifestDocument.Root?.Element(PluginNameInternal);
                 if (UncensorSelectorElement != null && UncensorSelectorElement.HasElements)
                 {
                     foreach (XElement UncensorElement in UncensorSelectorElement.Elements("uncensor"))
                     {
-                        UncensorData uncensor = new UncensorData(UncensorElement);
-                        if (uncensor.GUID == null)
+                        UncensorData Uncensor = new UncensorData(UncensorElement);
+                        if (Uncensor.GUID == null)
                         {
                             Logger.Log(LogLevel.Warning, "Uncensor failed to load due to missing GUID.");
                             continue;
                         }
-                        if (uncensor.DisplayName == null)
+                        if (Uncensor.DisplayName == null)
                         {
                             Logger.Log(LogLevel.Warning, "Uncensor failed to load due to missing display name.");
                             continue;
                         }
-                        if (uncensor.OOBase == Defaults.OOBase)
+                        if (Uncensor.OOBase == Defaults.OOBase)
                         {
                             Logger.Log(LogLevel.Warning, "Uncensor was not loaded because oo_base is the default.");
                             continue;
                         }
-                        UncensorList.Add(uncensor.GUID, uncensor);
+                        UncensorDictionary.Add(Uncensor.GUID, Uncensor);
+                        UncensorList.Add(Uncensor.GUID);
+                        UncensorListDisplay.Add($"[{Uncensor.Gender.ToString()}]{Uncensor.DisplayName}");
                     }
                 }
             }
-        }
-        /// <summary>
-        /// Generate the dictionary of CharacterName,UncensorName from KK_UncensorSelector.csv or KK_UncensorSelector folder
-        /// </summary>
-        private static void GenerateCharacterUncensorList()
-        {
-            void ReadFile(string UncensorSelectorFile)
-            {
-                using (StreamReader reader = new StreamReader(UncensorSelectorFile))
-                {
-                    try
-                    {
-                        string line;
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            if (line == "")
-                                continue;
-                            if (line.StartsWith(@"//"))
-                                continue;
-
-                            string[] parts = line.Split(',');
-                            if (parts[0].Trim().ToLower() == "m" || parts[0].Trim().ToLower() == "male" || parts[0].Trim() == "0")
-                                CharacterUncensorList["0"] = parts[1].Trim();
-                            else if (parts[0].Trim().ToLower() == "f" || parts[0].Trim().ToLower() == "female" || parts[0].Trim() == "1")
-                                CharacterUncensorList["1"] = parts[1].Trim();
-                            else
-                                CharacterUncensorList[parts[0].Trim()] = parts[1].Trim();
-                        }
-                    }
-                    catch
-                    {
-                        StringBuilder sb = new StringBuilder("Error reading KK_UncensorSelector file.").Append(Environment.NewLine);
-                        sb.Append($"File: {UncensorSelectorFile}");
-                        Logger.Log(LogLevel.Error, sb.ToString());
-                    }
-                }
-            }
-
-            var AllowedExtensions = new[] { ".txt", ".csv" };
-
-            if (Directory.Exists(UncensorSelectorPath))
-            {
-                var Files = Directory
-                            .GetFiles(UncensorSelectorPath)
-                            .Where(file => AllowedExtensions.Any(file.ToLower().EndsWith))
-                            .ToList();
-
-                foreach (string UncensorSelectorFile in Files)
-                    ReadFile(UncensorSelectorFile);
-
-            }
-
-            foreach (string Extension in AllowedExtensions)
-                if (File.Exists($"{UncensorSelectorPath}{Extension}"))
-                    ReadFile($"{UncensorSelectorPath}{Extension}");
         }
         /// <summary>
         /// Get the UncensorData for the specified character
         /// </summary>
-        private static UncensorData GetUncensorData(ChaControl Character) => GetUncensorData(Character.chaFile.parameter.fullname, Character.chaFile.parameter.sex);
-        private static UncensorData GetUncensorData(string Name, byte Sex, bool MMBase = false) =>
-            CharacterUncensorList.TryGetValue(Name.Trim(), out string UncensorID) && UncensorList.TryGetValue(UncensorID, out UncensorData Uncensor) && AssetBundleCheck.IsFile(MMBase ? Uncensor.MMBase : Uncensor.OOBase) ? Uncensor
-          : CharacterUncensorList.TryGetValue(Sex.ToString(), out UncensorID) && UncensorList.TryGetValue(UncensorID, out Uncensor) && AssetBundleCheck.IsFile(MMBase ? Uncensor.MMBase : Uncensor.OOBase) ? Uncensor
-          : CharacterUncensorList.TryGetValue("*", out UncensorID) && UncensorList.TryGetValue(UncensorID, out Uncensor) && AssetBundleCheck.IsFile(MMBase ? Uncensor.MMBase : Uncensor.OOBase) ? Uncensor
-          : null;
-        private static string SetOOBase() => GetUncensorData(CharacterName, CharacterSex)?.OOBase ?? Defaults.OOBase;
-        private static string SetNormals() => GetUncensorData(CharacterName, CharacterSex)?.Normals ?? Defaults.Normals;
-        private static string SetBodyMainTex() => GetUncensorData(CharacterName, CharacterSex)?.BodyMainTex ?? Defaults.BodyMainTex;
+        private static UncensorData GetUncensorData(ChaControl Character)
+        {
+            //System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
+            //Logger.Log(LogLevel.Info, t);
+            //Logger.Log(LogLevel.Info, $"GetUncensorData {Character?.chaFile?.parameter?.fullname.Trim()}");
+
+            if (MakerAPI.InsideAndLoaded && DoingForcedReload)
+                return SelectedUncensor;
+            else if (Character?.chaFile == null && CurrentChaFile != null)
+            {
+                //ChaFile hasn't been initialized yet, get the one set by the ChaControl.Initialize hook
+                PluginData ExtendedData = ExtendedSave.GetExtendedDataById(CurrentChaFile, GUID);
+                if (ExtendedData != null)
+                {
+                    if (ExtendedData.data.TryGetValue("UncensorGUID", out var UncensorGUID))
+                    {
+                        if (UncensorGUID == null)
+                            return null;
+                        if (UncensorDictionary.TryGetValue(UncensorGUID.ToString(), out var uncensorData))
+                        {
+                            return uncensorData;
+                        }
+                    }
+                }
+            }
+            else if (MakerAPI.InsideAndLoaded)
+            {
+                if (GetController(Character)?.UncensorGUID != null)
+                {
+                    if (UncensorDictionary.TryGetValue(GetController(Character).UncensorGUID, out var uncensorData))
+                    {
+                        return uncensorData;
+                    }
+                }
+            }
+            else
+            {
+                PluginData ExtendedData = ExtendedSave.GetExtendedDataById(Character.chaFile, GUID);
+                if (ExtendedData != null)
+                {
+                    if (ExtendedData.data.TryGetValue("UncensorGUID", out var UncensorGUID))
+                    {
+                        if (UncensorGUID == null)
+                            return null;
+
+                        if (UncensorDictionary.TryGetValue(UncensorGUID.ToString(), out var uncensorData))
+                        {
+                            return uncensorData;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        private static UncensorSelectorController GetController(ChaControl Character) => Character?.gameObject.GetComponent<UncensorSelectorController>();
+        private static string SetOOBase() => GetUncensorData(CurrentCharacter)?.OOBase ?? Defaults.OOBase;
+        private static string SetNormals() => GetUncensorData(CurrentCharacter)?.Normals ?? Defaults.Normals;
+        private static string SetBodyMainTex() => GetUncensorData(CurrentCharacter)?.BodyMainTex ?? Defaults.BodyMainTex;
         private static string SetMaleBodyLow() => SetBodyAsset(0, false);
         private static string SetMaleBodyHigh() => SetBodyAsset(0, true);
         private static string SetFemaleBodyLow() => SetBodyAsset(1, false);
         private static string SetFemaleBodyHigh() => SetBodyAsset(1, true);
         private static string SetBodyAsset(byte sex, bool HiPoly) =>
-            HiPoly ? (GetUncensorData(CharacterName, CharacterSex)?.AssetHighPoly ?? (sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale))
-                   : (GetUncensorData(CharacterName, CharacterSex)?.AssetLowPoly ?? (sex == 0 ? Defaults.AssetMaleLow : Defaults.AssetFemaleLow));
-        private static string SetMMBase() => GetUncensorData(CharacterName, CharacterSex, true)?.MMBase ?? Defaults.MMBase;
+            HiPoly ? (GetUncensorData(CurrentCharacter)?.AssetHighPoly ?? (sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale))
+                   : (GetUncensorData(CurrentCharacter)?.AssetLowPoly ?? (sex == 0 ? Defaults.AssetMaleLow : Defaults.AssetFemaleLow));
+        private static string SetMMBase()=> GetUncensorData(CurrentCharacter)?.MMBase ?? Defaults.MMBase;
         private static string SetBodyColorMaskMale() => SetColorMask(0);
         private static string SetBodyColorMaskFemale() => SetColorMask(1);
-        private static string SetColorMask(byte sex) => GetUncensorData(CharacterName, CharacterSex)?.BodyColorMask ?? (sex == 0 ? Defaults.BodyColorMaskMale : Defaults.BodyColorMaskFemale);
+        private static string SetColorMask(byte sex) => GetUncensorData(CurrentCharacter)?.BodyColorMask ?? (sex == 0 ? Defaults.BodyColorMaskMale : Defaults.BodyColorMaskFemale);
         /// <summary>
         /// Do color matching for every object configured in the manifest.xml
         /// </summary>
@@ -203,23 +331,45 @@ namespace KK_UncensorSelector
                 gameObject.GetComponent<Renderer>().material.SetTexture(ChaShader._MainTex, NewTex);
             }
         }
-        /// <summary>
-        /// Set the character name/sex
-        /// </summary>
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadAsync))]
-        public static void LoadAsyncPrefix(ChaControl __instance)
+        public static void SetChestNormals(ChaControl chaControl, UncensorData Uncensor)
         {
-            CharacterName = __instance.chaFile.parameter.fullname.Trim();
-            CharacterSex = __instance.chaFile.parameter.sex;
+            //Logger.Log(LogLevel.Info, "SetChestNormals");
+            if (chaControl.dictBustNormal.TryGetValue(ChaControl.BustNormalKind.NmlBody, out BustNormal bustNormal))
+                bustNormal.Release();
+
+            bustNormal = new BustNormal();
+            bustNormal.Init(chaControl.objBody, Uncensor?.OOBase ?? Defaults.OOBase, Uncensor?.Normals ?? Defaults.Normals, string.Empty);
+            chaControl.dictBustNormal[ChaControl.BustNormalKind.NmlBody] = bustNormal;
         }
-        /// <summary>
-        /// Set the character name/sex
-        /// </summary>
+
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
         public static void CreateBodyTexturePrefix(ChaControl __instance)
         {
-            CharacterName = __instance.chaFile.parameter.fullname.Trim();
-            CharacterSex = __instance.chaFile.parameter.sex;
+            //System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
+            //Logger.Log(LogLevel.Info, t);
+            //Logger.Log(LogLevel.Info, "CreateBodyTexture");
+
+            CurrentCharacter = __instance;
+        }
+        public static void InitializePrefix(ChaControl __instance, ChaFileControl _chaFile)
+        {
+            //Logger.Log(LogLevel.Info, $"InitializePrefix _chaFile:{_chaFile?.ToString() ?? "null"}");
+
+            CurrentCharacter = __instance;
+            CurrentChaFile = _chaFile;
+        }
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadAsync))]
+        public static void LoadAsyncPrefix(ChaControl __instance)
+        {
+
+            CurrentCharacter = __instance;
+        }
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
+        public static void InitBaseCustomTextureBodyPrefix(ChaControl __instance)
+        {
+            //Logger.Log(LogLevel.Info, "InitBaseCustomTextureBodyPrefix");
+
+            CurrentCharacter = __instance;
         }
         /// <summary>
         /// Modifies the code for string replacement of oo_base, etc.
@@ -300,7 +450,6 @@ namespace KK_UncensorSelector
         [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
         public static IEnumerable<CodeInstruction> InitBaseCustomTextureBodyTranspiler(IEnumerable<CodeInstruction> instructions)
         {
-            Logger.Log(LogLevel.Info, "InitBaseCustomTextureBodyTranspiler");
             List<CodeInstruction> instructionsList = instructions.ToList();
 
             foreach (var x in instructionsList)
@@ -314,11 +463,45 @@ namespace KK_UncensorSelector
 
             return instructions;
         }
-        //Color matching hooks
+        /// <summary>
+        /// Do color matching
+        /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetBodyBaseMaterial), null, null)]
         public static void SetBodyBaseMaterial(ChaControl __instance) => ColorMatchMaterials(__instance);
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload), null, null)]
-        public static void Reload(ChaControl __instance) => ColorMatchMaterials(__instance);
+        public static void Reload(ChaControl __instance, bool noChangeBody)
+        {
+            Logger.Log(LogLevel.Info, $"Reload noChangeBody:{noChangeBody}");
+
+            if (noChangeBody)
+                return;
+
+            //UpdateSkin(__instance, GetUncensorData(__instance));
+
+            if (!MakerAPI.InsideAndLoaded)
+                ReloadCharacterUncensor(__instance);
+        }
+        private static void ReloadCharacterUncensor(ChaControl __instance)
+        {
+            //Logger.Log(LogLevel.Info, $"CharacterReloaded:{__instance.chaFile.parameter.fullname}");
+            UncensorData Uncensor = GetUncensorData(__instance);
+            //Logger.Log(LogLevel.Info, $"CharacterReloaded Uncensor:{Uncensor}");
+            bool temp = __instance.fileStatus.visibleSonAlways;
+
+            UpdateUncensor(__instance, Uncensor);
+
+            if ((Uncensor != null && __instance.sex == 0 && __instance.hiPoly && Uncensor.BodyType == BodyType.Female) || (__instance.sex == 1 && __instance.hiPoly))
+                SetChestNormals(__instance, Uncensor);
+
+            if (StudioAPI.InsideStudio)
+                __instance.fileStatus.visibleSonAlways = temp;
+            else if (__instance.sex == 1 && (Uncensor == null || Uncensor.OOBase == Defaults.OOBase))
+                __instance.fileStatus.visibleSonAlways = false;
+            else
+                __instance.fileStatus.visibleSonAlways = Uncensor.ShowPenis;
+
+            ColorMatchMaterials(__instance);
+        }
         /// <summary>
         /// LineMask texture assigned to the material, toggled on and off for any color matching parts along with the body
         /// </summary>
@@ -368,16 +551,15 @@ namespace KK_UncensorSelector
             if (Uncensor == null)
                 return;
 
-            if (__instance.sex == 0 && __instance.hiPoly && Uncensor.FutaFix)
-            {
-                if (__instance.dictBustNormal.TryGetValue(ChaControl.BustNormalKind.NmlBody, out BustNormal bustNormal))
-                    bustNormal.Release();
+            if (__instance.sex == 0 && __instance.hiPoly && Uncensor.BodyType == BodyType.Female)
+                SetChestNormals(__instance, Uncensor);
 
-                bustNormal = new BustNormal();
-                bustNormal.Init(__instance.objBody, Uncensor.OOBase, Uncensor.Normals == "" ? Defaults.Normals : Uncensor.Normals, string.Empty);
-                __instance.dictBustNormal[ChaControl.BustNormalKind.NmlBody] = bustNormal;
-            }
+            if (!StudioAPI.InsideStudio)
+                __instance.fileStatus.visibleSonAlways = Uncensor.ShowPenis;
         }
+
+        public enum Gender { Male, Female, Trap, Futa }
+        public enum BodyType { Male, Female }
 
         public class UncensorData
         {
@@ -386,9 +568,9 @@ namespace KK_UncensorSelector
             public string OOBase;
             public string MMBase;
             public string Normals;
-            public bool Male = false;
-            public bool Female = false;
-            public bool FutaFix = false;
+            public Gender Gender = Gender.Male;
+            public BodyType BodyType = BodyType.Male;
+            public bool ShowPenis = false;
             public string BodyMainTex;
             public string BodyColorMask;
             public string AssetHighPoly;
@@ -401,18 +583,19 @@ namespace KK_UncensorSelector
                 DisplayName = UncensorData.Element("displayName")?.Value;
                 MMBase = UncensorData.Element("mm_base")?.Value;
 
-                if (UncensorData.Element("sex")?.Value.ToLower() == "male" || UncensorData.Element("sex")?.Value.ToLower() == "0")
-                    Male = true;
-                else if (UncensorData.Element("sex")?.Value.ToLower() == "female" || UncensorData.Element("sex")?.Value.ToLower() == "1")
-                    Female = true;
-                else
-                {
-                    Male = true;
-                    Female = true;
-                }
+                if (UncensorData.Element("gender")?.Value?.ToLower() == "male")
+                    Gender = Gender.Male;
+                else if (UncensorData.Element("gender")?.Value?.ToLower() == "female")
+                    Gender = Gender.Female;
+                else if (UncensorData.Element("gender")?.Value?.ToLower() == "trap")
+                    Gender = Gender.Trap;
+                else if (UncensorData.Element("gender")?.Value?.ToLower() == "futa")
+                    Gender = Gender.Futa;
 
-                if (UncensorData.Element("futaFix")?.Value.ToLower() == "true")
-                    FutaFix = true;
+                if (UncensorData.Element("bodyType")?.Value?.ToLower() == "female")
+                    BodyType = BodyType.Female;
+                if (UncensorData.Element("showPenis")?.Value?.ToLower() == "true" || UncensorData.Element("showPenis")?.Value?.ToLower() == "1")
+                    ShowPenis = true;
 
                 XElement oo_base = UncensorData.Element("oo_base");
                 if (oo_base != null)
@@ -482,6 +665,75 @@ namespace KK_UncensorSelector
             public static readonly string BodyColorMaskMale = "cm_body_00_mc";
             public static readonly string BodyColorMaskFemale = "cf_body_00_mc";
             public static readonly string Normals = "p_cf_body_00_Nml";
+        }
+
+        public class UncensorSelectorController : CharaCustomFunctionController
+        {
+            internal bool DisplayBalls { get; set; }
+            internal string UncensorGUID { get; set; }
+
+            protected override void OnCardBeingSaved(GameMode currentGameMode)
+            {
+                if (currentGameMode == GameMode.Maker)
+                {
+                    DisplayBalls = BallsToggle.Value;
+                    UncensorGUID = SelectedUncensor?.GUID;
+                }
+                //Logger.Log(LogLevel.Info, $"OnCardBeingSaved DisplayBalls:{DisplayBalls} UncensorGUID:{UncensorGUID}");
+
+                var data = new PluginData();
+                data.data.Add("DisplayBalls", DisplayBalls);
+                data.data.Add("UncensorGUID", UncensorGUID);
+                data.version = 1;
+                SetExtendedData(data);
+            }
+
+            protected override void OnReload(GameMode currentGameMode)
+            {
+                DisplayBalls = ChaControl.sex == 0 ? true : false;
+                UncensorGUID = null;
+
+                var data = GetExtendedData();
+                if (data != null)
+                {
+                    if (data.data.TryGetValue("DisplayBalls", out var LoadedDisplayBalls))
+                    {
+                        DisplayBalls = (bool)LoadedDisplayBalls;
+                    }
+                    if (data.data.TryGetValue("UncensorGUID", out var LoadedUncensorGUID) && LoadedUncensorGUID != null)
+                    {
+                        UncensorGUID = LoadedUncensorGUID.ToString();
+                        if (UncensorGUID.IsNullOrWhiteSpace())
+                            UncensorGUID = null;
+                    }
+                }
+                //Logger.Log(LogLevel.Info, $"OnReload DisplayBalls:{DisplayBalls} UncensorGUID:{UncensorGUID}");
+
+                if (MakerAPI.InsideAndLoaded)
+                {
+                    if (MakerAPI.GetCharacterLoadFlags().Body)
+                    {
+                        //Change the UI settings which will update the character's uncensor
+                        //Logger.Log(LogLevel.Info, $"Setting CharacterMaker values...");
+                        UncensorDropdown.Value = UncensorList.IndexOf(UncensorGUID) == -1 ? 0 : UncensorList.IndexOf(UncensorGUID);
+                        BallsToggle.Value = DisplayBalls;
+                    }
+                    else
+                    {
+                        //Set the uncensor stuff to whatever is set in the maker
+                        UncensorGUID = UncensorDropdown.Value == 0 ? null : UncensorList[UncensorDropdown.Value];
+                        DisplayBalls = BallsToggle.Value;
+                    }
+                }
+                else
+                {
+                    SetBallsVisibility(ChaControl, DisplayBalls);
+                }
+                //Logger.Log(LogLevel.Info, $"OnReload2 DisplayBalls:{DisplayBalls} UncensorGUID:{UncensorGUID}");
+
+                //Logger.Log(LogLevel.Info, $"---");
+
+            }
         }
     }
 }
