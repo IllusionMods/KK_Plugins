@@ -46,6 +46,10 @@
       <HintPath>..\lib\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ConfigurationManager">
+      <HintPath>..\..\..\..\..\..\Illusion\Koikatu\BepInEx\ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Illusion\Koikatu\BepInEx\ExtensibleSaveFormat.dll</HintPath>
@@ -72,17 +76,10 @@
     <Compile Include="KK_UncensorSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="KK_UncensorSelector\Example.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist C:\Illusion\Koikatu\BepInEx (
 copy /y $(TargetPath) C:\illusion\Koikatu\BepInEx\$(TargetFileName)
-if not exist C:\Illusion\Koikatu\BepInEx\$(ProjectName) mkdir C:\Illusion\Koikatu\BepInEx\$(ProjectName)
-copy /y $(ProjectName)\Example.txt C:\illusion\Koikatu\BepInEx\$(ProjectName)\Example.txt
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>
