@@ -101,12 +101,5 @@ v1.1 Gimmicks can now rotate hands and feet properly<br/>
 v1.2 Rotating characters doesn't break everything anymore
 </details>
 
-#### KK_FutaMod BETA 3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v28/KK_FutaMod.v0.3.zip)
-Adds dicks to girls. Requires MakerAPI, currently available as part of [ABMX](https://github.com/ManlyMarco/KKABMX#readme).
-
-More features soon, hopefully.
-
-<details><summary>Change Log</summary>
-BETA 2 Updated for MakerAPI compatibility<br/>
-BETA 3 Enabled/Disabled toggle for plugin
-</details>
+#### KK_ClothingUnlocker v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v31/KK_ClothingUnlocker.v1.0.zip)
+Allows gender restricted clothing to be used on all characters.
