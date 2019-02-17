@@ -860,12 +860,16 @@ namespace KK_UncensorSelector
                     SetBallsVisibility(ChaControl, DisplayBalls);
                 }
 
+                //If the chafile is null the character may have loaded with the wrong mm_base information. Reload just the skin textures to fix that.
                 if (CurrentChaFile == null && !MakerAPI.InsideMaker && !DidReload)
                 {
                     DidReload = true;
                     CurrentChaFile = ChaControl.chaFile;
                     ReloadCharacterUncensor(ChaControl, false);
                 }
+
+                //remove mosaic
+                ChaControl.hideMoz = true;
             }
         }
     }
