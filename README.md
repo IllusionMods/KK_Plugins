@@ -77,6 +77,8 @@ Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI) and [BepisPlugins]
 
 UncensorSelector compatible uncensors can be found [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS) For makers of uncensors, see the [template](https://github.com/DeathWeasel1337/KK_Plugins/blob/master/KK_UncensorSelector/Template.xml) for how to configure your uncensor for UncensorSelector compatibility.<br/>
 
+Make sure to remove any sideloader uncensors and replace your oo_base with a clean, unmodified one to prevent incompatibilities!<br/>
+
 <details><summary>Change Log</summary>
 v2.0 Complete rewrite, now supports changing uncensors inside the character maker, configuring uncensor metadata in manifest.xml, demosaic, etc.
 </details>
