@@ -216,7 +216,7 @@ namespace KK_UncensorSelector
             CurrentCharacter = chaControl;
         }
         /// <summary>
-        /// Update the character's skin textures
+        /// Rebuild the character's skin textures
         /// </summary>
         private static void UpdateSkin(ChaControl chaControl, UncensorData uncensor)
         {
@@ -233,7 +233,8 @@ namespace KK_UncensorSelector
             chaControl.ChangeCustomBodyWithoutCustomTexture();
         }
         /// <summary>
-        /// Copy the mesh from one SkinnedMeshRenderer to another
+        /// Copy the mesh from one SkinnedMeshRenderer to another. If there is a significant mismatch in the number of bones
+        /// this will fail horribly and create abominations. Verify the uncensor body has the proper number of bones in such a case.
         /// </summary>
         private static void UpdateMeshRenderer(SkinnedMeshRenderer src, SkinnedMeshRenderer dst, bool copyMaterials = false)
         {
@@ -306,7 +307,7 @@ namespace KK_UncensorSelector
         }
         /// <summary>
         /// Set the normals for the character's chest. This fixes the shadowing for small-chested characters.
-        /// By default it is not applied to males so we do it manually for all characters.
+        /// By default it is not applied to males so we do it manually for all characters in case the male is using a female body.
         /// </summary>
         public static void SetChestNormals(ChaControl chaControl, UncensorData uncensor)
         {
@@ -607,10 +608,13 @@ namespace KK_UncensorSelector
             return instructions;
         }
         /// <summary>
-        /// Do color matching
+        /// Do color matching whenever the body texture is changed
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetBodyBaseMaterial))]
         public static void SetBodyBaseMaterial(ChaControl __instance) => ColorMatchMaterials(__instance, GetUncensorData(__instance));
+        /// <summary>
+        /// When a character is reloaded, update the uncensor as well since it may be due to a character being replaced in studio, for example.
+        /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload))]
         public static void Reload(ChaControl __instance, bool noChangeBody)
         {
