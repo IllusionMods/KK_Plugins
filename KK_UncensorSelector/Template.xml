@@ -1,51 +1,51 @@
-	<KK_UncensorSelector>
-		<uncensor>
-			<!--Required - GUID of this uncensor, must be unique-->
-			<guid>Name</guid>
-			<!--Required - Name that will display in the character creator-->
-			<displayName>Display Name</displayName>
-			<!--Required - Male/Female/Trap/Futa-->
-			<gender>Male</gender>
-			<!--Required - Whether the body has breasts - Male/Female-->
-			<bodyType>Male</bodyType>
-			<!--Required - Whether the body has a penis - True/False-->
-			<showPenis>True</showPenis>
-      <!--mm_base file. Male uncensors should use chara/mm_base_male.unity3d and females should use chara/mm_base_female.unity3d-->
-      <!--Can also specify any alternate mm_base if your uncensor requires it-->
-      <mm_base>chara/mm_base_male.unity3d</mm_base>
-			<!--Optional - Only used for Trap/Futa uncensors-->
-			<!--GUID of an alternate uncensor to use if the user has disabled Trap/Futa content-->
-			<maleAlternate></maleAlternate>
-			<femaleAlternate></femaleAlternate>
-			<oo_base>
-				<!--Required - oo_base.unity3d file-->
-				<file></file>
-				<!--Optional - Defaults to p_cm_body_00/p_cf_body_00-->
-				<assetHighPoly></assetHighPoly>
-				<!--Optional - Defaults to p_cm_body_00_low/p_cf_body_00_low-->
-				<assetLowPoly></assetLowPoly>
-				<!--Optional - Defaults to cf_body_00_t-->
-				<mainTex></mainTex>
-				<!--Optional - Defaults to cm_body_00_mc/cf_body_00_mc-->
-				<colorMask></colorMask>
-				<!--Optional - Defaults to p_cf_body_00_Nml-->
-				<normals></normals>
-				<!--Optional - List of all body parts that need color matching-->
-				<!--Example setup:-->
-				<colorMatch>
-					<object>o_dankon</object>
-					<material>cm_m_dankon</material>
-					<materialCreate>cm_m_dankon_create</materialCreate>
-					<mainTex>cm_dankon_00_t</mainTex>
-					<colorMask>cm_dankon_00_mc</colorMask>
-				</colorMatch>
-				<colorMatch>
-					<object>o_dan_f</object>
-					<material>cm_m_dan_f</material>
-					<materialCreate>cm_m_dan_f_create</materialCreate>
-					<mainTex>cm_dan_f_00_t</mainTex>
-					<colorMask>cm_dan_f_00_mc</colorMask>
-				</colorMatch>
-			</oo_base>
-		</uncensor>
-	</KK_UncensorSelector>
+<KK_UncensorSelector>
+  <uncensor>
+    <!--Required - GUID of this uncensor, must be unique-->
+    <guid>Name</guid>
+    <!--Required - Name that will display in the character creator-->
+    <displayName>Display Name</displayName>
+    <!--Required - Male/Female/Trap/Futa-->
+    <gender>Male</gender>
+    <!--Required - Whether the body has breasts - Male/Female-->
+    <bodyType>Male</bodyType>
+    <!--Required - Whether the body has a penis - True/False-->
+    <showPenis>True</showPenis>
+    <!--mm_base file. Male uncensors should use chara/mm_base_male.unity3d and females should use chara/mm_base_female.unity3d-->
+    <!--Can also specify any alternate mm_base if your uncensor requires it-->
+    <mm_base>chara/mm_base_male.unity3d</mm_base>
+    <!--Optional - Only used for Trap/Futa uncensors-->
+    <!--GUID of an alternate uncensor to use if the user has disabled Trap/Futa content-->
+    <maleAlternate></maleAlternate>
+    <femaleAlternate></femaleAlternate>
+    <oo_base>
+      <!--Required - oo_base.unity3d file-->
+      <file></file>
+      <!--Optional - Defaults to p_cm_body_00/p_cf_body_00-->
+      <assetHighPoly></assetHighPoly>
+      <!--Optional - Defaults to p_cm_body_00_low/p_cf_body_00_low-->
+      <assetLowPoly></assetLowPoly>
+      <!--Optional - Defaults to cf_body_00_t-->
+      <mainTex></mainTex>
+      <!--Optional - Defaults to cm_body_00_mc/cf_body_00_mc-->
+      <colorMask></colorMask>
+      <!--Optional - Defaults to p_cf_body_00_Nml-->
+      <normals></normals>
+      <!--Optional - List of all body parts that need color matching-->
+      <!--Example setup:-->
+      <colorMatch>
+        <object>o_dankon</object>
+        <material>cm_m_dankon</material>
+        <materialCreate>cm_m_dankon_create</materialCreate>
+        <mainTex>cm_dankon_00_t</mainTex>
+        <colorMask>cm_dankon_00_mc</colorMask>
+      </colorMatch>
+      <colorMatch>
+        <object>o_dan_f</object>
+        <material>cm_m_dan_f</material>
+        <materialCreate>cm_m_dan_f_create</materialCreate>
+        <mainTex>cm_dan_f_00_t</mainTex>
+        <colorMask>cm_dan_f_00_mc</colorMask>
+      </colorMatch>
+    </oo_base>
+  </uncensor>
+</KK_UncensorSelector>
