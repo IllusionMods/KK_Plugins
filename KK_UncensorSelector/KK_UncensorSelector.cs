@@ -302,7 +302,11 @@ namespace KK_UncensorSelector
                 if (newTex == null)
                     continue;
 
-                gameObject.GetComponent<Renderer>().material.SetTexture(ChaShader._MainTex, newTex);
+                Material mat = gameObject.GetComponent<Renderer>().material;
+                var mt = mat.GetTexture(ChaShader._MainTex);
+                mat.SetTexture(ChaShader._MainTex, newTex);
+                //Destroy the old texture to prevent memory leak
+                Destroy(mt);
             }
         }
         /// <summary>
