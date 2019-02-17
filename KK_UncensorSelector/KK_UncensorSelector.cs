@@ -161,15 +161,19 @@ namespace KK_UncensorSelector
                 balls.gameObject.GetComponent<Renderer>().enabled = visible;
         }
         #region Uncensor Update
-        private static void ReloadCharacterUncensor(ChaControl chaControl)
+        private static void ReloadCharacterUncensor(ChaControl chaControl, bool updateMesh = true)
         {
             UncensorData uncensor = GetUncensorData(chaControl);
             bool temp = chaControl.fileStatus.visibleSonAlways;
 
-            UpdateUncensor(chaControl, uncensor);
+            if (updateMesh)
+                UpdateUncensor(chaControl, uncensor);
             UpdateSkin(chaControl, uncensor);
             SetChestNormals(chaControl, uncensor);
             ColorMatchMaterials(chaControl, uncensor);
+
+            chaControl.customMatBody.SetTexture(ChaShader._AlphaMask, Traverse.Create(chaControl).Property("texBodyAlphaMask").GetValue() as Texture);
+            Traverse.Create(chaControl).Property("updateAlphaMask").SetValue(true);
 
             if (StudioAPI.InsideStudio)
                 chaControl.fileStatus.visibleSonAlways = temp;
@@ -250,7 +254,6 @@ namespace KK_UncensorSelector
         /// </summary>
         public static void ColorMatchMaterials(ChaControl chaControl, UncensorData uncensor)
         {
-            Logger.Log(LogLevel.Info, $"ColorMatchMaterials:{uncensor?.UncensorGUID}");
             if (uncensor == null)
                 return;
 
@@ -784,6 +787,7 @@ namespace KK_UncensorSelector
         {
             internal bool DisplayBalls { get; set; }
             internal string UncensorGUID { get; set; }
+            internal bool DidReload { get; set; }
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
@@ -856,11 +860,12 @@ namespace KK_UncensorSelector
                     SetBallsVisibility(ChaControl, DisplayBalls);
                 }
 
-                //if (CurrentChaFile == null && !MakerAPI.InsideMaker)
-                //{
-                //    CurrentChaFile = ChaControl.chaFile;
-                //    ChaControl.Reload(true, true, true, false);
-                //}
+                if (CurrentChaFile == null && !MakerAPI.InsideMaker && !DidReload)
+                {
+                    DidReload = true;
+                    CurrentChaFile = ChaControl.chaFile;
+                    ReloadCharacterUncensor(ChaControl, false);
+                }
             }
         }
     }
