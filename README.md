@@ -70,18 +70,15 @@ v1.1 Updated to support missing DLC personalities<br/>
 v1.2 Updated for 1221 DLC personalities
 </details>
 
-#### KK_UncensorSelector v1.3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v30/KK_UncensorSelector.v1.3.zip)
-Allows you to specify which uncensors individual characters use.<br/>
+#### KK_UncensorSelector v2.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v32/KK_UncensorSelector.v2.0.zip)
+Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker or specify a default uncensor to use in the plugin settings.<br/>
 
-Usage: See Example.txt in the BepInEx/KK_UncensorSelector folder for instructions.<br/>
-Create a new .txt file in the BepInEx/KK_UncensorSelector folder and add your entries there.<br/>
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
 
-Note: Only what you have set as the default for the character's gender or the wild card (*) will load in the character maker. If you need a specific one loaded (for example when working with more extreme body mods) make sure to change the default. Set it back after you're done.<br/>
+UncensorSelector compatible uncensors can be found [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS)<br/>
 
 <details><summary>Change Log</summary>
-v1.1 Now reads .txt files. Reads all .txt and .csv files in BepInEx/KK_UncensorSelector folder. Loads body textures correctly when loading a scene with multiple characters. Can specify uncensors to apply only to one gender or the other.<br/>
-v1.2 Support for color matching uncensors<br/>
-v1.3 Shiny slider and detail line checkbox in character maker can now effect the uncensor if it is configured for it (detail mask or line mask textures). Uncensors with _trap or _futa in the name will have shadows corrected for male characters around the chest area.
+v2.0 Complete rewrite, now supports changing uncensors inside the character maker, configuring uncensor metadata in manifest.xml, demosaic, etc.
 </details>
 
 #### KK_Subtitles v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v23/KK_Subtitles.v1.1.zip)
