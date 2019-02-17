@@ -82,8 +82,19 @@ namespace KK_UncensorSelector
         public static ConfigWrapper<string> DefaultFemaleUncensor { get; private set; }
         #endregion
 
-        private void Main()
+        private void Start()
         {
+            if (KoikatuAPI.CheckIncompatiblePlugin(this, "koikatsu.cartoonuncensor", LogLevel.Error))
+            {
+                Logger.Log(LogLevel.Error | LogLevel.Message, "CartoonUncensor.dll is incompatible with KK_UncensorSelector! Please remove it and restart the game.");
+                return;
+            }
+            if (KoikatuAPI.CheckIncompatiblePlugin(this, "koikatsu.alexaebubblegum", LogLevel.Error))
+            {
+                Logger.Log(LogLevel.Error | LogLevel.Message, "BubblegumUncensor.dll is incompatible with KK_UncensorSelector! Please remove it and restart the game.");
+                return;
+            }
+
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_UncensorSelector));
 
@@ -293,6 +304,10 @@ namespace KK_UncensorSelector
                 gameObject.GetComponent<Renderer>().material.SetTexture(ChaShader._MainTex, newTex);
             }
         }
+        /// <summary>
+        /// Set the normals for the character's chest. This fixes the shadowing for small-chested characters.
+        /// By default it is not applied to males so we do it manually for all characters.
+        /// </summary>
         public static void SetChestNormals(ChaControl chaControl, UncensorData uncensor)
         {
             if (chaControl.dictBustNormal.TryGetValue(ChaControl.BustNormalKind.NmlBody, out BustNormal bustNormal))
