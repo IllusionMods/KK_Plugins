@@ -1,24 +1,11 @@
-﻿using BepInEx;
-using BepInEx.Logging;
-using ExtensibleSaveFormat;
-using Harmony;
-using KKAPI;
-using KKAPI.Chara;
+﻿using Harmony;
 using KKAPI.Maker;
-using KKAPI.Maker.UI;
 using KKAPI.Studio;
-using Manager;
-using Sideloader;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
-using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
-using Logger = BepInEx.Logger;
 
 namespace KK_UncensorSelector
 {
