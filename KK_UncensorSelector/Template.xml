@@ -10,8 +10,7 @@
     <bodyType>Male</bodyType>
     <!--Required - Whether the body has a penis - True/False-->
     <showPenis>True</showPenis>
-    <!--mm_base file. Male uncensors should use chara/mm_base_male.unity3d and females should use chara/mm_base_female.unity3d-->
-    <!--Can also specify any alternate mm_base if your uncensor requires it-->
+
     <mm_base>chara/mm_base_male.unity3d</mm_base>
     <!--Optional - Only used for Trap/Futa uncensors-->
     <!--GUID of an alternate uncensor to use if the user has disabled Trap/Futa content-->
@@ -47,5 +46,14 @@
         <colorMask>cm_dan_f_00_mc</colorMask>
       </colorMatch>
     </oo_base>
+    <!--Optional-->
+    <mm_base>
+      <!--Optional - Defaults to chara/mm_base.unity3d-->
+      <file>chara/mm_base.unity3d</file>
+      <!--Optional - Defaults to cm_m_body for uncensors with male body type, cf_m_body for female body types-->
+      <material>cm_m_body</material>
+      <!--Optional - Defaults to cf_m_body_create-->
+      <materialCreate>cf_m_body_create</materialCreate>
+    </mm_base>
   </uncensor>
 </KK_UncensorSelector>

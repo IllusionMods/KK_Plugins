@@ -91,7 +91,7 @@ namespace KK_UncensorSelector
             }
             if (KoikatuAPI.CheckIncompatiblePlugin(this, "koikatsu.alexaebubblegum", LogLevel.Error))
             {
-                Logger.Log(LogLevel.Error | LogLevel.Message, "BubblegumUncensor.dll is incompatible with KK_UncensorSelector! Please remove it and restart the game.");
+                Logger.Log(LogLevel.Error | LogLevel.Message, "AlexaeBubbleGum.dll is incompatible with KK_UncensorSelector! Please remove it and restart the game.");
                 return;
             }
 
@@ -221,10 +221,11 @@ namespace KK_UncensorSelector
         private static void UpdateSkin(ChaControl chaControl, UncensorData uncensor)
         {
             int num = chaControl.hiPoly ? 2048 : 512;
-            string mat = chaControl.sex == 0 ? "cm_m_body" : "cf_m_body";
             string mm_base = uncensor?.MMBase ?? Defaults.MMBase;
-            chaControl.customTexCtrlBody.Initialize(mm_base, mat, string.Empty, mm_base, "cf_m_body_create", string.Empty, num, num);
+            string mat = SetBodyMaterial(chaControl.sex, uncensor);
+            string matCreate = uncensor?.BodyMaterialCreate ?? Defaults.BodyMaterialCreate;
 
+            chaControl.customTexCtrlBody.Initialize(mm_base, mat, string.Empty, mm_base, matCreate, string.Empty, num, num);
             chaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
             chaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
             chaControl.AddUpdateCMBodyLayoutFlags(true, true);
@@ -502,8 +503,17 @@ namespace KK_UncensorSelector
         private static string SetFemaleBodyHigh() => SetBodyAsset(1, true);
         private static string SetBodyAsset(byte sex, bool hiPoly) =>
             hiPoly ? GetUncensorData(CurrentCharacter)?.AssetHighPoly ?? (sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale)
-                   : GetUncensorData(CurrentCharacter)?.AssetLowPoly ?? (sex == 0 ? Defaults.AssetMaleLow : Defaults.AssetFemaleLow);
+            : GetUncensorData(CurrentCharacter)?.AssetLowPoly ?? (sex == 0 ? Defaults.AssetMaleLow : Defaults.AssetFemaleLow);
         private static string SetMMBase() => GetUncensorData(CurrentCharacter)?.MMBase ?? Defaults.MMBase;
+        private static string SetBodyMaterialMale() => SetBodyMaterial(0);
+        private static string SetBodyMaterialFemale() => SetBodyMaterial(1);
+        private static string SetBodyMaterial(byte sex) => SetBodyMaterial(sex, GetUncensorData(CurrentCharacter));
+        private static string SetBodyMaterial(byte sex, UncensorData uncensor) =>
+            uncensor?.BodyMaterial == null ? uncensor?.BodyType == null
+            ? sex == 0 ? Defaults.BodyMaterialMale : Defaults.BodyMaterialFemale
+            : uncensor.BodyType == BodyType.Male ? Defaults.BodyMaterialMale : Defaults.BodyMaterialFemale
+            : uncensor.BodyMaterial;
+        private static string SetBodyMaterialCreate() => GetUncensorData(CurrentCharacter)?.BodyMaterialCreate ?? Defaults.BodyMaterialCreate;
         private static string SetBodyColorMaskMale() => SetColorMask(0);
         private static string SetBodyColorMaskFemale() => SetColorMask(1);
         private static string SetColorMask(byte sex) => GetUncensorData(CurrentCharacter)?.BodyColorMask ?? (sex == 0 ? Defaults.BodyColorMaskMale : Defaults.BodyColorMaskFemale);
@@ -602,10 +612,24 @@ namespace KK_UncensorSelector
 
             foreach (var x in instructionsList)
             {
-                if (x.operand?.ToString() == "chara/mm_base.unity3d")
+                switch (x.operand?.ToString())
                 {
-                    x.opcode = OpCodes.Call;
-                    x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetMMBase), AccessTools.all);
+                    case "chara/mm_base.unity3d":
+                        x.opcode = OpCodes.Call;
+                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetMMBase), AccessTools.all);
+                        break;
+                    case "cm_m_body":
+                        x.opcode = OpCodes.Call;
+                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetBodyMaterialMale), AccessTools.all);
+                        break;
+                    case "cf_m_body":
+                        x.opcode = OpCodes.Call;
+                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetBodyMaterialFemale), AccessTools.all);
+                        break;
+                    case "cf_m_body_create":
+                        x.opcode = OpCodes.Call;
+                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetBodyMaterialCreate), AccessTools.all);
+                        break;
                 }
             }
 
@@ -698,6 +722,8 @@ namespace KK_UncensorSelector
             public bool ShowPenis = false;
             public string BodyMainTex;
             public string BodyColorMask;
+            public string BodyMaterial;
+            public string BodyMaterialCreate;
             public string AssetHighPoly;
             public string AssetLowPoly;
             public string MaleAlternate;
@@ -711,7 +737,6 @@ namespace KK_UncensorSelector
 
                 UncensorGUID = uncensorXMLData.Element("guid")?.Value;
                 DisplayName = uncensorXMLData.Element("displayName")?.Value;
-                MMBase = uncensorXMLData.Element("mm_base")?.Value;
 
                 switch (uncensorXMLData.Element("gender")?.Value.ToLower())
                 {
@@ -756,6 +781,14 @@ namespace KK_UncensorSelector
                         if (part.Verify())
                             ColorMatchList.Add(part);
                     }
+                }
+
+                XElement mm_base = uncensorXMLData.Element("oo_base");
+                if (mm_base != null)
+                {
+                    MMBase = mm_base.Element("mm_base")?.Value;
+                    BodyMaterial = mm_base.Element("material")?.Value;
+                    BodyMaterialCreate = mm_base.Element("materialCreate")?.Value;
                 }
 
                 //These things can be null if the XML doesn't exist or empty strings if it does exist but is left blank
@@ -804,6 +837,9 @@ namespace KK_UncensorSelector
             public static readonly string BodyColorMaskMale = "cm_body_00_mc";
             public static readonly string BodyColorMaskFemale = "cf_body_00_mc";
             public static readonly string Normals = "p_cf_body_00_Nml";
+            public static readonly string BodyMaterialMale = "cm_m_body";
+            public static readonly string BodyMaterialFemale = "cf_m_body";
+            public static readonly string BodyMaterialCreate = "cf_m_body_create";
         }
 
         public class UncensorSelectorController : CharaCustomFunctionController
