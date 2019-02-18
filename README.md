@@ -70,7 +70,7 @@ v1.1 Updated to support missing DLC personalities<br/>
 v1.2 Updated for 1221 DLC personalities
 </details>
 
-#### KK_UncensorSelector v2.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v32/KK_UncensorSelector.v2.0.zip)
+#### KK_UncensorSelector v2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v33/KK_UncensorSelector.v2.1.zip)
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker or specify a default uncensor to use in the plugin settings.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
@@ -80,7 +80,8 @@ UncensorSelector compatible uncensors can be found [here.](https://mega.nz/#F!up
 Make sure to remove any sideloader uncensors and replace your oo_base with a clean, unmodified one to prevent incompatibilities!<br/>
 
 <details><summary>Change Log</summary>
-v2.0 Complete rewrite, now supports changing uncensors inside the character maker, configuring uncensor metadata in manifest.xml, demosaic, etc.
+v2.0 Complete rewrite, now supports changing uncensors inside the character maker, configuring uncensor metadata in manifest.xml, demosaic, etc.<br/>
+v2.1 Reduce reliance on KK_UncensorSelector Base.zipmod
 </details>
 
 #### KK_Subtitles v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v23/KK_Subtitles.v1.1.zip)
