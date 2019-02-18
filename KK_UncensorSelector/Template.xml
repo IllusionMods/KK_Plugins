@@ -19,10 +19,8 @@
     <oo_base>
       <!--Required - oo_base.unity3d file-->
       <file></file>
-      <!--Optional - Defaults to p_cm_body_00/p_cf_body_00-->
-      <assetHighPoly></assetHighPoly>
-      <!--Optional - Defaults to p_cm_body_00_low/p_cf_body_00_low-->
-      <assetLowPoly></assetLowPoly>
+      <!--Optional - Defaults to p_cm_body_00/p_cf_body_00 - A matching _low asset is expected to exist-->
+      <asset></asset>
       <!--Optional - Defaults to cf_body_00_t-->
       <mainTex></mainTex>
       <!--Optional - Defaults to cm_body_00_mc/cf_body_00_mc-->

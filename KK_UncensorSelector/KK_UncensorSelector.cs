@@ -501,9 +501,13 @@ namespace KK_UncensorSelector
         internal static string SetMaleBodyHigh() => SetBodyAsset(0, true);
         internal static string SetFemaleBodyLow() => SetBodyAsset(1, false);
         internal static string SetFemaleBodyHigh() => SetBodyAsset(1, true);
-        internal static string SetBodyAsset(byte sex, bool hiPoly) =>
-            hiPoly ? GetUncensorData(CurrentCharacter)?.AssetHighPoly ?? (sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale)
-            : GetUncensorData(CurrentCharacter)?.AssetLowPoly ?? (sex == 0 ? Defaults.AssetMaleLow : Defaults.AssetFemaleLow);
+        internal static string SetBodyAsset(byte sex, bool hiPoly)
+        {
+            string asset = GetUncensorData(CurrentCharacter)?.Asset ?? (sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale);
+            if (!hiPoly)
+                asset += "_low";
+            return asset;
+        }
         internal static string SetMMBase() => GetUncensorData(CurrentCharacter)?.MMBase ?? Defaults.MMBase;
         internal static string SetBodyMaterialMale() => SetBodyMaterial(0);
         internal static string SetBodyMaterialFemale() => SetBodyMaterial(1);
@@ -535,8 +539,7 @@ namespace KK_UncensorSelector
             public string BodyColorMask;
             public string BodyMaterial;
             public string BodyMaterialCreate;
-            public string AssetHighPoly;
-            public string AssetLowPoly;
+            public string Asset;
             public string MaleAlternate;
             public string FemaleAlternate;
             public List<ColorMatchPart> ColorMatchList = new List<ColorMatchPart>();
@@ -574,8 +577,10 @@ namespace KK_UncensorSelector
                 if (oo_base != null)
                 {
                     OOBase = oo_base.Element("file")?.Value;
-                    AssetHighPoly = oo_base.Element("assetHighPoly")?.Value;
-                    AssetLowPoly = oo_base.Element("assetLowPoly")?.Value;
+                    //assetHighPoly only exists for backwards compatibility, can go away after any breaking change
+                    Asset = oo_base.Element("assetHighPoly")?.Value;
+                    if (Asset.IsNullOrWhiteSpace())
+                        Asset = oo_base.Element("asset")?.Value;
                     BodyMainTex = oo_base.Element("mainTex")?.Value;
                     BodyColorMask = oo_base.Element("colorMask")?.Value;
                     Normals = oo_base.Element("normals")?.Value;
@@ -611,8 +616,7 @@ namespace KK_UncensorSelector
                 Normals = Normals.IsNullOrWhiteSpace() ? Defaults.Normals : Normals;
                 BodyMainTex = BodyMainTex.IsNullOrWhiteSpace() ? Defaults.BodyMainTex : BodyMainTex;
                 BodyColorMask = BodyColorMask.IsNullOrWhiteSpace() ? null : BodyColorMask;
-                AssetHighPoly = AssetHighPoly.IsNullOrWhiteSpace() ? null : AssetHighPoly;
-                AssetLowPoly = AssetLowPoly.IsNullOrWhiteSpace() ? null : AssetLowPoly;
+                Asset = Asset.IsNullOrWhiteSpace() ? null : Asset;
             }
 
             public class ColorMatchPart
@@ -641,9 +645,7 @@ namespace KK_UncensorSelector
             public static readonly string OOBase = "chara/oo_base.unity3d";
             public static readonly string MMBase = "chara/mm_base.unity3d";
             public static readonly string AssetMale = "p_cm_body_00";
-            public static readonly string AssetMaleLow = "p_cm_body_00_low";
             public static readonly string AssetFemale = "p_cf_body_00";
-            public static readonly string AssetFemaleLow = "p_cf_body_00_low";
             public static readonly string BodyMainTex = "cf_body_00_t";
             public static readonly string BodyColorMaskMale = "cm_body_00_mc";
             public static readonly string BodyColorMaskFemale = "cf_body_00_mc";
