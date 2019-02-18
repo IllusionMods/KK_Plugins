@@ -33,15 +33,15 @@ namespace KK_UncensorSelector
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
         public const string Version = "2.0";
-        private static ChaControl CurrentCharacter;
-        private static ChaFileControl CurrentChaFile;
+        internal static ChaControl CurrentCharacter;
+        internal static ChaFileControl CurrentChaFile;
         public static readonly Dictionary<string, UncensorData> UncensorDictionary = new Dictionary<string, UncensorData>();
         public static readonly List<string> UncensorList = new List<string>();
         public static readonly List<string> UncensorListDisplay = new List<string>();
         private static MakerDropdown UncensorDropdown;
         private static MakerToggle BallsToggle;
-        private static bool DoUncensorDropdownEvents = false;
-        private static bool DoingForcedReload = false;
+        internal static bool DoUncensorDropdownEvents = false;
+        internal static bool DoingForcedReload = false;
 
         #region Config
         [DisplayName("Male uncensor display")]
@@ -96,14 +96,14 @@ namespace KK_UncensorSelector
             }
 
             var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_UncensorSelector));
+            harmony.PatchAll(typeof(Hooks));
 
             MethodInfo chaControlInit = typeof(ChaControl).GetMethod("Initialize");
-            harmony.Patch(chaControlInit, new HarmonyMethod(typeof(KK_UncensorSelector).GetMethod(nameof(InitializePrefix), BindingFlags.Static | BindingFlags.Public)), null);
+            harmony.Patch(chaControlInit, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.InitializePrefix), BindingFlags.Static | BindingFlags.Public)), null);
 
             Type loadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).First(x => x.Name.StartsWith("<LoadAsync>c__Iterator"));
             MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
-            harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(KK_UncensorSelector).GetMethod(nameof(LoadAsyncTranspiler), BindingFlags.Static | BindingFlags.Public)));
+            harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), BindingFlags.Static | BindingFlags.Public)));
 
             GenerateUncensorList();
 
@@ -172,7 +172,7 @@ namespace KK_UncensorSelector
                 balls.gameObject.GetComponent<Renderer>().enabled = visible;
         }
         #region Uncensor Update
-        private static void ReloadCharacterUncensor(ChaControl chaControl, bool updateMesh = true)
+        internal static void ReloadCharacterUncensor(ChaControl chaControl, bool updateMesh = true)
         {
             UncensorData uncensor = GetUncensorData(chaControl);
             bool temp = chaControl.fileStatus.visibleSonAlways;
@@ -364,7 +364,7 @@ namespace KK_UncensorSelector
         /// <summary>
         /// Get the UncensorData for the specified character
         /// </summary>
-        private static UncensorData GetUncensorData(ChaControl character)
+        public static UncensorData GetUncensorData(ChaControl character)
         {
             try
             {
@@ -494,218 +494,29 @@ namespace KK_UncensorSelector
         private static UncensorSelectorController GetController(ChaControl character) => character?.gameObject?.GetComponent<UncensorSelectorController>();
         public static UncensorData SelectedUncensor => MakerAPI.InsideAndLoaded ? UncensorDropdown.Value == 0 ? null : UncensorDictionary[UncensorList[UncensorDropdown.Value]] : null;
 
-        private static string SetOOBase() => GetUncensorData(CurrentCharacter)?.OOBase ?? Defaults.OOBase;
-        private static string SetNormals() => GetUncensorData(CurrentCharacter)?.Normals ?? Defaults.Normals;
-        private static string SetBodyMainTex() => GetUncensorData(CurrentCharacter)?.BodyMainTex ?? Defaults.BodyMainTex;
-        private static string SetMaleBodyLow() => SetBodyAsset(0, false);
-        private static string SetMaleBodyHigh() => SetBodyAsset(0, true);
-        private static string SetFemaleBodyLow() => SetBodyAsset(1, false);
-        private static string SetFemaleBodyHigh() => SetBodyAsset(1, true);
-        private static string SetBodyAsset(byte sex, bool hiPoly) =>
+        internal static string SetOOBase() => GetUncensorData(CurrentCharacter)?.OOBase ?? Defaults.OOBase;
+        internal static string SetNormals() => GetUncensorData(CurrentCharacter)?.Normals ?? Defaults.Normals;
+        internal static string SetBodyMainTex() => GetUncensorData(CurrentCharacter)?.BodyMainTex ?? Defaults.BodyMainTex;
+        internal static string SetMaleBodyLow() => SetBodyAsset(0, false);
+        internal static string SetMaleBodyHigh() => SetBodyAsset(0, true);
+        internal static string SetFemaleBodyLow() => SetBodyAsset(1, false);
+        internal static string SetFemaleBodyHigh() => SetBodyAsset(1, true);
+        internal static string SetBodyAsset(byte sex, bool hiPoly) =>
             hiPoly ? GetUncensorData(CurrentCharacter)?.AssetHighPoly ?? (sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale)
             : GetUncensorData(CurrentCharacter)?.AssetLowPoly ?? (sex == 0 ? Defaults.AssetMaleLow : Defaults.AssetFemaleLow);
-        private static string SetMMBase() => GetUncensorData(CurrentCharacter)?.MMBase ?? Defaults.MMBase;
-        private static string SetBodyMaterialMale() => SetBodyMaterial(0);
-        private static string SetBodyMaterialFemale() => SetBodyMaterial(1);
-        private static string SetBodyMaterial(byte sex) => SetBodyMaterial(sex, GetUncensorData(CurrentCharacter));
-        private static string SetBodyMaterial(byte sex, UncensorData uncensor) =>
+        internal static string SetMMBase() => GetUncensorData(CurrentCharacter)?.MMBase ?? Defaults.MMBase;
+        internal static string SetBodyMaterialMale() => SetBodyMaterial(0);
+        internal static string SetBodyMaterialFemale() => SetBodyMaterial(1);
+        internal static string SetBodyMaterial(byte sex) => SetBodyMaterial(sex, GetUncensorData(CurrentCharacter));
+        internal static string SetBodyMaterial(byte sex, UncensorData uncensor) =>
             uncensor?.BodyMaterial == null ? uncensor?.BodyType == null
             ? sex == 0 ? Defaults.BodyMaterialMale : Defaults.BodyMaterialFemale
             : uncensor.BodyType == BodyType.Male ? Defaults.BodyMaterialMale : Defaults.BodyMaterialFemale
             : uncensor.BodyMaterial;
-        private static string SetBodyMaterialCreate() => GetUncensorData(CurrentCharacter)?.BodyMaterialCreate ?? Defaults.BodyMaterialCreate;
-        private static string SetBodyColorMaskMale() => SetColorMask(0);
-        private static string SetBodyColorMaskFemale() => SetColorMask(1);
-        private static string SetColorMask(byte sex) => GetUncensorData(CurrentCharacter)?.BodyColorMask ?? (sex == 0 ? Defaults.BodyColorMaskMale : Defaults.BodyColorMaskFemale);
-
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-        public static void CreateBodyTexturePrefix(ChaControl __instance) => CurrentCharacter = __instance;
-        public static void InitializePrefix(ChaControl __instance, ChaFileControl _chaFile)
-        {
-            CurrentCharacter = __instance;
-            CurrentChaFile = _chaFile;
-        }
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadAsync))]
-        public static void LoadAsyncPrefix(ChaControl __instance) => CurrentCharacter = __instance;
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
-        public static void InitBaseCustomTextureBodyPrefix(ChaControl __instance) => CurrentCharacter = __instance;
-        /// <summary>
-        /// Modifies the code for string replacement of oo_base, etc.
-        /// </summary>
-        public static IEnumerable<CodeInstruction> LoadAsyncTranspiler(IEnumerable<CodeInstruction> instructions)
-        {
-            List<CodeInstruction> instructionsList = instructions.ToList();
-
-            foreach (var x in instructionsList)
-            {
-                switch (x.operand?.ToString())
-                {
-                    case "chara/oo_base.unity3d":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetOOBase), AccessTools.all);
-                        break;
-                    case "p_cm_body_00":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetMaleBodyHigh), AccessTools.all);
-                        break;
-                    case "p_cm_body_00_low":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetMaleBodyLow), AccessTools.all);
-                        break;
-                    case "p_cf_body_00":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetFemaleBodyHigh), AccessTools.all);
-                        break;
-                    case "p_cf_body_00_low":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetFemaleBodyLow), AccessTools.all);
-                        break;
-                    case "p_cf_body_00_Nml":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetNormals), AccessTools.all);
-                        break;
-                }
-            }
-
-            return instructions;
-        }
-        /// <summary>
-        /// Modifies the code for string replacement of oo_base, etc.
-        /// </summary>
-        [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-        public static IEnumerable<CodeInstruction> CreateBodyTextureTranspiler(IEnumerable<CodeInstruction> instructions)
-        {
-            List<CodeInstruction> instructionsList = instructions.ToList();
-
-            foreach (var x in instructionsList)
-            {
-                switch (x.operand?.ToString())
-                {
-                    case "chara/oo_base.unity3d":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetOOBase), AccessTools.all);
-                        break;
-                    case "cf_body_00_t":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetBodyMainTex), AccessTools.all);
-                        break;
-                    case "cm_body_00_mc":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetBodyColorMaskMale), AccessTools.all);
-                        break;
-                    case "cf_body_00_mc":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetBodyColorMaskFemale), AccessTools.all);
-                        break;
-                }
-            }
-
-            return instructions;
-        }
-        /// <summary>
-        /// Modifies the code for string replacement of mm_base, etc.
-        /// </summary>
-        [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
-        public static IEnumerable<CodeInstruction> InitBaseCustomTextureBodyTranspiler(IEnumerable<CodeInstruction> instructions)
-        {
-            List<CodeInstruction> instructionsList = instructions.ToList();
-
-            foreach (var x in instructionsList)
-            {
-                switch (x.operand?.ToString())
-                {
-                    case "chara/mm_base.unity3d":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetMMBase), AccessTools.all);
-                        break;
-                    case "cm_m_body":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetBodyMaterialMale), AccessTools.all);
-                        break;
-                    case "cf_m_body":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetBodyMaterialFemale), AccessTools.all);
-                        break;
-                    case "cf_m_body_create":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(SetBodyMaterialCreate), AccessTools.all);
-                        break;
-                }
-            }
-
-            return instructions;
-        }
-        /// <summary>
-        /// Do color matching whenever the body texture is changed
-        /// </summary>
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetBodyBaseMaterial))]
-        public static void SetBodyBaseMaterial(ChaControl __instance) => ColorMatchMaterials(__instance, GetUncensorData(__instance));
-        /// <summary>
-        /// When a character is reloaded, update the uncensor as well since it may be due to a character being replaced in studio, for example.
-        /// </summary>
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload))]
-        public static void Reload(ChaControl __instance, bool noChangeBody)
-        {
-            if (noChangeBody)
-                return;
-
-            if (MakerAPI.InsideAndLoaded && !DoingForcedReload)
-                return;
-
-            ReloadCharacterUncensor(__instance);
-        }
-        /// <summary>
-        /// LineMask texture assigned to the material, toggled on and off for any color matching parts along with the body
-        /// </summary>
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.VisibleAddBodyLine))]
-        public static void VisibleAddBodyLine(ChaControl __instance)
-        {
-            UncensorData uncensor = GetUncensorData(__instance);
-            if (uncensor == null)
-                return;
-
-            foreach (var colorMatchPart in uncensor.ColorMatchList)
-            {
-                FindAssist findAssist = new FindAssist();
-                findAssist.Initialize(__instance.objBody.transform);
-                GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
-                if (gameObject != null)
-                    gameObject.GetComponent<Renderer>().material.SetFloat(ChaShader._linetexon, __instance.chaFile.custom.body.drawAddLine ? 1f : 0f);
-            }
-        }
-        /// <summary>
-        /// Skin gloss slider level, as assigned in the character maker.
-        /// This corresponds to the red coloring in the DetailMask texture.
-        /// </summary>
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingSkinGlossPower))]
-        public static void ChangeSettingSkinGlossPower(ChaControl __instance)
-        {
-            UncensorData uncensor = GetUncensorData(__instance);
-            if (uncensor == null)
-                return;
-
-            foreach (var colorMatchPart in uncensor.ColorMatchList)
-            {
-                FindAssist findAssist = new FindAssist();
-                findAssist.Initialize(__instance.objBody.transform);
-                GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
-                if (gameObject != null)
-                    gameObject.GetComponent<Renderer>().material.SetFloat(ChaShader._SpecularPower, Mathf.Lerp(__instance.chaFile.custom.body.skinGlossPower, 1f, __instance.chaFile.status.skinTuyaRate));
-            }
-        }
-        /// <summary>
-        /// For traps and futas, set the normals for the chest area. This prevents strange shadowing around flat-chested trap/futa characters
-        /// </summary>
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomBodyWithoutCustomTexture))]
-        public static void ChangeCustomBodyWithoutCustomTexture(ChaControl __instance)
-        {
-            UncensorData uncensor = GetUncensorData(__instance);
-
-            SetChestNormals(__instance, uncensor);
-
-            if (!StudioAPI.InsideStudio && !MakerAPI.InsideMaker && uncensor != null)
-                __instance.fileStatus.visibleSonAlways = uncensor.ShowPenis;
-        }
+        internal static string SetBodyMaterialCreate() => GetUncensorData(CurrentCharacter)?.BodyMaterialCreate ?? Defaults.BodyMaterialCreate;
+        internal static string SetBodyColorMaskMale() => SetColorMask(0);
+        internal static string SetBodyColorMaskFemale() => SetColorMask(1);
+        internal static string SetColorMask(byte sex) => GetUncensorData(CurrentCharacter)?.BodyColorMask ?? (sex == 0 ? Defaults.BodyColorMaskMale : Defaults.BodyColorMaskFemale);
 
         public enum Gender { Male, Female, Trap, Futa }
         public enum BodyType { Male, Female }
