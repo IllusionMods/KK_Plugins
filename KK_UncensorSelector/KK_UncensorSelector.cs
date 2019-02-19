@@ -31,7 +31,7 @@ namespace KK_UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "2.2";
+        public const string Version = "2.3";
         internal static ChaControl CurrentCharacter;
         internal static ChaFileControl CurrentChaFile;
         public static readonly Dictionary<string, UncensorData> UncensorDictionary = new Dictionary<string, UncensorData>();
@@ -162,6 +162,8 @@ namespace KK_UncensorSelector
                 SetBallsVisibility(MakerAPI.GetMakerBase().chaCtrl, BallsToggle.Value);
                 GetController(MakerAPI.GetMakerBase().chaCtrl).DisplayBalls = BallsToggle.Value;
             }
+            e.AddControl(new MakerText("Warning: Your selected default uncensor will not be displayed in maker but, it will be used elsewhere.", MakerConstants.Body.All, this) { TextColor = Color.yellow });
+            e.AddControl(new MakerText("Warning: Some uncensors might not be displayed fully in maker, but they will work correctly elsewhere.", MakerConstants.Body.All, this) { TextColor = Color.yellow });
         }
 
         public static void SetBallsVisibility(ChaControl character, bool visible)
