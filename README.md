@@ -70,7 +70,7 @@ v1.1 Updated to support missing DLC personalities<br/>
 v1.2 Updated for 1221 DLC personalities
 </details>
 
-#### KK_UncensorSelector v2.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v34/KK_UncensorSelector.v2.2.zip)
+#### KK_UncensorSelector v2.3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v35/KK_UncensorSelector.v2.3.zip)
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker or specify a default uncensor to use in the plugin settings.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
@@ -82,7 +82,8 @@ Make sure to remove any sideloader uncensors and replace your oo_base with a cle
 <details><summary>Change Log</summary>
 v2.0 Complete rewrite, now supports changing uncensors inside the character maker, configuring uncensor metadata in manifest.xml, demosaic, etc.<br/>
 v2.1 Reduce reliance on KK_UncensorSelector Base.zipmod<br/>
-v2.2 Removed the ability to specify _low assets. A matching _low asset is expected to exist for everything that requires one.
+v2.2 Removed the ability to specify _low assets. A matching _low asset is expected to exist for everything that requires one.<br/>
+v2.3 Added some warning labels
 </details>
 
 #### KK_Subtitles v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v23/KK_Subtitles.v1.1.zip)
