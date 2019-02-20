@@ -120,5 +120,4 @@ Adds floor, breast, hand, and skirt colliders. Ported from Patchwork
 #### KK_HairAccessoryFix v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_HairAccessoryFix.v1.0.zip)
 Applies hair gloss to hair accessories and matches hair color/outline color. Only works with objects using a ChaCustomHairComponent MonoBehavior. Not all hair accessories use one.<br/>
 
-Known issues:If front/side/back hair colors are different they all get their colors overriden as well as the accessories. Applies to all characters and hair accessories whether you like it or not. Accessory color doesn't save and is entirely cosmetic. Use Keelhauled's [CharaEditTool](https://github.com/Keelhauled/KoikatuPlugins#readme) to actually update the colors.
-Adds floor, breast, hand, and skirt colliders. Ported from Patchwork
+Known issues: If front/side/back hair colors are different they all get their colors overriden as well as the accessories. Applies to all characters and hair accessories whether you like it or not. Accessory color doesn't save and is entirely cosmetic. Use Keelhauled's [CharaEditTool](https://github.com/Keelhauled/KoikatuPlugins#readme) to actually update the colors.
