@@ -11,13 +11,6 @@ Plays a sound when the Chara Maker finishes loading. Useful if you spend the loa
 #### KK_StudioSceneLoadedSound v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_StudioSceneLoadedSound.v1.0.zip)
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.
 
-#### KK_ForceHighPoly v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v10/KK_ForceHighPoly.v1.1.zip)
-Forces all characters to load in high poly mode, even in the school exploration mode.
-
-<details><summary>Change Log</summary>
-v1.1 Fixed locking up the game after special H scenes. Added config option to disable high poly mode.
-</details>
-
 #### KK_GUIDMigration v1.2.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v20/KK_GUIDMigration.v1.2.2.zip)
 Migrates information on your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.
 
@@ -62,12 +55,13 @@ Blocks mod hotkeys from triggering while typing in input fields. Based on kisama
 v1.1 Blocks hotkeys in studio coordinate fields
 </details>
 
-#### KK_PersonalityCorrector v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v18/KK_PersonalityCorrector.v1.2.zip)
+#### KK_PersonalityCorrector v1.3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_PersonalityCorrector.v1.3.zip)
 Replaces any cards with the modded story character personalities with the default "Pure" personality when attempting to added them to the class to prevent the game from breaking. Also defaults to "Pure" for characters using paid DLC personalities if you don't have the paid DLC installed.
 
 <details><summary>Change Log</summary>
 v1.1 Updated to support missing DLC personalities<br/>
-v1.2 Updated for 1221 DLC personalities
+v1.2 Updated for 1221 DLC personalities<br/>
+v1.3 Now corrects personalities when using the random button
 </details>
 
 #### KK_UncensorSelector v2.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v36/KK_UncensorSelector.v2.4.zip)
@@ -106,3 +100,25 @@ v1.2 Rotating characters doesn't break everything anymore
 
 #### KK_ClothingUnlocker v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v31/KK_ClothingUnlocker.v1.0.zip)
 Allows gender restricted clothing to be used on all characters.
+
+
+# Experimental plugins
+Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. These are primarily proof of concept plugins. Use at your own risk. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
+
+#### KK_ForceHighPoly v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v10/KK_ForceHighPoly.v1.1.zip)
+Forces all characters to load in high poly mode, even in the school exploration mode.<br/>
+
+Known issues: Hair physics doesn't work. Hi poly textures are loaded but probably downscaled to low poly resolutions anyway.
+
+<details><summary>Change Log</summary>
+v1.1 Fixed locking up the game after special H scenes. Added config option to disable high poly mode.
+</details>
+
+#### KK_Colliders v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_Colliders.v1.0.zip)
+Adds floor, breast, hand, and skirt colliders. Ported from Patchwork
+
+#### KK_HairAccessoryFix v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_HairAccessoryFix.v1.0.zip)
+Applies hair gloss to hair accessories and matches hair color/outline color. Only works with objects using a ChaCustomHairComponent MonoBehavior. Not all hair accessories use one.<br/>
+
+Known issues:If front/side/back hair colors are different they all get their colors overriden as well as the accessories. Applies to all characters and hair accessories whether you like it or not. Accessory color doesn't save and is entirely cosmetic. Use Keelhauled's [CharaEditTool](https://github.com/Keelhauled/KoikatuPlugins#readme) to actually update the colors.
+Adds floor, breast, hand, and skirt colliders. Ported from Patchwork
