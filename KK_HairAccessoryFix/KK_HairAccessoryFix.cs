@@ -28,6 +28,9 @@ namespace KK_HairAccessoryFix
         [Category("Config")]
         [Description("Match hair accessory gloss when possible.")]
         public static ConfigWrapper<bool> MatchGloss { get; private set; }
+        [DisplayName("Sync Hotkey")]
+        [Description("Syncs newly added hair accessories in the character maker.")]
+        public static SavedKeyboardShortcut SyncHotkey { get; private set; }
 
         void Main()
         {
@@ -37,11 +40,12 @@ namespace KK_HairAccessoryFix
             MatchColor = new ConfigWrapper<bool>("MatchColor", PluginNameInternal, true);
             MatchOutlineColor = new ConfigWrapper<bool>("MatchOutlineColor", PluginNameInternal, true);
             MatchGloss = new ConfigWrapper<bool>("MatchGloss", PluginNameInternal, true);
+            SyncHotkey = new SavedKeyboardShortcut("SyncHotkey", PluginNameInternal, new KeyboardShortcut(KeyCode.F5));
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha5) && MakerAPI.InsideAndLoaded)
+            if (SyncHotkey.IsDown() && MakerAPI.InsideAndLoaded)
                 FixHairAccessories(MakerAPI.GetCharacterControl());
         }
 

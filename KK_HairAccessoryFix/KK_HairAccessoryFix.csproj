@@ -40,6 +40,9 @@
     <Reference Include="BepInEx">
       <HintPath>..\lib\BepInEx.dll</HintPath>
     </Reference>
+    <Reference Include="ConfigurationManager">
+      <HintPath>..\..\..\..\..\..\Illusion\Koikatu\BepInEx\ConfigurationManager.dll</HintPath>
+    </Reference>
     <Reference Include="KKAPI">
       <HintPath>..\lib\KKAPI.dll</HintPath>
     </Reference>

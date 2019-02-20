@@ -30,8 +30,8 @@ namespace KK_FreeHRandom
 
         void Main()
         {
-            RandomMale = new ConfigWrapper<bool>("EnableTraps", PluginNameInternal, true);
-            RandomHotkey = new SavedKeyboardShortcut("InvisibilityHotkey", PluginNameInternal, new KeyboardShortcut(KeyCode.F5));
+            RandomMale = new ConfigWrapper<bool>("RandomMale", PluginNameInternal, true);
+            RandomHotkey = new SavedKeyboardShortcut("RandomHotkey", PluginNameInternal, new KeyboardShortcut(KeyCode.F5));
         }
 
         void Update()
@@ -40,7 +40,7 @@ namespace KK_FreeHRandom
             {
                 if (Singleton<Manager.Scene>.Instance.NowSceneNames.Any(sceneName => sceneName == "FreeH"))
                 {
-                    if (Input.GetKeyDown(KeyCode.F5))
+                    if (RandomHotkey.IsDown())
                     {
                         //Get some random female cards
                         FreeHScene instance = Singleton<FreeHScene>.Instance;
