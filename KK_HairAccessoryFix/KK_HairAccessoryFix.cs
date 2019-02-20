@@ -14,7 +14,7 @@ namespace KK_HairAccessoryFix
         public const string GUID = "com.deathweasel.bepinex.hairaccessoryfix";
         public const string PluginName = "Hair Accessory Fix";
         public const string PluginNameInternal = "KK_HairAccessoryFix";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
 
         [DisplayName("Color match")]
         [Category("Config")]
