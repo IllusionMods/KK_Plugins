@@ -19,25 +19,28 @@ namespace KK_GUIDMigration
     {
         public const string GUID = "com.deathweasel.bepinex.guidmigration";
         public const string PluginName = "GUID Migration";
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         private static List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
         private static readonly string GUIDMigrationFilePath = Path.Combine(Paths.PluginPath, "KK_GUIDMigration.csv");
-        private static bool DoMigration = false;
 
         void Main()
         {
             //Don't even bother if there's no mods directory
             if (Directory.Exists(Path.Combine(Paths.GameRootPath, "mods")) && Directory.Exists(Paths.PluginPath))
             {
-                var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.guidmigration");
-                harmony.PatchAll(typeof(KK_GUIDMigration));
-
                 //Only do migration if there's a .csv file and it has stuff in it
                 if (File.Exists(GUIDMigrationFilePath))
                 {
                     GenerateMigrationInfo();
                     if (MigrationInfoList.Count > 0)
-                        DoMigration = true;
+                    {
+                        var harmony = HarmonyInstance.Create(GUID);
+                        harmony.PatchAll(typeof(KK_GUIDMigration));
+                    }
+                    else
+                    {
+                        Logger.Log(LogLevel.Error | LogLevel.Message, "KK_GUIDMigration was not loaded due to missing or empty KK_GUIDMigration.csv file.");
+                    }
                 }
             }
         }
@@ -54,9 +57,9 @@ namespace KK_GUIDMigration
                 if (extInfo == null)
                     return extInfo;
 
-                foreach (ResolveInfo a in extInfo)
+                foreach (ResolveInfo resolveInfo in extInfo)
                 {
-                    if (a.GUID.IsNullOrEmpty())
+                    if (resolveInfo.GUID.IsNullOrEmpty())
                     {
                         //Don't add empty GUID to the new list, this way CompatibilityResolve will treat it as a hard mod and attempt to find a match
                         if (!DidBlankGUIDMessage) //No need to spam it for every single thing
@@ -65,9 +68,9 @@ namespace KK_GUIDMigration
                             DidBlankGUIDMessage = true;
                         }
                     }
-                    else if (DoMigration)
+                    else
                     {
-                        string propertyWithoutPrefix = a.Property;
+                        string propertyWithoutPrefix = resolveInfo.Property;
 
                         //Remove outfit and accessory prefixes for searching purposes
                         if (propertyWithoutPrefix.StartsWith("outfit"))
@@ -75,16 +78,17 @@ namespace KK_GUIDMigration
                         if (propertyWithoutPrefix.StartsWith("accessory"))
                             propertyWithoutPrefix = propertyWithoutPrefix.Remove(0, propertyWithoutPrefix.IndexOf('.') + 1);
 
-                        MigrationInfo info = MigrationInfoList.Where(x => (x.Property == propertyWithoutPrefix && x.OldID == a.Slot && x.OldGUID == a.GUID)
-                                                                       || (x.Property == "*" && x.OldGUID == a.GUID)).FirstOrDefault();
+                        MigrationInfo info = MigrationInfoList.Where(x => (x.Property == propertyWithoutPrefix && x.OldID == resolveInfo.Slot && x.OldGUID == resolveInfo.GUID)
+                                                                       || (x.Property == "*" && x.OldGUID == resolveInfo.GUID)
+                                                                       || (x.Property == "-" && x.OldGUID == resolveInfo.GUID)).FirstOrDefault();
                         if (info == null)
                         {
                             //This item does not need to be migrated
-                            extInfoNew.Add(a);
+                            extInfoNew.Add(resolveInfo);
                         }
                         else if (info.Property == "*") //* assumes only the GUID changed while the IDs stayed the same
                         {
-                            ResolveInfo GUIDCheckOld = UniversalAutoResolver.LoadedResolutionInfo.FirstOrDefault(x => x.GUID == a.GUID);
+                            ResolveInfo GUIDCheckOld = UniversalAutoResolver.LoadedResolutionInfo.FirstOrDefault(x => x.GUID == resolveInfo.GUID);
 
                             if (GUIDCheckOld == null)
                             {
@@ -92,10 +96,10 @@ namespace KK_GUIDMigration
                                 //If we don't have the new mod the user will get a missing mod warning for the new mod since they should be using that instead.
                                 //If we do it will load correctly.
                                 Logger.Log(LogLevel.Info, $"Migrating GUID {info.OldGUID} -> {info.NewGUID}");
-                                ResolveInfo b = new ResolveInfo();
-                                b = a;
-                                b.GUID = info.NewGUID;
-                                extInfoNew.Add(b);
+                                ResolveInfo resolveInfoNew = new ResolveInfo();
+                                resolveInfoNew = resolveInfo;
+                                resolveInfoNew.GUID = info.NewGUID;
+                                extInfoNew.Add(resolveInfoNew);
                             }
                             else
                             {
@@ -104,22 +108,26 @@ namespace KK_GUIDMigration
                                 if (GUIDCheckNew == null)
                                 {
                                     //We have the old mod but not the new, do not do migration
-                                    extInfoNew.Add(a);
+                                    extInfoNew.Add(resolveInfo);
                                 }
                                 else
                                 {
                                     //We have the old mod and the new, do migration so characters save with the new stuff
                                     Logger.Log(LogLevel.Info, $"Migrating GUID {info.OldGUID} -> {info.NewGUID}");
-                                    ResolveInfo b = new ResolveInfo();
-                                    b = a;
-                                    b.GUID = info.NewGUID;
-                                    extInfoNew.Add(b);
+                                    ResolveInfo resolveInfoNew = new ResolveInfo();
+                                    resolveInfoNew = resolveInfo;
+                                    resolveInfoNew.GUID = info.NewGUID;
+                                    extInfoNew.Add(resolveInfoNew);
                                 }
                             }
                         }
+                        else if (info.Property == "-") //- indicates the entry needs to be stripped of its extended data and loaded as a hard mod
+                        {
+                            continue;
+                        }
                         else
                         {
-                            ResolveInfo intResolveOld = UniversalAutoResolver.LoadedResolutionInfo.FirstOrDefault(x => x.Property == propertyWithoutPrefix && x.Slot == a.Slot && x.GUID == a.GUID);
+                            ResolveInfo intResolveOld = UniversalAutoResolver.LoadedResolutionInfo.FirstOrDefault(x => x.Property == propertyWithoutPrefix && x.Slot == resolveInfo.Slot && x.GUID == resolveInfo.GUID);
 
                             if (intResolveOld == null)
                             {
@@ -127,11 +135,11 @@ namespace KK_GUIDMigration
                                 //If we don't have the new mod the user will get a missing mod warning for the new mod since they should be using that instead.
                                 //If we do it will load correctly.
                                 Logger.Log(LogLevel.Info, $"Migrating {info.OldGUID}:{info.OldID} -> {info.NewGUID}:{info.NewID}");
-                                ResolveInfo b = new ResolveInfo();
-                                b = a;
-                                b.GUID = info.NewGUID;
-                                b.Slot = info.NewID;
-                                extInfoNew.Add(b);
+                                ResolveInfo resolveInfoNew = new ResolveInfo();
+                                resolveInfoNew = resolveInfo;
+                                resolveInfoNew.GUID = info.NewGUID;
+                                resolveInfoNew.Slot = info.NewID;
+                                extInfoNew.Add(resolveInfoNew);
                             }
                             else
                             {
@@ -140,14 +148,14 @@ namespace KK_GUIDMigration
                                 if (intResolveNew == null)
                                 {
                                     //We have the old mod but not the new, do not do migration
-                                    extInfoNew.Add(a);
+                                    extInfoNew.Add(resolveInfo);
                                 }
                                 else
                                 {
                                     //We have the old mod and the new, do migration so characters save with the new stuff
                                     Logger.Log(LogLevel.Warning, $"Migrating {info.OldGUID}:{info.OldID} -> {info.NewGUID}:{info.NewID}");
                                     ResolveInfo b = new ResolveInfo();
-                                    b = a;
+                                    b = resolveInfo;
                                     b.GUID = info.NewGUID;
                                     b.Slot = info.NewID;
                                     extInfoNew.Add(b);
