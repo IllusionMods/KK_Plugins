@@ -740,9 +740,6 @@ namespace KK_UncensorSelector
                     CurrentChaFile = ChaControl.chaFile;
                     ReloadCharacterUncensor(ChaControl, false);
                 }
-
-                //remove mosaic
-                ChaControl.hideMoz = true;
             }
         }
     }

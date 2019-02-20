@@ -199,5 +199,10 @@ namespace KK_UncensorSelector
             if (!StudioAPI.InsideStudio && !MakerAPI.InsideMaker && uncensor != null)
                 __instance.fileStatus.visibleSonAlways = uncensor.ShowPenis;
         }
+        /// <summary>
+        /// Demosaic
+        /// </summary>
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "LateUpdateForce")]
+        public static void LateUpdateForce(ChaControl __instance) => __instance.hideMoz = true;
     }
 }
