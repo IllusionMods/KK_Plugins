@@ -55,19 +55,20 @@ Blocks mod hotkeys from triggering while typing in input fields. Based on kisama
 v1.1 Blocks hotkeys in studio coordinate fields
 </details>
 
-#### KK_PersonalityCorrector v1.3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_PersonalityCorrector.v1.3.zip)
+#### KK_PersonalityCorrector v1.3.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_PersonalityCorrector.v1.3.1.zip)
 Replaces any cards with the modded story character personalities with the default "Pure" personality when attempting to added them to the class to prevent the game from breaking. Also defaults to "Pure" for characters using paid DLC personalities if you don't have the paid DLC installed.
 
 <details><summary>Change Log</summary>
 v1.1 Updated to support missing DLC personalities<br/>
 v1.2 Updated for 1221 DLC personalities<br/>
-v1.3 Now corrects personalities when using the random button
+v1.3 Now corrects personalities when using the random button<br/>
+v1.3.1 Removed log messages. Oops.
 </details>
 
 #### KK_UncensorSelector v2.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v36/KK_UncensorSelector.v2.4.zip)
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker or specify a default uncensor to use in the plugin settings.<br/>
 
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
 
 UncensorSelector compatible uncensors can be found [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS) For makers of uncensors, see the [template](https://github.com/DeathWeasel1337/KK_Plugins/blob/master/KK_UncensorSelector/Template.xml) for how to configure your uncensor for UncensorSelector compatibility.<br/>
 
@@ -101,9 +102,14 @@ v1.2 Rotating characters doesn't break everything anymore
 #### KK_ClothingUnlocker v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v31/KK_ClothingUnlocker.v1.0.zip)
 Allows gender restricted clothing to be used on all characters.
 
+#### KK_EyeShaking v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_EyeShaking.v1.0.zip)
+Virgins in H scenes will appear to have slightly shaking eye highlights.<br/>
+
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
+
 
 # Experimental plugins
-Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. These are primarily proof of concept plugins. Use at your own risk. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
+Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. These are primarily proof of concept plugins. Use at your own risk. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
 
 #### KK_ForceHighPoly v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v10/KK_ForceHighPoly.v1.1.zip)
 Forces all characters to load in high poly mode, even in the school exploration mode.<br/>
@@ -117,11 +123,18 @@ v1.1 Fixed locking up the game after special H scenes. Added config option to di
 #### KK_Colliders v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_Colliders.v1.0.zip)
 Adds floor, breast, hand, and skirt colliders. Ported from Patchwork.<br/>
 
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI)
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)
 
-#### KK_HairAccessoryFix v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_HairAccessoryFix.v1.0.zip)
-Applies hair gloss to hair accessories and matches hair color/outline color. Only works with objects using a ChaCustomHairComponent MonoBehavior. Not all hair accessories use one. Press 5 in the character maker to update newly added hair accessories.<br/>
+#### KK_HairAccessoryFix v1.0.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_HairAccessoryFix.v1.0.1.zip)
+Applies hair gloss to hair accessories and matches hair color/outline color. Only works with objects using a ChaCustomHairComponent MonoBehavior. Not all hair accessories use one. Press F5 in the character maker to update newly added hair accessories.<br/>
 
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI)<br/>
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
 
 Known issues: If front/side/back hair colors are different they all get their colors overriden as well as the accessories. Applies to all characters and hair accessories whether you like it or not. Accessory color doesn't save and is entirely cosmetic. Use Keelhauled's [CharaEditTool](https://github.com/Keelhauled/KoikatuPlugins#readme) to actually update the colors.
+
+<details><summary>Change Log</summary>
+v1.0.1 Fixed configs, changed hotkey, made it configurable.
+</details>
+
+#### KK_FreeHRandom v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_FreeHRandom.v1.0.zip)
+Press F5 at Free H selection screen to get random characters for your H session.
