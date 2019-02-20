@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_AnimationController", "K
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ClothingUnlocker", "KK_ClothingUnlocker\KK_ClothingUnlocker.csproj", "{A59F4B61-4FD8-4B7B-92C5-9C06D608DAD2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_HairAccessoryFix", "KK_HairAccessoryFix\KK_HairAccessoryFix.csproj", "{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{A59F4B61-4FD8-4B7B-92C5-9C06D608DAD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A59F4B61-4FD8-4B7B-92C5-9C06D608DAD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A59F4B61-4FD8-4B7B-92C5-9C06D608DAD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
