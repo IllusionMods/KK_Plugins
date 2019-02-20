@@ -11,7 +11,7 @@ namespace KK_PersonalityCorrector
     {
         public const string GUID = "com.deathweasel.bepinex.personalitycorrector";
         public const string PluginName = "Personality Corrector";
-        public const string Version = "1.3";
+        public const string Version = "1.3.1";
         public static int DefaultPersonality = 8; //Pure
 
         void Main()
@@ -38,7 +38,6 @@ namespace KK_PersonalityCorrector
 
         private static void CheckPersonalityAndOverride(ChaFileControl chaFileControl)
         {
-            Logger.Log(BepInEx.Logging.LogLevel.Info, $"{chaFileControl.parameter.fullname.Trim()}:{chaFileControl.parameter.personality}");
             switch (chaFileControl.parameter.personality)
             {
                 case 30: //0727 Free DLC
