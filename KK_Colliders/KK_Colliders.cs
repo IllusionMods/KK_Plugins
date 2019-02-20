@@ -21,7 +21,7 @@ namespace KK_Colliders
         public const string GUID = "com.deathweasel.bepinex.colliders";
         public const string PluginName = "Colliders";
         public const string PluginNameInternal = "KK_Colliders";
-        public const string Version = "0.1";
+        public const string Version = "1.0";
         private static FindAssist fa;
         private static bool DidColliders = false;
 
