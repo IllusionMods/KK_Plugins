@@ -8,7 +8,6 @@ using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using KKAPI.Studio;
 using Manager;
-using Sideloader;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +16,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
+using static Sideloader.Sideloader;
 using Logger = BepInEx.Logger;
 
 namespace KK_UncensorSelector
@@ -37,6 +37,7 @@ namespace KK_UncensorSelector
         public static readonly Dictionary<string, UncensorData> UncensorDictionary = new Dictionary<string, UncensorData>();
         public static readonly List<string> UncensorList = new List<string>();
         public static readonly List<string> UncensorListDisplay = new List<string>();
+        public static readonly List<string> UncensorListFull = new List<string>();
         private static MakerDropdown UncensorDropdown;
         private static MakerToggle BallsToggle;
         internal static bool DoUncensorDropdownEvents = false;
@@ -74,10 +75,12 @@ namespace KK_UncensorSelector
         [DisplayName("Default male uncensor")]
         [Category("Config")]
         [Description("GUID of the uncensor to use if character does not have one set.")]
+        [AcceptableValueList("GenerateUncensorList")]
         public static ConfigWrapper<string> DefaultMaleUncensor { get; private set; }
         [DisplayName("Default female uncensor")]
         [Category("Config")]
         [Description("GUID of the uncensor to use if character does not have one set.")]
+        [AcceptableValueList("GenerateUncensorList")]
         public static ConfigWrapper<string> DefaultFemaleUncensor { get; private set; }
         #endregion
 
@@ -328,14 +331,17 @@ namespace KK_UncensorSelector
         /// <summary>
         /// Read all the manifest.xml files and generate a dictionary of uncensors
         /// </summary>
-        private void GenerateUncensorList()
+        private object[] GenerateUncensorList()
         {
-            var manifests = AccessTools.Field(typeof(Sideloader.Sideloader), "LoadedManifests").GetValue(GetComponent<Sideloader.Sideloader>()) as List<Manifest>;
-            if (manifests == null)
-                return;
-            foreach (var manifest in manifests)
+            if (LoadedManifests == null)
+               return null;
+
+            if (UncensorListFull.Count > 0)
+                return UncensorListFull.ToArray();
+
+            foreach (var manifest in LoadedManifests)
             {
-                XDocument manifestDocument = AccessTools.Field(typeof(Manifest), "manifestDocument").GetValue(manifest) as XDocument;
+                XDocument manifestDocument = manifest.manifestDocument;
                 XElement uncensorSelectorElement = manifestDocument?.Root?.Element(PluginNameInternal);
                 if (uncensorSelectorElement != null && uncensorSelectorElement.HasElements)
                 {
@@ -358,9 +364,12 @@ namespace KK_UncensorSelector
                             continue;
                         }
                         UncensorDictionary.Add(uncensor.UncensorGUID, uncensor);
+                        UncensorListFull.Add(uncensor.UncensorGUID);
                     }
                 }
             }
+
+            return UncensorListFull.ToArray();
         }
         /// <summary>
         /// Get the UncensorData for the specified character
