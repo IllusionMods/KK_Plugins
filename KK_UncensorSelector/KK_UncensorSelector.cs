@@ -75,12 +75,12 @@ namespace KK_UncensorSelector
         [DisplayName("Default male uncensor")]
         [Category("Config")]
         [Description("GUID of the uncensor to use if character does not have one set.")]
-        [AcceptableValueList("GenerateUncensorList")]
+        [AcceptableValueList(nameof(GenerateUncensorList))]
         public static ConfigWrapper<string> DefaultMaleUncensor { get; private set; }
         [DisplayName("Default female uncensor")]
         [Category("Config")]
         [Description("GUID of the uncensor to use if character does not have one set.")]
-        [AcceptableValueList("GenerateUncensorList")]
+        [AcceptableValueList(nameof(GenerateUncensorList))]
         public static ConfigWrapper<string> DefaultFemaleUncensor { get; private set; }
         #endregion
 
@@ -334,7 +334,7 @@ namespace KK_UncensorSelector
         private object[] GenerateUncensorList()
         {
             if (LoadedManifests == null)
-               return null;
+                return null;
 
             if (UncensorListFull.Count > 0)
                 return UncensorListFull.ToArray();
