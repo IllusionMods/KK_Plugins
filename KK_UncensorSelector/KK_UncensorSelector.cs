@@ -736,6 +736,8 @@ namespace KK_UncensorSelector
                         ChaControl.fileStatus.visibleSonAlways = ChaControl.sex == 0;
                     else
                         ChaControl.fileStatus.visibleSonAlways = GetUncensorData(ChaControl).ShowPenis;
+
+                    ColorMatchMaterials(ChaControl, GetUncensorData(ChaControl));
                 }
                 else
                 {
