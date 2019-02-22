@@ -47,6 +47,24 @@ namespace KK_TranslationSync
                 SyncTLs(TLType.H);
                 Logger.Log(LogLevel.Info, "Sync complete.");
             }
+            if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKey(TranslationSyncHotkey.Value.MainKey))
+            {
+                for (int i = 0; i <= 37; i++)
+                {
+                    Personality.Value = "c" + i.ToString("00");
+                    SyncTLs(TLType.Scenario);
+                    SyncTLs(TLType.Communication);
+                    SyncTLs(TLType.H);
+                }
+                for (int i = 0; i <= 10; i++)
+                {
+                    Personality.Value = "c-" + i.ToString("00");
+                    SyncTLs(TLType.Scenario);
+                    SyncTLs(TLType.Communication);
+                    SyncTLs(TLType.H);
+                }
+                Logger.Log(LogLevel.Info, "Sync complete.");
+            }
         }
 
         private void CountText()
