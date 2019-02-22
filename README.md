@@ -111,7 +111,7 @@ Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
 
 
 # Experimental plugins
-Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. These are primarily proof of concept plugins. Use at your own risk. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
+Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
 
 #### KK_ForceHighPoly v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v10/KK_ForceHighPoly.v1.1.zip)
 Forces all characters to load in high poly mode, even in the school exploration mode.<br/>
