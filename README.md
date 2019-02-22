@@ -68,6 +68,8 @@ v1.3.1 Removed log messages. Oops.
 </details>
 
 #### KK_UncensorSelector v2.5 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v40/KK_UncensorSelector.v2.5.zip)
+Requires [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) r8! Make sure to update.<br/>
+
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker or specify a default uncensor to use in the plugin settings.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
