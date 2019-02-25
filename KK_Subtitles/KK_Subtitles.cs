@@ -20,10 +20,10 @@ namespace KK_Subtitles
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
         public const string PluginNameInternal = "KK_Subtitles";
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         internal static Info ActionGameInfoInstance;
         internal static HSceneProc HSceneProcInstance;
-        public static bool WasTouched = false;
+        public static bool DoSubtitle = false;
 
         #region ConfigMgr
         [DisplayName("Show Untranslated Text")]
@@ -59,7 +59,6 @@ namespace KK_Subtitles
         [AcceptableValueRange(0, 100, false)]
         [Advanced(true)]
         public static ConfigWrapper<int> outlineThickness { get; private set; }
-
         [DisplayName("Text Color")]
         [Category("Caption Text")]
         public static ConfigWrapper<Color> textColor { get; private set; }
@@ -109,7 +108,7 @@ namespace KK_Subtitles
 
             if (HSceneProcInstance != null)
                 Caption.DisplayHSubtitle(__instance);
-            else if (ActionGameInfoInstance != null && WasTouched)
+            else if (ActionGameInfoInstance != null && DoSubtitle)
                 Caption.DisplayDialogueSubtitle(__instance);
 
             //Captions for chara maker
@@ -122,23 +121,22 @@ namespace KK_Subtitles
             //    Caption.DisplaySubtitle(__instance, "はじめまして、よろしくね！");
             //}
 
-            WasTouched = false;
+            DoSubtitle = false;
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(Info), "Init")]
+        [HarmonyPostfix, HarmonyPatch(typeof(Info), "Init")]
         public static void InfoInit(Info __instance)
         {
             Caption.InitGUI();
             ActionGameInfoInstance = __instance;
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(TalkScene), "TouchFunc")]
-        public static void TouchFunc(TalkScene __instance) => WasTouched = true;
+        [HarmonyPostfix, HarmonyPatch(typeof(TalkScene), "TouchFunc")]
+        public static void TouchFunc(TalkScene __instance) => DoSubtitle = true;
+        [HarmonyPostfix, HarmonyPatch(typeof(Info), nameof(Info.GetLeaveAloneVoice))]
+        public static void GetLeaveAloneVoice(TalkScene __instance) => DoSubtitle = true;
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(HVoiceCtrl), "Init")]
+        [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
         public static void HVoiceCtrlInit()
         {
             Caption.InitGUI();
