@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_FreeHRandom", "KK_FreeHR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_EyeShaking", "KK_EyeShaking\KK_EyeShaking.csproj", "{7B514B4E-A0BC-4DA9-B2A8-0B72515E8033}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_MiscFixes", "KK_MiscFixes\KK_MiscFixes.csproj", "{7C93707D-91B4-4F18-976D-D222F67FD59A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{7B514B4E-A0BC-4DA9-B2A8-0B72515E8033}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B514B4E-A0BC-4DA9-B2A8-0B72515E8033}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B514B4E-A0BC-4DA9-B2A8-0B72515E8033}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C93707D-91B4-4F18-976D-D222F67FD59A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C93707D-91B4-4F18-976D-D222F67FD59A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C93707D-91B4-4F18-976D-D222F67FD59A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C93707D-91B4-4F18-976D-D222F67FD59A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
