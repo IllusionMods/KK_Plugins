@@ -67,8 +67,8 @@ v1.3 Now corrects personalities when using the random button<br/>
 v1.3.1 Removed log messages. Oops.
 </details>
 
-#### KK_UncensorSelector v2.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v36/KK_UncensorSelector.v2.4.zip)
-Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker or specify a default uncensor to use in the plugin settings.<br/>
+#### KK_UncensorSelector v2.5 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v40/KK_UncensorSelector.v2.5.zip)
+Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
 
@@ -81,7 +81,8 @@ v2.0 Complete rewrite, now supports changing uncensors inside the character make
 v2.1 Reduce reliance on KK_UncensorSelector Base.zipmod<br/>
 v2.2 Removed the ability to specify _low assets. A matching _low asset is expected to exist for everything that requires one.<br/>
 v2.3 Added some warning labels<br/>
-v2.4 Fixed demosaic not working sometimes
+v2.4 Fixed demosaic not working sometimes<br/>
+v2.5 ConfigManager dropdown for GUID selection, fixed color matching bug in chara maker
 </details>
 
 #### KK_Subtitles v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v23/KK_Subtitles.v1.1.zip)
@@ -111,7 +112,7 @@ Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
 
 
 # Experimental plugins
-Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. These are primarily proof of concept plugins. Use at your own risk. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
+Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
 
 #### KK_ForceHighPoly v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v10/KK_ForceHighPoly.v1.1.zip)
 Forces all characters to load in high poly mode, even in the school exploration mode.<br/>
