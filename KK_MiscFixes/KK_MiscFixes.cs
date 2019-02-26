@@ -21,12 +21,12 @@ namespace KK_MiscFixes
             harmony.PatchAll(typeof(KK_MiscFixes));
         }
         /// <summary>
-        /// Turn off Extended Save events
+        /// Turn off ExtensibleSaveFormat events
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(FreeHClassRoomCharaFile), "Start")]
         public static void StartPrefix(FreeHClassRoomCharaFile __instance) => LoadEventsEnabled = false;
         /// <summary>
-        /// Turn back on Extended Save events, load a copy of the character with extended data on this time, and use that instead.
+        /// Turn back on ExtensibleSaveFormat events, load a copy of the character with extended data on this time, and use that instead.
         /// </summary>
         [HarmonyPostfix, HarmonyPatch(typeof(FreeHClassRoomCharaFile), "Start")]
         public static void StartPostfix(FreeHClassRoomCharaFile __instance)
