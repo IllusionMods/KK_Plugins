@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_EyeShaking", "KK_EyeShak
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_MiscFixes", "KK_MiscFixes\KK_MiscFixes.csproj", "{7C93707D-91B4-4F18-976D-D222F67FD59A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ANIMATIONOVERDRIVE", "KK_ANIMATIONOVERDRIVE\KK_ANIMATIONOVERDRIVE.csproj", "{D7FABE27-7568-49B1-A81A-CDCE5708970F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,10 @@ Global
 		{7C93707D-91B4-4F18-976D-D222F67FD59A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C93707D-91B4-4F18-976D-D222F67FD59A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C93707D-91B4-4F18-976D-D222F67FD59A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7FABE27-7568-49B1-A81A-CDCE5708970F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7FABE27-7568-49B1-A81A-CDCE5708970F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7FABE27-7568-49B1-A81A-CDCE5708970F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7FABE27-7568-49B1-A81A-CDCE5708970F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
