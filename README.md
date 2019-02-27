@@ -110,11 +110,15 @@ Virgins in H scenes will appear to have slightly shaking eye highlights.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
 
-#### KK_MiscFixes v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v41/KK_MiscFixes.v1.0.zip)
+#### KK_MiscFixes v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v43/KK_MiscFixes.v1.1.zip)
 Miscellaneous fixes aimed at improving the performance of the game.<br/>
 
 * Improves load time of the list of characters in Free H<br/>
 * Improves load time when opening the class roster menu<br/>
+
+<details><summary>Change Log</summary>
+v1.1 Now uses full path instead of file name for compatibility with Marco's KK_BrowserFolders
+</details>
 
 #### KK_ANIMATIONOVERDRIVE - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v42/KK_ANIMATIONOVERDRIVE.zip)
 gotta go fast<br/>
