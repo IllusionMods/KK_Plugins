@@ -31,7 +31,7 @@ namespace KK_UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "2.5";
+        public const string Version = "2.5.1";
         private const string UncensorKeyRandom = "Random";
         internal static ChaControl CurrentCharacter;
         internal static ChaFileControl CurrentChaFile;
@@ -43,6 +43,7 @@ namespace KK_UncensorSelector
         private static MakerToggle BallsToggle;
         internal static bool DoUncensorDropdownEvents = false;
         internal static bool DoingForcedReload = false;
+        private static readonly HashSet<string> BodyParts = new HashSet<string>() { "o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster" };
 
         #region Config
         [DisplayName("Male uncensor display")]
@@ -199,26 +200,26 @@ namespace KK_UncensorSelector
                 chaControl.fileStatus.visibleSonAlways = uncensor.ShowPenis;
         }
         /// <summary>
-        /// Create a copy of the character with the new uncensor, copy its mesh, and delete it
+        /// Load the body asset, copy its mesh, and delete it
         /// </summary>
         private static void UpdateUncensor(ChaControl chaControl, UncensorData uncensor)
         {
-            ChaControl chaControlTemp = Singleton<Character>.Instance.CreateChara(chaControl.sex, null, 9846215, chaControl.chaFile, chaControl.hiPoly);
-            chaControlTemp.Load();
+            string OOBase = uncensor?.OOBase ?? Defaults.OOBase;
+            string Asset = uncensor?.Asset ?? (chaControl.sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale);
+
+            GameObject uncensorCopy = CommonLib.LoadAsset<GameObject>(OOBase, Asset, true);
             foreach (var mesh in chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
             {
                 if (mesh.name == "o_body_a")
-                    UpdateMeshRenderer(chaControlTemp.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
-                else if (mesh.name == "o_dankon" || mesh.name == "o_dan_f" || mesh.name == "o_mnpa" || mesh.name == "o_mnpb")
-                    UpdateMeshRenderer(chaControlTemp.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
+                    UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh);
+                else if (BodyParts.Contains(mesh.name))
+                    UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
                 else if (uncensor != null)
                     foreach (var part in uncensor.ColorMatchList)
                         if (mesh.name == part.Object)
-                            UpdateMeshRenderer(chaControlTemp.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(x => x.name == part.Object), mesh, true);
+                            UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(x => x.name == part.Object), mesh, true);
             }
-            
-            Singleton<Character>.Instance.DeleteChara(chaControlTemp);
-            CurrentCharacter = chaControl;
+            Destroy(uncensorCopy);
         }
 
         /// <summary>
