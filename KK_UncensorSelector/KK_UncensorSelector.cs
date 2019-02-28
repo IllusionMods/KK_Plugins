@@ -31,7 +31,7 @@ namespace KK_UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "2.5.1";
+        public const string Version = "2.5.2";
         private const string UncensorKeyRandom = "Random";
         internal static ChaControl CurrentCharacter;
         internal static ChaFileControl CurrentChaFile;
@@ -466,7 +466,7 @@ namespace KK_UncensorSelector
 
                             // Find a close match that is unlikely to change even if number of uncensors change
                             var query = from unc in UncensorDictionary
-                                        where unc.Value.Gender == gender
+                                        where unc.Value.Gender == gender && unc.Value.AllowRandom
                                         let uncHash = new System.Random(unc.Key.GetHashCode()).Next()
                                         orderby Mathf.Abs(uncHash - charaHash)
                                         select unc.Value;
@@ -579,6 +579,7 @@ namespace KK_UncensorSelector
             public Gender Gender = Gender.Male;
             public BodyType BodyType = BodyType.Male;
             public bool ShowPenis = false;
+            public bool AllowRandom = true;
             public string BodyMainTex;
             public string BodyColorMask;
             public string BodyMaterial;
@@ -616,6 +617,8 @@ namespace KK_UncensorSelector
                     BodyType = BodyType.Female;
                 if (uncensorXMLData.Element("showPenis")?.Value.ToLower() == "true" || uncensorXMLData.Element("showPenis")?.Value.ToLower() == "1")
                     ShowPenis = true;
+                if (uncensorXMLData.Element("allowRandom")?.Value.ToLower() == "false" || uncensorXMLData.Element("allowRandom")?.Value.ToLower() == "0")
+                    AllowRandom = false;
 
                 XElement oo_base = uncensorXMLData.Element("oo_base");
                 if (oo_base != null)

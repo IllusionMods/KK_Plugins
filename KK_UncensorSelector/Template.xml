@@ -10,8 +10,8 @@
     <bodyType>Male</bodyType>
     <!--Required - Whether the body has a penis - True/False-->
     <showPenis>True</showPenis>
-
-    <mm_base>chara/mm_base_male.unity3d</mm_base>
+    <!--Optional - Whether the uncensor is allowed to be chosen randomly - Defaults to True-->
+    <allowRandom>True</allowRandom>
     <!--Optional - Only used for Trap/Futa uncensors-->
     <!--GUID of an alternate uncensor to use if the user has disabled Trap/Futa content-->
     <maleAlternate></maleAlternate>
