@@ -33,7 +33,6 @@ namespace KK_UncensorSelector
         public const string PluginNameInternal = "KK_UncensorSelector";
         public const string Version = "2.5";
         private const string UncensorKeyRandom = "Random";
-        private const string UncensorKeyNone = "None (censored)";
         internal static ChaControl CurrentCharacter;
         internal static ChaFileControl CurrentChaFile;
         public static readonly Dictionary<string, UncensorData> UncensorDictionary = new Dictionary<string, UncensorData>();
@@ -130,8 +129,8 @@ namespace KK_UncensorSelector
             UncensorList.Clear();
             UncensorListDisplay.Clear();
 
-            UncensorList.Add(UncensorKeyNone);
-            UncensorListDisplay.Add(UncensorKeyNone);
+            UncensorList.Add("Default");
+            UncensorListDisplay.Add("Default");
 
             foreach (UncensorData uncensor in UncensorDictionary.Select(x => x.Value))
             {
@@ -152,11 +151,11 @@ namespace KK_UncensorSelector
                     return;
                 }
 
+                GetController(MakerAPI.GetMakerBase().chaCtrl).UncensorGUID = UncensorDropdown.Value == 0 ? null : SelectedUncensor.UncensorGUID;
                 DoingForcedReload = true;
                 MakerAPI.GetMakerBase().chaCtrl.Reload(true, true, true, false);
                 DoingForcedReload = false;
                 SetBallsVisibility(MakerAPI.GetMakerBase().chaCtrl, BallsToggle.Value);
-                GetController(MakerAPI.GetMakerBase().chaCtrl).UncensorGUID = UncensorDropdown.Value == 0 ? null : SelectedUncensor.UncensorGUID;
             }
 
             BallsToggle = e.AddControl(new MakerToggle(MakerConstants.Body.All, "Display balls", this));
@@ -217,10 +216,11 @@ namespace KK_UncensorSelector
                         if (mesh.name == part.Object)
                             UpdateMeshRenderer(chaControlTemp.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(x => x.name == part.Object), mesh, true);
             }
-
+            
             Singleton<Character>.Instance.DeleteChara(chaControlTemp);
             CurrentCharacter = chaControl;
         }
+
         /// <summary>
         /// Rebuild the character's skin textures
         /// </summary>
@@ -341,8 +341,8 @@ namespace KK_UncensorSelector
             if (UncensorListFull.Count > 0)
                 return UncensorListFull.ToArray();
 
+            UncensorListFull.Add("None (censored)");
             UncensorListFull.Add(UncensorKeyRandom);
-            UncensorListFull.Add(UncensorKeyNone);
 
             foreach (var manifest in LoadedManifests)
             {
@@ -453,7 +453,7 @@ namespace KK_UncensorSelector
                     {
                         var male = character.sex == 0;
                         var uncensorKey = male ? DefaultMaleUncensor.Value : DefaultFemaleUncensor.Value;
-                        
+
                         if (uncensorKey == UncensorKeyRandom)
                         {
                             // Calculate a value that is unique for a character and unlikely to change
@@ -743,20 +743,22 @@ namespace KK_UncensorSelector
                 {
                     if (MakerAPI.GetCharacterLoadFlags().Body)
                     {
-                        //Change the UI settings which will update the character's uncensor
-
-                        if (UncensorList.IndexOf(UncensorGUID) == -1)
+                        if (MakerAPI.GetMakerBase().chaCtrl == ChaControl)
                         {
-                            //The loaded uncensor isn't on the list, possibly due to being forbidden
-                            UncensorDropdown.Value = 0;
-                            UncensorGUID = null;
-                            if (ChaControl.sex == 1)
-                                DisplayBalls = false;
-                        }
-                        else
-                        {
-                            UncensorDropdown.Value = UncensorList.IndexOf(UncensorGUID) == -1 ? 0 : UncensorList.IndexOf(UncensorGUID);
-                            BallsToggle.Value = DisplayBalls;
+                            //Change the UI settings which will update the character's uncensor
+                            if (UncensorList.IndexOf(UncensorGUID) == -1)
+                            {
+                                //The loaded uncensor isn't on the list, possibly due to being forbidden
+                                UncensorDropdown.Value = 0;
+                                UncensorGUID = null;
+                                if (ChaControl.sex == 1)
+                                    DisplayBalls = false;
+                            }
+                            else
+                            {
+                                UncensorDropdown.Value = UncensorList.IndexOf(UncensorGUID) == -1 ? 0 : UncensorList.IndexOf(UncensorGUID);
+                                BallsToggle.Value = DisplayBalls;
+                            }
                         }
                     }
                     else
