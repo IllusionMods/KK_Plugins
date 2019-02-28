@@ -32,6 +32,7 @@ namespace KK_UncensorSelector
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
         public const string Version = "2.5";
+        private const string UncensorKeyRandom = "Random";
         internal static ChaControl CurrentCharacter;
         internal static ChaFileControl CurrentChaFile;
         public static readonly Dictionary<string, UncensorData> UncensorDictionary = new Dictionary<string, UncensorData>();
@@ -119,8 +120,8 @@ namespace KK_UncensorSelector
             FutaDisplay = new ConfigWrapper<string>("FutaDisplay", PluginNameInternal, "Both");
             EnableTraps = new ConfigWrapper<bool>("EnableTraps", PluginNameInternal, true);
             EnableFutas = new ConfigWrapper<bool>("EnableFutas", PluginNameInternal, true);
-            DefaultMaleUncensor = new ConfigWrapper<string>("DefaultMaleUncensor", PluginNameInternal, "None");
-            DefaultFemaleUncensor = new ConfigWrapper<string>("DefaultFemaleUncensor", PluginNameInternal, "None");
+            DefaultMaleUncensor = new ConfigWrapper<string>("DefaultMaleUncensor", PluginNameInternal, UncensorKeyRandom);
+            DefaultFemaleUncensor = new ConfigWrapper<string>("DefaultFemaleUncensor", PluginNameInternal, UncensorKeyRandom);
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
@@ -128,8 +129,8 @@ namespace KK_UncensorSelector
             UncensorList.Clear();
             UncensorListDisplay.Clear();
 
-            UncensorList.Add("None");
-            UncensorListDisplay.Add("None");
+            UncensorList.Add("Default");
+            UncensorListDisplay.Add("Default");
 
             foreach (UncensorData uncensor in UncensorDictionary.Select(x => x.Value))
             {
@@ -150,11 +151,11 @@ namespace KK_UncensorSelector
                     return;
                 }
 
+                GetController(MakerAPI.GetMakerBase().chaCtrl).UncensorGUID = UncensorDropdown.Value == 0 ? null : SelectedUncensor.UncensorGUID;
                 DoingForcedReload = true;
                 MakerAPI.GetMakerBase().chaCtrl.Reload(true, true, true, false);
                 DoingForcedReload = false;
                 SetBallsVisibility(MakerAPI.GetMakerBase().chaCtrl, BallsToggle.Value);
-                GetController(MakerAPI.GetMakerBase().chaCtrl).UncensorGUID = UncensorDropdown.Value == 0 ? null : SelectedUncensor.UncensorGUID;
             }
 
             BallsToggle = e.AddControl(new MakerToggle(MakerConstants.Body.All, "Display balls", this));
@@ -215,10 +216,11 @@ namespace KK_UncensorSelector
                         if (mesh.name == part.Object)
                             UpdateMeshRenderer(chaControlTemp.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(x => x.name == part.Object), mesh, true);
             }
-
+            
             Singleton<Character>.Instance.DeleteChara(chaControlTemp);
             CurrentCharacter = chaControl;
         }
+
         /// <summary>
         /// Rebuild the character's skin textures
         /// </summary>
@@ -339,6 +341,9 @@ namespace KK_UncensorSelector
             if (UncensorListFull.Count > 0)
                 return UncensorListFull.ToArray();
 
+            UncensorListFull.Add("None (censored)");
+            UncensorListFull.Add(UncensorKeyRandom);
+
             foreach (var manifest in LoadedManifests)
             {
                 XDocument manifestDocument = manifest.manifestDocument;
@@ -445,8 +450,36 @@ namespace KK_UncensorSelector
 
                     //If no uncensor has been found get the default uncensor
                     if (!MakerAPI.InsideMaker && uncensor == null)
-                        if (UncensorDictionary.TryGetValue(character.sex == 0 ? DefaultMaleUncensor.Value : DefaultFemaleUncensor.Value, out UncensorData defaultUncensor))
-                            uncensor = defaultUncensor;
+                    {
+                        var male = character.sex == 0;
+                        var uncensorKey = male ? DefaultMaleUncensor.Value : DefaultFemaleUncensor.Value;
+
+                        if (uncensorKey == UncensorKeyRandom)
+                        {
+                            // Calculate a value that is unique for a character and unlikely to change
+                            // Use System.Random to spread the results out to full int span while keeping them deterministic (so most girls don't use the same uncensor)
+                            var charaHash = new System.Random(character.fileParam.birthDay + character.fileParam.personality + character.fileParam.bloodType).Next();
+
+                            // Only randomize vanilla uncensors, no surprise futas
+                            var gender = male ? Gender.Male : Gender.Female;
+
+                            // Find a close match that is unlikely to change even if number of uncensors change
+                            var query = from unc in UncensorDictionary
+                                        where unc.Value.Gender == gender
+                                        let uncHash = new System.Random(unc.Key.GetHashCode()).Next()
+                                        orderby Mathf.Abs(uncHash - charaHash)
+                                        select unc.Value;
+
+                            var closestUncensor = query.FirstOrDefault();
+                            if (closestUncensor != null)
+                                uncensor = closestUncensor;
+                        }
+                        else
+                        {
+                            if (UncensorDictionary.TryGetValue(uncensorKey, out UncensorData defaultUncensor))
+                                uncensor = defaultUncensor;
+                        }
+                    }
                 }
 
                 return uncensor;
@@ -710,20 +743,22 @@ namespace KK_UncensorSelector
                 {
                     if (MakerAPI.GetCharacterLoadFlags().Body)
                     {
-                        //Change the UI settings which will update the character's uncensor
-
-                        if (UncensorList.IndexOf(UncensorGUID) == -1)
+                        if (MakerAPI.GetMakerBase().chaCtrl == ChaControl)
                         {
-                            //The loaded uncensor isn't on the list, possibly due to being forbidden
-                            UncensorDropdown.Value = 0;
-                            UncensorGUID = null;
-                            if (ChaControl.sex == 1)
-                                DisplayBalls = false;
-                        }
-                        else
-                        {
-                            UncensorDropdown.Value = UncensorList.IndexOf(UncensorGUID) == -1 ? 0 : UncensorList.IndexOf(UncensorGUID);
-                            BallsToggle.Value = DisplayBalls;
+                            //Change the UI settings which will update the character's uncensor
+                            if (UncensorList.IndexOf(UncensorGUID) == -1)
+                            {
+                                //The loaded uncensor isn't on the list, possibly due to being forbidden
+                                UncensorDropdown.Value = 0;
+                                UncensorGUID = null;
+                                if (ChaControl.sex == 1)
+                                    DisplayBalls = false;
+                            }
+                            else
+                            {
+                                UncensorDropdown.Value = UncensorList.IndexOf(UncensorGUID) == -1 ? 0 : UncensorList.IndexOf(UncensorGUID);
+                                BallsToggle.Value = DisplayBalls;
+                            }
                         }
                     }
                     else
