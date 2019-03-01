@@ -67,7 +67,7 @@ v1.3 Now corrects personalities when using the random button<br/>
 v1.3.1 Removed log messages. Oops.
 </details>
 
-#### KK_UncensorSelector v2.5 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v40/KK_UncensorSelector.v2.5.zip)
+#### KK_UncensorSelector v2.6 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v44/KK_UncensorSelector.v2.6.zip)
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
@@ -82,7 +82,8 @@ v2.1 Reduce reliance on KK_UncensorSelector Base.zipmod<br/>
 v2.2 Removed the ability to specify _low assets. A matching _low asset is expected to exist for everything that requires one.<br/>
 v2.3 Added some warning labels<br/>
 v2.4 Fixed demosaic not working sometimes<br/>
-v2.5 ConfigManager dropdown for GUID selection, fixed color matching bug in chara maker
+v2.5 ConfigManager dropdown for GUID selection, fixed color matching bug in chara maker<br/>
+v2.6 Uncensors now change much more quickly without causing lag in the character maker. Random can be selected as an option for the default uncensor, any character with no uncensor selected will use a random one (Thanks @ManlyMarco). Uncensors can be exluded from random selection with a modification to the manifest.xml.
 </details>
 
 #### KK_Subtitles v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v23/KK_Subtitles.v1.1.zip)
