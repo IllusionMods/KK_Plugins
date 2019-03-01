@@ -31,7 +31,7 @@ namespace KK_UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "2.6";
+        public const string Version = "2.6.1";
         private const string UncensorKeyRandom = "Random";
         internal static ChaControl CurrentCharacter;
         internal static ChaFileControl CurrentChaFile;
@@ -206,6 +206,8 @@ namespace KK_UncensorSelector
         {
             string OOBase = uncensor?.OOBase ?? Defaults.OOBase;
             string Asset = uncensor?.Asset ?? (chaControl.sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale);
+            if (chaControl.hiPoly == false)
+                Asset += "_low";
 
             GameObject uncensorCopy = CommonLib.LoadAsset<GameObject>(OOBase, Asset, true);
             foreach (var mesh in chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
