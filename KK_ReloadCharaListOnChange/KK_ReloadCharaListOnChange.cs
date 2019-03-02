@@ -20,7 +20,7 @@ namespace KK_ReloadCharaListOnChange
     {
         public const string GUID = "com.deathweasel.bepinex.reloadcharalistonchange";
         public const string PluginName = "Reload Character List On Change";
-        public const string Version = "1.4";
+        public const string Version = "1.4.1";
         private static FileSystemWatcher CharacterCardWatcher;
         private static FileSystemWatcher CoordinateCardWatcher;
         private static FileSystemWatcher StudioFemaleCardWatcher;
