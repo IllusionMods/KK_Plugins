@@ -33,14 +33,15 @@ When the category is - the extended data will be stripped and will be treated as
 #### KK_CutsceneLockupFix v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_CutsceneLockupFix.v1.0.zip)
 Adds some extra error handling to the game so certain hair mods wont lock up the whole game when they appear in a cutscene.
 
-#### KK_ReloadCharaListOnChange v1.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v18/KK_ReloadCharaListOnChange.v1.4.zip)
+#### KK_ReloadCharaListOnChange v1.4.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v46/KK_ReloadCharaListOnChange.v1.4.1.zip)
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.
 
 <details><summary>Change Log</summary>
-v1.1 Fixed new coordinates saved from within the game not being handled correctly  
-v1.2 Fixed error when exiting the chara maker  
-v1.3 Updated for plugin compatibility  
-v1.4 Studio support
+v1.1 Fixed new coordinates saved from within the game not being handled correctly<br/>
+v1.2 Fixed error when exiting the chara maker<br/>
+v1.3 Updated for plugin compatibility<br/>
+v1.4 Studio support<br/>
+v1.4.1 Compatibility with BepisPlugins versions higher than r8
 </details>
 
 #### KK_InvisibleBody v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v7/KK_InvisibleBody.v1.1.zip)
@@ -122,9 +123,6 @@ Miscellaneous fixes aimed at improving the performance of the game.<br/>
 v1.1 Now uses full path instead of file name for compatibility with Marco's KK_BrowserFolders
 </details>
 
-#### KK_ANIMATIONOVERDRIVE - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v42/KK_ANIMATIONOVERDRIVE.zip)
-gotta go fast<br/>
-
 
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
@@ -156,3 +154,9 @@ v1.0.1 Fixed configs, changed hotkey, made it configurable.
 
 #### KK_FreeHRandom v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_FreeHRandom.v1.0.zip)
 Press F5 at Free H selection screen to get random characters for your H session.
+
+#### KK_ANIMATIONOVERDRIVE - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v42/KK_ANIMATIONOVERDRIVE.zip)
+Type a value in to a gimmick's speed text box to use speeds higher than normally allowed.<br/>
+
+#### KK_HCharaAdjustment v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v46/KK_HCharaAdjustment.v1.0.zip)
+Adjust the position of the female character in H scene by pressing some hotkeys, listed [here](https://github.com/DeathWeasel1337/KK_Plugins/blob/master/KK_HCharaAdjustment/KK_HCharaAdjustment.cs#L40).
