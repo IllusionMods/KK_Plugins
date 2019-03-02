@@ -41,6 +41,9 @@ namespace KK_ReloadCharaListOnChange
         private static CardEventType EventType;
         private static readonly ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim();
 
+        private static object ExtendedSaveInstance;
+        private static Version LoadedVersionNumber;
+
         public void Main()
         {
             SceneManager.sceneUnloaded += SceneUnloaded;
@@ -49,6 +52,9 @@ namespace KK_ReloadCharaListOnChange
             harmony.PatchAll(typeof(KK_ReloadCharaListOnChange));
             harmony.Patch(typeof(Studio.MPCharCtrl).GetNestedType("CostumeInfo", BindingFlags.NonPublic).GetMethod("InitFileList", AccessTools.all),
                           new HarmonyMethod(typeof(KK_ReloadCharaListOnChange).GetMethod(nameof(StudioCoordinateListPrefix), AccessTools.all)), null);
+
+            ExtendedSaveInstance = GetComponent<ExtensibleSaveFormat.ExtendedSave>();
+            LoadedVersionNumber = MetadataHelper.GetMetadata(ExtendedSaveInstance).Version;
         }
         /// <summary>
         /// When cards are added or removed from the folder set a flag
@@ -87,6 +93,28 @@ namespace KK_ReloadCharaListOnChange
             rwlock.ExitWriteLock();
         }
         /// <summary>
+        /// Get or set the value that determines whether card load events fire.
+        /// It's different depending on the BepisPlugins version so we use reflection to get it depending on the version the user is running.
+        /// </summary>
+        private static bool LoadEvents
+        {
+            get
+            {
+                if (LoadedVersionNumber.Major <= 8 && LoadedVersionNumber.MajorRevision <= 0 && LoadedVersionNumber.Minor <= 0 && LoadedVersionNumber.MinorRevision <= 0)
+                    return (bool)typeof(Sideloader.AutoResolver.Hooks).GetProperty("IsResolving").GetValue(null, null);
+                else
+                    return (bool)Traverse.Create(ExtendedSaveInstance).Field("LoadEventsEnabled").GetValue();
+            }
+            set
+            {
+                //Version 8.0 and below
+                if (LoadedVersionNumber.Major <= 8 && LoadedVersionNumber.MajorRevision <= 0 && LoadedVersionNumber.Minor <= 0 && LoadedVersionNumber.MinorRevision <= 0)
+                    typeof(Sideloader.AutoResolver.Hooks).GetProperty("IsResolving").SetValue(null, value, null);
+                else//Version 8.0.0.1 and above
+                    Traverse.Create(ExtendedSaveInstance).Field("LoadEventsEnabled").SetValue(value);
+            }
+        }
+        /// <summary>
         /// Refresh the list
         /// </summary>
         private static void RefreshList()
@@ -94,7 +122,7 @@ namespace KK_ReloadCharaListOnChange
             try
             {
                 //Turn off resolving to prevent spam since modded stuff isn't relevent for making this list.
-                Sideloader.AutoResolver.Hooks.IsResolving = false;
+                LoadEvents = false;
                 switch (EventType)
                 {
                     case CardEventType.CharaMakerCharacter:
@@ -124,7 +152,7 @@ namespace KK_ReloadCharaListOnChange
             }
             finally
             {
-                Sideloader.AutoResolver.Hooks.IsResolving = true;
+                LoadEvents = true;
             }
         }
         /// <summary>
