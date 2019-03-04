@@ -7,7 +7,6 @@ using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using KKAPI.Studio;
-using Manager;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -251,6 +250,8 @@ namespace KK_UncensorSelector
             if (src == null || dst == null)
                 return;
 
+            var uvCopy = src.sharedMesh.uv.ToArray();
+
             //Copy the mesh
             dst.sharedMesh = src.sharedMesh;
 
@@ -270,6 +271,8 @@ namespace KK_UncensorSelector
 
             if (copyMaterials)
                 dst.materials = src.materials;
+
+            src.sharedMesh.uv = uvCopy;
         }
         /// <summary>
         /// Do color matching for every object configured in the manifest.xml
