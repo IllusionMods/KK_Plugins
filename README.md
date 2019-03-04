@@ -123,6 +123,11 @@ Miscellaneous fixes aimed at improving the performance of the game.<br/>
 v1.1 Now uses full path instead of file name for compatibility with Marco's KK_BrowserFolders
 </details>
 
+#### KK_RandomCharacterGenerator v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v47/KK_RandomCharacterGenerator.v1.0.zip)
+Generates random characters in the character maker.<br/>
+
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
+
 
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
