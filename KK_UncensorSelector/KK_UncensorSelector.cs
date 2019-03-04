@@ -166,7 +166,7 @@ namespace KK_UncensorSelector
                 SetBallsVisibility(MakerAPI.GetMakerBase().chaCtrl, BallsToggle.Value);
                 GetController(MakerAPI.GetMakerBase().chaCtrl).DisplayBalls = BallsToggle.Value;
             }
-            e.AddControl(new MakerText("Warning: Your selected default uncensor will not be displayed in maker, but it will be used elsewhere.", MakerConstants.Body.All, this) { TextColor = Color.yellow });
+            e.AddControl(new MakerText("You can set the default uncensor in plugin settings. Warning: It will NOT be displayed in the maker.", MakerConstants.Body.All, this) { TextColor = Color.yellow });
             e.AddControl(new MakerText("Warning: Some uncensors might not be displayed fully in maker, but they will work correctly elsewhere.", MakerConstants.Body.All, this) { TextColor = Color.yellow });
         }
 
