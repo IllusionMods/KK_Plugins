@@ -15,7 +15,6 @@ using System.Reflection;
 using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
-using static Sideloader.Sideloader;
 using Logger = BepInEx.Logger;
 
 namespace KK_UncensorSelector
@@ -37,7 +36,10 @@ namespace KK_UncensorSelector
         public static readonly Dictionary<string, UncensorData> UncensorDictionary = new Dictionary<string, UncensorData>();
         public static readonly List<string> UncensorList = new List<string>();
         public static readonly List<string> UncensorListDisplay = new List<string>();
-        public static readonly List<string> UncensorListFull = new List<string>();
+        /// <summary>
+        /// List used in config manager dropdown
+        /// </summary>
+        public static readonly Dictionary<string, string> UncensorConfigListFull = new Dictionary<string, string>();
         private static MakerDropdown UncensorDropdown;
         private static MakerToggle BallsToggle;
         internal static bool DoUncensorDropdownEvents = false;
@@ -76,12 +78,12 @@ namespace KK_UncensorSelector
         [DisplayName("Default male uncensor")]
         [Category("Config")]
         [Description("GUID of the uncensor to use if character does not have one set.")]
-        [AcceptableValueList(nameof(GenerateUncensorList))]
+        [AcceptableValueList(nameof(GetConfigUncensorList))]
         public static ConfigWrapper<string> DefaultMaleUncensor { get; private set; }
         [DisplayName("Default female uncensor")]
         [Category("Config")]
         [Description("GUID of the uncensor to use if character does not have one set.")]
-        [AcceptableValueList(nameof(GenerateUncensorList))]
+        [AcceptableValueList(nameof(GetConfigUncensorList))]
         public static ConfigWrapper<string> DefaultFemaleUncensor { get; private set; }
         #endregion
 
@@ -108,7 +110,7 @@ namespace KK_UncensorSelector
             MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
             harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), BindingFlags.Static | BindingFlags.Public)));
 
-            GenerateUncensorList();
+            PopulateUncensorLists();
 
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerExiting += (s, e) => DoUncensorDropdownEvents = false;
@@ -120,8 +122,26 @@ namespace KK_UncensorSelector
             FutaDisplay = new ConfigWrapper<string>("FutaDisplay", PluginNameInternal, "Both");
             EnableTraps = new ConfigWrapper<bool>("EnableTraps", PluginNameInternal, true);
             EnableFutas = new ConfigWrapper<bool>("EnableFutas", PluginNameInternal, true);
-            DefaultMaleUncensor = new ConfigWrapper<string>("DefaultMaleUncensor", PluginNameInternal, UncensorKeyRandom);
-            DefaultFemaleUncensor = new ConfigWrapper<string>("DefaultFemaleUncensor", PluginNameInternal, UncensorKeyRandom);
+
+            DefaultMaleUncensor = new ConfigWrapper<string>("DefaultMaleUncensor", PluginNameInternal, GuidToDisplayName, DisplayNameToGuid, UncensorKeyRandom);
+            DefaultFemaleUncensor = new ConfigWrapper<string>("DefaultFemaleUncensor", PluginNameInternal, GuidToDisplayName, DisplayNameToGuid, UncensorKeyRandom);
+        }
+
+        private static string DisplayNameToGuid(string displayName)
+        {
+            UncensorConfigListFull.TryGetValue(displayName, out var guid);
+            return guid;
+        }
+
+        private static string GuidToDisplayName(string guid)
+        {
+            return UncensorConfigListFull.FirstOrDefault(x => x.Value == guid).Key;
+        }
+
+        private static string GetDefaultUncensorGuid(bool male)
+        {
+            var uncensorName = male ? DefaultMaleUncensor.Value : DefaultFemaleUncensor.Value;
+            return DisplayNameToGuid(uncensorName);
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
@@ -132,12 +152,17 @@ namespace KK_UncensorSelector
             UncensorList.Add("Default");
             UncensorListDisplay.Add("Default");
 
-            foreach (UncensorData uncensor in UncensorDictionary.Select(x => x.Value))
+            var characterSex = (byte)MakerAPI.GetMakerSex();
+
+            foreach (UncensorData uncensor in UncensorDictionary.Select(x => x.Value)
+                .OrderByDescending(x => x.Gender == (Gender)characterSex)
+                .ThenBy(x => x.Gender)
+                .ThenBy(x => x.DisplayName))
             {
-                if (UncensorAllowedInMaker(uncensor.Gender, (byte)MakerAPI.GetMakerSex()))
+                if (UncensorAllowedInMaker(uncensor.Gender, characterSex))
                 {
                     UncensorList.Add(uncensor.UncensorGUID);
-                    UncensorListDisplay.Add($"[{uncensor.Gender.ToString()}]{uncensor.DisplayName}");
+                    UncensorListDisplay.Add(GuidToDisplayName(uncensor.UncensorGUID));
                 }
             }
 
@@ -337,20 +362,23 @@ namespace KK_UncensorSelector
         }
         #endregion
         /// <summary>
-        /// Read all the manifest.xml files and generate a dictionary of uncensors
+        /// Read all the manifest.xml files and generate a dictionary of uncensors to be used in config manager dropdown
+        /// Needs to be an instance method
         /// </summary>
-        private object[] GenerateUncensorList()
+        private object[] GetConfigUncensorList()
         {
-            if (LoadedManifests == null)
-                return null;
+            return UncensorConfigListFull?.Keys.OrderBy(x => x[0] == '[').ThenBy(x => x).Cast<object>().ToArray();
+        }
 
-            if (UncensorListFull.Count > 0)
-                return UncensorListFull.ToArray();
+        private static void PopulateUncensorLists()
+        {
+            UncensorDictionary.Clear();
+            UncensorConfigListFull.Clear();
 
-            UncensorListFull.Add("None (censored)");
-            UncensorListFull.Add(UncensorKeyRandom);
+            UncensorConfigListFull.Add("None (censored)", "None");
+            UncensorConfigListFull.Add("Random (sticks to characters)", UncensorKeyRandom);
 
-            foreach (var manifest in LoadedManifests)
+            foreach (var manifest in Sideloader.Sideloader.LoadedManifests)
             {
                 XDocument manifestDocument = manifest.manifestDocument;
                 XElement uncensorSelectorElement = manifestDocument?.Root?.Element(PluginNameInternal);
@@ -375,13 +403,12 @@ namespace KK_UncensorSelector
                             continue;
                         }
                         UncensorDictionary.Add(uncensor.UncensorGUID, uncensor);
-                        UncensorListFull.Add(uncensor.UncensorGUID);
+                        UncensorConfigListFull.Add($"[{uncensor.Gender.ToString()}] {uncensor.DisplayName}", uncensor.UncensorGUID);
                     }
                 }
             }
-
-            return UncensorListFull.ToArray();
         }
+
         /// <summary>
         /// Get the UncensorData for the specified character
         /// </summary>
@@ -458,7 +485,7 @@ namespace KK_UncensorSelector
                     if (!MakerAPI.InsideMaker && uncensor == null)
                     {
                         var male = character.sex == 0;
-                        var uncensorKey = male ? DefaultMaleUncensor.Value : DefaultFemaleUncensor.Value;
+                        var uncensorKey = GetDefaultUncensorGuid(male);
 
                         if (uncensorKey == UncensorKeyRandom)
                         {
@@ -493,6 +520,7 @@ namespace KK_UncensorSelector
             catch { }
             return null;
         }
+
         /// <summary>
         /// Check if the uncensor is permitted in the character maker
         /// </summary>
