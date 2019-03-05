@@ -32,18 +32,14 @@ namespace KK_UncensorSelector
         public const string Version = "2.6.1";
         private const string UncensorKeyRandom = "Random";
         internal static ChaControl CurrentCharacter;
-        internal static ChaFileControl CurrentChaFile;
         public static readonly Dictionary<string, UncensorData> UncensorDictionary = new Dictionary<string, UncensorData>();
         public static readonly List<string> UncensorList = new List<string>();
         public static readonly List<string> UncensorListDisplay = new List<string>();
-        /// <summary>
-        /// List used in config manager dropdown
-        /// </summary>
+        /// <summary> List used in config manager dropdown </summary>
         public static readonly Dictionary<string, string> UncensorConfigListFull = new Dictionary<string, string>();
         private static MakerDropdown UncensorDropdown;
         private static MakerToggle BallsToggle;
         internal static bool DoUncensorDropdownEvents = false;
-        internal static bool DoingForcedReload = false;
         private static readonly HashSet<string> BodyParts = new HashSet<string>() { "o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster" };
 
         #region Config
@@ -177,9 +173,7 @@ namespace KK_UncensorSelector
                 }
 
                 GetController(MakerAPI.GetMakerBase().chaCtrl).UncensorGUID = UncensorDropdown.Value == 0 ? null : SelectedUncensor.UncensorGUID;
-                DoingForcedReload = true;
-                MakerAPI.GetMakerBase().chaCtrl.Reload(true, true, true, false);
-                DoingForcedReload = false;
+                ReloadCharacterUncensor(MakerAPI.GetMakerBase().chaCtrl, SelectedUncensor, true, true);
                 SetBallsVisibility(MakerAPI.GetMakerBase().chaCtrl, BallsToggle.Value);
             }
 
@@ -191,7 +185,7 @@ namespace KK_UncensorSelector
                 SetBallsVisibility(MakerAPI.GetMakerBase().chaCtrl, BallsToggle.Value);
                 GetController(MakerAPI.GetMakerBase().chaCtrl).DisplayBalls = BallsToggle.Value;
             }
-            e.AddControl(new MakerText("You can set the default uncensor in plugin settings. Warning: It will NOT be displayed in the maker.", MakerConstants.Body.All, this) { TextColor = Color.yellow });
+            e.AddControl(new MakerText("You can set a default uncensor in plugin settings. Warning: It will not be displayed in the maker.", MakerConstants.Body.All, this) { TextColor = Color.yellow });
             e.AddControl(new MakerText("Warning: Some uncensors might not be displayed fully in maker, but they will work correctly elsewhere.", MakerConstants.Body.All, this) { TextColor = Color.yellow });
         }
 
@@ -202,26 +196,32 @@ namespace KK_UncensorSelector
                 balls.gameObject.GetComponent<Renderer>().enabled = visible;
         }
         #region Uncensor Update
-        internal static void ReloadCharacterUncensor(ChaControl chaControl, bool updateMesh = true)
+        internal static void ReloadCharacterUncensor(ChaControl chaControl, UncensorData uncensor, bool updateMesh, bool updateTextures)
         {
-            UncensorData uncensor = GetUncensorData(chaControl);
             bool temp = chaControl.fileStatus.visibleSonAlways;
 
             if (updateMesh)
                 UpdateUncensor(chaControl, uncensor);
-            UpdateSkin(chaControl, uncensor);
-            SetChestNormals(chaControl, uncensor);
-            ColorMatchMaterials(chaControl, uncensor);
 
-            chaControl.customMatBody.SetTexture(ChaShader._AlphaMask, Traverse.Create(chaControl).Property("texBodyAlphaMask").GetValue() as Texture);
-            Traverse.Create(chaControl).Property("updateAlphaMask").SetValue(true);
+            if (updateTextures)
+            {
+                UpdateSkin(chaControl, uncensor);
+                SetChestNormals(chaControl, uncensor);
+                ColorMatchMaterials(chaControl, uncensor);
 
-            if (StudioAPI.InsideStudio)
-                chaControl.fileStatus.visibleSonAlways = temp;
-            else if (uncensor == null)
-                chaControl.fileStatus.visibleSonAlways = chaControl.sex == 0;
-            else
-                chaControl.fileStatus.visibleSonAlways = uncensor.ShowPenis;
+                chaControl.customMatBody.SetTexture(ChaShader._AlphaMask, Traverse.Create(chaControl).Property("texBodyAlphaMask").GetValue() as Texture);
+                Traverse.Create(chaControl).Property("updateAlphaMask").SetValue(true);
+            }
+
+            if (updateMesh)
+            {
+                if (StudioAPI.InsideStudio)
+                    chaControl.fileStatus.visibleSonAlways = temp;
+                else if (uncensor == null)
+                    chaControl.fileStatus.visibleSonAlways = chaControl.sex == 0;
+                else
+                    chaControl.fileStatus.visibleSonAlways = uncensor.ShowPenis;
+            }
         }
         /// <summary>
         /// Load the body asset, copy its mesh, and delete it
@@ -247,18 +247,12 @@ namespace KK_UncensorSelector
             }
             Destroy(uncensorCopy);
         }
-
         /// <summary>
         /// Rebuild the character's skin textures
         /// </summary>
         private static void UpdateSkin(ChaControl chaControl, UncensorData uncensor)
         {
-            int num = chaControl.hiPoly ? 2048 : 512;
-            string mm_base = uncensor?.MMBase ?? Defaults.MMBase;
-            string mat = SetBodyMaterial(chaControl.sex, uncensor);
-            string matCreate = uncensor?.BodyMaterialCreate ?? Defaults.BodyMaterialCreate;
-
-            chaControl.customTexCtrlBody.Initialize(mm_base, mat, string.Empty, mm_base, matCreate, string.Empty, num, num);
+            Traverse.Create(chaControl).Method("InitBaseCustomTextureBody", new object[] { chaControl.sex }).GetValue();
             chaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
             chaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
             chaControl.AddUpdateCMBodyLayoutFlags(true, true);
@@ -274,8 +268,6 @@ namespace KK_UncensorSelector
         {
             if (src == null || dst == null)
                 return;
-
-            var uvCopy = src.sharedMesh.uv.ToArray();
 
             //Copy the mesh
             dst.sharedMesh = src.sharedMesh;
@@ -296,8 +288,6 @@ namespace KK_UncensorSelector
 
             if (copyMaterials)
                 dst.materials = src.materials;
-
-            src.sharedMesh.uv = uvCopy;
         }
         /// <summary>
         /// Do color matching for every object configured in the manifest.xml
@@ -363,7 +353,6 @@ namespace KK_UncensorSelector
         #endregion
         /// <summary>
         /// Read all the manifest.xml files and generate a dictionary of uncensors to be used in config manager dropdown
-        /// Needs to be an instance method
         /// </summary>
         private object[] GetConfigUncensorList()
         {
@@ -376,7 +365,7 @@ namespace KK_UncensorSelector
             UncensorConfigListFull.Clear();
 
             UncensorConfigListFull.Add("None (censored)", "None");
-            UncensorConfigListFull.Add("Random (sticks to characters)", UncensorKeyRandom);
+            UncensorConfigListFull.Add("Random", UncensorKeyRandom);
 
             foreach (var manifest in Sideloader.Sideloader.LoadedManifests)
             {
@@ -418,22 +407,7 @@ namespace KK_UncensorSelector
             {
                 UncensorData uncensor = null;
 
-                if (MakerAPI.InsideAndLoaded && DoingForcedReload)
-                    return SelectedUncensor;
-                else if (character?.chaFile == null && CurrentChaFile != null)
-                {
-                    //ChaFile hasn't been initialized yet, get the one set by the ChaControl.Initialize hook
-                    PluginData extendedData = ExtendedSave.GetExtendedDataById(CurrentChaFile, GUID);
-                    if (extendedData != null)
-                    {
-                        if (extendedData.data.TryGetValue("UncensorGUID", out var uncensorGUID))
-                        {
-                            if (uncensorGUID != null && UncensorDictionary.TryGetValue(uncensorGUID.ToString(), out var uncensorData))
-                                uncensor = uncensorData;
-                        }
-                    }
-                }
-                else if (MakerAPI.InsideAndLoaded)
+                if (MakerAPI.InsideAndLoaded)
                 {
                     if (GetController(character)?.UncensorGUID != null)
                     {
@@ -739,7 +713,6 @@ namespace KK_UncensorSelector
         {
             internal bool DisplayBalls { get; set; }
             internal string UncensorGUID { get; set; }
-            internal bool DidReload { get; set; }
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
@@ -793,7 +766,7 @@ namespace KK_UncensorSelector
                             }
                             else
                             {
-                                UncensorDropdown.Value = UncensorList.IndexOf(UncensorGUID) == -1 ? 0 : UncensorList.IndexOf(UncensorGUID);
+                                UncensorDropdown.Value = UncensorList.IndexOf(UncensorGUID);
                                 BallsToggle.Value = DisplayBalls;
                             }
                         }
@@ -804,24 +777,17 @@ namespace KK_UncensorSelector
                         UncensorGUID = UncensorDropdown.Value == 0 ? null : UncensorList[UncensorDropdown.Value];
                         DisplayBalls = BallsToggle.Value;
                     }
+
                     if (UncensorList.IndexOf(UncensorGUID) == -1 || GetUncensorData(ChaControl) == null)
                         ChaControl.fileStatus.visibleSonAlways = ChaControl.sex == 0;
                     else
                         ChaControl.fileStatus.visibleSonAlways = GetUncensorData(ChaControl).ShowPenis;
-
-                    ColorMatchMaterials(ChaControl, GetUncensorData(ChaControl));
                 }
                 else
                 {
+                    //Update textures on every load or reload because in some cases they may not have loaded correctly
+                    ReloadCharacterUncensor(ChaControl, GetUncensorData(ChaControl), false, true);
                     SetBallsVisibility(ChaControl, DisplayBalls);
-                }
-
-                //If the chafile is null the character may have loaded with the wrong mm_base information. Reload just the skin textures to fix that.
-                if (CurrentChaFile == null && !MakerAPI.InsideMaker && !DidReload)
-                {
-                    DidReload = true;
-                    CurrentChaFile = ChaControl.chaFile;
-                    ReloadCharacterUncensor(ChaControl, false);
                 }
             }
         }

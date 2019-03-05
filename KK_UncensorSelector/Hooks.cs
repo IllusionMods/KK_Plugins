@@ -13,11 +13,7 @@ namespace KK_UncensorSelector
     {
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
         public static void CreateBodyTexturePrefix(ChaControl __instance) => KK_UncensorSelector.CurrentCharacter = __instance;
-        public static void InitializePrefix(ChaControl __instance, ChaFileControl _chaFile)
-        {
-            KK_UncensorSelector.CurrentCharacter = __instance;
-            KK_UncensorSelector.CurrentChaFile = _chaFile;
-        }
+        public static void InitializePrefix(ChaControl __instance, ChaFileControl _chaFile) => KK_UncensorSelector.CurrentCharacter = __instance;
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadAsync))]
         public static void LoadAsyncPrefix(ChaControl __instance) => KK_UncensorSelector.CurrentCharacter = __instance;
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
@@ -139,13 +135,10 @@ namespace KK_UncensorSelector
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload))]
         public static void Reload(ChaControl __instance, bool noChangeBody)
         {
-            if (noChangeBody)
+            if (noChangeBody || MakerAPI.InsideAndLoaded)
                 return;
 
-            if (MakerAPI.InsideAndLoaded && !KK_UncensorSelector.DoingForcedReload)
-                return;
-
-            KK_UncensorSelector.ReloadCharacterUncensor(__instance);
+            KK_UncensorSelector.ReloadCharacterUncensor(__instance, KK_UncensorSelector.GetUncensorData(__instance), true, false);
         }
         /// <summary>
         /// LineMask texture assigned to the material, toggled on and off for any color matching parts along with the body
