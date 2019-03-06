@@ -29,7 +29,7 @@ namespace KK_UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "2.6.1";
+        public const string Version = "2.7";
         private const string UncensorKeyRandom = "Random";
         internal static ChaControl CurrentCharacter;
         public static readonly Dictionary<string, UncensorData> UncensorDictionary = new Dictionary<string, UncensorData>();
