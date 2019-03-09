@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace KK_UncensorSelector
 {
-   partial class KK_UncensorSelector
+    partial class KK_UncensorSelector
     {
         public class BodyData
         {
@@ -19,8 +19,6 @@ namespace KK_UncensorSelector
             public string BodyMaterial;
             public string BodyMaterialCreate;
             public string Asset;
-            public string MaleAlternate;
-            public string FemaleAlternate;
             public List<ColorMatchPart> ColorMatchList = new List<ColorMatchPart>();
             public List<string> AdditionalParts = new List<string>();
 
@@ -46,8 +44,6 @@ namespace KK_UncensorSelector
                     BodyMainTex = oo_base.Element("mainTex")?.Value;
                     BodyColorMask = oo_base.Element("colorMask")?.Value;
                     Normals = oo_base.Element("normals")?.Value;
-                    MaleAlternate = oo_base.Element("maleAlternate")?.Value;
-                    FemaleAlternate = oo_base.Element("femaleAlternate")?.Value;
 
                     foreach (XElement parts in oo_base.Elements("additionalPart"))
                     {
@@ -81,14 +77,16 @@ namespace KK_UncensorSelector
                 MMBase = MMBase.IsNullOrWhiteSpace() ? Defaults.MMBase : MMBase;
                 OOBase = OOBase.IsNullOrWhiteSpace() ? Defaults.OOBase : OOBase;
                 BodyGUID = BodyGUID.IsNullOrWhiteSpace() ? null : BodyGUID;
-                DisplayName = DisplayName.IsNullOrWhiteSpace() ? null : DisplayName;
+                DisplayName = DisplayName.IsNullOrWhiteSpace() ? BodyGUID : DisplayName;
                 Normals = Normals.IsNullOrWhiteSpace() ? Defaults.Normals : Normals;
                 BodyMainTex = BodyMainTex.IsNullOrWhiteSpace() ? Defaults.BodyMainTex : BodyMainTex;
-                BodyColorMask = BodyColorMask.IsNullOrWhiteSpace() ? null : BodyColorMask;
-                Asset = Asset.IsNullOrWhiteSpace() ? null : Asset;
+                BodyColorMask = BodyColorMask.IsNullOrWhiteSpace() ? Sex == 0 ? Defaults.BodyColorMaskMale : Defaults.BodyColorMaskFemale : BodyColorMask;
+                Asset = Asset.IsNullOrWhiteSpace() ? Sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale : Asset;
+                BodyMaterial = BodyMaterial.IsNullOrWhiteSpace() ? Sex == 0 ? Defaults.BodyMaterialMale : Defaults.BodyMaterialFemale : BodyMaterial;
+                BodyMaterialCreate = BodyMaterialCreate.IsNullOrWhiteSpace() ? Defaults.BodyMaterialCreate : BodyMaterialCreate;
             }
 
-            internal BodyData(byte sex,string bodyGUID, string displayName)
+            internal BodyData(byte sex, string bodyGUID, string displayName)
             {
                 OOBase = Defaults.OOBase;
                 MMBase = Defaults.MMBase;
@@ -97,6 +95,12 @@ namespace KK_UncensorSelector
                 Sex = sex;
                 Asset = Sex == 0 ? "p_cm_body_00" : "p_cf_body_00";
                 AllowRandom = false;
+                Normals = Defaults.Normals;
+                BodyMainTex = Defaults.BodyMainTex;
+                BodyColorMask = Sex == 0 ? Defaults.BodyColorMaskMale : Defaults.BodyColorMaskFemale;
+                Asset = Sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale;
+                BodyMaterial = Sex == 0 ? Defaults.BodyMaterialMale : Defaults.BodyMaterialFemale;
+                BodyMaterialCreate = Defaults.BodyMaterialCreate;
             }
         }
 
@@ -198,6 +202,7 @@ namespace KK_UncensorSelector
                 DisplayName = displayName;
                 File = "chara/oo_base.unity3d";
                 Asset = "p_cm_body_00";
+                AllowRandom = false;
             }
         }
 
@@ -235,6 +240,5 @@ namespace KK_UncensorSelector
             public static readonly string BodyMaterialFemale = "cf_m_body";
             public static readonly string BodyMaterialCreate = "cf_m_body_create";
         }
-
     }
 }

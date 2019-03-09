@@ -73,11 +73,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColorMatch.cs" />
     <Compile Include="Hooks.cs" />
     <Compile Include="KK_UncensorSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UncensorData.cs" />
+    <Compile Include="UncensorSelectorController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Template.xml" />
