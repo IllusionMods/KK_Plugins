@@ -14,7 +14,7 @@ namespace KK_HairAccessoryFix
         public const string GUID = "com.deathweasel.bepinex.hairaccessoryfix";
         public const string PluginName = "Hair Accessory Fix";
         public const string PluginNameInternal = "KK_HairAccessoryFix";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
 
         [DisplayName("Color match")]
         [Category("Config")]
@@ -37,7 +37,7 @@ namespace KK_HairAccessoryFix
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_HairAccessoryFix));
 
-            MatchColor = new ConfigWrapper<bool>("MatchColor", PluginNameInternal, true);
+            MatchColor = new ConfigWrapper<bool>("MatchColor", PluginNameInternal, false);
             MatchOutlineColor = new ConfigWrapper<bool>("MatchOutlineColor", PluginNameInternal, true);
             MatchGloss = new ConfigWrapper<bool>("MatchGloss", PluginNameInternal, true);
             SyncHotkey = new SavedKeyboardShortcut("SyncHotkey", PluginNameInternal, new KeyboardShortcut(KeyCode.F5));
