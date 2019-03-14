@@ -27,7 +27,7 @@ namespace KK_UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = nameof(KK_UncensorSelector);
-        public const string Version = "2.7.0.1";
+        public const string Version = "3.0";
         private const string UncensorKeyRandom = "Random";
         private const string UncensorKeyNone = "None";
         private const string MaleBodyDefaultValue = UncensorKeyRandom;
@@ -40,6 +40,7 @@ namespace KK_UncensorSelector
         public static readonly Dictionary<string, BodyData> BodyDictionary = new Dictionary<string, BodyData>();
         public static readonly Dictionary<string, PenisData> PenisDictionary = new Dictionary<string, PenisData>();
         public static readonly Dictionary<string, BallsData> BallsDictionary = new Dictionary<string, BallsData>();
+        public static readonly Dictionary<string, MigrationData> MigrationDictionary = new Dictionary<string, MigrationData>();
         public static readonly List<string> BodyList = new List<string>();
         public static readonly List<string> BodyListDisplay = new List<string>();
         public static readonly List<string> PenisList = new List<string>();
@@ -182,6 +183,8 @@ namespace KK_UncensorSelector
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
         {
+            e.AddControl(new MakerText(PluginName, MakerConstants.Body.All, this));
+
             BodyList.Clear();
             BodyListDisplay.Clear();
 
@@ -299,11 +302,11 @@ namespace KK_UncensorSelector
             BodyConfigListFull.Add("None (censored)", UncensorKeyNone);
             BodyConfigListFull.Add("Random", UncensorKeyRandom);
 
-            BodyData DefaultMale = new BodyData(0, "Default.Body.Male", "Default Body");
+            BodyData DefaultMale = new BodyData(0, "Default.Body.Male", "Default Body M");
             BodyDictionary.Add(DefaultMale.BodyGUID, DefaultMale);
             BodyConfigListFull.Add($"[{(DefaultMale.Sex == 0 ? "Male" : "Female")}] {DefaultMale.DisplayName}", DefaultMale.BodyGUID);
 
-            BodyData DefaultFemale = new BodyData(1, "Default.Body.Female", "Default Body");
+            BodyData DefaultFemale = new BodyData(1, "Default.Body.Female", "Default Body F");
             BodyDictionary.Add(DefaultFemale.BodyGUID, DefaultFemale);
             BodyConfigListFull.Add($"[{(DefaultFemale.Sex == 0 ? "Male" : "Female")}] {DefaultFemale.DisplayName}", DefaultFemale.BodyGUID);
 
@@ -403,6 +406,21 @@ namespace KK_UncensorSelector
                         }
                         BallsDictionary.Add(ballsData.BallsGUID, ballsData);
                         BallsConfigListFull.Add(ballsData.DisplayName, ballsData.BallsGUID);
+                    }
+                    foreach (XElement uncensorElement in uncensorSelectorElement.Elements("migration"))
+                    {
+                        MigrationData migrationData = new MigrationData(uncensorElement);
+                        if (migrationData.UncensorGUID == null)
+                        {
+                            Logger.Log(LogLevel.Warning, "Migration data failed to load due to missing Uncensor GUID.");
+                            continue;
+                        }
+                        if (migrationData.BodyGUID == null)
+                        {
+                            Logger.Log(LogLevel.Warning, "Migration data failed to load due to missing Body GUID.");
+                            continue;
+                        }
+                        MigrationDictionary.Add(migrationData.UncensorGUID, migrationData);
                     }
                 }
             }

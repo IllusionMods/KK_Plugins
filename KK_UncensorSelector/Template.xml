@@ -84,4 +84,15 @@
       <colorMask>cm_dan_f_00_mc</colorMask>
     </colorMatch>
   </balls>
+  <!--For migrating older uncensors to the new format-->
+  <migration>
+    <!--Required - The old uncensor GUID-->
+    <guidUncensor></guidUncensor>
+    <!--Required - The new body GUID-->
+    <guidBody></guidBody>
+    <!--Optional - GUID of the penis, if the old uncensor had one-->
+    <guidPenis></guidPenis>
+    <!--Optional - GUID of the balls, if the old uncensor had one-->
+    <guidBalls></guidBalls>
+  </migration>
 </KK_UncensorSelector>

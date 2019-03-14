@@ -16,8 +16,11 @@ namespace KK_UncensorSelector
     {
         public class UncensorSelectorController : CharaCustomFunctionController
         {
+            /// <summary> BodyGUID saved to the character. Use BodyData.BodyGUID to get the current BodyGUID.</summary>
             public string BodyGUID { get; set; }
+            /// <summary> PenisGUID saved to the character. Use PenisData.PenisGUID to get the current PenisGUID.</summary>
             public string PenisGUID { get; set; }
+            /// <summary> BallsGUID saved to the character. Use BallsData.BallsGUID to get the current BallsGUID.</summary>
             public string BallsGUID { get; set; }
             public bool DisplayPenis { get; set; }
             public bool DisplayBalls { get; set; }
@@ -53,41 +56,42 @@ namespace KK_UncensorSelector
                         }
                         if (data.data.TryGetValue("UncensorGUID", out var loadedUncensorGUID) && loadedUncensorGUID != null)
                         {
-                            BodyGUID = loadedUncensorGUID.ToString();
-                            if (BodyGUID.IsNullOrWhiteSpace())
-                                BodyGUID = null;
+                            string UncensorGUID = loadedUncensorGUID.ToString();
+                            if (!UncensorGUID.IsNullOrWhiteSpace() && MigrationDictionary.TryGetValue(UncensorGUID, out MigrationData migrationData))
+                            {
+                                BodyGUID = migrationData.BodyGUID;
+                                PenisGUID = migrationData.PenisGUID;
+                                BallsGUID = migrationData.BallsGUID;
+                                if (PenisGUID != null)
+                                    DisplayPenis = true;
+                            }
                         }
                     }
                     else
                     {
                         if (data.data.TryGetValue("BodyGUID", out var loadedUncensorGUID) && loadedUncensorGUID != null)
-                        {
                             BodyGUID = loadedUncensorGUID.ToString();
-                            if (BodyGUID.IsNullOrWhiteSpace())
-                                BodyGUID = null;
-                        }
+
                         if (data.data.TryGetValue("PenisGUID", out var loadedPenisGUID) && loadedPenisGUID != null)
-                        {
                             PenisGUID = loadedPenisGUID.ToString();
-                            if (PenisGUID.IsNullOrWhiteSpace())
-                                PenisGUID = null;
-                        }
+
                         if (data.data.TryGetValue("BallsGUID", out var loadedBallsGUID) && loadedBallsGUID != null)
-                        {
                             BallsGUID = loadedBallsGUID.ToString();
-                            if (BallsGUID.IsNullOrWhiteSpace())
-                                BallsGUID = null;
-                        }
+
                         if (data.data.TryGetValue("DisplayPenis", out var loadedDisplayPenis))
-                        {
                             DisplayPenis = (bool)loadedDisplayPenis;
-                        }
+
                         if (data.data.TryGetValue("DisplayBalls", out var loadedDisplayBalls))
-                        {
                             DisplayBalls = (bool)loadedDisplayBalls;
-                        }
                     }
                 }
+
+                if (BodyGUID.IsNullOrWhiteSpace())
+                    BodyGUID = null;
+                if (PenisGUID.IsNullOrWhiteSpace())
+                    PenisGUID = null;
+                if (BallsGUID.IsNullOrWhiteSpace())
+                    BallsGUID = null;
 
                 if (MakerAPI.InsideAndLoaded)
                 {
@@ -97,7 +101,7 @@ namespace KK_UncensorSelector
                         if (MakerAPI.GetMakerBase().chaCtrl == ChaControl)
                         {
                             //Update the UI to match the loaded character
-                            if (BodyList.IndexOf(BodyGUID) == -1)
+                            if (BodyGUID == null || BodyList.IndexOf(BodyGUID) == -1)
                             {
                                 //The loaded uncensor isn't on the list, possibly due to being forbidden
                                 BodyDropdown.Value = 0;
@@ -108,7 +112,7 @@ namespace KK_UncensorSelector
                                 BodyDropdown.Value = BodyList.IndexOf(BodyGUID);
                             }
 
-                            if (PenisList.IndexOf(PenisGUID) == -1)
+                            if (PenisGUID == null || PenisList.IndexOf(PenisGUID) == -1)
                             {
                                 PenisDropdown.Value = DisplayPenis ? 0 : 1;
                                 PenisGUID = null;
@@ -118,7 +122,7 @@ namespace KK_UncensorSelector
                                 PenisDropdown.Value = PenisList.IndexOf(PenisGUID);
                             }
 
-                            if (BallsList.IndexOf(BallsGUID) == -1)
+                            if (BallsGUID == null || BallsList.IndexOf(BallsGUID) == -1)
                             {
                                 BallsDropdown.Value = DisplayBalls ? 0 : 1;
                                 BallsGUID = null;
@@ -151,7 +155,7 @@ namespace KK_UncensorSelector
             public void UpdateSkinLine() => SkinMatch.SetLineVisibility(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinGloss() => SkinMatch.SetSkinGloss(ChaControl, BodyData, PenisData, BallsData);
             /// <summary>
-            /// BodyData for this character
+            /// Current BodyData for this character
             /// </summary>
             public BodyData BodyData
             {
@@ -169,7 +173,7 @@ namespace KK_UncensorSelector
                 }
             }
             /// <summary>
-            /// PenisData for this character
+            /// Current PenisData for this character
             /// </summary>
             public PenisData PenisData
             {
@@ -187,7 +191,7 @@ namespace KK_UncensorSelector
                 }
             }
             /// <summary>
-            /// BallsData for this character
+            /// Current BallsData for this character
             /// </summary>
             public BallsData BallsData
             {
@@ -288,9 +292,9 @@ namespace KK_UncensorSelector
 
                 internal static BallsData GetDefaultOrRandomBalls(ChaControl chaControl)
                 {
-                    string uncensorKey = DisplayNameToPenisGuid(chaControl.sex == 0 ? DefaultMaleBalls.Value : DefaultFemaleBalls.Value);
+                    string uncensorKey = DisplayNameToBallsGuid(chaControl.sex == 0 ? DefaultMaleBalls.Value : DefaultFemaleBalls.Value);
 
-                    //None/default penis
+                    //None/default balls
                     if (uncensorKey == UncensorKeyNone)
                         return null;
 
@@ -298,14 +302,14 @@ namespace KK_UncensorSelector
                     if (uncensorKey == UncensorKeyRandom)
                         return GetRandomBalls(chaControl);
 
-                    //Return the default penis if specified
+                    //Return the default balls if specified
                     if (BallsDictionary.TryGetValue(uncensorKey, out BallsData defaultBalls))
                         return defaultBalls;
 
                     //Something was selected but can no longer be found
-                    if (chaControl.sex == 0 && MalePenisDefaultValue == UncensorKeyNone)
+                    if (chaControl.sex == 0 && MaleBallsDefaultValue == UncensorKeyNone)
                         return null;
-                    if (chaControl.sex == 1 && FemalePenisDefaultValue == UncensorKeyNone)
+                    if (chaControl.sex == 1 && FemaleBallsDefaultValue == UncensorKeyNone)
                         return null;
 
                     return GetRandomBalls(chaControl);
@@ -396,10 +400,10 @@ namespace KK_UncensorSelector
                         Asset += "_low";
 
                     GameObject uncensorCopy = CommonLib.LoadAsset<GameObject>(OOBase, Asset, true);
-                    SkinnedMeshRenderer o_body_a = chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).First(x => x.name == "o_body_a");
+                    SkinnedMeshRenderer o_body_a = chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a");
 
                     //Copy any additional parts to the character
-                    if (bodyData != null && bodyData.AdditionalParts.Count > 0)
+                    if (bodyData != null && o_body_a != null && bodyData.AdditionalParts.Count > 0)
                     {
                         foreach (var mesh in uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                         {

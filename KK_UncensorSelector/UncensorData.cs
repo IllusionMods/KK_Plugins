@@ -226,6 +226,32 @@ namespace KK_UncensorSelector
             public bool Verify() => Object != null && Material != null && MaterialCreate != null && MainTex != null && ColorMask != null;
         }
 
+        public class MigrationData
+        {
+            public string UncensorGUID;
+            public string BodyGUID;
+            public string PenisGUID;
+            public string BallsGUID;
+
+            public MigrationData(XContainer migrationXMLData)
+            {
+                if (migrationXMLData == null)
+                    return;
+
+                UncensorGUID = migrationXMLData.Element("guidUncensor")?.Value;
+                BodyGUID = migrationXMLData.Element("guidBody")?.Value;
+                PenisGUID = migrationXMLData.Element("guidPenis")?.Value;
+                BallsGUID = migrationXMLData.Element("guidBalls")?.Value;
+
+                //These things can be null if the XML doesn't exist or empty strings if it does exist but is left blank
+                //Set everything to null for easier checks
+                UncensorGUID = UncensorGUID.IsNullOrWhiteSpace() ? null : UncensorGUID;
+                BodyGUID = BodyGUID.IsNullOrWhiteSpace() ? null : BodyGUID;
+                PenisGUID = PenisGUID.IsNullOrWhiteSpace() ? null : PenisGUID;
+                BallsGUID = BallsGUID.IsNullOrWhiteSpace() ? null : BallsGUID;
+            }
+        }
+
         public static class Defaults
         {
             public static readonly string OOBase = "chara/oo_base.unity3d";

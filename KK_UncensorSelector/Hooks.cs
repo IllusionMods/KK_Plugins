@@ -29,9 +29,9 @@ namespace KK_UncensorSelector
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "LateUpdateForce")]
         public static void LateUpdateForce(ChaControl __instance) => __instance.hideMoz = true;
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-        public static void CreateBodyTexturePrefix(ChaControl __instance) => KK_UncensorSelector.CurrentBodyGUID = KK_UncensorSelector.GetController(__instance)?.BodyGUID;
+        public static void CreateBodyTexturePrefix(ChaControl __instance) => KK_UncensorSelector.CurrentBodyGUID = KK_UncensorSelector.GetController(__instance)?.BodyData?.BodyGUID;
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
-        public static void InitBaseCustomTextureBodyPrefix(ChaControl __instance) => KK_UncensorSelector.CurrentBodyGUID = KK_UncensorSelector.GetController(__instance)?.BodyGUID;
+        public static void InitBaseCustomTextureBodyPrefix(ChaControl __instance) => KK_UncensorSelector.CurrentBodyGUID = KK_UncensorSelector.GetController(__instance)?.BodyData?.BodyGUID;
         /// <summary>
         /// Modifies the code for string replacement of oo_base, etc.
         /// </summary>
