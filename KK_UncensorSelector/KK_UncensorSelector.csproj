@@ -40,7 +40,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\BepisPlugins\lib\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\lib\BepInEx.dll</HintPath>
@@ -49,13 +50,15 @@
     <Reference Include="ConfigurationManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Illusion\Koikatu\BepInEx\ExtensibleSaveFormat.dll</HintPath>
+    <Reference Include="ExtensibleSaveFormat">
+      <HintPath>..\lib\ExtensibleSaveFormat.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="KKAPI">
       <HintPath>..\lib\KKAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Sideloader">
       <HintPath>..\lib\Sideloader.dll</HintPath>

@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(KK_ANIMATIONOVERDRIVE.KK_ANIMATIONOVERDRIVE.Version)]
-[assembly: AssemblyFileVersion(KK_ANIMATIONOVERDRIVE.KK_ANIMATIONOVERDRIVE.Version)]
+[assembly: AssemblyVersion(KK_AnimationOverdrive.KK_AnimationOverdrive.Version)]
+[assembly: AssemblyFileVersion(KK_AnimationOverdrive.KK_AnimationOverdrive.Version)]

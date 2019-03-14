@@ -9,19 +9,19 @@ using System;
 using System.Linq;
 using UnityEngine.UI;
 
-namespace KK_ANIMATIONOVERDRIVE
+namespace KK_AnimationOverdrive
 {
     [BepInPlugin(GUID, PluginName, Version)]
-    public class KK_ANIMATIONOVERDRIVE : BaseUnityPlugin
+    public class KK_AnimationOverdrive : BaseUnityPlugin
     {
-        public const string GUID = "com.deathweasel.bepinex.ANIMATIONOVERDRIVE";
-        public const string PluginName = "A N I M A T I O N O V E R D R I V E";
-        public const string Version = "9999.9999.9999.9999";
+        public const string GUID = "com.deathweasel.bepinex.animationoverdrive";
+        public const string PluginName = "Animation Overdrive";
+        public const string Version = "1.0";
 
         void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_ANIMATIONOVERDRIVE));
+            harmony.PatchAll(typeof(KK_AnimationOverdrive));
         }
         /// <summary>
         /// Copy/paste decompiled code in to the prefix, return false. 10/10 programing skills
