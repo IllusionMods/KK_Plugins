@@ -95,7 +95,7 @@ namespace KK_UncensorSelector
 
                 if (MakerAPI.InsideAndLoaded)
                 {
-                    SetDropdownEvents(false);
+                    DoDropdownEvents = false;
                     if (MakerAPI.GetCharacterLoadFlags().Body)
                     {
                         if (MakerAPI.GetMakerBase().chaCtrl == ChaControl)
@@ -142,7 +142,7 @@ namespace KK_UncensorSelector
                         DisplayPenis = PenisDropdown.Value == 1 ? false : true;
                         DisplayBalls = BallsDropdown.Value == 1 ? false : true;
                     }
-                    SetDropdownEvents(true);
+                    DoDropdownEvents = true;
                 }
                 //Update the uncensor on every load or reload
                 UpdateUncensor();
@@ -334,6 +334,9 @@ namespace KK_UncensorSelector
             {
                 internal static void ReloadCharacterUncensor(ChaControl chaControl, BodyData bodyData, PenisData penisData, bool penisVisible, BallsData ballsData, bool ballsVisible)
                 {
+                    if (chaControl.objBody == null)
+                        return;
+
                     ReloadCharacterBody(chaControl, bodyData);
                     ReloadCharacterPenis(chaControl, penisData, penisVisible);
                     ReloadCharacterBalls(chaControl, ballsData, ballsVisible);

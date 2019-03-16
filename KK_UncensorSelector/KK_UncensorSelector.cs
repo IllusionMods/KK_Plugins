@@ -53,9 +53,7 @@ namespace KK_UncensorSelector
         private static MakerDropdown BodyDropdown;
         private static MakerDropdown PenisDropdown;
         private static MakerDropdown BallsDropdown;
-        private static bool DoBodyDropdownEvents = false;
-        private static bool DoPenisDropdownEvents = false;
-        private static bool DoBallsDropdownEvents = false;
+        private static bool DoDropdownEvents = false;
         private static readonly HashSet<string> BodyParts = new HashSet<string>() { "o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster" };
         private static readonly HashSet<string> PenisParts = new HashSet<string>() { "o_dankon", "o_gomu" };
         private static readonly HashSet<string> BallsParts = new HashSet<string>() { "o_dan_f" };
@@ -167,7 +165,7 @@ namespace KK_UncensorSelector
             PopulateUncensorLists();
 
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
-            MakerAPI.MakerStartedLoading += (s, e) => SetDropdownEvents(false);
+            MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             CharacterApi.RegisterExtraBehaviour<UncensorSelectorController>(GUID);
 
             MaleDisplay = new ConfigWrapper<string>(nameof(MaleDisplay), PluginNameInternal, "Male");
@@ -180,9 +178,12 @@ namespace KK_UncensorSelector
             DefaultFemalePenis = new ConfigWrapper<string>(nameof(DefaultFemalePenis), PluginNameInternal, FemalePenisGuidToDisplayName, DisplayNameToPenisGuid, FemalePenisDefaultValue);
             DefaultFemaleBalls = new ConfigWrapper<string>(nameof(DefaultFemaleBalls), PluginNameInternal, FemaleBallsGuidToDisplayName, DisplayNameToBallsGuid, FemaleBallsDefaultValue);
         }
-
+        /// <summary>
+        /// Initialize the character maker GUI
+        /// </summary>
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
         {
+            DoDropdownEvents = false;
             e.AddControl(new MakerText(PluginName, MakerConstants.Body.All, this));
 
             BodyList.Clear();
@@ -209,11 +210,8 @@ namespace KK_UncensorSelector
             BodyDropdown.ValueChanged.Subscribe(Observer.Create<int>(BodyDropdownChanged));
             void BodyDropdownChanged(int ID)
             {
-                if (DoBodyDropdownEvents == false)
-                {
-                    DoBodyDropdownEvents = true;
+                if (DoDropdownEvents == false)
                     return;
-                }
 
                 var controller = GetController(MakerAPI.GetCharacterControl());
                 controller.BodyGUID = ID == 0 ? null : BodyList[ID];
@@ -238,11 +236,8 @@ namespace KK_UncensorSelector
             PenisDropdown.ValueChanged.Subscribe(Observer.Create<int>(PenisDropdownChanged));
             void PenisDropdownChanged(int ID)
             {
-                if (DoPenisDropdownEvents == false)
-                {
-                    DoPenisDropdownEvents = true;
+                if (DoDropdownEvents == false)
                     return;
-                }
 
                 var controller = GetController(MakerAPI.GetCharacterControl());
                 controller.PenisGUID = ID == 0 || ID == 1 ? null : PenisList[ID];
@@ -268,23 +263,27 @@ namespace KK_UncensorSelector
             BallsDropdown.ValueChanged.Subscribe(Observer.Create<int>(BallsDropdownChanged));
             void BallsDropdownChanged(int ID)
             {
-                if (DoBallsDropdownEvents == false)
-                {
-                    DoBallsDropdownEvents = true;
+                if (DoDropdownEvents == false)
                     return;
-                }
 
                 var controller = GetController(MakerAPI.GetCharacterControl());
                 controller.BallsGUID = ID == 0 || ID == 1 ? null : BallsList[ID];
                 controller.DisplayBalls = ID == 1 ? false : true;
-                controller.UpdateUncensor();
             }
         }
-        private static void SetDropdownEvents(bool value)
+        /// <summary>
+        /// Set initial values for the loaded character and enable dropdown events
+        /// </summary>
+        private void MakerAPI_MakerFinishedLoading(object sender, System.EventArgs e)
         {
-            DoBodyDropdownEvents = value;
-            DoPenisDropdownEvents = value;
-            DoBallsDropdownEvents = value;
+            var controller = GetController(MakerAPI.GetCharacterControl());
+            if (controller?.BodyGUID != null && BodyList.IndexOf(controller.BodyGUID) != -1)
+                BodyDropdown.Value = BodyList.IndexOf(controller.BodyGUID);
+            if (controller?.PenisGUID != null && PenisList.IndexOf(controller.PenisGUID) != -1)
+                PenisDropdown.Value = PenisList.IndexOf(controller.PenisGUID);
+            if (controller?.BallsGUID != null && BallsList.IndexOf(controller.BallsGUID) != -1)
+                BallsDropdown.Value = BallsList.IndexOf(controller.BallsGUID);
+            DoDropdownEvents = true;
         }
         /// <summary>
         /// Read all the manifest.xml files and generate a dictionary of uncensors to be used in config manager dropdown
