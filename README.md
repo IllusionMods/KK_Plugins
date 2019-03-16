@@ -68,7 +68,9 @@ v1.3 Now corrects personalities when using the random button<br/>
 v1.3.1 Removed log messages. Oops.
 </details>
 
-#### KK_UncensorSelector v2.7 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v49/KK_UncensorSelector.v2.7.zip)
+#### KK_UncensorSelector v3.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v50/KK_UncensorSelector.v3.0.zip)
+3.0 update note: Uncensors from previous versions are not compatible, download new versions [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS)
+
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
@@ -87,13 +89,15 @@ v2.5 ConfigManager dropdown for GUID selection, fixed color matching bug in char
 v2.6 Uncensors now change much more quickly without causing lag in the character maker. Random can be selected as an option for the default uncensor, any character with no uncensor selected will use a random one (Thanks @ManlyMarco). Uncensors can be exluded from random selection with a modification to the manifest.xml.<br/>
 v2.6.1 Fix for the new uncensor loading code breaking in low poly<br/>
 v2.7 Names in ConfigManager instead of GUIDs, uncensor lists are ordered (Thanks @ManlyMarco), slightly faster uncensor switching<br/>
+v3.0 All uncensors load correctly in the character maker, default uncensors display in character maker, body parts can be selected independently from the body, new format for uncensors, new bugs<br/>
 </details>
 
-#### KK_Subtitles v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v23/KK_Subtitles.v1.1.zip)
+#### KK_Subtitles v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v50/KK_Subtitles.v1.2.zip)
 Subtitles for H scenes and spoken text in dialogues
 
 <details><summary>Change Log</summary>
-v1.1 Fixed H subs not working for some people
+v1.1 Fixed H subs not working for some people<br/>
+v1.2 Subtitles for idle lines in dialogue
 </details>
 
 #### KK_AnimationController v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v27/KK_AnimationController.v1.2.zip)
@@ -147,7 +151,7 @@ Adds floor, breast, hand, and skirt colliders. Ported from Patchwork.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)
 
-#### KK_HairAccessoryFix v1.0.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_HairAccessoryFix.v1.0.1.zip)
+#### KK_HairAccessoryFix v1.0.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v50/KK_HairAccessoryFix.v1.0.2.zip)
 Applies hair gloss to hair accessories and matches hair color/outline color. Only works with objects using a ChaCustomHairComponent MonoBehavior. Not all hair accessories use one. Press F5 in the character maker to update newly added hair accessories.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
@@ -155,7 +159,8 @@ Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
 Known issues: If front/side/back hair colors are different they all get their colors overriden as well as the accessories. Applies to all characters and hair accessories whether you like it or not. Accessory color doesn't save and is entirely cosmetic. Use Keelhauled's [CharaEditTool](https://github.com/Keelhauled/KoikatuPlugins#readme) to actually update the colors.
 
 <details><summary>Change Log</summary>
-v1.0.1 Fixed configs, changed hotkey, made it configurable.
+v1.0.1 Fixed configs, changed hotkey, made it configurable.<br/>
+v1.0.2 Color matching off by default<br/>
 </details>
 
 #### KK_FreeHRandom v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_FreeHRandom.v1.0.zip)
