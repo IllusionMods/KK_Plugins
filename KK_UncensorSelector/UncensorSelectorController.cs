@@ -235,20 +235,16 @@ namespace KK_UncensorSelector
 
                     return GetRandomBody(chaControl);
                 }
-
+                /// <summary>
+                /// Generate a random number based on character parameters so the same character will generate the same number every time and get a body based on this number.
+                /// </summary>
                 internal static BodyData GetRandomBody(ChaControl chaControl)
                 {
-                    //Calculate a value that is unique for a character and unlikely to change
-                    //Use System.Random to spread the results out to full int span while keeping them deterministic (so most girls don't use the same uncensor)
-                    var charaHash = new System.Random(chaControl.fileParam.birthDay + chaControl.fileParam.personality + chaControl.fileParam.bloodType).Next();
-
-                    // Find a close match that is unlikely to change even if number of uncensors change
-                    var query = from unc in BodyDictionary
-                                where unc.Value.Sex == chaControl.sex && unc.Value.AllowRandom
-                                let uncHash = new System.Random(unc.Key.GetHashCode()).Next()
-                                orderby Mathf.Abs(uncHash - charaHash)
-                                select unc.Value;
-                    return query.FirstOrDefault();
+                    var uncensors = BodyDictionary.Where(x => x.Value.Sex == chaControl.sex && x.Value.AllowRandom).Select(x => x.Value).ToArray();
+                    if (uncensors.Count() == 0)
+                        return null;
+                    var randomIndex = new System.Random(chaControl.fileParam.birthDay + chaControl.fileParam.personality + chaControl.fileParam.bloodType).Next(uncensors.Count());
+                    return uncensors[randomIndex];
                 }
 
                 internal static PenisData GetDefaultOrRandomPenis(ChaControl chaControl)
@@ -275,20 +271,16 @@ namespace KK_UncensorSelector
 
                     return GetRandomPenis(chaControl);
                 }
-
+                /// <summary>
+                /// Generate a random number based on character parameters so the same character will generate the same number every time and get a penis based on this number.
+                /// </summary>
                 internal static PenisData GetRandomPenis(ChaControl chaControl)
                 {
-                    //Calculate a value that is unique for a character and unlikely to change
-                    //Use System.Random to spread the results out to full int span while keeping them deterministic (so most girls don't use the same uncensor)
-                    var charaHash = new System.Random(chaControl.fileParam.birthDay + chaControl.fileParam.personality + chaControl.fileParam.bloodType).Next();
-
-                    // Find a close match that is unlikely to change even if number of uncensors change
-                    var query = from unc in PenisDictionary
-                                where unc.Value.AllowRandom
-                                let uncHash = new System.Random(unc.Key.GetHashCode()).Next()
-                                orderby Mathf.Abs(uncHash - charaHash)
-                                select unc.Value;
-                    return query.FirstOrDefault();
+                    var uncensors = PenisDictionary.Where(x => x.Value.AllowRandom).Select(x => x.Value).ToArray();
+                    if (uncensors.Count() == 0)
+                        return null;
+                    var randomIndex = new System.Random(chaControl.fileParam.birthDay + chaControl.fileParam.personality + chaControl.fileParam.bloodType).Next(uncensors.Count());
+                    return uncensors[randomIndex];
                 }
 
                 internal static BallsData GetDefaultOrRandomBalls(ChaControl chaControl)
@@ -315,20 +307,16 @@ namespace KK_UncensorSelector
 
                     return GetRandomBalls(chaControl);
                 }
-
+                /// <summary>
+                /// Generate a random number based on character parameters so the same character will generate the same number every time and get balls based on this number.
+                /// </summary>
                 internal static BallsData GetRandomBalls(ChaControl chaControl)
                 {
-                    //Calculate a value that is unique for a character and unlikely to change
-                    //Use System.Random to spread the results out to full int span while keeping them deterministic (so most girls don't use the same uncensor)
-                    var charaHash = new System.Random(chaControl.fileParam.birthDay + chaControl.fileParam.personality + chaControl.fileParam.bloodType).Next();
-
-                    // Find a close match that is unlikely to change even if number of uncensors change
-                    var query = from unc in BallsDictionary
-                                where unc.Value.AllowRandom
-                                let uncHash = new System.Random(unc.Key.GetHashCode()).Next()
-                                orderby Mathf.Abs(uncHash - charaHash)
-                                select unc.Value;
-                    return query.FirstOrDefault();
+                    var uncensors = BallsDictionary.Where(x => x.Value.AllowRandom).Select(x => x.Value).ToArray();
+                    if (uncensors.Count() == 0)
+                        return null;
+                    var randomIndex = new System.Random(chaControl.fileParam.birthDay + chaControl.fileParam.personality + chaControl.fileParam.bloodType).Next(uncensors.Count());
+                    return uncensors[randomIndex];
                 }
             }
             internal static class UncensorUpdate
