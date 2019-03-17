@@ -366,7 +366,7 @@ namespace KK_UncensorSelector
 
                         foreach (var mesh in dick.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                             if (PenisParts.Contains(mesh.name))
-                                UpdateMeshRenderer(mesh, chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
+                                UpdateMeshRenderer(mesh, chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
 
                         Destroy(dick);
                     }
@@ -386,12 +386,12 @@ namespace KK_UncensorSelector
                         GameObject balls = CommonLib.LoadAsset<GameObject>(ballsData.File, ballsData.Asset, true);
                         foreach (var mesh in balls.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                             if (BallsParts.Contains(mesh.name))
-                                UpdateMeshRenderer(mesh, chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
+                                UpdateMeshRenderer(mesh, chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
 
                         Destroy(balls);
                     }
 
-                    SkinnedMeshRenderer ballsSMR = chaControl?.gameObject?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x?.name == "o_dan_f");
+                    SkinnedMeshRenderer ballsSMR = chaControl?.objBody?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x?.name == "o_dan_f");
                     if (ballsSMR != null)
                         ballsSMR.gameObject.GetComponent<Renderer>().enabled = showBalls;
                 }
@@ -406,7 +406,7 @@ namespace KK_UncensorSelector
                         Asset += "_low";
 
                     GameObject uncensorCopy = CommonLib.LoadAsset<GameObject>(OOBase, Asset, true);
-                    SkinnedMeshRenderer o_body_a = chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a");
+                    SkinnedMeshRenderer o_body_a = chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a");
 
                     //Copy any additional parts to the character
                     if (bodyData != null && o_body_a != null && bodyData.AdditionalParts.Count > 0)
@@ -415,7 +415,7 @@ namespace KK_UncensorSelector
                         {
                             if (bodyData.AdditionalParts.Contains(mesh.name))
                             {
-                                SkinnedMeshRenderer part = chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name);
+                                SkinnedMeshRenderer part = chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name);
                                 Transform parent = o_body_a.gameObject.GetComponentsInChildren<Transform>(true).FirstOrDefault(c => c.name == mesh.transform.parent.name);
                                 if (part == null && parent != null)
                                 {
@@ -428,7 +428,7 @@ namespace KK_UncensorSelector
                         }
                     }
 
-                    foreach (var mesh in chaControl.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                    foreach (var mesh in chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                     {
                         if (mesh.name == "o_body_a")
                             UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh);
