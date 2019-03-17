@@ -18,13 +18,15 @@ namespace KK_UncensorSelector
         public class UncensorSelectorController : CharaCustomFunctionController
         {
             /// <summary> BodyGUID saved to the character. Use BodyData.BodyGUID to get the current BodyGUID.</summary>
-            public string BodyGUID { get; set; }
+            internal string BodyGUID { get; set; }
             /// <summary> PenisGUID saved to the character. Use PenisData.PenisGUID to get the current PenisGUID.</summary>
-            public string PenisGUID { get; set; }
+            internal string PenisGUID { get; set; }
             /// <summary> BallsGUID saved to the character. Use BallsData.BallsGUID to get the current BallsGUID.</summary>
-            public string BallsGUID { get; set; }
-            public bool DisplayPenis { get; set; }
-            public bool DisplayBalls { get; set; }
+            internal string BallsGUID { get; set; }
+            /// <summary> Visibility of the penis as saved to the character.</summary>
+            internal bool DisplayPenis { get; set; }
+            /// <summary> Visibility of the balls as saved to the character.</summary>
+            internal bool DisplayBalls { get; set; }
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
@@ -151,7 +153,7 @@ namespace KK_UncensorSelector
             /// <summary>
             /// Reload this character's uncensor
             /// </summary>
-            public void UpdateUncensor() => ChaControl.StartCoroutine(UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, DisplayPenis, BallsData, DisplayBalls));
+            public void UpdateUncensor() => ChaControl.StartCoroutine(UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, PenisVisible, BallsData, BallsVisible));
             public void UpdateSkinColor() => SkinMatch.SetSkinColor(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinLine() => SkinMatch.SetLineVisibility(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinGloss() => SkinMatch.SetSkinGloss(ChaControl, BodyData, PenisData, BallsData);
@@ -166,6 +168,9 @@ namespace KK_UncensorSelector
 
                     if (BodyGUID != null && BodyDictionary.TryGetValue(BodyGUID, out var body))
                         bodyData = body;
+
+                    if (!StudioAPI.InsideStudio && bodyData != null && GenderBender.Value == false && ChaControl.sex != bodyData.Sex)
+                        bodyData = null;
 
                     if (bodyData == null)
                         bodyData = DefaultData.GetDefaultOrRandomBody(ChaControl);
@@ -209,6 +214,15 @@ namespace KK_UncensorSelector
                     return ballsData;
                 }
             }
+            /// <summary>
+            /// Whether the penis is currently allowed to be visible
+            /// </summary>
+            public bool PenisVisible => (!StudioAPI.InsideStudio && GenderBender.Value == false) ? ChaControl.sex == 0 ? true : false : DisplayPenis;
+            /// <summary>
+            /// Whether the balls are currently allowed to be visible
+            /// </summary>
+            public bool BallsVisible => (!StudioAPI.InsideStudio && GenderBender.Value == false) ? ChaControl.sex == 0 ? true : false : DisplayBalls;
+
             internal static class DefaultData
             {
                 internal static BodyData GetDefaultOrRandomBody(ChaControl chaControl)

@@ -29,7 +29,7 @@ namespace KK_UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = nameof(KK_UncensorSelector);
-        public const string Version = "3.1";
+        public const string Version = "3.2";
         private const string UncensorKeyRandom = "Random";
         private const string UncensorKeyNone = "None";
         private const string MaleBodyDefaultValue = UncensorKeyRandom;
@@ -62,16 +62,12 @@ namespace KK_UncensorSelector
         internal static string CurrentBodyGUID;
 
         #region Config
-        [DisplayName("Male body display")]
+        [DisplayName("Genderbender allowed")]
         [Category("Config")]
-        [Description("Which character maker to display male bodies")]
-        [AcceptableValueList(new object[] { "Male", "Both" })]
-        public static ConfigWrapper<string> MaleDisplay { get; private set; }
-        [DisplayName("Female body display")]
-        [Category("Config")]
-        [Description("Which character maker to display female bodies")]
-        [AcceptableValueList(new object[] { "Female", "Both" })]
-        public static ConfigWrapper<string> FemaleDisplay { get; private set; }
+        [Description("Whether or not genderbender characters are allowed. " +
+            "When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. " +
+            "Genderbender characters will still load in Studio for scene compatibility.")]
+        public static ConfigWrapper<bool> GenderBender { get; private set; }
         [DisplayName("Default male body")]
         [Category("Config")]
         [Description("Body to use if character does not have one set.")]
@@ -174,9 +170,7 @@ namespace KK_UncensorSelector
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             CharacterApi.RegisterExtraBehaviour<UncensorSelectorController>(GUID);
 
-            MaleDisplay = new ConfigWrapper<string>(nameof(MaleDisplay), PluginNameInternal, "Male");
-            FemaleDisplay = new ConfigWrapper<string>(nameof(FemaleDisplay), PluginNameInternal, "Female");
-
+            GenderBender = new ConfigWrapper<bool>(nameof(GenderBender), PluginNameInternal, true);
             DefaultMaleBody = new ConfigWrapper<string>(nameof(DefaultMaleBody), PluginNameInternal, BodyGuidToDisplayName, DisplayNameToBodyGuid, MaleBodyDefaultValue);
             DefaultMalePenis = new ConfigWrapper<string>(nameof(DefaultMalePenis), PluginNameInternal, MalePenisGuidToDisplayName, DisplayNameToPenisGuid, MalePenisDefaultValue);
             DefaultMaleBalls = new ConfigWrapper<string>(nameof(DefaultMaleBalls), PluginNameInternal, MaleBallsGuidToDisplayName, DisplayNameToBallsGuid, MaleBallsDefaultValue);
@@ -435,10 +429,10 @@ namespace KK_UncensorSelector
         /// </summary>
         public static bool BodyAllowedInMaker(byte bodySex, byte characterSex)
         {
-            if (bodySex == 0 && (MaleDisplay.Value == "Both" || (characterSex == 0 && MaleDisplay.Value == "Male")))
+            if (GenderBender.Value)
                 return true;
 
-            if (bodySex == 1 && (FemaleDisplay.Value == "Both" || (characterSex == 1 && FemaleDisplay.Value == "Female")))
+            if (bodySex == characterSex)
                 return true;
 
             return false;
