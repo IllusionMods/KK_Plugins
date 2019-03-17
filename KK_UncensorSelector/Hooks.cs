@@ -98,5 +98,25 @@ namespace KK_UncensorSelector
 
             return instructions;
         }
+        /// <summary>
+        /// Change the male _low asset to the female _low asset. Female has more bones so trying to change male body to female doesn't work. Load as female and change to male as a workaround.
+        /// </summary>
+        public static IEnumerable<CodeInstruction> LoadAsyncTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> instructionsList = instructions.ToList();
+
+            foreach (var x in instructionsList)
+            {
+                switch (x.operand?.ToString())
+                {
+                    case "p_cm_body_00_low":
+                        x.opcode = OpCodes.Call;
+                        x.operand = typeof(KK_UncensorSelector).GetMethod(nameof(KK_UncensorSelector.SetMaleBodyLow), AccessTools.all);
+                        break;
+                }
+            }
+
+            return instructions;
+        }
     }
 }

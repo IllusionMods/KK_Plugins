@@ -471,18 +471,10 @@ namespace KK_UncensorSelector
                     //Copy the mesh
                     dst.sharedMesh = src.sharedMesh;
 
-                    Transform[] originalBones = dst.bones;
-
                     //Sort the bones
                     List<Transform> newBones = new List<Transform>();
                     foreach (Transform t in src.bones)
-                    {
-                        try
-                        {
-                            newBones.Add(Array.Find(originalBones, c => c.name == t.name));
-                        }
-                        catch { }
-                    }
+                        newBones.Add(Array.Find(dst.bones, c => c.name == t.name));
                     dst.bones = newBones.ToArray();
 
                     if (copyMaterials)

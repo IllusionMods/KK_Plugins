@@ -5,9 +5,11 @@ using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
 using UniRx;
 using Logger = BepInEx.Logger;
@@ -161,6 +163,10 @@ namespace KK_UncensorSelector
 
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(Hooks));
+
+            Type loadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).First(x => x.Name.StartsWith("<LoadAsync>c__Iterator"));
+            MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
+            harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), BindingFlags.Static | BindingFlags.Public)));
 
             PopulateUncensorLists();
 
@@ -451,5 +457,10 @@ namespace KK_UncensorSelector
         internal static string SetBodyMaterialFemale() => SetBodyMaterial(1);
         internal static string SetBodyMaterial(byte sex) => CurrentBodyGUID == null ? sex == 0 ? Defaults.BodyMaterialMale : Defaults.BodyMaterialFemale : BodyDictionary[CurrentBodyGUID].BodyMaterial;
         internal static string SetBodyMaterialCreate() => CurrentBodyGUID == null ? Defaults.BodyMaterialCreate : BodyDictionary[CurrentBodyGUID].BodyMaterialCreate;
+        internal static string SetMaleBodyLow()
+        {
+            Logger.Log(LogLevel.Info, "SetMaleBodyLow");
+            return "p_cf_body_00_low";
+        }
     }
 }
