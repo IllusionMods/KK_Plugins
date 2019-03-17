@@ -475,7 +475,7 @@ namespace KK_UncensorSelector
                     //Sort the bones
                     List<Transform> newBones = new List<Transform>();
                     foreach (Transform t in src.bones)
-                        newBones.Add(Array.Find(dst.bones, c => c.name == t.name));
+                        newBones.Add(Array.Find(dst.bones, c => c?.name == t?.name));
                     dst.bones = newBones.ToArray();
 
                     if (copyMaterials)
