@@ -5,6 +5,7 @@ using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -150,7 +151,7 @@ namespace KK_UncensorSelector
             /// <summary>
             /// Reload this character's uncensor
             /// </summary>
-            public void UpdateUncensor() => UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, DisplayPenis, BallsData, DisplayBalls);
+            public void UpdateUncensor() => ChaControl.StartCoroutine(UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, DisplayPenis, BallsData, DisplayBalls));
             public void UpdateSkinColor() => SkinMatch.SetSkinColor(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinLine() => SkinMatch.SetLineVisibility(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinGloss() => SkinMatch.SetSkinGloss(ChaControl, BodyData, PenisData, BallsData);
@@ -332,10 +333,10 @@ namespace KK_UncensorSelector
             }
             internal static class UncensorUpdate
             {
-                internal static void ReloadCharacterUncensor(ChaControl chaControl, BodyData bodyData, PenisData penisData, bool penisVisible, BallsData ballsData, bool ballsVisible)
+                internal static IEnumerator ReloadCharacterUncensor(ChaControl chaControl, BodyData bodyData, PenisData penisData, bool penisVisible, BallsData ballsData, bool ballsVisible)
                 {
-                    if (chaControl.objBody == null)
-                        return;
+                    while (chaControl.objBody == null)
+                        yield return null;
 
                     ReloadCharacterBody(chaControl, bodyData);
                     ReloadCharacterPenis(chaControl, penisData, penisVisible);
