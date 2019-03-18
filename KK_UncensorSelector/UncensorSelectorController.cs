@@ -345,6 +345,7 @@ namespace KK_UncensorSelector
                     ReloadCharacterBalls(chaControl, ballsData, ballsVisible);
 
                     UpdateSkin(chaControl, bodyData);
+                    chaControl.updateBustSize = true;
                     SetChestNormals(chaControl, bodyData);
 
                     chaControl.customMatBody.SetTexture(ChaShader._AlphaMask, Traverse.Create(chaControl).Property("texBodyAlphaMask").GetValue() as Texture);
