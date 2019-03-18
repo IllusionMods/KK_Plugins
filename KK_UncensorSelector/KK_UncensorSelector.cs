@@ -274,15 +274,32 @@ namespace KK_UncensorSelector
         /// <summary>
         /// Set initial values for the loaded character and enable dropdown events
         /// </summary>
-        private void MakerAPI_MakerFinishedLoading(object sender, System.EventArgs e)
+        private void MakerAPI_MakerFinishedLoading(object sender, EventArgs e)
         {
             var controller = GetController(MakerAPI.GetCharacterControl());
-            if (controller?.BodyGUID != null && BodyList.IndexOf(controller.BodyGUID) != -1)
-                BodyDropdown.Value = BodyList.IndexOf(controller.BodyGUID);
-            if (controller?.PenisGUID != null && PenisList.IndexOf(controller.PenisGUID) != -1)
-                PenisDropdown.Value = PenisList.IndexOf(controller.PenisGUID);
-            if (controller?.BallsGUID != null && BallsList.IndexOf(controller.BallsGUID) != -1)
-                BallsDropdown.Value = BallsList.IndexOf(controller.BallsGUID);
+
+            if (controller != null)
+            {
+                if (controller.BodyGUID != null && BodyList.IndexOf(controller.BodyGUID) != -1)
+                    BodyDropdown.Value = BodyList.IndexOf(controller.BodyGUID);
+
+                if (controller.PenisGUID != null && PenisList.IndexOf(controller.PenisGUID) != -1)
+                    PenisDropdown.Value = PenisList.IndexOf(controller.PenisGUID);
+                else if (controller.PenisGUID == null)
+                    if (controller.DisplayPenis == false)
+                        PenisDropdown.Value = 1;
+                    else
+                        PenisDropdown.Value = 0;
+
+                if (controller.BallsGUID != null && BallsList.IndexOf(controller.BallsGUID) != -1)
+                    BallsDropdown.Value = BallsList.IndexOf(controller.BallsGUID);
+                else if (controller.BallsGUID == null)
+                    if (controller.DisplayBalls)
+                        BallsDropdown.Value = 0;
+                    else
+                        BallsDropdown.Value = 1;
+            }
+
             DoDropdownEvents = true;
         }
         /// <summary>
