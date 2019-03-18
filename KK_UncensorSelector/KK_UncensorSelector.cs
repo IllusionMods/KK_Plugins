@@ -269,6 +269,7 @@ namespace KK_UncensorSelector
                 var controller = GetController(MakerAPI.GetCharacterControl());
                 controller.BallsGUID = ID == 0 || ID == 1 ? null : BallsList[ID];
                 controller.DisplayBalls = ID == 1 ? false : true;
+                controller.UpdateUncensor();
             }
         }
         /// <summary>
