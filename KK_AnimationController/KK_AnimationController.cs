@@ -29,8 +29,8 @@ namespace KK_AnimationController
         private bool GUIVisible = false;
 
         int SelectedGuideObject = 0;
-        static readonly string[] IKGuideObjectsPretty = new string[] { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot" };
-        static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R" };
+        static readonly string[] IKGuideObjectsPretty = new string[] { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot", "Eyes", "Neck" };
+        static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
 
         void Main()
         {
@@ -55,19 +55,27 @@ namespace KK_AnimationController
                     IKObjectInfoList.RemoveAt(i);
                 else
                 {
-                    IKObjectInfoList[i].IKTarget.guideObject.SetWorldPos(IKObjectInfoList[i].SelectedObject.transform.position);
-                    if (IKObjectInfoList[i].Version == "1.0")
-                        //Original version used the wrong rotation, keep using it so that scenes load properly
-                        IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.localRotation.eulerAngles;
+                    if (IKObjectInfoList[i].LinkType == LinkType.Eyes)
+                        IKObjectInfoList[i].OCICharacter.charInfo.eyeLookCtrl.target = IKObjectInfoList[i].SelectedObject.transform;
+                    else if (IKObjectInfoList[i].LinkType == LinkType.Neck)
+                        IKObjectInfoList[i].OCICharacter.charInfo.neckLookCtrl.target = IKObjectInfoList[i].SelectedObject.transform;
                     else
                     {
-                        //Set the rotation of the linked body part to the rotation of the object
-                        IKObjectInfoList[i].IKTarget.targetObject.rotation = IKObjectInfoList[i].SelectedObject.transform.rotation;
-                        //Update the guide object cache so that unlinking and then rotating manually doesn't cause strange behavior
-                        IKObjectInfoList[i].IKTarget.guideObject.changeAmount.rot = IKObjectInfoList[i].IKTarget.targetObject.localRotation.eulerAngles;
+                        IKObjectInfoList[i].IKTarget.guideObject.SetWorldPos(IKObjectInfoList[i].SelectedObject.transform.position);
+                        if (IKObjectInfoList[i].Version == "1.0")
+                            //Original version used the wrong rotation, keep using it so that scenes load properly
+                            IKObjectInfoList[i].IKTarget.targetInfo.changeAmount.rot = IKObjectInfoList[i].SelectedObject.transform.localRotation.eulerAngles;
+                        else
+                        {
+                            //Set the rotation of the linked body part to the rotation of the object
+                            IKObjectInfoList[i].IKTarget.targetObject.rotation = IKObjectInfoList[i].SelectedObject.transform.rotation;
+                            //Update the guide object cache so that unlinking and then rotating manually doesn't cause strange behavior
+                            IKObjectInfoList[i].IKTarget.guideObject.changeAmount.rot = IKObjectInfoList[i].IKTarget.targetObject.localRotation.eulerAngles;
+                        }
                     }
+
                     i++;
-                } 
+                }
             }
         }
 
@@ -90,9 +98,17 @@ namespace KK_AnimationController
                     {
                         case OCIChar Character:
                             IKObject.CharacterKey = objectCtrlInfo.objectInfo.dicKey;
-                            IKObject.CharacterObject = GameObject.Find(Character.charInfo.name);
-                            IKObject.IKTarget = Character.listIKTarget.Where(x => x.boneObject.name == IKGuideObjects[SelectedGuideObject]).First();
-                            IKObject.IKPart = IKGuideObjects[SelectedGuideObject];
+                            IKObject.OCICharacter = Character;
+                            if (IKGuideObjects[SelectedGuideObject] == "eyes")
+                                IKObject.LinkType = LinkType.Eyes;
+                            else if (IKGuideObjects[SelectedGuideObject] == "neck")
+                                IKObject.LinkType = LinkType.Neck;
+                            else
+                            {
+                                IKObject.LinkType = LinkType.GuideObject;
+                                IKObject.IKTarget = Character.listIKTarget.Where(x => x.boneObject.name == IKGuideObjects[SelectedGuideObject]).First();
+                                IKObject.IKPart = IKGuideObjects[SelectedGuideObject];
+                            }
                             break;
                         case OCIItem Item:
                             IKObject.ObjectKey = objectCtrlInfo.objectInfo.dicKey;
@@ -110,10 +126,14 @@ namespace KK_AnimationController
                 }
             }
 
-            if (IKObject.SelectedObject != null && IKObject.CharacterObject != null && IKObject.IKTarget != null)
+            if (IKObject.SelectedObject != null && IKObject.OCICharacter != null)
             {
-                IKObjectInfoList.RemoveAll(x => x.CharacterObject == IKObject.CharacterObject &&
-                                                x.IKTarget == IKObject.IKTarget);
+                if (IKGuideObjects[SelectedGuideObject] == "eyes")
+                    IKObjectInfoList.RemoveAll(x => x.OCICharacter == IKObject.OCICharacter && x.LinkType == LinkType.Eyes);
+                else if (IKGuideObjects[SelectedGuideObject] == "neck")
+                    IKObjectInfoList.RemoveAll(x => x.OCICharacter == IKObject.OCICharacter && x.LinkType == LinkType.Neck);
+                else
+                    IKObjectInfoList.RemoveAll(x => x.OCICharacter == IKObject.OCICharacter && x.LinkType == LinkType.GuideObject && x.IKTarget == IKObject.IKTarget);
                 IKObject.Version = Version;
                 IKObjectInfoList.Add(IKObject);
             }
@@ -133,8 +153,12 @@ namespace KK_AnimationController
                 {
                     if (objectCtrlInfo is OCIChar ociChar)
                     {
-                        IKObjectInfoList.RemoveAll(x => x.CharacterObject == GameObject.Find(ociChar.charInfo.name) &&
-                                                        x.IKTarget.boneObject.name == IKGuideObjects[SelectedGuideObject]);
+                        if (IKGuideObjects[SelectedGuideObject] == "eyes")
+                            IKObjectInfoList.RemoveAll(x => x.OCICharacter == ociChar && x.LinkType == LinkType.Eyes);
+                        else if (IKGuideObjects[SelectedGuideObject] == "neck")
+                            IKObjectInfoList.RemoveAll(x => x.OCICharacter == ociChar && x.LinkType == LinkType.Neck);
+                        else
+                            IKObjectInfoList.RemoveAll(x => x.OCICharacter == ociChar && x.LinkType == LinkType.GuideObject && x.IKTarget.boneObject.name == IKGuideObjects[SelectedGuideObject]);
                         DidUnlink = true;
                     }
                 }
@@ -169,10 +193,10 @@ namespace KK_AnimationController
                         {
                             IKObjectInfo LoadedAnimInfo = new IKObjectInfo();
 
-                            var Character = Singleton<Studio.Studio>.Instance.dicObjectCtrl.Where(x => x.Key == AnimInfo.CharDicKey).Select(x => x.Value as OCIChar).First();
+                            var Character = Singleton<Studio.Studio>.Instance.dicObjectCtrl[AnimInfo.CharDicKey] as OCIChar;
 
                             LoadedAnimInfo.CharacterKey = AnimInfo.CharDicKey;
-                            LoadedAnimInfo.CharacterObject = GameObject.Find(Character.charInfo.name);
+                            LoadedAnimInfo.OCICharacter = Character;
                             LoadedAnimInfo.IKPart = AnimInfo.IKPart;
                             LoadedAnimInfo.Version = AnimInfo.Version;
                             if (LoadedAnimInfo.Version.IsNullOrEmpty())
@@ -236,17 +260,19 @@ namespace KK_AnimationController
             }
         }
 
+        private enum LinkType { GuideObject, Eyes, Neck }
         private class IKObjectInfo
         {
             public GameObject SelectedObject;
-            public GameObject CharacterObject;
+            public OCIChar OCICharacter;
             public OCIChar.IKInfo IKTarget;
             public int CharacterKey;
             public int ObjectKey;
             public string IKPart;
             public string Version;
+            public LinkType LinkType;
 
-            public bool CheckNull() => SelectedObject == null || CharacterObject == null || IKTarget == null ? true : false;
+            public bool CheckNull() => SelectedObject == null || OCICharacter == null;
         }
 
         [Serializable]
