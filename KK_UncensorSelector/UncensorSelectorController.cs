@@ -346,6 +346,7 @@ namespace KK_UncensorSelector
 
                     UpdateSkin(chaControl, bodyData);
                     chaControl.updateBustSize = true;
+                    Traverse.Create(chaControl).Method("UpdateSiru", new object[] { true }).GetValue();
                     SetChestNormals(chaControl, bodyData);
 
                     chaControl.customMatBody.SetTexture(ChaShader._AlphaMask, Traverse.Create(chaControl).Property("texBodyAlphaMask").GetValue() as Texture);
