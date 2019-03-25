@@ -15,6 +15,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Logger = BepInEx.Logger;
+using ExtensionMethods;
 
 namespace KK_AnimationController
 {
@@ -28,21 +29,19 @@ namespace KK_AnimationController
         public const string PluginName = "Animation Controller";
         public const string PluginNameInternal = nameof(KK_AnimationController);
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
-        public const string Version = "2.0";
+        public const string Version = "2.1";
         public static SavedKeyboardShortcut AnimationControllerHotkey { get; private set; }
         private bool GUIVisible = false;
-        int SelectedGuideObject = 0;
-        static readonly string[] IKGuideObjectsPretty = new string[] { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot", "Eyes", "Neck" };
-        static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
+        private int SelectedGuideObject = 0;
+        private static readonly string[] IKGuideObjectsPretty = new string[] { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot", "Eyes", "Neck" };
+        private static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
+        private Rect AnimGUI = new Rect(70, 190, 200, 400);
 
         void Main()
         {
-            var harmony = HarmonyInstance.Create("com.deathweasel.bepinex.animationcontroller");
-            harmony.PatchAll(typeof(KK_AnimationController));
-
             AnimationControllerHotkey = new SavedKeyboardShortcut(nameof(AnimationControllerHotkey), nameof(KK_AnimationController), new KeyboardShortcut(KeyCode.Minus));
             CharacterApi.RegisterExtraBehaviour<AnimationControllerCharaController>(GUID);
-            StudioSaveLoadApi.RegisterExtraBehaviour<AnimationControllerSceneController>(GUID);
+            StudioSaveLoadApi.RegisterExtraBehaviour<AnimationControllerSceneController>(GUID);            
         }
 
         private void Update()
@@ -50,7 +49,9 @@ namespace KK_AnimationController
             if (AnimationControllerHotkey.IsDown())
                 GUIVisible = !GUIVisible;
         }
-
+        /// <summary>
+        /// Called by GUI button click. Links the selected node to the selected object.
+        /// </summary>
         private void LinkCharacterToObject()
         {
             ObjectCtrlInfo SelectedObject = null;
@@ -86,7 +87,9 @@ namespace KK_AnimationController
             else
                 Logger.Log(LogLevel.Info | LogLevel.Message, "Select both the character and object to link.");
         }
-
+        /// <summary>
+        /// Called by GUI button click. Unlinks the selected node.
+        /// </summary>
         private void UnlinkCharacterToObject()
         {
             TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
@@ -105,14 +108,17 @@ namespace KK_AnimationController
             if (!DidUnlink)
                 Logger.Log(LogLevel.Info | LogLevel.Message, "Select a character.");
         }
-
-        private Rect AnimGUI = new Rect(70, 190, 200, 400);
+        /// <summary>
+        /// Draws the GUI
+        /// </summary>
         void OnGUI()
         {
             if (GUIVisible)
                 AnimGUI = GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
         }
-
+        /// <summary>
+        /// The AnimationController GUI
+        /// </summary>
         private void AnimWindow(int id)
         {
             GUILayout.Label("Select an IK Guide Object");
@@ -123,10 +129,14 @@ namespace KK_AnimationController
             if (GUILayout.Button("Unlink"))
                 UnlinkCharacterToObject();
         }
-
+        /// <summary>
+        /// Get the controller for the character
+        /// </summary>
         public static AnimationControllerCharaController GetController(ChaControl character) => character?.gameObject?.GetComponent<AnimationControllerCharaController>();
+        /// <summary>
+        /// Get the controller for the character
+        /// </summary>
         public static AnimationControllerCharaController GetController(OCIChar character) => character?.charInfo?.gameObject?.GetComponent<AnimationControllerCharaController>();
-
 
         public class AnimationControllerCharaController : CharaCustomFunctionController
         {
@@ -181,7 +191,7 @@ namespace KK_AnimationController
             /// </summary>
             protected override void Update()
             {
-                Transform eyeTransform = GetTransformFromObjectCtrl(EyeLink);
+                Transform eyeTransform = GetChildRootFromObjectCtrl(EyeLink);
                 if (eyeTransform == null)
                 {
                     if (EyeLinkEngaged)
@@ -190,7 +200,7 @@ namespace KK_AnimationController
                 else
                     ChaControl.eyeLookCtrl.target = eyeTransform;
 
-                Transform neckTransform = GetTransformFromObjectCtrl(EyeLink);
+                Transform neckTransform = GetChildRootFromObjectCtrl(NeckLink);
                 if (neckTransform == null)
                 {
                     if (NeckLinkEngaged)
@@ -199,41 +209,47 @@ namespace KK_AnimationController
                 else
                     ChaControl.neckLookCtrl.target = neckTransform;
 
-                foreach (var ikInfo in LinksToRemove)
-                {
-                    GuideObjectLinksV1.Remove(ikInfo);
-                    GuideObjectLinks.Remove(ikInfo);
-                }
-
                 foreach (var link in GuideObjectLinksV1)
                 {
-                    Transform objTransform = GetTransformFromObjectCtrl(link.Value);
+                    Transform objTransform = GetChildRootFromObjectCtrl(link.Value);
                     if (objTransform == null)
-                        RemoveLink(link.Key);
+                        LinksToRemove.Add(link.Key);
                     else
                     {
-                        link.Key.guideObject.SetWorldPos(GetTransformFromObjectCtrl(link.Value).position);
+                        link.Key.guideObject.SetWorldPos(GetChildRootFromObjectCtrl(link.Value).position);
                         //Original version used the wrong rotation, keep using it so that scenes load properly
-                        link.Key.targetInfo.changeAmount.rot = GetTransformFromObjectCtrl(link.Value).localRotation.eulerAngles;
+                        link.Key.targetInfo.changeAmount.rot = GetChildRootFromObjectCtrl(link.Value).localRotation.eulerAngles;
                     }
                 }
 
                 foreach (var link in GuideObjectLinks)
                 {
-                    Transform objTransform = GetTransformFromObjectCtrl(link.Value);
+                    Transform objTransform = GetChildRootFromObjectCtrl(link.Value);
                     if (objTransform == null)
-                        RemoveLink(link.Key);
+                        LinksToRemove.Add(link.Key);
                     else
                     {
-                        link.Key.guideObject.SetWorldPos(GetTransformFromObjectCtrl(link.Value).position);
+                        link.Key.guideObject.SetWorldPos(GetChildRootFromObjectCtrl(link.Value).position);
                         //Set the rotation of the linked body part to the rotation of the object
-                        link.Key.targetObject.rotation = GetTransformFromObjectCtrl(link.Value).rotation;
+                        link.Key.targetObject.rotation = GetChildRootFromObjectCtrl(link.Value).rotation;
                         //Update the guide object so that unlinking and then rotating manually doesn't cause strange behavior
                         link.Key.guideObject.changeAmount.rot = link.Key.targetObject.localRotation.eulerAngles;
                     }
                 }
-            }
 
+                if (LinksToRemove.Count > 0)
+                {
+                    foreach (var ikInfo in LinksToRemove)
+                    {
+                        RemoveLink(ikInfo);
+                        RemoveLink(ikInfo);
+                    }
+                    LinksToRemove.Clear();
+                }
+            }
+            /// <summary>
+            /// Called by the scene controller, loads animations from the loaded or imported scene
+            /// </summary>
             internal void LoadAnimations(int characterDicKey, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
             {
                 try
@@ -288,13 +304,19 @@ namespace KK_AnimationController
                     Logger.Log(LogLevel.Error, ex.ToString());
                 }
             }
-
-            internal void AddLinkV1(string selectedGuideObject, ObjectCtrlInfo selectedObject)
+            /// <summary>
+            /// Add a v1 link. Only ever added by loading card data, new links will never by of this type.
+            /// </summary>
+            private void AddLinkV1(string selectedGuideObject, ObjectCtrlInfo selectedObject)
             {
-                OCIChar.IKInfo ikInfo = StudioObjectExtensions.GetOCIChar(ChaControl).listIKTarget.First(x => x.boneObject.name == selectedGuideObject);
+                OCIChar.IKInfo ikInfo = OCIChar.listIKTarget.First(x => x.boneObject.name == selectedGuideObject);
                 GuideObjectLinksV1[ikInfo] = selectedObject;
             }
-
+            /// <summary>
+            /// Add a link between the selected guide object and the selected object.
+            /// </summary>
+            /// <param name="selectedGuideObject">Name of the bone associated with the guide object.</param>
+            /// <param name="selectedObject">ObjectCtrlInfo of the object. Can be an item, a folder, or a route.</param>
             public void AddLink(string selectedGuideObject, ObjectCtrlInfo selectedObject)
             {
                 if (selectedGuideObject == "eyes")
@@ -303,10 +325,14 @@ namespace KK_AnimationController
                     AddNeckLink(selectedObject);
                 else
                 {
-                    OCIChar.IKInfo ikInfo = StudioObjectExtensions.GetOCIChar(ChaControl).listIKTarget.First(x => x.boneObject.name == selectedGuideObject);
+                    OCIChar.IKInfo ikInfo = OCIChar.listIKTarget.First(x => x.boneObject.name == selectedGuideObject);
                     GuideObjectLinks[ikInfo] = selectedObject;
                 }
             }
+            /// <summary>
+            /// Links the character's eyes to the selected object.
+            /// </summary>
+            /// <param name="selectedObject">ObjectCtrlInfo of the object. Can be an item, a folder, or a route.</param>
             public void AddEyeLink(ObjectCtrlInfo selectedObject)
             {
                 //Set the eye control to "Follow"
@@ -314,6 +340,10 @@ namespace KK_AnimationController
                 EyeLink = selectedObject;
                 EyeLinkEngaged = true;
             }
+            /// <summary>
+            /// Links the character's neck to the selected object.
+            /// </summary>
+            /// <param name="selectedObject">ObjectCtrlInfo of the object. Can be an item, a folder, or a route.</param>
             public void AddNeckLink(ObjectCtrlInfo selectedObject)
             {
                 //Set the neck control to "Follow"
@@ -321,6 +351,10 @@ namespace KK_AnimationController
                 NeckLink = selectedObject;
                 NeckLinkEngaged = true;
             }
+            /// <summary>
+            /// Remove a link between the selected guide object and any object it is currently linked to.
+            /// </summary>
+            /// <param name="selectedGuideObject">Name of the bone associated with the guide object.</param>
             public void RemoveLink(string selectedGuideObject)
             {
                 if (selectedGuideObject == "eyes")
@@ -329,11 +363,22 @@ namespace KK_AnimationController
                     RemoveNeckLink();
                 else
                 {
-                    OCIChar.IKInfo ikInfo = StudioObjectExtensions.GetOCIChar(ChaControl).listIKTarget.First(x => x.boneObject.name == selectedGuideObject);
-                    LinksToRemove.Add(ikInfo);
+                    OCIChar.IKInfo ikInfo = OCIChar.listIKTarget.First(x => x.boneObject.name == selectedGuideObject);
+                    GuideObjectLinksV1.Remove(ikInfo);
+                    GuideObjectLinks.Remove(ikInfo);
                 }
             }
-            public void RemoveLink(OCIChar.IKInfo ikInfo) => LinksToRemove.Add(ikInfo);
+            /// <summary>
+            /// Remove a link between the selected guide object and any object it is currently linked to.
+            /// </summary>
+            public void RemoveLink(OCIChar.IKInfo ikInfo)
+            {
+                GuideObjectLinksV1.Remove(ikInfo);
+                GuideObjectLinks.Remove(ikInfo);
+            }
+            /// <summary>
+            /// Remove a link between the eyes and any object it is currently linked to.
+            /// </summary>
             public void RemoveEyeLink()
             {
                 ChaControl.eyeLookCtrl.target = Camera.main.transform;
@@ -342,6 +387,9 @@ namespace KK_AnimationController
                 EyeLink = null;
                 EyeLinkEngaged = false;
             }
+            /// <summary>
+            /// Remove a link between the neck and any object it is currently linked to.
+            /// </summary>
             public void RemoveNeckLink()
             {
                 ChaControl.neckLookCtrl.target = Camera.main.transform;
@@ -350,44 +398,46 @@ namespace KK_AnimationController
                 NeckLink = null;
                 NeckLinkEngaged = false;
             }
+            /// <summary>
+            /// Set the eye look stuff. Most of the code comes from Studio.MPCharCtrl.LookAtInfo.OnClick.
+            /// This sets the selected button, changes the color to green, etc. as though the button were clicked manually.
+            /// This is done because the eyes will only track the target object when the eyes are set to "Follow"
+            /// </summary>
             private void SetEyeLook(int no)
             {
-                OCIChar ociChar = StudioObjectExtensions.GetOCIChar(ChaControl);
-                foreach (MPCharCtrl mpCharCtrl in Resources.FindObjectsOfTypeAll<MPCharCtrl>())
-                {
-                    var temp = mpCharCtrl.ociChar;
-                    mpCharCtrl.ociChar = ociChar;
-                    var lookAtInfo = Traverse.Create(mpCharCtrl).Field("lookAtInfo").GetValue();
-                    int eyesLookPtn = ociChar.charFileStatus.eyesLookPtn;
-                    ociChar.ChangeLookEyesPtn(no, false);
-                    Slider sliderSize = (Slider)Traverse.Create(lookAtInfo).Field("sliderSize").GetValue();
-                    sliderSize.interactable = false;
-                    Button[] buttonMode = (Button[])Traverse.Create(lookAtInfo).Field("buttonMode").GetValue();
-                    buttonMode[eyesLookPtn].image.color = Color.white;
-                    buttonMode[no].image.color = Color.green;
-                    mpCharCtrl.ociChar = temp;
-                }
+                var temp = Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar;
+                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = OCIChar;
+                int eyesLookPtn = OCIChar.charFileStatus.eyesLookPtn;
+                OCIChar.ChangeLookEyesPtn(no, false);
+                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().LookAtInfo_SliderSize().interactable = false;
+                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().LookAtInfo_ButtonMode()[eyesLookPtn].image.color = Color.white;
+                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().LookAtInfo_ButtonMode()[no].image.color = Color.green;
+                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = temp;
             }
+            /// <summary>
+            /// Set the neck look stuff. Most of the code comes from Studio.MPCharCtrl.NeckInfo.OnClick.
+            /// This sets the selected button, changes the color to green, etc. as though the button were clicked manually.
+            /// This is done because the neck will only track the target object when the neck is set to "Follow"
+            /// </summary>
             private void SetNeckLook(int no)
             {
-                OCIChar ociChar = StudioObjectExtensions.GetOCIChar(ChaControl);
-                foreach (MPCharCtrl mpCharCtrl in Resources.FindObjectsOfTypeAll<MPCharCtrl>())
-                {
-                    ChaControl.neckLookCtrl.target = Camera.main.transform;
-                    var temp = mpCharCtrl.ociChar;
-                    mpCharCtrl.ociChar = ociChar;
-                    var lookAtInfo = Traverse.Create(mpCharCtrl).Field("neckInfo").GetValue();
-                    int neckLookPtn = ociChar.charFileStatus.neckLookPtn;
-                    neckLookPtn = Array.FindIndex(patterns, (int v) => v == neckLookPtn);
-                    ociChar.ChangeLookNeckPtn(patterns[no]);
-                    Button[] buttonMode = (Button[])Traverse.Create(lookAtInfo).Field("buttonMode").GetValue();
-                    buttonMode[neckLookPtn].image.color = Color.white;
-                    buttonMode[no].image.color = Color.green;
-                    mpCharCtrl.ociChar = temp;
-                }
+                var temp = Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar;
+                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = OCIChar;
+                int neckLookPtn = OCIChar.charFileStatus.neckLookPtn;
+                neckLookPtn = Array.FindIndex(patterns, (int v) => v == neckLookPtn);
+                OCIChar.ChangeLookNeckPtn(patterns[no]);
+                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().NeckInfo_ButtonMode()[neckLookPtn].image.color = Color.white;
+                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().NeckInfo_ButtonMode()[no].image.color = Color.green;
+                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = temp;
             }
+            /// <summary>
+            /// Used by SetNeckLook
+            /// </summary>
             private readonly int[] patterns = new int[] { 0, 1, 3, 4 };
-            private Transform GetTransformFromObjectCtrl(ObjectCtrlInfo objectCtrlInfo)
+            /// <summary>
+            /// Because ObjectCtrlInfo does not have a childRoot, cast it as the appropriate type and get it from that.
+            /// </summary>
+            private Transform GetChildRootFromObjectCtrl(ObjectCtrlInfo objectCtrlInfo)
             {
                 if (objectCtrlInfo == null) return null;
 
@@ -397,6 +447,20 @@ namespace KK_AnimationController
                     case OCIFolder Folder: return Folder.childRoot;
                     case OCIRoute Route: return Route.childRoot;
                     default: return null;
+                }
+            }
+
+            private OCIChar _OCIChar;
+            /// <summary>
+            /// The character's OCIChar object
+            /// </summary>
+            public OCIChar OCIChar
+            {
+                get
+                {
+                    if (_OCIChar == null)
+                        _OCIChar = ChaControl.GetOCIChar();
+                    return _OCIChar;
                 }
             }
             /// <summary>
@@ -436,6 +500,69 @@ namespace KK_AnimationController
                     if (kvp.Value is OCIChar)
                         GetController(kvp.Value as OCIChar).LoadAnimations(kvp.Key, loadedItems);
             }
+        }
+    }
+}
+
+namespace ExtensionMethods
+{
+    public static class MPCharCtrlExtensions
+    {
+        private static MPCharCtrl _MPCharCtrl;
+        public static MPCharCtrl MPCharCtrl(this ManipulatePanelCtrl manipulatePanelCtrl)
+        {
+            if (_MPCharCtrl == null)
+            {
+                var charaPanelInfo = Traverse.Create(Studio.Studio.Instance.manipulatePanelCtrl).Field("charaPanelInfo").GetValue();
+                _MPCharCtrl = (MPCharCtrl)Traverse.Create(charaPanelInfo).Property("mpCharCtrl").GetValue();
+            }
+            return _MPCharCtrl;
+        }
+
+        private static object _LookAtInfo;
+        private static object LookAtInfo
+        {
+            get
+            {
+                if (_LookAtInfo == null)
+                    _LookAtInfo = Traverse.Create(Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl()).Field("lookAtInfo").GetValue();
+                return _LookAtInfo;
+            }
+        }
+
+        private static Slider _LookAtInfo_SliderSize;
+        public static Slider LookAtInfo_SliderSize(this MPCharCtrl mpCharCtrl)
+        {
+            if (_LookAtInfo_SliderSize == null)
+                _LookAtInfo_SliderSize = (Slider)Traverse.Create(LookAtInfo).Field("sliderSize").GetValue();
+            return _LookAtInfo_SliderSize;
+        }
+
+        private static Button[] _LookAtInfo_ButtonMode;
+        public static Button[] LookAtInfo_ButtonMode(this MPCharCtrl mpCharCtrl)
+        {
+            if (_LookAtInfo_ButtonMode == null)
+                _LookAtInfo_ButtonMode = (Button[])Traverse.Create(LookAtInfo).Field("buttonMode").GetValue();
+            return _LookAtInfo_ButtonMode;
+        }
+
+        private static object _MPCharCtrl_NeckInfo;
+        private static object MPCharCtrl_NeckInfo
+        {
+            get
+            {
+                if (_MPCharCtrl_NeckInfo == null)
+                    _MPCharCtrl_NeckInfo = Traverse.Create(Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl()).Field("neckInfo").GetValue();
+                return _MPCharCtrl_NeckInfo;
+            }
+        }
+
+        private static Button[] _NeckInfo_ButtonMode;
+        public static Button[] NeckInfo_ButtonMode(this MPCharCtrl mpCharCtrl)
+        {
+            if (_NeckInfo_ButtonMode == null)
+                _NeckInfo_ButtonMode = (Button[])Traverse.Create(MPCharCtrl_NeckInfo).Field("buttonMode").GetValue();
+            return _NeckInfo_ButtonMode;
         }
     }
 }
