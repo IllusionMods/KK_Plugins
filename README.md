@@ -104,7 +104,7 @@ v1.1 Fixed H subs not working for some people<br/>
 v1.2 Subtitles for idle lines in dialogue
 </details>
 
-#### KK_AnimationController v2.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v56/KK_AnimationController.v2.0.zip)
+#### KK_AnimationController v2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v57/KK_AnimationController.v2.1.zip)
 Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) 1.2 or higher and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager and ExtensibleSaveFormat.<br/>
@@ -115,6 +115,7 @@ Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair
 v1.1 Gimmicks can now rotate hands and feet properly<br/>
 v1.2 Rotating characters doesn't break everything anymore<br/>
 v2.0 Significant rewrite with KKAPI integration. Can now link eyes and neck to objects, scene import support, Drag and Drop plugin support<br/>
+v2.1 Fix neck link not working, fix linking after unlinking not working<br/>
 </details>
 
 #### KK_ClothingUnlocker v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v31/KK_ClothingUnlocker.v1.0.zip)
