@@ -60,7 +60,6 @@ namespace KK_UncensorSelector
         private static readonly HashSet<string> PenisParts = new HashSet<string>() { "o_dankon", "o_gomu" };
         private static readonly HashSet<string> BallsParts = new HashSet<string>() { "o_dan_f" };
         internal static string CurrentBodyGUID;
-        private static KK_UncensorSelector Instance;
 
         #region Config
         [DisplayName("Genderbender allowed")]
@@ -178,8 +177,6 @@ namespace KK_UncensorSelector
             DefaultFemaleBody = new ConfigWrapper<string>(nameof(DefaultFemaleBody), PluginNameInternal, BodyGuidToDisplayName, DisplayNameToBodyGuid, FemaleBodyDefaultValue);
             DefaultFemalePenis = new ConfigWrapper<string>(nameof(DefaultFemalePenis), PluginNameInternal, FemalePenisGuidToDisplayName, DisplayNameToPenisGuid, FemalePenisDefaultValue);
             DefaultFemaleBalls = new ConfigWrapper<string>(nameof(DefaultFemaleBalls), PluginNameInternal, FemaleBallsGuidToDisplayName, DisplayNameToBallsGuid, FemaleBallsDefaultValue);
-
-            Instance = this;
         }
         /// <summary>
         /// Initialize the character maker GUI
