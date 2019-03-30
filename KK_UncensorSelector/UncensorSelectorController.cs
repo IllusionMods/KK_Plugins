@@ -503,6 +503,7 @@ namespace KK_UncensorSelector
                     {
                         BepInEx.Logger.Log(LogLevel.Warning, $"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
                         dst.sharedMesh.uv = uvCopy;
+                        yield return null;
 
                         if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
                             BepInEx.Logger.Log(LogLevel.Error, "Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
