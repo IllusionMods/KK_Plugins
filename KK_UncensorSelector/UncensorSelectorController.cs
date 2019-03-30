@@ -474,7 +474,7 @@ namespace KK_UncensorSelector
                     if (src == null || dst == null)
                         return;
 
-                    // First check if UVs got corrupted
+                    // Check if UVs got corrupted when we loaded the asset, uncommon
                     var uvCopy = src.sharedMesh.uv.ToArray();
                     if (AreUVsCorrupted(uvCopy))
                         BepInEx.Logger.Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be displayed corrupted. Consider updating your GPU drivers.");
@@ -491,11 +491,19 @@ namespace KK_UncensorSelector
                     if (copyMaterials)
                         dst.materials = src.materials;
 
-                    // Second check if UVs got corrupted
+                    Instance.StartCoroutine(HandleUVCorrupionsCo(dst, uvCopy));
+                }
+
+                private static IEnumerator HandleUVCorrupionsCo(SkinnedMeshRenderer dst, Vector2[] uvCopy)
+                {
+                    // Wait for next frame to let the graphics logic run. Issue seems to happen between frames.
+                    yield return null;
+                    // Check if UVs got corrupted after moving the mesh, most common fail point
                     if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
                     {
                         BepInEx.Logger.Log(LogLevel.Warning, $"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
                         dst.sharedMesh.uv = uvCopy;
+                        yield return null;
 
                         if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
                             BepInEx.Logger.Log(LogLevel.Error, "Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
