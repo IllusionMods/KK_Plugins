@@ -29,7 +29,7 @@ namespace KK_UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = nameof(KK_UncensorSelector);
-        public const string Version = "3.4";
+        public const string Version = "3.5";
         private const string UncensorKeyRandom = "Random";
         private const string UncensorKeyNone = "None";
         private const string MaleBodyDefaultValue = UncensorKeyRandom;
@@ -70,32 +70,32 @@ namespace KK_UncensorSelector
         public static ConfigWrapper<bool> GenderBender { get; private set; }
         [DisplayName("Default male body")]
         [Category("Config")]
-        [Description("Body to use if character does not have one set.")]
+        [Description("Body to use if character does not have one set. The censored body will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigBodyList))]
         public static ConfigWrapper<string> DefaultMaleBody { get; private set; }
         [DisplayName("Default male penis")]
         [Category("Config")]
-        [Description("Penis to use if character does not have one set.")]
+        [Description("Penis to use if character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigPenisList))]
         public static ConfigWrapper<string> DefaultMalePenis { get; private set; }
         [DisplayName("Default male balls")]
         [Category("Config")]
-        [Description("Balls to use if character does not have one set.")]
+        [Description("Balls to use if character does not have one set. The mosaic balls will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigBallsList))]
         public static ConfigWrapper<string> DefaultMaleBalls { get; private set; }
         [DisplayName("Default female body")]
         [Category("Config")]
-        [Description("Body to use if character does not have one set.")]
+        [Description("Body to use if character does not have one set. The censored body will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigBodyList))]
         public static ConfigWrapper<string> DefaultFemaleBody { get; private set; }
         [DisplayName("Default female penis")]
         [Category("Config")]
-        [Description("Penis to use if character does not have one set.")]
+        [Description("Penis to use if character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigPenisList))]
         public static ConfigWrapper<string> DefaultFemalePenis { get; private set; }
         [DisplayName("Default female balls")]
         [Category("Config")]
-        [Description("Balls to use if character does not have one set.")]
+        [Description("Balls to use if character does not have one set. The mosaic balls will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigBallsList))]
         public static ConfigWrapper<string> DefaultFemaleBalls { get; private set; }
 
