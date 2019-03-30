@@ -19,10 +19,10 @@ namespace KK_UncensorSelector
     /// <summary>
     /// Plugin for assigning uncensors to characters individually
     /// </summary>
-    [BepInDependency("com.bepis.bepinex.sideloader")]
-    [BepInDependency("com.bepis.bepinex.extendedsave")]
-    [BepInDependency("com.bepis.bepinex.configurationmanager")]
-    [BepInDependency("marco.kkapi")]
+    [BepInDependency(Sideloader.Sideloader.GUID)]
+    [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID)]
+    [BepInDependency(ConfigurationManager.ConfigurationManager.GUID)]
+    [BepInDependency(KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     partial class KK_UncensorSelector : BaseUnityPlugin
     {
