@@ -94,7 +94,7 @@ v3.1 Fixed uncensors not loading in the character maker accessed through the cla
 v3.2 Random uncensors are now more evenly distributed, gender bender config option simplified, fixed a problem with clothes that have the same mesh name as body part meshes causing problems<br/>
 v3.3 Fix wrong normals after loading a character sometimes, fix default values when loading a character in to the character maker from class menu, fix balls dropdown not reloading the uncensor on change<br/>
 v3.4 Fix liquid textures being removed on changing characters<br/>
-v3.5 Added a message that displays if the skin texture has become corrupt (Thanks @ManlyMarco)<br/>
+v3.5 Added a message that displays if the skin texture has become corrupt and attempts a fix (Thanks @ManlyMarco)<br/>
 </details>
 
 #### KK_Subtitles v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v50/KK_Subtitles.v1.2.zip)
