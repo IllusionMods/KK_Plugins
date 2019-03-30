@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BepInEx.Logging;
 using UniRx;
 using UnityEngine;
 
@@ -473,6 +474,11 @@ namespace KK_UncensorSelector
                     if (src == null || dst == null)
                         return;
 
+                    // First check if UVs got corrupted
+                    var uvCopy = src.sharedMesh.uv.ToArray();
+                    if (AreUVsCorrupted(uvCopy))
+                        BepInEx.Logger.Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be displayed corrupted. Consider updating your GPU drivers.");
+
                     //Copy the mesh
                     dst.sharedMesh = src.sharedMesh;
 
@@ -484,7 +490,38 @@ namespace KK_UncensorSelector
 
                     if (copyMaterials)
                         dst.materials = src.materials;
+
+                    // Second check if UVs got corrupted
+                    if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
+                    {
+                        BepInEx.Logger.Log(LogLevel.Warning, $"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
+                        dst.sharedMesh.uv = uvCopy;
+
+                        if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
+                            BepInEx.Logger.Log(LogLevel.Error, "Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
+                    }
                 }
+
+                private static bool AreUVsCorrupted(Vector2[] uvCopy)
+                {
+                    var count = 0;
+                    foreach (var uv in uvCopy)
+                    {
+                        // UVs can fail to load and be all 0s in a solid chunk (not spread around) with some GPU drivers
+                        if (uv.Equals(Vector2.zero))
+                        {
+                            if (count++ >= 3)
+                                return true;
+                        }
+                        else
+                        {
+                            count = 0;
+                        }
+                    }
+
+                    return false;
+                }
+
                 /// <summary>
                 /// Set the normals for the character's chest. This fixes the shadowing for small-chested characters.
                 /// By default it is not applied to males so we do it manually for all characters in case the male is using a female body.
