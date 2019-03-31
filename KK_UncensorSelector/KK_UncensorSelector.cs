@@ -469,10 +469,6 @@ namespace KK_UncensorSelector
         internal static string SetBodyMaterialFemale() => SetBodyMaterial(1);
         internal static string SetBodyMaterial(byte sex) => CurrentBodyGUID == null ? sex == 0 ? Defaults.BodyMaterialMale : Defaults.BodyMaterialFemale : BodyDictionary[CurrentBodyGUID].BodyMaterial;
         internal static string SetBodyMaterialCreate() => CurrentBodyGUID == null ? Defaults.BodyMaterialCreate : BodyDictionary[CurrentBodyGUID].BodyMaterialCreate;
-        internal static string SetMaleBodyLow()
-        {
-            Logger.Log(LogLevel.Info, "SetMaleBodyLow");
-            return "p_cf_body_00_low";
-        }
+        internal static string SetMaleBodyLow() => "p_cf_body_00_low";
     }
 }
