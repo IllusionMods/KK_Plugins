@@ -142,6 +142,11 @@ Generates random characters in the character maker.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
 
+#### KK_PoseFolders v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v60/KK_PoseFolders.v1.0.zip)
+Create new folders in userdata/studio/pose and place the pose data inside them. Folders will show up in your list of poses in Studio.<br/>
+
+Ported to Koikatsu from Essu's NEOpose List Folders plugin for Honey Select.<br/>
+
 
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.
