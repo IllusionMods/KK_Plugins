@@ -142,9 +142,17 @@ v2.1 Fix neck link not working, fix linking after unlinking not working<br/>
 </details>
 
 #### KK_ClothingUnlocker
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v31/KK_ClothingUnlocker.v1.0.zip)**<br/>
+**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v62/KK_ClothingUnlocker.v1.1.zip)**<br/>
 
 Allows gender restricted clothing to be used on all characters.<br/>
+
+<details><summary>Advanced mode</summary>
+KK_ClothingUnlocker can unlock bras/skirts with any top. Go to plugin settings and enable advanced mode to see the options for them. These settings are not recommended because they will require updating many characters for compatibility.<br/>
+</details>
+
+<details><summary>Change Log</summary>
+v1.1 Added clothing unlocking for bras/skirts with any top<br/>
+</details>
 
 #### KK_EyeShaking
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_EyeShaking.v1.0.zip)**<br/>
