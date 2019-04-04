@@ -44,6 +44,10 @@
       <HintPath>..\lib\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ConfigurationManager">
+      <HintPath>..\lib\ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
