@@ -13,7 +13,7 @@ namespace KK_GUIDMigration
     /// <summary>
     /// Modifies the GUID or ID of items saved to a card
     /// </summary>
-    [BepInDependency("com.bepis.bepinex.sideloader")]
+    [BepInDependency(Sideloader.Sideloader.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_GUIDMigration : BaseUnityPlugin
     {
@@ -153,7 +153,7 @@ namespace KK_GUIDMigration
                                 else
                                 {
                                     //We have the old mod and the new, do migration so characters save with the new stuff
-                                    Logger.Log(LogLevel.Warning, $"Migrating {info.OldGUID}:{info.OldID} -> {info.NewGUID}:{info.NewID}");
+                                    Logger.Log(LogLevel.Info, $"Migrating {info.OldGUID}:{info.OldID} -> {info.NewGUID}:{info.NewID}");
                                     ResolveInfo b = new ResolveInfo();
                                     b = resolveInfo;
                                     b.GUID = info.NewGUID;

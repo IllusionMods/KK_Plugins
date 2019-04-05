@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KK_ClothingUnlocker")]
+[assembly: AssemblyTitle("KK_PoseFolders")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KK_ClothingUnlocker")]
+[assembly: AssemblyProduct("KK_PoseFolders")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a59f4b61-4fd8-4b7b-92c5-9c06d608dad2")]
+[assembly: Guid("4f27e216-a311-469c-891a-8e57f330a68f")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(KK_ClothingUnlocker.KK_ClothingUnlocker.Version)]
-[assembly: AssemblyFileVersion(KK_ClothingUnlocker.KK_ClothingUnlocker.Version)]
+[assembly: AssemblyVersion(KK_PoseFolders.KK_PoseFolders.Version)]
+[assembly: AssemblyFileVersion(KK_PoseFolders.KK_PoseFolders.Version)]

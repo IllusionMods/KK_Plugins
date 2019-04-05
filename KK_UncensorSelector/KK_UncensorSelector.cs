@@ -29,7 +29,7 @@ namespace KK_UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = nameof(KK_UncensorSelector);
-        public const string Version = "3.4";
+        public const string Version = "3.5";
         private const string UncensorKeyRandom = "Random";
         private const string UncensorKeyNone = "None";
         private const string MaleBodyDefaultValue = UncensorKeyRandom;
@@ -60,7 +60,6 @@ namespace KK_UncensorSelector
         private static readonly HashSet<string> PenisParts = new HashSet<string>() { "o_dankon", "o_gomu" };
         private static readonly HashSet<string> BallsParts = new HashSet<string>() { "o_dan_f" };
         internal static string CurrentBodyGUID;
-        private static KK_UncensorSelector Instance;
 
         #region Config
         [DisplayName("Genderbender allowed")]
@@ -71,32 +70,32 @@ namespace KK_UncensorSelector
         public static ConfigWrapper<bool> GenderBender { get; private set; }
         [DisplayName("Default male body")]
         [Category("Config")]
-        [Description("Body to use if character does not have one set.")]
+        [Description("Body to use if character does not have one set. The censored body will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigBodyList))]
         public static ConfigWrapper<string> DefaultMaleBody { get; private set; }
         [DisplayName("Default male penis")]
         [Category("Config")]
-        [Description("Penis to use if character does not have one set.")]
+        [Description("Penis to use if character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigPenisList))]
         public static ConfigWrapper<string> DefaultMalePenis { get; private set; }
         [DisplayName("Default male balls")]
         [Category("Config")]
-        [Description("Balls to use if character does not have one set.")]
+        [Description("Balls to use if character does not have one set. The mosaic balls will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigBallsList))]
         public static ConfigWrapper<string> DefaultMaleBalls { get; private set; }
         [DisplayName("Default female body")]
         [Category("Config")]
-        [Description("Body to use if character does not have one set.")]
+        [Description("Body to use if character does not have one set. The censored body will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigBodyList))]
         public static ConfigWrapper<string> DefaultFemaleBody { get; private set; }
         [DisplayName("Default female penis")]
         [Category("Config")]
-        [Description("Penis to use if character does not have one set.")]
+        [Description("Penis to use if character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigPenisList))]
         public static ConfigWrapper<string> DefaultFemalePenis { get; private set; }
         [DisplayName("Default female balls")]
         [Category("Config")]
-        [Description("Balls to use if character does not have one set.")]
+        [Description("Balls to use if character does not have one set. The mosaic balls will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigBallsList))]
         public static ConfigWrapper<string> DefaultFemaleBalls { get; private set; }
 
@@ -178,8 +177,6 @@ namespace KK_UncensorSelector
             DefaultFemaleBody = new ConfigWrapper<string>(nameof(DefaultFemaleBody), PluginNameInternal, BodyGuidToDisplayName, DisplayNameToBodyGuid, FemaleBodyDefaultValue);
             DefaultFemalePenis = new ConfigWrapper<string>(nameof(DefaultFemalePenis), PluginNameInternal, FemalePenisGuidToDisplayName, DisplayNameToPenisGuid, FemalePenisDefaultValue);
             DefaultFemaleBalls = new ConfigWrapper<string>(nameof(DefaultFemaleBalls), PluginNameInternal, FemaleBallsGuidToDisplayName, DisplayNameToBallsGuid, FemaleBallsDefaultValue);
-
-            Instance = this;
         }
         /// <summary>
         /// Initialize the character maker GUI
@@ -472,10 +469,6 @@ namespace KK_UncensorSelector
         internal static string SetBodyMaterialFemale() => SetBodyMaterial(1);
         internal static string SetBodyMaterial(byte sex) => CurrentBodyGUID == null ? sex == 0 ? Defaults.BodyMaterialMale : Defaults.BodyMaterialFemale : BodyDictionary[CurrentBodyGUID].BodyMaterial;
         internal static string SetBodyMaterialCreate() => CurrentBodyGUID == null ? Defaults.BodyMaterialCreate : BodyDictionary[CurrentBodyGUID].BodyMaterialCreate;
-        internal static string SetMaleBodyLow()
-        {
-            Logger.Log(LogLevel.Info, "SetMaleBodyLow");
-            return "p_cf_body_00_low";
-        }
+        internal static string SetMaleBodyLow() => "p_cf_body_00_low";
     }
 }

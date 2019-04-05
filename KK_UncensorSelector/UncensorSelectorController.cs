@@ -1,4 +1,5 @@
-﻿using ExtensibleSaveFormat;
+﻿using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using Harmony;
 using KKAPI;
 using KKAPI.Chara;
@@ -8,9 +9,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using BepInEx.Logging;
 using UniRx;
 using UnityEngine;
+using Logger = BepInEx.Logger;
 
 namespace KK_UncensorSelector
 {
@@ -369,7 +370,7 @@ namespace KK_UncensorSelector
 
                         foreach (var mesh in dick.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                             if (PenisParts.Contains(mesh.name))
-                                UpdateMeshRenderer(mesh, chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
+                                UpdateMeshRenderer(chaControl, mesh, chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
 
                         Destroy(dick);
                     }
@@ -389,7 +390,7 @@ namespace KK_UncensorSelector
                         GameObject balls = CommonLib.LoadAsset<GameObject>(ballsData.File, ballsData.Asset, true);
                         foreach (var mesh in balls.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                             if (BallsParts.Contains(mesh.name))
-                                UpdateMeshRenderer(mesh, chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
+                                UpdateMeshRenderer(chaControl, mesh, chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
 
                         Destroy(balls);
                     }
@@ -434,20 +435,20 @@ namespace KK_UncensorSelector
                     foreach (var mesh in chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                     {
                         if (mesh.name == "o_body_a")
-                            UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh);
+                            UpdateMeshRenderer(chaControl, uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh);
                         else if (BodyParts.Contains(mesh.name))
-                            UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
+                            UpdateMeshRenderer(chaControl, uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
                         else if (bodyData != null)
                             foreach (var part in bodyData.ColorMatchList)
                                 if (mesh.name == part.Object)
-                                    UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(x => x.name == part.Object), mesh, true);
+                                    UpdateMeshRenderer(chaControl, uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(x => x.name == part.Object), mesh, true);
 
                         //Destroy all additional parts attached to the current body that shouldn't be there
                         if (AllAdditionalParts.Contains(mesh.name))
                             if (bodyData == null || !bodyData.AdditionalParts.Contains(mesh.name))
                                 Destroy(mesh);
                             else
-                                UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
+                                UpdateMeshRenderer(chaControl, uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
                     }
 
                     Destroy(uncensorCopy);
@@ -469,7 +470,7 @@ namespace KK_UncensorSelector
                 /// Copy the mesh from one SkinnedMeshRenderer to another. If there is a significant mismatch in the number of bones
                 /// this will fail horribly and create abominations. Verify the uncensor body has the proper number of bones in such a case.
                 /// </summary>
-                internal static void UpdateMeshRenderer(SkinnedMeshRenderer src, SkinnedMeshRenderer dst, bool copyMaterials = false)
+                internal static void UpdateMeshRenderer(ChaControl chaControl, SkinnedMeshRenderer src, SkinnedMeshRenderer dst, bool copyMaterials = false)
                 {
                     if (src == null || dst == null)
                         return;
@@ -477,7 +478,7 @@ namespace KK_UncensorSelector
                     // Check if UVs got corrupted when we loaded the asset, uncommon
                     var uvCopy = src.sharedMesh.uv.ToArray();
                     if (AreUVsCorrupted(uvCopy))
-                        BepInEx.Logger.Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be displayed corrupted. Consider updating your GPU drivers.");
+                        Logger.Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be displayed corrupted. Consider updating your GPU drivers.");
 
                     //Copy the mesh
                     dst.sharedMesh = src.sharedMesh;
@@ -491,7 +492,7 @@ namespace KK_UncensorSelector
                     if (copyMaterials)
                         dst.materials = src.materials;
 
-                    Instance.StartCoroutine(HandleUVCorrupionsCo(dst, uvCopy));
+                    chaControl.StartCoroutine(HandleUVCorrupionsCo(dst, uvCopy));
                 }
 
                 private static IEnumerator HandleUVCorrupionsCo(SkinnedMeshRenderer dst, Vector2[] uvCopy)
@@ -501,11 +502,12 @@ namespace KK_UncensorSelector
                     // Check if UVs got corrupted after moving the mesh, most common fail point
                     if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
                     {
-                        BepInEx.Logger.Log(LogLevel.Warning, $"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
+                        Logger.Log(LogLevel.Warning, $"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
                         dst.sharedMesh.uv = uvCopy;
+                        yield return null;
 
                         if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
-                            BepInEx.Logger.Log(LogLevel.Error, "Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
+                            Logger.Log(LogLevel.Error, "Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
                     }
                 }
 
