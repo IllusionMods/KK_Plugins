@@ -478,7 +478,7 @@ namespace KK_UncensorSelector
                     // Check if UVs got corrupted when we loaded the asset, uncommon
                     var uvCopy = src.sharedMesh.uv.ToArray();
                     if (AreUVsCorrupted(uvCopy))
-                        Logger.Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be displayed corrupted. Consider updating your GPU drivers.");
+                        Logger.Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be corrupted. Consider updating your GPU drivers.");
 
                     //Copy the mesh
                     dst.sharedMesh = src.sharedMesh;
@@ -492,7 +492,8 @@ namespace KK_UncensorSelector
                     if (copyMaterials)
                         dst.materials = src.materials;
 
-                    chaControl.StartCoroutine(HandleUVCorrupionsCo(dst, uvCopy));
+                    if (src.sharedMesh.name != "o_dankon" && src.sharedMesh.name != "o_gomu")
+                        chaControl.StartCoroutine(HandleUVCorrupionsCo(dst, uvCopy));
                 }
 
                 private static IEnumerator HandleUVCorrupionsCo(SkinnedMeshRenderer dst, Vector2[] uvCopy)
