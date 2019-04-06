@@ -85,7 +85,7 @@ v1.3.1 Removed log messages. Oops.
 </details>
 
 #### KK_UncensorSelector
-**v3.5 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v59/KK_UncensorSelector.v3.5.zip)**<br/>
+**v3.5.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v63/KK_UncensorSelector.v3.5.1.zip)**<br/>
 
 3.0 update note: Uncensors from previous versions are not compatible, download new versions [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS)<br/>
 
@@ -113,6 +113,7 @@ v3.2 Random uncensors are now more evenly distributed, gender bender config opti
 v3.3 Fix wrong normals after loading a character sometimes, fix default values when loading a character in to the character maker from class menu, fix balls dropdown not reloading the uncensor on change<br/>
 v3.4 Fix liquid textures being removed on changing characters<br/>
 v3.5 Added a message that displays if the skin texture has become corrupt and attempts a fix (Thanks @ManlyMarco)<br/>
+v3.5.1 Reduce false positives for the above change<br/>
 </details>
 
 #### KK_Subtitles
