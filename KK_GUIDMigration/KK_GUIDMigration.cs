@@ -127,7 +127,7 @@ namespace KK_GUIDMigration
                         }
                         else
                         {
-                            ResolveInfo intResolveOld = UniversalAutoResolver.LoadedResolutionInfo.FirstOrDefault(x => x.Property == propertyWithoutPrefix && x.Slot == resolveInfo.Slot && x.GUID == resolveInfo.GUID);
+                            ResolveInfo intResolveOld = UniversalAutoResolver.TryGetResolutionInfo(resolveInfo.Slot, propertyWithoutPrefix, resolveInfo.GUID);
 
                             if (intResolveOld == null)
                             {
@@ -143,7 +143,7 @@ namespace KK_GUIDMigration
                             }
                             else
                             {
-                                ResolveInfo intResolveNew = UniversalAutoResolver.LoadedResolutionInfo.FirstOrDefault(x => x.Property == propertyWithoutPrefix && x.Slot == info.NewID && x.GUID == info.NewGUID);
+                                ResolveInfo intResolveNew = UniversalAutoResolver.TryGetResolutionInfo(info.NewID, propertyWithoutPrefix, info.NewGUID);
 
                                 if (intResolveNew == null)
                                 {
