@@ -42,9 +42,9 @@ namespace KK_BodyShaders
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetBodyBaseMaterial))]
-        public static void SetBodyBaseMaterial(ChaControl __instance) => GetController(__instance).SetBodyMaterial();
+        public static void SetBodyBaseMaterial(ChaControl __instance) => GetController(__instance).SetAllMaterial();
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetFaceBaseMaterial))]
-        public static void SetFaceBaseMaterial(ChaControl __instance) => GetController(__instance).SetFaceMaterial();
+        public static void SetFaceBaseMaterial(ChaControl __instance) => GetController(__instance).SetAllMaterial();
 
         public static BodyShadersCharaController GetController(ChaControl character) => character?.gameObject?.GetComponent<BodyShadersCharaController>();
 
@@ -105,42 +105,12 @@ namespace KK_BodyShaders
                 ChaControl.Reload();
                 SetAllMaterial();
             }
-            public void SetBodyMaterial()
-            {
-                if (Enabled)
-                {
-                    SetMaterial(ChaControl.customTexCtrlBody.matDraw);
-                    IterateMaterials(ChaControl.transform.Find("BodyTop/p_cf_body_00/cf_o_root/")?.gameObject);
-                }
-            }
-            public void SetFaceMaterial()
-            {
-                if (Enabled)
-                    IterateMaterials(ChaControl.objHeadBone);
-            }
-            public void SetClothesMaterial()
-            {
-                if (Enabled)
-                {
-                    IterateMaterials(ChaControl.objTop.transform.Find("ct_clothesTop")?.gameObject);
-                    IterateMaterials(ChaControl.objTop.transform.Find("ct_clothesBot")?.gameObject);
-                    IterateMaterials(ChaControl.objTop.transform.Find("ct_bra")?.gameObject);
-                    IterateMaterials(ChaControl.objTop.transform.Find("ct_shorts")?.gameObject);
-                    IterateMaterials(ChaControl.objTop.transform.Find("ct_gloves")?.gameObject);
-                    IterateMaterials(ChaControl.objTop.transform.Find("ct_panst")?.gameObject);
-                    IterateMaterials(ChaControl.objTop.transform.Find("ct_socks")?.gameObject);
-                    IterateMaterials(ChaControl.objTop.transform.Find("ct_shoes_inner")?.gameObject);
-                    IterateMaterials(ChaControl.objTop.transform.Find("ct_shoes_outer")?.gameObject);
-                }
-            }
             public void SetAllMaterial()
             {
                 if (Enabled)
                 {
-                    SetFaceMaterial();
-                    if (DoClothes)
-                        SetClothesMaterial();
-                    SetBodyMaterial();
+                    IterateMaterials(ChaControl.objTop);
+                    SetMaterial(ChaControl.customTexCtrlBody.matDraw);
                 }
             }
 
@@ -148,22 +118,10 @@ namespace KK_BodyShaders
             {
                 if (go == null) return;
                 if (excluded.Contains(go.name)) return;
-
-                if (go.GetComponent<ChaCustomHairComponent>() && go.GetComponent<ChaAccessoryComponent>())
-                {
-                    //hair accessory
-                    if (DoHair == false) return;
-                }
-                else if (go.GetComponent<ChaCustomHairComponent>())
-                {
-                    //hair
-                    if (DoHair == false) return;
-                }
-                else if (go.GetComponent<ChaAccessoryComponent>())
-                {
-                    //accessory
-                    return;
-                }
+                if (go.GetComponent<ChaClothesComponent>() && DoClothes == false) return; //clothes
+                if (go.GetComponent<ChaCustomHairComponent>() && go.GetComponent<ChaAccessoryComponent>() && DoHair == false) return; //hair accessory
+                if (go.GetComponent<ChaCustomHairComponent>() && !go.GetComponent<ChaAccessoryComponent>() && DoHair == false) return; //hair
+                if (!go.GetComponent<ChaCustomHairComponent>() && go.GetComponent<ChaAccessoryComponent>()) return; //accessory
 
                 if (go.GetComponent<Renderer>())
                     SetMaterial(go.GetComponent<Renderer>().material);
