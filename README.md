@@ -199,6 +199,14 @@ To use, open the plugin settings and set a personality, press the hotkey (defaul
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.<br/>
 
+
+#### KK_BodyShaders
+**Beta - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v63/KK_BodyShaders.beta.zip)**<br/>
+
+Applies shaders to a character's body and hair. Currently only has a shader for making goo girls. Or boys, if you're in to that kind of thing. Also has bugs. Not a shader for making bug girls, the kind of bugs that might make your game act strange.<br/>
+
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
+
 #### KK_ForceHighPoly
 **v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v10/KK_ForceHighPoly.v1.1.zip)**<br/>
 
