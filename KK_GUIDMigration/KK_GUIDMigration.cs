@@ -222,5 +222,11 @@ namespace KK_GUIDMigration
         {
             extInfo = MigrateGUID(extInfo, file.parameter.fullname.Trim());
         }
+        
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(Hooks), "IterateCoordinatePrefixes")]
+        public static void IterateCoordinatePrefixes(ref IEnumerable<ResolveInfo> extInfo, ChaFileCoordinate coordinate) {
+            extInfo = MigrateGUID(extInfo, coordinate.coordinateName.Trim());            
+        }
     }
 }
