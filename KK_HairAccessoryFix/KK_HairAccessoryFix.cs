@@ -14,7 +14,7 @@ namespace KK_HairAccessoryFix
         public const string GUID = "com.deathweasel.bepinex.hairaccessoryfix";
         public const string PluginName = "Hair Accessory Fix";
         public const string PluginNameInternal = "KK_HairAccessoryFix";
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
 
         [DisplayName("Color match")]
         [Category("Config")]
@@ -28,9 +28,6 @@ namespace KK_HairAccessoryFix
         [Category("Config")]
         [Description("Match hair accessory gloss when possible.")]
         public static ConfigWrapper<bool> MatchGloss { get; private set; }
-        [DisplayName("Sync Hotkey")]
-        [Description("Syncs newly added hair accessories in the character maker.")]
-        public static SavedKeyboardShortcut SyncHotkey { get; private set; }
 
         void Main()
         {
@@ -40,53 +37,58 @@ namespace KK_HairAccessoryFix
             MatchColor = new ConfigWrapper<bool>("MatchColor", PluginNameInternal, false);
             MatchOutlineColor = new ConfigWrapper<bool>("MatchOutlineColor", PluginNameInternal, true);
             MatchGloss = new ConfigWrapper<bool>("MatchGloss", PluginNameInternal, true);
-            SyncHotkey = new SavedKeyboardShortcut("SyncHotkey", PluginNameInternal, new KeyboardShortcut(KeyCode.F5));
         }
 
-        void Update()
+        private static void FixHairAccessory(ChaControl chaControl, int slotNo)
         {
-            if (SyncHotkey.IsDown() && MakerAPI.InsideAndLoaded)
-                FixHairAccessories(MakerAPI.GetCharacterControl());
+            if (!MathfEx.RangeEqualOn<int>(0, slotNo, 19)) return;
+
+            ChaAccessoryComponent chaAccessoryComponent = chaControl.cusAcsCmp[slotNo];
+            if (chaAccessoryComponent?.rendNormal == null) return;
+
+            ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent.gameObject.GetComponent<ChaCustomHairComponent>();
+            if (chaCustomHairComponent?.rendHair == null) return;
+
+            Texture2D texHairGloss = (Texture2D)AccessTools.Property(typeof(ChaControl), "texHairGloss").GetValue(chaControl, null);
+            Color baseColor = chaControl.chaFile.custom.hair.parts[0].baseColor;
+            Color endColor = chaControl.chaFile.custom.hair.parts[0].endColor;
+            Color startColor = chaControl.chaFile.custom.hair.parts[0].startColor;
+            Color outlineColor = chaControl.chaFile.custom.hair.parts[0].outlineColor;
+            Color acsColor = chaControl.chaFile.custom.hair.parts[0].acsColor[0];
+
+            foreach (Renderer renderer in chaCustomHairComponent.rendHair)
+            {
+                if (renderer == null) continue;
+
+                if (renderer.material.HasProperty("_Color") && MatchColor.Value)
+                    renderer.material.SetColor("_Color", baseColor);
+
+                if (renderer.material.HasProperty("_Color2") && MatchColor.Value)
+                    renderer.material.SetColor("_Color2", startColor);
+
+                if (renderer.material.HasProperty("_Color3") && MatchColor.Value)
+                    renderer.material.SetColor("_Color3", endColor);
+
+                if (renderer.material.HasProperty(ChaShader._HairGloss) && MatchGloss.Value)
+                    renderer.material.SetTexture(ChaShader._HairGloss, texHairGloss);
+
+                if (renderer.material.HasProperty(ChaShader._LineColor) && MatchOutlineColor.Value)
+                    renderer.material.SetColor(ChaShader._LineColor, outlineColor);
+            }
+
+            foreach (Renderer renderer in chaCustomHairComponent.rendAccessory)
+            {
+                if (renderer == null) continue;
+
+                if (renderer.material.HasProperty("_Color") && MatchColor.Value)
+                    renderer.material.SetColor("_Color", acsColor);
+            }
         }
 
         private static void FixHairAccessories(ChaControl chaControl)
         {
-            try
-            {
-                if (chaControl?.chaFile?.custom?.hair.parts[0] == null)
-                    return;
-
-                Texture2D texHairGloss = (Texture2D)AccessTools.Property(typeof(ChaControl), "texHairGloss").GetValue(chaControl, null);
-                foreach (ChaCustomHairComponent x in chaControl.GetComponentsInChildren<ChaCustomHairComponent>(true))
-                {
-
-                    Color baseColor = chaControl.chaFile.custom.hair.parts[0].baseColor;
-                    Color endColor = chaControl.chaFile.custom.hair.parts[0].endColor;
-                    Color startColor = chaControl.chaFile.custom.hair.parts[0].startColor;
-                    Color outlineColor = chaControl.chaFile.custom.hair.parts[0].outlineColor;
-
-                    foreach (Renderer y in x.rendHair)
-                    {
-                        Material material = y.material;
-
-                        if (material.HasProperty("_Color") && MatchColor.Value)
-                            material.SetColor("_Color", baseColor);
-
-                        if (material.HasProperty("_Color2") && MatchColor.Value)
-                            material.SetColor("_Color2", startColor);
-
-                        if (material.HasProperty("_Color3") && MatchColor.Value)
-                            material.SetColor("_Color3", endColor);
-
-                        if (material.HasProperty(ChaShader._HairGloss) && MatchGloss.Value)
-                            material.SetTexture(ChaShader._HairGloss, texHairGloss);
-
-                        if (material.HasProperty(ChaShader._LineColor) && MatchOutlineColor.Value)
-                            material.SetColor(ChaShader._LineColor, outlineColor);
-                    }
-                }
-            }
-            catch { }
+            for (int i = 0; i < 20; i++)
+                FixHairAccessory(chaControl, i);
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairGlossMask))]
@@ -95,7 +97,9 @@ namespace KK_HairAccessoryFix
         public static void ChangeSettingHairColor(ChaControl __instance) => FixHairAccessories(__instance);
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairOutlineColor))]
         public static void ChangeSettingHairOutlineColor(ChaControl __instance) => FixHairAccessories(__instance);
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload))]
-        public static void Reload(ChaControl __instance) => FixHairAccessories(__instance);
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairAcsColor))]
+        public static void ChangeSettingHairAcsColor(ChaControl __instance) => FixHairAccessories(__instance);
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryColor))]
+        public static void ChangeAccessoryColor(ChaControl __instance, int slotNo) => FixHairAccessory(__instance, slotNo);
     }
 }
