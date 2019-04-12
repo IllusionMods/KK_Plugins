@@ -225,7 +225,7 @@ namespace KK_GUIDMigration
         
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Hooks), "IterateCoordinatePrefixes")]
-        public static void IterateCoordinatePrefixes(ref IEnumerable<ResolveInfo> extInfo, ChaFileCoordinate coordinate) {
+        public static void IterateCoordinatePrefixesPrefix(ref IEnumerable<ResolveInfo> extInfo, ChaFileCoordinate coordinate) {
             extInfo = MigrateGUID(extInfo, coordinate.coordinateName.Trim());            
         }
     }
