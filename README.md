@@ -16,7 +16,7 @@ Plays a sound when the Chara Maker finishes loading. Useful if you spend the loa
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.<br/>
 
 #### KK_GUIDMigration
-**v1.3.3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v58/KK_GUIDMigration.v1.3.3.zip)**<br/>
+**v1.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v64/KK_GUIDMigration.v1.4.zip)**<br/>
 
 Migrates information on your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.<br/>
 
@@ -25,7 +25,8 @@ Also attempts to fix cards saved with a blank GUID (Missing Mod []) by stripping
 <details><summary>Change Log</summary>
 v1.1 Added character name for blank GUID messages<br/>
 v1.2 Fixed hard coded path<br/>
-v1.3 Added support for stripping extended data, fix errors resulting from missing .csv
+v1.3 Added support for stripping extended data, fix errors resulting from missing .csv<br/>
+v1.4 Added support for coordinate cards (Thanks Kokaiinum), fix errors caused by wrong sideloader version<br/>
 </details>
 
 <details><summary>Configuration</summary>
