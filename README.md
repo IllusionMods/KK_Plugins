@@ -16,7 +16,7 @@ Plays a sound when the Chara Maker finishes loading. Useful if you spend the loa
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.<br/>
 
 #### KK_GUIDMigration
-**v1.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v64/KK_GUIDMigration.v1.4.zip)**<br/>
+**v1.4.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v66/KK_GUIDMigration.v1.4.1.zip)**<br/>
 
 Migrates information on your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.<br/>
 
