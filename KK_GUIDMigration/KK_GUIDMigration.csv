@@ -164,7 +164,6 @@ ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,503,com.DeathWeasel.AccessoryHa
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,523,com.DeathWeasel.AccessoryHairBack,016
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,504,com.DeathWeasel.AccessoryHairBack,020
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,505,com.DeathWeasel.AccessoryHairBack,021
-ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,506,com.DeathWeasel.AccessoryHairBack,022
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,524,com.DeathWeasel.AccessoryHairBack,024
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,525,com.DeathWeasel.AccessoryHairBack,023
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,507,com.DeathWeasel.AccessoryHairBack,025
@@ -187,7 +186,6 @@ ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,521,com.DeathWeasel.AccessoryHa
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,529,com.DeathWeasel.AccessoryHairBack,055
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,531,com.DeathWeasel.AccessoryHairBack,058
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,532,com.DeathWeasel.AccessoryHairBack,062
-ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,554,com.DeathWeasel.AccessoryHairBack,063
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,556,com.DeathWeasel.AccessoryHairBack,067
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,559,com.DeathWeasel.AccessoryHairBack,068
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairB,560,com.DeathWeasel.AccessoryHairBack,069
@@ -224,13 +222,13 @@ ChaFileAccessory.PartsInfo.id,moderchan.AhogeNoShake,1876,com.DeathWeasel.Access
 ChaFileAccessory.PartsInfo.id,moderchan.AhogeNoShake,1877,com.DeathWeasel.AccessoryHairExtension,009
 ChaFileAccessory.PartsInfo.id,moderchan.AhogeNoShake,1878,com.DeathWeasel.AccessoryHairExtension,010
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,507,com.DeathWeasel.AccessoryHairFront,002
-ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,508,com.DeathWeasel.AccessoryHairFront,007
-ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,509,com.DeathWeasel.AccessoryHairFront,008
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,509,com.DeathWeasel.AccessoryHairFront,007
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,508,com.DeathWeasel.AccessoryHairFront,008
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,510,com.DeathWeasel.AccessoryHairFront,010
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,511,com.DeathWeasel.AccessoryHairFront,015
-ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,513,com.DeathWeasel.AccessoryHairFront,020
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,609,com.DeathWeasel.AccessoryHairFront,020
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,512,com.DeathWeasel.AccessoryHairFront,021
-ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,609,com.DeathWeasel.AccessoryHairFront,026
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,513,com.DeathWeasel.AccessoryHairFront,026
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,608,com.DeathWeasel.AccessoryHairFront,027
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,514,com.DeathWeasel.AccessoryHairFront,032
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,776,com.DeathWeasel.AccessoryHairFront,036
@@ -270,8 +268,8 @@ ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,626,com.DeathWeasel.AccessoryH
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,628,com.DeathWeasel.AccessoryHairFront,166
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,629,com.DeathWeasel.AccessoryHairFront,167
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,635,com.DeathWeasel.AccessoryHairFront,175
-ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,751,com.DeathWeasel.AccessoryHairFront,186
-ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,752,com.DeathWeasel.AccessoryHairFront,188
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,751,com.DeathWeasel.AccessoryHairFront,176
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,752,com.DeathWeasel.AccessoryHairFront,178
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,636,com.DeathWeasel.AccessoryHairFront,180
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,753,com.DeathWeasel.AccessoryHairFront,181
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,754,com.DeathWeasel.AccessoryHairFront,182
