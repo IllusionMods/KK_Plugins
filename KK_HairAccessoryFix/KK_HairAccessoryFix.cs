@@ -9,6 +9,9 @@ using MessagePack;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using BepInEx.Logging;
+using System.Collections;
+using Logger = BepInEx.Logger;
 /// <summary>
 /// Match color, outline color, and hair gloss for hair accessories
 /// </summary>
@@ -49,7 +52,9 @@ namespace KK_HairAccessoryFix
             ColorMatchToggle = new AccessoryControlWrapper<MakerToggle, bool>(MakerAPI.AddAccessoryWindowControl(new MakerToggle(null, "Color Match", ColorMatchDefault, this)));
             HairGlossToggle = new AccessoryControlWrapper<MakerToggle, bool>(MakerAPI.AddAccessoryWindowControl(new MakerToggle(null, "Hair Gloss", ColorMatchDefault, this)));
             OutlineColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Outline Color", false, null, OutlineColorDefault, this)));
+            OutlineColorPicker.Control.ColorBoxWidth = 230;
             AccessoryColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Accessory Color", false, null, OutlineColorDefault, this)));
+            AccessoryColorPicker.Control.ColorBoxWidth = 230;
 
             //Color Match
             ColorMatchToggle.ValueChanged += ColorMatchToggle_ValueChanged;
@@ -192,6 +197,16 @@ namespace KK_HairAccessoryFix
             protected override void OnReload(GameMode currentGameMode, bool maintainState)
             {
                 base.OnReload(currentGameMode, maintainState);
+                ChaControl.StartCoroutine(LoadData());
+            }
+            /// <summary>
+            /// Wait one frame and then load the data. Accessories do not yet exist at the time OnReload triggers.
+            /// </summary>
+            /// <returns></returns>
+            private IEnumerator LoadData()
+            {
+                DoEvents = false;
+                yield return null;
 
                 HairAccessories.Clear();
 
@@ -203,6 +218,7 @@ namespace KK_HairAccessoryFix
                         if (InitHairAccessoryInfo(i))
                         {
                             HairAccessories[i].ColorMatch = false;
+                            HairAccessories[i].HairGloss = false;
                             var chaCustomHairComponent = AccessoriesApi.GetAccessory(ChaControl, i)?.gameObject.GetComponent<ChaCustomHairComponent>();
                             if (chaCustomHairComponent != null)
                                 foreach (Color color in chaCustomHairComponent.acsDefColor)
@@ -228,13 +244,31 @@ namespace KK_HairAccessoryFix
                         DoEvents = true;
                     }
                 }
+
+                DoEvents = true;
+                UpdateAccessories();
             }
-
+            /// <summary>
+            /// Get color match data for the specified accessory or default if the accessory does not exist or is not a hair accessory
+            /// </summary>
             public bool GetColorMatch(int slot) => HairAccessories.TryGetValue(slot, out var hairAccessoryInfo) ? hairAccessoryInfo.ColorMatch : ColorMatchDefault;
+            /// <summary>
+            /// Get hair gloss data for the specified accessory or default if the accessory does not exist or is not a hair accessory
+            /// </summary>
             public bool GetHairGloss(int slot) => HairAccessories.TryGetValue(slot, out var hairAccessoryInfo) ? hairAccessoryInfo.HairGloss : HairGlossDefault;
+            /// <summary>
+            /// Get outline color data for the specified accessory or default if the accessory does not exist or is not a hair accessory
+            /// </summary>
             public Color GetOutlineColor(int slot) => HairAccessories.TryGetValue(slot, out var hairAccessoryInfo) ? hairAccessoryInfo.OutlineColor : OutlineColorDefault;
+            /// <summary>
+            /// Get accessory color data for the specified accessory or default if the accessory does not exist or is not a hair accessory
+            /// </summary>
             public Color GetAccessoryColor(int slot) => HairAccessories.TryGetValue(slot, out var hairAccessoryInfo) ? hairAccessoryInfo.AccessoryColor : AccessoryColorDefault;
-
+            /// <summary>
+            /// Initializes the HairAccessoryInfo for the slot if it is a hair accessory, or removes it if it is not.
+            /// Returns true if the accessory is a hair accessory so this method check, initialize, and remove HairAccessoryInfo. Use before getting or setting.
+            /// </summary>
+            /// <returns>True if the accessory is a hair accessory</returns>
             public bool InitHairAccessoryInfo(int slot)
             {
                 if (IsHairAccessory(slot))
@@ -249,9 +283,13 @@ namespace KK_HairAccessoryFix
                     return false;
                 }
             }
-
+            /// <summary>
+            /// Removes the HairAccessoryInfo for the slot
+            /// </summary>
             public void RemoveHairAccessoryInfo(int slot) => HairAccessories.Remove(slot);
-
+            /// <summary>
+            /// Set color match for the specified accessory
+            /// </summary>
             public void SetColorMatch(int slot, bool value)
             {
                 if (MakerAPI.InsideAndLoaded && IsHairAccessory(slot))
@@ -260,6 +298,9 @@ namespace KK_HairAccessoryFix
                     UpdateAccessory(slot);
                 }
             }
+            /// <summary>
+            /// Set hair gloss for the specified accessory
+            /// </summary>
             public void SetHairGloss(int slot, bool value)
             {
                 if (MakerAPI.InsideAndLoaded && IsHairAccessory(slot))
@@ -268,7 +309,9 @@ namespace KK_HairAccessoryFix
                     UpdateAccessory(slot);
                 }
             }
-
+            /// <summary>
+            /// Set outline color for the specified accessory
+            /// </summary>
             public void SetOutlineColor(int slot, Color value)
             {
                 if (MakerAPI.InsideAndLoaded && IsHairAccessory(slot))
@@ -277,7 +320,9 @@ namespace KK_HairAccessoryFix
                     UpdateAccessory(slot);
                 }
             }
-
+            /// <summary>
+            /// Set accessory color for the specified accessory
+            /// </summary>
             public void SetAccessoryColor(int slot, Color value)
             {
                 if (MakerAPI.InsideAndLoaded && IsHairAccessory(slot))
@@ -286,9 +331,17 @@ namespace KK_HairAccessoryFix
                     UpdateAccessory(slot);
                 }
             }
-
+            /// <summary>
+            /// Checks if the specified accessory is a hair accessory
+            /// </summary>
             public bool IsHairAccessory(ChaAccessoryComponent chaAccessoryComponent) => chaAccessoryComponent?.gameObject.GetComponent<ChaCustomHairComponent>() != null;
+            /// <summary>
+            /// Checks if the specified accessory is a hair accessory
+            /// </summary>
             public bool IsHairAccessory(int slot) => AccessoriesApi.GetAccessory(ChaControl, slot)?.gameObject.GetComponent<ChaCustomHairComponent>() != null;
+            /// <summary>
+            /// Checks if the specified accessory is a hair accessory and has accessory parts (rendAccessory in the ChaCustomHairComponent MonoBehavior)
+            /// </summary>
             public bool HasAccessoryPart(int slot)
             {
                 var chaCustomHairComponent = AccessoriesApi.GetAccessory(ChaControl, slot)?.gameObject.GetComponent<ChaCustomHairComponent>();
@@ -297,12 +350,17 @@ namespace KK_HairAccessoryFix
                         if (renderer != null) return true;
                 return false;
             }
-
+            /// <summary>
+            /// Updates all the hair accessories
+            /// </summary>
             public void UpdateAccessories()
             {
                 foreach (var x in HairAccessories)
                     UpdateAccessory(x.Key);
             }
+            /// <summary>
+            /// Updates the specified hair accessory
+            /// </summary>
             public void UpdateAccessory(int slot)
             {
                 if (!IsHairAccessory(slot)) return;
@@ -321,7 +379,7 @@ namespace KK_HairAccessoryFix
                     cvsAccessory.UpdateAcsColor01(ChaControl.chaFile.custom.hair.parts[0].baseColor);
                     cvsAccessory.UpdateAcsColor02(ChaControl.chaFile.custom.hair.parts[0].startColor);
                     cvsAccessory.UpdateAcsColor03(ChaControl.chaFile.custom.hair.parts[0].endColor);
-                    OutlineColorPicker.SetSelectedValue(ChaControl.chaFile.custom.hair.parts[0].outlineColor);
+                    OutlineColorPicker.SetValue(slot, ChaControl.chaFile.custom.hair.parts[0].outlineColor);
                     hairAccessoryInfo.OutlineColor = ChaControl.chaFile.custom.hair.parts[0].outlineColor;
                     DoEvents = true;
                 }
