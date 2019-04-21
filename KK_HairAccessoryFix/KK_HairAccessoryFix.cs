@@ -7,11 +7,12 @@ using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using MessagePack;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BepInEx.Logging;
-using System.Collections;
+using UnityEngine.UI;
 using Logger = BepInEx.Logger;
+using BepInEx.Logging;
 /// <summary>
 /// Match color, outline color, and hair gloss for hair accessories
 /// </summary>
@@ -26,6 +27,7 @@ namespace KK_HairAccessoryFix
         public const string Version = "1.1";
 
         private static bool DoEvents = true;
+        private static bool ReloadingChara = false;
         private static AccessoryControlWrapper<MakerToggle, bool> ColorMatchToggle;
         private static AccessoryControlWrapper<MakerToggle, bool> HairGlossToggle;
         private static AccessoryControlWrapper<MakerColor, Color> OutlineColorPicker;
@@ -43,6 +45,75 @@ namespace KK_HairAccessoryFix
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
             CharacterApi.RegisterExtraBehaviour<HairAccessoryController>(GUID);
+            AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
+            AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
+        }
+
+        private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e)
+        {
+            var controller = GetController(MakerAPI.GetCharacterControl());
+            bool hairAcc = controller.InitHairAccessoryInfo(e.SlotIndex);
+            bool colorMatch = ColorMatchToggle.GetSelectedValue();
+
+            if (hairAcc)
+            {
+                ColorMatchToggle.Control.Visible.OnNext(true);
+                HairGlossToggle.Control.Visible.OnNext(true);
+                OutlineColorPicker.Control.Visible.OnNext(!ColorMatchToggle.Control.Value);
+                AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart(e.SlotIndex));
+
+                if (colorMatch)
+                    HideAccColors(e.SlotIndex);
+                else
+                    ShowAccColors(e.SlotIndex);
+
+                if (DoEvents)
+                    controller.UpdateAccessory(e.SlotIndex);
+            }
+            else
+            {
+                ColorMatchToggle.Control.Visible.OnNext(false);
+                HairGlossToggle.Control.Visible.OnNext(false);
+                OutlineColorPicker.Control.Visible.OnNext(false);
+                AccessoryColorPicker.Control.Visible.OnNext(false);
+                SetDefaults();
+                ShowAccColors(e.SlotIndex);
+            }
+        }
+
+        private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e)
+        {
+            if (!MakerAPI.InsideAndLoaded) return;
+
+            var controller = GetController(MakerAPI.GetCharacterControl());
+            bool hairAcc = controller.IsHairAccessory(e.SlotIndex);
+            bool colorMatch = ColorMatchToggle.GetSelectedValue();
+
+            if (hairAcc)
+            {
+                ColorMatchToggle.Control.Visible.OnNext(true);
+                ColorMatchToggle.Control.Visible.OnNext(true);
+                OutlineColorPicker.Control.Visible.OnNext(!ColorMatchToggle.Control.Value);
+                AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart(e.SlotIndex));
+
+                if (colorMatch)
+                    HideAccColors(e.SlotIndex);
+                else
+                    ShowAccColors(e.SlotIndex);
+
+                ColorMatchToggle.SetSelectedValue(controller.GetColorMatch(e.SlotIndex));
+                HairGlossToggle.SetSelectedValue(controller.GetHairGloss(e.SlotIndex));
+                OutlineColorPicker.SetSelectedValue(controller.GetOutlineColor(e.SlotIndex));
+                AccessoryColorPicker.SetSelectedValue(controller.GetAccessoryColor(e.SlotIndex));
+            }
+            else
+            {
+                HairGlossToggle.Control.Visible.OnNext(false);
+                ColorMatchToggle.Control.Visible.OnNext(false);
+                OutlineColorPicker.Control.Visible.OnNext(false);
+                AccessoryColorPicker.Control.Visible.OnNext(false);
+                ShowAccColors(e.SlotIndex);
+            }
         }
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
@@ -52,52 +123,26 @@ namespace KK_HairAccessoryFix
             ColorMatchToggle = new AccessoryControlWrapper<MakerToggle, bool>(MakerAPI.AddAccessoryWindowControl(new MakerToggle(null, "Color Match", ColorMatchDefault, this)));
             HairGlossToggle = new AccessoryControlWrapper<MakerToggle, bool>(MakerAPI.AddAccessoryWindowControl(new MakerToggle(null, "Hair Gloss", ColorMatchDefault, this)));
             OutlineColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Outline Color", false, null, OutlineColorDefault, this)));
-            OutlineColorPicker.Control.ColorBoxWidth = 230;
             AccessoryColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Accessory Color", false, null, OutlineColorDefault, this)));
-            AccessoryColorPicker.Control.ColorBoxWidth = 230;
 
             //Color Match
+            ColorMatchToggle.Control.Visible.OnNext(false);
             ColorMatchToggle.ValueChanged += ColorMatchToggle_ValueChanged;
             void ColorMatchToggle_ValueChanged(object sender, AccessoryWindowControlValueChangedEventArgs<bool> eventArgs)
             {
                 if (DoEvents)
                     controller.SetColorMatch(eventArgs.SlotIndex, eventArgs.NewValue);
+
                 OutlineColorPicker.Control.Visible.OnNext(!eventArgs.NewValue);
-            }
 
-            ColorMatchToggle.VisibleIndexChanged += ColorMatchToggle_VisibleIndexChanged;
-            void ColorMatchToggle_VisibleIndexChanged(object sender, AccessorySlotEventArgs eventArgs)
-            {
-                if (DoEvents)
-                    ColorMatchToggle.SetSelectedValue(controller.GetColorMatch(eventArgs.SlotIndex));
-                ColorMatchToggle.Control.Visible.OnNext(controller.IsHairAccessory(eventArgs.SlotIndex));
-            }
-
-            ColorMatchToggle.AccessoryKindChanged += ColorMatchToggle_AccessoryKindChanged;
-            void ColorMatchToggle_AccessoryKindChanged(object sender, AccessorySlotEventArgs eventArgs)
-            {
-                ColorMatchToggle.Control.Visible.OnNext(controller.IsHairAccessory(eventArgs.SlotIndex));
-                if (controller.InitHairAccessoryInfo(eventArgs.SlotIndex))
-                {
-                    if (DoEvents)
-                        controller.UpdateAccessory(eventArgs.SlotIndex);
-                }
+                if (eventArgs.NewValue)
+                    HideAccColors(eventArgs.SlotIndex);
                 else
-                    SetDefaults();
-            }
-            ColorMatchToggle.Control.Visible.OnNext(false);
-
-            void SetDefaults()
-            {
-                DoEvents = false;
-                ColorMatchToggle.Control.Value = ColorMatchDefault;
-                HairGlossToggle.Control.Value = HairGlossDefault;
-                OutlineColorPicker.Control.Value = OutlineColorDefault;
-                AccessoryColorPicker.Control.Value = AccessoryColorDefault;
-                DoEvents = true;
+                    ShowAccColors(eventArgs.SlotIndex);
             }
 
             //Hair Gloss
+            HairGlossToggle.Control.Visible.OnNext(false);
             HairGlossToggle.ValueChanged += HairGlossToggle_ValueChanged;
             void HairGlossToggle_ValueChanged(object sender, AccessoryWindowControlValueChangedEventArgs<bool> eventArgs)
             {
@@ -105,22 +150,9 @@ namespace KK_HairAccessoryFix
                     controller.SetHairGloss(eventArgs.SlotIndex, eventArgs.NewValue);
             }
 
-            HairGlossToggle.VisibleIndexChanged += HairGlossToggle_VisibleIndexChanged;
-            void HairGlossToggle_VisibleIndexChanged(object sender, AccessorySlotEventArgs eventArgs)
-            {
-                if (DoEvents)
-                    HairGlossToggle.SetSelectedValue(controller.GetHairGloss(eventArgs.SlotIndex));
-                HairGlossToggle.Control.Visible.OnNext(controller.IsHairAccessory(eventArgs.SlotIndex));
-            }
-
-            HairGlossToggle.AccessoryKindChanged += HairGlossToggle_AccessoryKindChanged;
-            void HairGlossToggle_AccessoryKindChanged(object sender, AccessorySlotEventArgs eventArgs)
-            {
-                HairGlossToggle.Control.Visible.OnNext(controller.IsHairAccessory(eventArgs.SlotIndex));
-            }
-            HairGlossToggle.Control.Visible.OnNext(false);
-
             //Outline Color
+            OutlineColorPicker.Control.ColorBoxWidth = 230;
+            OutlineColorPicker.Control.Visible.OnNext(false);
             OutlineColorPicker.ValueChanged += OutlineColorPicker_ValueChanged;
             void OutlineColorPicker_ValueChanged(object sender, AccessoryWindowControlValueChangedEventArgs<Color> eventArgs)
             {
@@ -128,59 +160,77 @@ namespace KK_HairAccessoryFix
                     controller.SetOutlineColor(eventArgs.SlotIndex, eventArgs.NewValue);
             }
 
-            OutlineColorPicker.VisibleIndexChanged += OutlineColorPicker_VisibleIndexChanged;
-            void OutlineColorPicker_VisibleIndexChanged(object sender, AccessorySlotEventArgs eventArgs)
-            {
-                if (DoEvents)
-                    OutlineColorPicker.SetSelectedValue(controller.GetOutlineColor(eventArgs.SlotIndex));
-                if (controller.IsHairAccessory(eventArgs.SlotIndex))
-                    OutlineColorPicker.Control.Visible.OnNext(!ColorMatchToggle.Control.Value);
-                else
-                    OutlineColorPicker.Control.Visible.OnNext(false);
-            }
-
-            OutlineColorPicker.AccessoryKindChanged += OutlineColorPicker_AccessoryKindChanged;
-            void OutlineColorPicker_AccessoryKindChanged(object sender, AccessorySlotEventArgs eventArgs)
-            {
-                if (controller.IsHairAccessory(eventArgs.SlotIndex))
-                    OutlineColorPicker.Control.Visible.OnNext(!ColorMatchToggle.Control.Value);
-                else
-                    OutlineColorPicker.Control.Visible.OnNext(false);
-            }
-            OutlineColorPicker.Control.Visible.OnNext(false);
-
             //AccessoryColor
+            AccessoryColorPicker.Control.ColorBoxWidth = 230;
+            AccessoryColorPicker.Control.Visible.OnNext(false);
             AccessoryColorPicker.ValueChanged += AccessoryColorPicker_ValueChanged;
             void AccessoryColorPicker_ValueChanged(object sender, AccessoryWindowControlValueChangedEventArgs<Color> eventArgs)
             {
                 controller.SetAccessoryColor(eventArgs.SlotIndex, eventArgs.NewValue);
             }
-
-            AccessoryColorPicker.VisibleIndexChanged += AccessoryColorPicker_VisibleIndexChanged;
-            void AccessoryColorPicker_VisibleIndexChanged(object sender, AccessorySlotEventArgs eventArgs)
-            {
-                if (DoEvents)
-                    AccessoryColorPicker.SetSelectedValue(controller.GetAccessoryColor(eventArgs.SlotIndex));
-                AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart(eventArgs.SlotIndex));
-            }
-
-            AccessoryColorPicker.AccessoryKindChanged += AccessoryColorPicker_AccessoryKindChanged;
-            void AccessoryColorPicker_AccessoryKindChanged(object sender, AccessorySlotEventArgs eventArgs)
-            {
-                AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart(eventArgs.SlotIndex));
-            }
-            AccessoryColorPicker.Control.Visible.OnNext(false);
         }
 
-        private void ColorMatchToggle_VisibleIndexChanged1(object sender, AccessorySlotEventArgs e) => throw new System.NotImplementedException();
+        private static void HideAccColors(int slot)
+        {
+            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("separateColor").GetValue<GameObject>().SetActive(false);
+            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnAcsColor01").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnAcsColor02").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnAcsColor03").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnAcsColor04").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+        }
+        private static void ShowAccColors(int slot)
+        {
+            AccessoriesApi.GetCvsAccessory(slot).ChangeUseColorVisible();
+            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(true);
+        }
+        void SetDefaults()
+        {
+            DoEvents = false;
+            ColorMatchToggle.Control.Value = ColorMatchDefault;
+            HairGlossToggle.Control.Value = HairGlossDefault;
+            OutlineColorPicker.Control.Value = OutlineColorDefault;
+            AccessoryColorPicker.Control.Value = AccessoryColorDefault;
+            DoEvents = true;
+        }
+
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairGlossMask))]
-        public static void ChangeSettingHairGlossMask(ChaControl __instance) => GetController(__instance).UpdateAccessories();
+        public static void ChangeSettingHairGlossMask(ChaControl __instance)
+        {
+            if (!ReloadingChara)
+                GetController(__instance).UpdateAccessories();
+        }
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairColor))]
-        public static void ChangeSettingHairColor(ChaControl __instance) => GetController(__instance).UpdateAccessories();
+        public static void ChangeSettingHairColor(ChaControl __instance)
+        {
+            if (!ReloadingChara)
+                GetController(__instance).UpdateAccessories();
+        }
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairOutlineColor))]
-        public static void ChangeSettingHairOutlineColor(ChaControl __instance) => GetController(__instance).UpdateAccessories();
+        public static void ChangeSettingHairOutlineColor(ChaControl __instance)
+        {
+            if (!ReloadingChara)
+                GetController(__instance).UpdateAccessories();
+        }
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairAcsColor))]
-        public static void ChangeSettingHairAcsColor(ChaControl __instance) => GetController(__instance).UpdateAccessories();
+        public static void ChangeSettingHairAcsColor(ChaControl __instance)
+        {
+            if (!ReloadingChara)
+                GetController(__instance).UpdateAccessories();
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaCustom.CvsAccessory), nameof(ChaCustom.CvsAccessory.ChangeUseColorVisible))]
+        public static void ChangeUseColorVisible(ChaCustom.CvsAccessory __instance)
+        {
+            if (GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && ColorMatchToggle.GetSelectedValue())
+                HideAccColors((int)__instance.slotNo);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaCustom.CvsAccessory), nameof(ChaCustom.CvsAccessory.ChangeSettingVisible))]
+        public static void ChangeSettingVisible(ChaCustom.CvsAccessory __instance)
+        {
+            if (GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && ColorMatchToggle.GetSelectedValue())
+                Traverse.Create(AccessoriesApi.GetCvsAccessory((int)__instance.slotNo)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+        }
 
         private static HairAccessoryController GetController(ChaControl character) => character?.gameObject?.GetComponent<HairAccessoryController>();
 
@@ -206,6 +256,7 @@ namespace KK_HairAccessoryFix
             private IEnumerator LoadData()
             {
                 DoEvents = false;
+                ReloadingChara = true;
                 yield return null;
 
                 HairAccessories.Clear();
@@ -236,17 +287,16 @@ namespace KK_HairAccessoryFix
                 {
                     foreach (var acc in HairAccessories)
                     {
-                        DoEvents = false;
                         ColorMatchToggle.SetValue(acc.Key, acc.Value.ColorMatch);
                         HairGlossToggle.SetValue(acc.Key, acc.Value.HairGloss);
                         OutlineColorPicker.SetValue(acc.Key, acc.Value.OutlineColor);
                         AccessoryColorPicker.SetValue(acc.Key, acc.Value.AccessoryColor);
-                        DoEvents = true;
                     }
                 }
 
-                DoEvents = true;
                 UpdateAccessories();
+                DoEvents = true;
+                ReloadingChara = false;
             }
             /// <summary>
             /// Get color match data for the specified accessory or default if the accessory does not exist or is not a hair accessory
@@ -364,6 +414,7 @@ namespace KK_HairAccessoryFix
             public void UpdateAccessory(int slot)
             {
                 if (!IsHairAccessory(slot)) return;
+                Logger.Log(LogLevel.Info, $"UpdateAccessory slot:{slot}");
 
                 ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(ChaControl, slot);
                 ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent?.gameObject.GetComponent<ChaCustomHairComponent>();
