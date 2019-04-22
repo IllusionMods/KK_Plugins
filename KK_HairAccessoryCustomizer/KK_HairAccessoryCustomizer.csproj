@@ -7,8 +7,8 @@
     <ProjectGuid>{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KK_HairAccessoryFix</RootNamespace>
-    <AssemblyName>KK_HairAccessoryFix</AssemblyName>
+    <RootNamespace>KK_HairAccessoryCustomizer</RootNamespace>
+    <AssemblyName>KK_HairAccessoryCustomizer</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -75,7 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK_HairAccessoryFix.cs" />
+    <Compile Include="KK_HairAccessoryCustomizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

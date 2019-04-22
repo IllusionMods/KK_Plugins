@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KK_HairAccessoryFix")]
+[assembly: AssemblyTitle("KK_HairAccessoryCustomizer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KK_HairAccessoryFix")]
+[assembly: AssemblyProduct("KK_HairAccessoryCustomizer")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(KK_HairAccessoryFix.KK_HairAccessoryFix.Version)]
-[assembly: AssemblyFileVersion(KK_HairAccessoryFix.KK_HairAccessoryFix.Version)]
+[assembly: AssemblyVersion(KK_HairAccessoryCustomizer.KK_HairAccessoryCustomizer.Version)]
+[assembly: AssemblyFileVersion(KK_HairAccessoryCustomizer.KK_HairAccessoryCustomizer.Version)]

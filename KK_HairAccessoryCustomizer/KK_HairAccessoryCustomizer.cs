@@ -12,17 +12,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 /// <summary>
-/// Match color, outline color, and hair gloss for hair accessories
+/// Individual customization of hair accessories for adding hair gloss, color matching, etc.
 /// </summary>
-namespace KK_HairAccessoryFix
+namespace KK_HairAccessoryCustomizer
 {
     [BepInPlugin(GUID, PluginName, Version)]
-    public class KK_HairAccessoryFix : BaseUnityPlugin
+    public class KK_HairAccessoryCustomizer : BaseUnityPlugin
     {
-        public const string GUID = "com.deathweasel.bepinex.hairaccessoryfix";
-        public const string PluginName = "Hair Accessory Fix";
-        public const string PluginNameInternal = "KK_HairAccessoryFix";
-        public const string Version = "1.1";
+        public const string GUID = "com.deathweasel.bepinex.hairaccessorycustomizer";
+        public const string PluginName = "Hair Accessory Customizer";
+        public const string PluginNameInternal = nameof(KK_HairAccessoryCustomizer);
+        public const string Version = "1.0";
 
         private static bool ReloadingChara = false;
         private static AccessoryControlWrapper<MakerToggle, bool> ColorMatchToggle;
@@ -38,7 +38,7 @@ namespace KK_HairAccessoryFix
         private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_HairAccessoryFix));
+            harmony.PatchAll(typeof(KK_HairAccessoryCustomizer));
 
             CharacterApi.RegisterExtraBehaviour<HairAccessoryController>(GUID);
 

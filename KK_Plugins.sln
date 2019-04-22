@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_AnimationController", "K
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ClothingUnlocker", "KK_ClothingUnlocker\KK_ClothingUnlocker.csproj", "{A59F4B61-4FD8-4B7B-92C5-9C06D608DAD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_HairAccessoryFix", "KK_HairAccessoryFix\KK_HairAccessoryFix.csproj", "{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_HairAccessoryCustomizer", "KK_HairAccessoryCustomizer\KK_HairAccessoryCustomizer.csproj", "{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_Colliders", "KK_Colliders\KK_Colliders.csproj", "{3D3A1302-C529-4D07-97A4-02C23560A547}"
 EndProject
