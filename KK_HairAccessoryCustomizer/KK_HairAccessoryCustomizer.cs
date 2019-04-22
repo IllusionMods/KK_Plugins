@@ -616,8 +616,12 @@ namespace KK_HairAccessoryCustomizer
                 {
                     if (renderer == null) continue;
 
-                    if (renderer.material.HasProperty("_Color"))
-                        renderer.material.SetColor("_Color", hairAccessoryInfo.AccessoryColor);
+                    if (renderer.material.HasProperty(ChaShader._Color))
+                        renderer.material.SetColor(ChaShader._Color, hairAccessoryInfo.AccessoryColor);
+                    if (renderer.material.HasProperty(ChaShader._Color2))
+                        renderer.material.SetColor(ChaShader._Color2, hairAccessoryInfo.AccessoryColor);
+                    if (renderer.material.HasProperty(ChaShader._Color3))
+                        renderer.material.SetColor(ChaShader._Color3, hairAccessoryInfo.AccessoryColor);
                 }
             }
             /// <summary>
