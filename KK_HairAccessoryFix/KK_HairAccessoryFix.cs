@@ -276,31 +276,67 @@ namespace KK_HairAccessoryFix
                 data.data.Add("HairAccessories", MessagePackSerializer.Serialize(HairAccessories));
                 SetExtendedData(data);
             }
-            protected override void OnReload(GameMode currentGameMode, bool maintainState)
+            protected override void OnReload(GameMode currentGameMode, bool maintainState) => ChaControl.StartCoroutine(LoadData());
+            protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
             {
-                base.OnReload(currentGameMode, maintainState);
-                ChaControl.StartCoroutine(LoadData());
+                var data = new PluginData();
+                if (HairAccessories.TryGetValue(ChaControl.fileStatus.coordinateType, out var hairAccessoryInfo))
+                    if (hairAccessoryInfo.Count > 0)
+                        data.data.Add("CoordinateHairAccessories", MessagePackSerializer.Serialize(hairAccessoryInfo));
+                    else
+                        data.data.Add("CoordinateHairAccessories", null);
+                SetCoordinateExtendedData(coordinate, data);
             }
+            protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate, bool maintainState) => ChaControl.StartCoroutine(LoadCoordinateData(coordinate));
             /// <summary>
-            /// Wait one frame and then load the data. Accessories do not yet exist at the time OnReload triggers.
+            /// Wait one frame for accessories to load and then load the data.
             /// </summary>
-            /// <returns></returns>
             private IEnumerator LoadData()
             {
                 ReloadingChara = true;
                 yield return null;
 
+                if (MakerAPI.InsideAndLoaded && !MakerAPI.GetCharacterLoadFlags().Clothes) yield break;
+
                 HairAccessories.Clear();
 
                 var data = GetExtendedData();
-                if (data == null)
-                {
-
-                }
-                else
-                {
+                if (data != null)
                     if (data.data.TryGetValue("HairAccessories", out var loadedHairAccessories) && loadedHairAccessories != null)
                         HairAccessories = MessagePackSerializer.Deserialize<Dictionary<int, Dictionary<int, HairAccessoryInfo>>>((byte[])loadedHairAccessories);
+
+                if (MakerAPI.InsideAndLoaded)
+                {
+                    if (InitHairAccessoryInfo(AccessoriesApi.SelectedMakerAccSlot))
+                    {
+                        //switching to a hair accessory that previously had no data. Meaning this card was made before this plugin. ColorMatch and HairGloss should be off.
+                        SetColorMatch(false);
+                        SetHairGloss(false);
+                    }
+
+                    InitCurrentSlot(this);
+                }
+
+                UpdateAccessories();
+                ReloadingChara = false;
+            }
+            /// <summary>
+            /// Wait one frame for accessories to load and then load the data.
+            /// </summary>
+            private IEnumerator LoadCoordinateData(ChaFileCoordinate coordinate)
+            {
+                ReloadingChara = true;
+                yield return null;
+
+                var data = GetCoordinateExtendedData(coordinate);
+                if (data != null && data.data.TryGetValue("CoordinateHairAccessories", out var loadedHairAccessories) && loadedHairAccessories != null)
+                {
+                    if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType))
+                        HairAccessories[ChaControl.fileStatus.coordinateType].Clear();
+                    else
+                        HairAccessories[ChaControl.fileStatus.coordinateType] = new Dictionary<int, HairAccessoryInfo>();
+
+                    HairAccessories[ChaControl.fileStatus.coordinateType] = MessagePackSerializer.Deserialize<Dictionary<int, HairAccessoryInfo>>((byte[])loadedHairAccessories);
                 }
 
                 if (MakerAPI.InsideAndLoaded)
