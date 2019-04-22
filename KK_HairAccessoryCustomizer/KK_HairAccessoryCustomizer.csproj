@@ -76,6 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KK_HairAccessoryCustomizer.cs" />
+    <Compile Include="KK_HairAccessoryCustomizer_controller.cs" />
+    <Compile Include="KK_HairAccessoryCustomizer_events.cs" />
+    <Compile Include="KK_HairAccessoryCustomizer_hooks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
