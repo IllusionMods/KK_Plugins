@@ -20,10 +20,10 @@ namespace KK_GUIDMigration
         public const string GUID = "com.deathweasel.bepinex.guidmigration";
         public const string PluginName = "GUID Migration";
         public const string Version = "1.4";
-        private static List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
+        private static readonly List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
         private static readonly string GUIDMigrationFilePath = Path.Combine(Paths.PluginPath, "KK_GUIDMigration.csv");
 
-        void Main()
+        private void Main()
         {
             //Don't even bother if there's no mods directory
             if (!Directory.Exists(Path.Combine(Paths.GameRootPath, "mods")) || !Directory.Exists(Paths.PluginPath))
@@ -83,7 +83,7 @@ namespace KK_GUIDMigration
                         //Remove outfit and accessory prefixes for searching purposes
                         if (propertyWithoutPrefix.StartsWith("outfit"))
                             propertyWithoutPrefix = propertyWithoutPrefix.Remove(0, propertyWithoutPrefix.IndexOf('.') + 1);
-                        if (propertyWithoutPrefix.StartsWith("accessory"))
+                        if (propertyWithoutPrefix.Remove(propertyWithoutPrefix.IndexOf('.')).Contains("accessory"))
                             propertyWithoutPrefix = propertyWithoutPrefix.Remove(0, propertyWithoutPrefix.IndexOf('.') + 1);
 
                         MigrationInfo info = MigrationInfoList.Where(x => (x.Property == propertyWithoutPrefix && x.OldID == resolveInfo.Slot && x.OldGUID == resolveInfo.GUID)
