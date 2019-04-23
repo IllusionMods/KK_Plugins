@@ -31,7 +31,7 @@ namespace KK_HairAccessoryCustomizer
             if (!KK_HairAccessoryCustomizer.ReloadingChara)
                 KK_HairAccessoryCustomizer.GetController(__instance).UpdateAccessories();
         }
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), new[] { typeof(ChaFileDefine.CoordinateType), typeof(bool) })]
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), new[] { typeof(ChaFileDefine.CoordinateType), typeof(bool) })]
         public static void ChangeCoordinateType(ChaControl __instance)
         {
             if (!KK_HairAccessoryCustomizer.ReloadingChara)
@@ -39,12 +39,21 @@ namespace KK_HairAccessoryCustomizer
         }
         private static IEnumerator ChangeCoordinateActions(ChaControl __instance)
         {
-            yield return false;
             var controller = KK_HairAccessoryCustomizer.GetController(__instance);
             if (controller == null) yield break;
+            KK_HairAccessoryCustomizer.ReloadingChara = true;
+            yield return null;
+
+            if (controller.InitHairAccessoryInfo(AccessoriesApi.SelectedMakerAccSlot))
+            {
+                //switching to a hair accessory that previously had no data. Meaning this card was made before this plugin. ColorMatch and HairGloss should be off.
+                controller.SetColorMatch(false);
+                controller.SetHairGloss(false);
+            }
 
             controller.UpdateAccessories();
             KK_HairAccessoryCustomizer.InitCurrentSlot(controller);
+            KK_HairAccessoryCustomizer.ReloadingChara = false;
         }
         [HarmonyPostfix, HarmonyPatch(typeof(ChaCustom.CvsAccessory), nameof(ChaCustom.CvsAccessory.ChangeUseColorVisible))]
         public static void ChangeUseColorVisible(ChaCustom.CvsAccessory __instance)
@@ -58,6 +67,5 @@ namespace KK_HairAccessoryCustomizer
             if (KK_HairAccessoryCustomizer.GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && KK_HairAccessoryCustomizer.ColorMatchToggle.GetSelectedValue())
                 Traverse.Create(AccessoriesApi.GetCvsAccessory((int)__instance.slotNo)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
         }
-
     }
 }
