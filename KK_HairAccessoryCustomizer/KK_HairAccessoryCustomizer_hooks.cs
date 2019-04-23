@@ -31,6 +31,8 @@ namespace KK_HairAccessoryCustomizer
             if (!KK_HairAccessoryCustomizer.ReloadingChara)
                 KK_HairAccessoryCustomizer.GetController(__instance).UpdateAccessories();
         }
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryColor))]
+        public static void ChangeAccessoryColor(ChaControl __instance, int slotNo) => KK_HairAccessoryCustomizer.GetController(__instance).UpdateHairGloss(slotNo);
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), new[] { typeof(ChaFileDefine.CoordinateType), typeof(bool) })]
         public static void ChangeCoordinateType(ChaControl __instance)
         {

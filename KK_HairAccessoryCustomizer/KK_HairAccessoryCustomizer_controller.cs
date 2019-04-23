@@ -375,6 +375,38 @@ namespace KK_HairAccessoryCustomizer
                 }
             }
             /// <summary>
+            /// Updates the specified hair accessory's gloss
+            /// </summary>
+            public void UpdateHairGloss(int slot)
+            {
+                if (!IsHairAccessory(slot)) return;
+
+                ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(ChaControl, slot);
+                ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent?.gameObject.GetComponent<ChaCustomHairComponent>();
+
+                if (!HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType)) return;
+                if (!HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo)) return;
+                if (chaAccessoryComponent?.rendNormal == null) return;
+                if (chaCustomHairComponent?.rendHair == null) return;
+
+                Texture2D texHairGloss = (Texture2D)AccessTools.Property(typeof(ChaControl), "texHairGloss").GetValue(ChaControl, null);
+
+                foreach (Renderer renderer in chaCustomHairComponent.rendHair)
+                {
+                    if (renderer == null) continue;
+
+                    if (renderer.material.HasProperty(ChaShader._HairGloss))
+                    {
+                        var mt = renderer.material.GetTexture(ChaShader._MainTex);
+                        if (hairAccessoryInfo.HairGloss)
+                            renderer.material.SetTexture(ChaShader._HairGloss, texHairGloss);
+                        else
+                            renderer.material.SetTexture(ChaShader._HairGloss, null);
+                        Destroy(mt);
+                    }
+                }
+            }
+            /// <summary>
             /// Updates the current hair accessory
             /// </summary>
             public void UpdateAccessory() => UpdateAccessory(AccessoriesApi.SelectedMakerAccSlot);
