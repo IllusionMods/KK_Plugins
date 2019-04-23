@@ -348,27 +348,29 @@ namespace KK_HairAccessoryCustomizer
             /// <summary>
             /// Updates all the hair accessories
             /// </summary>
-            public void UpdateAccessories()
+            public void UpdateAccessories(bool updateHairInfo = true)
             {
                 if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType))
                     foreach (var x in HairAccessories[ChaControl.fileStatus.coordinateType])
-                        UpdateAccessory(x.Key);
+                        UpdateAccessory(x.Key, updateHairInfo);
             }
             /// <summary>
             /// Updates the specified hair accessory
             /// </summary>
-            public void UpdateAccessory(int slot)
+            public void UpdateAccessory(int slot, bool updateCharacter = true)
             {
                 if (!IsHairAccessory(slot)) return;
+                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, $"UpdateAccessory {slot}");
 
                 ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(ChaControl, slot);
                 ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent?.gameObject.GetComponent<ChaCustomHairComponent>();
 
+                if (!HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType)) return;
                 if (!HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo)) return;
                 if (chaAccessoryComponent?.rendNormal == null) return;
                 if (chaCustomHairComponent?.rendHair == null) return;
 
-                if (MakerAPI.InsideAndLoaded && hairAccessoryInfo.ColorMatch)
+                if (updateCharacter && MakerAPI.InsideAndLoaded && hairAccessoryInfo.ColorMatch)
                 {
                     ChaCustom.CvsAccessory cvsAccessory = AccessoriesApi.GetCvsAccessory(slot);
                     cvsAccessory.UpdateAcsColor01(ChaControl.chaFile.custom.hair.parts[0].baseColor);
@@ -415,42 +417,6 @@ namespace KK_HairAccessoryCustomizer
 
                 chaCustomHairComponent.lengthRate = hairAccessoryInfo.HairLength;
             }
-            /// <summary>
-            /// Updates the specified hair accessory's gloss
-            /// </summary>
-            public void UpdateHairGloss(int slot)
-            {
-                if (!IsHairAccessory(slot)) return;
-
-                ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(ChaControl, slot);
-                ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent?.gameObject.GetComponent<ChaCustomHairComponent>();
-
-                if (!HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType)) return;
-                if (!HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo)) return;
-                if (chaAccessoryComponent?.rendNormal == null) return;
-                if (chaCustomHairComponent?.rendHair == null) return;
-
-                Texture2D texHairGloss = (Texture2D)AccessTools.Property(typeof(ChaControl), "texHairGloss").GetValue(ChaControl, null);
-
-                foreach (Renderer renderer in chaCustomHairComponent.rendHair)
-                {
-                    if (renderer == null) continue;
-
-                    if (renderer.material.HasProperty(ChaShader._HairGloss))
-                    {
-                        var mt = renderer.material.GetTexture(ChaShader._MainTex);
-                        if (hairAccessoryInfo.HairGloss)
-                            renderer.material.SetTexture(ChaShader._HairGloss, texHairGloss);
-                        else
-                            renderer.material.SetTexture(ChaShader._HairGloss, null);
-                        Destroy(mt);
-                    }
-                }
-            }
-            /// <summary>
-            /// Updates the current hair accessory
-            /// </summary>
-            public void UpdateAccessory() => UpdateAccessory(AccessoriesApi.SelectedMakerAccSlot);
 
             [Serializable]
             [MessagePackObject]
