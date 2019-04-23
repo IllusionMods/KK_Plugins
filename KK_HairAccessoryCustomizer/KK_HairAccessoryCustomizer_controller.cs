@@ -158,6 +158,20 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public Color GetAccessoryColor() => GetAccessoryColor(AccessoriesApi.SelectedMakerAccSlot);
             /// <summary>
+            /// Get hair length data for the specified accessory or default if the accessory does not exist or is not a hair accessory
+            /// </summary>
+            public float GetHairLength(int slot)
+            {
+                if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo))
+                    return hairAccessoryInfo.HairLength;
+
+                return HairLengthDefault;
+            }
+            /// <summary>
+            /// Get hair length data for the current accessory or default if the accessory does not exist or is not a hair accessory
+            /// </summary>
+            public float GetHairLength() => GetHairLength(AccessoriesApi.SelectedMakerAccSlot);
+            /// <summary>
             /// Initializes the HairAccessoryInfo for the slot if it is a hair accessory, or removes it if it is not.
             /// </summary>
             /// <returns>True if HairAccessoryInfo was initialized</returns>
@@ -236,6 +250,18 @@ namespace KK_HairAccessoryCustomizer
             /// <summary>
             /// Set accessory color for the current accessory
             /// </summary>
+            public void SetHairLength(float value) => SetHairLength(value, AccessoriesApi.SelectedMakerAccSlot);
+            /// <summary>
+            /// Set hair length for the specified accessory
+            /// </summary>
+            public void SetHairLength(float value, int slot)
+            {
+                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && IsHairAccessory(slot))
+                    HairAccessories[ChaControl.fileStatus.coordinateType][slot].HairLength = value;
+            }
+            /// <summary>
+            /// Set hair length for the current accessory
+            /// </summary>
             public void SetAccessoryColor(Color value) => SetAccessoryColor(value, AccessoriesApi.SelectedMakerAccSlot);
             /// <summary>
             /// Checks if the specified accessory is a hair accessory
@@ -248,12 +274,23 @@ namespace KK_HairAccessoryCustomizer
             /// <summary>
             /// Checks if the specified accessory is a hair accessory and has accessory parts (rendAccessory in the ChaCustomHairComponent MonoBehavior)
             /// </summary>
-            public bool HasAccessoryPart(int slot)
+            public bool HasAccessoryPart()
             {
-                var chaCustomHairComponent = AccessoriesApi.GetAccessory(ChaControl, slot)?.gameObject.GetComponent<ChaCustomHairComponent>();
+                var chaCustomHairComponent = AccessoriesApi.GetAccessory(ChaControl, AccessoriesApi.SelectedMakerAccSlot)?.gameObject.GetComponent<ChaCustomHairComponent>();
                 if (chaCustomHairComponent != null)
                     foreach (Renderer renderer in chaCustomHairComponent.rendAccessory)
                         if (renderer != null) return true;
+                return false;
+            }
+            /// <summary>
+            /// Checks if the specified accessory has length transforms (trfLength in the ChaCustomHairComponent MonoBehavior)
+            /// </summary>
+            public bool HasLengthTransforms()
+            {
+                var chaCustomHairComponent = AccessoriesApi.GetAccessory(ChaControl, AccessoriesApi.SelectedMakerAccSlot)?.gameObject.GetComponent<ChaCustomHairComponent>();
+                if (chaCustomHairComponent != null)
+                    foreach (Transform transform in chaCustomHairComponent.trfLength)
+                        if (transform != null) return true;
                 return false;
             }
             internal void CopyAccessoriesHandler(AccessoryCopyEventArgs e)
@@ -373,6 +410,8 @@ namespace KK_HairAccessoryCustomizer
                     if (renderer.material.HasProperty(ChaShader._Color3))
                         renderer.material.SetColor(ChaShader._Color3, hairAccessoryInfo.AccessoryColor);
                 }
+
+                chaCustomHairComponent.lengthRate = hairAccessoryInfo.HairLength;
             }
             /// <summary>
             /// Updates the specified hair accessory's gloss
@@ -423,6 +462,8 @@ namespace KK_HairAccessoryCustomizer
                 public Color OutlineColor = OutlineColorDefault;
                 [Key("AccessoryColor")]
                 public Color AccessoryColor = AccessoryColorDefault;
+                [Key("HairLength")]
+                public float HairLength = HairLengthDefault;
             }
         }
     }

@@ -59,6 +59,7 @@ namespace KK_HairAccessoryCustomizer
             HairGlossToggle = new AccessoryControlWrapper<MakerToggle, bool>(MakerAPI.AddAccessoryWindowControl(new MakerToggle(null, "Use Hair Gloss", ColorMatchDefault, this)));
             OutlineColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Outline Color", false, null, OutlineColorDefault, this)));
             AccessoryColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Accessory Color", false, null, OutlineColorDefault, this)));
+            HairLengthSlider = new AccessoryControlWrapper<MakerSlider, float>(MakerAPI.AddAccessoryWindowControl(new MakerSlider(null, "Length", 0, 1, HairLengthDefault, this)));
 
             //Color Match
             ColorMatchToggle.Control.Visible.OnNext(false);
@@ -102,6 +103,15 @@ namespace KK_HairAccessoryCustomizer
             void AccessoryColorPicker_ValueChanged(object sender, AccessoryWindowControlValueChangedEventArgs<Color> eventArgs)
             {
                 controller.SetAccessoryColor(eventArgs.NewValue, eventArgs.SlotIndex);
+                controller.UpdateAccessory(eventArgs.SlotIndex);
+            }
+
+            //HairLength
+            HairLengthSlider.Control.Visible.OnNext(false);
+            HairLengthSlider.ValueChanged += HairLengthSlider_ValueChanged;
+            void HairLengthSlider_ValueChanged(object sender, AccessoryWindowControlValueChangedEventArgs<float> eventArgs)
+            {
+                controller.SetHairLength(eventArgs.NewValue, eventArgs.SlotIndex);
                 controller.UpdateAccessory(eventArgs.SlotIndex);
             }
         }

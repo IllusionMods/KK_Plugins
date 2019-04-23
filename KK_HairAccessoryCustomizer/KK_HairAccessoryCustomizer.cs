@@ -22,10 +22,12 @@ namespace KK_HairAccessoryCustomizer
         internal static AccessoryControlWrapper<MakerToggle, bool> HairGlossToggle;
         internal static AccessoryControlWrapper<MakerColor, Color> OutlineColorPicker;
         internal static AccessoryControlWrapper<MakerColor, Color> AccessoryColorPicker;
+        internal static AccessoryControlWrapper<MakerSlider, float> HairLengthSlider;
         private static readonly bool ColorMatchDefault = true;
         private static readonly bool HairGlossDefault = true;
         private static Color OutlineColorDefault = Color.black;
         private static Color AccessoryColorDefault = Color.red;
+        private static readonly float HairLengthDefault = 0;
 
         private void Main()
         {
@@ -78,11 +80,13 @@ namespace KK_HairAccessoryCustomizer
                 HairGlossToggle.SetSelectedValue(controller.GetHairGloss(), false);
                 OutlineColorPicker.SetSelectedValue(controller.GetOutlineColor(), false);
                 AccessoryColorPicker.SetSelectedValue(controller.GetAccessoryColor(), false);
+                HairLengthSlider.SetSelectedValue(controller.GetHairLength(), false);
 
                 ColorMatchToggle.Control.Visible.OnNext(true);
                 HairGlossToggle.Control.Visible.OnNext(true);
                 OutlineColorPicker.Control.Visible.OnNext(!controller.GetColorMatch());
-                AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart(AccessoriesApi.SelectedMakerAccSlot));
+                AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart());
+                HairLengthSlider.Control.Visible.OnNext(controller.HasLengthTransforms());
 
                 if (controller.GetColorMatch(AccessoriesApi.SelectedMakerAccSlot))
                     HideAccColors();
@@ -100,6 +104,7 @@ namespace KK_HairAccessoryCustomizer
                 ColorMatchToggle.Control.Visible.OnNext(false);
                 OutlineColorPicker.Control.Visible.OnNext(false);
                 AccessoryColorPicker.Control.Visible.OnNext(false);
+                HairLengthSlider.Control.Visible.OnNext(false);
                 ShowAccColors(AccessoriesApi.GetAccessory(controller.ChaControl, AccessoriesApi.SelectedMakerAccSlot) != null);
             }
         }
