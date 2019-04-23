@@ -58,12 +58,12 @@ namespace KK_HairAccessoryCustomizer
         /// <summary>
         /// Shows the accessory color controls for the current slot
         /// </summary>
-        internal static void ShowAccColors()
+        internal static void ShowAccColors(bool showButton)
         {
             if (!MakerAPI.InsideAndLoaded) return;
 
             AccessoriesApi.GetCvsAccessory(AccessoriesApi.SelectedMakerAccSlot).ChangeUseColorVisible();
-            Traverse.Create(AccessoriesApi.GetCvsAccessory(AccessoriesApi.SelectedMakerAccSlot)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(true);
+            Traverse.Create(AccessoriesApi.GetCvsAccessory(AccessoriesApi.SelectedMakerAccSlot)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(showButton);
         }
         /// <summary>
         /// Sets up the visibility and values for the current slot
@@ -87,7 +87,7 @@ namespace KK_HairAccessoryCustomizer
                 if (controller.GetColorMatch(AccessoriesApi.SelectedMakerAccSlot))
                     HideAccColors();
                 else
-                    ShowAccColors();
+                    ShowAccColors(true);
             }
             else
             {
@@ -100,7 +100,7 @@ namespace KK_HairAccessoryCustomizer
                 ColorMatchToggle.Control.Visible.OnNext(false);
                 OutlineColorPicker.Control.Visible.OnNext(false);
                 AccessoryColorPicker.Control.Visible.OnNext(false);
-                ShowAccColors();
+                ShowAccColors(AccessoriesApi.GetAccessory(controller.ChaControl, AccessoriesApi.SelectedMakerAccSlot) != null);
             }
         }
         internal static void InitCurrentSlot(HairAccessoryController controller) => InitCurrentSlot(controller, controller.IsHairAccessory(AccessoriesApi.SelectedMakerAccSlot));

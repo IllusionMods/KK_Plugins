@@ -71,7 +71,7 @@ namespace KK_HairAccessoryCustomizer
                 if (eventArgs.NewValue)
                     HideAccColors();
                 else
-                    ShowAccColors();
+                    ShowAccColors(true);
 
                 controller.UpdateAccessory(eventArgs.SlotIndex);
             }
