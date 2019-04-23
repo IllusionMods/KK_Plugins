@@ -44,15 +44,19 @@ namespace KK_HairAccessoryCustomizer
             KK_HairAccessoryCustomizer.ReloadingChara = true;
             yield return null;
 
-            if (controller.InitHairAccessoryInfo(AccessoriesApi.SelectedMakerAccSlot))
+            if (MakerAPI.InsideAndLoaded)
             {
-                //switching to a hair accessory that previously had no data. Meaning this card was made before this plugin. ColorMatch and HairGloss should be off.
-                controller.SetColorMatch(false);
-                controller.SetHairGloss(false);
+                if (controller.InitHairAccessoryInfo(AccessoriesApi.SelectedMakerAccSlot))
+                {
+                    //switching to a hair accessory that previously had no data. Meaning this card was made before this plugin. ColorMatch and HairGloss should be off.
+                    controller.SetColorMatch(false);
+                    controller.SetHairGloss(false);
+                }
+
+                KK_HairAccessoryCustomizer.InitCurrentSlot(controller);
             }
 
             controller.UpdateAccessories();
-            KK_HairAccessoryCustomizer.InitCurrentSlot(controller);
             KK_HairAccessoryCustomizer.ReloadingChara = false;
         }
         [HarmonyPostfix, HarmonyPatch(typeof(ChaCustom.CvsAccessory), nameof(ChaCustom.CvsAccessory.ChangeUseColorVisible))]
