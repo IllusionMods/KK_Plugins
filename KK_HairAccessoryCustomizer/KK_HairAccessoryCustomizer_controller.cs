@@ -310,6 +310,7 @@ namespace KK_HairAccessoryCustomizer
                         newHairAccessoryInfo.HairGloss = hairAccessoryInfo.HairGloss;
                         newHairAccessoryInfo.OutlineColor = hairAccessoryInfo.OutlineColor;
                         newHairAccessoryInfo.AccessoryColor = hairAccessoryInfo.AccessoryColor;
+                        newHairAccessoryInfo.HairLength = hairAccessoryInfo.HairLength;
                         HairAccessories[(int)e.CopyDestination][x] = newHairAccessoryInfo;
                     }
                     else
@@ -329,6 +330,7 @@ namespace KK_HairAccessoryCustomizer
                     newHairAccessoryInfo.HairGloss = hairAccessoryInfo.HairGloss;
                     newHairAccessoryInfo.OutlineColor = hairAccessoryInfo.OutlineColor;
                     newHairAccessoryInfo.AccessoryColor = hairAccessoryInfo.AccessoryColor;
+                    newHairAccessoryInfo.HairLength = hairAccessoryInfo.HairLength;
                     HairAccessories[ChaControl.fileStatus.coordinateType][e.DestinationSlotIndex] = newHairAccessoryInfo;
 
                     if (AccessoriesApi.SelectedMakerAccSlot == e.DestinationSlotIndex)
