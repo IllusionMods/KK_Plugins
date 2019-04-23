@@ -295,11 +295,14 @@ namespace KK_HairAccessoryCustomizer
                     HairAccessories[ChaControl.fileStatus.coordinateType][e.DestinationSlotIndex] = newHairAccessoryInfo;
 
                     if (AccessoriesApi.SelectedMakerAccSlot == e.DestinationSlotIndex)
-                        InitCurrentSlot(this);
+                        InitCurrentSlot(this, true);
                 }
                 else
+                {
                     //not a hair accessory, remove hair accessory info from the destination slot
                     HairAccessories[ChaControl.fileStatus.coordinateType].Remove(e.DestinationSlotIndex);
+                    InitCurrentSlot(this, false);
+                }
 
                 UpdateAccessories();
             }

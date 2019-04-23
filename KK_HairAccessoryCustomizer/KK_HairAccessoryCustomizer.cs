@@ -41,61 +41,69 @@ namespace KK_HairAccessoryCustomizer
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
         }
         /// <summary>
-        /// Hides the accessory color controls for the slot
+        /// Hides the accessory color controls for the current slot
         /// </summary>
-        internal static void HideAccColors(int slot)
+        internal static void HideAccColors()
         {
             if (!MakerAPI.InsideAndLoaded) return;
 
-            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("separateColor").GetValue<GameObject>().SetActive(false);
-            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnAcsColor01").GetValue<Button>().transform.parent.gameObject.SetActive(false);
-            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnAcsColor02").GetValue<Button>().transform.parent.gameObject.SetActive(false);
-            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnAcsColor03").GetValue<Button>().transform.parent.gameObject.SetActive(false);
-            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnAcsColor04").GetValue<Button>().transform.parent.gameObject.SetActive(false);
-            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            var cvsAccessory = AccessoriesApi.GetCvsAccessory(AccessoriesApi.SelectedMakerAccSlot);
+            Traverse.Create(cvsAccessory).Field("separateColor").GetValue<GameObject>().SetActive(false);
+            Traverse.Create(cvsAccessory).Field("btnAcsColor01").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            Traverse.Create(cvsAccessory).Field("btnAcsColor02").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            Traverse.Create(cvsAccessory).Field("btnAcsColor03").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            Traverse.Create(cvsAccessory).Field("btnAcsColor04").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            Traverse.Create(cvsAccessory).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
         }
         /// <summary>
-        /// Shows the accessory color controls for the slot
+        /// Shows the accessory color controls for the current slot
         /// </summary>
-        internal static void ShowAccColors(int slot)
+        internal static void ShowAccColors()
         {
             if (!MakerAPI.InsideAndLoaded) return;
 
-            AccessoriesApi.GetCvsAccessory(slot).ChangeUseColorVisible();
-            Traverse.Create(AccessoriesApi.GetCvsAccessory(slot)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(true);
+            AccessoriesApi.GetCvsAccessory(AccessoriesApi.SelectedMakerAccSlot).ChangeUseColorVisible();
+            Traverse.Create(AccessoriesApi.GetCvsAccessory(AccessoriesApi.SelectedMakerAccSlot)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(true);
         }
         /// <summary>
         /// Sets up the visibility and values for the current slot
         /// </summary>
-        internal static void InitCurrentSlot(HairAccessoryController controller)
+        internal static void InitCurrentSlot(HairAccessoryController controller, bool hairAccessory)
         {
             if (!MakerAPI.InsideAndLoaded) return;
 
-            ColorMatchToggle.SetSelectedValue(controller.GetColorMatch(), false);
-            HairGlossToggle.SetSelectedValue(controller.GetHairGloss(), false);
-            OutlineColorPicker.SetSelectedValue(controller.GetOutlineColor(), false);
-            AccessoryColorPicker.SetSelectedValue(controller.GetAccessoryColor(), false);
+            if (hairAccessory)
+            {
+                ColorMatchToggle.SetSelectedValue(controller.GetColorMatch(), false);
+                HairGlossToggle.SetSelectedValue(controller.GetHairGloss(), false);
+                OutlineColorPicker.SetSelectedValue(controller.GetOutlineColor(), false);
+                AccessoryColorPicker.SetSelectedValue(controller.GetAccessoryColor(), false);
 
-            ColorMatchToggle.Control.Visible.OnNext(true);
-            HairGlossToggle.Control.Visible.OnNext(true);
-            OutlineColorPicker.Control.Visible.OnNext(!controller.GetColorMatch());
-            AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart(AccessoriesApi.SelectedMakerAccSlot));
+                ColorMatchToggle.Control.Visible.OnNext(true);
+                HairGlossToggle.Control.Visible.OnNext(true);
+                OutlineColorPicker.Control.Visible.OnNext(!controller.GetColorMatch());
+                AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart(AccessoriesApi.SelectedMakerAccSlot));
 
-            if (controller.GetColorMatch(AccessoriesApi.SelectedMakerAccSlot))
-                HideAccColors(AccessoriesApi.SelectedMakerAccSlot);
+                if (controller.GetColorMatch(AccessoriesApi.SelectedMakerAccSlot))
+                    HideAccColors();
+                else
+                    ShowAccColors();
+            }
             else
-                ShowAccColors(AccessoriesApi.SelectedMakerAccSlot);
+            {
+                ColorMatchToggle.SetSelectedValue(ColorMatchDefault, false);
+                HairGlossToggle.SetSelectedValue(HairGlossDefault, false);
+                OutlineColorPicker.SetSelectedValue(OutlineColorDefault, false);
+                AccessoryColorPicker.SetSelectedValue(AccessoryColorDefault, false);
+
+                HairGlossToggle.Control.Visible.OnNext(false);
+                ColorMatchToggle.Control.Visible.OnNext(false);
+                OutlineColorPicker.Control.Visible.OnNext(false);
+                AccessoryColorPicker.Control.Visible.OnNext(false);
+                ShowAccColors();
+            }
         }
-        /// <summary>
-        /// Sets default values for the current slot
-        /// </summary>
-        internal void SetDefaults()
-        {
-            ColorMatchToggle.SetSelectedValue(ColorMatchDefault, false);
-            HairGlossToggle.SetSelectedValue(HairGlossDefault, false);
-            OutlineColorPicker.SetSelectedValue(OutlineColorDefault, false);
-            AccessoryColorPicker.SetSelectedValue(AccessoryColorDefault, false);
-        }
+        internal static void InitCurrentSlot(HairAccessoryController controller) => InitCurrentSlot(controller, controller.IsHairAccessory(AccessoriesApi.SelectedMakerAccSlot));
 
         internal static HairAccessoryController GetController(ChaControl character) => character?.gameObject?.GetComponent<HairAccessoryController>();
     }

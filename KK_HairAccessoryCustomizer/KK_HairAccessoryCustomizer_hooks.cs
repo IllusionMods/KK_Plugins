@@ -49,8 +49,8 @@ namespace KK_HairAccessoryCustomizer
         [HarmonyPostfix, HarmonyPatch(typeof(ChaCustom.CvsAccessory), nameof(ChaCustom.CvsAccessory.ChangeUseColorVisible))]
         public static void ChangeUseColorVisible(ChaCustom.CvsAccessory __instance)
         {
-            if (KK_HairAccessoryCustomizer.GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && KK_HairAccessoryCustomizer.ColorMatchToggle.GetSelectedValue())
-                KK_HairAccessoryCustomizer.HideAccColors((int)__instance.slotNo);
+            if (AccessoriesApi.SelectedMakerAccSlot == (int)__instance.slotNo && KK_HairAccessoryCustomizer.GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && KK_HairAccessoryCustomizer.ColorMatchToggle.GetSelectedValue())
+                KK_HairAccessoryCustomizer.HideAccColors();
         }
         [HarmonyPostfix, HarmonyPatch(typeof(ChaCustom.CvsAccessory), nameof(ChaCustom.CvsAccessory.ChangeSettingVisible))]
         public static void ChangeSettingVisible(ChaCustom.CvsAccessory __instance)

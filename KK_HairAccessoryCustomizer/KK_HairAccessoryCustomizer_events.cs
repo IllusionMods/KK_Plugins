@@ -15,32 +15,15 @@ namespace KK_HairAccessoryCustomizer
 
             var controller = GetController(MakerAPI.GetCharacterControl());
             bool hairAcc = controller.IsHairAccessory(e.SlotIndex);
-            bool colorMatch = ColorMatchToggle.GetSelectedValue();
 
             controller.InitHairAccessoryInfo(e.SlotIndex);
             if (hairAcc)
             {
-                ColorMatchToggle.Control.Visible.OnNext(true);
-                HairGlossToggle.Control.Visible.OnNext(true);
-                OutlineColorPicker.Control.Visible.OnNext(!ColorMatchToggle.Control.Value);
-                AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart(e.SlotIndex));
-
-                if (colorMatch)
-                    HideAccColors(e.SlotIndex);
-                else
-                    ShowAccColors(e.SlotIndex);
-
+                InitCurrentSlot(controller, true);
                 controller.UpdateAccessory(e.SlotIndex);
             }
             else
-            {
-                ColorMatchToggle.Control.Visible.OnNext(false);
-                HairGlossToggle.Control.Visible.OnNext(false);
-                OutlineColorPicker.Control.Visible.OnNext(false);
-                AccessoryColorPicker.Control.Visible.OnNext(false);
-                SetDefaults();
-                ShowAccColors(e.SlotIndex);
-            }
+                InitCurrentSlot(controller, false);
         }
 
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e)
@@ -61,17 +44,11 @@ namespace KK_HairAccessoryCustomizer
                     controller.SetHairGloss(false, e.SlotIndex);
                 }
 
-                InitCurrentSlot(controller);
+                InitCurrentSlot(controller, true);
                 controller.UpdateAccessory(e.SlotIndex);
             }
             else
-            {
-                HairGlossToggle.Control.Visible.OnNext(false);
-                ColorMatchToggle.Control.Visible.OnNext(false);
-                OutlineColorPicker.Control.Visible.OnNext(false);
-                AccessoryColorPicker.Control.Visible.OnNext(false);
-                ShowAccColors(e.SlotIndex);
-            }
+                InitCurrentSlot(controller, false);
         }
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
@@ -92,9 +69,9 @@ namespace KK_HairAccessoryCustomizer
                 OutlineColorPicker.Control.Visible.OnNext(!eventArgs.NewValue);
 
                 if (eventArgs.NewValue)
-                    HideAccColors(eventArgs.SlotIndex);
+                    HideAccColors();
                 else
-                    ShowAccColors(eventArgs.SlotIndex);
+                    ShowAccColors();
 
                 controller.UpdateAccessory(eventArgs.SlotIndex);
             }
