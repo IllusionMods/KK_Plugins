@@ -360,7 +360,6 @@ namespace KK_HairAccessoryCustomizer
             public void UpdateAccessory(int slot, bool updateCharacter = true)
             {
                 if (!IsHairAccessory(slot)) return;
-                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, $"UpdateAccessory {slot}");
 
                 ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(ChaControl, slot);
                 ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent?.gameObject.GetComponent<ChaCustomHairComponent>();
