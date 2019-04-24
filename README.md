@@ -16,7 +16,7 @@ Plays a sound when the Chara Maker finishes loading. Useful if you spend the loa
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.<br/>
 
 #### KK_GUIDMigration
-**v1.3.3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v58/KK_GUIDMigration.v1.3.3.zip)**<br/>
+**v1.4.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v69/KK_GUIDMigration.v1.4.4.zip)**<br/>
 
 Migrates information on your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.<br/>
 
@@ -25,7 +25,8 @@ Also attempts to fix cards saved with a blank GUID (Missing Mod []) by stripping
 <details><summary>Change Log</summary>
 v1.1 Added character name for blank GUID messages<br/>
 v1.2 Fixed hard coded path<br/>
-v1.3 Added support for stripping extended data, fix errors resulting from missing .csv
+v1.3 Added support for stripping extended data, fix errors resulting from missing .csv<br/>
+v1.4 Added support for coordinate cards (Thanks Kokaiinum), fix errors caused by wrong sideloader version<br/>
 </details>
 
 <details><summary>Configuration</summary>
@@ -194,6 +195,13 @@ Ported to Koikatsu from Essu's NEOpose List Folders plugin for Honey Select.<br/
 A plugin for correctly formatting translation files. Corrects formatting and copies translations from one file to another for the same personality in case of duplicate entries. Used by translators working on the [Koikatsu Translation](https://github.com/DeathWeasel1337/Koikatsu-Translations) project. No need to download unless you're working on translations.<br/>
 
 To use, open the plugin settings and set a personality, press the hotkey (default 0) to sync translations. Read your bepinex console or output_log.txt to see the changes made or any warnings and errors. Press alt+hotkey to force sync translation files in case of differing translations (warning: make backups first. It may not be obvious which translations are treated as the primary source). Press ctrl+hotkey to sync translations for all personalities (warning: very slow).<br/>
+
+#### KK_ListOverride
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip)**<br/>
+
+Allows you to override vanilla list files. Comes with some overrides that enable half off state for some vanilla pantyhose.<br/>
+
+Overriding list files can allow you to do things like enable bras with some shirts which don't normally allow it, or skirts with some tops, etc. Any part of of the list can be changed except for ID.<br/>
 
 
 # Experimental plugins

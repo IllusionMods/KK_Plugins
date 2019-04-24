@@ -7,8 +7,8 @@
     <ProjectGuid>{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KK_HairAccessoryFix</RootNamespace>
-    <AssemblyName>KK_HairAccessoryFix</AssemblyName>
+    <RootNamespace>KK_HairAccessoryCustomizer</RootNamespace>
+    <AssemblyName>KK_HairAccessoryCustomizer</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -40,12 +40,19 @@
       <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\lib\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ConfigurationManager">
       <HintPath>..\lib\ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ExtensibleSaveFormat">
+      <HintPath>..\lib\ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KKAPI">
@@ -62,9 +69,16 @@
       <HintPath>..\lib\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\lib\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK_HairAccessoryFix.cs" />
+    <Compile Include="KK_HairAccessoryCustomizer.cs" />
+    <Compile Include="KK_HairAccessoryCustomizer_controller.cs" />
+    <Compile Include="KK_HairAccessoryCustomizer_events.cs" />
+    <Compile Include="KK_HairAccessoryCustomizer_hooks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

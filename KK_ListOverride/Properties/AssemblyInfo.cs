@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KK_HairAccessoryFix")]
+[assembly: AssemblyTitle("KK_ListOverride")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KK_HairAccessoryFix")]
+[assembly: AssemblyProduct("KK_ListOverride")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d9c3e165-10ab-4561-9d23-35de4e91addb")]
+[assembly: Guid("f609a9f5-e889-4729-9982-5e08febbf53e")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(KK_HairAccessoryFix.KK_HairAccessoryFix.Version)]
-[assembly: AssemblyFileVersion(KK_HairAccessoryFix.KK_HairAccessoryFix.Version)]
+[assembly: AssemblyVersion(KK_ListOverride.KK_ListOverride.Version)]
+[assembly: AssemblyFileVersion(KK_ListOverride.KK_ListOverride.Version)]

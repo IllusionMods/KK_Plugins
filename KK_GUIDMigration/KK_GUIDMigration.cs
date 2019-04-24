@@ -19,35 +19,40 @@ namespace KK_GUIDMigration
     {
         public const string GUID = "com.deathweasel.bepinex.guidmigration";
         public const string PluginName = "GUID Migration";
-        public const string Version = "1.2";
-        private static List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
+        public const string Version = "1.4";
+        private static readonly List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
         private static readonly string GUIDMigrationFilePath = Path.Combine(Paths.PluginPath, "KK_GUIDMigration.csv");
 
-        void Main()
+        private void Main()
         {
             //Don't even bother if there's no mods directory
-            if (Directory.Exists(Path.Combine(Paths.GameRootPath, "mods")) && Directory.Exists(Paths.PluginPath))
+            if (!Directory.Exists(Path.Combine(Paths.GameRootPath, "mods")) || !Directory.Exists(Paths.PluginPath))
             {
-                //Only do migration if there's a .csv file and it has stuff in it
-                if (File.Exists(GUIDMigrationFilePath))
-                {
-                    GenerateMigrationInfo();
-                    if (MigrationInfoList.Count > 0)
-                    {
-                        var harmony = HarmonyInstance.Create(GUID);
-                        harmony.PatchAll(typeof(KK_GUIDMigration));
-                    }
-                    else
-                    {
-                        Logger.Log(LogLevel.Error | LogLevel.Message, "KK_GUIDMigration was not loaded due to missing or empty KK_GUIDMigration.csv file.");
-                    }
-                }
+                Logger.Log(LogLevel.Warning, "KK_GUIDMigration was not loaded due to missing mods folder.");
+                return;
             }
+
+            //Only do migration if there's a .csv file and it has stuff in it
+            if (!File.Exists(GUIDMigrationFilePath))
+            {
+                Logger.Log(LogLevel.Error | LogLevel.Message, "KK_GUIDMigration was not loaded due to missing KK_GUIDMigration.csv file.");
+                return;
+            }
+
+            GenerateMigrationInfo();
+            if (MigrationInfoList.Count == 0)
+            {
+                Logger.Log(LogLevel.Error | LogLevel.Message, "KK_GUIDMigration was not loaded due to empty KK_GUIDMigration.csv file.");
+                return;
+            }
+
+            var harmony = HarmonyInstance.Create(GUID);
+            harmony.PatchAll(typeof(KK_GUIDMigration));
         }
         /// <summary>
         /// Look through all the GUIDs, compare it to the MigrationInfoList, and do migration when necessary
         /// </summary>
-        private static IEnumerable<ResolveInfo> MigrateGUID(IEnumerable<ResolveInfo> extInfo, string characterName)
+        private static IEnumerable<ResolveInfo> MigrateGUID(IEnumerable<ResolveInfo> extInfo, string characterName = "")
         {
             List<ResolveInfo> extInfoNew = new List<ResolveInfo>();
             bool DidBlankGUIDMessage = false;
@@ -64,7 +69,10 @@ namespace KK_GUIDMigration
                         //Don't add empty GUID to the new list, this way CompatibilityResolve will treat it as a hard mod and attempt to find a match
                         if (!DidBlankGUIDMessage) //No need to spam it for every single thing
                         {
-                            Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{characterName}] Blank GUID detected, attempting Compatibility Resolve");
+                            if (characterName == "")
+                                Logger.Log(LogLevel.Warning | LogLevel.Message, $"Blank GUID detected, attempting Compatibility Resolve");
+                            else
+                                Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{characterName}] Blank GUID detected, attempting Compatibility Resolve");
                             DidBlankGUIDMessage = true;
                         }
                     }
@@ -75,7 +83,7 @@ namespace KK_GUIDMigration
                         //Remove outfit and accessory prefixes for searching purposes
                         if (propertyWithoutPrefix.StartsWith("outfit"))
                             propertyWithoutPrefix = propertyWithoutPrefix.Remove(0, propertyWithoutPrefix.IndexOf('.') + 1);
-                        if (propertyWithoutPrefix.StartsWith("accessory"))
+                        if (propertyWithoutPrefix.Remove(propertyWithoutPrefix.IndexOf('.')).Contains("accessory"))
                             propertyWithoutPrefix = propertyWithoutPrefix.Remove(0, propertyWithoutPrefix.IndexOf('.') + 1);
 
                         MigrationInfo info = MigrationInfoList.Where(x => (x.Property == propertyWithoutPrefix && x.OldID == resolveInfo.Slot && x.OldGUID == resolveInfo.GUID)
@@ -216,17 +224,29 @@ namespace KK_GUIDMigration
             }
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Hooks), "IterateCardPrefixes")]
+        [HarmonyPrefix, HarmonyPatch(typeof(Hooks), "IterateCardPrefixes")]
         public static void IterateCardPrefixesPrefix(ref IEnumerable<ResolveInfo> extInfo, ChaFile file)
         {
-            extInfo = MigrateGUID(extInfo, file.parameter.fullname.Trim());
+            try
+            {
+                extInfo = MigrateGUID(extInfo, file.parameter.fullname.Trim());
+            }
+            catch
+            {
+                Logger.Log(LogLevel.Error | LogLevel.Message, $"GUID migration failed. Please update KK_GUIDMigration and/or BepisPlugins.");
+            }
         }
-        
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Hooks), "IterateCoordinatePrefixes")]
-        public static void IterateCoordinatePrefixesPrefix(ref IEnumerable<ResolveInfo> extInfo, ChaFileCoordinate coordinate) {
-            extInfo = MigrateGUID(extInfo, coordinate.coordinateName.Trim());            
+        [HarmonyPrefix, HarmonyPatch(typeof(Hooks), "IterateCoordinatePrefixes")]
+        public static void IterateCoordinatePrefixesPrefix(ref IEnumerable<ResolveInfo> extInfo, ChaFileCoordinate coordinate)
+        {
+            try
+            {
+                extInfo = MigrateGUID(extInfo);
+            }
+            catch
+            {
+                Logger.Log(LogLevel.Error | LogLevel.Message, $"GUID migration failed. Please update KK_GUIDMigration and/or BepisPlugins.");
+            }
         }
     }
 }
