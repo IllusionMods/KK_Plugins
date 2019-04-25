@@ -44,5 +44,27 @@ namespace KK_ForceHighPoly
             if (Enabled.Value && assetName.EndsWith("_low"))
                 assetName = assetName.Substring(0, assetName.Length - 4);
         }
+        
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ChaControl), "ChangeHairAsync", new Type[] { typeof(int), typeof(int), typeof(bool), typeof(bool) })]
+        public static void ChangeHairAsyncPostHook(ChaControl __instance, int kind, ref IEnumerator __result)
+        {
+            var orig = __result;
+            __result = new IEnumerator[] { orig, ChangeHairAsyncPostfix(__instance, kind) }.GetEnumerator();
+        }
+
+        private static IEnumerator ChangeHairAsyncPostfix(ChaControl instance, int kind)
+        {
+            var hairObject = instance.objHair[kind];
+            if (hairObject != null)
+            {
+                var componentsInChildren = hairObject.GetComponentsInChildren<DynamicBone>(true);
+                foreach (var dynamicBone in componentsInChildren)
+                {
+                    dynamicBone.enabled = true;
+                }
+            }
+            yield break;
+        }
     }
 }
