@@ -213,6 +213,17 @@ Allows you to override vanilla list files. Comes with some overrides that enable
 
 Overriding list files can allow you to do things like enable bras with some shirts which don't normally allow it, or skirts with some tops, etc. Any part of of the list can be changed except for ID.<br/>
 
+#### KK_HairAccessoryCustomizer
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v71/KK_HairAccessoryCustomizer.v1.0.zip)**<br/>
+
+Adds configuration options for hair accessories to the character maker. Hair accessories can be set to match color with the hair, enable hair gloss, modify outline color, and has a separate color picker for the hair tie part. Hairs that support a length slider can also hair their length adjusted, just like vanilla front hairs. Saves and loads to cards and coordinates.<br/>
+
+Configuration options will work only on properly configured hair accessories. All of the hair accessories from <https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!GpJEiLwK> will work.<br/>
+
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) v1.3 or higher, previous versions will NOT work.<br/>
+
+Note for modders: These options will only show up for hair accessories that are properly configured. For accessories to work the accessory must have a ChaCustomHairComponent MonoBehavior in addition to the ChaAccessoryComponent MonoBehavior. Hair accessory color will display if the ChaCustomHairComponent rendAccessory array has meshes configured. The length slider will appear if the ChaCustomHairComponent trfLength array has bones configured. Hair color will only match to meshes configured in the ChaCustomHairComponent rendHair array. Also check out [this guide](https://github.com/DeathWeasel1337/KK_Plugins/wiki/Hair-Accessory-Guide) for how to create hair accessories.<br/>
+
 
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.<br/>
@@ -231,20 +242,6 @@ Shaders by Essu. Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/re
 Adds floor, breast, hand, and skirt colliders. Ported from Patchwork.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
-
-#### KK_HairAccessoryFix
-**v1.0.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v50/KK_HairAccessoryFix.v1.0.2.zip)**<br/>
-
-Applies hair gloss to hair accessories and matches hair color/outline color. Only works with objects using a ChaCustomHairComponent MonoBehavior. Not all hair accessories use one. Press F5 in the character maker to update newly added hair accessories.<br/>
-
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
-
-Known issues: If front/side/back hair colors are different they all get their colors overriden as well as the accessories. Applies to all characters and hair accessories whether you like it or not. Accessory color doesn't save and is entirely cosmetic. Use Keelhauled's [CharaEditTool](https://github.com/Keelhauled/KoikatuPlugins#readme) to actually update the colors.
-
-<details><summary>Change Log</summary>
-v1.0.1 Fixed configs, changed hotkey, made it configurable.<br/>
-v1.0.2 Color matching off by default<br/>
-</details>
 
 #### KK_FreeHRandom
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_FreeHRandom.v1.0.zip)**<br/>
