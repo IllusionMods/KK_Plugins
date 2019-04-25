@@ -26,7 +26,7 @@ v1.2 Fixed hair physics not working (Thanks Rau/Marco/Essu)<br/>
 </details>
 
 #### KK_GUIDMigration
-**v1.4.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v69/KK_GUIDMigration.v1.4.4.zip)**<br/>
+**v1.5 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v72/KK_GUIDMigration.v1.5.zip)**<br/>
 
 Migrates information on your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.<br/>
 
@@ -37,6 +37,7 @@ v1.1 Added character name for blank GUID messages<br/>
 v1.2 Fixed hard coded path<br/>
 v1.3 Added support for stripping extended data, fix errors resulting from missing .csv<br/>
 v1.4 Added support for coordinate cards (Thanks Kokaiinum), fix errors caused by wrong sideloader version<br/>
+v1.4 BepisPlugins r10 support, MoreAccessories support<br/>
 </details>
 
 <details><summary>Configuration</summary>
