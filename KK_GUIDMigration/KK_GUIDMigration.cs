@@ -19,7 +19,7 @@ namespace KK_GUIDMigration
     {
         public const string GUID = "com.deathweasel.bepinex.guidmigration";
         public const string PluginName = "GUID Migration";
-        public const string Version = "1.4";
+        public const string Version = "1.5";
         private static readonly List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
         private static readonly string GUIDMigrationFilePath = Path.Combine(Paths.PluginPath, "KK_GUIDMigration.csv");
 
