@@ -15,7 +15,7 @@ namespace KK_ForceHighPoly
         public const string GUID = "com.deathweasel.bepinex.forcehighpoly";
         public const string PluginName = "Force High Poly";
         public const string PluginNameInternal = "KK_ForceHighPoly";
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         [Category("Settings")]
         [DisplayName("High poly mode")]
         [Description("Whether or not to load high poly assets. May require exiting to main menu to take effect.")]
