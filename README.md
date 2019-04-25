@@ -15,6 +15,16 @@ Plays a sound when the Chara Maker finishes loading. Useful if you spend the loa
 
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.<br/>
 
+#### KK_ForceHighPoly
+**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v70/KK_ForceHighPoly.v1.2.zip)**<br/>
+
+Forces all characters to load in high poly mode, even in the school exploration mode.<br/>
+
+<details><summary>Change Log</summary>
+v1.1 Fixed locking up the game after special H scenes. Added config option to disable high poly mode.<br/>
+v1.2 Fixed hair physics not working (Thanks Rau/Marco/Essu)<br/>
+</details>
+
 #### KK_GUIDMigration
 **v1.4.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v69/KK_GUIDMigration.v1.4.4.zip)**<br/>
 
@@ -214,17 +224,6 @@ Experimental or unfinished plugins. No support will be given and most likely no 
 Applies shaders to a character's body and hair. Currently only has a shader for making goo girls. Or boys, if you're in to that kind of thing. Also has bugs. Not a shader for making bug girls, the kind of bugs that might make your game act strange.<br/>
 
 Shaders by Essu. Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
-
-#### KK_ForceHighPoly
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v10/KK_ForceHighPoly.v1.1.zip)**<br/>
-
-Forces all characters to load in high poly mode, even in the school exploration mode.<br/>
-
-Known issues: Hair physics doesn't work. High poly textures are loaded but probably downscaled to low poly resolutions anyway.
-
-<details><summary>Change Log</summary>
-v1.1 Fixed locking up the game after special H scenes. Added config option to disable high poly mode.
-</details>
 
 #### KK_Colliders
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_Colliders.v1.0.zip)**<br/>
