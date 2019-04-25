@@ -2,6 +2,7 @@
 using Harmony;
 using System;
 using System.ComponentModel;
+using System.Collections;
 
 namespace KK_ForceHighPoly
 {
@@ -44,7 +45,7 @@ namespace KK_ForceHighPoly
             if (Enabled.Value && assetName.EndsWith("_low"))
                 assetName = assetName.Substring(0, assetName.Length - 4);
         }
-        
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ChaControl), "ChangeHairAsync", new Type[] { typeof(int), typeof(int), typeof(bool), typeof(bool) })]
         public static void ChangeHairAsyncPostHook(ChaControl __instance, int kind, ref IEnumerator __result)
@@ -57,13 +58,9 @@ namespace KK_ForceHighPoly
         {
             var hairObject = instance.objHair[kind];
             if (hairObject != null)
-            {
-                var componentsInChildren = hairObject.GetComponentsInChildren<DynamicBone>(true);
-                foreach (var dynamicBone in componentsInChildren)
-                {
+                foreach (var dynamicBone in hairObject.GetComponentsInChildren<DynamicBone>(true))
                     dynamicBone.enabled = true;
-                }
-            }
+
             yield break;
         }
     }
