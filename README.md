@@ -27,6 +27,7 @@ v1.2 Fixed hair physics not working (Thanks Rau/Marco/Essu)<br/>
 
 #### KK_GUIDMigration
 **v1.5 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v72/KK_GUIDMigration.v1.5.zip)**<br/>
+Note: Only to be used with BepisPlugins r10, earlier versions are incompatible!<br/>
 
 Migrates information on your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.<br/>
 
