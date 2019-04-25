@@ -50,6 +50,8 @@ namespace KK_ForceHighPoly
         [HarmonyPatch(typeof(ChaControl), "ChangeHairAsync", new Type[] { typeof(int), typeof(int), typeof(bool), typeof(bool) })]
         public static void ChangeHairAsyncPostHook(ChaControl __instance, int kind, ref IEnumerator __result)
         {
+            if (!Enabled.Value) return;
+
             var orig = __result;
             __result = new IEnumerator[] { orig, ChangeHairAsyncPostfix(__instance, kind) }.GetEnumerator();
         }
