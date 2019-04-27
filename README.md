@@ -141,6 +141,7 @@ v1.2 Subtitles for idle lines in dialogue
 
 #### KK_AnimationController
 **v2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v57/KK_AnimationController.v2.1.zip)**<br/>
+*Note: Mostly obsolete. [NodeConstraints](https://www.patreon.com/posts/26357789) does what this plugin does but better.*
 
 Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.<br/>
 
