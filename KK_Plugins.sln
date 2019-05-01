@@ -63,6 +63,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HairAccessoryCustomizer", "
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_HairAccessoryCustomizer", "Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.shproj", "{C71A1776-100B-49C9-A944-ED54C4312591}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_Demosaic", "EC_Demosaic\EC_Demosaic.csproj", "{46FCD429-D43B-4E0C-879D-46760202C288}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
@@ -186,6 +188,10 @@ Global
 		{89FE73CD-0973-4E53-A29A-634C5926D7A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89FE73CD-0973-4E53-A29A-634C5926D7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89FE73CD-0973-4E53-A29A-634C5926D7A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46FCD429-D43B-4E0C-879D-46760202C288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46FCD429-D43B-4E0C-879D-46760202C288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46FCD429-D43B-4E0C-879D-46760202C288}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46FCD429-D43B-4E0C-879D-46760202C288}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
