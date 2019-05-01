@@ -68,12 +68,17 @@ v1.4.1 Compatibility with BepisPlugins versions higher than r8
 </details>
 
 #### KK_InvisibleBody
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v7/KK_InvisibleBody.v1.1.zip)**<br/>
+**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v74/KK_InvisibleBody.v1.2.zip)** - For Koikatsu<br/>
+#### EC_InvisibleBody
+**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v74/EC_InvisibleBody.v1.2.zip)** - For EmotionCreators<br/>
 
-Select characters in the Studio workspace and press numpad+ (configurable) to toggle them between invisible and visible. Any worn clothes or accessories and any attached studio items will remain visible. Invisible state saves and loads with the scene. Can also be used to make girls invisible in H scenes but cannot be disabled except by exiting the scene.<br/>
+Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
+
+Select characters in the Studio workspace and press numpad+ (configurable) to toggle them between invisible and visible. Any worn clothes or accessories and any attached studio items will remain visible. Invisible state saves and loads with the scene. <br/>
 
 <details><summary>Change Log</summary> 
-v1.1 Fixed studio items becoming visible when they were toggled off in the workspace
+v1.1 Fixed studio items becoming visible when they were toggled off in the workspace<br/>
+v1.2 Added a character maker toggle, EmotionCreators port<br/>
 </details>
 
 #### KK_InputHotkeyBlock
