@@ -3,29 +3,31 @@ using KKAPI.Maker;
 using System.Collections;
 using UnityEngine.UI;
 
-namespace KK_HairAccessoryCustomizer
+namespace HairAccessoryCustomizer
 {
-    internal class KK_HairAccessoryCustomizer_hooks
+    internal class Hooks
     {
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairGlossMask))]
-        public static void ChangeSettingHairGlossMask(ChaControl __instance) => KK_HairAccessoryCustomizer.GetController(__instance).UpdateAccessories(!KK_HairAccessoryCustomizer.ReloadingChara);
+        public static void ChangeSettingHairGlossMask(ChaControl __instance) => HairAccessoryCustomizer.GetController(__instance).UpdateAccessories(!HairAccessoryCustomizer.ReloadingChara);
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairColor))]
-        public static void ChangeSettingHairColor(ChaControl __instance) => KK_HairAccessoryCustomizer.GetController(__instance).UpdateAccessories(!KK_HairAccessoryCustomizer.ReloadingChara);
+        public static void ChangeSettingHairColor(ChaControl __instance) => HairAccessoryCustomizer.GetController(__instance).UpdateAccessories(!HairAccessoryCustomizer.ReloadingChara);
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairOutlineColor))]
-        public static void ChangeSettingHairOutlineColor(ChaControl __instance) => KK_HairAccessoryCustomizer.GetController(__instance).UpdateAccessories(!KK_HairAccessoryCustomizer.ReloadingChara);
+        public static void ChangeSettingHairOutlineColor(ChaControl __instance) => HairAccessoryCustomizer.GetController(__instance).UpdateAccessories(!HairAccessoryCustomizer.ReloadingChara);
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairAcsColor))]
-        public static void ChangeSettingHairAcsColor(ChaControl __instance) => KK_HairAccessoryCustomizer.GetController(__instance).UpdateAccessories(!KK_HairAccessoryCustomizer.ReloadingChara);
+        public static void ChangeSettingHairAcsColor(ChaControl __instance) => HairAccessoryCustomizer.GetController(__instance).UpdateAccessories(!HairAccessoryCustomizer.ReloadingChara);
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryColor))]
-        public static void ChangeAccessoryColor(ChaControl __instance, int slotNo) => KK_HairAccessoryCustomizer.GetController(__instance).UpdateAccessory(slotNo, false);
+#if KK
+        public static void ChangeAccessoryColor(ChaControl __instance, int slotNo) => HairAccessoryCustomizer.GetController(__instance).UpdateAccessory(slotNo, false);
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), new[] { typeof(ChaFileDefine.CoordinateType), typeof(bool) })]
+#endif
         public static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));
         private static IEnumerator ChangeCoordinateActions(ChaControl __instance)
         {
-            var controller = KK_HairAccessoryCustomizer.GetController(__instance);
+            var controller = HairAccessoryCustomizer.GetController(__instance);
             if (controller == null) yield break;
-            if (KK_HairAccessoryCustomizer.ReloadingChara) yield break;
+            if (HairAccessoryCustomizer.ReloadingChara) yield break;
 
-            KK_HairAccessoryCustomizer.ReloadingChara = true;
+            HairAccessoryCustomizer.ReloadingChara = true;
             yield return null;
 
             if (MakerAPI.InsideAndLoaded)
@@ -37,22 +39,22 @@ namespace KK_HairAccessoryCustomizer
                     controller.SetHairGloss(false);
                 }
 
-                KK_HairAccessoryCustomizer.InitCurrentSlot(controller);
+                HairAccessoryCustomizer.InitCurrentSlot(controller);
             }
 
-            controller.UpdateAccessories(!KK_HairAccessoryCustomizer.ReloadingChara);
-            KK_HairAccessoryCustomizer.ReloadingChara = false;
+            controller.UpdateAccessories(!HairAccessoryCustomizer.ReloadingChara);
+            HairAccessoryCustomizer.ReloadingChara = false;
         }
         [HarmonyPostfix, HarmonyPatch(typeof(ChaCustom.CvsAccessory), nameof(ChaCustom.CvsAccessory.ChangeUseColorVisible))]
         public static void ChangeUseColorVisible(ChaCustom.CvsAccessory __instance)
         {
-            if (AccessoriesApi.SelectedMakerAccSlot == (int)__instance.slotNo && KK_HairAccessoryCustomizer.GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && KK_HairAccessoryCustomizer.ColorMatchToggle.GetSelectedValue())
-                KK_HairAccessoryCustomizer.HideAccColors();
+            if (AccessoriesApi.SelectedMakerAccSlot == (int)__instance.slotNo && HairAccessoryCustomizer.GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && HairAccessoryCustomizer.ColorMatchToggle.GetSelectedValue())
+                HairAccessoryCustomizer.HideAccColors();
         }
         [HarmonyPostfix, HarmonyPatch(typeof(ChaCustom.CvsAccessory), nameof(ChaCustom.CvsAccessory.ChangeSettingVisible))]
         public static void ChangeSettingVisible(ChaCustom.CvsAccessory __instance)
         {
-            if (KK_HairAccessoryCustomizer.GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && KK_HairAccessoryCustomizer.ColorMatchToggle.GetSelectedValue())
+            if (HairAccessoryCustomizer.GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && HairAccessoryCustomizer.ColorMatchToggle.GetSelectedValue())
                 Traverse.Create(AccessoriesApi.GetCvsAccessory((int)__instance.slotNo)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
         }
     }

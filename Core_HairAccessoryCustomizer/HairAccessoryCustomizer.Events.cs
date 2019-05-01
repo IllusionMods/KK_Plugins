@@ -2,12 +2,14 @@
 using KKAPI.Maker.UI;
 using UnityEngine;
 
-namespace KK_HairAccessoryCustomizer
+namespace HairAccessoryCustomizer
 {
-    public partial class KK_HairAccessoryCustomizer
+    public partial class HairAccessoryCustomizer
     {
         private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetController(MakerAPI.GetCharacterControl()).TransferAccessoriesHandler(e);
+#if KK
         private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetController(MakerAPI.GetCharacterControl()).CopyAccessoriesHandler(e);
+#endif
 
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e)
         {

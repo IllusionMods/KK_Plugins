@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KK_HairAccessoryCustomizer")]
-[assembly: AssemblyDescription("Hair Accessory Customizer for Koikatsu")]
+[assembly: AssemblyTitle("EC_HairAccessoryCustomizer")]
+[assembly: AssemblyDescription("Hair Accessory Customizer for EmotionCreators")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("https://github.com/DeathWeasel1337/EC_Plugins")]
-[assembly: AssemblyProduct("KK_HairAccessoryCustomizer")]
+[assembly: AssemblyProduct("EC_HairAccessoryCustomizer")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d9c3e165-10ab-4561-9d23-35de4e91addb")]
+[assembly: Guid("89fe73cd-0973-4e53-a29a-634c5926d7a1")]
 
 // Version information for an assembly consists of the following four values:
 //

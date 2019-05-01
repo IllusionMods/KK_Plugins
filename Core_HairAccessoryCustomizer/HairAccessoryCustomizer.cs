@@ -8,15 +8,14 @@ using UnityEngine.UI;
 /// <summary>
 /// Individual customization of hair accessories for adding hair gloss, color matching, etc.
 /// </summary>
-namespace KK_HairAccessoryCustomizer
+namespace HairAccessoryCustomizer
 {
-    [BepInPlugin(GUID, PluginName, Version)]
-    public partial class KK_HairAccessoryCustomizer : BaseUnityPlugin
+    public partial class HairAccessoryCustomizer : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.hairaccessorycustomizer";
         public const string PluginName = "Hair Accessory Customizer";
-        public const string PluginNameInternal = nameof(KK_HairAccessoryCustomizer);
         public const string Version = "1.0";
+
         internal static bool ReloadingChara = false;
         internal static AccessoryControlWrapper<MakerToggle, bool> ColorMatchToggle;
         internal static AccessoryControlWrapper<MakerToggle, bool> HairGlossToggle;
@@ -29,17 +28,16 @@ namespace KK_HairAccessoryCustomizer
         private static Color AccessoryColorDefault = Color.red;
         private static readonly float HairLengthDefault = 0;
 
-        private void Main()
+        private void Start()
         {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_HairAccessoryCustomizer_hooks));
-
             CharacterApi.RegisterExtraBehaviour<HairAccessoryController>(GUID);
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
+#if KK
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
+#endif
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
         }
         /// <summary>
