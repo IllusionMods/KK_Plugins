@@ -67,9 +67,8 @@ v1.4 Studio support<br/>
 v1.4.1 Compatibility with BepisPlugins versions higher than r8
 </details>
 
-#### KK_InvisibleBody
+#### KK_InvisibleBody/EC_InvisibleBody
 **v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v74/KK_InvisibleBody.v1.2.zip)** - For Koikatsu<br/>
-#### EC_InvisibleBody
 **v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v74/EC_InvisibleBody.v1.2.zip)** - For EmotionCreators<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
@@ -221,9 +220,8 @@ Allows you to override vanilla list files. Comes with some overrides that enable
 
 Overriding list files can allow you to do things like enable bras with some shirts which don't normally allow it, or skirts with some tops, etc. Any part of of the list can be changed except for ID.<br/>
 
-#### KK_HairAccessoryCustomizer
+#### KK_HairAccessoryCustomizer/EC_HairAccessoryCustomizer
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v71/KK_HairAccessoryCustomizer.v1.0.zip)** - For Koikatsu<br/>
-#### EC_HairAccessoryCustomizer
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v73/EC_HairAccessoryCustomizer.v1.0.zip)** - For EmotionCreators<br/>
 
 Adds configuration options for hair accessories to the character maker. Hair accessories can be set to match color with the hair, enable hair gloss, modify outline color, and has a separate color picker for the hair tie part. Hairs that support a length slider can also hair their length adjusted, just like vanilla front hairs. Saves and loads to cards and coordinates.<br/>
