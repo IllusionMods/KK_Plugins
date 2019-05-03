@@ -6,7 +6,7 @@ using UniRx;
 
 namespace UncensorSelector
 {
-    internal class Hooks
+    internal partial class Hooks
     {
         /// <summary>
         /// Do color matching whenever the body texture is changed
@@ -92,26 +92,6 @@ namespace UncensorSelector
                     case "cf_m_body_create":
                         x.opcode = OpCodes.Call;
                         x.operand = typeof(UncensorSelector).GetMethod(nameof(UncensorSelector.SetBodyMaterialCreate), AccessTools.all);
-                        break;
-                }
-            }
-
-            return instructions;
-        }
-        /// <summary>
-        /// Change the male _low asset to the female _low asset. Female has more bones so trying to change male body to female doesn't work. Load as female and change to male as a workaround.
-        /// </summary>
-        public static IEnumerable<CodeInstruction> LoadAsyncTranspiler(IEnumerable<CodeInstruction> instructions)
-        {
-            List<CodeInstruction> instructionsList = instructions.ToList();
-
-            foreach (var x in instructionsList)
-            {
-                switch (x.operand?.ToString())
-                {
-                    case "p_cm_body_00_low":
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(UncensorSelector).GetMethod(nameof(UncensorSelector.SetMaleBodyLow), AccessTools.all);
                         break;
                 }
             }

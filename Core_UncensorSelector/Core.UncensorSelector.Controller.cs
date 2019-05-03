@@ -34,11 +34,6 @@ namespace UncensorSelector
             internal bool DisplayPenis { get; set; }
             /// <summary> Visibility of the balls as saved to the character.</summary>
             internal bool DisplayBalls { get; set; }
-            protected override void Update()
-            {
-                if (Input.GetKeyDown(KeyCode.P))
-                    UpdateUncensor();
-            }
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
@@ -174,11 +169,7 @@ namespace UncensorSelector
             /// <summary>
             /// Reload this character's uncensor
             /// </summary>
-#if KK
             public void UpdateUncensor() => ChaControl.StartCoroutine(UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, PenisVisible, BallsData, BallsVisible));
-#elif EC
-            public void UpdateUncensor() => ChaControl.StartCoroutine(UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, true, BallsData, BallsVisible));
-#endif
             public void UpdateSkinColor() => SkinMatch.SetSkinColor(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinLine() => SkinMatch.SetLineVisibility(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinGloss() => SkinMatch.SetSkinGloss(ChaControl, BodyData, PenisData, BallsData);
@@ -239,11 +230,13 @@ namespace UncensorSelector
                     return ballsData;
                 }
             }
-#if KK
             /// <summary>
             /// Whether the penis is currently allowed to be visible
             /// </summary>
+#if KK
             public bool PenisVisible => (!StudioAPI.InsideStudio && GenderBender.Value == false) ? ChaControl.sex == 0 ? true : false : DisplayPenis;
+#elif EC
+            public bool PenisVisible => true;
 #endif
             /// <summary>
             /// Whether the balls are currently allowed to be visible

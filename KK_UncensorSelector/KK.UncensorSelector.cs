@@ -2,7 +2,11 @@
 using BepInEx.Logging;
 using Harmony;
 using KKAPI;
+using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using UniRx;
 using Logger = BepInEx.Logger;
 
 namespace UncensorSelector
@@ -60,6 +64,10 @@ namespace UncensorSelector
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(Hooks));
+
+            Type loadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).First(x => x.Name.StartsWith("<LoadAsync>c__Iterator"));
+            MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
+            harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), AccessTools.all)));
 
             GenderBender = new ConfigWrapper<bool>(nameof(GenderBender), PluginNameInternal, true);
             DefaultMaleBody = new ConfigWrapper<string>(nameof(DefaultMaleBody), PluginNameInternal, BodyGuidToDisplayName, DisplayNameToBodyGuid, MaleBodyDefaultValue);

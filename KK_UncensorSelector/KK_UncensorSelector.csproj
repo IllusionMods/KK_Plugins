@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KK.UncensorSelector.cs" />
+    <Compile Include="KK.UncensorSelector.Hooks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="..\Core_UncensorSelector\Core_UncensorSelector.projitems" Label="Shared" />

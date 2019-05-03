@@ -34,7 +34,11 @@ namespace UncensorSelector
         private const string MalePenisDefaultValue = UncensorKeyRandom;
         private const string MaleBallsDefaultValue = UncensorKeyRandom;
         private const string FemaleBodyDefaultValue = UncensorKeyRandom;
+#if KK
         private const string FemalePenisDefaultValue = UncensorKeyNone;
+#elif EC
+        private const string FemalePenisDefaultValue = UncensorKeyRandom;
+#endif
         private const string FemaleBallsDefaultValue = UncensorKeyNone;
         private static readonly HashSet<string> AllAdditionalParts = new HashSet<string>();
         public static readonly Dictionary<string, BodyData> BodyDictionary = new Dictionary<string, BodyData>();
@@ -70,12 +74,6 @@ namespace UncensorSelector
                 Logger.Log(LogLevel.Error | LogLevel.Message, "AlexaeBubbleGum.dll is incompatible with KK_UncensorSelector! Please remove it and restart the game.");
                 return;
             }
-
-            var harmonyCore = HarmonyInstance.Create(GUID + ".Core");
-
-            Type loadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).First(x => x.Name.StartsWith("<LoadAsync>c__Iterator"));
-            MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
-            harmonyCore.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), BindingFlags.Static | BindingFlags.Public)));
 
             PopulateUncensorLists();
 
