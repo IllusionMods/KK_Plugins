@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace KK_UncensorSelector
+namespace UncensorSelector
 {
-    partial class KK_UncensorSelector
+    internal partial class UncensorSelector
     {
         public class BodyData
         {

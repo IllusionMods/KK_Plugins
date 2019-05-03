@@ -71,14 +71,23 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_InvisibleBody", "Core_
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_InvisibleBody", "EC_InvisibleBody\EC_InvisibleBody.csproj", "{6B1C1B2B-C74E-4C53-B019-5DFBA3BA3F75}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UncensorSelector", "UncensorSelector", "{74A0EB97-BF27-453D-B01D-DC0CDC60BC19}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_UncensorSelector", "Core_UncensorSelector\Core_UncensorSelector.shproj", "{EA82BB52-404C-416A-9BF8-A36A90F6DA93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_UncensorSelector", "EC_UncensorSelector\EC_UncensorSelector.csproj", "{587A82DD-6BC1-481A-B979-5CA6D247CF69}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
+		Core_UncensorSelector\Core_UncensorSelector.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
+		Core_UncensorSelector\Core_UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{c15b8820-0e24-452b-b076-1a052dd7c0fb}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{c71a1776-100b-49c9-a944-ed54c4312591}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
+		Core_UncensorSelector\Core_UncensorSelector.projitems*{ea82bb52-404c-416a-9bf8-a36a90f6da93}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -205,17 +214,24 @@ Global
 		{6B1C1B2B-C74E-4C53-B019-5DFBA3BA3F75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B1C1B2B-C74E-4C53-B019-5DFBA3BA3F75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B1C1B2B-C74E-4C53-B019-5DFBA3BA3F75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{587A82DD-6BC1-481A-B979-5CA6D247CF69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{587A82DD-6BC1-481A-B979-5CA6D247CF69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{587A82DD-6BC1-481A-B979-5CA6D247CF69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{587A82DD-6BC1-481A-B979-5CA6D247CF69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{17B56A36-764F-4670-941A-B0CB76558F37} = {CE8EA04B-6351-40C4-97AB-24CAE7020DCB}
+		{190FE08F-1D2E-4615-8555-F036D5E48587} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
 		{D9C3E165-10AB-4561-9D23-35DE4E91ADDB} = {6249F14A-AEBF-4683-AC7E-64458FC9F6D5}
 		{89FE73CD-0973-4E53-A29A-634C5926D7A1} = {6249F14A-AEBF-4683-AC7E-64458FC9F6D5}
 		{C71A1776-100B-49C9-A944-ED54C4312591} = {6249F14A-AEBF-4683-AC7E-64458FC9F6D5}
 		{C15B8820-0E24-452B-B076-1A052DD7C0FB} = {CE8EA04B-6351-40C4-97AB-24CAE7020DCB}
 		{6B1C1B2B-C74E-4C53-B019-5DFBA3BA3F75} = {CE8EA04B-6351-40C4-97AB-24CAE7020DCB}
+		{EA82BB52-404C-416A-9BF8-A36A90F6DA93} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
+		{587A82DD-6BC1-481A-B979-5CA6D247CF69} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

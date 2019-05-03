@@ -1,21 +1,26 @@
-﻿using BepInEx.Logging;
-using ExtensibleSaveFormat;
-using Harmony;
+﻿using Harmony;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
-using KKAPI.Studio;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using Logger = BepInEx.Logger;
+using BepInEx.Logging;
+#if KK
+using KKAPI.Studio;
+#endif
+#if KK
+using ExtensibleSaveFormat;
+#elif EC
+using EC.Core.ExtensibleSaveFormat;
+#endif
 
-namespace KK_UncensorSelector
+namespace UncensorSelector
 {
-    partial class KK_UncensorSelector
+    internal partial class UncensorSelector
     {
         public class UncensorSelectorController : CharaCustomFunctionController
         {
@@ -29,6 +34,11 @@ namespace KK_UncensorSelector
             internal bool DisplayPenis { get; set; }
             /// <summary> Visibility of the balls as saved to the character.</summary>
             internal bool DisplayBalls { get; set; }
+            protected override void Update()
+            {
+                if (Input.GetKeyDown(KeyCode.P))
+                    UpdateUncensor();
+            }
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
@@ -42,7 +52,7 @@ namespace KK_UncensorSelector
                 SetExtendedData(data);
             }
 
-            protected override void OnReload(GameMode currentGameMode)
+            protected override void OnReload(GameMode currentGameMode, bool maintainState)
             {
                 BodyGUID = null;
                 PenisGUID = null;
@@ -100,7 +110,6 @@ namespace KK_UncensorSelector
 
                 if (MakerAPI.InsideAndLoaded)
                 {
-                    DoDropdownEvents = false;
                     if (MakerAPI.GetCharacterLoadFlags().Body)
                     {
                         if (MakerAPI.GetMakerBase().chaCtrl == ChaControl)
@@ -109,32 +118,36 @@ namespace KK_UncensorSelector
                             if (BodyGUID == null || BodyList.IndexOf(BodyGUID) == -1)
                             {
                                 //The loaded uncensor isn't on the list, possibly due to being forbidden
-                                BodyDropdown.Value = 0;
+                                BodyDropdown.SetValue(0, false);
                                 BodyGUID = null;
                             }
                             else
                             {
-                                BodyDropdown.Value = BodyList.IndexOf(BodyGUID);
+                                BodyDropdown.SetValue(BodyList.IndexOf(BodyGUID), false);
                             }
 
                             if (PenisGUID == null || PenisList.IndexOf(PenisGUID) == -1)
                             {
-                                PenisDropdown.Value = DisplayPenis ? 0 : 1;
+#if KK
+                                PenisDropdown.SetValue(DisplayPenis ? 0 : 1, false);
+#elif EC
+                                PenisDropdown.SetValue(0, false);
+#endif
                                 PenisGUID = null;
                             }
                             else
                             {
-                                PenisDropdown.Value = PenisList.IndexOf(PenisGUID);
+                                PenisDropdown.SetValue(PenisList.IndexOf(PenisGUID), false);
                             }
 
                             if (BallsGUID == null || BallsList.IndexOf(BallsGUID) == -1)
                             {
-                                BallsDropdown.Value = DisplayBalls ? 0 : 1;
+                                BallsDropdown.SetValue(DisplayBalls ? 0 : 1, false);
                                 BallsGUID = null;
                             }
                             else
                             {
-                                BallsDropdown.Value = BallsList.IndexOf(BallsGUID);
+                                BallsDropdown.SetValue(BallsList.IndexOf(BallsGUID), false);
                             }
                         }
                     }
@@ -142,12 +155,18 @@ namespace KK_UncensorSelector
                     {
                         //Set the uncensor stuff to whatever is set in the maker
                         BodyGUID = BodyDropdown.Value == 0 ? null : BodyList[BodyDropdown.Value];
+#if KK
                         PenisGUID = PenisDropdown.Value == 0 || PenisDropdown.Value == 1 ? null : PenisList[PenisDropdown.Value];
                         BallsGUID = BallsDropdown.Value == 0 || BallsDropdown.Value == 1 ? null : BallsList[BallsDropdown.Value];
                         DisplayPenis = PenisDropdown.Value == 1 ? false : true;
                         DisplayBalls = BallsDropdown.Value == 1 ? false : true;
+#elif EC
+                        PenisGUID = PenisDropdown.Value == 0 ? null : PenisList[PenisDropdown.Value];
+                        BallsGUID = BallsDropdown.Value == 0 || BallsDropdown.Value == 1 ? null : BallsList[BallsDropdown.Value];
+                        DisplayPenis = ChaControl.sex == 0;
+                        DisplayBalls = ChaControl.sex == 0;
+#endif
                     }
-                    DoDropdownEvents = true;
                 }
                 //Update the uncensor on every load or reload
                 UpdateUncensor();
@@ -155,7 +174,11 @@ namespace KK_UncensorSelector
             /// <summary>
             /// Reload this character's uncensor
             /// </summary>
+#if KK
             public void UpdateUncensor() => ChaControl.StartCoroutine(UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, PenisVisible, BallsData, BallsVisible));
+#elif EC
+            public void UpdateUncensor() => ChaControl.StartCoroutine(UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, true, BallsData, BallsVisible));
+#endif
             public void UpdateSkinColor() => SkinMatch.SetSkinColor(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinLine() => SkinMatch.SetLineVisibility(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinGloss() => SkinMatch.SetSkinGloss(ChaControl, BodyData, PenisData, BallsData);
@@ -170,10 +193,10 @@ namespace KK_UncensorSelector
 
                     if (BodyGUID != null && BodyDictionary.TryGetValue(BodyGUID, out var body))
                         bodyData = body;
-
+#if KK
                     if (!StudioAPI.InsideStudio && bodyData != null && GenderBender.Value == false && ChaControl.sex != bodyData.Sex)
                         bodyData = null;
-
+#endif
                     if (bodyData == null)
                         bodyData = DefaultData.GetDefaultOrRandomBody(ChaControl);
 
@@ -216,15 +239,20 @@ namespace KK_UncensorSelector
                     return ballsData;
                 }
             }
+#if KK
             /// <summary>
             /// Whether the penis is currently allowed to be visible
             /// </summary>
             public bool PenisVisible => (!StudioAPI.InsideStudio && GenderBender.Value == false) ? ChaControl.sex == 0 ? true : false : DisplayPenis;
+#endif
             /// <summary>
             /// Whether the balls are currently allowed to be visible
             /// </summary>
+#if KK
             public bool BallsVisible => (!StudioAPI.InsideStudio && GenderBender.Value == false) ? ChaControl.sex == 0 ? true : false : DisplayBalls;
-
+#elif EC
+            public bool BallsVisible => (GenderBender.Value == false) ? ChaControl.sex == 0 ? true : false : DisplayBalls;
+#endif
             internal static class DefaultData
             {
                 internal static BodyData GetDefaultOrRandomBody(ChaControl chaControl)
@@ -359,9 +387,11 @@ namespace KK_UncensorSelector
                 /// </summary>
                 internal static void ReloadCharacterPenis(ChaControl chaControl, PenisData penisData, bool showPenis)
                 {
+#if KK
                     bool temp = chaControl.fileStatus.visibleSonAlways;
                     if (chaControl.hiPoly == false)
                         return;
+#endif
 
                     if (penisData != null)
                     {
@@ -375,15 +405,19 @@ namespace KK_UncensorSelector
                         Destroy(dick);
                     }
 
+#if KK
                     chaControl.fileStatus.visibleSonAlways = StudioAPI.InsideStudio ? temp : showPenis;
+#endif
                 }
                 /// <summary>
                 /// Update the mesh of the balls and set the visibility
                 /// </summary>
                 internal static void ReloadCharacterBalls(ChaControl chaControl, BallsData ballsData, bool showBalls)
                 {
+#if KK
                     if (chaControl.hiPoly == false)
                         return;
+#endif
 
                     if (ballsData != null)
                     {
@@ -406,8 +440,10 @@ namespace KK_UncensorSelector
                 {
                     string OOBase = bodyData?.OOBase ?? Defaults.OOBase;
                     string Asset = bodyData?.Asset ?? (chaControl.sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale);
+#if KK
                     if (chaControl.hiPoly == false)
                         Asset += "_low";
+#endif
 
                     GameObject uncensorCopy = CommonLib.LoadAsset<GameObject>(OOBase, Asset, true);
                     SkinnedMeshRenderer o_body_a = chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a");
@@ -458,7 +494,11 @@ namespace KK_UncensorSelector
                 /// </summary>
                 internal static void UpdateSkin(ChaControl chaControl, BodyData bodyData)
                 {
+#if KK
                     Traverse.Create(chaControl).Method("InitBaseCustomTextureBody", new object[] { bodyData?.Sex ?? chaControl.sex }).GetValue();
+#elif EC
+                    Traverse.Create(chaControl).Method("InitBaseCustomTextureBody").GetValue();
+#endif
                     chaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
                     chaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
                     chaControl.AddUpdateCMBodyLayoutFlags(true, true);
@@ -478,7 +518,7 @@ namespace KK_UncensorSelector
                     // Check if UVs got corrupted when we loaded the asset, uncommon
                     var uvCopy = src.sharedMesh.uv.ToArray();
                     if (AreUVsCorrupted(uvCopy))
-                        Logger.Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be corrupted. Consider updating your GPU drivers.");
+                        Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be corrupted. Consider updating your GPU drivers.");
 
                     //Copy the mesh
                     dst.sharedMesh = src.sharedMesh;
@@ -503,12 +543,12 @@ namespace KK_UncensorSelector
                     // Check if UVs got corrupted after moving the mesh, most common fail point
                     if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
                     {
-                        Logger.Log(LogLevel.Warning, $"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
+                        Log(LogLevel.Warning, $"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
                         dst.sharedMesh.uv = uvCopy;
                         yield return null;
 
                         if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
-                            Logger.Log(LogLevel.Error, "Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
+                            Log(LogLevel.Error, "Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
                     }
                 }
 
@@ -694,7 +734,7 @@ namespace KK_UncensorSelector
                     if (penisData == null)
                         return;
 
-                    foreach (KK_UncensorSelector.ColorMatchPart colorMatchPart in penisData.ColorMatchList)
+                    foreach (UncensorSelector.ColorMatchPart colorMatchPart in penisData.ColorMatchList)
                         SetSkinGloss(chaControl, colorMatchPart);
                 }
 
