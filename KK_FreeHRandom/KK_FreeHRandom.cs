@@ -28,13 +28,13 @@ namespace KK_FreeHRandom
         [Description("The key that triggers the random selection of characters in the Free H select screen.")]
         public static SavedKeyboardShortcut RandomHotkey { get; private set; }
 
-        void Main()
+        private void Main()
         {
             RandomMale = new ConfigWrapper<bool>("RandomMale", PluginNameInternal, true);
             RandomHotkey = new SavedKeyboardShortcut("RandomHotkey", PluginNameInternal, new KeyboardShortcut(KeyCode.F5));
         }
 
-        void Update()
+        private void Update()
         {
             try
             {

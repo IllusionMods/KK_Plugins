@@ -16,7 +16,7 @@ namespace KK_InputHotkeyBlock
         public const string GUID = "com.deathweasel.bepinex.inputhotkeyblock";
         public const string Version = "1.1";
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_InputHotkeyBlock));

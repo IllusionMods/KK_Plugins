@@ -30,7 +30,7 @@ namespace KK_RandomCharacterGenerator
         private static readonly System.Random Rand = new System.Random();
         private static MakerSlider DeviationSlider;
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_RandomCharacterGenerator));

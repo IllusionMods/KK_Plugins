@@ -1,13 +1,9 @@
 ﻿using ActionGame.Communication;
 using BepInEx;
-using BepInEx.Logging;
 using Harmony;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using UnityEngine;
-using Logger = BepInEx.Logger;
 
 namespace KK_Subtitles
 {
@@ -67,7 +63,7 @@ namespace KK_Subtitles
         public static ConfigWrapper<Color> outlineColor { get; private set; }
         #endregion
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_Subtitles));
@@ -81,10 +77,7 @@ namespace KK_Subtitles
             outlineThickness = new ConfigWrapper<int>("outlineThickness", PluginNameInternal, 2);
         }
 
-        public void Start()
-        {
-            StartCoroutine(InitAsync());
-        }
+        public void Start() => StartCoroutine(InitAsync());
 
         private IEnumerator<WaitWhile> InitAsync()
         {
@@ -132,9 +125,9 @@ namespace KK_Subtitles
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(TalkScene), "TouchFunc")]
-        public static void TouchFunc(TalkScene __instance) => DoSubtitle = true;
+        public static void TouchFunc() => DoSubtitle = true;
         [HarmonyPostfix, HarmonyPatch(typeof(Info), nameof(Info.GetLeaveAloneVoice))]
-        public static void GetLeaveAloneVoice(TalkScene __instance) => DoSubtitle = true;
+        public static void GetLeaveAloneVoice() => DoSubtitle = true;
 
         [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
         public static void HVoiceCtrlInit()

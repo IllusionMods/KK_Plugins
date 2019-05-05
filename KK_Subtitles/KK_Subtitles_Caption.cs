@@ -1,5 +1,4 @@
-﻿using BepInEx;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using Harmony;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,10 +131,7 @@ namespace KK_Subtitles
             subOutline.effectColor = KK_Subtitles.outlineColor.Value;
             subOutline.effectDistance = new Vector2(KK_Subtitles.outlineThickness.Value, KK_Subtitles.outlineThickness.Value);
 
-            if (speaker.IsNullOrEmpty())
-                subtitleText.text = text;
-            else
-                subtitleText.text = $"{speaker}:{text}";
+            subtitleText.text = speaker.IsNullOrEmpty() ? text : $"{speaker}:{text}";
             Logger.Log(LogLevel.Debug, $"KK_Subtitles:{text}");
 
             voice.OnDestroyAsObservable().Subscribe(delegate (Unit _)
@@ -145,6 +141,6 @@ namespace KK_Subtitles
             });
         }
 
-        private static HashSet<char> JPChars = new HashSet<char>("あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわんアイウエカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン");
+        private static readonly HashSet<char> JPChars = new HashSet<char>("あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわんアイウエカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン");
     }
 }

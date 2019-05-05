@@ -14,7 +14,7 @@ namespace KK_PersonalityCorrector
         public const string Version = "1.3.1";
         public static int DefaultPersonality = 8; //Pure
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_PersonalityCorrector));

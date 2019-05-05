@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("EC_Demosaic")]
 [assembly: AssemblyDescription("Demosaic for EmotionCreators")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("https://github.com/DeathWeasel1337/EC_Plugins")]
+[assembly: AssemblyCompany("https://github.com/DeathWeasel1337/KK_Plugins")]
 [assembly: AssemblyProduct("EC_Demosaic")]
 [assembly: AssemblyCopyright("Copyright © DeathWeasel1337 2019")]
 [assembly: AssemblyTrademark("")]

@@ -1,8 +1,8 @@
 ﻿using BepInEx;
 using Harmony;
 using System;
-using System.ComponentModel;
 using System.Collections;
+using System.ComponentModel;
 
 namespace KK_ForceHighPoly
 {
@@ -21,7 +21,7 @@ namespace KK_ForceHighPoly
         [Description("Whether or not to load high poly assets. May require exiting to main menu to take effect.")]
         public static ConfigWrapper<bool> Enabled { get; private set; }
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_ForceHighPoly));
