@@ -53,7 +53,7 @@ namespace UncensorSelector
                 PenisGUID = null;
                 BallsGUID = null;
                 DisplayPenis = ChaControl.sex == 0;
-                DisplayBalls = ChaControl.sex == 0;
+                DisplayBalls = ChaControl.sex == 0 ? true : DefaultFemaleDisplayBalls.Value;
 
                 var data = GetExtendedData();
                 if (data != null)
@@ -152,24 +152,31 @@ namespace UncensorSelector
                         BodyGUID = BodyDropdown.Value == 0 ? null : BodyList[BodyDropdown.Value];
 #if KK
                         PenisGUID = PenisDropdown.Value == 0 || PenisDropdown.Value == 1 ? null : PenisList[PenisDropdown.Value];
-                        BallsGUID = BallsDropdown.Value == 0 || BallsDropdown.Value == 1 ? null : BallsList[BallsDropdown.Value];
                         DisplayPenis = PenisDropdown.Value == 1 ? false : true;
-                        DisplayBalls = BallsDropdown.Value == 1 ? false : true;
 #elif EC
                         PenisGUID = PenisDropdown.Value == 0 ? null : PenisList[PenisDropdown.Value];
-                        BallsGUID = BallsDropdown.Value == 0 || BallsDropdown.Value == 1 ? null : BallsList[BallsDropdown.Value];
-                        DisplayPenis = ChaControl.sex == 0;
-                        DisplayBalls = ChaControl.sex == 0;
 #endif
+                        BallsGUID = BallsDropdown.Value == 0 || BallsDropdown.Value == 1 ? null : BallsList[BallsDropdown.Value];
+                        DisplayBalls = BallsDropdown.Value == 1 ? false : true;
                     }
                 }
+
+#if KK
+                //Correct characters if genderbender is not permitted, except in Studio where it may be required for scene compatibility
+                if (GenderBender.Value == false && !StudioAPI.InsideStudio)
+                {
+                    DisplayPenis = ChaControl.sex == 0;
+                    DisplayBalls = ChaControl.sex == 0;
+                }
+#endif
+
                 //Update the uncensor on every load or reload
                 UpdateUncensor();
             }
             /// <summary>
             /// Reload this character's uncensor
             /// </summary>
-            public void UpdateUncensor() => ChaControl.StartCoroutine(UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, PenisVisible, BallsData, BallsVisible));
+            public void UpdateUncensor() => ChaControl.StartCoroutine(UncensorUpdate.ReloadCharacterUncensor(ChaControl, BodyData, PenisData, DisplayPenis, BallsData, DisplayBalls));
             public void UpdateSkinColor() => SkinMatch.SetSkinColor(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinLine() => SkinMatch.SetLineVisibility(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinGloss() => SkinMatch.SetSkinGloss(ChaControl, BodyData, PenisData, BallsData);
@@ -230,45 +237,15 @@ namespace UncensorSelector
                     return ballsData;
                 }
             }
-            /// <summary>
-            /// Whether the penis is currently allowed to be visible
-            /// </summary>
-#if KK
-            public bool PenisVisible => (!StudioAPI.InsideStudio && GenderBender.Value == false) ? ChaControl.sex == 0 ? true : false : DisplayPenis;
-#elif EC
-            public bool PenisVisible => true;
-#endif
-            /// <summary>
-            /// Whether the balls are currently allowed to be visible
-            /// </summary>
-#if KK
-            public bool BallsVisible => (!StudioAPI.InsideStudio && GenderBender.Value == false) ? ChaControl.sex == 0 ? true : false : DisplayBalls;
-#elif EC
-            public bool BallsVisible => (GenderBender.Value == false) ? ChaControl.sex == 0 ? true : false : DisplayBalls;
-#endif
             internal static class DefaultData
             {
                 internal static BodyData GetDefaultOrRandomBody(ChaControl chaControl)
                 {
                     string uncensorKey = DisplayNameToBodyGuid(chaControl.sex == 0 ? DefaultMaleBody.Value : DefaultFemaleBody.Value);
 
-                    //None/default body
-                    if (uncensorKey == UncensorKeyNone)
-                        return null;
-
-                    //Random
-                    if (uncensorKey == UncensorKeyRandom)
-                        return GetRandomBody(chaControl);
-
                     //Return the default body if specified
                     if (BodyDictionary.TryGetValue(uncensorKey, out BodyData defaultBody))
                         return defaultBody;
-
-                    //Something was selected but can no longer be found
-                    if (chaControl.sex == 0 && MaleBodyDefaultValue == UncensorKeyNone)
-                        return null;
-                    if (chaControl.sex == 1 && FemaleBodyDefaultValue == UncensorKeyNone)
-                        return null;
 
                     return GetRandomBody(chaControl);
                 }
@@ -288,23 +265,9 @@ namespace UncensorSelector
                 {
                     string uncensorKey = DisplayNameToPenisGuid(chaControl.sex == 0 ? DefaultMalePenis.Value : DefaultFemalePenis.Value);
 
-                    //None/default penis
-                    if (uncensorKey == UncensorKeyNone)
-                        return null;
-
-                    //Random
-                    if (uncensorKey == UncensorKeyRandom)
-                        return GetRandomPenis(chaControl);
-
                     //Return the default penis if specified
                     if (PenisDictionary.TryGetValue(uncensorKey, out PenisData defaultPenis))
                         return defaultPenis;
-
-                    //Something was selected but can no longer be found
-                    if (chaControl.sex == 0 && MalePenisDefaultValue == UncensorKeyNone)
-                        return null;
-                    if (chaControl.sex == 1 && FemalePenisDefaultValue == UncensorKeyNone)
-                        return null;
 
                     return GetRandomPenis(chaControl);
                 }
@@ -324,23 +287,9 @@ namespace UncensorSelector
                 {
                     string uncensorKey = DisplayNameToBallsGuid(chaControl.sex == 0 ? DefaultMaleBalls.Value : DefaultFemaleBalls.Value);
 
-                    //None/default balls
-                    if (uncensorKey == UncensorKeyNone)
-                        return null;
-
-                    //Random
-                    if (uncensorKey == UncensorKeyRandom)
-                        return GetRandomBalls(chaControl);
-
                     //Return the default balls if specified
                     if (BallsDictionary.TryGetValue(uncensorKey, out BallsData defaultBalls))
                         return defaultBalls;
-
-                    //Something was selected but can no longer be found
-                    if (chaControl.sex == 0 && MaleBallsDefaultValue == UncensorKeyNone)
-                        return null;
-                    if (chaControl.sex == 1 && FemaleBallsDefaultValue == UncensorKeyNone)
-                        return null;
 
                     return GetRandomBalls(chaControl);
                 }
@@ -636,6 +585,9 @@ namespace UncensorSelector
                     findAssist.Initialize(chaControl.objBody.transform);
                     GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
                     if (gameObject == null)
+                        return;
+
+                    if (!gameObject.GetComponent<Renderer>().material.HasProperty(ChaShader._MainTex))
                         return;
 
                     var customTex = new CustomTextureControl(gameObject.transform);

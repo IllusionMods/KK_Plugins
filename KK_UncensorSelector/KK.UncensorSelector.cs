@@ -58,6 +58,10 @@ namespace UncensorSelector
         [Description("Balls to use if character does not have one set. The mosaic balls will not be selected randomly if there are any alternatives.")]
         [AcceptableValueList(nameof(GetConfigBallsList))]
         public static ConfigWrapper<string> DefaultFemaleBalls { get; private set; }
+        [DisplayName("Default female balls display")]
+        [Category("Config")]
+        [Description("Whether balls will be displayed on females if not otherwise configured.")]
+        public static ConfigWrapper<bool> DefaultFemaleDisplayBalls { get; private set; }
         #endregion
 
         private void Start()
@@ -70,12 +74,13 @@ namespace UncensorSelector
             harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), AccessTools.all)));
 
             GenderBender = new ConfigWrapper<bool>(nameof(GenderBender), PluginNameInternal, true);
-            DefaultMaleBody = new ConfigWrapper<string>(nameof(DefaultMaleBody), PluginNameInternal, BodyGuidToDisplayName, DisplayNameToBodyGuid, MaleBodyDefaultValue);
-            DefaultMalePenis = new ConfigWrapper<string>(nameof(DefaultMalePenis), PluginNameInternal, MalePenisGuidToDisplayName, DisplayNameToPenisGuid, MalePenisDefaultValue);
-            DefaultMaleBalls = new ConfigWrapper<string>(nameof(DefaultMaleBalls), PluginNameInternal, MaleBallsGuidToDisplayName, DisplayNameToBallsGuid, MaleBallsDefaultValue);
-            DefaultFemaleBody = new ConfigWrapper<string>(nameof(DefaultFemaleBody), PluginNameInternal, BodyGuidToDisplayName, DisplayNameToBodyGuid, FemaleBodyDefaultValue);
-            DefaultFemalePenis = new ConfigWrapper<string>(nameof(DefaultFemalePenis), PluginNameInternal, FemalePenisGuidToDisplayName, DisplayNameToPenisGuid, FemalePenisDefaultValue);
-            DefaultFemaleBalls = new ConfigWrapper<string>(nameof(DefaultFemaleBalls), PluginNameInternal, FemaleBallsGuidToDisplayName, DisplayNameToBallsGuid, FemaleBallsDefaultValue);
+            DefaultMaleBody = new ConfigWrapper<string>(nameof(DefaultMaleBody), PluginNameInternal, BodyGuidToDisplayName, DisplayNameToBodyGuid, "Random");
+            DefaultMalePenis = new ConfigWrapper<string>(nameof(DefaultMalePenis), PluginNameInternal, PenisGuidToDisplayName, DisplayNameToPenisGuid, "Random");
+            DefaultMaleBalls = new ConfigWrapper<string>(nameof(DefaultMaleBalls), PluginNameInternal, BallsGuidToDisplayName, DisplayNameToBallsGuid, "Random");
+            DefaultFemaleBody = new ConfigWrapper<string>(nameof(DefaultFemaleBody), PluginNameInternal, BodyGuidToDisplayName, DisplayNameToBodyGuid, "Random");
+            DefaultFemalePenis = new ConfigWrapper<string>(nameof(DefaultFemalePenis), PluginNameInternal, PenisGuidToDisplayName, DisplayNameToPenisGuid, "Random");
+            DefaultFemaleBalls = new ConfigWrapper<string>(nameof(DefaultFemaleBalls), PluginNameInternal, BallsGuidToDisplayName, DisplayNameToBallsGuid, "Random");
+            DefaultFemaleDisplayBalls = new ConfigWrapper<bool>(nameof(DefaultFemaleDisplayBalls), PluginNameInternal, false);
         }
 
         public static void Log(LogLevel level, object text) => Logger.Log(level, text);

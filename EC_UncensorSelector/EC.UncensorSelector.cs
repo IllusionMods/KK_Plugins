@@ -23,6 +23,7 @@ namespace UncensorSelector
         public static ConfigWrapper<string> DefaultFemaleBody { get; private set; }
         public static ConfigWrapper<string> DefaultFemalePenis { get; private set; }
         public static ConfigWrapper<string> DefaultFemaleBalls { get; private set; }
+        public static ConfigWrapper<bool> DefaultFemaleDisplayBalls { get; private set; }
 
         private void Start()
         {
@@ -32,18 +33,19 @@ namespace UncensorSelector
             GenderBender = Config.Wrap("Config", "Genderbender Allowed", "Whether or not genderbender characters are allowed. " +
                 "When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. " +
                 "Genderbender characters will still load in Studio for scene compatibility.", true);
-            DefaultMaleBody = Config.Wrap("Config", "Default Male Body", "Body to use if character does not have one set. " +
-                "The censored body will not be selected randomly if there are any alternatives.", MaleBodyDefaultValue);
-            DefaultMalePenis = Config.Wrap("Config", "Default Male Penis", "Penis to use if character does not have one set. " +
-                "The mosaic penis will not be selected randomly if there are any alternatives.", MalePenisDefaultValue);
-            DefaultMaleBalls = Config.Wrap("Config", "Default Male Balls", "Penis to use if character does not have one set. " +
-                "The mosaic penis will not be selected randomly if there are any alternatives.", MaleBallsDefaultValue);
-            DefaultFemaleBody = Config.Wrap("Config", "Default Female Body", "Body to use if character does not have one set. " +
-                "The censored body will not be selected randomly if there are any alternatives.", FemaleBodyDefaultValue);
-            DefaultFemalePenis = Config.Wrap("Config", "Default Female Penis", "Penis to use if character does not have one set. " +
-                "The mosaic penis will not be selected randomly if there are any alternatives.", FemalePenisDefaultValue);
-            DefaultFemaleBalls = Config.Wrap("Config", "Default Female Balls", "Penis to use if character does not have one set. " +
-                "The mosaic penis will not be selected randomly if there are any alternatives.", FemaleBallsDefaultValue);
+            DefaultMaleBody = Config.Wrap("Config", "Default Male Body", "Body to use if the character does not have one set. " +
+                "The censored body will not be selected randomly if there are any alternatives.", "Random");
+            DefaultMalePenis = Config.Wrap("Config", "Default Male Penis", "Penis to use if the character does not have one set. " +
+                "The mosaic penis will not be selected randomly if there are any alternatives.", "Random");
+            DefaultMaleBalls = Config.Wrap("Config", "Default Male Balls", "Balls to use if the character does not have one set. " +
+                "The mosaic penis will not be selected randomly if there are any alternatives.", "Random");
+            DefaultFemaleBody = Config.Wrap("Config", "Default Female Body", "Body to use if the character does not have one set. " +
+                "The censored body will not be selected randomly if there are any alternatives.", "Random");
+            DefaultFemalePenis = Config.Wrap("Config", "Default Female Penis", "Penis to use if the character does not have one set. " +
+                "The mosaic penis will not be selected randomly if there are any alternatives.", "Random");
+            DefaultFemaleBalls = Config.Wrap("Config", "Default Female Balls", "Balls to use if the character does not have one set. " +
+                "The mosaic penis will not be selected randomly if there are any alternatives.", "Random");
+            DefaultFemaleDisplayBalls = Config.Wrap("Config", "Default Female Balls Display", "Whether balls will be displayed on females if not otherwise configured.", false);
         }
 
         public static void Log(LogLevel level, object text) => _logsource.Log(level, text);

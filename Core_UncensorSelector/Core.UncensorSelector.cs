@@ -28,18 +28,6 @@ namespace UncensorSelector
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
         public const string Version = "3.5.1";
-        private const string UncensorKeyRandom = "Random";
-        private const string UncensorKeyNone = "None";
-        private const string MaleBodyDefaultValue = UncensorKeyRandom;
-        private const string MalePenisDefaultValue = UncensorKeyRandom;
-        private const string MaleBallsDefaultValue = UncensorKeyRandom;
-        private const string FemaleBodyDefaultValue = UncensorKeyRandom;
-#if KK
-        private const string FemalePenisDefaultValue = UncensorKeyNone;
-#elif EC
-        private const string FemalePenisDefaultValue = UncensorKeyRandom;
-#endif
-        private const string FemaleBallsDefaultValue = UncensorKeyNone;
         private static readonly HashSet<string> AllAdditionalParts = new HashSet<string>();
         public static readonly Dictionary<string, BodyData> BodyDictionary = new Dictionary<string, BodyData>();
         public static readonly Dictionary<string, PenisData> PenisDictionary = new Dictionary<string, PenisData>();
@@ -173,7 +161,8 @@ namespace UncensorSelector
                 BallsListDisplay.Add(balls.DisplayName);
             }
 
-            BallsDropdown = e.AddControl(new MakerDropdown("Balls", BallsListDisplay.ToArray(), MakerConstants.Body.All, characterSex == 0 ? 0 : 1, this));
+            int ballsInitialValue = characterSex == 0 ? 0 : DefaultFemaleDisplayBalls.Value == true ? 0 : 1;
+            BallsDropdown = e.AddControl(new MakerDropdown("Balls", BallsListDisplay.ToArray(), MakerConstants.Body.All, ballsInitialValue, this));
             BallsDropdown.ValueChanged.Subscribe(Observer.Create<int>(BallsDropdownChanged));
             void BallsDropdownChanged(int ID)
             {
@@ -237,8 +226,7 @@ namespace UncensorSelector
             BallsConfigListFull.Clear();
 
             //Add the default body options
-            BodyConfigListFull.Add("None (censored)", UncensorKeyNone);
-            BodyConfigListFull.Add("Random", UncensorKeyRandom);
+            BodyConfigListFull.Add("Random", "Random");
 
             BodyData DefaultMale = new BodyData(0, "Default.Body.Male", "Default Body M");
             BodyDictionary.Add(DefaultMale.BodyGUID, DefaultMale);
@@ -249,16 +237,14 @@ namespace UncensorSelector
             BodyConfigListFull.Add($"[{(DefaultFemale.Sex == 0 ? "Male" : "Female")}] {DefaultFemale.DisplayName}", DefaultFemale.BodyGUID);
 
             //Add the default penis options
-            PenisConfigListFull.Add("None", UncensorKeyNone);
-            PenisConfigListFull.Add("Random", UncensorKeyRandom);
+            PenisConfigListFull.Add("Random", "Random");
 
             PenisData DefaultPenis = new PenisData("Default.Penis", "Mosaic Penis");
             PenisDictionary.Add(DefaultPenis.PenisGUID, DefaultPenis);
             PenisConfigListFull.Add(DefaultPenis.DisplayName, DefaultPenis.PenisGUID);
 
             //Add the default balls options
-            BallsConfigListFull.Add("None", UncensorKeyNone);
-            BallsConfigListFull.Add("Random", UncensorKeyRandom);
+            BallsConfigListFull.Add("Random", "Random");
 
             BallsData DefaultBalls = new BallsData("Default.Balls", "Mosaic Balls");
             BallsDictionary.Add(DefaultBalls.BallsGUID, DefaultBalls);
@@ -388,43 +374,25 @@ namespace UncensorSelector
         private static string DisplayNameToBodyGuid(string displayName)
         {
             BodyConfigListFull.TryGetValue(displayName, out var guid);
-            return guid;
+            return guid.IsNullOrWhiteSpace() ? "Random" : guid;
         }
         private static string DisplayNameToPenisGuid(string displayName)
         {
             PenisConfigListFull.TryGetValue(displayName, out var guid);
-            return guid;
+            return guid.IsNullOrWhiteSpace() ? "Random" : guid;
         }
         private static string DisplayNameToBallsGuid(string displayName)
         {
             BallsConfigListFull.TryGetValue(displayName, out var guid);
-            return guid;
+            return guid.IsNullOrWhiteSpace() ? "Random" : guid;
         }
         private static string BodyGuidToDisplayName(string guid)
         {
             var displayName = BodyConfigListFull.FirstOrDefault(x => x.Value == guid).Key;
-            return displayName.IsNullOrWhiteSpace() ? UncensorKeyRandom : displayName;
+            return displayName.IsNullOrWhiteSpace() ? "Random" : displayName;
         }
-        private static string MalePenisGuidToDisplayName(string guid)
-        {
-            var displayName = PenisConfigListFull.FirstOrDefault(x => x.Value == guid).Key;
-            return displayName.IsNullOrWhiteSpace() ? MalePenisDefaultValue : displayName;
-        }
-        private static string FemalePenisGuidToDisplayName(string guid)
-        {
-            var displayName = PenisConfigListFull.FirstOrDefault(x => x.Value == guid).Key;
-            return displayName.IsNullOrWhiteSpace() ? FemalePenisDefaultValue : displayName;
-        }
-        private static string MaleBallsGuidToDisplayName(string guid)
-        {
-            var displayName = BallsConfigListFull.FirstOrDefault(x => x.Value == guid).Key;
-            return displayName.IsNullOrWhiteSpace() ? MaleBallsDefaultValue : displayName;
-        }
-        private static string FemaleBallsGuidToDisplayName(string guid)
-        {
-            var displayName = BallsConfigListFull.FirstOrDefault(x => x.Value == guid).Key;
-            return displayName.IsNullOrWhiteSpace() ? FemaleBallsDefaultValue : displayName;
-        }
+        private static string PenisGuidToDisplayName(string guid) => PenisConfigListFull.FirstOrDefault(x => x.Value == guid).Key ?? "Random";
+        private static string BallsGuidToDisplayName(string guid) => BallsConfigListFull.FirstOrDefault(x => x.Value == guid).Key ?? "Random";
         /// <summary>
         /// Returns the UncensorSelectorController for the specified character or null if it does not exist
         /// </summary>
