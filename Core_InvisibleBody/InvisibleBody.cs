@@ -1,12 +1,13 @@
 ﻿using BepInEx;
-using UnityEngine;
-using UniRx;
+using Harmony;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using System.Collections;
-using Harmony;
+using System.Linq;
+using UniRx;
+using UnityEngine;
 #if KK
 using ExtensibleSaveFormat;
 #elif EC
@@ -23,7 +24,7 @@ namespace InvisibleBody
         public const string GUID = "com.deathweasel.bepinex.invisiblebody";
         public const string PluginName = "Invisible Body";
         public const string PluginNameInternal = "KK_InvisibleBody";
-        public const string Version = "1.2";
+        public const string Version = "1.2.1";
 
         private static MakerToggle InvisibleToggle;
 
@@ -113,6 +114,10 @@ namespace InvisibleBody
             /// </summary>
             private void SetVisibleState()
             {
+                //Don't set the visible state if it is already set
+                if (ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a").GetComponent<Renderer>().enabled == Visible)
+                    return;
+
                 Transform cf_j_root = ChaControl.gameObject.transform.Find("BodyTop/p_cf_body_bone/cf_j_root");
                 if (cf_j_root != null)
                     IterateVisible(cf_j_root.gameObject);
