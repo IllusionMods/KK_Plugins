@@ -8,11 +8,10 @@ Plugins for Koikatsu and EmotionCreators
 4. Extract the plugin .zip file to your Koikatu folder
 
 ## Installation - EmotionCreators
-1. Install [Bepinex 5](https://builds.bepis.io/bepinex_be)
-2. In \BepInEx\config\BepInEx.cfg set Assembly = UnityEngine.CoreModule.dll
-3. Install [EC_CorePlugins](https://builds.bepis.io/ec_coreplugins)
-4. Install [ECAPI](https://github.com/ManlyMarco/KKAPI/releases)
-5. Extract the plugin .zip file to your Koikatu folder
+1. Install [Bepinex 5](https://builds.bepis.io/bepinex_be) BepInEx build for post-Unity 2018 game (x64) - Build 133
+2. Install [EC_CorePlugins](https://builds.bepis.io/ec_coreplugins)
+3. Install [ECAPI](https://github.com/ManlyMarco/KKAPI/releases)
+4. Extract the plugin .zip file to your Koikatu folder
 
 #### KK_CharaMakerLoadedSound
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip)**<br/>
