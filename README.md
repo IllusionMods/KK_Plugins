@@ -76,7 +76,7 @@ v1.4 Studio support<br/>
 v1.4.1 Compatibility with BepisPlugins versions higher than r8
 </details>
 
-#### KK_InvisibleBody/EC_InvisibleBody
+#### KK_InvisibleBody EC_InvisibleBody
 **v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v74/KK_InvisibleBody.v1.2.zip)** - For Koikatsu<br/>
 **v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v74/EC_InvisibleBody.v1.2.zip)** - For EmotionCreators<br/>
 
