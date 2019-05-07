@@ -241,7 +241,11 @@ namespace UncensorSelector
             {
                 internal static BodyData GetDefaultOrRandomBody(ChaControl chaControl)
                 {
+#if KK
                     string uncensorKey = DisplayNameToBodyGuid(chaControl.sex == 0 ? DefaultMaleBody.Value : DefaultFemaleBody.Value);
+#elif EC
+                    string uncensorKey = chaControl.sex == 0 ? DefaultMaleBody.Value : DefaultFemaleBody.Value;
+#endif
 
                     //Return the default body if specified
                     if (BodyDictionary.TryGetValue(uncensorKey, out BodyData defaultBody))
@@ -263,7 +267,11 @@ namespace UncensorSelector
 
                 internal static PenisData GetDefaultOrRandomPenis(ChaControl chaControl)
                 {
+#if KK
                     string uncensorKey = DisplayNameToPenisGuid(chaControl.sex == 0 ? DefaultMalePenis.Value : DefaultFemalePenis.Value);
+#elif EC
+                    string uncensorKey = chaControl.sex == 0 ? DefaultMalePenis.Value : DefaultFemalePenis.Value;
+#endif
 
                     //Return the default penis if specified
                     if (PenisDictionary.TryGetValue(uncensorKey, out PenisData defaultPenis))
@@ -285,7 +293,11 @@ namespace UncensorSelector
 
                 internal static BallsData GetDefaultOrRandomBalls(ChaControl chaControl)
                 {
+#if KK
                     string uncensorKey = DisplayNameToBallsGuid(chaControl.sex == 0 ? DefaultMaleBalls.Value : DefaultFemaleBalls.Value);
+#elif EC
+                    string uncensorKey = chaControl.sex == 0 ? DefaultMaleBalls.Value : DefaultFemaleBalls.Value;
+#endif
 
                     //Return the default balls if specified
                     if (BallsDictionary.TryGetValue(uncensorKey, out BallsData defaultBalls))
