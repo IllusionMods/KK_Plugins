@@ -77,8 +77,8 @@ v1.4.1 Compatibility with BepisPlugins versions higher than r8
 </details>
 
 #### KK_InvisibleBody EC_InvisibleBody
-**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v74/KK_InvisibleBody.v1.2.zip)** - For Koikatsu<br/>
-**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v74/EC_InvisibleBody.v1.2.zip)** - For EmotionCreators<br/>
+**v1.2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/KK_InvisibleBody.v1.2.1.zip)** - For Koikatsu<br/>
+**v1.2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/EC_InvisibleBody.v1.2.1.zip)** - For EmotionCreators<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
 
@@ -87,6 +87,7 @@ Select characters in the Studio workspace and press numpad+ (configurable) to to
 <details><summary>Change Log</summary> 
 v1.1 Fixed studio items becoming visible when they were toggled off in the workspace<br/>
 v1.2 Added a character maker toggle, EmotionCreators port<br/>
+v1.2.1 Fixed an incompatibility with UncensorSelector<br/>
 </details>
 
 #### KK_InputHotkeyBlock
@@ -110,8 +111,9 @@ v1.3 Now corrects personalities when using the random button<br/>
 v1.3.1 Removed log messages. Oops.
 </details>
 
-#### KK_UncensorSelector
-**v3.5.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v63/KK_UncensorSelector.v3.5.1.zip)**<br/>
+#### KK_UncensorSelector EC_UncensorSelector
+**v3.6 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/KK_UncensorSelector.v3.6.zip)** - For Koikatsu<br/>
+**v3.6 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/EC_UncensorSelector.v3.6.zip)** - For EmotionCreators<br/>
 
 3.0 update note: Uncensors from previous versions are not compatible, download new versions [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS)<br/>
 
@@ -140,6 +142,7 @@ v3.3 Fix wrong normals after loading a character sometimes, fix default values w
 v3.4 Fix liquid textures being removed on changing characters<br/>
 v3.5 Added a message that displays if the skin texture has become corrupt and attempts a fix (Thanks @ManlyMarco)<br/>
 v3.5.1 Reduce false positives for the above change<br/>
+v3.6 EmotionCreators port, removed "none" as a default config option<br/>
 </details>
 
 #### KK_Subtitles
@@ -229,7 +232,7 @@ Allows you to override vanilla list files. Comes with some overrides that enable
 
 Overriding list files can allow you to do things like enable bras with some shirts which don't normally allow it, or skirts with some tops, etc. Any part of of the list can be changed except for ID.<br/>
 
-#### KK_HairAccessoryCustomizer/EC_HairAccessoryCustomizer
+#### KK_HairAccessoryCustomizer EC_HairAccessoryCustomizer
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v71/KK_HairAccessoryCustomizer.v1.0.zip)** - For Koikatsu<br/>
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v73/EC_HairAccessoryCustomizer.v1.0.zip)** - For EmotionCreators<br/>
 
@@ -243,8 +246,9 @@ Note for modders: These options will only show up for hair accessories that are 
 
 #### EC_Demosaic
 **v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v73/EC_Demosaic.v1.1.zip)** - For EmotionCreators<br/>
+Note: Not required when using UncensorSelector<br/>
 
-Removes the mosaic from female characters. Based on the demosaic for Koikatsu by [AUTOMATIC1111](https://github.com/AUTOMATIC1111/KoikatsuMods), compiled for EC and BepInEx 5.
+Removes the mosaic from female characters. Based on the demosaic for Koikatsu by [AUTOMATIC1111](https://github.com/AUTOMATIC1111/KoikatsuMods), compiled for EC and BepInEx 5.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Added a config option to disable the plugin<br/>
