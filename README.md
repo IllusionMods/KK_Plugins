@@ -76,7 +76,7 @@ v1.4.1 Compatibility with BepisPlugins versions higher than r8
 </details>
 
 #### KK_InvisibleBody EC_InvisibleBody
-**v1.2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/KK_InvisibleBody.v1.2.1.zip)** - For Koikatsu<br/>
+**v1.2.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v76/KK_InvisibleBody.v1.2.2.zip)** - For Koikatsu<br/>
 **v1.2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/EC_InvisibleBody.v1.2.1.zip)** - For EmotionCreators<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
@@ -87,6 +87,7 @@ Select characters in the Studio workspace and press numpad+ (configurable) to to
 v1.1 Fixed studio items becoming visible when they were toggled off in the workspace<br/>
 v1.2 Added a character maker toggle, EmotionCreators port<br/>
 v1.2.1 Fixed an incompatibility with UncensorSelector<br/>
+v1.2.2 Updated for KK Darkness<br/>
 </details>
 
 #### KK_InputHotkeyBlock
@@ -111,7 +112,7 @@ v1.3.1 Removed log messages. Oops.
 </details>
 
 #### KK_UncensorSelector EC_UncensorSelector
-**v3.6 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/KK_UncensorSelector.v3.6.zip)** - For Koikatsu<br/>
+**v3.6.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v76/KK_UncensorSelector.v3.6.1.zip)** - For Koikatsu<br/>
 **v3.6 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/EC_UncensorSelector.v3.6.zip)** - For EmotionCreators<br/>
 
 3.0 update note: Uncensors from previous versions are not compatible, download new versions [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS)<br/>
@@ -142,6 +143,7 @@ v3.4 Fix liquid textures being removed on changing characters<br/>
 v3.5 Added a message that displays if the skin texture has become corrupt and attempts a fix (Thanks @ManlyMarco)<br/>
 v3.5.1 Reduce false positives for the above change<br/>
 v3.6 EmotionCreators port, removed "none" as a default config option<br/>
+v3.6.1 Updated for KK Darkness<br/>
 </details>
 
 #### KK_Subtitles
