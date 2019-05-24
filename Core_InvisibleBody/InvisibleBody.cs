@@ -24,7 +24,7 @@ namespace InvisibleBody
         public const string GUID = "com.deathweasel.bepinex.invisiblebody";
         public const string PluginName = "Invisible Body";
         public const string PluginNameInternal = "KK_InvisibleBody";
-        public const string Version = "1.2.1";
+        public const string Version = "1.2.2";
 
         private static MakerToggle InvisibleToggle;
 
@@ -115,7 +115,7 @@ namespace InvisibleBody
             private void SetVisibleState()
             {
                 //Don't set the visible state if it is already set
-                if (ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a").GetComponent<Renderer>().enabled == Visible)
+                if (ChaControl?.objBody?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a")?.GetComponent<Renderer>().enabled == Visible)
                     return;
 
                 Transform cf_j_root = ChaControl.gameObject.transform.Find("BodyTop/p_cf_body_bone/cf_j_root");
