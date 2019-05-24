@@ -10,11 +10,11 @@ namespace KK_HCharaAdjustment
     public class KK_HCharaAdjustment : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.hcharaadjustment";
-        public const string PluginName = "H Chara Adjustment";
+        public const string PluginName = "H Character Adjustment";
         public const string PluginNameInternal = "KK_HCharaAdjustment";
         public const string Version = "1.0";
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_HCharaAdjustment));

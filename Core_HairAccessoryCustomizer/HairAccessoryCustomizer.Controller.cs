@@ -1,4 +1,8 @@
-﻿using ExtensibleSaveFormat;
+﻿#if KK
+using ExtensibleSaveFormat;
+#elif EC
+using EC.Core.ExtensibleSaveFormat;
+#endif
 using Harmony;
 using KKAPI;
 using KKAPI.Chara;
@@ -9,13 +13,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KK_HairAccessoryCustomizer
+namespace HairAccessoryCustomizer
 {
-    public partial class KK_HairAccessoryCustomizer
+    public partial class HairAccessoryCustomizer
     {
         public class HairAccessoryController : CharaCustomFunctionController
         {
             private Dictionary<int, Dictionary<int, HairAccessoryInfo>> HairAccessories = new Dictionary<int, Dictionary<int, HairAccessoryInfo>>();
+#if KK
+            public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
+#elif EC
+            public int CurrentCoordinateIndex => 0;
+#endif
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
@@ -27,7 +36,7 @@ namespace KK_HairAccessoryCustomizer
             protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
             {
                 var data = new PluginData();
-                if (HairAccessories.TryGetValue(ChaControl.fileStatus.coordinateType, out var hairAccessoryInfo))
+                if (HairAccessories.TryGetValue(CurrentCoordinateIndex, out var hairAccessoryInfo))
                     if (hairAccessoryInfo.Count > 0)
                         data.data.Add("CoordinateHairAccessories", MessagePackSerializer.Serialize(hairAccessoryInfo));
                     else
@@ -78,12 +87,12 @@ namespace KK_HairAccessoryCustomizer
                 var data = GetCoordinateExtendedData(coordinate);
                 if (data != null && data.data.TryGetValue("CoordinateHairAccessories", out var loadedHairAccessories) && loadedHairAccessories != null)
                 {
-                    if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType))
-                        HairAccessories[ChaControl.fileStatus.coordinateType].Clear();
+                    if (HairAccessories.ContainsKey(CurrentCoordinateIndex))
+                        HairAccessories[CurrentCoordinateIndex].Clear();
                     else
-                        HairAccessories[ChaControl.fileStatus.coordinateType] = new Dictionary<int, HairAccessoryInfo>();
+                        HairAccessories[CurrentCoordinateIndex] = new Dictionary<int, HairAccessoryInfo>();
 
-                    HairAccessories[ChaControl.fileStatus.coordinateType] = MessagePackSerializer.Deserialize<Dictionary<int, HairAccessoryInfo>>((byte[])loadedHairAccessories);
+                    HairAccessories[CurrentCoordinateIndex] = MessagePackSerializer.Deserialize<Dictionary<int, HairAccessoryInfo>>((byte[])loadedHairAccessories);
                 }
 
                 if (MakerAPI.InsideAndLoaded)
@@ -106,7 +115,7 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public bool GetColorMatch(int slot)
             {
-                if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo))
+                if (HairAccessories.ContainsKey(CurrentCoordinateIndex) && HairAccessories[CurrentCoordinateIndex].TryGetValue(slot, out var hairAccessoryInfo))
                     return hairAccessoryInfo.ColorMatch;
 
                 return ColorMatchDefault;
@@ -120,7 +129,7 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public bool GetHairGloss(int slot)
             {
-                if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo))
+                if (HairAccessories.ContainsKey(CurrentCoordinateIndex) && HairAccessories[CurrentCoordinateIndex].TryGetValue(slot, out var hairAccessoryInfo))
                     return hairAccessoryInfo.HairGloss;
 
                 return HairGlossDefault;
@@ -134,7 +143,7 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public Color GetOutlineColor(int slot)
             {
-                if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo))
+                if (HairAccessories.ContainsKey(CurrentCoordinateIndex) && HairAccessories[CurrentCoordinateIndex].TryGetValue(slot, out var hairAccessoryInfo))
                     return hairAccessoryInfo.OutlineColor;
 
                 return OutlineColorDefault;
@@ -148,7 +157,7 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public Color GetAccessoryColor(int slot)
             {
-                if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo))
+                if (HairAccessories.ContainsKey(CurrentCoordinateIndex) && HairAccessories[CurrentCoordinateIndex].TryGetValue(slot, out var hairAccessoryInfo))
                     return hairAccessoryInfo.AccessoryColor;
 
                 return AccessoryColorDefault;
@@ -162,7 +171,7 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public float GetHairLength(int slot)
             {
-                if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo))
+                if (HairAccessories.ContainsKey(CurrentCoordinateIndex) && HairAccessories[CurrentCoordinateIndex].TryGetValue(slot, out var hairAccessoryInfo))
                     return hairAccessoryInfo.HairLength;
 
                 return HairLengthDefault;
@@ -179,12 +188,12 @@ namespace KK_HairAccessoryCustomizer
             {
                 if (IsHairAccessory(slot))
                 {
-                    if (!HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType))
-                        HairAccessories[ChaControl.fileStatus.coordinateType] = new Dictionary<int, HairAccessoryInfo>();
+                    if (!HairAccessories.ContainsKey(CurrentCoordinateIndex))
+                        HairAccessories[CurrentCoordinateIndex] = new Dictionary<int, HairAccessoryInfo>();
 
-                    if (!HairAccessories[ChaControl.fileStatus.coordinateType].ContainsKey(slot))
+                    if (!HairAccessories[CurrentCoordinateIndex].ContainsKey(slot))
                     {
-                        HairAccessories[ChaControl.fileStatus.coordinateType][slot] = new HairAccessoryInfo();
+                        HairAccessories[CurrentCoordinateIndex][slot] = new HairAccessoryInfo();
                         return true;
                     }
                     return false;
@@ -200,16 +209,16 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public void RemoveHairAccessoryInfo(int slot)
             {
-                if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType))
-                    HairAccessories[ChaControl.fileStatus.coordinateType].Remove(slot);
+                if (HairAccessories.ContainsKey(CurrentCoordinateIndex))
+                    HairAccessories[CurrentCoordinateIndex].Remove(slot);
             }
             /// <summary>
             /// Set color match for the specified accessory
             /// </summary>
             public void SetColorMatch(bool value, int slot)
             {
-                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && IsHairAccessory(slot))
-                    HairAccessories[ChaControl.fileStatus.coordinateType][slot].ColorMatch = value;
+                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(CurrentCoordinateIndex) && IsHairAccessory(slot))
+                    HairAccessories[CurrentCoordinateIndex][slot].ColorMatch = value;
             }
             /// <summary>
             /// Set color match for the current accessory
@@ -220,8 +229,8 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public void SetHairGloss(bool value, int slot)
             {
-                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && IsHairAccessory(slot))
-                    HairAccessories[ChaControl.fileStatus.coordinateType][slot].HairGloss = value;
+                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(CurrentCoordinateIndex) && IsHairAccessory(slot))
+                    HairAccessories[CurrentCoordinateIndex][slot].HairGloss = value;
             }
             /// <summary>
             /// Set hair gloss for the specified accessory
@@ -232,8 +241,8 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public void SetOutlineColor(Color value, int slot)
             {
-                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && IsHairAccessory(slot))
-                    HairAccessories[ChaControl.fileStatus.coordinateType][slot].OutlineColor = value;
+                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(CurrentCoordinateIndex) && IsHairAccessory(slot))
+                    HairAccessories[CurrentCoordinateIndex][slot].OutlineColor = value;
             }
             /// <summary>
             /// Set outline color for the current accessory
@@ -244,8 +253,8 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public void SetAccessoryColor(Color value, int slot)
             {
-                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && IsHairAccessory(slot))
-                    HairAccessories[ChaControl.fileStatus.coordinateType][slot].AccessoryColor = value;
+                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(CurrentCoordinateIndex) && IsHairAccessory(slot))
+                    HairAccessories[CurrentCoordinateIndex][slot].AccessoryColor = value;
             }
             /// <summary>
             /// Set accessory color for the current accessory
@@ -256,8 +265,8 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public void SetHairLength(float value, int slot)
             {
-                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType) && IsHairAccessory(slot))
-                    HairAccessories[ChaControl.fileStatus.coordinateType][slot].HairLength = value;
+                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(CurrentCoordinateIndex) && IsHairAccessory(slot))
+                    HairAccessories[CurrentCoordinateIndex][slot].HairLength = value;
             }
             /// <summary>
             /// Set hair length for the current accessory
@@ -293,6 +302,7 @@ namespace KK_HairAccessoryCustomizer
                         if (transform != null) return true;
                 return false;
             }
+#if KK
             internal void CopyAccessoriesHandler(AccessoryCopyEventArgs e)
             {
                 if (!HairAccessories.ContainsKey((int)e.CopySource))
@@ -318,11 +328,12 @@ namespace KK_HairAccessoryCustomizer
                         HairAccessories[(int)e.CopyDestination].Remove(x);
                 }
             }
+#endif
             internal void TransferAccessoriesHandler(AccessoryTransferEventArgs e)
             {
-                if (!HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType)) return;
+                if (!HairAccessories.ContainsKey(CurrentCoordinateIndex)) return;
 
-                if (HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(e.SourceSlotIndex, out var hairAccessoryInfo))
+                if (HairAccessories[CurrentCoordinateIndex].TryGetValue(e.SourceSlotIndex, out var hairAccessoryInfo))
                 {
                     //copy hair accessory info to the destination slot
                     var newHairAccessoryInfo = new HairAccessoryInfo();
@@ -331,7 +342,7 @@ namespace KK_HairAccessoryCustomizer
                     newHairAccessoryInfo.OutlineColor = hairAccessoryInfo.OutlineColor;
                     newHairAccessoryInfo.AccessoryColor = hairAccessoryInfo.AccessoryColor;
                     newHairAccessoryInfo.HairLength = hairAccessoryInfo.HairLength;
-                    HairAccessories[ChaControl.fileStatus.coordinateType][e.DestinationSlotIndex] = newHairAccessoryInfo;
+                    HairAccessories[CurrentCoordinateIndex][e.DestinationSlotIndex] = newHairAccessoryInfo;
 
                     if (AccessoriesApi.SelectedMakerAccSlot == e.DestinationSlotIndex)
                         InitCurrentSlot(this, true);
@@ -339,7 +350,7 @@ namespace KK_HairAccessoryCustomizer
                 else
                 {
                     //not a hair accessory, remove hair accessory info from the destination slot
-                    HairAccessories[ChaControl.fileStatus.coordinateType].Remove(e.DestinationSlotIndex);
+                    HairAccessories[CurrentCoordinateIndex].Remove(e.DestinationSlotIndex);
                     InitCurrentSlot(this, false);
                 }
 
@@ -350,8 +361,8 @@ namespace KK_HairAccessoryCustomizer
             /// </summary>
             public void UpdateAccessories(bool updateHairInfo = true)
             {
-                if (HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType))
-                    foreach (var x in HairAccessories[ChaControl.fileStatus.coordinateType])
+                if (HairAccessories.ContainsKey(CurrentCoordinateIndex))
+                    foreach (var x in HairAccessories[CurrentCoordinateIndex])
                         UpdateAccessory(x.Key, updateHairInfo);
             }
             /// <summary>
@@ -364,8 +375,8 @@ namespace KK_HairAccessoryCustomizer
                 ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(ChaControl, slot);
                 ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent?.gameObject.GetComponent<ChaCustomHairComponent>();
 
-                if (!HairAccessories.ContainsKey(ChaControl.fileStatus.coordinateType)) return;
-                if (!HairAccessories[ChaControl.fileStatus.coordinateType].TryGetValue(slot, out var hairAccessoryInfo)) return;
+                if (!HairAccessories.ContainsKey(CurrentCoordinateIndex)) return;
+                if (!HairAccessories[CurrentCoordinateIndex].TryGetValue(slot, out var hairAccessoryInfo)) return;
                 if (chaAccessoryComponent?.rendNormal == null) return;
                 if (chaCustomHairComponent?.rendHair == null) return;
 

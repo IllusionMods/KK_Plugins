@@ -20,12 +20,9 @@ namespace KK_TextDump
         public const string PluginName = "KK_TextDump";
         public const string Version = "1.0";
 
-        void Main()
-        {
-            DumpText();
-        }
+        private void Main() => DumpText();
 
-        void DumpText()
+        private void DumpText()
         {
             int a = DumpCommunicationText();
             int b = DumpScenarioText();
@@ -33,7 +30,7 @@ namespace KK_TextDump
             Logger.Log(LogLevel.Info, $"Total lines:{a + b + c}");
         }
 
-        int DumpCommunicationText()
+        private int DumpCommunicationText()
         {
             HashSet<string> AllJPText = new HashSet<string>();
 
@@ -78,7 +75,7 @@ namespace KK_TextDump
             return AllJPText.Count;
         }
 
-        int DumpScenarioText()
+        private int DumpScenarioText()
         {
             HashSet<string> AllJPText = new HashSet<string>();
 
@@ -123,7 +120,7 @@ namespace KK_TextDump
             return AllJPText.Count;
         }
 
-        int DumpHText()
+        private int DumpHText()
         {
             HashSet<string> AllJPText = new HashSet<string>();
 
@@ -185,11 +182,10 @@ namespace KK_TextDump
             return AllJPText.Count;
         }
 
-
         public static T ManualLoadAsset<T>(string bundle, string asset, string manifest) where T : Object
         {
             AssetBundleManager.LoadAssetBundleInternal(bundle, false, manifest);
-            var assetBundle = AssetBundleManager.GetLoadedAssetBundle(bundle, out string error, manifest);
+            var assetBundle = AssetBundleManager.GetLoadedAssetBundle(bundle, out _, manifest);
 
             T output = assetBundle.m_AssetBundle.LoadAsset<T>(asset);
 

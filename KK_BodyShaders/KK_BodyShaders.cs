@@ -65,7 +65,7 @@ namespace KK_BodyShaders
                 data.version = 2;
                 SetExtendedData(data);
             }
-            protected override void OnReload(GameMode currentGameMode)
+            protected override void OnReload(GameMode currentGameMode, bool maintainState)
             {
                 ShaderName = "Goo";
                 Alpha = 0.741f;

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>c71a1776-100b-49c9-a944-ed54c4312591</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Core_HairAccessoryCustomizer</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)HairAccessoryCustomizer.Controller.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HairAccessoryCustomizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HairAccessoryCustomizer.Events.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HairAccessoryCustomizer.Hooks.cs" />
+  </ItemGroup>
+</Project>

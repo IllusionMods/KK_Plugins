@@ -20,7 +20,7 @@ namespace KK_EyeShaking
         [Description("When enabled, virgins in H scenes will appear to have shaking eye highlights")]
         public static ConfigWrapper<bool> Enabled { get; private set; }
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_EyeShaking));
@@ -37,7 +37,7 @@ namespace KK_EyeShaking
             internal bool IsInit { get; set; } = false;
 
             protected override void OnCardBeingSaved(GameMode currentGameMode) { }
-            protected override void OnReload(GameMode currentGameMode) { }
+            protected override void OnReload(GameMode currentGameMode, bool maintainState) { }
 
             internal void HSceneStart(bool virgin)
             {

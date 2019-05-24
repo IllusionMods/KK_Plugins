@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using Harmony;
 using System;
+using System.Collections;
 using System.ComponentModel;
 
 namespace KK_ForceHighPoly
@@ -14,13 +15,13 @@ namespace KK_ForceHighPoly
         public const string GUID = "com.deathweasel.bepinex.forcehighpoly";
         public const string PluginName = "Force High Poly";
         public const string PluginNameInternal = "KK_ForceHighPoly";
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         [Category("Settings")]
         [DisplayName("High poly mode")]
         [Description("Whether or not to load high poly assets. May require exiting to main menu to take effect.")]
         public static ConfigWrapper<bool> Enabled { get; private set; }
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_ForceHighPoly));
@@ -44,11 +45,13 @@ namespace KK_ForceHighPoly
             if (Enabled.Value && assetName.EndsWith("_low"))
                 assetName = assetName.Substring(0, assetName.Length - 4);
         }
-        
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ChaControl), "ChangeHairAsync", new Type[] { typeof(int), typeof(int), typeof(bool), typeof(bool) })]
         public static void ChangeHairAsyncPostHook(ChaControl __instance, int kind, ref IEnumerator __result)
         {
+            if (!Enabled.Value) return;
+
             var orig = __result;
             __result = new IEnumerator[] { orig, ChangeHairAsyncPostfix(__instance, kind) }.GetEnumerator();
         }
@@ -57,13 +60,9 @@ namespace KK_ForceHighPoly
         {
             var hairObject = instance.objHair[kind];
             if (hairObject != null)
-            {
-                var componentsInChildren = hairObject.GetComponentsInChildren<DynamicBone>(true);
-                foreach (var dynamicBone in componentsInChildren)
-                {
+                foreach (var dynamicBone in hairObject.GetComponentsInChildren<DynamicBone>(true))
                     dynamicBone.enabled = true;
-                }
-            }
+
             yield break;
         }
     }

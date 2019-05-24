@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
+using ExtensionMethods;
 using Harmony;
 using KKAPI;
 using KKAPI.Chara;
@@ -15,7 +16,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Logger = BepInEx.Logger;
-using ExtensionMethods;
 
 namespace KK_AnimationController
 {
@@ -37,11 +37,11 @@ namespace KK_AnimationController
         private static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
         private Rect AnimGUI = new Rect(70, 190, 200, 400);
 
-        void Main()
+        private void Main()
         {
             AnimationControllerHotkey = new SavedKeyboardShortcut(nameof(AnimationControllerHotkey), nameof(KK_AnimationController), new KeyboardShortcut(KeyCode.Minus));
             CharacterApi.RegisterExtraBehaviour<AnimationControllerCharaController>(GUID);
-            StudioSaveLoadApi.RegisterExtraBehaviour<AnimationControllerSceneController>(GUID);            
+            StudioSaveLoadApi.RegisterExtraBehaviour<AnimationControllerSceneController>(GUID);
         }
 
         private void Update()
@@ -70,12 +70,12 @@ namespace KK_AnimationController
                 {
                     switch (objectCtrlInfo)
                     {
-                        case OCIChar Character:
+                        case OCIChar _:
                             SelectedCharacter = objectCtrlInfo;
                             break;
-                        case OCIItem Item:
-                        case OCIFolder Folder:
-                        case OCIRoute Route:
+                        case OCIItem _:
+                        case OCIFolder _:
+                        case OCIRoute _:
                             SelectedObject = objectCtrlInfo;
                             break;
                     }
@@ -100,7 +100,7 @@ namespace KK_AnimationController
                 {
                     if (objectCtrlInfo is OCIChar ociChar)
                     {
-                        GetController(objectCtrlInfo as OCIChar).RemoveLink(IKGuideObjects[SelectedGuideObject]);
+                        GetController(ociChar).RemoveLink(IKGuideObjects[SelectedGuideObject]);
                         DidUnlink = true;
                     }
                 }
@@ -108,10 +108,11 @@ namespace KK_AnimationController
             if (!DidUnlink)
                 Logger.Log(LogLevel.Info | LogLevel.Message, "Select a character.");
         }
+
         /// <summary>
         /// Draws the GUI
         /// </summary>
-        void OnGUI()
+        private void OnGUI()
         {
             if (GUIVisible)
                 AnimGUI = GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
@@ -140,9 +141,9 @@ namespace KK_AnimationController
 
         public class AnimationControllerCharaController : CharaCustomFunctionController
         {
-            private Dictionary<OCIChar.IKInfo, ObjectCtrlInfo> GuideObjectLinksV1 = new Dictionary<OCIChar.IKInfo, ObjectCtrlInfo>();
-            private Dictionary<OCIChar.IKInfo, ObjectCtrlInfo> GuideObjectLinks = new Dictionary<OCIChar.IKInfo, ObjectCtrlInfo>();
-            private List<OCIChar.IKInfo> LinksToRemove = new List<OCIChar.IKInfo>();
+            private readonly Dictionary<OCIChar.IKInfo, ObjectCtrlInfo> GuideObjectLinksV1 = new Dictionary<OCIChar.IKInfo, ObjectCtrlInfo>();
+            private readonly Dictionary<OCIChar.IKInfo, ObjectCtrlInfo> GuideObjectLinks = new Dictionary<OCIChar.IKInfo, ObjectCtrlInfo>();
+            private readonly List<OCIChar.IKInfo> LinksToRemove = new List<OCIChar.IKInfo>();
             private ObjectCtrlInfo EyeLink;
             private bool EyeLinkEngaged = false;
             private ObjectCtrlInfo NeckLink;
@@ -185,7 +186,7 @@ namespace KK_AnimationController
                 }
             }
 
-            protected override void OnReload(GameMode currentGameMode) { }
+            protected override void OnReload(GameMode currentGameMode, bool maintainState) { }
             /// <summary>
             /// Every update, match the part to the object
             /// </summary>
@@ -485,14 +486,8 @@ namespace KK_AnimationController
 
         public class AnimationControllerSceneController : SceneCustomFunctionController
         {
-            protected override void OnSceneSave()
-            {
-                //Clear out the old style data
-                PluginData OldData = ExtendedSave.GetSceneExtendedDataById(PluginNameInternal);
-                if (OldData != null)
-                    OldData = null;
-                ExtendedSave.SetSceneExtendedDataById(PluginNameInternal, new PluginData { data = null });
-            }
+            //Clear out the old style data
+            protected override void OnSceneSave() => ExtendedSave.SetSceneExtendedDataById(PluginNameInternal, new PluginData { data = null });
 
             protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
             {
