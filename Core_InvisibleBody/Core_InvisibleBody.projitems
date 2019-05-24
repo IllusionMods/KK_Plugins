@@ -9,6 +9,6 @@
     <Import_RootNamespace>Core_InvisibleBody</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)InvisibleBody.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.InvisibleBody.cs" />
   </ItemGroup>
 </Project>

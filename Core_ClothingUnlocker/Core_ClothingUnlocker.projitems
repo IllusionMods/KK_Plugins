@@ -9,7 +9,7 @@
     <Import_RootNamespace>ClothingUnlocker</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)ClothingUnlocker.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Core.ClothingUnlocker.cs">
       <CustomToolNamespace>ClothingUnlocker</CustomToolNamespace>
     </Compile>
   </ItemGroup>

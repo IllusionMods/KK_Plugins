@@ -89,7 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HairAccessoryCustomizer.cs" />
+    <Compile Include="EC.HairAccessoryCustomizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="..\Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems" Label="Shared" />

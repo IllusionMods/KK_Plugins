@@ -9,9 +9,9 @@
     <Import_RootNamespace>Core_HairAccessoryCustomizer</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)HairAccessoryCustomizer.Controller.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HairAccessoryCustomizer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HairAccessoryCustomizer.Events.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HairAccessoryCustomizer.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.HairAccessoryCustomizer.Controller.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.HairAccessoryCustomizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.HairAccessoryCustomizer.Events.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.HairAccessoryCustomizer.Hooks.cs" />
   </ItemGroup>
 </Project>
