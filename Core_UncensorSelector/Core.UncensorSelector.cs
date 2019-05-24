@@ -25,7 +25,7 @@ namespace UncensorSelector
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "3.6";
+        public const string Version = "3.6.1";
         private static readonly HashSet<string> AllAdditionalParts = new HashSet<string>();
         public static readonly Dictionary<string, BodyData> BodyDictionary = new Dictionary<string, BodyData>();
         public static readonly Dictionary<string, PenisData> PenisDictionary = new Dictionary<string, PenisData>();

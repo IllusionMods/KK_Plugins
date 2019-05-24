@@ -448,11 +448,12 @@ namespace UncensorSelector
                 /// </summary>
                 internal static void UpdateSkin(ChaControl chaControl, BodyData bodyData)
                 {
-#if KK
-                    Traverse.Create(chaControl).Method("InitBaseCustomTextureBody", new object[] { bodyData?.Sex ?? chaControl.sex }).GetValue();
-#elif EC
-                    Traverse.Create(chaControl).Method("InitBaseCustomTextureBody").GetValue();
-#endif
+                    //Method changed number of parameters, check number of parameters for compatibility
+                    if (typeof(ChaControl).GetMethod("InitBaseCustomTextureBody", AccessTools.all).GetParameters().Count() == 0)
+                        Traverse.Create(chaControl).Method("InitBaseCustomTextureBody").GetValue();
+                    else
+                        Traverse.Create(chaControl).Method("InitBaseCustomTextureBody", new object[] { bodyData?.Sex ?? chaControl.sex }).GetValue();
+
                     chaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
                     chaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
                     chaControl.AddUpdateCMBodyLayoutFlags(true, true);
