@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F0772D38-CABB-4E99-9C5A-336F5DA499CB}</ProjectGuid>
+    <ProjectGuid>{AAE2BDC4-4CAB-4677-8F02-3290B6061097}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClothingUnlocker</RootNamespace>
-    <AssemblyName>ClothingUnlocker</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>EC_ClothingUnlocker</RootNamespace>
+    <AssemblyName>EC_ClothingUnlocker</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -32,32 +32,34 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\Crap\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\..\..\Crap2\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Crap\Koikatu_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\Crap2\EmotionCreators_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>..\..\..\..\..\Crap\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>..\..\..\..\..\Crap2\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="ConfigurationManager">
-      <HintPath>..\..\..\..\..\Crap\BepInEx\ConfigurationManager.dll</HintPath>
+    <Reference Include="BepInEx.Harmony">
+      <HintPath>..\..\..\..\..\Crap2\BepInEx\core\BepInEx.Harmony.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\Crap\Koikatu_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\Crap2\EmotionCreators_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\..\Crap\Koikatu_Data\Managed\UnityEngine.UI.dll</HintPath>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\Crap2\EmotionCreators_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK_ClothingUnlocker.cs" />
+    <Compile Include="EC_ClothingUnlocker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="..\Core_ClothingUnlocker\Core_ClothingUnlocker.projitems" Label="Shared" />
