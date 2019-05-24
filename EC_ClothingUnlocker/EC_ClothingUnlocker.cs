@@ -13,9 +13,9 @@ namespace ClothingUnlocker
     [BepInPlugin(GUID,PluginName,Version)]
     public partial class ClothingUnlocker : BaseUnityPlugin
     {
-        private static ConfigWrapper<bool> EnableCrossdressing;
-        private static ConfigWrapper<bool> EnableBras;
-        private static ConfigWrapper<bool> EnableSkirts;
+        public static ConfigWrapper<bool> EnableCrossdressing;
+        public static ConfigWrapper<bool> EnableBras;
+        public static ConfigWrapper<bool> EnableSkirts;
 
         private void Start() {
             HarmonyWrapper.PatchAll(typeof(ClothingUnlocker));
