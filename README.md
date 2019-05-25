@@ -173,8 +173,9 @@ v2.0 Significant rewrite with KKAPI integration. Can now link eyes and neck to o
 v2.1 Fix neck link not working, fix linking after unlinking not working<br/>
 </details>
 
-#### KK_ClothingUnlocker
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v62/KK_ClothingUnlocker.v1.1.zip)**<br/>
+#### KK_ClothingUnlocker EC_ClothingUnlocker
+**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v62/KK_ClothingUnlocker.v1.1.zip)** - For Koikatsu<br/>
+**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v77/EC_ClothingUnlocker.v1.1.zip)** - For EmotionCreators<br/>
 
 Allows gender restricted clothing to be used on all characters.<br/>
 
