@@ -13,6 +13,7 @@ namespace KK_TextDump
     /// <summary>
     /// Dumps untranslated text to .txt files
     /// </summary>
+    [BepInProcess("CharaStudio")]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_TextDump : BaseUnityPlugin
     {
@@ -24,10 +25,16 @@ namespace KK_TextDump
 
         private void DumpText()
         {
+            if (Directory.Exists(Path.Combine(Paths.GameRootPath, "TextDump")))
+            {
+                Logger.Log(LogLevel.Info, "[TextDump] Not dumping text, folder already exists.");
+                return;
+            }
+
             int a = DumpCommunicationText();
             int b = DumpScenarioText();
             int c = DumpHText();
-            Logger.Log(LogLevel.Info, $"Total lines:{a + b + c}");
+            Logger.Log(LogLevel.Info, $"[TextDump] Total lines:{a + b + c}");
         }
 
         private int DumpCommunicationText()
@@ -41,6 +48,9 @@ namespace KK_TextDump
 
                 foreach (var AssetName in AssetBundleCheck.GetAllAssetName(AssetBundleName))
                 {
+                    if (AssetName.Contains("speed_"))
+                        continue;
+
                     var Asset = ManualLoadAsset<ExcelData>(AssetBundleName, AssetName, "abdata");
 
                     HashSet<string> JPText = new HashSet<string>();
@@ -71,7 +81,7 @@ namespace KK_TextDump
                     }
                 }
             }
-            Logger.Log(LogLevel.Info, $"Total Communication unique lines:{AllJPText.Count}");
+            Logger.Log(LogLevel.Info, $"[TextDump] Total Communication unique lines:{AllJPText.Count}");
             return AllJPText.Count;
         }
 
@@ -116,7 +126,7 @@ namespace KK_TextDump
                     }
                 }
             }
-            Logger.Log(LogLevel.Info, $"Total Scenario unique lines:{AllJPText.Count}");
+            Logger.Log(LogLevel.Info, $"[TextDump] Total Scenario unique lines:{AllJPText.Count}");
             return AllJPText.Count;
         }
 
@@ -178,7 +188,7 @@ namespace KK_TextDump
                     }
                 }
             }
-            Logger.Log(LogLevel.Info, $"Total H-Scene unique lines:{AllJPText.Count}");
+            Logger.Log(LogLevel.Info, $"[TextDump] Total H-Scene unique lines:{AllJPText.Count}");
             return AllJPText.Count;
         }
 
