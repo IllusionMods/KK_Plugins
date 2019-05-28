@@ -55,6 +55,11 @@ namespace UncensorSelector
                 DisplayPenis = ChaControl.sex == 0;
                 DisplayBalls = ChaControl.sex == 0 ? true : DefaultFemaleDisplayBalls.Value;
 
+                //Check if exType property exists, since it wont exist on early game versions. Do not modify uncensors for characters with extype other than 0 (Janitor)
+                if (typeof(ChaControl).GetProperties(AccessTools.all).Any(p => p.Name == "exType"))
+                    if (ChaControl.exType != 0)
+                        return;
+
                 var data = GetExtendedData();
                 if (data != null)
                 {
