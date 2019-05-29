@@ -3,6 +3,10 @@ using BepInEx;
 using Harmony;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace KK_Subtitles
@@ -16,10 +20,12 @@ namespace KK_Subtitles
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
         public const string PluginNameInternal = "KK_Subtitles";
-        public const string Version = "1.2";
+        public const string Version = "1.3";
         internal static Info ActionGameInfoInstance;
         internal static HSceneProc HSceneProcInstance;
+        internal static CustomScene CustomSceneInstance;
         public static bool DoSubtitle = false;
+        internal static XDocument CharaMakerSubs;
 
         #region ConfigMgr
         [DisplayName("Show Untranslated Text")]
@@ -75,6 +81,10 @@ namespace KK_Subtitles
             textAlign = new ConfigWrapper<TextAnchor>("textAlignment", PluginNameInternal, TextAnchor.LowerCenter);
             textOffset = new ConfigWrapper<int>("textOffset", PluginNameInternal, 10);
             outlineThickness = new ConfigWrapper<int>("outlineThickness", PluginNameInternal, 2);
+
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("KK_Subtitles.Resources.CharaMakerSubs.xml"))
+            using (XmlReader reader = XmlReader.Create(stream))
+                CharaMakerSubs = XDocument.Load(reader);
         }
 
         public void Start() => StartCoroutine(InitAsync());
@@ -103,16 +113,8 @@ namespace KK_Subtitles
                 Caption.DisplayHSubtitle(__instance);
             else if (ActionGameInfoInstance != null && DoSubtitle)
                 Caption.DisplayDialogueSubtitle(__instance);
-
-            //Captions for chara maker
-            //There doesn't appear to be any text for these spoken lines. May have to transcribe them manually or something
-
-            //assetBundleName:custom/samplevoice_00.unity3d assetName:csv_08_00
-            //if (__instance.assetBundleName == "custom/samplevoice_00.unity3d" && __instance.assetName == "csv_08_00")
-            //{
-            //    Caption.InitGUI();
-            //    Caption.DisplaySubtitle(__instance, "はじめまして、よろしくね！");
-            //}
+            else if (CustomSceneInstance != null)
+                Caption.DisplayCharaMakerSubtitle(__instance);
 
             DoSubtitle = false;
         }
@@ -134,6 +136,12 @@ namespace KK_Subtitles
         {
             Caption.InitGUI();
             HSceneProcInstance = FindObjectOfType<HSceneProc>();
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(CustomScene), "Start")]
+        public static void CustomSceneStart(CustomScene __instance)
+        {
+            Caption.InitGUI();
+            CustomSceneInstance = __instance;
         }
     }
 }

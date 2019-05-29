@@ -105,6 +105,12 @@ namespace KK_Subtitles
             DisplaySubtitle(voice, text);
         }
 
+        internal static void DisplayCharaMakerSubtitle(LoadVoice voice)
+        {
+            string subText = KK_Subtitles.CharaMakerSubs.Root.Elements("Sub").Where(x => (string)x.Attribute("Asset") == voice.assetName).Select(x => (string)x.Attribute("Text")).FirstOrDefault();
+            DisplaySubtitle(voice, $"{subText}");
+        }
+
         internal static void DisplaySubtitle(LoadVoice voice, string text, string speaker = "")
         {
             Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"{KK_Subtitles.fontName.Value}.ttf");
