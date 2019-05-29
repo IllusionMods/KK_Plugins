@@ -112,7 +112,7 @@ v1.3.1 Removed log messages. Oops.
 </details>
 
 #### KK_UncensorSelector EC_UncensorSelector
-**v3.6.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v79/KK_UncensorSelector.v3.6.2.zip)** - For Koikatsu<br/>
+**v3.6.3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v80/KK_UncensorSelector.v3.6.3.zip)** - For Koikatsu<br/>
 **v3.6 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/EC_UncensorSelector.v3.6.zip)** - For EmotionCreators<br/>
 
 3.0 update note: Uncensors from previous versions are not compatible, download new versions [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS)<br/>
@@ -145,6 +145,7 @@ v3.5.1 Reduce false positives for the above change<br/>
 v3.6 EmotionCreators port, removed "none" as a default config option<br/>
 v3.6.1 Updated for KK Darkness<br/>
 v3.6.2 Fix replacing janitor's body when it shouldn't<br/>
+v3.6.3 Fix janitor's uncensor<br/>
 </details>
 
 #### KK_Subtitles
