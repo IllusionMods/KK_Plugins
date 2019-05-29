@@ -55,11 +55,6 @@ namespace UncensorSelector
                 DisplayPenis = ChaControl.sex == 0;
                 DisplayBalls = ChaControl.sex == 0 ? true : DefaultFemaleDisplayBalls.Value;
 
-                //Check if exType property exists, since it wont exist on early game versions. Do not modify uncensors for characters with extype other than 0 (Janitor)
-                if (typeof(ChaControl).GetProperties(AccessTools.all).Any(p => p.Name == "exType"))
-                    if (ChaControl.exType != 0)
-                        return;
-
                 var data = GetExtendedData();
                 if (data != null)
                 {
@@ -185,6 +180,10 @@ namespace UncensorSelector
             public void UpdateSkinColor() => SkinMatch.SetSkinColor(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinLine() => SkinMatch.SetLineVisibility(ChaControl, BodyData, PenisData, BallsData);
             public void UpdateSkinGloss() => SkinMatch.SetSkinGloss(ChaControl, BodyData, PenisData, BallsData);
+            /// <summary>
+            /// Returns the exType or 0 if the exType field does not exists for cross version compatibility
+            /// </summary>
+            private static int ExType(ChaControl chaControl) => typeof(ChaControl).GetProperties(AccessTools.all).Any(p => p.Name == "exType") ? chaControl.exType : 0;
             /// <summary>
             /// Current BodyData for this character
             /// </summary>
@@ -329,17 +328,21 @@ namespace UncensorSelector
                     while (chaControl.objBody == null)
                         yield return null;
 
-                    ReloadCharacterBody(chaControl, bodyData);
+                    if (ExType(chaControl) == 0) //exType of 1 indicates Janitor, don't modify his body.
+                        ReloadCharacterBody(chaControl, bodyData);
                     ReloadCharacterPenis(chaControl, penisData, penisVisible);
                     ReloadCharacterBalls(chaControl, ballsData, ballsVisible);
 
                     UpdateSkin(chaControl, bodyData);
-                    chaControl.updateBustSize = true;
-                    Traverse.Create(chaControl).Method("UpdateSiru", new object[] { true }).GetValue();
-                    SetChestNormals(chaControl, bodyData);
+                    if (ExType(chaControl) == 0)
+                    {
+                        chaControl.updateBustSize = true;
+                        Traverse.Create(chaControl).Method("UpdateSiru", new object[] { true }).GetValue();
+                        SetChestNormals(chaControl, bodyData);
 
-                    chaControl.customMatBody.SetTexture(ChaShader._AlphaMask, Traverse.Create(chaControl).Property("texBodyAlphaMask").GetValue() as Texture);
-                    Traverse.Create(chaControl).Property("updateAlphaMask").SetValue(true);
+                        chaControl.customMatBody.SetTexture(ChaShader._AlphaMask, Traverse.Create(chaControl).Property("texBodyAlphaMask").GetValue() as Texture);
+                        Traverse.Create(chaControl).Property("updateAlphaMask").SetValue(true);
+                    }
                 }
                 /// <summary>
                 /// Update the mesh of the penis and set the visibility
