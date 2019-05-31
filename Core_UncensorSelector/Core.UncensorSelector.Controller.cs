@@ -183,7 +183,11 @@ namespace UncensorSelector
             /// <summary>
             /// Returns the exType or 0 if the exType field does not exists for cross version compatibility
             /// </summary>
-            private static int ExType(ChaControl chaControl) => typeof(ChaControl).GetProperties(AccessTools.all).Any(p => p.Name == "exType") ? chaControl.exType : 0;
+            private static int ExType(ChaControl chaControl) => typeof(ChaControl).GetProperties(AccessTools.all).Any(p => p.Name == "exType") ? ExType_internal(chaControl) : 0;
+            /// <summary>
+            /// In a separate method to avoid missing method exception
+            /// </summary>
+            private static int ExType_internal(ChaControl chaControl) => chaControl.exType;
             /// <summary>
             /// Current BodyData for this character
             /// </summary>
