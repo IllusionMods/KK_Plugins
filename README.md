@@ -152,7 +152,7 @@ v3.6.4 Fix compatibility issues for non Darkness game versions<br/>
 #### KK_Subtitles
 **v1.3 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v83/KK_Subtitles.v1.3.zip)**<br/>
 
-Subtitles for H scenes and spoken text in dialogues<br/>
+Subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Fixed H subs not working for some people<br/>
