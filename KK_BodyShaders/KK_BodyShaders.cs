@@ -16,7 +16,7 @@ namespace KK_BodyShaders
     {
         public const string PluginName = "Body Shaders";
         public const string GUID = "com.deathweasel.bepinex.bodyshaders";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         private static Shader sha;
         private static readonly HashSet<string> excluded = new HashSet<string> { "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_mayuge", "cf_Ohitomi_L", "cf_Ohitomi_R", "cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_noseline", "cf_O_namida_L", "cf_O_namida_M", "cf_O_namida_S", "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "o_shadowcaster", "o_mnpa", "o_mnpb", "o_body_a" };
         private static MakerToggle GooToggle;
@@ -102,7 +102,6 @@ namespace KK_BodyShaders
             public void SetEnabled(bool enabled)
             {
                 Enabled = enabled;
-                ChaControl.Reload();
                 SetAllMaterial();
             }
             public void SetAllMaterial()
