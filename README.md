@@ -274,11 +274,15 @@ Experimental or unfinished plugins. No support will be given and most likely no 
 
 
 #### KK_BodyShaders
-**Beta - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v63/KK_BodyShaders.beta.zip)**<br/>
+**Beta 2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v85/KK_BodyShaders.beta.2.zip)**<br/>
 
 Applies shaders to a character's body and hair. Currently only has a shader for making goo girls. Or boys, if you're in to that kind of thing. Also has bugs. Not a shader for making bug girls, the kind of bugs that might make your game act strange.<br/>
 
 Shaders by Essu. Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
+
+<details><summary>Change Log</summary>
+Beta 2 Fix checkbox not working<br/>
+</details>
 
 #### KK_Colliders
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_Colliders.v1.0.zip)**<br/>
