@@ -44,6 +44,10 @@
       <HintPath>..\lib\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KKAPI">
+      <HintPath>..\lib\KKAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -58,6 +62,9 @@
   <ItemGroup>
     <Compile Include="KK_SettingsFix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\setup.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
