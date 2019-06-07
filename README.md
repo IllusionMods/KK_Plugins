@@ -265,8 +265,12 @@ v1.1 Added a config option to disable the plugin<br/>
 Fixes a bug where alternate heads cannot load modded eyeliners and modded heads cannot load any eyeliners.<br/>
 
 #### KK_SettingsFix
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v84/KK_SettingsFix.v1.0.zip)**<br/>
+**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v86/KK_SettingsFix.v1.1.zip)**<br/>
 Creates setup.xml if missing and makes CharaStudio read settings from the setup.xml. This means you no longer need to run InitSetting.exe to change Studio settings and registry entries are no longer required.<br/>
+
+<details><summary>Change Log</summary>
+v1.1 Setup.xml is tested for validity, deleted if broken<br/>
+</details>
 
 
 # Experimental plugins
