@@ -87,6 +87,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_HeadFix", "KK_HeadFix\KK
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_SettingsFix", "KK_SettingsFix\KK_SettingsFix.csproj", "{A3147960-5869-466E-B3F2-FA7E4AFC5A76}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UIUtility", "UIUtility\UIUtility.shproj", "{E6EF7A17-9328-4821-AF19-BC2C175BF4DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_MaterialEditor", "KK_MaterialEditor\KK_MaterialEditor.csproj", "{B743E048-5913-4DEC-9067-8AFD1293A211}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
@@ -96,9 +100,11 @@ Global
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
+		UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{c15b8820-0e24-452b-b076-1a052dd7c0fb}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{c71a1776-100b-49c9-a944-ed54c4312591}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
+		UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{ea82bb52-404c-416a-9bf8-a36a90f6da93}*SharedItemsImports = 13
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{f0772d38-cabb-4e99-9c5a-336f5da499cb}*SharedItemsImports = 4
 	EndGlobalSection
@@ -243,6 +249,10 @@ Global
 		{A3147960-5869-466E-B3F2-FA7E4AFC5A76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3147960-5869-466E-B3F2-FA7E4AFC5A76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3147960-5869-466E-B3F2-FA7E4AFC5A76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B743E048-5913-4DEC-9067-8AFD1293A211}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B743E048-5913-4DEC-9067-8AFD1293A211}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B743E048-5913-4DEC-9067-8AFD1293A211}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B743E048-5913-4DEC-9067-8AFD1293A211}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>e6ef7a17-9328-4821-af19-bc2c175bf4dd</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>UIUtility</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MovableWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OneTimeContentSizeFitter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OneTimeHorizontalLayoutGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OneTimeVerticalLayoutGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIUtility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\DefaultResourcesKOI.unity3d" />
+  </ItemGroup>
+</Project>
