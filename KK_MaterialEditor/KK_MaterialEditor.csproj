@@ -38,8 +38,16 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\lib\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\ExtensibleSaveFormat.dll</HintPath>
     </Reference>
     <Reference Include="KKAPI">
       <HintPath>..\lib\KKAPI.dll</HintPath>
@@ -59,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KK_MaterialEditor.cs" />
+    <Compile Include="KK_MaterialEditor.SceneController.cs" />
+    <Compile Include="KK_MaterialEditor.UI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
