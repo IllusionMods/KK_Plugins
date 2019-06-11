@@ -1,14 +1,14 @@
 ﻿using BepInEx;
-using BepInEx.Logging;
 using Harmony;
 using Illusion.Extensions;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using TMPro;
+using UILib;
 using UnityEngine;
-using Logger = BepInEx.Logger;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace KK_FreeHRandom
 {
@@ -18,77 +18,118 @@ namespace KK_FreeHRandom
         public const string GUID = "com.deathweasel.bepinex.freehrandom";
         public const string PluginName = "Free H Random";
         public const string PluginNameInternal = "KK_FreeHRandom";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
+        private enum CharacterType { Female1, Female2, Female3P, Male }
 
-        [DisplayName("Random male")]
-        [Category("Config")]
-        [Description("Whether a random male will be selected as well")]
-        public static ConfigWrapper<bool> RandomMale { get; private set; }
-        [DisplayName("Random Hotkey")]
-        [Description("The key that triggers the random selection of characters in the Free H select screen.")]
-        public static SavedKeyboardShortcut RandomHotkey { get; private set; }
+        private void Main() => SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
 
-        private void Main()
+        private void InitUI(string sceneName)
         {
-            RandomMale = new ConfigWrapper<bool>("RandomMale", PluginNameInternal, true);
-            RandomHotkey = new SavedKeyboardShortcut("RandomHotkey", PluginNameInternal, new KeyboardShortcut(KeyCode.F5));
+            if (sceneName != "FreeH")
+                return;
+
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female1);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Male);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Masturbation/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female1);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female1);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/PartnerSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female2);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female3P);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Male);
+            //CreateRandomButton(GameObject.Find("FreeHScene").transform.Find("Canvas/Panel/Dark/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female1);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Dark/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Male);
         }
 
-        private void Update()
+        private void CreateRandomButton(RectTransform buttonToCopy, CharacterType characterType)
         {
-            try
+            if (buttonToCopy == null)
+                return;
+
+            var copy = Instantiate(buttonToCopy.gameObject);
+            copy.name = $"{buttonToCopy.name}Random";
+            Button randomButton = copy.GetComponent<Button>();
+            RectTransform testButtonRectTransform = randomButton.transform as RectTransform;
+            randomButton.transform.SetParent(buttonToCopy.parent, true);
+            randomButton.transform.localScale = buttonToCopy.localScale;
+            testButtonRectTransform.SetRect(buttonToCopy.anchorMin, buttonToCopy.anchorMax, buttonToCopy.offsetMin, buttonToCopy.offsetMax);
+            testButtonRectTransform.anchoredPosition = buttonToCopy.anchoredPosition + new Vector2(0f, -50f);
+            randomButton.onClick = new Button.ButtonClickedEvent();
+            randomButton.onClick.AddListener(() => { RandomizeCharacter(characterType); });
+
+            var tmp = copy.transform.Children().FirstOrDefault(x => x.name.StartsWith("TextMeshPro"));
+            if (tmp != null)
+                tmp.GetComponent<TextMeshProUGUI>().text = "Random";
+        }
+        private void RandomizeCharacter(CharacterType characterType)
+        {
+            FolderAssist folderAssist = new FolderAssist();
+
+            //Get some random cards
+            if (characterType == CharacterType.Male)
+                folderAssist.CreateFolderInfoEx(Path.Combine(UserData.Path, "chara/male/"), new string[] { "*.png" }, true);
+            else
+                folderAssist.CreateFolderInfoEx(Path.Combine(UserData.Path, "chara/female/"), new string[] { "*.png" }, true);
+
+            //different fields for different versions of the game, get the correct one
+            var listFileObj = folderAssist.GetType().GetField("_lstFile", AccessTools.all)?.GetValue(folderAssist);
+            if (listFileObj == null)
+                listFileObj = folderAssist.GetType().GetField("lstFile", AccessTools.all)?.GetValue(folderAssist);
+            List<FolderAssist.FileInfo> lstFile = (List<FolderAssist.FileInfo>)listFileObj;
+
+            if (lstFile.Count() == 0)
+                return;
+
+            lstFile.Randomize();
+
+            //different fields for different versions of the game, get the correct one
+            string filePath = (string)lstFile[0].GetType().GetField("fullPath", AccessTools.all)?.GetValue(lstFile[0]);
+            if (filePath.IsNullOrEmpty())
+                filePath = (string)lstFile[0].GetType().GetField("FullPath", AccessTools.all)?.GetValue(lstFile[0]);
+
+            SetupCharacter(filePath, characterType);
+        }
+
+        private void SetupCharacter(string filePath, CharacterType characterType)
+        {
+            var chaFileControl = new ChaFileControl();
+            if (chaFileControl.LoadCharaFile(filePath, 255, false, true))
             {
-                if (Singleton<Manager.Scene>.Instance.NowSceneNames.Any(sceneName => sceneName == "FreeH"))
+                FreeHScene.Member member = (FreeHScene.Member)Singleton<FreeHScene>.Instance.GetType().GetField("member", AccessTools.all).GetValue(Singleton<FreeHScene>.Instance);
+
+                switch (characterType)
                 {
-                    if (RandomHotkey.IsDown())
-                    {
-                        //Get some random female cards
-                        FreeHScene instance = Singleton<FreeHScene>.Instance;
-                        FreeHScene.Member member = (FreeHScene.Member)instance.GetType().GetField("member", AccessTools.all).GetValue(instance);
-                        FolderAssist folderAssist = new FolderAssist();
-                        folderAssist.CreateFolderInfoEx(Path.Combine(UserData.Path, "chara/female/"), new string[] { "*.png" }, true);
-                        List<string> list = (from n in folderAssist.lstFile.Shuffle() select n.FullPath).ToList();
-
-                        if (list.Count == 0)
-                            return;
-
-                        //Load the main female
-                        ChaFileControl chaFileControl = new ChaFileControl();
-                        if (chaFileControl.LoadCharaFile(list[0], 1, false, true))
-                        {
+                    case CharacterType.Female1:
+                        member.resultHeroine.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        break;
+                    case CharacterType.Female2:
+                        member.resultPartner.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        break;
+                    case CharacterType.Female3P:
+                        if (GameObject.Find("FreeHScene/Canvas/Panel/3P/Stage1").activeInHierarchy)
                             member.resultHeroine.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
-
-                            //Load the second female
-                            ChaFileControl chaFileControl2 = new ChaFileControl();
-                            if (list.Count >= 2 && chaFileControl2.LoadCharaFile(list[1], 1, false, true))
-                            {
-                                member.resultPartner.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl2, false));
-                            }
-                        }
-
-                        //Load the male card, if allowed
-                        if (RandomMale.Value)
-                        {
-                            folderAssist = new FolderAssist();
-                            folderAssist.CreateFolderInfoEx(Path.Combine(UserData.Path, "chara/male/"), new string[] { "*.png" }, true);
-                            list = (from n in folderAssist.lstFile.Shuffle() select n.FullPath).ToList();
-
-                            if (list.Count == 0)
-                                return;
-
-                            ChaFileControl chaFileControlMale = new ChaFileControl();
-                            if (chaFileControlMale.LoadCharaFile(list[1], 0, false, true))
-                            {
-                                member.resultPlayer.SetValueAndForceNotify(new SaveData.Player(chaFileControlMale, false));
-                            }
-                        }
-                    }
+                        else
+                            member.resultPartner.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        break;
+                    case CharacterType.Male:
+                        member.resultPlayer.SetValueAndForceNotify(new SaveData.Player(chaFileControl, false));
+                        break;
                 }
             }
-            catch (Exception ex)
+        }
+    }
+
+    internal static class Extensions
+    {
+        private static readonly System.Random rng = new System.Random();
+        public static void Randomize<T>(this IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
             {
-                Logger.Log(LogLevel.Error, "Error in KK_FreeHRandom");
-                Logger.Log(LogLevel.Error, ex);
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
             }
         }
     }
