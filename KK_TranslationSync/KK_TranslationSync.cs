@@ -274,7 +274,7 @@ namespace KK_TranslationSync
                             {
                                 Lines2[i] = $"{JPText}={NewTLText}";
                                 DidEdit2 = true;
-                                Logger.Log(LogLevel.Info, $"Setting:{JPText}={NewTLText}");
+                                //Logger.Log(LogLevel.Info, $"Setting:{JPText}={NewTLText}");
                             }
                             else
                             {
@@ -351,12 +351,12 @@ namespace KK_TranslationSync
             if (NewTLText.StartsWith("「") && NewTLText.EndsWith("」"))
                 NewTLText = "“" + NewTLText.Substring(1, NewTLText.Length - 2) + "”";
 
-            if (NewTLText.StartsWith("\"") && NewTLText.EndsWith("\""))
-            {
-                string temp = NewTLText.Substring(1, NewTLText.Length - 2);
-                if (!temp.IsNullOrEmpty())
-                    NewTLText = "“" + NewTLText.Substring(1, NewTLText.Length - 2) + "”";
-            }
+            //if (NewTLText.StartsWith("\"") && NewTLText.EndsWith("\""))
+            //{
+            //    string temp = NewTLText.Substring(1, NewTLText.Length - 2);
+            //    if (!temp.IsNullOrEmpty())
+            //        NewTLText = "“" + NewTLText.Substring(1, NewTLText.Length - 2) + "”";
+            //}
 
             if (NewTLText != tlText)
             {

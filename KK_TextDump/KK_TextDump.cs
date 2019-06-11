@@ -53,18 +53,23 @@ namespace KK_TextDump
 
                     var Asset = ManualLoadAsset<ExcelData>(AssetBundleName, AssetName, "abdata");
 
-                    HashSet<string> JPText = new HashSet<string>();
+                    Dictionary<string, string> Translations = new Dictionary<string, string>();
 
                     foreach (var param in Asset.list)
                     {
                         if (15 <= param.list.Count && !param.list[15].IsNullOrEmpty() && param.list[15] != "テキスト")
                         {
-                            AllJPText.Add($"//{param.list[15]}=");
-                            JPText.Add($"//{param.list[15]}=");
+                            AllJPText.Add(param.list[15]);
+                            Translations[param.list[15]] = "";
+                            try
+                            {
+                                Translations[param.list[15]] = param.list[20];
+                            }
+                            catch { }
                         }
                     }
 
-                    if (JPText.Count > 0)
+                    if (Translations.Count > 0)
                     {
                         string FolderPath = Path.Combine(Paths.GameRootPath, "TextDump");
                         FolderPath = Path.Combine(FolderPath, AssetBundleName.Replace(".unity3d", ""));
@@ -77,7 +82,24 @@ namespace KK_TextDump
                         if (File.Exists(FilePath))
                             File.Delete(FilePath);
 
-                        File.WriteAllLines(FilePath, JPText.ToArray());
+                        List<string> Lines = new List<string>();
+                        foreach (var tl in Translations)
+                        {
+                            string JP = tl.Key.Trim();
+                            string ENG = tl.Value.Trim();
+                            if (JP.Contains("\n"))
+                                JP = $"\"{JP.Replace("\n", @"\n").Trim()}\"";
+                            if (ENG.Contains("\n"))
+                                ENG = $"\"{ENG.Replace("\n", @"\n").Trim()}\"";
+                            ENG = ENG.Replace(";", ",");
+
+                            if (ENG.IsNullOrEmpty())
+                                Lines.Add($"//{JP}=");
+                            else
+                                Lines.Add($"{JP}={ENG}");
+                        }
+
+                        File.WriteAllLines(FilePath, Lines.ToArray());
                     }
                 }
             }
@@ -96,20 +118,23 @@ namespace KK_TextDump
 
                     var Asset = ManualLoadAsset<ADV.ScenarioData>(AssetBundleName, AssetName, "abdata");
 
-                    HashSet<string> JPText = new HashSet<string>();
+                    Dictionary<string, string> Translations = new Dictionary<string, string>();
+
                     foreach (var param in Asset.list)
                     {
                         if (param.Command == ADV.Command.Text)
                         {
-                            if (1 <= param.Args.Length && !param.Args[1].IsNullOrEmpty())
+                            if (param.Args.Length >= 2 && !param.Args[1].IsNullOrEmpty())
                             {
-                                AllJPText.Add($"//{param.Args[1]}=");
-                                JPText.Add($"//{param.Args[1]}=");
+                                AllJPText.Add(param.Args[1]);
+                                Translations[param.Args[1]] = "";
+                                if (param.Args.Length >= 3 && !param.Args[2].IsNullOrEmpty())
+                                    Translations[param.Args[1]] = param.Args[2];
                             }
                         }
                     }
 
-                    if (JPText.Count > 0)
+                    if (Translations.Count > 0)
                     {
                         string FolderPath = Path.Combine(Paths.GameRootPath, "TextDump");
                         FolderPath = Path.Combine(FolderPath, AssetBundleName.Replace(".unity3d", ""));
@@ -122,7 +147,23 @@ namespace KK_TextDump
                         if (File.Exists(FilePath))
                             File.Delete(FilePath);
 
-                        File.WriteAllLines(FilePath, JPText.ToArray());
+                        List<string> Lines = new List<string>();
+                        foreach (var tl in Translations)
+                        {
+                            string JP = tl.Key.Trim();
+                            string ENG = tl.Value.Trim();
+                            if (JP.Contains("\n"))
+                                JP = $"\"{JP.Replace("\n", @"\n").Trim()}\"";
+                            if (ENG.Contains("\n"))
+                                ENG = $"\"{ENG.Replace("\n", @"\n").Trim()}\"";
+
+                            if (ENG.IsNullOrEmpty())
+                                Lines.Add($"//{JP}=");
+                            else
+                                Lines.Add($"{JP}={ENG}");
+                        }
+
+                        File.WriteAllLines(FilePath, Lines.ToArray());
                     }
                 }
             }
