@@ -29,13 +29,13 @@ namespace KK_FreeHRandom
                 return;
 
             CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Male);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
             CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Masturbation/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
             CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
             CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/PartnerSelectButton")?.GetComponent<RectTransform>(), CharacterType.Partner);
             CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female3P);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Male);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Dark/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Male);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Dark/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
         }
         /// <summary>
         /// Copy the male/female selection button and rewire it in to a Random button
@@ -68,7 +68,7 @@ namespace KK_FreeHRandom
             FolderAssist folderAssist = new FolderAssist();
 
             //Get some random cards
-            if (characterType == CharacterType.Male)
+            if (characterType == CharacterType.Player)
                 folderAssist.CreateFolderInfoEx(Path.Combine(UserData.Path, "chara/male/"), new string[] { "*.png" }, true);
             else
                 folderAssist.CreateFolderInfoEx(Path.Combine(UserData.Path, "chara/female/"), new string[] { "*.png" }, true);
@@ -115,7 +115,7 @@ namespace KK_FreeHRandom
                         else
                             member.resultPartner.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
                         break;
-                    case CharacterType.Male:
+                    case CharacterType.Player:
                         member.resultPlayer.SetValueAndForceNotify(new SaveData.Player(chaFileControl, false));
                         break;
                 }
