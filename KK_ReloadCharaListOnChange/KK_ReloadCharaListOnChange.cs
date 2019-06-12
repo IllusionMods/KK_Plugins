@@ -21,7 +21,7 @@ namespace KK_ReloadCharaListOnChange
     {
         public const string GUID = "com.deathweasel.bepinex.reloadcharalistonchange";
         public const string PluginName = "Reload Character List On Change";
-        public const string Version = "1.4.1";
+        public const string Version = "1.5";
         private static FileSystemWatcher CharacterCardWatcher;
         private static FileSystemWatcher CoordinateCardWatcher;
         private static FileSystemWatcher StudioFemaleCardWatcher;
@@ -99,10 +99,20 @@ namespace KK_ReloadCharaListOnChange
                 switch (EventType)
                 {
                     case CardEventType.CharaMakerCharacter:
-                        typeof(CustomCharaFile).GetMethod("Initialize", AccessTools.all)?.Invoke(CustomCharaFileInstance, null);
+                        var initializeChara = typeof(CustomCharaFile).GetMethod("Initialize", AccessTools.all);
+                        if (initializeChara != null)
+                            if (initializeChara.GetParameters().Length == 0)
+                                initializeChara.Invoke(CustomCharaFileInstance, null);
+                            else
+                                initializeChara.Invoke(CustomCharaFileInstance, new object[] { true, false });
                         break;
                     case CardEventType.CharaMakerCoordinate:
-                        typeof(CustomCoordinateFile).GetMethod("Initialize", AccessTools.all)?.Invoke(CustomCoordinateFileInstance, null);
+                        var initializeCoordinate = typeof(CustomCoordinateFile).GetMethod("Initialize", AccessTools.all);
+                        if (initializeCoordinate != null)
+                            if (initializeCoordinate.GetParameters().Length == 0)
+                                initializeCoordinate.Invoke(CustomCoordinateFileInstance, null);
+                            else
+                                initializeCoordinate.Invoke(CustomCoordinateFileInstance, new object[] { true, false });
                         break;
                     case CardEventType.StudioFemale:
                         StudioFemaleListInstance.InitCharaList(true);
