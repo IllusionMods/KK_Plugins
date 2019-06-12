@@ -272,6 +272,14 @@ Creates setup.xml if missing and makes CharaStudio read settings from the setup.
 v1.1 Setup.xml is tested for validity, deleted if broken<br/>
 </details>
 
+#### KK_FreeHRandom
+**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v88/KK_FreeHRandom.v1.1.zip)**<br/>
+Adds buttons to Free H selection screen to get random characters for your H session.<br/>
+
+<details><summary>Change Log</summary>
+v1.1 Added UI, KK Party support<br/>
+</details>
+
 
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.<br/>
@@ -294,11 +302,6 @@ Beta 2 Fix checkbox not working<br/>
 Adds floor, breast, hand, and skirt colliders. Ported from Patchwork.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
-
-#### KK_FreeHRandom
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_FreeHRandom.v1.0.zip)**<br/>
-
-Press F5 at Free H selection screen to get random characters for your H session.<br/>
 
 #### KK_ANIMATIONOVERDRIVE
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v42/KK_ANIMATIONOVERDRIVE.zip)**<br/>
