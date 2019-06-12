@@ -261,8 +261,12 @@ v1.1 Added a config option to disable the plugin<br/>
 </details>
 
 #### KK_HeadFix
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v78/KK_HeadFix.v1.0.zip)**<br/>
+**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v89/KK_HeadFix.v1.1.zip)**<br/>
 Fixes a bug where alternate heads cannot load modded eyeliners and modded heads cannot load any eyeliners.<br/>
+
+<details><summary>Change Log</summary>
+v1.1 Support for Koikatsu Party<br/>
+</details>
 
 #### KK_SettingsFix
 **v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v86/KK_SettingsFix.v1.1.zip)**<br/>
