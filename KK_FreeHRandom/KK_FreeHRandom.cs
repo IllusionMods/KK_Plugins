@@ -19,7 +19,7 @@ namespace KK_FreeHRandom
         public const string GUID = "com.deathweasel.bepinex.freehrandom";
         public const string PluginName = "Free H Random";
         public const string Version = "1.1";
-        private enum CharacterType { Heroine, Partner, Female3P, Male }
+        private enum CharacterType { Heroine, Partner, Female3P, Player }
 
         private void Main() => SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
 
