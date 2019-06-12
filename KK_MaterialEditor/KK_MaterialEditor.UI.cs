@@ -49,7 +49,7 @@ namespace KK_MaterialEditor
             float scrollOffsetX = -15f;
             float windowMargin = 130f;
 
-            UISystem = UIUtility.CreateNewUISystem("TestPluginCanvas");
+            UISystem = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
             UISystem.gameObject.SetActive(false);
             UISystem.gameObject.transform.SetParent(transform);
 
@@ -91,7 +91,7 @@ namespace KK_MaterialEditor
             MaterialEditorWindow.movementType = ScrollRect.MovementType.Clamped;
         }
 
-        private enum ObjectType { StudioItem };
+        private enum ObjectType { StudioItem, Clothes };
 
         private void PopulateListStudio()
         {
@@ -102,12 +102,14 @@ namespace KK_MaterialEditor
             for (int i = 0; i < selectNodes.Length; i++)
                 if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
                     if (objectCtrlInfo is OCIItem ociItem)
-                        PopulateList(ociItem?.objectItem, GetObjectID(objectCtrlInfo), ObjectType.StudioItem);
+                        PopulateList(ociItem?.objectItem, ObjectType.StudioItem, GetObjectID(objectCtrlInfo));
         }
 
         private void PopulateListClothes(int index)
         {
-            //PopulateList(MakerAPI.GetCharacterControl().objClothes[index]);
+            var chaControl = MakerAPI.GetCharacterControl();
+            int coordinateIndex = GetCharaController(chaControl).CurrentCoordinateIndex;
+            PopulateList(chaControl.objClothes[index], ObjectType.Clothes, 0, chaControl, coordinateIndex, index);
         }
 
         private void PopulateListAccessory()
@@ -116,7 +118,7 @@ namespace KK_MaterialEditor
             //PopulateList(chaAccessoryComponent?.gameObject);
         }
 
-        private void PopulateList(GameObject go, int id, ObjectType objectType)
+        private void PopulateList(GameObject go, ObjectType objectType, int id = 0, ChaControl chaControl = null, int coordinateIndex = 0, int slot = 0)
         {
             UISystem.gameObject.SetActive(true);
 
@@ -141,12 +143,12 @@ namespace KK_MaterialEditor
                 contentListHeader.gameObject.AddComponent<Mask>();
                 contentListHeader.gameObject.AddComponent<HorizontalLayoutGroup>();
 
-                var labelMesh = UIUtility.CreateText(FormatObjectName(rend), contentListHeader.transform, "Mesh:");
-                labelMesh.alignment = TextAnchor.MiddleLeft;
-                labelMesh.color = Color.black;
-                var labelMesh2 = UIUtility.CreateText(FormatObjectName(rend), contentListHeader.transform, FormatObjectName(rend));
-                labelMesh2.alignment = TextAnchor.MiddleRight;
-                labelMesh2.color = Color.black;
+                var labelRenderer = UIUtility.CreateText(FormatObjectName(rend), contentListHeader.transform, "Renderer:");
+                labelRenderer.alignment = TextAnchor.MiddleLeft;
+                labelRenderer.color = Color.black;
+                var labelRenderer2 = UIUtility.CreateText(FormatObjectName(rend), contentListHeader.transform, FormatObjectName(rend));
+                labelRenderer2.alignment = TextAnchor.MiddleRight;
+                labelRenderer2.color = Color.black;
 
                 var contentItem1 = UIUtility.CreatePanel("ContentItem1", MaterialEditorWindow.content.transform);
                 contentItem1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
@@ -174,8 +176,10 @@ namespace KK_MaterialEditor
                 dropdownShadowCastingMode.onValueChanged.AddListener((value) =>
                 {
                     if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddMeshProperty(id, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)rend.shadowCastingMode).ToString());
-                    SetMeshProperty(rend, RendererProperties.ShadowCastingMode, value);
+                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)rend.shadowCastingMode).ToString());
+                    else if (objectType == ObjectType.Clothes)
+                        GetCharaController(chaControl).AddRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)rend.shadowCastingMode).ToString());
+                    SetRendererProperty(rend, RendererProperties.ShadowCastingMode, value);
                 });
                 var dropdownShadowCastingModeLE = dropdownShadowCastingMode.gameObject.AddComponent<LayoutElement>();
                 dropdownShadowCastingModeLE.preferredWidth = dropdownWidth;
@@ -206,8 +210,10 @@ namespace KK_MaterialEditor
                 dropdownReceiveShadows.onValueChanged.AddListener((value) =>
                 {
                     if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddMeshProperty(id, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), receiveShadowsValue.ToString());
-                    SetMeshProperty(rend, RendererProperties.ReceiveShadows, value);
+                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), receiveShadowsValue.ToString());
+                    else if (objectType == ObjectType.Clothes)
+                        GetCharaController(chaControl).AddRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), receiveShadowsValue.ToString());
+                    SetRendererProperty(rend, RendererProperties.ReceiveShadows, value);
                 });
                 var dropdownReceiveShadowsLE = dropdownReceiveShadows.gameObject.AddComponent<LayoutElement>();
                 dropdownReceiveShadowsLE.preferredWidth = dropdownWidth;
@@ -273,7 +279,12 @@ namespace KK_MaterialEditor
 
                             var textBoxR = UIUtility.CreateInputField(colorProperty, contentList.transform);
                             textBoxR.text = color.r.ToString();
-                            textBoxR.onEndEdit.AddListener((input) => SetColorRProperty(go, mat, colorProperty, input));
+                            textBoxR.onEndEdit.AddListener((value) =>
+                            {
+                                SetColorRProperty(go, mat, colorProperty, value);
+                                if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                            });
                             var textBoxRLE = textBoxR.gameObject.AddComponent<LayoutElement>();
                             textBoxRLE.preferredWidth = colorTextBoxWidth;
                             textBoxRLE.flexibleWidth = 0;
@@ -287,7 +298,12 @@ namespace KK_MaterialEditor
 
                             var textBoxG = UIUtility.CreateInputField(colorProperty, contentList.transform);
                             textBoxG.text = color.g.ToString();
-                            textBoxG.onEndEdit.AddListener((input) => SetColorGProperty(go, mat, colorProperty, input));
+                            textBoxG.onEndEdit.AddListener((value) =>
+                            {
+                                SetColorGProperty(go, mat, colorProperty, value);
+                                if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                            });
                             var textBoxGLE = textBoxG.gameObject.AddComponent<LayoutElement>();
                             textBoxGLE.preferredWidth = colorTextBoxWidth;
                             textBoxGLE.flexibleWidth = 0;
@@ -301,7 +317,13 @@ namespace KK_MaterialEditor
 
                             var textBoxB = UIUtility.CreateInputField(colorProperty, contentList.transform);
                             textBoxB.text = color.b.ToString();
-                            textBoxB.onEndEdit.AddListener((input) => SetColorBProperty(go, mat, colorProperty, input));
+                            textBoxB.onEndEdit.AddListener((value) =>
+                            {
+                                SetColorBProperty(go, mat, colorProperty, value);
+                                if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                            });
+
                             var textBoxBLE = textBoxB.gameObject.AddComponent<LayoutElement>();
                             textBoxBLE.preferredWidth = colorTextBoxWidth;
                             textBoxBLE.flexibleWidth = 0;
@@ -315,7 +337,13 @@ namespace KK_MaterialEditor
 
                             var textBoxA = UIUtility.CreateInputField(colorProperty, contentList.transform);
                             textBoxA.text = color.a.ToString();
-                            textBoxA.onEndEdit.AddListener((input) => SetColorAProperty(go, mat, colorProperty, input));
+                            textBoxA.onEndEdit.AddListener((value) =>
+                            {
+                                SetColorAProperty(go, mat, colorProperty, value);
+                                if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                            });
+
                             var textBoxALE = textBoxA.gameObject.AddComponent<LayoutElement>();
                             textBoxALE.preferredWidth = colorTextBoxWidth;
                             textBoxALE.flexibleWidth = 0;
@@ -386,7 +414,9 @@ namespace KK_MaterialEditor
                             textBoxProperty.onEndEdit.AddListener((value) =>
                             {
                                 if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialProperty(id, FormatObjectName(mat), floatProperty, value.ToString(), propertyValue.ToString());
+                                    GetSceneController().AddMaterialFloatProperty(id, FormatObjectName(mat), floatProperty, value.ToString(), propertyValue.ToString());
+                                else if (objectType == ObjectType.Clothes)
+                                    GetCharaController(chaControl).AddMaterialFloatProperty(coordinateIndex, slot, FormatObjectName(mat), floatProperty, value.ToString(), propertyValue.ToString());
                                 SetFloatProperty(go, mat, floatProperty, value);
                             });
                             var textBoxPropertyLE = textBoxProperty.gameObject.AddComponent<LayoutElement>();

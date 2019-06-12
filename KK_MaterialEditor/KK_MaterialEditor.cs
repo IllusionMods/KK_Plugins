@@ -1,9 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
+using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio.SaveLoad;
 using Studio;
 using System.Linq;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,12 +16,13 @@ namespace KK_MaterialEditor
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "0.1";
+        public const string Version = "0.2";
 
         private void Main()
         {
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
+            CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
         }
 
@@ -31,6 +34,14 @@ namespace KK_MaterialEditor
                 foreach (var objMat in obj.materials)
                     if (objMat.name == mat.name)
                         objMat.SetFloat($"_{property}", floatValue);
+        }
+
+        private static void SetColorProperty(GameObject go, Material mat, string property, Color value)
+        {
+            foreach (var obj in go.GetComponentsInChildren<Renderer>())
+                foreach (var objMat in obj.materials)
+                    if (objMat.name == mat.name)
+                        objMat.SetColor($"_{property}", value);
         }
 
         private static void SetColorRProperty(GameObject go, Material mat, string property, string value)
@@ -77,7 +88,7 @@ namespace KK_MaterialEditor
                         objMat.SetColor($"_{property}", new Color(colorOrig.r, colorOrig.g, colorOrig.b, floatValue));
         }
 
-        private static void SetMeshProperty(Renderer rend, RendererProperties property, int value)
+        private static void SetRendererProperty(Renderer rend, RendererProperties property, int value)
         {
             if (property == RendererProperties.ShadowCastingMode)
                 rend.shadowCastingMode = (UnityEngine.Rendering.ShadowCastingMode)value;
@@ -87,7 +98,8 @@ namespace KK_MaterialEditor
 
         private static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
         internal static string FormatObjectName(Object go) => go.name.Replace("(Instance)", "").Trim();
-        public MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
+        public static MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
+        public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();
         internal static void Log(string text) => BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, text);
         internal static void Log(object text) => BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, text?.ToString());
     }

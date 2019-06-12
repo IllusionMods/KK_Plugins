@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KK_MaterialEditor.CharaController.cs" />
     <Compile Include="KK_MaterialEditor.cs" />
     <Compile Include="KK_MaterialEditor.SceneController.cs" />
     <Compile Include="KK_MaterialEditor.UI.cs" />
@@ -76,10 +77,11 @@
     <EmbeddedResource Include="Resources\MaterialEditorIcon.png" />
   </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
+  <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist C:\Illusion\Koikatu\BepInEx (
-copy /y $(TargetPath) C:\illusion\Koikatu\BepInEx\$(TargetFileName)
+    <PostBuildEvent>if exist C:\Illusion\Koikatu\BepInEx\plugins\bepinex4_plugins (
+copy /y $(TargetPath) C:\Illusion\Koikatu\BepInEx\plugins\bepinex4_plugins\$(TargetFileName)
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>

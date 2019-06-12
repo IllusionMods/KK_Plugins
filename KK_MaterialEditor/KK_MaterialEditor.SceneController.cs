@@ -15,22 +15,30 @@ namespace KK_MaterialEditor
 
         public class MaterialEditorSceneController : SceneCustomFunctionController
         {
-            private readonly List<MeshProperty> StudioItemMeshPropertyList = new List<MeshProperty>();
-            private readonly List<MaterialProperty> StudioItemMaterialPropertyList = new List<MaterialProperty>();
+            private readonly List<RendererProperty> StudioItemRendererPropertyList = new List<RendererProperty>();
+            private readonly List<MaterialFloatProperty> StudioItemMaterialFloatPropertyList = new List<MaterialFloatProperty>();
+            private readonly List<MaterialColorProperty> StudioItemMaterialColorPropertyList = new List<MaterialColorProperty>();
 
             protected override void OnSceneSave()
             {
                 var data = new PluginData();
+                if (data == null)
+                    return;
 
-                if (StudioItemMeshPropertyList.Count > 0)
-                    data.data.Add("MeshProperties", MessagePackSerializer.Serialize(StudioItemMeshPropertyList));
+                if (StudioItemRendererPropertyList.Count > 0)
+                    data.data.Add("RendererProperties", MessagePackSerializer.Serialize(StudioItemRendererPropertyList));
                 else
-                    data.data.Add("MeshProperties", null);
+                    data.data.Add("RendererProperties", null);
 
-                if (StudioItemMaterialPropertyList.Count > 0)
-                    data.data.Add("MaterialProperties", MessagePackSerializer.Serialize(StudioItemMaterialPropertyList));
+                if (StudioItemMaterialFloatPropertyList.Count > 0)
+                    data.data.Add("MaterialFloatProperties", MessagePackSerializer.Serialize(StudioItemMaterialFloatPropertyList));
                 else
-                    data.data.Add("MaterialProperties", null);
+                    data.data.Add("MaterialFloatProperties", null);
+
+                if (StudioItemMaterialColorPropertyList.Count > 0)
+                    data.data.Add("MaterialColorProperties", MessagePackSerializer.Serialize(StudioItemMaterialColorPropertyList));
+                else
+                    data.data.Add("MaterialColorProperties", null);
 
                 SetExtendedData(data);
             }
@@ -41,60 +49,78 @@ namespace KK_MaterialEditor
 
                 if (operation == SceneOperationKind.Clear || operation == SceneOperationKind.Load)
                 {
-                    StudioItemMeshPropertyList.Clear();
-                    StudioItemMaterialPropertyList.Clear();
+                    StudioItemRendererPropertyList.Clear();
+                    StudioItemMaterialFloatPropertyList.Clear();
+                    StudioItemMaterialColorPropertyList.Clear();
                 }
 
-                if (data.data.TryGetValue("MeshProperties", out var meshProperties) && meshProperties != null)
+                if (data.data.TryGetValue("RendererProperties", out var rendererProperties) && rendererProperties != null)
                 {
-                    var loadedMeshProperties = MessagePackSerializer.Deserialize<List<MeshProperty>>((byte[])meshProperties);
+                    var loadedRendererProperties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
 
-                    foreach (var loadedMeshProperty in loadedMeshProperties)
+                    foreach (var loadedRendererProperty in loadedRendererProperties)
                     {
-                        if (loadedItems.TryGetValue(loadedMeshProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                        if (loadedItems.TryGetValue(loadedRendererProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                         {
-                            foreach (var mesh in ociItem.objectItem.GetComponentsInChildren<Renderer>())
+                            foreach (var renderer in ociItem.objectItem.GetComponentsInChildren<Renderer>())
                             {
-                                if (FormatObjectName(mesh) == loadedMeshProperty.MeshName)
+                                if (FormatObjectName(renderer) == loadedRendererProperty.RendererName)
                                 {
                                     string valueOriginal = "";
-                                    if (loadedMeshProperty.Property == RendererProperties.ShadowCastingMode)
-                                        valueOriginal = ((int)mesh.shadowCastingMode).ToString();
-                                    else if (loadedMeshProperty.Property == RendererProperties.ReceiveShadows)
-                                        valueOriginal = mesh.receiveShadows ? "1" : "0";
+                                    if (loadedRendererProperty.Property == RendererProperties.ShadowCastingMode)
+                                        valueOriginal = ((int)renderer.shadowCastingMode).ToString();
+                                    else if (loadedRendererProperty.Property == RendererProperties.ReceiveShadows)
+                                        valueOriginal = renderer.receiveShadows ? "1" : "0";
 
-                                    StudioItemMeshPropertyList.Add(new MeshProperty(GetObjectID(objectCtrlInfo), loadedMeshProperty.MeshName, loadedMeshProperty.Property, loadedMeshProperty.Value, valueOriginal));
-                                    SetMeshProperty(mesh, loadedMeshProperty.Property, int.Parse(loadedMeshProperty.Value));
+                                    StudioItemRendererPropertyList.Add(new RendererProperty(GetObjectID(objectCtrlInfo), loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, valueOriginal));
+                                    SetRendererProperty(renderer, loadedRendererProperty.Property, int.Parse(loadedRendererProperty.Value));
                                 }
                             }
                         }
                     }
                 }
 
-                if (data.data.TryGetValue("MaterialProperties", out var materialProperties) && materialProperties != null)
+                if (data.data.TryGetValue("MaterialFloatProperties", out var materialFloatProperties) && materialFloatProperties != null)
                 {
-                    var loadedMaterialProperties = MessagePackSerializer.Deserialize<List<MaterialProperty>>((byte[])materialProperties);
+                    var loadedMaterialFloatProperties = MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties);
 
-                    foreach (var loadedMaterialProperty in loadedMaterialProperties)
+                    foreach (var loadedMaterialFloatProperty in loadedMaterialFloatProperties)
                     {
-                        if (loadedItems.TryGetValue(loadedMaterialProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                        if (loadedItems.TryGetValue(loadedMaterialFloatProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                         {
                             foreach (var rend in ociItem.objectItem.GetComponentsInChildren<Renderer>())
                             {
                                 foreach (var mat in rend.materials)
                                 {
-                                    if (mat.HasProperty($"_{loadedMaterialProperty.Property}"))
+                                    if (mat.HasProperty($"_{loadedMaterialFloatProperty.Property}") && FloatProperties.Contains(loadedMaterialFloatProperty.Property))
                                     {
-                                        if (ColorProperties.Contains(loadedMaterialProperty.Property))
-                                        { }
-                                        else if (ImageProperties.Contains(loadedMaterialProperty.Property))
-                                        { }
-                                        else if (FloatProperties.Contains(loadedMaterialProperty.Property))
-                                        {
-                                            var valueOriginal = mat.GetFloat($"_{loadedMaterialProperty.Property}").ToString();
-                                            StudioItemMaterialPropertyList.Add(new MaterialProperty(GetObjectID(objectCtrlInfo), loadedMaterialProperty.MaterialName, loadedMaterialProperty.Property, loadedMaterialProperty.Value, valueOriginal));
-                                            SetFloatProperty(ociItem.objectItem, mat, loadedMaterialProperty.Property, loadedMaterialProperty.Value);
-                                        }
+                                        var valueOriginal = mat.GetFloat($"_{loadedMaterialFloatProperty.Property}").ToString();
+                                        StudioItemMaterialFloatPropertyList.Add(new MaterialFloatProperty(GetObjectID(objectCtrlInfo), loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, valueOriginal));
+                                        SetFloatProperty(ociItem.objectItem, mat, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (data.data.TryGetValue("MaterialColorProperties", out var materialColorProperties) && materialColorProperties != null)
+                {
+                    var loadedMaterialColorProperties = MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties);
+
+                    foreach (var loadedMaterialColorProperty in loadedMaterialColorProperties)
+                    {
+                        if (loadedItems.TryGetValue(loadedMaterialColorProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                        {
+                            foreach (var rend in ociItem.objectItem.GetComponentsInChildren<Renderer>())
+                            {
+                                foreach (var mat in rend.materials)
+                                {
+                                    if (mat.HasProperty($"_{loadedMaterialColorProperty.Property}") && ColorProperties.Contains(loadedMaterialColorProperty.Property))
+                                    {
+                                        var valueOriginal = mat.GetColor($"_{loadedMaterialColorProperty.Property}");
+                                        StudioItemMaterialColorPropertyList.Add(new MaterialColorProperty(GetObjectID(objectCtrlInfo), loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, valueOriginal));
+                                        SetColorProperty(ociItem.objectItem, mat, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value);
                                     }
                                 }
                             }
@@ -103,42 +129,56 @@ namespace KK_MaterialEditor
                 }
             }
 
-            public void AddMeshProperty(int id, string meshName, RendererProperties property, string value, string valueOriginal)
+            public void AddRendererProperty(int id, string rendererName, RendererProperties property, string value, string valueOriginal)
             {
-                var meshProperty = StudioItemMeshPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property);
-                if (meshProperty == null)
-                    StudioItemMeshPropertyList.Add(new MeshProperty(id, meshName, property, value, valueOriginal));
+                var rendererProperty = StudioItemRendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property);
+                if (rendererProperty == null)
+                    StudioItemRendererPropertyList.Add(new RendererProperty(id, rendererName, property, value, valueOriginal));
                 else
                 {
-                    if (value == meshProperty.ValueOriginal)
-                        StudioItemMeshPropertyList.Remove(meshProperty);
+                    if (value == rendererProperty.ValueOriginal)
+                        StudioItemRendererPropertyList.Remove(rendererProperty);
                     else
-                        meshProperty.Value = value;
+                        rendererProperty.Value = value;
                 }
             }
 
-            public void AddMaterialProperty(int id, string materialName, string property, string value, string valueOriginal)
+            public void AddMaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
             {
-                var materialProperty = StudioItemMaterialPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property);
+                var materialProperty = StudioItemMaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property);
                 if (materialProperty == null)
-                    StudioItemMaterialPropertyList.Add(new MaterialProperty(id, materialName, property, value, valueOriginal));
+                    StudioItemMaterialFloatPropertyList.Add(new MaterialFloatProperty(id, materialName, property, value, valueOriginal));
                 else
                 {
                     if (value == materialProperty.ValueOriginal)
-                        StudioItemMaterialPropertyList.Remove(materialProperty);
+                        StudioItemMaterialFloatPropertyList.Remove(materialProperty);
                     else
                         materialProperty.Value = value;
                 }
             }
 
+            public void AddMaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal)
+            {
+                var colorProperty = StudioItemMaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property);
+                if (colorProperty == null)
+                    StudioItemMaterialColorPropertyList.Add(new MaterialColorProperty(id, materialName, property, value, valueOriginal));
+                else
+                {
+                    if (value == colorProperty.ValueOriginal)
+                        StudioItemMaterialColorPropertyList.Remove(colorProperty);
+                    else
+                        colorProperty.Value = value;
+                }
+            }
+
             [Serializable]
             [MessagePackObject]
-            private class MeshProperty
+            private class RendererProperty
             {
                 [Key("ID")]
                 public int ID;
-                [Key("MeshName")]
-                public string MeshName;
+                [Key("RendererName")]
+                public string RendererName;
                 [Key("Property")]
                 public RendererProperties Property;
                 [Key("Value")]
@@ -146,10 +186,10 @@ namespace KK_MaterialEditor
                 [Key("ValueOriginal")]
                 public string ValueOriginal;
 
-                public MeshProperty(int id, string meshName, RendererProperties property, string value, string valueOriginal)
+                public RendererProperty(int id, string rendererName, RendererProperties property, string value, string valueOriginal)
                 {
                     ID = id;
-                    MeshName = meshName.Replace("(Instance)", "").Trim();
+                    RendererName = rendererName.Replace("(Instance)", "").Trim();
                     Property = property;
                     Value = value;
                     ValueOriginal = valueOriginal;
@@ -158,7 +198,7 @@ namespace KK_MaterialEditor
 
             [Serializable]
             [MessagePackObject]
-            private class MaterialProperty
+            private class MaterialFloatProperty
             {
                 [Key("ID")]
                 public int ID;
@@ -171,7 +211,7 @@ namespace KK_MaterialEditor
                 [Key("ValueOriginal")]
                 public string ValueOriginal;
 
-                public MaterialProperty(int id, string materialName, string property, string value, string valueOriginal)
+                public MaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
                 {
                     ID = id;
                     MaterialName = materialName.Replace("(Instance)", "").Trim();
@@ -180,6 +220,32 @@ namespace KK_MaterialEditor
                     ValueOriginal = valueOriginal;
                 }
             }
+
+            [Serializable]
+            [MessagePackObject]
+            private class MaterialColorProperty
+            {
+                [Key("ID")]
+                public int ID;
+                [Key("MaterialName")]
+                public string MaterialName;
+                [Key("Property")]
+                public string Property;
+                [Key("Value")]
+                public Color Value;
+                [Key("ValueOriginal")]
+                public Color ValueOriginal;
+
+                public MaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal)
+                {
+                    ID = id;
+                    MaterialName = materialName.Replace("(Instance)", "").Trim();
+                    Property = property;
+                    Value = value;
+                    ValueOriginal = valueOriginal;
+                }
+            }
+
         }
     }
 }
