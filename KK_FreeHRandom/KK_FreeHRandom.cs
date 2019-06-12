@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using CommonCode;
 using Harmony;
 using Illusion.Extensions;
 using System.Collections.Generic;
@@ -17,9 +18,8 @@ namespace KK_FreeHRandom
     {
         public const string GUID = "com.deathweasel.bepinex.freehrandom";
         public const string PluginName = "Free H Random";
-        public const string PluginNameInternal = "KK_FreeHRandom";
         public const string Version = "1.1";
-        private enum CharacterType { Female1, Female2, Female3P, Male }
+        private enum CharacterType { Heroine, Partner, Female3P, Male }
 
         private void Main() => SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
 
@@ -28,17 +28,18 @@ namespace KK_FreeHRandom
             if (sceneName != "FreeH")
                 return;
 
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female1);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
             CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Male);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Masturbation/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female1);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female1);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/PartnerSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female2);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Masturbation/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
+            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/PartnerSelectButton")?.GetComponent<RectTransform>(), CharacterType.Partner);
             CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female3P);
             CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Male);
-            //CreateRandomButton(GameObject.Find("FreeHScene").transform.Find("Canvas/Panel/Dark/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female1);
             CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Dark/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Male);
         }
-
+        /// <summary>
+        /// Copy the male/female selection button and rewire it in to a Random button
+        /// </summary>
         private void CreateRandomButton(RectTransform buttonToCopy, CharacterType characterType)
         {
             if (buttonToCopy == null)
@@ -57,8 +58,11 @@ namespace KK_FreeHRandom
 
             var tmp = copy.transform.Children().FirstOrDefault(x => x.name.StartsWith("TextMeshPro"));
             if (tmp != null)
-                tmp.GetComponent<TextMeshProUGUI>().text = "Random";
+                tmp.GetComponent<TextMeshProUGUI>().text = CC.Language == 0 ? "ランダム" : "Random";
         }
+        /// <summary>
+        /// Load the list of character cards and choose a random one
+        /// </summary>
         private void RandomizeCharacter(CharacterType characterType)
         {
             FolderAssist folderAssist = new FolderAssist();
@@ -87,7 +91,9 @@ namespace KK_FreeHRandom
 
             SetupCharacter(filePath, characterType);
         }
-
+        /// <summary>
+        /// Load and set the character
+        /// </summary>
         private void SetupCharacter(string filePath, CharacterType characterType)
         {
             var chaFileControl = new ChaFileControl();
@@ -97,10 +103,10 @@ namespace KK_FreeHRandom
 
                 switch (characterType)
                 {
-                    case CharacterType.Female1:
+                    case CharacterType.Heroine:
                         member.resultHeroine.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
                         break;
-                    case CharacterType.Female2:
+                    case CharacterType.Partner:
                         member.resultPartner.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
                         break;
                     case CharacterType.Female3P:
@@ -113,23 +119,6 @@ namespace KK_FreeHRandom
                         member.resultPlayer.SetValueAndForceNotify(new SaveData.Player(chaFileControl, false));
                         break;
                 }
-            }
-        }
-    }
-
-    internal static class Extensions
-    {
-        private static readonly System.Random rng = new System.Random();
-        public static void Randomize<T>(this IList<T> list)
-        {
-            int n = list.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
             }
         }
     }
