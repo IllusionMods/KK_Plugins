@@ -41,7 +41,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="ConfigurationManager">
-      <HintPath>..\..\..\..\..\..\Illusion\Koikatu\BepInEx\ConfigurationManager.dll</HintPath>
+      <HintPath>..\lib\ConfigurationManager.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

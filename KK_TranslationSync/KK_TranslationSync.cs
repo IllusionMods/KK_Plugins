@@ -2,7 +2,6 @@
 using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -24,13 +23,13 @@ namespace KK_TranslationSync
         public static ConfigWrapper<string> Personality { get; private set; }
         public static SavedKeyboardShortcut TranslationSyncHotkey { get; private set; }
 
-        void Main()
+        private void Main()
         {
             Personality = new ConfigWrapper<string>("Personality", PluginNameInternal, "c00");
             TranslationSyncHotkey = new SavedKeyboardShortcut(PluginNameInternal, PluginNameInternal, new KeyboardShortcut(KeyCode.Alpha0));
         }
 
-        void Update()
+        private void Update()
         {
             if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) && Input.GetKey(TranslationSyncHotkey.Value.MainKey))
             {
@@ -305,7 +304,7 @@ namespace KK_TranslationSync
 
         private enum TLType { Scenario, Communication, H }
 
-        bool CheckLineForErrors(string line, string fileName, int lineNumber)
+        private bool CheckLineForErrors(string line, string fileName, int lineNumber)
         {
             if (!line.Contains("="))
             {
@@ -335,13 +334,13 @@ namespace KK_TranslationSync
             return false;
         }
 
-        void SaveFile(string filePath, string[] lines)
+        private void SaveFile(string filePath, string[] lines)
         {
             Logger.Log(LogLevel.Info, $"Saving file:{filePath}");
             File.WriteAllLines(filePath, lines);
         }
 
-        bool FormatTLText(ref string tlText)
+        private bool FormatTLText(ref string tlText)
         {
             bool DidEdit = false;
             string NewTLText = tlText;
@@ -367,7 +366,7 @@ namespace KK_TranslationSync
             return DidEdit;
         }
 
-        bool FormatUnTLText(ref string UnTLText)
+        private bool FormatUnTLText(ref string UnTLText)
         {
             bool DidEdit = false;
             string NewUnTLText = UnTLText;
