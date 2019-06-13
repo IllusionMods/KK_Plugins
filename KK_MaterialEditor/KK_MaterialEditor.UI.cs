@@ -1,4 +1,5 @@
-﻿using KKAPI.Maker;
+﻿using CommonCode;
+using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using KKAPI.Utilities;
 using Studio;
@@ -52,6 +53,7 @@ namespace KK_MaterialEditor
             UISystem = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
             UISystem.gameObject.SetActive(false);
             UISystem.gameObject.transform.SetParent(transform);
+            UISystem.sortingOrder = 1000;
 
             var mainPanel = UIUtility.CreatePanel("Panel", UISystem.transform);
             mainPanel.color = Color.white;
@@ -91,7 +93,7 @@ namespace KK_MaterialEditor
             MaterialEditorWindow.movementType = ScrollRect.MovementType.Clamped;
         }
 
-        private enum ObjectType { StudioItem, Clothes };
+        private enum ObjectType { StudioItem, Clothes, Accessory };
 
         private void PopulateListStudio()
         {
@@ -114,8 +116,10 @@ namespace KK_MaterialEditor
 
         private void PopulateListAccessory()
         {
-            //ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(MakerAPI.GetCharacterControl(), AccessoriesApi.SelectedMakerAccSlot);
-            //PopulateList(chaAccessoryComponent?.gameObject);
+            var chaControl = MakerAPI.GetCharacterControl();
+            int coordinateIndex = GetCharaController(chaControl).CurrentCoordinateIndex;
+            ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(MakerAPI.GetCharacterControl(), AccessoriesApi.SelectedMakerAccSlot);
+            PopulateList(chaAccessoryComponent?.gameObject, ObjectType.Accessory, 0, chaControl, coordinateIndex, AccessoriesApi.SelectedMakerAccSlot);
         }
 
         private void PopulateList(GameObject go, ObjectType objectType, int id = 0, ChaControl chaControl = null, int coordinateIndex = 0, int slot = 0)
@@ -155,14 +159,52 @@ namespace KK_MaterialEditor
                 contentItem1.gameObject.AddComponent<Mask>();
                 contentItem1.gameObject.AddComponent<HorizontalLayoutGroup>();
 
-                var labelShadowCastingMode = UIUtility.CreateText("ShadowCastingMode", contentItem1.transform, "ShadowCastingMode:");
+                var labelEnabled = UIUtility.CreateText("Enabled", contentItem1.transform, "Enabled:");
+                labelEnabled.alignment = TextAnchor.MiddleLeft;
+                labelEnabled.color = Color.black;
+                var labelEnabledLE = labelEnabled.gameObject.AddComponent<LayoutElement>();
+                labelEnabledLE.preferredWidth = labelWidth;
+                labelEnabledLE.flexibleWidth = labelWidth;
+
+                bool initialValueEnabled = rend.enabled;
+                var dropdownEnabled = UIUtility.CreateDropdown("Enabled", contentItem1.transform, "Enabled");
+                dropdownEnabled.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
+                dropdownEnabled.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
+                dropdownEnabled.captionText.alignment = TextAnchor.MiddleLeft;
+                dropdownEnabled.options.Clear();
+                dropdownEnabled.options.Add(new Dropdown.OptionData("Off"));
+                dropdownEnabled.options.Add(new Dropdown.OptionData("On"));
+                dropdownEnabled.value = initialValueEnabled ? 1 : 0;
+                dropdownEnabled.captionText.text = initialValueEnabled ? "On" : "Off";
+                dropdownEnabled.onValueChanged.AddListener((value) =>
+                {
+                    if (objectType == ObjectType.StudioItem)
+                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
+                    else if (objectType == ObjectType.Clothes)
+                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
+                    else if (objectType == ObjectType.Accessory)
+                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
+                    SetRendererProperty(rend, RendererProperties.Enabled, value);
+                });
+                var dropdownEnabledLE = dropdownEnabled.gameObject.AddComponent<LayoutElement>();
+                dropdownEnabledLE.preferredWidth = dropdownWidth;
+                dropdownEnabledLE.flexibleWidth = 0;
+
+
+                var contentItem2 = UIUtility.CreatePanel("ContentItem1", MaterialEditorWindow.content.transform);
+                contentItem2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
+                contentItem2.gameObject.AddComponent<Mask>();
+                contentItem2.gameObject.AddComponent<HorizontalLayoutGroup>();
+
+                var labelShadowCastingMode = UIUtility.CreateText("ShadowCastingMode", contentItem2.transform, "ShadowCastingMode:");
                 labelShadowCastingMode.alignment = TextAnchor.MiddleLeft;
                 labelShadowCastingMode.color = Color.black;
                 var labelShadowCastingModeLE = labelShadowCastingMode.gameObject.AddComponent<LayoutElement>();
                 labelShadowCastingModeLE.preferredWidth = labelWidth;
                 labelShadowCastingModeLE.flexibleWidth = labelWidth;
 
-                var dropdownShadowCastingMode = UIUtility.CreateDropdown("ShadowCastingMode", contentItem1.transform, "ShadowCastingMode");
+                var initialValueShadowCastingMode = rend.shadowCastingMode;
+                var dropdownShadowCastingMode = UIUtility.CreateDropdown("ShadowCastingMode", contentItem2.transform, "ShadowCastingMode");
                 dropdownShadowCastingMode.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                 dropdownShadowCastingMode.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
                 dropdownShadowCastingMode.captionText.alignment = TextAnchor.MiddleLeft;
@@ -171,48 +213,52 @@ namespace KK_MaterialEditor
                 dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("On"));
                 dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("TwoSided"));
                 dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("ShadowsOnly"));
-                dropdownShadowCastingMode.value = (int)rend.shadowCastingMode;
-                dropdownShadowCastingMode.captionText.text = rend.shadowCastingMode.ToString();
+                dropdownShadowCastingMode.value = (int)initialValueShadowCastingMode;
+                dropdownShadowCastingMode.captionText.text = initialValueShadowCastingMode.ToString();
                 dropdownShadowCastingMode.onValueChanged.AddListener((value) =>
                 {
                     if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)rend.shadowCastingMode).ToString());
+                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
                     else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)rend.shadowCastingMode).ToString());
+                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
+                    else if (objectType == ObjectType.Clothes)
+                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
                     SetRendererProperty(rend, RendererProperties.ShadowCastingMode, value);
                 });
                 var dropdownShadowCastingModeLE = dropdownShadowCastingMode.gameObject.AddComponent<LayoutElement>();
                 dropdownShadowCastingModeLE.preferredWidth = dropdownWidth;
                 dropdownShadowCastingModeLE.flexibleWidth = 0;
 
-                var contentItem2 = UIUtility.CreatePanel("ContentItem2", MaterialEditorWindow.content.transform);
-                contentItem2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                contentItem2.gameObject.AddComponent<Mask>();
-                contentItem2.gameObject.AddComponent<HorizontalLayoutGroup>();
+                var contentItem3 = UIUtility.CreatePanel("ContentItem2", MaterialEditorWindow.content.transform);
+                contentItem3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
+                contentItem3.gameObject.AddComponent<Mask>();
+                contentItem3.gameObject.AddComponent<HorizontalLayoutGroup>();
 
-                var labelReceiveShadows = UIUtility.CreateText("ReceiveShadows", contentItem2.transform, $"ReceiveShadows:");
+                var labelReceiveShadows = UIUtility.CreateText("ReceiveShadows", contentItem3.transform, $"ReceiveShadows:");
                 labelReceiveShadows.alignment = TextAnchor.MiddleLeft;
                 labelReceiveShadows.color = Color.black;
                 var labelReceiveShadowsLE = labelReceiveShadows.gameObject.AddComponent<LayoutElement>();
                 labelReceiveShadowsLE.preferredWidth = labelWidth;
                 labelReceiveShadowsLE.flexibleWidth = labelWidth;
 
-                int receiveShadowsValue = rend.receiveShadows ? 1 : 0;
-                var dropdownReceiveShadows = UIUtility.CreateDropdown("ReceiveShadows", contentItem2.transform, "ReceiveShadows");
+                bool initialValueReceiveShadows = rend.receiveShadows;
+                var dropdownReceiveShadows = UIUtility.CreateDropdown("ReceiveShadows", contentItem3.transform, "ReceiveShadows");
                 dropdownReceiveShadows.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                 dropdownReceiveShadows.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
                 dropdownReceiveShadows.captionText.alignment = TextAnchor.MiddleLeft;
                 dropdownReceiveShadows.options.Clear();
                 dropdownReceiveShadows.options.Add(new Dropdown.OptionData("Off"));
                 dropdownReceiveShadows.options.Add(new Dropdown.OptionData("On"));
-                dropdownReceiveShadows.value = rend.receiveShadows ? 1 : 0;
-                dropdownReceiveShadows.captionText.text = rend.receiveShadows ? "On" : "Off";
+                dropdownReceiveShadows.value = initialValueReceiveShadows ? 1 : 0;
+                dropdownReceiveShadows.captionText.text = initialValueReceiveShadows ? "On" : "Off";
                 dropdownReceiveShadows.onValueChanged.AddListener((value) =>
                 {
                     if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), receiveShadowsValue.ToString());
+                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
                     else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), receiveShadowsValue.ToString());
+                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
+                    else if (objectType == ObjectType.Accessory)
+                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
                     SetRendererProperty(rend, RendererProperties.ReceiveShadows, value);
                 });
                 var dropdownReceiveShadowsLE = dropdownReceiveShadows.gameObject.AddComponent<LayoutElement>();
@@ -255,6 +301,11 @@ namespace KK_MaterialEditor
 
                     foreach (var colorProperty in ColorProperties)
                     {
+                        if (objectType == ObjectType.Clothes && ClothesBlacklist.Contains(colorProperty))
+                            continue;
+                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(colorProperty))
+                            continue;
+
                         if (mat.HasProperty($"_{colorProperty}"))
                         {
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
@@ -284,6 +335,8 @@ namespace KK_MaterialEditor
                                 SetColorRProperty(go, mat, colorProperty, value);
                                 if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Clothes)
+                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                             });
                             var textBoxRLE = textBoxR.gameObject.AddComponent<LayoutElement>();
                             textBoxRLE.preferredWidth = colorTextBoxWidth;
@@ -303,6 +356,8 @@ namespace KK_MaterialEditor
                                 SetColorGProperty(go, mat, colorProperty, value);
                                 if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Clothes)
+                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                             });
                             var textBoxGLE = textBoxG.gameObject.AddComponent<LayoutElement>();
                             textBoxGLE.preferredWidth = colorTextBoxWidth;
@@ -322,6 +377,8 @@ namespace KK_MaterialEditor
                                 SetColorBProperty(go, mat, colorProperty, value);
                                 if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Clothes)
+                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                             });
 
                             var textBoxBLE = textBoxB.gameObject.AddComponent<LayoutElement>();
@@ -342,6 +399,8 @@ namespace KK_MaterialEditor
                                 SetColorAProperty(go, mat, colorProperty, value);
                                 if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Clothes)
+                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                             });
 
                             var textBoxALE = textBoxA.gameObject.AddComponent<LayoutElement>();
@@ -351,6 +410,11 @@ namespace KK_MaterialEditor
                     }
                     foreach (var imageProperty in ImageProperties)
                     {
+                        if (objectType == ObjectType.Clothes && ClothesBlacklist.Contains(imageProperty))
+                            continue;
+                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(imageProperty))
+                            continue;
+
                         if (mat.HasProperty($"_{imageProperty}"))
                         {
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
@@ -394,6 +458,11 @@ namespace KK_MaterialEditor
                     }
                     foreach (var floatProperty in FloatProperties)
                     {
+                        if (objectType == ObjectType.Clothes && ClothesBlacklist.Contains(floatProperty))
+                            continue;
+                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(floatProperty))
+                            continue;
+
                         if (mat.HasProperty($"_{floatProperty}"))
                         {
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
@@ -416,7 +485,7 @@ namespace KK_MaterialEditor
                                 if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialFloatProperty(id, FormatObjectName(mat), floatProperty, value.ToString(), propertyValue.ToString());
                                 else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddMaterialFloatProperty(coordinateIndex, slot, FormatObjectName(mat), floatProperty, value.ToString(), propertyValue.ToString());
+                                    GetCharaController(chaControl).AddClothingMaterialFloatProperty(coordinateIndex, slot, FormatObjectName(mat), floatProperty, value.ToString(), propertyValue.ToString());
                                 SetFloatProperty(go, mat, floatProperty, value);
                             });
                             var textBoxPropertyLE = textBoxProperty.gameObject.AddComponent<LayoutElement>();
@@ -506,7 +575,9 @@ namespace KK_MaterialEditor
             var dirPath = $"{Application.dataPath}/../UserData/MaterialEditor/";
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);
-            SaveTex(tex, $"{dirPath}{FormatObjectName(mat)}_{property}.png");
+            string filename = $"{dirPath}{FormatObjectName(mat)}_{property}.png";
+            CC.Log($"Exported {filename}");
+            SaveTex(tex, filename);
         }
 
         private byte[] LoadIcon()
@@ -518,6 +589,16 @@ namespace KK_MaterialEditor
                 return bytesInStream;
             }
         }
+
+        public static HashSet<string> ClothesBlacklist = new HashSet<string>()
+        {
+            "MainTex"
+        };
+
+        public static HashSet<string> AccessoryBlacklist = new HashSet<string>()
+        {
+            "Color", "Color2", "Color3", "Color4"
+        };
 
         public static HashSet<string> ColorProperties = new HashSet<string>()
         {
@@ -540,7 +621,7 @@ namespace KK_MaterialEditor
         };
         public enum RendererProperties
         {
-            ShadowCastingMode, ReceiveShadows
+            Enabled, ShadowCastingMode, ReceiveShadows
         }
 
         #region Helper Methods

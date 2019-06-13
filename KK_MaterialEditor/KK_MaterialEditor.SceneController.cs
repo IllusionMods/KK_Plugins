@@ -66,13 +66,7 @@ namespace KK_MaterialEditor
                             {
                                 if (FormatObjectName(renderer) == loadedRendererProperty.RendererName)
                                 {
-                                    string valueOriginal = "";
-                                    if (loadedRendererProperty.Property == RendererProperties.ShadowCastingMode)
-                                        valueOriginal = ((int)renderer.shadowCastingMode).ToString();
-                                    else if (loadedRendererProperty.Property == RendererProperties.ReceiveShadows)
-                                        valueOriginal = renderer.receiveShadows ? "1" : "0";
-
-                                    StudioItemRendererPropertyList.Add(new RendererProperty(GetObjectID(objectCtrlInfo), loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, valueOriginal));
+                                    StudioItemRendererPropertyList.Add(new RendererProperty(GetObjectID(objectCtrlInfo), loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
                                     SetRendererProperty(renderer, loadedRendererProperty.Property, int.Parse(loadedRendererProperty.Value));
                                 }
                             }

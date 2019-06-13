@@ -93,7 +93,9 @@ namespace KK_MaterialEditor
             if (property == RendererProperties.ShadowCastingMode)
                 rend.shadowCastingMode = (UnityEngine.Rendering.ShadowCastingMode)value;
             else if (property == RendererProperties.ReceiveShadows)
-                rend.receiveShadows = value == 1 ? true : false;
+                rend.receiveShadows = value == 1;
+            else if (property == RendererProperties.Enabled)
+                rend.enabled = value == 1;
         }
 
         private static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
