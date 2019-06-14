@@ -63,7 +63,7 @@ When the category is - the extended data will be stripped and will be treated as
 Adds some extra error handling to the game so certain hair mods wont lock up the whole game when they appear in a cutscene.<br/>
 
 #### KK_ReloadCharaListOnChange
-**v1.5 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v90/KK_ReloadCharaListOnChange.v1.5.zip)**<br/>
+**v1.5.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_ReloadCharaListOnChange.v1.5.1.zip)**<br/>
 
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.<br/>
 
@@ -74,6 +74,7 @@ v1.3 Updated for plugin compatibility<br/>
 v1.4 Studio support<br/>
 v1.4.1 Compatibility with BepisPlugins versions higher than r8<br/>
 v1.5 Koikatsu Party compatibility<br/>
+v1.5.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 #### KK_InvisibleBody EC_InvisibleBody
@@ -278,11 +279,12 @@ v1.1 Setup.xml is tested for validity, deleted if broken<br/>
 </details>
 
 #### KK_FreeHRandom
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v88/KK_FreeHRandom.v1.1.zip)**<br/>
+**v1.1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_FreeHRandom.v1.1.1.zip)**<br/>
 Adds buttons to Free H selection screen to get random characters for your H session.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Added UI, KK Party support<br/>
+v1.1.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 
