@@ -16,11 +16,11 @@ namespace HairAccessoryCustomizer
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairAcsColor))]
         public static void ChangeSettingHairAcsColor(ChaControl __instance) => HairAccessoryCustomizer.GetController(__instance).UpdateAccessories(!HairAccessoryCustomizer.ReloadingChara);
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryColor))]
-#if KK
         public static void ChangeAccessoryColor(ChaControl __instance, int slotNo) => HairAccessoryCustomizer.GetController(__instance).UpdateAccessory(slotNo, false);
+#if KK
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), new[] { typeof(ChaFileDefine.CoordinateType), typeof(bool) })]
-#endif
         public static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));
+#endif
         private static IEnumerator ChangeCoordinateActions(ChaControl __instance)
         {
             var controller = HairAccessoryCustomizer.GetController(__instance);
