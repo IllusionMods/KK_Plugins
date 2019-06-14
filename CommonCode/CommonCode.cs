@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Xml.Linq;
 using UnityEngine;
 
@@ -53,6 +54,13 @@ namespace CommonCode
         internal static void Log(object text) => BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, text?.ToString());
         internal static void Log(BepInEx.Logging.LogLevel level, object text) => BepInEx.Logger.Log(level, text?.ToString());
         internal static void StackTrace() => Log(new System.Diagnostics.StackTrace());
+
+        internal static class Paths
+        {
+            internal static readonly string FemaleCardPath = Path.Combine(UserData.Path, "chara/female/");
+            internal static readonly string MaleCardPath = Path.Combine(UserData.Path, "chara/male/");
+            internal static readonly string CoordinateCardPath = Path.Combine(UserData.Path, "coordinate/");
+        }
     }
 
     internal static class Extensions

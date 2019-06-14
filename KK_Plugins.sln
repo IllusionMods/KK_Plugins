@@ -108,6 +108,7 @@ Global
 		CommonCode\CommonCode.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{c15b8820-0e24-452b-b076-1a052dd7c0fb}*SharedItemsImports = 13
+		CommonCode\CommonCode.projitems*{c2c68ac3-cb8f-4ba7-91ea-9a242851294d}*SharedItemsImports = 4
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{c71a1776-100b-49c9-a944-ed54c4312591}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13

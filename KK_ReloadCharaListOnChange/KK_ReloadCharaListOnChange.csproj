@@ -68,6 +68,7 @@
     <Compile Include="KK_ReloadCharaListOnChange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist C:\Illusion\Koikatu\BepInEx (

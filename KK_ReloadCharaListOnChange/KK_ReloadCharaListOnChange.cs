@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using ChaCustom;
+using CommonCode;
 using ExtensibleSaveFormat;
 using Harmony;
 using System;
@@ -21,15 +22,12 @@ namespace KK_ReloadCharaListOnChange
     {
         public const string GUID = "com.deathweasel.bepinex.reloadcharalistonchange";
         public const string PluginName = "Reload Character List On Change";
-        public const string Version = "1.5";
+        public const string Version = "1.5.1";
         private static FileSystemWatcher CharacterCardWatcher;
         private static FileSystemWatcher CoordinateCardWatcher;
         private static FileSystemWatcher StudioFemaleCardWatcher;
         private static FileSystemWatcher StudioMaleCardWatcher;
         private static FileSystemWatcher StudioCoordinateCardWatcher;
-        private static readonly string FemaleCardPath = Path.Combine(Paths.GameRootPath, "UserData\\chara\\female");
-        private static readonly string MaleCardPath = Path.Combine(Paths.GameRootPath, "UserData\\chara\\male");
-        private static readonly string CoordinateCardPath = Path.Combine(Paths.GameRootPath, "UserData\\coordinate");
         private static bool DoRefresh = false;
         private static bool EventFromCharaMaker = false;
         private static bool InCharaMaker = false;
@@ -44,6 +42,11 @@ namespace KK_ReloadCharaListOnChange
 
         public void Main()
         {
+            //KK Party may not have these directories when first run, create them to avoid errors
+            Directory.CreateDirectory(CC.Paths.FemaleCardPath);
+            Directory.CreateDirectory(CC.Paths.MaleCardPath);
+            Directory.CreateDirectory(CC.Paths.CoordinateCardPath);
+
             SceneManager.sceneUnloaded += SceneUnloaded;
 
             var harmony = HarmonyInstance.Create(GUID);
@@ -227,7 +230,7 @@ namespace KK_ReloadCharaListOnChange
                 CustomCharaFileInstance = __instance;
 
                 CharacterCardWatcher = new FileSystemWatcher();
-                CharacterCardWatcher.Path = Singleton<CustomBase>.Instance.modeSex == 0 ? MaleCardPath : FemaleCardPath;
+                CharacterCardWatcher.Path = Singleton<CustomBase>.Instance.modeSex == 0 ? CC.Paths.MaleCardPath : CC.Paths.FemaleCardPath;
                 CharacterCardWatcher.NotifyFilter = NotifyFilters.FileName;
                 CharacterCardWatcher.Filter = "*.png";
                 CharacterCardWatcher.EnableRaisingEvents = true;
@@ -250,7 +253,7 @@ namespace KK_ReloadCharaListOnChange
                 CustomCoordinateFileInstance = __instance;
 
                 CoordinateCardWatcher = new FileSystemWatcher();
-                CoordinateCardWatcher.Path = CoordinateCardPath;
+                CoordinateCardWatcher.Path = CC.Paths.CoordinateCardPath;
                 CoordinateCardWatcher.NotifyFilter = NotifyFilters.FileName;
                 CoordinateCardWatcher.Filter = "*.png";
                 CoordinateCardWatcher.EnableRaisingEvents = true;
@@ -270,7 +273,7 @@ namespace KK_ReloadCharaListOnChange
                 StudioFemaleListInstance = __instance;
 
                 StudioFemaleCardWatcher = new FileSystemWatcher();
-                StudioFemaleCardWatcher.Path = FemaleCardPath;
+                StudioFemaleCardWatcher.Path = CC.Paths.FemaleCardPath;
                 StudioFemaleCardWatcher.NotifyFilter = NotifyFilters.FileName;
                 StudioFemaleCardWatcher.Filter = "*.png";
                 StudioFemaleCardWatcher.EnableRaisingEvents = true;
@@ -290,7 +293,7 @@ namespace KK_ReloadCharaListOnChange
                 StudioMaleListInstance = __instance;
 
                 StudioMaleCardWatcher = new FileSystemWatcher();
-                StudioMaleCardWatcher.Path = MaleCardPath;
+                StudioMaleCardWatcher.Path = CC.Paths.MaleCardPath;
                 StudioMaleCardWatcher.NotifyFilter = NotifyFilters.FileName;
                 StudioMaleCardWatcher.Filter = "*.png";
                 StudioMaleCardWatcher.EnableRaisingEvents = true;
@@ -309,7 +312,7 @@ namespace KK_ReloadCharaListOnChange
                 StudioCoordinateListInstance = __instance;
 
                 StudioCoordinateCardWatcher = new FileSystemWatcher();
-                StudioCoordinateCardWatcher.Path = CoordinateCardPath;
+                StudioCoordinateCardWatcher.Path = CC.Paths.CoordinateCardPath;
                 StudioCoordinateCardWatcher.NotifyFilter = NotifyFilters.FileName;
                 StudioCoordinateCardWatcher.Filter = "*.png";
                 StudioCoordinateCardWatcher.EnableRaisingEvents = true;

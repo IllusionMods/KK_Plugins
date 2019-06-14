@@ -18,10 +18,18 @@ namespace KK_FreeHRandom
     {
         public const string GUID = "com.deathweasel.bepinex.freehrandom";
         public const string PluginName = "Free H Random";
-        public const string Version = "1.1";
+        public const string Version = "1.1.1";
+
         private enum CharacterType { Heroine, Partner, Female3P, Player }
 
-        private void Main() => SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
+        private void Main()
+        {
+            //KK Party may not have these directories when first run, create them to avoid errors
+            Directory.CreateDirectory(CC.Paths.FemaleCardPath);
+            Directory.CreateDirectory(CC.Paths.MaleCardPath);
+
+            SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
+        }
 
         private void InitUI(string sceneName)
         {
@@ -69,9 +77,9 @@ namespace KK_FreeHRandom
 
             //Get some random cards
             if (characterType == CharacterType.Player)
-                folderAssist.CreateFolderInfoEx(Path.Combine(UserData.Path, "chara/male/"), new string[] { "*.png" }, true);
+                folderAssist.CreateFolderInfoEx(CC.Paths.MaleCardPath, new string[] { "*.png" }, true);
             else
-                folderAssist.CreateFolderInfoEx(Path.Combine(UserData.Path, "chara/female/"), new string[] { "*.png" }, true);
+                folderAssist.CreateFolderInfoEx(CC.Paths.FemaleCardPath, new string[] { "*.png" }, true);
 
             //different fields for different versions of the game, get the correct one
             var listFileObj = folderAssist.GetType().GetField("_lstFile", AccessTools.all)?.GetValue(folderAssist);
