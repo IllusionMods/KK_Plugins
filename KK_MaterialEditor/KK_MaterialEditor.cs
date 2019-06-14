@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
+using Harmony;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio.SaveLoad;
@@ -16,15 +17,27 @@ namespace KK_MaterialEditor
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "0.2";
+        public const string Version = "0.3";
 
         private void Main()
         {
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
+            AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
+            AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
+            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
+            AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
+
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
+
+            HarmonyInstance.Create(GUID).PatchAll(typeof(Hooks));
         }
+
+        private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
+        private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
+        private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
+        private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
 
         private static void SetFloatProperty(GameObject go, Material mat, string property, string value)
         {
@@ -99,10 +112,7 @@ namespace KK_MaterialEditor
         }
 
         private static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
-        internal static string FormatObjectName(Object go) => go.name.Replace("(Instance)", "").Trim();
         public static MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
         public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();
-        internal static void Log(string text) => BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, text);
-        internal static void Log(object text) => BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, text?.ToString());
     }
 }

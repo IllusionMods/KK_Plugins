@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Linq;
+using UnityEngine;
 
 namespace CommonCode
 {
@@ -51,6 +52,7 @@ namespace CommonCode
         internal static void Log(BepInEx.Logging.LogLevel level, string text) => BepInEx.Logger.Log(level, text);
         internal static void Log(object text) => BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, text?.ToString());
         internal static void Log(BepInEx.Logging.LogLevel level, object text) => BepInEx.Logger.Log(level, text?.ToString());
+        internal static void StackTrace() => Log(new System.Diagnostics.StackTrace());
     }
 
     internal static class Extensions
@@ -68,5 +70,9 @@ namespace CommonCode
                 list[n] = value;
             }
         }
+        public static string NameFormatted(this GameObject go) => go.name.Replace("(Instance)", "").Trim();
+        public static string NameFormatted(this Material go) => go.name.Replace("(Instance)", "").Trim();
+        public static string NameFormatted(this Renderer go) => go.name.Replace("(Instance)", "").Trim();
+        public static string NameFormatted(this Shader go) => go.name.Replace("(Instance)", "").Trim();
     }
 }

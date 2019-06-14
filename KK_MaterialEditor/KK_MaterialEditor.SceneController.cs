@@ -1,4 +1,5 @@
-﻿using ExtensibleSaveFormat;
+﻿using CommonCode;
+using ExtensibleSaveFormat;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using MessagePack;
@@ -64,7 +65,7 @@ namespace KK_MaterialEditor
                         {
                             foreach (var renderer in ociItem.objectItem.GetComponentsInChildren<Renderer>())
                             {
-                                if (FormatObjectName(renderer) == loadedRendererProperty.RendererName)
+                                if (renderer.NameFormatted() == loadedRendererProperty.RendererName)
                                 {
                                     StudioItemRendererPropertyList.Add(new RendererProperty(GetObjectID(objectCtrlInfo), loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
                                     SetRendererProperty(renderer, loadedRendererProperty.Property, int.Parse(loadedRendererProperty.Value));
@@ -125,7 +126,7 @@ namespace KK_MaterialEditor
 
             public void AddRendererProperty(int id, string rendererName, RendererProperties property, string value, string valueOriginal)
             {
-                var rendererProperty = StudioItemRendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property);
+                var rendererProperty = StudioItemRendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == rendererName);
                 if (rendererProperty == null)
                     StudioItemRendererPropertyList.Add(new RendererProperty(id, rendererName, property, value, valueOriginal));
                 else
@@ -139,7 +140,7 @@ namespace KK_MaterialEditor
 
             public void AddMaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
             {
-                var materialProperty = StudioItemMaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property);
+                var materialProperty = StudioItemMaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
                 if (materialProperty == null)
                     StudioItemMaterialFloatPropertyList.Add(new MaterialFloatProperty(id, materialName, property, value, valueOriginal));
                 else
@@ -153,7 +154,7 @@ namespace KK_MaterialEditor
 
             public void AddMaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal)
             {
-                var colorProperty = StudioItemMaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property);
+                var colorProperty = StudioItemMaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
                 if (colorProperty == null)
                     StudioItemMaterialColorPropertyList.Add(new MaterialColorProperty(id, materialName, property, value, valueOriginal));
                 else

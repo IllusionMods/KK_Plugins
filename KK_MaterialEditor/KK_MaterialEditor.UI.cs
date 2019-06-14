@@ -14,16 +14,16 @@ namespace KK_MaterialEditor
 {
     public partial class KK_MaterialEditor
     {
-        private Canvas UISystem;
-        private ScrollRect MaterialEditorWindow;
+        private static Canvas UISystem;
+        private static ScrollRect MaterialEditorWindow;
 
         public const string FileExt = ".png";
         public const string FileFilter = "Images (*.png)|*.png|All files|*.*";
 
-        private string TexPath = "";
-        private string PropertyToSet = "";
-        private Material MatToSet;
-        private GameObject GameObjectToSet;
+        private static string TexPath = "";
+        private static string PropertyToSet = "";
+        private static Material MatToSet;
+        private static GameObject GameObjectToSet;
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
@@ -39,6 +39,12 @@ namespace KK_MaterialEditor
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Socks, this)).OnClick.AddListener(delegate { PopulateListClothes(6); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.InnerShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(8); });
+
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Back, this)).OnClick.AddListener(delegate { PopulateListHair(0); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Front, this)).OnClick.AddListener(delegate { PopulateListHair(1); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Side, this)).OnClick.AddListener(delegate { PopulateListHair(2); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Extension, this)).OnClick.AddListener(delegate { PopulateListHair(3); });
+
         }
 
         private void InitUI()
@@ -93,9 +99,9 @@ namespace KK_MaterialEditor
             MaterialEditorWindow.movementType = ScrollRect.MovementType.Clamped;
         }
 
-        private enum ObjectType { StudioItem, Clothes, Accessory };
+        private enum ObjectType { StudioItem, Clothes, Accessory, Hair };
 
-        private void PopulateListStudio()
+        private static void PopulateListStudio()
         {
             if (Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes.Length != 1)
                 return;
@@ -107,14 +113,14 @@ namespace KK_MaterialEditor
                         PopulateList(ociItem?.objectItem, ObjectType.StudioItem, GetObjectID(objectCtrlInfo));
         }
 
-        private void PopulateListClothes(int index)
+        private static void PopulateListClothes(int index)
         {
             var chaControl = MakerAPI.GetCharacterControl();
             int coordinateIndex = GetCharaController(chaControl).CurrentCoordinateIndex;
             PopulateList(chaControl.objClothes[index], ObjectType.Clothes, 0, chaControl, coordinateIndex, index);
         }
 
-        private void PopulateListAccessory()
+        private static void PopulateListAccessory()
         {
             var chaControl = MakerAPI.GetCharacterControl();
             int coordinateIndex = GetCharaController(chaControl).CurrentCoordinateIndex;
@@ -122,7 +128,13 @@ namespace KK_MaterialEditor
             PopulateList(chaAccessoryComponent?.gameObject, ObjectType.Accessory, 0, chaControl, coordinateIndex, AccessoriesApi.SelectedMakerAccSlot);
         }
 
-        private void PopulateList(GameObject go, ObjectType objectType, int id = 0, ChaControl chaControl = null, int coordinateIndex = 0, int slot = 0)
+        private static void PopulateListHair(int index)
+        {
+            var chaControl = MakerAPI.GetCharacterControl();
+            PopulateList(chaControl.objHair[index], ObjectType.Hair, 0, chaControl, 0, index);
+        }
+
+        private static void PopulateList(GameObject go, ObjectType objectType, int id = 0, ChaControl chaControl = null, int coordinateIndex = 0, int slot = 0)
         {
             UISystem.gameObject.SetActive(true);
 
@@ -147,10 +159,10 @@ namespace KK_MaterialEditor
                 contentListHeader.gameObject.AddComponent<Mask>();
                 contentListHeader.gameObject.AddComponent<HorizontalLayoutGroup>();
 
-                var labelRenderer = UIUtility.CreateText(FormatObjectName(rend), contentListHeader.transform, "Renderer:");
+                var labelRenderer = UIUtility.CreateText(rend.NameFormatted(), contentListHeader.transform, "Renderer:");
                 labelRenderer.alignment = TextAnchor.MiddleLeft;
                 labelRenderer.color = Color.black;
-                var labelRenderer2 = UIUtility.CreateText(FormatObjectName(rend), contentListHeader.transform, FormatObjectName(rend));
+                var labelRenderer2 = UIUtility.CreateText(rend.NameFormatted(), contentListHeader.transform, rend.NameFormatted());
                 labelRenderer2.alignment = TextAnchor.MiddleRight;
                 labelRenderer2.color = Color.black;
 
@@ -179,11 +191,13 @@ namespace KK_MaterialEditor
                 dropdownEnabled.onValueChanged.AddListener((value) =>
                 {
                     if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
+                        GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
                     else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
+                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
                     else if (objectType == ObjectType.Accessory)
-                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
+                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
+                    else if (objectType == ObjectType.Hair)
+                        GetCharaController(chaControl).AddHairRendererProperty(slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
                     SetRendererProperty(rend, RendererProperties.Enabled, value);
                 });
                 var dropdownEnabledLE = dropdownEnabled.gameObject.AddComponent<LayoutElement>();
@@ -218,11 +232,13 @@ namespace KK_MaterialEditor
                 dropdownShadowCastingMode.onValueChanged.AddListener((value) =>
                 {
                     if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
+                        GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
                     else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
+                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
                     else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
+                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
+                    else if (objectType == ObjectType.Hair)
+                        GetCharaController(chaControl).AddHairRendererProperty(slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
                     SetRendererProperty(rend, RendererProperties.ShadowCastingMode, value);
                 });
                 var dropdownShadowCastingModeLE = dropdownShadowCastingMode.gameObject.AddComponent<LayoutElement>();
@@ -254,11 +270,13 @@ namespace KK_MaterialEditor
                 dropdownReceiveShadows.onValueChanged.AddListener((value) =>
                 {
                     if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddRendererProperty(id, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
+                        GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
                     else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
+                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
                     else if (objectType == ObjectType.Accessory)
-                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, FormatObjectName(rend), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
+                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
+                    else if (objectType == ObjectType.Hair)
+                        GetCharaController(chaControl).AddHairRendererProperty(slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
                     SetRendererProperty(rend, RendererProperties.ReceiveShadows, value);
                 });
                 var dropdownReceiveShadowsLE = dropdownReceiveShadows.gameObject.AddComponent<LayoutElement>();
@@ -270,20 +288,20 @@ namespace KK_MaterialEditor
             {
                 foreach (var mat in rend.materials)
                 {
-                    if (mats.Contains(FormatObjectName(mat)))
+                    if (mats.Contains(mat.NameFormatted()))
                         return;
 
-                    mats.Add(FormatObjectName(mat));
+                    mats.Add(mat.NameFormatted());
 
                     var contentListHeader1 = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                     contentListHeader1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentListHeader1.gameObject.AddComponent<Mask>();
                     contentListHeader1.gameObject.AddComponent<HorizontalLayoutGroup>();
 
-                    var labelMat = UIUtility.CreateText(FormatObjectName(mat), contentListHeader1.transform, "Material:");
+                    var labelMat = UIUtility.CreateText(mat.NameFormatted(), contentListHeader1.transform, "Material:");
                     labelMat.alignment = TextAnchor.MiddleLeft;
                     labelMat.color = Color.black;
-                    var labelMat2 = UIUtility.CreateText(FormatObjectName(mat), contentListHeader1.transform, FormatObjectName(mat));
+                    var labelMat2 = UIUtility.CreateText(mat.NameFormatted(), contentListHeader1.transform, mat.NameFormatted());
                     labelMat2.alignment = TextAnchor.MiddleRight;
                     labelMat2.color = Color.black;
 
@@ -292,10 +310,10 @@ namespace KK_MaterialEditor
                     contentListHeader2.gameObject.AddComponent<Mask>();
                     contentListHeader2.gameObject.AddComponent<HorizontalLayoutGroup>();
 
-                    var labelShader = UIUtility.CreateText(FormatObjectName(mat.shader), contentListHeader2.transform, "Shader:");
+                    var labelShader = UIUtility.CreateText(mat.shader.NameFormatted(), contentListHeader2.transform, "Shader:");
                     labelShader.alignment = TextAnchor.MiddleLeft;
                     labelShader.color = Color.black;
-                    var labelShader2 = UIUtility.CreateText(FormatObjectName(mat.shader), contentListHeader2.transform, FormatObjectName(mat.shader));
+                    var labelShader2 = UIUtility.CreateText(mat.shader.NameFormatted(), contentListHeader2.transform, mat.shader.NameFormatted());
                     labelShader2.alignment = TextAnchor.MiddleRight;
                     labelShader2.color = Color.black;
 
@@ -304,6 +322,8 @@ namespace KK_MaterialEditor
                         if (objectType == ObjectType.Clothes && ClothesBlacklist.Contains(colorProperty))
                             continue;
                         if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(colorProperty))
+                            continue;
+                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(colorProperty))
                             continue;
 
                         if (mat.HasProperty($"_{colorProperty}"))
@@ -334,9 +354,13 @@ namespace KK_MaterialEditor
                             {
                                 SetColorRProperty(go, mat, colorProperty, value);
                                 if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                                 else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Accessory)
+                                    GetCharaController(chaControl).AddAccessoryMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Hair)
+                                    GetCharaController(chaControl).AddHairMaterialColorProperty(slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                             });
                             var textBoxRLE = textBoxR.gameObject.AddComponent<LayoutElement>();
                             textBoxRLE.preferredWidth = colorTextBoxWidth;
@@ -355,9 +379,13 @@ namespace KK_MaterialEditor
                             {
                                 SetColorGProperty(go, mat, colorProperty, value);
                                 if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                                 else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Accessory)
+                                    GetCharaController(chaControl).AddAccessoryMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Hair)
+                                    GetCharaController(chaControl).AddHairMaterialColorProperty(slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                             });
                             var textBoxGLE = textBoxG.gameObject.AddComponent<LayoutElement>();
                             textBoxGLE.preferredWidth = colorTextBoxWidth;
@@ -376,9 +404,13 @@ namespace KK_MaterialEditor
                             {
                                 SetColorBProperty(go, mat, colorProperty, value);
                                 if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                                 else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Accessory)
+                                    GetCharaController(chaControl).AddAccessoryMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Hair)
+                                    GetCharaController(chaControl).AddHairMaterialColorProperty(slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                             });
 
                             var textBoxBLE = textBoxB.gameObject.AddComponent<LayoutElement>();
@@ -398,9 +430,13 @@ namespace KK_MaterialEditor
                             {
                                 SetColorAProperty(go, mat, colorProperty, value);
                                 if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                                 else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, FormatObjectName(mat), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Accessory)
+                                    GetCharaController(chaControl).AddAccessoryMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                else if (objectType == ObjectType.Hair)
+                                    GetCharaController(chaControl).AddHairMaterialColorProperty(slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
                             });
 
                             var textBoxALE = textBoxA.gameObject.AddComponent<LayoutElement>();
@@ -413,6 +449,8 @@ namespace KK_MaterialEditor
                         if (objectType == ObjectType.Clothes && ClothesBlacklist.Contains(imageProperty))
                             continue;
                         if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(imageProperty))
+                            continue;
+                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(imageProperty))
                             continue;
 
                         if (mat.HasProperty($"_{imageProperty}"))
@@ -462,6 +500,8 @@ namespace KK_MaterialEditor
                             continue;
                         if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(floatProperty))
                             continue;
+                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(floatProperty))
+                            continue;
 
                         if (mat.HasProperty($"_{floatProperty}"))
                         {
@@ -483,9 +523,13 @@ namespace KK_MaterialEditor
                             textBoxProperty.onEndEdit.AddListener((value) =>
                             {
                                 if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialFloatProperty(id, FormatObjectName(mat), floatProperty, value.ToString(), propertyValue.ToString());
+                                    GetSceneController().AddMaterialFloatProperty(id, mat.NameFormatted(), floatProperty, value.ToString(), propertyValue.ToString());
                                 else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialFloatProperty(coordinateIndex, slot, FormatObjectName(mat), floatProperty, value.ToString(), propertyValue.ToString());
+                                    GetCharaController(chaControl).AddClothingMaterialFloatProperty(coordinateIndex, slot, mat.NameFormatted(), floatProperty, value.ToString(), propertyValue.ToString());
+                                else if (objectType == ObjectType.Accessory)
+                                    GetCharaController(chaControl).AddAccessoryMaterialFloatProperty(coordinateIndex, slot, mat.NameFormatted(), floatProperty, value.ToString(), propertyValue.ToString());
+                                else if (objectType == ObjectType.Hair)
+                                    GetCharaController(chaControl).AddHairMaterialFloatProperty(slot, mat.NameFormatted(), floatProperty, value.ToString(), propertyValue.ToString());
                                 SetFloatProperty(go, mat, floatProperty, value);
                             });
                             var textBoxPropertyLE = textBoxProperty.gameObject.AddComponent<LayoutElement>();
@@ -550,7 +594,7 @@ namespace KK_MaterialEditor
                 GameObjectToSet = null;
             }
         }
-        private void ImportTexture(GameObject go, Material mat, string property)
+        private static void ImportTexture(GameObject go, Material mat, string property)
         {
             OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, FileFilter, FileExt);
 
@@ -569,13 +613,13 @@ namespace KK_MaterialEditor
             }
         }
 
-        private void ExportTexture(Material mat, string property)
+        private static void ExportTexture(Material mat, string property)
         {
             var tex = mat.GetTexture($"_{property}");
             var dirPath = $"{Application.dataPath}/../UserData/MaterialEditor/";
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);
-            string filename = $"{dirPath}{FormatObjectName(mat)}_{property}.png";
+            string filename = $"{dirPath}{mat.NameFormatted()}_{property}.png";
             CC.Log($"Exported {filename}");
             SaveTex(tex, filename);
         }
@@ -597,8 +641,14 @@ namespace KK_MaterialEditor
 
         public static HashSet<string> AccessoryBlacklist = new HashSet<string>()
         {
-            "Color", "Color2", "Color3", "Color4"
+            "Color", "Color2", "Color3", "Color4", "HairGloss"
         };
+
+        public static HashSet<string> HairBlacklist = new HashSet<string>()
+        {
+            "Color", "Color2", "Color3", "Color4", "HairGloss"
+        };
+
 
         public static HashSet<string> ColorProperties = new HashSet<string>()
         {
@@ -608,14 +658,14 @@ namespace KK_MaterialEditor
 
         public static HashSet<string> ImageProperties = new HashSet<string>()
         {
-            "AlphaMask", "AnotherRamp", "BumpMap", "ColorMask", "DetailMask", "EmissionMap", "GlassRamp", "HairGloss", "LineMask", "MainTex", "MetallicGlossMap", "NormalMap", "ParallaxMap",
-            "PatternMask1", "PatternMask2", "PatternMask3", "Texture2", "Texture3", "liquidmask"
+            "AnimationMask", "AlphaMask", "AnotherRamp", "BumpMap", "ColorMask", "DetailMask", "EmissionMap", "GlassRamp", "HairGloss", "LineMask", "MainTex", "MetallicGlossMap", "NormalMap",
+            "ParallaxMap", "PatternMask1", "PatternMask2", "PatternMask3", "Texture2", "Texture3", "liquidmask"
         };
         public static HashSet<string> FloatProperties = new HashSet<string>()
         {
-            "AnotherRampFull", "BlendNormalMapScale", "BumpScale", "Cutoff", "CutoutClip", "DetailBLineG", "DetailNormalMapScale", "DetailRLineR", "DstBlend", "EmissionPower",
+            "AnotherRampFull", "BlendNormalMapScale", "BumpScale", "Cutoff", "CutoutClip", "DetailBLineG", "DetailNormalMapScale", "DetailRLineR", "DstBlend", "EmissionPower", "GlossMapScale",
             "Glossiness", "GlossyReflections", "HairEffect", "LightCancel", "LineWidthS", "Metallic", "Mode", "OcclusionStrength", "Parallax", "SelectEmissionMap", "ShadowExtend",
-            "ShadowExtendAnother", "Smoothness", "SmoothnessTextureChannel", "SpecularHeight", "SpecularPower", "SpecularPowerNail", "SrcBlend", "UVSec", "ZWrite", "alpha", "alpha_a",
+            "ShadowExtendAnother", "Smoothness", "SmoothnessTextureChannel", "SpecularHeight", "SpecularPower", "SpecularPowerNail", "SrcBlend", "UPanner", "UVSec", "ZWrite", "alpha", "alpha_a",
             "alpha_b", "ambientshadowOFF", "linetexon", "linewidth", "liquidbbot", "liquidbtop", "liquidface", "liquidfbot", "liquidftop", "nip", "nipsize", "node_6948", "notusetexspecular",
             "patternclamp1", "patternclamp2", "patternclamp3", "patternrotator1", "patternrotator2", "patternrotator3", "refpower", "rimV", "rimpower"
         };
