@@ -137,6 +137,12 @@ namespace KK_MaterialEditor
                         rendererProperty.Value = value;
                 }
             }
+            public string GetRendererPropertyValue(int id, string rendererName, RendererProperties property) =>
+                StudioItemRendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == rendererName)?.Value;
+            public string GetRendererPropertyValueOriginal(int id, string rendererName, RendererProperties property) =>
+                StudioItemRendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == rendererName)?.ValueOriginal;
+            public void RemoveRendererProperty(int id, string rendererName, RendererProperties property) =>
+                StudioItemRendererPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.RendererName == rendererName);
 
             public void AddMaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
             {
@@ -151,6 +157,12 @@ namespace KK_MaterialEditor
                         materialProperty.Value = value;
                 }
             }
+            public string GetMaterialFloatPropertyValue(int id, string materialName, string property) =>
+                StudioItemMaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName)?.Value;
+            public string GetMaterialFloatPropertyValueOriginal(int id, string materialName, string property) =>
+                StudioItemMaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName)?.ValueOriginal;
+            public void RemoveMaterialFloatProperty(int id, string materialName, string property) =>
+                StudioItemMaterialFloatPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
 
             public void AddMaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal)
             {
@@ -165,6 +177,21 @@ namespace KK_MaterialEditor
                         colorProperty.Value = value;
                 }
             }
+            public Color GetMaterialColorPropertyValue(int id, string materialName, string property)
+            {
+                if (StudioItemMaterialColorPropertyList.Where(x => x.ID == id && x.Property == property && x.MaterialName == materialName).Count() == 0)
+                    return new Color(-1, -1, -1, -1);
+                return StudioItemMaterialColorPropertyList.First(x => x.ID == id && x.Property == property && x.MaterialName == materialName).Value;
+            }
+            public Color GetMaterialColorPropertyValueOriginal(int id, string materialName, string property)
+            {
+                if (StudioItemMaterialColorPropertyList.Where(x => x.ID == id && x.Property == property && x.MaterialName == materialName).Count() == 0)
+                    return new Color(-1, -1, -1, -1);
+                return StudioItemMaterialColorPropertyList.First(x => x.ID == id && x.Property == property && x.MaterialName == materialName).ValueOriginal;
+            }
+            public void RemoveMaterialColorProperty(int id, string materialName, string property) =>
+                StudioItemMaterialColorPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+
 
             [Serializable]
             [MessagePackObject]

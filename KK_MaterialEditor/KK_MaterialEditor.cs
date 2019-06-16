@@ -111,6 +111,7 @@ namespace KK_MaterialEditor
                 rend.enabled = value == 1;
         }
 
+        public enum ObjectType { StudioItem, Clothing, Accessory, Hair, Other };
         private static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
         public static MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
         public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();

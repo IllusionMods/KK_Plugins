@@ -44,7 +44,6 @@ namespace KK_MaterialEditor
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Front, this)).OnClick.AddListener(delegate { PopulateListHair(1); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Side, this)).OnClick.AddListener(delegate { PopulateListHair(2); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Extension, this)).OnClick.AddListener(delegate { PopulateListHair(3); });
-
         }
 
         private void InitUI()
@@ -99,8 +98,6 @@ namespace KK_MaterialEditor
             MaterialEditorWindow.movementType = ScrollRect.MovementType.Clamped;
         }
 
-        private enum ObjectType { StudioItem, Clothes, Accessory, Hair };
-
         private static void PopulateListStudio()
         {
             if (Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes.Length != 1)
@@ -117,7 +114,7 @@ namespace KK_MaterialEditor
         {
             var chaControl = MakerAPI.GetCharacterControl();
             int coordinateIndex = GetCharaController(chaControl).CurrentCoordinateIndex;
-            PopulateList(chaControl.objClothes[index], ObjectType.Clothes, 0, chaControl, coordinateIndex, index);
+            PopulateList(chaControl.objClothes[index], ObjectType.Clothing, 0, chaControl, coordinateIndex, index);
         }
 
         private static void PopulateListAccessory()
@@ -144,12 +141,17 @@ namespace KK_MaterialEditor
             if (go == null)
                 return;
 
+            if (objectType == ObjectType.Hair)
+                coordinateIndex = 0;
+
             float labelWidth = 50f;
             float buttonWidth = 100f;
             float dropdownWidth = 100f;
             float textBoxWidth = 150f;
             float colorLabelWidth = 10f;
             float colorTextBoxWidth = 75f;
+            float resetButtonWidth = 50f;
+            RectOffset padding = new RectOffset(3, 3, 0, 1);
 
             List<string> mats = new List<string>();
             foreach (var rend in go.GetComponentsInChildren<Renderer>())
@@ -157,7 +159,7 @@ namespace KK_MaterialEditor
                 var contentListHeader = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                 contentListHeader.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                 contentListHeader.gameObject.AddComponent<Mask>();
-                contentListHeader.gameObject.AddComponent<HorizontalLayoutGroup>();
+                contentListHeader.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
                 var labelRenderer = UIUtility.CreateText(rend.NameFormatted(), contentListHeader.transform, "Renderer:");
                 labelRenderer.alignment = TextAnchor.MiddleLeft;
@@ -169,7 +171,7 @@ namespace KK_MaterialEditor
                 var contentItem1 = UIUtility.CreatePanel("ContentItem1", MaterialEditorWindow.content.transform);
                 contentItem1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                 contentItem1.gameObject.AddComponent<Mask>();
-                contentItem1.gameObject.AddComponent<HorizontalLayoutGroup>();
+                contentItem1.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
                 var labelEnabled = UIUtility.CreateText("Enabled", contentItem1.transform, "Enabled:");
                 labelEnabled.alignment = TextAnchor.MiddleLeft;
@@ -178,7 +180,17 @@ namespace KK_MaterialEditor
                 labelEnabledLE.preferredWidth = labelWidth;
                 labelEnabledLE.flexibleWidth = labelWidth;
 
-                bool initialValueEnabled = rend.enabled;
+                bool valueEnabled = rend.enabled;
+                bool valueEnabledInitial = rend.enabled;
+                if (objectType == ObjectType.Other) { }
+                else if (objectType == ObjectType.StudioItem)
+                {
+                    if (GetSceneController().GetRendererPropertyValueOriginal(id, rend.NameFormatted(), RendererProperties.Enabled) != null)
+                        valueEnabledInitial = GetSceneController().GetRendererPropertyValueOriginal(id, rend.NameFormatted(), RendererProperties.Enabled) == "1";
+                }
+                else if (GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled) != null)
+                    valueEnabledInitial = GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled) == "1";
+
                 var dropdownEnabled = UIUtility.CreateDropdown("Enabled", contentItem1.transform, "Enabled");
                 dropdownEnabled.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                 dropdownEnabled.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
@@ -186,29 +198,43 @@ namespace KK_MaterialEditor
                 dropdownEnabled.options.Clear();
                 dropdownEnabled.options.Add(new Dropdown.OptionData("Off"));
                 dropdownEnabled.options.Add(new Dropdown.OptionData("On"));
-                dropdownEnabled.value = initialValueEnabled ? 1 : 0;
-                dropdownEnabled.captionText.text = initialValueEnabled ? "On" : "Off";
+                dropdownEnabled.value = valueEnabled ? 1 : 0;
+                dropdownEnabled.captionText.text = valueEnabled ? "On" : "Off";
                 dropdownEnabled.onValueChanged.AddListener((value) =>
                 {
-                    if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
-                    else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
-                    else if (objectType == ObjectType.Accessory)
-                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
-                    else if (objectType == ObjectType.Hair)
-                        GetCharaController(chaControl).AddHairRendererProperty(slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), initialValueEnabled ? "1" : "0");
+                    if (value == (valueEnabledInitial ? 1 : 0))
+                        return;
+
+                    if (objectType == ObjectType.Other) { }
+                    else if (objectType == ObjectType.StudioItem)
+                        GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), valueEnabledInitial ? "1" : "0");
+                    else
+                        GetCharaController(chaControl).AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), valueEnabledInitial ? "1" : "0");
                     SetRendererProperty(rend, RendererProperties.Enabled, value);
                 });
                 var dropdownEnabledLE = dropdownEnabled.gameObject.AddComponent<LayoutElement>();
                 dropdownEnabledLE.preferredWidth = dropdownWidth;
                 dropdownEnabledLE.flexibleWidth = 0;
 
+                var resetEnabled = UIUtility.CreateButton("ResetEnabled", contentItem1.transform, "Reset");
+                resetEnabled.onClick.AddListener(() =>
+                {
+                    if (objectType == ObjectType.Other) { }
+                    else if (objectType == ObjectType.StudioItem)
+                        GetSceneController().RemoveRendererProperty(id, rend.NameFormatted(), RendererProperties.Enabled);
+                    else
+                        GetCharaController(chaControl).RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled);
+                    SetRendererProperty(rend, RendererProperties.Enabled, valueEnabledInitial ? 1 : 0);
+                    dropdownEnabled.value = valueEnabledInitial ? 1 : 0;
+                });
+                var resetEnabledLE = resetEnabled.gameObject.AddComponent<LayoutElement>();
+                resetEnabledLE.preferredWidth = resetButtonWidth;
+                resetEnabledLE.flexibleWidth = 0;
 
-                var contentItem2 = UIUtility.CreatePanel("ContentItem1", MaterialEditorWindow.content.transform);
+                var contentItem2 = UIUtility.CreatePanel("ContentItem2", MaterialEditorWindow.content.transform);
                 contentItem2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                 contentItem2.gameObject.AddComponent<Mask>();
-                contentItem2.gameObject.AddComponent<HorizontalLayoutGroup>();
+                contentItem2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
                 var labelShadowCastingMode = UIUtility.CreateText("ShadowCastingMode", contentItem2.transform, "ShadowCastingMode:");
                 labelShadowCastingMode.alignment = TextAnchor.MiddleLeft;
@@ -217,7 +243,17 @@ namespace KK_MaterialEditor
                 labelShadowCastingModeLE.preferredWidth = labelWidth;
                 labelShadowCastingModeLE.flexibleWidth = labelWidth;
 
-                var initialValueShadowCastingMode = rend.shadowCastingMode;
+                var valueShadowCastingMode = rend.shadowCastingMode;
+                var valueShadowCastingModeInitial = rend.shadowCastingMode;
+                if (objectType == ObjectType.Other) { }
+                else if (objectType == ObjectType.StudioItem)
+                {
+                    if (GetSceneController().GetRendererPropertyValueOriginal(id, rend.NameFormatted(), RendererProperties.ShadowCastingMode) != null)
+                        valueShadowCastingModeInitial = (UnityEngine.Rendering.ShadowCastingMode)int.Parse(GetSceneController().GetRendererPropertyValueOriginal(id, rend.NameFormatted(), RendererProperties.ShadowCastingMode));
+                }
+                else if (GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode) != null)
+                    valueShadowCastingModeInitial = (UnityEngine.Rendering.ShadowCastingMode)int.Parse(GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode));
+
                 var dropdownShadowCastingMode = UIUtility.CreateDropdown("ShadowCastingMode", contentItem2.transform, "ShadowCastingMode");
                 dropdownShadowCastingMode.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                 dropdownShadowCastingMode.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
@@ -227,28 +263,40 @@ namespace KK_MaterialEditor
                 dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("On"));
                 dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("TwoSided"));
                 dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("ShadowsOnly"));
-                dropdownShadowCastingMode.value = (int)initialValueShadowCastingMode;
-                dropdownShadowCastingMode.captionText.text = initialValueShadowCastingMode.ToString();
+                dropdownShadowCastingMode.value = (int)valueShadowCastingMode;
+                dropdownShadowCastingMode.captionText.text = valueShadowCastingMode.ToString();
                 dropdownShadowCastingMode.onValueChanged.AddListener((value) =>
                 {
-                    if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
-                    else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
-                    else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
-                    else if (objectType == ObjectType.Hair)
-                        GetCharaController(chaControl).AddHairRendererProperty(slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)initialValueShadowCastingMode).ToString());
+                    if (objectType == ObjectType.Other) { }
+                    else if (objectType == ObjectType.StudioItem)
+                        GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)valueShadowCastingModeInitial).ToString());
+                    else
+                        GetCharaController(chaControl).AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)valueShadowCastingModeInitial).ToString());
                     SetRendererProperty(rend, RendererProperties.ShadowCastingMode, value);
                 });
                 var dropdownShadowCastingModeLE = dropdownShadowCastingMode.gameObject.AddComponent<LayoutElement>();
                 dropdownShadowCastingModeLE.preferredWidth = dropdownWidth;
                 dropdownShadowCastingModeLE.flexibleWidth = 0;
 
-                var contentItem3 = UIUtility.CreatePanel("ContentItem2", MaterialEditorWindow.content.transform);
+                var resetShadowCastingMode = UIUtility.CreateButton("ResetShadowCastingMode", contentItem2.transform, "Reset");
+                resetShadowCastingMode.onClick.AddListener(() =>
+                {
+                    if (objectType == ObjectType.Other) { }
+                    else if (objectType == ObjectType.StudioItem)
+                        GetSceneController().RemoveRendererProperty(id, rend.NameFormatted(), RendererProperties.ShadowCastingMode);
+                    else
+                        GetCharaController(chaControl).RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode);
+                    SetRendererProperty(rend, RendererProperties.ShadowCastingMode, (int)valueShadowCastingModeInitial);
+                    dropdownShadowCastingMode.value = (int)valueShadowCastingModeInitial;
+                });
+                var resetShadowCastingModeLE = resetShadowCastingMode.gameObject.AddComponent<LayoutElement>();
+                resetShadowCastingModeLE.preferredWidth = resetButtonWidth;
+                resetShadowCastingModeLE.flexibleWidth = 0;
+
+                var contentItem3 = UIUtility.CreatePanel("ContentItem3", MaterialEditorWindow.content.transform);
                 contentItem3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                 contentItem3.gameObject.AddComponent<Mask>();
-                contentItem3.gameObject.AddComponent<HorizontalLayoutGroup>();
+                contentItem3.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
                 var labelReceiveShadows = UIUtility.CreateText("ReceiveShadows", contentItem3.transform, $"ReceiveShadows:");
                 labelReceiveShadows.alignment = TextAnchor.MiddleLeft;
@@ -257,7 +305,17 @@ namespace KK_MaterialEditor
                 labelReceiveShadowsLE.preferredWidth = labelWidth;
                 labelReceiveShadowsLE.flexibleWidth = labelWidth;
 
-                bool initialValueReceiveShadows = rend.receiveShadows;
+                bool valueReceiveShadows = rend.receiveShadows;
+                bool valueReceiveShadowsInitial = rend.receiveShadows;
+                if (objectType == ObjectType.Other) { }
+                else if (objectType == ObjectType.StudioItem)
+                {
+                    if (GetSceneController().GetRendererPropertyValueOriginal(id, rend.NameFormatted(), RendererProperties.ReceiveShadows) != null)
+                        valueReceiveShadowsInitial = GetSceneController().GetRendererPropertyValueOriginal(id, rend.NameFormatted(), RendererProperties.ReceiveShadows) == "1";
+                }
+                else if (GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows) != null)
+                    valueReceiveShadowsInitial = GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows) == "1";
+
                 var dropdownReceiveShadows = UIUtility.CreateDropdown("ReceiveShadows", contentItem3.transform, "ReceiveShadows");
                 dropdownReceiveShadows.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                 dropdownReceiveShadows.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
@@ -265,23 +323,35 @@ namespace KK_MaterialEditor
                 dropdownReceiveShadows.options.Clear();
                 dropdownReceiveShadows.options.Add(new Dropdown.OptionData("Off"));
                 dropdownReceiveShadows.options.Add(new Dropdown.OptionData("On"));
-                dropdownReceiveShadows.value = initialValueReceiveShadows ? 1 : 0;
-                dropdownReceiveShadows.captionText.text = initialValueReceiveShadows ? "On" : "Off";
+                dropdownReceiveShadows.value = valueReceiveShadows ? 1 : 0;
+                dropdownReceiveShadows.captionText.text = valueReceiveShadows ? "On" : "Off";
                 dropdownReceiveShadows.onValueChanged.AddListener((value) =>
                 {
-                    if (objectType == ObjectType.StudioItem)
-                        GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
-                    else if (objectType == ObjectType.Clothes)
-                        GetCharaController(chaControl).AddClothingRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
-                    else if (objectType == ObjectType.Accessory)
-                        GetCharaController(chaControl).AddAccessoryRendererProperty(coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
-                    else if (objectType == ObjectType.Hair)
-                        GetCharaController(chaControl).AddHairRendererProperty(slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), initialValueReceiveShadows ? "1" : "0");
+                    if (objectType == ObjectType.Other) { }
+                    else if (objectType == ObjectType.StudioItem)
+                        GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), valueReceiveShadowsInitial ? "1" : "0");
+                    else
+                        GetCharaController(chaControl).AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), valueReceiveShadowsInitial ? "1" : "0");
                     SetRendererProperty(rend, RendererProperties.ReceiveShadows, value);
                 });
                 var dropdownReceiveShadowsLE = dropdownReceiveShadows.gameObject.AddComponent<LayoutElement>();
                 dropdownReceiveShadowsLE.preferredWidth = dropdownWidth;
                 dropdownReceiveShadowsLE.flexibleWidth = 0;
+
+                var resetReceiveShadows = UIUtility.CreateButton("ResetReceiveShadows", contentItem3.transform, "Reset");
+                resetReceiveShadows.onClick.AddListener(() =>
+                {
+                    if (objectType == ObjectType.Other) { }
+                    else if (objectType == ObjectType.StudioItem)
+                        GetSceneController().RemoveRendererProperty(id, rend.NameFormatted(), RendererProperties.ReceiveShadows);
+                    else
+                        GetCharaController(chaControl).RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows);
+                    SetRendererProperty(rend, RendererProperties.ReceiveShadows, valueReceiveShadowsInitial ? 1 : 0);
+                    dropdownReceiveShadows.value = valueReceiveShadowsInitial ? 1 : 0;
+                });
+                var resetReceiveShadowsLE = resetReceiveShadows.gameObject.AddComponent<LayoutElement>();
+                resetReceiveShadowsLE.preferredWidth = resetButtonWidth;
+                resetReceiveShadowsLE.flexibleWidth = 0;
             }
 
             foreach (var rend in go.GetComponentsInChildren<Renderer>())
@@ -296,7 +366,7 @@ namespace KK_MaterialEditor
                     var contentListHeader1 = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                     contentListHeader1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentListHeader1.gameObject.AddComponent<Mask>();
-                    contentListHeader1.gameObject.AddComponent<HorizontalLayoutGroup>();
+                    contentListHeader1.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
                     var labelMat = UIUtility.CreateText(mat.NameFormatted(), contentListHeader1.transform, "Material:");
                     labelMat.alignment = TextAnchor.MiddleLeft;
@@ -308,7 +378,7 @@ namespace KK_MaterialEditor
                     var contentListHeader2 = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                     contentListHeader2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentListHeader2.gameObject.AddComponent<Mask>();
-                    contentListHeader2.gameObject.AddComponent<HorizontalLayoutGroup>();
+                    contentListHeader2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
                     var labelShader = UIUtility.CreateText(mat.shader.NameFormatted(), contentListHeader2.transform, "Shader:");
                     labelShader.alignment = TextAnchor.MiddleLeft;
@@ -319,7 +389,7 @@ namespace KK_MaterialEditor
 
                     foreach (var colorProperty in ColorProperties)
                     {
-                        if (objectType == ObjectType.Clothes && ClothesBlacklist.Contains(colorProperty))
+                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(colorProperty))
                             continue;
                         if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(colorProperty))
                             continue;
@@ -331,7 +401,7 @@ namespace KK_MaterialEditor
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
-                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>();
+                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
                             var label = UIUtility.CreateText(colorProperty, contentList.transform, $"{colorProperty}:");
                             label.alignment = TextAnchor.MiddleLeft;
@@ -340,7 +410,15 @@ namespace KK_MaterialEditor
                             labelLE.preferredWidth = labelWidth;
                             labelLE.flexibleWidth = labelWidth;
 
-                            Color color = mat.GetColor($"_{colorProperty}");
+                            Color valueColor = mat.GetColor($"_{colorProperty}");
+                            Color valueColorInitial = valueColor;
+                            if (objectType == ObjectType.StudioItem)
+                            {
+                                Color c = GetSceneController().GetMaterialColorPropertyValueOriginal(id, mat.NameFormatted(), colorProperty);
+                                if (c.r != -1 && c.g != -1 && c.b != -1 && c.a != -1)
+                                    valueColorInitial = c;
+                            }
+
                             var labelR = UIUtility.CreateText("R", contentList.transform, "R");
                             labelR.alignment = TextAnchor.MiddleLeft;
                             labelR.color = Color.black;
@@ -349,18 +427,15 @@ namespace KK_MaterialEditor
                             labelRLE.flexibleWidth = 0;
 
                             var textBoxR = UIUtility.CreateInputField(colorProperty, contentList.transform);
-                            textBoxR.text = color.r.ToString();
+                            textBoxR.text = valueColor.r.ToString();
                             textBoxR.onEndEdit.AddListener((value) =>
                             {
                                 SetColorRProperty(go, mat, colorProperty, value);
-                                if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Accessory)
-                                    GetCharaController(chaControl).AddAccessoryMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Hair)
-                                    GetCharaController(chaControl).AddHairMaterialColorProperty(slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
+                                else
+                                    GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
                             });
                             var textBoxRLE = textBoxR.gameObject.AddComponent<LayoutElement>();
                             textBoxRLE.preferredWidth = colorTextBoxWidth;
@@ -374,18 +449,15 @@ namespace KK_MaterialEditor
                             labelGLE.flexibleWidth = 0;
 
                             var textBoxG = UIUtility.CreateInputField(colorProperty, contentList.transform);
-                            textBoxG.text = color.g.ToString();
+                            textBoxG.text = valueColor.g.ToString();
                             textBoxG.onEndEdit.AddListener((value) =>
                             {
                                 SetColorGProperty(go, mat, colorProperty, value);
-                                if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Accessory)
-                                    GetCharaController(chaControl).AddAccessoryMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Hair)
-                                    GetCharaController(chaControl).AddHairMaterialColorProperty(slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
+                                else
+                                    GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
                             });
                             var textBoxGLE = textBoxG.gameObject.AddComponent<LayoutElement>();
                             textBoxGLE.preferredWidth = colorTextBoxWidth;
@@ -399,18 +471,15 @@ namespace KK_MaterialEditor
                             labelBLE.flexibleWidth = 0;
 
                             var textBoxB = UIUtility.CreateInputField(colorProperty, contentList.transform);
-                            textBoxB.text = color.b.ToString();
+                            textBoxB.text = valueColor.b.ToString();
                             textBoxB.onEndEdit.AddListener((value) =>
                             {
                                 SetColorBProperty(go, mat, colorProperty, value);
-                                if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Accessory)
-                                    GetCharaController(chaControl).AddAccessoryMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Hair)
-                                    GetCharaController(chaControl).AddHairMaterialColorProperty(slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
+                                else if (objectType == ObjectType.Clothing)
+                                    GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
                             });
 
                             var textBoxBLE = textBoxB.gameObject.AddComponent<LayoutElement>();
@@ -425,28 +494,43 @@ namespace KK_MaterialEditor
                             labelALE.flexibleWidth = 0;
 
                             var textBoxA = UIUtility.CreateInputField(colorProperty, contentList.transform);
-                            textBoxA.text = color.a.ToString();
+                            textBoxA.text = valueColor.a.ToString();
                             textBoxA.onEndEdit.AddListener((value) =>
                             {
                                 SetColorAProperty(go, mat, colorProperty, value);
-                                if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Accessory)
-                                    GetCharaController(chaControl).AddAccessoryMaterialColorProperty(coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
-                                else if (objectType == ObjectType.Hair)
-                                    GetCharaController(chaControl).AddHairMaterialColorProperty(slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), color);
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
+                                else
+                                    GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
                             });
 
                             var textBoxALE = textBoxA.gameObject.AddComponent<LayoutElement>();
                             textBoxALE.preferredWidth = colorTextBoxWidth;
                             textBoxALE.flexibleWidth = 0;
+
+                            var resetColor = UIUtility.CreateButton($"Reset{colorProperty}", contentList.transform, "Reset");
+                            resetColor.onClick.AddListener(() =>
+                            {
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().RemoveMaterialColorProperty(id, mat.NameFormatted(), colorProperty);
+                                else if (objectType == ObjectType.Clothing)
+                                    GetCharaController(chaControl).RemoveMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty);
+                                SetColorProperty(go, mat, colorProperty, valueColorInitial);
+                                textBoxR.text = valueColorInitial.r.ToString();
+                                textBoxG.text = valueColorInitial.g.ToString();
+                                textBoxB.text = valueColorInitial.b.ToString();
+                                textBoxA.text = valueColorInitial.a.ToString();
+                            });
+                            var resetEnabledLE = resetColor.gameObject.AddComponent<LayoutElement>();
+                            resetEnabledLE.preferredWidth = resetButtonWidth;
+                            resetEnabledLE.flexibleWidth = 0;
                         }
                     }
                     foreach (var imageProperty in ImageProperties)
                     {
-                        if (objectType == ObjectType.Clothes && ClothesBlacklist.Contains(imageProperty))
+                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(imageProperty))
                             continue;
                         if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(imageProperty))
                             continue;
@@ -458,7 +542,7 @@ namespace KK_MaterialEditor
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
-                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>();
+                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
                             var label = UIUtility.CreateText(imageProperty, contentList.transform, $"{imageProperty}:");
                             label.alignment = TextAnchor.MiddleLeft;
@@ -469,23 +553,23 @@ namespace KK_MaterialEditor
 
                             var texture = mat.GetTexture($"_{imageProperty}");
 
+                            var labelNoTexture = UIUtility.CreateText($"NoTexture{imageProperty}", contentList.transform, "No Texture");
+                            labelNoTexture.alignment = TextAnchor.MiddleCenter;
+                            labelNoTexture.color = Color.black;
+                            var labelNoTextureLE = labelNoTexture.gameObject.AddComponent<LayoutElement>();
+                            labelNoTextureLE.preferredWidth = buttonWidth;
+                            labelNoTextureLE.flexibleWidth = 0;
+
+                            var exportButton = UIUtility.CreateButton($"ExportTexture{imageProperty}", contentList.transform, $"Export Texture");
+                            exportButton.onClick.AddListener(() => ExportTexture(mat, imageProperty));
+                            var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
+                            exportButtonLE.preferredWidth = buttonWidth;
+                            exportButtonLE.flexibleWidth = 0;
+
                             if (texture == null)
-                            {
-                                var labelNoTexture = UIUtility.CreateText($"NoTexture{imageProperty}", contentList.transform, "No Texture");
-                                labelNoTexture.alignment = TextAnchor.MiddleCenter;
-                                labelNoTexture.color = Color.black;
-                                var labelNoTextureLE = labelNoTexture.gameObject.AddComponent<LayoutElement>();
-                                labelNoTextureLE.preferredWidth = buttonWidth;
-                                labelNoTextureLE.flexibleWidth = 0;
-                            }
+                                exportButton.enabled = false;
                             else
-                            {
-                                var exportButton = UIUtility.CreateButton($"ExportTexture{imageProperty}", contentList.transform, $"Export Texture");
-                                exportButton.onClick.AddListener(() => ExportTexture(mat, imageProperty));
-                                var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
-                                exportButtonLE.preferredWidth = buttonWidth;
-                                exportButtonLE.flexibleWidth = 0;
-                            }
+                                labelNoTexture.enabled = false;
 
                             var importButton = UIUtility.CreateButton($"ImportTexture{imageProperty}", contentList.transform, $"Import Texture");
                             importButton.onClick.AddListener(() => ImportTexture(go, mat, imageProperty));
@@ -496,7 +580,7 @@ namespace KK_MaterialEditor
                     }
                     foreach (var floatProperty in FloatProperties)
                     {
-                        if (objectType == ObjectType.Clothes && ClothesBlacklist.Contains(floatProperty))
+                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(floatProperty))
                             continue;
                         if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(floatProperty))
                             continue;
@@ -508,7 +592,7 @@ namespace KK_MaterialEditor
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
-                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>();
+                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
                             var label = UIUtility.CreateText(floatProperty, contentList.transform, $"{floatProperty}:");
                             label.alignment = TextAnchor.MiddleLeft;
@@ -517,24 +601,46 @@ namespace KK_MaterialEditor
                             labelLE.preferredWidth = labelWidth;
                             labelLE.flexibleWidth = labelWidth;
 
-                            float propertyValue = mat.GetFloat($"_{floatProperty}");
-                            var textBoxProperty = UIUtility.CreateInputField(floatProperty, contentList.transform);
-                            textBoxProperty.text = propertyValue.ToString();
-                            textBoxProperty.onEndEdit.AddListener((value) =>
+                            string valueFloat = mat.GetFloat($"_{floatProperty}").ToString();
+                            string valueFloatInitial = valueFloat;
+                            if (objectType == ObjectType.Other) { }
+                            else if (objectType == ObjectType.StudioItem)
                             {
-                                if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialFloatProperty(id, mat.NameFormatted(), floatProperty, value.ToString(), propertyValue.ToString());
-                                else if (objectType == ObjectType.Clothes)
-                                    GetCharaController(chaControl).AddClothingMaterialFloatProperty(coordinateIndex, slot, mat.NameFormatted(), floatProperty, value.ToString(), propertyValue.ToString());
-                                else if (objectType == ObjectType.Accessory)
-                                    GetCharaController(chaControl).AddAccessoryMaterialFloatProperty(coordinateIndex, slot, mat.NameFormatted(), floatProperty, value.ToString(), propertyValue.ToString());
-                                else if (objectType == ObjectType.Hair)
-                                    GetCharaController(chaControl).AddHairMaterialFloatProperty(slot, mat.NameFormatted(), floatProperty, value.ToString(), propertyValue.ToString());
+                                if (GetSceneController().GetMaterialFloatPropertyValueOriginal(id, mat.NameFormatted(), floatProperty) != null)
+                                    valueFloatInitial = GetSceneController().GetMaterialFloatPropertyValueOriginal(id, mat.NameFormatted(), floatProperty);
+                            }
+                            else if (GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty) != null)
+                                valueFloatInitial = GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty);
+
+                            var textBoxFloat = UIUtility.CreateInputField(floatProperty, contentList.transform);
+                            textBoxFloat.text = valueFloat;
+                            textBoxFloat.onEndEdit.AddListener((value) =>
+                            {
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialFloatProperty(id, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
+                                else if (objectType == ObjectType.Clothing)
+                                    GetCharaController(chaControl).AddMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
                                 SetFloatProperty(go, mat, floatProperty, value);
                             });
-                            var textBoxPropertyLE = textBoxProperty.gameObject.AddComponent<LayoutElement>();
-                            textBoxPropertyLE.preferredWidth = textBoxWidth;
-                            textBoxPropertyLE.flexibleWidth = 0;
+                            var textBoxFloatLE = textBoxFloat.gameObject.AddComponent<LayoutElement>();
+                            textBoxFloatLE.preferredWidth = textBoxWidth;
+                            textBoxFloatLE.flexibleWidth = 0;
+
+                            var resetFloat = UIUtility.CreateButton($"Reset{floatProperty}", contentList.transform, "Reset");
+                            resetFloat.onClick.AddListener(() =>
+                            {
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().RemoveMaterialFloatProperty(id, mat.NameFormatted(), floatProperty);
+                                else
+                                    GetCharaController(chaControl).RemoveMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty);
+                                SetFloatProperty(go, mat, floatProperty, valueFloatInitial);
+                                textBoxFloat.text = valueFloatInitial;
+                            });
+                            var resetEnabledLE = resetFloat.gameObject.AddComponent<LayoutElement>();
+                            resetEnabledLE.preferredWidth = resetButtonWidth;
+                            resetEnabledLE.flexibleWidth = 0;
                         }
                     }
                 }
