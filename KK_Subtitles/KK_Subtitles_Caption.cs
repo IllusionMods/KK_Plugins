@@ -24,7 +24,9 @@ namespace KK_Subtitles
             cscl.referenceResolution = new Vector2(1920, 1080);
             cscl.matchWidthOrHeight = 0.5f;
 
-            (Pane.GetComponent<Canvas>() ?? Pane.AddComponent<Canvas>()).renderMode = RenderMode.ScreenSpaceOverlay;
+            var canvas = Pane.GetComponent<Canvas>() ?? Pane.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 500;
             (Pane.GetComponent<CanvasGroup>() ?? Pane.AddComponent<CanvasGroup>()).blocksRaycasts = false;
 
             var vlg = Pane.GetComponent<VerticalLayoutGroup>() ?? Pane.AddComponent<VerticalLayoutGroup>();
@@ -58,13 +60,6 @@ namespace KK_Subtitles
             if (text.IsNullOrEmpty())
                 return;
 
-            if (KK_Subtitles.showUntranslated.Value == false)
-                foreach (var x in text.ToList())
-                    if (JPChars.Contains(x))
-                        return;
-
-            //string speaker = voice.voiceTrans.gameObject.GetComponentInParent<ChaControl>().chaFile.parameter.firstname;
-
             DisplaySubtitle(voice, text);
         }
 
@@ -95,13 +90,6 @@ namespace KK_Subtitles
             if (text.IsNullOrEmpty())
                 return;
 
-            if (KK_Subtitles.showUntranslated.Value == false)
-                foreach (var x in text.ToList())
-                    if (JPChars.Contains(x))
-                        return;
-
-            //string speaker = voice.voiceTrans.gameObject.GetComponentInParent<ChaControl>().chaFile.parameter.firstname;
-
             DisplaySubtitle(voice, text);
         }
 
@@ -113,6 +101,11 @@ namespace KK_Subtitles
 
         internal static void DisplaySubtitle(LoadVoice voice, string text, string speaker = "")
         {
+            if (KK_Subtitles.showUntranslated.Value == false)
+                foreach (var x in text.ToList())
+                    if (JPChars.Contains(x))
+                        return;
+
             Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"{KK_Subtitles.fontName.Value}.ttf");
             int fsize = KK_Subtitles.fontSize.Value;
             fsize = (int)(fsize < 0 ? (fsize * Screen.height / -100.0) : fsize);
@@ -138,6 +131,7 @@ namespace KK_Subtitles
             subOutline.effectDistance = new Vector2(KK_Subtitles.outlineThickness.Value, KK_Subtitles.outlineThickness.Value);
 
             subtitleText.text = speaker.IsNullOrEmpty() ? text : $"{speaker}:{text}";
+
             Logger.Log(LogLevel.Debug, $"KK_Subtitles:{text}");
 
             voice.OnDestroyAsObservable().Subscribe(delegate (Unit _)

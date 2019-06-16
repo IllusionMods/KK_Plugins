@@ -20,11 +20,10 @@ namespace KK_Subtitles
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
         public const string PluginNameInternal = "KK_Subtitles";
-        public const string Version = "1.3";
+        public const string Version = "1.4";
         internal static Info ActionGameInfoInstance;
         internal static HSceneProc HSceneProcInstance;
         internal static CustomScene CustomSceneInstance;
-        public static bool DoSubtitle = false;
         internal static XDocument CharaMakerSubs;
 
         #region ConfigMgr
@@ -111,12 +110,10 @@ namespace KK_Subtitles
 
             if (HSceneProcInstance != null)
                 Caption.DisplayHSubtitle(__instance);
-            else if (ActionGameInfoInstance != null && DoSubtitle)
+            else if (ActionGameInfoInstance != null && GameObject.Find("ActionScene/ADVScene") == null)
                 Caption.DisplayDialogueSubtitle(__instance);
             else if (CustomSceneInstance != null)
                 Caption.DisplayCharaMakerSubtitle(__instance);
-
-            DoSubtitle = false;
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(Info), "Init")]
@@ -125,12 +122,6 @@ namespace KK_Subtitles
             Caption.InitGUI();
             ActionGameInfoInstance = __instance;
         }
-
-        [HarmonyPostfix, HarmonyPatch(typeof(TalkScene), "TouchFunc")]
-        public static void TouchFunc() => DoSubtitle = true;
-        [HarmonyPostfix, HarmonyPatch(typeof(Info), nameof(Info.GetLeaveAloneVoice))]
-        public static void GetLeaveAloneVoice() => DoSubtitle = true;
-
         [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
         public static void HVoiceCtrlInit()
         {
@@ -145,4 +136,3 @@ namespace KK_Subtitles
         }
     }
 }
-
