@@ -69,9 +69,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist C:\Illusion\Koikatu\BepInEx (
-copy /y $(TargetPath) C:\illusion\Koikatu\BepInEx\$(TargetFileName)
-copy /y KK_GUIDMigration.csv C:\illusion\Koikatu\BepInEx\KK_GUIDMigration.csv
-)</PostBuildEvent>
+    <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) KK
+IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(OutDir)$(TargetName).csv KK
+
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

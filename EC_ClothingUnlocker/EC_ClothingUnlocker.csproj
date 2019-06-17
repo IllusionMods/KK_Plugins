@@ -76,8 +76,6 @@
   <Import Project="..\Core_ClothingUnlocker\Core_ClothingUnlocker.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist C:\Illusion\emotioncreators\BepInEx\plugins\EC_Plugins (
-copy /y $(TargetPath) C:\Illusion\emotioncreators\BepInEx\plugins\EC_Plugins\$(TargetFileName)
-)</PostBuildEvent>
+    <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) EC</PostBuildEvent>
   </PropertyGroup>
 </Project>
