@@ -55,6 +55,9 @@ namespace KK_MaterialEditor
                     StudioItemMaterialColorPropertyList.Clear();
                 }
 
+                if (data == null)
+                    return;
+
                 if (data.data.TryGetValue("RendererProperties", out var rendererProperties) && rendererProperties != null)
                 {
                     var loadedRendererProperties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
