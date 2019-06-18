@@ -367,9 +367,12 @@ namespace HairAccessoryCustomizer
                         if (HairAccessories.ContainsKey(i))
                             foreach (var x in HairAccessories[i])
                             {
-                                ChaControl.chaFile.coordinate[i].accessory.parts[x.Key].color[0] = ChaControl.chaFile.custom.hair.parts[0].baseColor;
-                                ChaControl.chaFile.coordinate[i].accessory.parts[x.Key].color[1] = ChaControl.chaFile.custom.hair.parts[0].startColor;
-                                ChaControl.chaFile.coordinate[i].accessory.parts[x.Key].color[2] = ChaControl.chaFile.custom.hair.parts[0].endColor;
+                                if (ChaControl.chaFile.coordinate[i]?.accessory?.parts.SafeGet(x.Key) != null)
+                                {
+                                    ChaControl.chaFile.coordinate[i].accessory.parts[x.Key].color[0] = ChaControl.chaFile.custom.hair.parts[0].baseColor;
+                                    ChaControl.chaFile.coordinate[i].accessory.parts[x.Key].color[1] = ChaControl.chaFile.custom.hair.parts[0].startColor;
+                                    ChaControl.chaFile.coordinate[i].accessory.parts[x.Key].color[2] = ChaControl.chaFile.custom.hair.parts[0].endColor;
+                                }
                             }
 #endif
 
