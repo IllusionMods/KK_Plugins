@@ -29,7 +29,7 @@ namespace HairAccessoryCustomizer
                 HairAccessoryCustomizer.InitCurrentSlot(controller);
             }
 
-            controller.UpdateAccessories(!HairAccessoryCustomizer.ReloadingChara);
+            controller.UpdateAccessories(true);
             HairAccessoryCustomizer.ReloadingChara = false;
         }
 
