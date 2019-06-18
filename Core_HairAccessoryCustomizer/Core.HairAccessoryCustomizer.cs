@@ -5,16 +5,17 @@ using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using UnityEngine.UI;
-/// <summary>
-/// Individual customization of hair accessories for adding hair gloss, color matching, etc.
-/// </summary>
+
 namespace HairAccessoryCustomizer
 {
+    /// <summary>
+    /// Individual customization of hair accessories for adding hair gloss, color matching, etc.
+    /// </summary>
     public partial class HairAccessoryCustomizer : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.hairaccessorycustomizer";
         public const string PluginName = "Hair Accessory Customizer";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
 
         internal static bool ReloadingChara = false;
         internal static AccessoryControlWrapper<MakerToggle, bool> ColorMatchToggle;

@@ -389,6 +389,20 @@ namespace HairAccessoryCustomizer
                     OutlineColorPicker.SetValue(slot, ChaControl.chaFile.custom.hair.parts[0].outlineColor, false);
                     hairAccessoryInfo.OutlineColor = ChaControl.chaFile.custom.hair.parts[0].outlineColor;
                 }
+                else if (updateCharacter && !MakerAPI.InsideMaker)
+                {
+                    foreach (Renderer renderer in chaCustomHairComponent.rendHair)
+                    {
+                        if (renderer == null) continue;
+
+                        if (renderer.material.HasProperty(ChaShader._Color))
+                            renderer.material.SetColor(ChaShader._Color, ChaControl.chaFile.custom.hair.parts[0].baseColor);
+                        if (renderer.material.HasProperty(ChaShader._Color2))
+                            renderer.material.SetColor(ChaShader._Color2, ChaControl.chaFile.custom.hair.parts[0].startColor);
+                        if (renderer.material.HasProperty(ChaShader._Color3))
+                            renderer.material.SetColor(ChaShader._Color3, ChaControl.chaFile.custom.hair.parts[0].endColor);
+                    }
+                }
 
                 Texture2D texHairGloss = (Texture2D)AccessTools.Property(typeof(ChaControl), "texHairGloss").GetValue(ChaControl, null);
 
