@@ -17,7 +17,7 @@ namespace KK_MaterialEditor
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "0.3";
+        public const string Version = "0.4";
 
         private void Main()
         {
@@ -109,6 +109,23 @@ namespace KK_MaterialEditor
                 rend.receiveShadows = value == 1;
             else if (property == RendererProperties.Enabled)
                 rend.enabled = value == 1;
+        }
+
+        private static void SetTextureProperty(GameObject go, Material mat, string property, Texture2D value)
+        {
+            foreach (var obj in go.GetComponentsInChildren<Renderer>())
+                foreach (var objMat in obj.materials)
+                    if (objMat.name == mat.name)
+                        objMat.SetTexture($"_{property}", value);
+        }
+
+        public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format)
+        {
+            if (texBytes == null || texBytes.Length == 0) return null;
+
+            var tex = new Texture2D(2, 2, format, false);
+            tex.LoadImage(texBytes);
+            return tex;
         }
 
         public enum ObjectType { StudioItem, Clothing, Accessory, Hair, Other };

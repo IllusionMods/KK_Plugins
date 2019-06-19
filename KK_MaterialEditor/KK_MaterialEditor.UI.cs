@@ -1,7 +1,6 @@
 ﻿using CommonCode;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
-using KKAPI.Utilities;
 using Studio;
 using System.Collections.Generic;
 using System.IO;
@@ -19,11 +18,6 @@ namespace KK_MaterialEditor
 
         public const string FileExt = ".png";
         public const string FileFilter = "Images (*.png)|*.png|All files|*.*";
-
-        private static string TexPath = "";
-        private static string PropertyToSet = "";
-        private static Material MatToSet;
-        private static GameObject GameObjectToSet;
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
@@ -202,9 +196,6 @@ namespace KK_MaterialEditor
                 dropdownEnabled.captionText.text = valueEnabled ? "On" : "Off";
                 dropdownEnabled.onValueChanged.AddListener((value) =>
                 {
-                    if (value == (valueEnabledInitial ? 1 : 0))
-                        return;
-
                     if (objectType == ObjectType.Other) { }
                     else if (objectType == ObjectType.StudioItem)
                         GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), valueEnabledInitial ? "1" : "0");
@@ -478,7 +469,7 @@ namespace KK_MaterialEditor
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
-                                else if (objectType == ObjectType.Clothing)
+                                else
                                     GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
                             });
 
@@ -528,51 +519,58 @@ namespace KK_MaterialEditor
                             resetEnabledLE.flexibleWidth = 0;
                         }
                     }
-                    foreach (var imageProperty in ImageProperties)
+                    foreach (var textureProperty in TextureProperties)
                     {
-                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(imageProperty))
+                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(textureProperty))
                             continue;
-                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(imageProperty))
+                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(textureProperty))
                             continue;
-                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(imageProperty))
+                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(textureProperty))
                             continue;
 
-                        if (mat.HasProperty($"_{imageProperty}"))
+                        if (mat.HasProperty($"_{textureProperty}"))
                         {
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
                             contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
-                            var label = UIUtility.CreateText(imageProperty, contentList.transform, $"{imageProperty}:");
+                            var label = UIUtility.CreateText(textureProperty, contentList.transform, $"{textureProperty}:");
                             label.alignment = TextAnchor.MiddleLeft;
                             label.color = Color.black;
                             var labelLE = label.gameObject.AddComponent<LayoutElement>();
                             labelLE.preferredWidth = labelWidth;
                             labelLE.flexibleWidth = labelWidth;
 
-                            var texture = mat.GetTexture($"_{imageProperty}");
-
-                            var labelNoTexture = UIUtility.CreateText($"NoTexture{imageProperty}", contentList.transform, "No Texture");
-                            labelNoTexture.alignment = TextAnchor.MiddleCenter;
-                            labelNoTexture.color = Color.black;
-                            var labelNoTextureLE = labelNoTexture.gameObject.AddComponent<LayoutElement>();
-                            labelNoTextureLE.preferredWidth = buttonWidth;
-                            labelNoTextureLE.flexibleWidth = 0;
-
-                            var exportButton = UIUtility.CreateButton($"ExportTexture{imageProperty}", contentList.transform, $"Export Texture");
-                            exportButton.onClick.AddListener(() => ExportTexture(mat, imageProperty));
-                            var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
-                            exportButtonLE.preferredWidth = buttonWidth;
-                            exportButtonLE.flexibleWidth = 0;
+                            var texture = mat.GetTexture($"_{textureProperty}");
 
                             if (texture == null)
-                                exportButton.enabled = false;
+                            {
+                                var labelNoTexture = UIUtility.CreateText($"NoTexture{textureProperty}", contentList.transform, "No Texture");
+                                labelNoTexture.alignment = TextAnchor.MiddleCenter;
+                                labelNoTexture.color = Color.black;
+                                var labelNoTextureLE = labelNoTexture.gameObject.AddComponent<LayoutElement>();
+                                labelNoTextureLE.preferredWidth = buttonWidth;
+                                labelNoTextureLE.flexibleWidth = 0;
+                            }
                             else
-                                labelNoTexture.enabled = false;
+                            {
+                                var exportButton = UIUtility.CreateButton($"ExportTexture{textureProperty}", contentList.transform, $"Export Texture");
+                                exportButton.onClick.AddListener(() => ExportTexture(mat, textureProperty));
+                                var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
+                                exportButtonLE.preferredWidth = buttonWidth;
+                                exportButtonLE.flexibleWidth = 0;
+                            }
 
-                            var importButton = UIUtility.CreateButton($"ImportTexture{imageProperty}", contentList.transform, $"Import Texture");
-                            importButton.onClick.AddListener(() => ImportTexture(go, mat, imageProperty));
+                            var importButton = UIUtility.CreateButton($"ImportTexture{textureProperty}", contentList.transform, $"Import Texture");
+                            importButton.onClick.AddListener(() =>
+                            {
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialTextureProperty(id, mat.NameFormatted(), textureProperty, go);
+                                else
+                                    GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), textureProperty, go);
+                            });
                             var importButtonLE = importButton.gameObject.AddComponent<LayoutElement>();
                             importButtonLE.preferredWidth = buttonWidth;
                             importButtonLE.flexibleWidth = 0;
@@ -664,59 +662,12 @@ namespace KK_MaterialEditor
 
             Texture2D texture2D = new Texture2D(32, 32);
             texture2D.LoadImage(LoadIcon());
-            var testImage = testButton.targetGraphic as Image;
-            testImage.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 32, 32), new Vector2(16, 16));
-            testImage.color = Color.white;
+            var MatEditorIcon = testButton.targetGraphic as Image;
+            MatEditorIcon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 32, 32), new Vector2(16, 16));
+            MatEditorIcon.color = Color.white;
 
             testButton.onClick = new Button.ButtonClickedEvent();
             testButton.onClick.AddListener(() => { PopulateListStudio(); });
-        }
-
-        private void Update()
-        {
-            try
-            {
-                if (!TexPath.IsNullOrEmpty())
-                {
-                    Texture2D tex = new Texture2D(2, 2);
-                    var imageBytes = File.ReadAllBytes(TexPath);
-                    tex.LoadImage(imageBytes);
-
-                    foreach (var obj in GameObjectToSet.GetComponentsInChildren<Renderer>())
-                        foreach (var objMat in obj.materials)
-                            if (objMat.name == MatToSet.name)
-                                objMat.SetTexture($"_{PropertyToSet}", tex);
-                }
-            }
-            catch
-            {
-                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message, "Failed to load texture.");
-            }
-            finally
-            {
-                TexPath = "";
-                PropertyToSet = "";
-                MatToSet = null;
-                GameObjectToSet = null;
-            }
-        }
-        private static void ImportTexture(GameObject go, Material mat, string property)
-        {
-            OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, FileFilter, FileExt);
-
-            void OnFileAccept(string[] strings)
-            {
-                if (strings == null || strings.Length == 0)
-                    return;
-
-                if (strings[0].IsNullOrEmpty())
-                    return;
-
-                TexPath = strings[0];
-                PropertyToSet = property;
-                MatToSet = mat;
-                GameObjectToSet = go;
-            }
         }
 
         private static void ExportTexture(Material mat, string property)
@@ -762,7 +713,7 @@ namespace KK_MaterialEditor
             "Spec", "Specular", "SpecularColor", "linecolor", "overcolor1", "overcolor2", "overcolor3", "refcolor", "shadowcolor"
         };
 
-        public static HashSet<string> ImageProperties = new HashSet<string>()
+        public static HashSet<string> TextureProperties = new HashSet<string>()
         {
             "AnimationMask", "AlphaMask", "AnotherRamp", "BumpMap", "ColorMask", "DetailMask", "EmissionMap", "GlassRamp", "HairGloss", "LineMask", "MainTex", "MetallicGlossMap", "NormalMap",
             "ParallaxMap", "PatternMask1", "PatternMask2", "PatternMask3", "Texture2", "Texture3", "liquidmask"
