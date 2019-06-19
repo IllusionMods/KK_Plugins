@@ -242,7 +242,7 @@ Allows you to override vanilla list files. Comes with some overrides that enable
 Overriding list files can allow you to do things like enable bras with some shirts which don't normally allow it, or skirts with some tops, etc. Any part of of the list can be changed except for ID.<br/>
 
 #### KK_HairAccessoryCustomizer EC_HairAccessoryCustomizer
-**v1.1 - [Download](https://www.patreon.com/posts/27712341)**<br/>
+**v1.1.1 - [Download](https://www.patreon.com/posts/27760009)**<br/>
 
 Adds configuration options for hair accessories to the character maker. Hair accessories can be set to match color with the hair, enable hair gloss, modify outline color, and has a separate color picker for the hair tie part. Hairs that support a length slider can also hair their length adjusted, just like vanilla front hairs. Saves and loads to cards and coordinates.<br/>
 
@@ -254,6 +254,7 @@ Note for modders: These options will only show up for hair accessories that are 
 
 <details><summary>Change Log</summary>
 v1.1 Fixed a bug with changing coordinates outside of Studio not applying color matching. Fixed a bug where changing hair color in the maker would not apply color matching to other outfit slots.<br/>
+v1.1.1 Fixed hair accessories matching color when they shouldn't.<br/>
 </details>
 
 #### EC_Demosaic
