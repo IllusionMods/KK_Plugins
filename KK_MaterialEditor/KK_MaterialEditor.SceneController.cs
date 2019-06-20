@@ -37,7 +37,7 @@ namespace KK_MaterialEditor
 
                 List<int> IDsToPurge = new List<int>();
                 foreach (int texID in TextureDictionary.Keys)
-                    if (MaterialTexturePropertyList.Any(x => x.TexID == texID))
+                    if (!MaterialTexturePropertyList.Any(x => x.TexID == texID))
                         IDsToPurge.Add(texID);
 
                 foreach (int texID in IDsToPurge)
@@ -182,7 +182,7 @@ namespace KK_MaterialEditor
                 }
             }
 
-            protected override void Update()
+            private void Update()
             {
                 try
                 {
@@ -214,7 +214,14 @@ namespace KK_MaterialEditor
                     MatToSet = null;
                     GameObjectToSet = null;
                 }
-                base.Update();
+            }
+
+            internal void ItemDeleteEvent(int ID)
+            {
+                RendererPropertyList.RemoveAll(x => x.ID == ID);
+                MaterialFloatPropertyList.RemoveAll(x => x.ID == ID);
+                MaterialColorPropertyList.RemoveAll(x => x.ID == ID);
+                MaterialTexturePropertyList.RemoveAll(x => x.ID == ID);
             }
 
             private static int GetTextureID(byte[] textureBytes)

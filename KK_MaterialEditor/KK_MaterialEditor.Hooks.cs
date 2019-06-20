@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using CommonCode;
 
 namespace KK_MaterialEditor
 {
@@ -18,5 +19,8 @@ namespace KK_MaterialEditor
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), new[] { typeof(int), typeof(int), typeof(bool), typeof(bool) })]
         public static void ChangeHair(ChaControl __instance, int kind) => KK_MaterialEditor.GetCharaController(__instance)?.ChangeHairEvent(kind);
+
+        [HarmonyPrefix, HarmonyPatch(typeof(Studio.OCIItem), nameof(Studio.OCIItem.OnDelete))]
+        public static void OCIItemOnDelete(Studio.OCIItem __instance) => KK_MaterialEditor.GetSceneController()?.ItemDeleteEvent(__instance.objectInfo.dicKey);
     }
 }
