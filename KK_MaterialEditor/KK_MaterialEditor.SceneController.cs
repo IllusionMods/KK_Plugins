@@ -87,8 +87,26 @@ namespace KK_MaterialEditor
                 if (data == null)
                     return;
 
-                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                    TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
+                var importDictionary = new Dictionary<int, int>();
+
+                if (operation == SceneOperationKind.Load)
+                {
+                    if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
+                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
+                }
+                else if (operation == SceneOperationKind.Import)
+                {
+                    if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
+                    {
+                        Dictionary<int, byte[]> importTextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
+
+                        foreach (var x in importTextureDictionary)
+                            importDictionary[x.Key] = SetAndGetTextureID(x.Value);
+                    }
+                }
+                else if (operation == SceneOperationKind.Clear)
+                    return;
+
 
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
                 {
@@ -172,8 +190,10 @@ namespace KK_MaterialEditor
                                 {
                                     if (mat.NameFormatted() == loadedMaterialTextureProperty.MaterialName && mat.HasProperty($"_{loadedMaterialTextureProperty.Property}") && TextureProperties.Contains(loadedMaterialTextureProperty.Property))
                                     {
-                                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(GetObjectID(objectCtrlInfo), loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, loadedMaterialTextureProperty.TexID));
-                                        SetTextureProperty(ociItem.objectItem, mat, loadedMaterialTextureProperty.Property, loadedMaterialTextureProperty.Texture);
+                                        int texID = operation == SceneOperationKind.Import ? importDictionary[loadedMaterialTextureProperty.TexID] : loadedMaterialTextureProperty.TexID;
+                                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(GetObjectID(objectCtrlInfo), loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, texID);
+                                        MaterialTexturePropertyList.Add(newTextureProperty);
+                                        SetTextureProperty(ociItem.objectItem, mat, newTextureProperty.Property, newTextureProperty.Texture);
                                     }
                                 }
                             }
@@ -198,7 +218,7 @@ namespace KK_MaterialEditor
 
                         var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == IDToSet && x.Property == PropertyToSet && x.MaterialName == MatToSet);
                         if (textureProperty == null)
-                            MaterialTexturePropertyList.Add(new MaterialTextureProperty(IDToSet, MatToSet, PropertyToSet, GetTextureID(TexBytes)));
+                            MaterialTexturePropertyList.Add(new MaterialTextureProperty(IDToSet, MatToSet, PropertyToSet, SetAndGetTextureID(TexBytes)));
                         else
                             textureProperty.Data = TexBytes;
                     }
@@ -223,8 +243,10 @@ namespace KK_MaterialEditor
                 MaterialColorPropertyList.RemoveAll(x => x.ID == ID);
                 MaterialTexturePropertyList.RemoveAll(x => x.ID == ID);
             }
-
-            private static int GetTextureID(byte[] textureBytes)
+            /// <summary>
+            /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
+            /// </summary>
+            private static int SetAndGetTextureID(byte[] textureBytes)
             {
                 int highestID = 0;
                 foreach (var tex in TextureDictionary)
@@ -423,7 +445,7 @@ namespace KK_MaterialEditor
                     {
                         Dispose();
                         _data = value;
-                        TexID = GetTextureID(value);
+                        TexID = SetAndGetTextureID(value);
                     }
                 }
                 [IgnoreMember]

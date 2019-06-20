@@ -159,7 +159,7 @@ namespace KK_MaterialEditor
 
                         var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == ObjectTypeToSet && x.CoordinateIndex == CoordinateIndexToSet && x.Slot == SlotToSet && x.Property == PropertyToSet && x.MaterialName == MatToSet);
                         if (textureProperty == null)
-                            MaterialTexturePropertyList.Add(new MaterialTextureProperty(ObjectTypeToSet, CoordinateIndexToSet, SlotToSet, MatToSet, PropertyToSet, GetTextureID(TexBytes)));
+                            MaterialTexturePropertyList.Add(new MaterialTextureProperty(ObjectTypeToSet, CoordinateIndexToSet, SlotToSet, MatToSet, PropertyToSet, SetAndGetTextureID(TexBytes)));
                         else
                             textureProperty.Data = TexBytes;
                     }
@@ -276,8 +276,10 @@ namespace KK_MaterialEditor
                     }
                 }
             }
-
-            private static int GetTextureID(byte[] textureBytes)
+            /// <summary>
+            /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
+            /// </summary>
+            private static int SetAndGetTextureID(byte[] textureBytes)
             {
                 int highestID = 0;
                 foreach (var tex in TextureDictionary)
@@ -288,7 +290,6 @@ namespace KK_MaterialEditor
 
                 highestID++;
                 TextureDictionary.Add(highestID, textureBytes);
-                CC.Log("GetTextureID adding new");
                 return highestID;
             }
 
@@ -676,7 +677,7 @@ namespace KK_MaterialEditor
                     {
                         Dispose();
                         _data = value;
-                        TexID = GetTextureID(value);
+                        TexID = SetAndGetTextureID(value);
                     }
                 }
                 [IgnoreMember]
