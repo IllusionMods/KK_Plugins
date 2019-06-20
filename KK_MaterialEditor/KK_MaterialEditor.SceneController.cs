@@ -107,7 +107,6 @@ namespace KK_MaterialEditor
                 else if (operation == SceneOperationKind.Clear)
                     return;
 
-
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
                 {
                     var loadedRendererProperties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);

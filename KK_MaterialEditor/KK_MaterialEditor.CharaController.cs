@@ -27,13 +27,6 @@ namespace KK_MaterialEditor
             private static Dictionary<int, byte[]> TextureDictionary = new Dictionary<int, byte[]>();
 
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
-
-            private bool CoordinateChanging = false;
-            private bool AccessorySelectedSlotChanging = false;
-            private bool ClothesChanging = false;
-            private bool CharacterLoading = false;
-            private bool RefreshingTextures = false;
-
             private static byte[] TexBytes = null;
             private static ObjectType ObjectTypeToSet;
             private static string PropertyToSet;
@@ -49,9 +42,7 @@ namespace KK_MaterialEditor
                 List<int> IDsToPurge = new List<int>();
                 foreach (int texID in TextureDictionary.Keys)
                 {
-                    if (MaterialTexturePropertyList.Any(x => x.TexID == texID))
-                        CC.Log("ID found");
-                    else
+                    if (!MaterialTexturePropertyList.Any(x => x.TexID == texID))
                         IDsToPurge.Add(texID);
                 }
 
@@ -88,9 +79,6 @@ namespace KK_MaterialEditor
 
             protected override void OnReload(GameMode currentGameMode, bool maintainState)
             {
-                if (MakerAPI.InsideAndLoaded && !MakerAPI.GetCharacterLoadFlags().Clothes)
-                    return;
-
                 RendererPropertyList.Clear();
                 MaterialFloatPropertyList.Clear();
                 MaterialColorPropertyList.Clear();
@@ -140,10 +128,9 @@ namespace KK_MaterialEditor
                 }
 
                 ChaControl.StartCoroutine(LoadData(true, true, true));
-                ChaControl.StartCoroutine(ResetEvents());
             }
 
-            protected override void Update()
+            private new void Update()
             {
                 try
                 {
@@ -176,6 +163,111 @@ namespace KK_MaterialEditor
                     GameObjectToSet = null;
                 }
                 base.Update();
+            }
+
+            protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
+            {
+                var data = new PluginData();
+
+                var coordinateRendererPropertyList = RendererPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair).ToList();
+                var coordinateMaterialFloatPropertyList = MaterialFloatPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair).ToList();
+                var coordinateMaterialColorPropertyList = MaterialColorPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair).ToList();
+                var coordinateMaterialTexturePropertyList = MaterialTexturePropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair).ToList();
+                var coordinateTextureDictionary = new Dictionary<int, byte[]>();
+
+                foreach (var tex in TextureDictionary)
+                    if (coordinateMaterialTexturePropertyList.Any(x => x.TexID == tex.Key))
+                        coordinateTextureDictionary.Add(tex.Key, tex.Value);
+
+                if (coordinateTextureDictionary.Count > 0)
+                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(coordinateTextureDictionary));
+                else
+                    data.data.Add(nameof(TextureDictionary), null);
+
+                if (coordinateRendererPropertyList.Count > 0)
+                    data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(coordinateRendererPropertyList));
+                else
+                    data.data.Add(nameof(RendererPropertyList), null);
+
+                if (coordinateMaterialFloatPropertyList.Count > 0)
+                    data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(coordinateMaterialFloatPropertyList));
+                else
+                    data.data.Add(nameof(MaterialFloatPropertyList), null);
+
+                if (coordinateMaterialColorPropertyList.Count > 0)
+                    data.data.Add(nameof(MaterialColorPropertyList), MessagePackSerializer.Serialize(coordinateMaterialColorPropertyList));
+                else
+                    data.data.Add(nameof(MaterialColorPropertyList), null);
+
+                if (coordinateMaterialTexturePropertyList.Count > 0)
+                    data.data.Add(nameof(MaterialTexturePropertyList), MessagePackSerializer.Serialize(coordinateMaterialTexturePropertyList));
+                else
+                    data.data.Add(nameof(MaterialTexturePropertyList), null);
+
+                SetCoordinateExtendedData(coordinate, data);
+
+                base.OnCoordinateBeingSaved(coordinate);
+            }
+
+            protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate, bool maintainState)
+            {
+                var data = GetCoordinateExtendedData(coordinate);
+
+                RendererPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
+                MaterialFloatPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
+                MaterialColorPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
+                MaterialTexturePropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
+
+                if (data?.data == null)
+                    return;
+
+                var importDictionary = new Dictionary<int, int>();
+
+                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
+                {
+                    Dictionary<int, byte[]> importTextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
+
+                    foreach (var x in importTextureDictionary)
+                        importDictionary[x.Key] = SetAndGetTextureID(x.Value);
+                }
+
+
+                if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
+                {
+                    var loadedRendererProperties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
+
+                    foreach (var loadedRendererProperty in loadedRendererProperties)
+                        RendererPropertyList.Add(new RendererProperty(loadedRendererProperty.ObjectType, loadedRendererProperty.CoordinateIndex, loadedRendererProperty.Slot, loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
+                }
+
+                if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
+                {
+                    var loadedMaterialFloatProperties = MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties);
+
+                    foreach (var loadedMaterialFloatProperty in loadedMaterialFloatProperties)
+                        MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedMaterialFloatProperty.ObjectType, loadedMaterialFloatProperty.CoordinateIndex, loadedMaterialFloatProperty.Slot, loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, loadedMaterialFloatProperty.ValueOriginal));
+                }
+
+                if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
+                {
+                    var loadedColorProperties = MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties);
+
+                    foreach (var loadedMaterialColorProperty in loadedColorProperties)
+                        MaterialColorPropertyList.Add(new MaterialColorProperty(loadedMaterialColorProperty.ObjectType, loadedMaterialColorProperty.CoordinateIndex, loadedMaterialColorProperty.Slot, loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, loadedMaterialColorProperty.ValueOriginal));
+                }
+
+                if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
+                {
+                    var loadedTextureProperties = MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties);
+
+                    foreach (var loadedMaterialTextureProperty in loadedTextureProperties)
+                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(loadedMaterialTextureProperty.ObjectType, loadedMaterialTextureProperty.CoordinateIndex, loadedMaterialTextureProperty.Slot, loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, importDictionary[loadedMaterialTextureProperty.TexID]));
+                }
+
+                CoordinateChanging = true;
+
+                ChaControl.StartCoroutine(LoadData(true, true, false));
+                base.OnCoordinateBeingLoaded(coordinate, maintainState);
             }
 
             private IEnumerator LoadData(bool clothes, bool accessories, bool hair)
@@ -308,7 +400,6 @@ namespace KK_MaterialEditor
                 CoordinateChanging = true;
 
                 ChaControl.StartCoroutine(LoadData(true, true, false));
-                ChaControl.StartCoroutine(ResetEvents());
             }
 
             internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
@@ -337,19 +428,6 @@ namespace KK_MaterialEditor
 
                 if (UISystem.gameObject.activeInHierarchy)
                     PopulateListAccessory();
-
-                ChaControl.StartCoroutine(ResetEvents());
-            }
-
-            private IEnumerator ResetEvents()
-            {
-                yield return null;
-
-                CoordinateChanging = false;
-                AccessorySelectedSlotChanging = false;
-                ClothesChanging = false;
-                CharacterLoading = false;
-                RefreshingTextures = false;
             }
 
             internal void AccessoryTransferredEvent(object sender, AccessoryTransferEventArgs e)
@@ -447,7 +525,6 @@ namespace KK_MaterialEditor
                 if (new System.Diagnostics.StackTrace().ToString().Contains("KoiClothesOverlayController"))
                 {
                     RefreshingTextures = true;
-                    ChaControl.StartCoroutine(ResetEvents());
                     return;
                 }
 
@@ -457,8 +534,6 @@ namespace KK_MaterialEditor
                 MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
                 MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
                 MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
-
-                ChaControl.StartCoroutine(ResetEvents());
 
                 UISystem.gameObject.SetActive(false);
             }
@@ -566,6 +641,87 @@ namespace KK_MaterialEditor
                     SlotToSet = slot;
                 }
             }
+
+            private bool coordinateChanging = false;
+            public bool CoordinateChanging
+            {
+                get => coordinateChanging;
+                set
+                {
+                    coordinateChanging = value;
+                    ChaControl.StartCoroutine(Reset());
+                    IEnumerator Reset()
+                    {
+                        yield return null;
+                        coordinateChanging = false;
+                    }
+                }
+            }
+
+            private bool accessorySelectedSlotChanging = false;
+            public bool AccessorySelectedSlotChanging
+            {
+                get => accessorySelectedSlotChanging;
+                set
+                {
+                    accessorySelectedSlotChanging = value;
+                    ChaControl.StartCoroutine(Reset());
+                    IEnumerator Reset()
+                    {
+                        yield return null;
+                        accessorySelectedSlotChanging = false;
+                    }
+                }
+            }
+
+            private bool clothesChanging = false;
+            public bool ClothesChanging
+            {
+                get => clothesChanging;
+                set
+                {
+                    clothesChanging = value;
+                    ChaControl.StartCoroutine(Reset());
+                    IEnumerator Reset()
+                    {
+                        yield return null;
+                        clothesChanging = false;
+                    }
+                }
+            }
+
+            private bool characterLoading = false;
+            public bool CharacterLoading
+            {
+                get => characterLoading;
+                set
+                {
+                    characterLoading = value;
+                    ChaControl.StartCoroutine(Reset());
+                    IEnumerator Reset()
+                    {
+                        yield return null;
+                        characterLoading = false;
+                    }
+                }
+            }
+
+            private bool refreshingTextures = false;
+            public bool RefreshingTextures
+            {
+                get => refreshingTextures;
+                set
+                {
+                    refreshingTextures = value;
+                    ChaControl.StartCoroutine(Reset());
+                    IEnumerator Reset()
+                    {
+                        yield return null;
+                        refreshingTextures = false;
+                    }
+                }
+            }
+
             [Serializable]
             [MessagePackObject]
             private class RendererProperty
