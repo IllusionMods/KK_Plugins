@@ -402,7 +402,7 @@ namespace KK_MaterialEditor
                 ChaControl.StartCoroutine(LoadData(true, true, false));
             }
 
-            internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
+            internal void AccessoryKindChangeEvent(int slotIndex)
             {
                 if (AccessorySelectedSlotChanging)
                     return;
@@ -410,10 +410,10 @@ namespace KK_MaterialEditor
                     return;
 
                 //User switched accessories, remove all edited properties for this slot
-                RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
-                MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
-                MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
-                MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
+                RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slotIndex);
+                MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slotIndex);
+                MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slotIndex);
+                MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slotIndex);
 
                 if (UISystem.gameObject.activeInHierarchy)
                     PopulateListAccessory();

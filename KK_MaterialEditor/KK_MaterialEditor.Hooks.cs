@@ -1,5 +1,7 @@
-﻿using Harmony;
-using CommonCode;
+﻿using ChaCustom;
+using Harmony;
+using KKAPI.Maker;
+using Studio;
 
 namespace KK_MaterialEditor
 {
@@ -20,7 +22,17 @@ namespace KK_MaterialEditor
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), new[] { typeof(int), typeof(int), typeof(bool), typeof(bool) })]
         public static void ChangeHair(ChaControl __instance, int kind) => KK_MaterialEditor.GetCharaController(__instance)?.ChangeHairEvent(kind);
 
-        [HarmonyPrefix, HarmonyPatch(typeof(Studio.OCIItem), nameof(Studio.OCIItem.OnDelete))]
-        public static void OCIItemOnDelete(Studio.OCIItem __instance) => KK_MaterialEditor.GetSceneController()?.ItemDeleteEvent(__instance.objectInfo.dicKey);
+        [HarmonyPrefix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.OnDelete))]
+        public static void OCIItemOnDelete(OCIItem __instance) => KK_MaterialEditor.GetSceneController()?.ItemDeleteEvent(__instance.objectInfo.dicKey);
+
+        [HarmonyPrefix, HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
+        public static void UpdateSelectAccessoryKindPrefix(CvsAccessory __instance, ref int __state) => __state = MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[(int)__instance.slotNo].id;
+
+        [HarmonyPostfix, HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
+        public static void UpdateSelectAccessoryKindPostfix(CvsAccessory __instance, ref int __state)
+        {
+            if (__state != MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[(int)__instance.slotNo].id)
+                KK_MaterialEditor.GetCharaController(MakerAPI.GetCharacterControl()).AccessoryKindChangeEvent((int)__instance.slotNo);
+        }
     }
 }

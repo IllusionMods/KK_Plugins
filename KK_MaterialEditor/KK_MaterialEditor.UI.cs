@@ -158,9 +158,22 @@ namespace KK_MaterialEditor
                 var labelRenderer = UIUtility.CreateText(rend.NameFormatted(), contentListHeader.transform, "Renderer:");
                 labelRenderer.alignment = TextAnchor.MiddleLeft;
                 labelRenderer.color = Color.black;
+                var labelRendererLE = labelRenderer.gameObject.AddComponent<LayoutElement>();
+                labelRendererLE.preferredWidth = labelWidth;
+                labelRendererLE.flexibleWidth = labelWidth;
+
                 var labelRenderer2 = UIUtility.CreateText(rend.NameFormatted(), contentListHeader.transform, rend.NameFormatted());
                 labelRenderer2.alignment = TextAnchor.MiddleRight;
                 labelRenderer2.color = Color.black;
+                var labelRenderer2LE = labelRenderer2.gameObject.AddComponent<LayoutElement>();
+                labelRenderer2LE.preferredWidth = 250;
+                labelRenderer2LE.flexibleWidth = 0;
+
+                var exportUVButton = UIUtility.CreateButton("ExportUVButton", contentListHeader.transform, "Export UV Map");
+                exportUVButton.onClick.AddListener(() => { ExportUVMap(rend); });
+                var exportUVButtonLE = exportUVButton.gameObject.AddComponent<LayoutElement>();
+                exportUVButtonLE.preferredWidth = 110;
+                exportUVButtonLE.flexibleWidth = 0;
 
                 var contentItem1 = UIUtility.CreatePanel("ContentItem1", MaterialEditorWindow.content.transform);
                 contentItem1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
@@ -506,7 +519,7 @@ namespace KK_MaterialEditor
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
                                     GetSceneController().RemoveMaterialColorProperty(id, mat.NameFormatted(), colorProperty);
-                                else if (objectType == ObjectType.Clothing)
+                                else
                                     GetCharaController(chaControl).RemoveMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty);
                                 SetColorProperty(go, mat, colorProperty, valueColorInitial);
                                 textBoxR.text = valueColorInitial.r.ToString();
@@ -617,7 +630,7 @@ namespace KK_MaterialEditor
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialFloatProperty(id, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
-                                else if (objectType == ObjectType.Clothing)
+                                else
                                     GetCharaController(chaControl).AddMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
                                 SetFloatProperty(go, mat, floatProperty, value);
                             });
@@ -673,12 +686,10 @@ namespace KK_MaterialEditor
         private static void ExportTexture(Material mat, string property)
         {
             var tex = mat.GetTexture($"_{property}");
-            var dirPath = $"{Application.dataPath}/../UserData/MaterialEditor/";
-            if (!Directory.Exists(dirPath))
-                Directory.CreateDirectory(dirPath);
-            string filename = $"{dirPath}{mat.NameFormatted()}_{property}.png";
-            CC.Log($"Exported {filename}");
+            string filename = Path.Combine(ExportPath, $"{mat.NameFormatted()}_{property}_{System.DateTime.Now:yyyy-MM-dd-HH-mm-ss}.png");
             SaveTex(tex, filename);
+            CC.Log($"Exported {filename}");
+            CC.OpenFileInExplorer(filename);
         }
 
         private byte[] LoadIcon()
@@ -688,6 +699,75 @@ namespace KK_MaterialEditor
                 byte[] bytesInStream = new byte[stream.Length];
                 stream.Read(bytesInStream, 0, bytesInStream.Length);
                 return bytesInStream;
+            }
+        }
+
+        private static void ExportUVMap(Renderer rend)
+        {
+            bool openedFile = false;
+            Shader shader = Shader.Find("Hidden/Internal-Colored");
+            var lineMaterial = new Material(shader);
+            lineMaterial.hideFlags = HideFlags.HideAndDontSave;
+            lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+            lineMaterial.SetInt("_ZWrite", 0);
+
+            Mesh mr;
+            if (rend is MeshRenderer meshRenderer)
+                mr = meshRenderer.GetComponent<MeshFilter>().mesh;
+            else if (rend is SkinnedMeshRenderer skinnedMeshRenderer)
+                mr = skinnedMeshRenderer.sharedMesh;
+            else return;
+
+            for (int x = 0; x < mr.subMeshCount; x++)
+            {
+                var tris = mr.GetTriangles(x);
+                var uvs = mr.uv;
+
+                const int size = 4096;
+                var _renderTexture = RenderTexture.GetTemporary(size, size);
+                var lineColor = Color.black;
+                Graphics.SetRenderTarget(_renderTexture);
+                GL.PushMatrix();
+                GL.LoadOrtho();
+                //GL.LoadPixelMatrix(); // * 2 - 1, maps differently.
+                GL.Clear(false, true, Color.clear);
+
+                lineMaterial.SetPass(0);
+                GL.Begin(GL.LINES);
+                GL.Color(lineColor);
+
+                for (var i = 0; i < tris.Length; i += 3)
+                {
+                    var v = uvs[tris[i]];
+                    var n1 = uvs[tris[i + 1]];
+                    var n2 = uvs[tris[i + 2]];
+
+                    GL.Vertex(v);
+                    GL.Vertex(n1);
+
+                    GL.Vertex(v);
+                    GL.Vertex(n2);
+
+                    GL.Vertex(n1);
+                    GL.Vertex(n2);
+                }
+                GL.End();
+
+                GL.PopMatrix();
+                Graphics.SetRenderTarget(null);
+
+                var png = GetT2D(_renderTexture);
+                RenderTexture.ReleaseTemporary(_renderTexture);
+
+                string filename = Path.Combine(ExportPath, $"{rend.NameFormatted()}_{x}.png");
+                File.WriteAllBytes(filename, png.EncodeToPNG());
+                DestroyImmediate(png);
+                CC.Log($"Exported {filename}");
+                if (!openedFile)
+                    CC.OpenFileInExplorer(filename);
+                openedFile = true;
             }
         }
 
