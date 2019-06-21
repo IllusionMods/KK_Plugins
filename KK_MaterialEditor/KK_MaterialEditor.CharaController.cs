@@ -408,7 +408,6 @@ namespace KK_MaterialEditor
                     return;
                 if (CoordinateChanging)
                     return;
-                CC.Log("AccessoryKindChangeEvent");
 
                 //User switched accessories, remove all edited properties for this slot
                 RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);

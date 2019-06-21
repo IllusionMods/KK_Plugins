@@ -5,11 +5,11 @@ using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio.SaveLoad;
 using Studio;
+using System.IO;
 using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.IO;
 
 namespace KK_MaterialEditor
 {
@@ -18,7 +18,7 @@ namespace KK_MaterialEditor
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "0.5";
+        public const string Version = "0.6";
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
 
