@@ -24,15 +24,5 @@ namespace KK_MaterialEditor
 
         [HarmonyPrefix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.OnDelete))]
         public static void OCIItemOnDelete(OCIItem __instance) => KK_MaterialEditor.GetSceneController()?.ItemDeleteEvent(__instance.objectInfo.dicKey);
-
-        [HarmonyPrefix, HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
-        public static void UpdateSelectAccessoryKindPrefix(CvsAccessory __instance, ref int __state) => __state = MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[(int)__instance.slotNo].id;
-
-        [HarmonyPostfix, HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
-        public static void UpdateSelectAccessoryKindPostfix(CvsAccessory __instance, ref int __state)
-        {
-            if (__state != MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[(int)__instance.slotNo].id)
-                KK_MaterialEditor.GetCharaController(MakerAPI.GetCharacterControl()).AccessoryKindChangeEvent((int)__instance.slotNo);
-        }
     }
 }
