@@ -19,7 +19,7 @@ namespace KK_TextDump
     {
         public const string GUID = "com.deathweasel.bepinex.textdump";
         public const string PluginName = "KK_TextDump";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
 
         private void Main() => DumpText();
 
@@ -156,6 +156,7 @@ namespace KK_TextDump
                                 JP = $"\"{JP.Replace("\n", @"\n").Trim()}\"";
                             if (ENG.Contains("\n"))
                                 ENG = $"\"{ENG.Replace("\n", @"\n").Trim()}\"";
+                            ENG = ENG.Replace(";", ",");
 
                             if (ENG.IsNullOrEmpty())
                                 Lines.Add($"//{JP}=");
