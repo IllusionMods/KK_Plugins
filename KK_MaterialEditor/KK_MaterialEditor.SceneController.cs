@@ -326,7 +326,6 @@ namespace KK_MaterialEditor
             }
             public void RemoveMaterialColorProperty(int id, string materialName, string property) =>
                 MaterialColorPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
-
             public void AddMaterialTextureProperty(int id, string materialName, string property, GameObject go)
             {
                 OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, FileFilter, FileExt);
@@ -345,6 +344,11 @@ namespace KK_MaterialEditor
                     GameObjectToSet = go;
                     IDToSet = id;
                 }
+            }
+            public void RemoveMaterialTextureProperty(int id, string materialName, string property)
+            {
+                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Message, "Save and reload scene to refresh textures.");
+                MaterialTexturePropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
             }
 
             [Serializable]

@@ -641,6 +641,11 @@ namespace KK_MaterialEditor
                     SlotToSet = slot;
                 }
             }
+            public void RemoveMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property)
+            {
+                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Message, "Save and reload character or change outfits to refresh textures.");
+                MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
+            }
 
             private bool coordinateChanging = false;
             public bool CoordinateChanging

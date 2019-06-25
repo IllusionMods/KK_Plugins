@@ -527,9 +527,9 @@ namespace KK_MaterialEditor
                                 textBoxB.text = valueColorInitial.b.ToString();
                                 textBoxA.text = valueColorInitial.a.ToString();
                             });
-                            var resetEnabledLE = resetColor.gameObject.AddComponent<LayoutElement>();
-                            resetEnabledLE.preferredWidth = resetButtonWidth;
-                            resetEnabledLE.flexibleWidth = 0;
+                            var resetColorLE = resetColor.gameObject.AddComponent<LayoutElement>();
+                            resetColorLE.preferredWidth = resetButtonWidth;
+                            resetColorLE.flexibleWidth = 0;
                         }
                     }
                     foreach (var textureProperty in TextureProperties)
@@ -587,6 +587,19 @@ namespace KK_MaterialEditor
                             var importButtonLE = importButton.gameObject.AddComponent<LayoutElement>();
                             importButtonLE.preferredWidth = buttonWidth;
                             importButtonLE.flexibleWidth = 0;
+
+                            var resetTexture = UIUtility.CreateButton($"Reset{textureProperty}", contentList.transform, "Reset");
+                            resetTexture.onClick.AddListener(() =>
+                            {
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().RemoveMaterialTextureProperty(id, mat.NameFormatted(), textureProperty);
+                                else
+                                    GetCharaController(chaControl).RemoveMaterialTextureProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), textureProperty);
+                            });
+                            var reseTextureLE = resetTexture.gameObject.AddComponent<LayoutElement>();
+                            reseTextureLE.preferredWidth = resetButtonWidth;
+                            reseTextureLE.flexibleWidth = 0;
                         }
                     }
                     foreach (var floatProperty in FloatProperties)
