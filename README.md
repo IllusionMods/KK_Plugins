@@ -292,6 +292,25 @@ v1.1 Added UI, KK Party support<br/>
 v1.1.1 Create card folders if missing to prevent errors<br/>
 </details>
 
+#### KK_Colliders
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_Colliders.v1.0.zip)**<br/>
+
+Adds floor, breast, hand, and skirt colliders. Ported from Patchwork.<br/>
+
+#### KK_MaterialEditor
+**v1.0 - [Download](https://www.patreon.com/posts/27881027)**<br/>
+MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
+
+Features:
+* Export UV maps of a mesh to help with drawing textures
+* Replace nearly any texture with custom textures
+* Change properties of materials to control things like shininess or outline thickness
+* Change properties of the mesh to affect whether it casts shadows or disable a mesh completely
+* All changes save and load with the card or Studio scene
+* Duplicate textures are saved to the card once. 100 accessories with the same texture have the same file size as one accessory with a texture
+
+Access the Material Editor by pressing the "Open Material Editor" button on clothes, hair, or accessories in the character maker. Access it in Studio by pressing the "Mat. Editor" button on the Workspace with a studio item selected.
+
 
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.<br/>
@@ -307,13 +326,6 @@ Shaders by Essu. Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/re
 <details><summary>Change Log</summary>
 Beta 2 Fix checkbox not working<br/>
 </details>
-
-#### KK_Colliders
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_Colliders.v1.0.zip)**<br/>
-
-Adds floor, breast, hand, and skirt colliders. Ported from Patchwork.<br/>
-
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
 
 #### KK_ANIMATIONOVERDRIVE
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v42/KK_ANIMATIONOVERDRIVE.zip)**<br/>
