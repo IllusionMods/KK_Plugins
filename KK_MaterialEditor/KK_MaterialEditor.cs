@@ -59,7 +59,7 @@ namespace KK_MaterialEditor
             {
                 XDocument manifestDocument = manifest.manifestDocument;
                 XElement shaderElement = manifestDocument?.Root?.Element(nameof(KK_MaterialEditor))?.Element("Shader");
-                CC.Log(manifestDocument?.Root?.Element(nameof(KK_MaterialEditor)));
+
                 if (shaderElement != null && shaderElement.HasElements)
                 {
                     string shaderName = manifestDocument?.Root?.Element(nameof(KK_MaterialEditor))?.Element("Shader").Attribute("Name").Value;
