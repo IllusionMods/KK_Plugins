@@ -1,12 +1,17 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
+using CommonCode;
 using Harmony;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio.SaveLoad;
 using Studio;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,6 +26,11 @@ namespace KK_MaterialEditor
         public const string Version = "1.0";
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
+        public static readonly string XMLPath = Path.Combine(Paths.PluginPath, nameof(KK_MaterialEditor));
+
+        internal static Dictionary<string, Dictionary<string, string>> XMLShaderProperties = new Dictionary<string, Dictionary<string, string>>();
+        internal static Dictionary<string, string> XMLShaderPropertiesAll = new Dictionary<string, string>();
+        internal static Dictionary<string, Shader> LoadedShaders = new Dictionary<string, Shader>();
 
         private void Main()
         {
@@ -37,6 +47,40 @@ namespace KK_MaterialEditor
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
 
             HarmonyInstance.Create(GUID).PatchAll(typeof(Hooks));
+
+            LoadXML();
+        }
+
+        private void LoadXML()
+        {
+            var loadedManifests = Sideloader.Sideloader.LoadedManifests;
+
+            foreach (var manifest in loadedManifests)
+            {
+                XDocument manifestDocument = manifest.manifestDocument;
+                XElement shaderElement = manifestDocument?.Root?.Element(nameof(KK_MaterialEditor))?.Element("Shader");
+                CC.Log(manifestDocument?.Root?.Element(nameof(KK_MaterialEditor)));
+                if (shaderElement != null && shaderElement.HasElements)
+                {
+                    string shaderName = manifestDocument?.Root?.Element(nameof(KK_MaterialEditor))?.Element("Shader").Attribute("Name").Value;
+                    XMLShaderProperties[shaderName] = new Dictionary<string, string>();
+                    foreach (XElement element in shaderElement.Elements("Property"))
+                    {
+                        XMLShaderPropertiesAll[element.Attribute("Name").Value] = element.Attribute("Type").Value;
+                        XMLShaderProperties[shaderName][element.Attribute("Name").Value] = element.Attribute("Type").Value;
+                    }
+                }
+            }
+
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_MaterialEditor)}.Resources.default.xml"))
+            {
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    XDocument doc = XDocument.Load(reader);
+                    foreach (var element in doc.Element("Shader").Elements("Property"))
+                        XMLShaderPropertiesAll[element.Attribute("Name").Value] = element.Attribute("Type").Value;
+                }
+            }
         }
 
         private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);

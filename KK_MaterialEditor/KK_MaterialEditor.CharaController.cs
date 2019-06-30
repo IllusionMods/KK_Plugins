@@ -231,13 +231,12 @@ namespace KK_MaterialEditor
                         importDictionary[x.Key] = SetAndGetTextureID(x.Value);
                 }
 
-
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
                 {
                     var loadedRendererProperties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
 
                     foreach (var loadedRendererProperty in loadedRendererProperties)
-                        RendererPropertyList.Add(new RendererProperty(loadedRendererProperty.ObjectType, loadedRendererProperty.CoordinateIndex, loadedRendererProperty.Slot, loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
+                        RendererPropertyList.Add(new RendererProperty(loadedRendererProperty.ObjectType, CurrentCoordinateIndex, loadedRendererProperty.Slot, loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
                 }
 
                 if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
@@ -245,7 +244,7 @@ namespace KK_MaterialEditor
                     var loadedMaterialFloatProperties = MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties);
 
                     foreach (var loadedMaterialFloatProperty in loadedMaterialFloatProperties)
-                        MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedMaterialFloatProperty.ObjectType, loadedMaterialFloatProperty.CoordinateIndex, loadedMaterialFloatProperty.Slot, loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, loadedMaterialFloatProperty.ValueOriginal));
+                        MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedMaterialFloatProperty.ObjectType, CurrentCoordinateIndex, loadedMaterialFloatProperty.Slot, loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, loadedMaterialFloatProperty.ValueOriginal));
                 }
 
                 if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
@@ -253,7 +252,7 @@ namespace KK_MaterialEditor
                     var loadedColorProperties = MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties);
 
                     foreach (var loadedMaterialColorProperty in loadedColorProperties)
-                        MaterialColorPropertyList.Add(new MaterialColorProperty(loadedMaterialColorProperty.ObjectType, loadedMaterialColorProperty.CoordinateIndex, loadedMaterialColorProperty.Slot, loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, loadedMaterialColorProperty.ValueOriginal));
+                        MaterialColorPropertyList.Add(new MaterialColorProperty(loadedMaterialColorProperty.ObjectType, CurrentCoordinateIndex, loadedMaterialColorProperty.Slot, loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, loadedMaterialColorProperty.ValueOriginal));
                 }
 
                 if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
@@ -261,7 +260,7 @@ namespace KK_MaterialEditor
                     var loadedTextureProperties = MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties);
 
                     foreach (var loadedMaterialTextureProperty in loadedTextureProperties)
-                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(loadedMaterialTextureProperty.ObjectType, loadedMaterialTextureProperty.CoordinateIndex, loadedMaterialTextureProperty.Slot, loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, importDictionary[loadedMaterialTextureProperty.TexID]));
+                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(loadedMaterialTextureProperty.ObjectType, CurrentCoordinateIndex, loadedMaterialTextureProperty.Slot, loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, importDictionary[loadedMaterialTextureProperty.TexID]));
                 }
 
                 CoordinateChanging = true;
@@ -844,6 +843,8 @@ namespace KK_MaterialEditor
                     get => _data;
                     set
                     {
+                        if (value == null) return;
+
                         Dispose();
                         _data = value;
                         TexID = SetAndGetTextureID(value);
@@ -873,7 +874,10 @@ namespace KK_MaterialEditor
                     MaterialName = materialName.Replace("(Instance)", "").Trim();
                     Property = property;
                     TexID = texID;
-                    Data = TextureDictionary[texID];
+                    if (TextureDictionary.TryGetValue(texID, out var data))
+                        Data = data;
+                    else
+                        Data = null;
                 }
 
                 public void Dispose()

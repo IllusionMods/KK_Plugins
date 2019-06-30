@@ -815,7 +815,7 @@ namespace KK_MaterialEditor
         {
             "AnotherRampFull", "BlendNormalMapScale", "BumpScale", "Cutoff", "CutoutClip", "DetailBLineG", "DetailNormalMapScale", "DetailRLineR", "DstBlend", "EmissionPower", "GlossMapScale",
             "Glossiness", "GlossyReflections", "HairEffect", "LightCancel", "LineWidthS", "Metallic", "Mode", "OcclusionStrength", "Parallax", "SelectEmissionMap", "ShadowExtend",
-            "ShadowExtendAnother", "Smoothness", "SmoothnessTextureChannel", "SpecularHeight", "SpecularPower", "SpecularPowerNail", "SrcBlend", "UPanner", "UVSec", "ZWrite", "alpha", "alpha_a",
+            "ShadowExtendAnother", "Smoothness", "SmoothnessTextureChannel", "SpeclarHeight", "SpecularPower", "SpecularPowerNail", "SrcBlend", "UPanner", "UVSec", "ZWrite", "alpha", "alpha_a",
             "alpha_b", "ambientshadowOFF", "linetexon", "linewidth", "liquidbbot", "liquidbtop", "liquidface", "liquidfbot", "liquidftop", "nip", "nipsize", "node_6948", "notusetexspecular",
             "patternclamp1", "patternclamp2", "patternclamp3", "patternrotator1", "patternrotator2", "patternrotator3", "refpower", "rimV", "rimpower"
         };

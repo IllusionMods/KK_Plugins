@@ -58,6 +58,10 @@
       <HintPath>..\lib\KKAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Sideloader">
+      <HintPath>..\lib\Sideloader.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -81,7 +85,9 @@
     <Compile Include="KK_MaterialEditor.UI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\default.xml" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\MaterialEditorIcon.png" />
   </ItemGroup>
