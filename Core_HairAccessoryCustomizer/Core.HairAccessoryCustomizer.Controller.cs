@@ -361,21 +361,6 @@ namespace HairAccessoryCustomizer
             /// </summary>
             public void UpdateAccessories(bool updateHairInfo = true)
             {
-#if KK
-                if (updateHairInfo)
-                    for (int i = 0; i < ChaControl.chaFile.coordinate.Length; i++)
-                        if (HairAccessories.ContainsKey(i))
-                            foreach (var x in HairAccessories[i])
-                            {
-                                if (x.Value.ColorMatch && ChaControl.chaFile.coordinate[i]?.accessory?.parts.SafeGet(x.Key) != null)
-                                {
-                                    ChaControl.chaFile.coordinate[i].accessory.parts[x.Key].color[0] = ChaControl.chaFile.custom.hair.parts[0].baseColor;
-                                    ChaControl.chaFile.coordinate[i].accessory.parts[x.Key].color[1] = ChaControl.chaFile.custom.hair.parts[0].startColor;
-                                    ChaControl.chaFile.coordinate[i].accessory.parts[x.Key].color[2] = ChaControl.chaFile.custom.hair.parts[0].endColor;
-                                }
-                            }
-#endif
-
                 if (HairAccessories.ContainsKey(CurrentCoordinateIndex))
                     foreach (var x in HairAccessories[CurrentCoordinateIndex])
                         UpdateAccessory(x.Key, updateHairInfo);
