@@ -484,8 +484,11 @@ namespace UncensorSelector
 
                     // Check if UVs got corrupted when we loaded the asset, uncommon
                     var uvCopy = src.sharedMesh.uv.ToArray();
-                    if (AreUVsCorrupted(uvCopy))
+                    if (AreUVsCorrupted(uvCopy) && !DidErrorMessage)
+                    {
                         Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be corrupted. Consider updating your GPU drivers.");
+                        DidErrorMessage = true;
+                    }
 
                     //Copy the mesh
                     dst.sharedMesh = src.sharedMesh;
@@ -499,7 +502,7 @@ namespace UncensorSelector
                     if (copyMaterials)
                         dst.materials = src.materials;
 
-                    if (src.sharedMesh.name != "o_dankon" && src.sharedMesh.name != "o_gomu")
+                    if (src.sharedMesh.name != "o_dankon" && src.sharedMesh.name != "o_gomu" && src.sharedMesh.name != "o_dan_f")
                         chaControl.StartCoroutine(HandleUVCorrupionsCo(dst, uvCopy));
                 }
 
