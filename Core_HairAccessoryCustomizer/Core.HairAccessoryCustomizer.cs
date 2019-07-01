@@ -15,7 +15,7 @@ namespace HairAccessoryCustomizer
     {
         public const string GUID = "com.deathweasel.bepinex.hairaccessorycustomizer";
         public const string PluginName = "Hair Accessory Customizer";
-        public const string Version = "1.1.1";
+        public const string Version = "1.1.2";
 
         internal static bool ReloadingChara = false;
         internal static AccessoryControlWrapper<MakerToggle, bool> ColorMatchToggle;
