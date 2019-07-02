@@ -24,16 +24,16 @@ namespace KK_MaterialEditor
             private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
             private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
 
-            private static Dictionary<int, byte[]> TextureDictionary = new Dictionary<int, byte[]>();
+            private Dictionary<int, byte[]> TextureDictionary = new Dictionary<int, byte[]>();
 
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
-            private static byte[] TexBytes = null;
-            private static ObjectType ObjectTypeToSet;
-            private static string PropertyToSet;
-            private static string MatToSet;
-            private static int CoordinateIndexToSet;
-            private static int SlotToSet;
-            private static GameObject GameObjectToSet;
+            private byte[] TexBytes = null;
+            private ObjectType ObjectTypeToSet;
+            private string PropertyToSet;
+            private string MatToSet;
+            private int CoordinateIndexToSet;
+            private int SlotToSet;
+            private GameObject GameObjectToSet;
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
@@ -148,7 +148,7 @@ namespace KK_MaterialEditor
                         if (textureProperty == null)
                             MaterialTexturePropertyList.Add(new MaterialTextureProperty(ObjectTypeToSet, CoordinateIndexToSet, SlotToSet, MatToSet, PropertyToSet, SetAndGetTextureID(TexBytes)));
                         else
-                            textureProperty.Data = TexBytes;
+                            textureProperty.TexID = SetAndGetTextureID(TexBytes);
                     }
                 }
                 catch
@@ -349,28 +349,28 @@ namespace KK_MaterialEditor
                         foreach (var rend in ChaControl.objClothes[property.Slot].GetComponentsInChildren<Renderer>())
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(ChaControl.objClothes[property.Slot], mat, property.Property, property.Texture);
+                                    SetTextureProperty(ChaControl.objClothes[property.Slot], mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]));
                     }
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
                         foreach (var rend in AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject.GetComponentsInChildren<Renderer>())
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, property.Texture);
+                                    SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]));
                     }
                     else if (property.ObjectType == ObjectType.Hair && hair)
                     {
                         foreach (var rend in ChaControl.objHair[property.Slot]?.gameObject.GetComponentsInChildren<Renderer>())
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, property.Texture);
+                                    SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]));
                     }
                 }
             }
             /// <summary>
             /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
             /// </summary>
-            private static int SetAndGetTextureID(byte[] textureBytes)
+            private int SetAndGetTextureID(byte[] textureBytes)
             {
                 int highestID = 0;
                 foreach (var tex in TextureDictionary)
@@ -835,37 +835,6 @@ namespace KK_MaterialEditor
                 [Key("TexID")]
                 public int TexID;
 
-                [IgnoreMember]
-                private byte[] _data;
-                [IgnoreMember]
-                public byte[] Data
-                {
-                    get => _data;
-                    set
-                    {
-                        if (value == null) return;
-
-                        Dispose();
-                        _data = value;
-                        TexID = SetAndGetTextureID(value);
-                    }
-                }
-                [IgnoreMember]
-                private Texture2D _texture;
-                [IgnoreMember]
-                public Texture2D Texture
-                {
-                    get
-                    {
-                        if (_texture == null)
-                        {
-                            if (_data != null)
-                                _texture = TextureFromBytes(_data, TextureFormat.ARGB32);
-                        }
-                        return _texture;
-                    }
-                }
-
                 public MaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, int texID)
                 {
                     ObjectType = objectType;
@@ -874,24 +843,8 @@ namespace KK_MaterialEditor
                     MaterialName = materialName.Replace("(Instance)", "").Trim();
                     Property = property;
                     TexID = texID;
-                    if (TextureDictionary.TryGetValue(texID, out var data))
-                        Data = data;
-                    else
-                        Data = null;
                 }
-
-                public void Dispose()
-                {
-                    if (_texture != null)
-                    {
-                        UnityEngine.Object.Destroy(_texture);
-                        _texture = null;
-                    }
-                }
-
-                public bool IsEmpty() => Data == null;
             }
-
         }
     }
 }

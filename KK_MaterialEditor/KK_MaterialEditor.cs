@@ -130,7 +130,7 @@ namespace KK_MaterialEditor
                         objMat.SetTexture($"_{property}", value);
         }
 
-        public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format)
+        public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32)
         {
             if (texBytes == null || texBytes.Length == 0) return null;
 
