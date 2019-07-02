@@ -399,6 +399,9 @@ namespace KK_MaterialEditor
                 CoordinateChanging = true;
 
                 ChaControl.StartCoroutine(LoadData(true, true, false));
+
+                if (MakerAPI.InsideAndLoaded)
+                    UISystem.gameObject.SetActive(false);
             }
 
             internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
