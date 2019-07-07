@@ -114,8 +114,7 @@ v1.3.1 Removed log messages. Oops.
 </details>
 
 #### KK_UncensorSelector EC_UncensorSelector
-**v3.6.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v81/KK_UncensorSelector.v3.6.4.zip)** - For Koikatsu<br/>
-**v3.6 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/EC_UncensorSelector.v3.6.zip)** - For EmotionCreators<br/>
+**v3.7 - [Download](https://www.patreon.com/posts/28204946)**<br/>
 
 3.0 update note: Uncensors from previous versions are not compatible, download new versions [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS)<br/>
 
@@ -149,6 +148,7 @@ v3.6.1 Updated for KK Darkness<br/>
 v3.6.2 Fix replacing janitor's body when it shouldn't<br/>
 v3.6.3 Fix janitor's uncensor<br/>
 v3.6.4 Fix compatibility issues for non Darkness game versions<br/>
+v3.7 Fix shadows on male parts and reduce error spam<br/>
 </details>
 
 #### KK_Subtitles
