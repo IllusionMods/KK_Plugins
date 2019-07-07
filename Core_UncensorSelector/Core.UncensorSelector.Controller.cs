@@ -504,6 +504,10 @@ namespace UncensorSelector
 
                     if (src.sharedMesh.name != "o_dankon" && src.sharedMesh.name != "o_gomu" && src.sharedMesh.name != "o_dan_f")
                         chaControl.StartCoroutine(HandleUVCorrupionsCo(dst, uvCopy));
+
+                    //Regardless of the receive shadow settings configured for the mesh it's always set to false for dick and balls, change it so shadows work correctly
+                    if (dst.sharedMesh.name == "o_dankon" || dst.sharedMesh.name == "o_dan_f")
+                        dst.receiveShadows = true;
                 }
 
                 private static IEnumerator HandleUVCorrupionsCo(SkinnedMeshRenderer dst, Vector2[] uvCopy)
