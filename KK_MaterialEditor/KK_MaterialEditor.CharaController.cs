@@ -139,7 +139,7 @@ namespace KK_MaterialEditor
                         Texture2D tex = new Texture2D(2, 2);
                         tex.LoadImage(TexBytes);
 
-                        foreach (var obj in GameObjectToSet.GetComponentsInChildren<Renderer>())
+                        foreach (var obj in GetRendererList(GameObjectToSet, ObjectTypeToSet))
                             foreach (var objMat in obj.materials)
                                 if (objMat.NameFormatted() == MatToSet)
                                     objMat.SetTexture($"_{PropertyToSet}", tex);
@@ -169,10 +169,10 @@ namespace KK_MaterialEditor
             {
                 var data = new PluginData();
 
-                var coordinateRendererPropertyList = RendererPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair).ToList();
-                var coordinateMaterialFloatPropertyList = MaterialFloatPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair).ToList();
-                var coordinateMaterialColorPropertyList = MaterialColorPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair).ToList();
-                var coordinateMaterialTexturePropertyList = MaterialTexturePropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair).ToList();
+                var coordinateRendererPropertyList = RendererPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
+                var coordinateMaterialFloatPropertyList = MaterialFloatPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
+                var coordinateMaterialColorPropertyList = MaterialColorPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
+                var coordinateMaterialTexturePropertyList = MaterialTexturePropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
                 var coordinateTextureDictionary = new Dictionary<int, byte[]>();
 
                 foreach (var tex in TextureDictionary)
@@ -277,19 +277,27 @@ namespace KK_MaterialEditor
                 {
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
-                        foreach (var rend in ChaControl.objClothes[property.Slot].GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(ChaControl.objClothes[property.Slot], property.ObjectType))
                             if (rend.NameFormatted() == property.RendererName)
                                 SetRendererProperty(rend, property.Property, int.Parse(property.Value));
                     }
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
-                        foreach (var rend in AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject.GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.ObjectType))
                             if (rend.name == property.RendererName)
                                 SetRendererProperty(rend, property.Property, int.Parse(property.Value));
                     }
                     else if (property.ObjectType == ObjectType.Hair && hair)
                     {
-                        foreach (var rend in ChaControl.objHair[property.Slot]?.gameObject.GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(ChaControl.objHair[property.Slot]?.gameObject, property.ObjectType))
+                            if (rend.name == property.RendererName)
+                                SetRendererProperty(rend, property.Property, int.Parse(property.Value));
+                    }
+                    else if (property.ObjectType == ObjectType.Character)
+                    {
+                        List<Renderer> rendList = GetRendererList(ChaControl.gameObject, property.ObjectType);
+
+                        foreach (var rend in rendList)
                             if (rend.name == property.RendererName)
                                 SetRendererProperty(rend, property.Property, int.Parse(property.Value));
                     }
@@ -298,72 +306,97 @@ namespace KK_MaterialEditor
                 {
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
-                        foreach (var rend in ChaControl.objClothes[property.Slot].GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(ChaControl.objClothes[property.Slot], property.ObjectType))
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetFloatProperty(ChaControl.objClothes[property.Slot], mat, property.Property, property.Value);
+                                    SetFloatProperty(ChaControl.objClothes[property.Slot], mat, property.Property, property.Value, property.ObjectType);
                     }
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
-                        foreach (var rend in AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject.GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.ObjectType))
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetFloatProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, property.Value);
+                                    SetFloatProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, property.Value, property.ObjectType);
                     }
                     else if (property.ObjectType == ObjectType.Hair && hair)
                     {
-                        foreach (var rend in ChaControl.objHair[property.Slot]?.gameObject.GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(ChaControl.objHair[property.Slot]?.gameObject, property.ObjectType))
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetFloatProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, property.Value);
+                                    SetFloatProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, property.Value, property.ObjectType);
+                    }
+                    else if (property.ObjectType == ObjectType.Character)
+                    {
+                        List<Renderer> rendList = GetRendererList(ChaControl.gameObject, property.ObjectType);
+
+                        foreach (var rend in rendList)
+                            foreach (var mat in rend.materials)
+                                if (mat.NameFormatted() == property.MaterialName)
+                                    SetFloatProperty(ChaControl.gameObject, mat, property.Property, property.Value, property.ObjectType);
                     }
                 }
                 foreach (var property in MaterialColorPropertyList)
                 {
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
-                        foreach (var rend in ChaControl.objClothes[property.Slot].GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(ChaControl.objClothes[property.Slot], property.ObjectType))
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetColorProperty(ChaControl.objClothes[property.Slot], mat, property.Property, property.Value);
+                                    SetColorProperty(ChaControl.objClothes[property.Slot], mat, property.Property, property.Value, property.ObjectType);
                     }
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
-                        foreach (var rend in AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject.GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.ObjectType))
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetColorProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, property.Value);
+                                    SetColorProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, property.Value, property.ObjectType);
                     }
                     else if (property.ObjectType == ObjectType.Hair && hair)
                     {
-                        foreach (var rend in ChaControl.objHair[property.Slot]?.gameObject.GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(ChaControl.objHair[property.Slot]?.gameObject, property.ObjectType))
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetColorProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, property.Value);
+                                    SetColorProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, property.Value, property.ObjectType);
+                    }
+                    else if (property.ObjectType == ObjectType.Character)
+                    {
+                        List<Renderer> rendList = GetRendererList(ChaControl.gameObject, property.ObjectType);
+
+                        foreach (var rend in rendList)
+                            foreach (var mat in rend.materials)
+                                if (mat.NameFormatted() == property.MaterialName)
+                                    SetColorProperty(ChaControl.gameObject, mat, property.Property, property.Value, property.ObjectType);
                     }
                 }
                 foreach (var property in MaterialTexturePropertyList)
                 {
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
-                        foreach (var rend in ChaControl.objClothes[property.Slot].GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(ChaControl.objClothes[property.Slot], property.ObjectType))
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(ChaControl.objClothes[property.Slot], mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]));
+                                    SetTextureProperty(ChaControl.objClothes[property.Slot], mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
                     }
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
-                        foreach (var rend in AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject.GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.ObjectType))
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]));
+                                    SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
                     }
                     else if (property.ObjectType == ObjectType.Hair && hair)
                     {
-                        foreach (var rend in ChaControl.objHair[property.Slot]?.gameObject.GetComponentsInChildren<Renderer>())
+                        foreach (var rend in GetRendererList(ChaControl.objHair[property.Slot]?.gameObject, property.ObjectType))
                             foreach (var mat in rend.materials)
                                 if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]));
+                                    SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
+                    }
+                    else if (property.ObjectType == ObjectType.Character)
+                    {
+                        foreach (var rend in GetRendererList(ChaControl.gameObject, property.ObjectType))
+                            foreach (var mat in rend.materials)
+                                if (mat.NameFormatted() == property.MaterialName)
+                                    SetTextureProperty(ChaControl.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
                     }
                 }
             }

@@ -18,12 +18,19 @@ namespace KK_MaterialEditor
 
         public const string FileExt = ".png";
         public const string FileFilter = "Images (*.png)|*.png|All files|*.*";
+        private static readonly HashSet<string> BodyParts = new HashSet<string> {
+            "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang", "n_tang_silhouette",  "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_mayuge", "cf_Ohitomi_L", "cf_Ohitomi_R",
+            "cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_noseline", "cf_O_namida_L", "cf_O_namida_M", "o_dankon", "o_gomu", "o_dan_f", "cf_O_namida_S", "cf_O_gag_eye_00", "cf_O_gag_eye_01",
+            "cf_O_gag_eye_02", "o_shadowcaster", "o_shadowcaster_cm", "o_mnpa", "o_mnpb", "n_body_silhouette" };
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
             InitUI();
 
             MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(delegate { PopulateListAccessory(); });
+            if (AdvancedMode.Value)
+                e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.All, this)).OnClick.AddListener(delegate { PopulateListCharacter(); });
+
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Top, this)).OnClick.AddListener(delegate { PopulateListClothes(0); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Bottom, this)).OnClick.AddListener(delegate { PopulateListClothes(1); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Bra, this)).OnClick.AddListener(delegate { PopulateListClothes(2); });
@@ -102,6 +109,8 @@ namespace KK_MaterialEditor
                 if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
                     if (objectCtrlInfo is OCIItem ociItem)
                         PopulateList(ociItem?.objectItem, ObjectType.StudioItem, GetObjectID(objectCtrlInfo));
+                    else if (objectCtrlInfo is OCIChar ociChar)
+                        PopulateList(ociChar?.charInfo.gameObject, ObjectType.Character, GetObjectID(objectCtrlInfo), ociChar?.charInfo);
         }
 
         private static void PopulateListClothes(int index)
@@ -125,6 +134,12 @@ namespace KK_MaterialEditor
             PopulateList(chaControl.objHair[index], ObjectType.Hair, 0, chaControl, 0, index);
         }
 
+        private static void PopulateListCharacter()
+        {
+            var chaControl = MakerAPI.GetCharacterControl();
+            PopulateList(chaControl.gameObject, ObjectType.Character, 0, chaControl);
+        }
+
         private static void PopulateList(GameObject go, ObjectType objectType, int id = 0, ChaControl chaControl = null, int coordinateIndex = 0, int slot = 0)
         {
             UISystem.gameObject.SetActive(true);
@@ -135,7 +150,7 @@ namespace KK_MaterialEditor
             if (go == null)
                 return;
 
-            if (objectType == ObjectType.Hair)
+            if (objectType == ObjectType.Hair || objectType == ObjectType.Character)
                 coordinateIndex = 0;
 
             float labelWidth = 50f;
@@ -147,8 +162,10 @@ namespace KK_MaterialEditor
             float resetButtonWidth = 50f;
             RectOffset padding = new RectOffset(3, 3, 0, 1);
 
+            List<Renderer> rendList = GetRendererList(go, objectType);
             List<string> mats = new List<string>();
-            foreach (var rend in go.GetComponentsInChildren<Renderer>())
+
+            foreach (var rend in rendList)
             {
                 var contentListHeader = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                 contentListHeader.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
@@ -358,12 +375,14 @@ namespace KK_MaterialEditor
                 resetReceiveShadowsLE.flexibleWidth = 0;
             }
 
-            foreach (var rend in go.GetComponentsInChildren<Renderer>())
+            foreach (var rend in rendList)
             {
+                if (objectType == ObjectType.Character && !BodyParts.Contains(rend.NameFormatted()))
+                    continue;
+
                 foreach (var mat in rend.materials)
                 {
-                    if (mats.Contains(mat.NameFormatted()))
-                        return;
+                    if (mats.Contains(mat.NameFormatted())) continue;
 
                     mats.Add(mat.NameFormatted());
 
@@ -434,7 +453,7 @@ namespace KK_MaterialEditor
                             textBoxR.text = valueColor.r.ToString();
                             textBoxR.onEndEdit.AddListener((value) =>
                             {
-                                SetColorRProperty(go, mat, colorProperty, value);
+                                SetColorRProperty(go, mat, colorProperty, value, objectType);
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
@@ -456,7 +475,7 @@ namespace KK_MaterialEditor
                             textBoxG.text = valueColor.g.ToString();
                             textBoxG.onEndEdit.AddListener((value) =>
                             {
-                                SetColorGProperty(go, mat, colorProperty, value);
+                                SetColorGProperty(go, mat, colorProperty, value, objectType);
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
@@ -478,7 +497,7 @@ namespace KK_MaterialEditor
                             textBoxB.text = valueColor.b.ToString();
                             textBoxB.onEndEdit.AddListener((value) =>
                             {
-                                SetColorBProperty(go, mat, colorProperty, value);
+                                SetColorBProperty(go, mat, colorProperty, value, objectType);
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
@@ -501,7 +520,7 @@ namespace KK_MaterialEditor
                             textBoxA.text = valueColor.a.ToString();
                             textBoxA.onEndEdit.AddListener((value) =>
                             {
-                                SetColorAProperty(go, mat, colorProperty, value);
+                                SetColorAProperty(go, mat, colorProperty, value, objectType);
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
                                     GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
@@ -521,7 +540,7 @@ namespace KK_MaterialEditor
                                     GetSceneController().RemoveMaterialColorProperty(id, mat.NameFormatted(), colorProperty);
                                 else
                                     GetCharaController(chaControl).RemoveMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty);
-                                SetColorProperty(go, mat, colorProperty, valueColorInitial);
+                                SetColorProperty(go, mat, colorProperty, valueColorInitial, objectType);
                                 textBoxR.text = valueColorInitial.r.ToString();
                                 textBoxG.text = valueColorInitial.g.ToString();
                                 textBoxB.text = valueColorInitial.b.ToString();
@@ -645,7 +664,7 @@ namespace KK_MaterialEditor
                                     GetSceneController().AddMaterialFloatProperty(id, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
                                 else
                                     GetCharaController(chaControl).AddMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
-                                SetFloatProperty(go, mat, floatProperty, value);
+                                SetFloatProperty(go, mat, floatProperty, value, objectType);
                             });
                             var textBoxFloatLE = textBoxFloat.gameObject.AddComponent<LayoutElement>();
                             textBoxFloatLE.preferredWidth = textBoxWidth;
@@ -659,7 +678,7 @@ namespace KK_MaterialEditor
                                     GetSceneController().RemoveMaterialFloatProperty(id, mat.NameFormatted(), floatProperty);
                                 else
                                     GetCharaController(chaControl).RemoveMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty);
-                                SetFloatProperty(go, mat, floatProperty, valueFloatInitial);
+                                SetFloatProperty(go, mat, floatProperty, valueFloatInitial, objectType);
                                 textBoxFloat.text = valueFloatInitial;
                             });
                             var resetEnabledLE = resetFloat.gameObject.AddComponent<LayoutElement>();

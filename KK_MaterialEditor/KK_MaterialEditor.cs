@@ -1,11 +1,13 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
+using CommonCode;
 using Harmony;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio.SaveLoad;
 using Studio;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using UniRx;
@@ -19,7 +21,7 @@ namespace KK_MaterialEditor
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "1.1";
+        public const string Version = "1.2";
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
         public static readonly string XMLPath = Path.Combine(Paths.PluginPath, nameof(KK_MaterialEditor));
@@ -27,6 +29,11 @@ namespace KK_MaterialEditor
         internal static Dictionary<string, Dictionary<string, string>> XMLShaderProperties = new Dictionary<string, Dictionary<string, string>>();
         internal static Dictionary<string, string> XMLShaderPropertiesAll = new Dictionary<string, string>();
         internal static Dictionary<string, Shader> LoadedShaders = new Dictionary<string, Shader>();
+
+        [DisplayName("Enable advanced editing")]
+        [Category("Config")]
+        [Description("Enables advanced editing of characters in the character maker. Note: Some textures and colors will override chracter maker selections but will not always appear to do so, especially after changing them from the in game color pickers. Save and reload to see the real effects.\nUse at your own risk.")]
+        public static ConfigWrapper<bool> AdvancedMode { get; private set; }
 
         private void Main()
         {
@@ -43,6 +50,8 @@ namespace KK_MaterialEditor
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
 
             HarmonyInstance.Create(GUID).PatchAll(typeof(Hooks));
+
+            AdvancedMode = new ConfigWrapper<bool>(nameof(AdvancedMode), PluginName, false);
         }
 
         private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
@@ -50,63 +59,63 @@ namespace KK_MaterialEditor
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
 
-        private static void SetFloatProperty(GameObject go, Material mat, string property, string value)
+        private static void SetFloatProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
         {
             float floatValue = float.Parse(value);
 
-            foreach (var obj in go.GetComponentsInChildren<Renderer>())
+            foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
                     if (objMat.name == mat.name)
                         objMat.SetFloat($"_{property}", floatValue);
         }
 
-        private static void SetColorProperty(GameObject go, Material mat, string property, Color value)
+        private static void SetColorProperty(GameObject go, Material mat, string property, Color value, ObjectType objectType)
         {
-            foreach (var obj in go.GetComponentsInChildren<Renderer>())
+            foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
                     if (objMat.name == mat.name)
                         objMat.SetColor($"_{property}", value);
         }
 
-        private static void SetColorRProperty(GameObject go, Material mat, string property, string value)
+        private static void SetColorRProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
         {
             float floatValue = float.Parse(value);
             Color colorOrig = mat.GetColor($"_{property}");
 
-            foreach (var obj in go.GetComponentsInChildren<Renderer>())
+            foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
                     if (objMat.name == mat.name)
                         objMat.SetColor($"_{property}", new Color(floatValue, colorOrig.g, colorOrig.b, colorOrig.a));
         }
 
-        private static void SetColorGProperty(GameObject go, Material mat, string property, string value)
+        private static void SetColorGProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
         {
             float floatValue = float.Parse(value);
             Color colorOrig = mat.GetColor($"_{property}");
 
-            foreach (var obj in go.GetComponentsInChildren<Renderer>())
+            foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
                     if (objMat.name == mat.name)
                         objMat.SetColor($"_{property}", new Color(colorOrig.r, floatValue, colorOrig.b, colorOrig.a));
         }
 
-        private static void SetColorBProperty(GameObject go, Material mat, string property, string value)
+        private static void SetColorBProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
         {
             float floatValue = float.Parse(value);
             Color colorOrig = mat.GetColor($"_{property}");
 
-            foreach (var obj in go.GetComponentsInChildren<Renderer>())
+            foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
                     if (objMat.name == mat.name)
                         objMat.SetColor($"_{property}", new Color(colorOrig.r, colorOrig.g, floatValue, colorOrig.a));
         }
 
-        private static void SetColorAProperty(GameObject go, Material mat, string property, string value)
+        private static void SetColorAProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
         {
             float floatValue = float.Parse(value);
             Color colorOrig = mat.GetColor($"_{property}");
 
-            foreach (var obj in go.GetComponentsInChildren<Renderer>())
+            foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
                     if (objMat.name == mat.name)
                         objMat.SetColor($"_{property}", new Color(colorOrig.r, colorOrig.g, colorOrig.b, floatValue));
@@ -122,9 +131,9 @@ namespace KK_MaterialEditor
                 rend.enabled = value == 1;
         }
 
-        private static void SetTextureProperty(GameObject go, Material mat, string property, Texture2D value)
+        private static void SetTextureProperty(GameObject go, Material mat, string property, Texture2D value, ObjectType objectType)
         {
-            foreach (var obj in go.GetComponentsInChildren<Renderer>())
+            foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
                     if (objMat.name == mat.name)
                         objMat.SetTexture($"_{property}", value);
@@ -138,8 +147,40 @@ namespace KK_MaterialEditor
             tex.LoadImage(texBytes);
             return tex;
         }
+        /// <summary>
+        /// When geting the renderers, GetComponentsInChildren cannot be used on the body or it causes problems. This method constructs a list without using GetComponentsInChildren.
+        /// </summary>
+        private static List<Renderer> GetRendererList(GameObject go, ObjectType objectType = ObjectType.Other)
+        {
+            List<Renderer> rendList = new List<Renderer>();
 
-        public enum ObjectType { StudioItem, Clothing, Accessory, Hair, Other };
+            if (objectType == ObjectType.Character)
+                _GetRendererList(go, rendList);
+            else
+                rendList = go.GetComponentsInChildren<Renderer>(true).ToList();
+
+            return rendList;
+        }
+        /// <summary>
+        /// Recursively iterates over game objects to create the list. Use GetRendererList intead.
+        /// </summary>
+        private static void _GetRendererList(GameObject go, List<Renderer> rendList)
+        {
+            if (go == null) return;
+
+            //Iterating over o_body_a destroys the body mask for some reason so we skip it. Iterating over cf_O_face destroys juice textures.
+            if (go.name != "o_body_a" && go.name != "cf_O_face")
+            {
+                Renderer rend = go.GetComponent<Renderer>();
+                if (rend != null && BodyParts.Contains(rend.NameFormatted()))
+                    rendList.Add(rend);
+            }
+
+            for (int i = 0; i < go.transform.childCount; i++)
+                _GetRendererList(go.transform.GetChild(i).gameObject, rendList);
+        }
+
+        public enum ObjectType { StudioItem, Clothing, Accessory, Hair, Character, Other };
         private static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
         public static MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
         public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();

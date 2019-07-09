@@ -143,7 +143,7 @@ namespace KK_MaterialEditor
                                     {
                                         var valueOriginal = mat.GetFloat($"_{loadedMaterialFloatProperty.Property}").ToString();
                                         MaterialFloatPropertyList.Add(new MaterialFloatProperty(GetObjectID(objectCtrlInfo), loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, valueOriginal));
-                                        SetFloatProperty(ociItem.objectItem, mat, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value);
+                                        SetFloatProperty(ociItem.objectItem, mat, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, ObjectType.StudioItem);
                                     }
                                 }
                             }
@@ -167,7 +167,7 @@ namespace KK_MaterialEditor
                                     {
                                         var valueOriginal = mat.GetColor($"_{loadedMaterialColorProperty.Property}");
                                         MaterialColorPropertyList.Add(new MaterialColorProperty(GetObjectID(objectCtrlInfo), loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, valueOriginal));
-                                        SetColorProperty(ociItem.objectItem, mat, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value);
+                                        SetColorProperty(ociItem.objectItem, mat, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, ObjectType.StudioItem);
                                     }
                                 }
                             }
@@ -192,7 +192,7 @@ namespace KK_MaterialEditor
                                         int texID = operation == SceneOperationKind.Import ? importDictionary[loadedMaterialTextureProperty.TexID] : loadedMaterialTextureProperty.TexID;
                                         MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(GetObjectID(objectCtrlInfo), loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, texID);
                                         MaterialTexturePropertyList.Add(newTextureProperty);
-                                        SetTextureProperty(ociItem.objectItem, mat, newTextureProperty.Property, newTextureProperty.Texture);
+                                        SetTextureProperty(ociItem.objectItem, mat, newTextureProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem);
                                     }
                                 }
                             }
