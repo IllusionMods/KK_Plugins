@@ -1,5 +1,5 @@
-﻿using CommonCode;
-using ExtensibleSaveFormat;
+﻿using ExtensibleSaveFormat;
+using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using MessagePack;
@@ -90,115 +90,82 @@ namespace KK_MaterialEditor
                 var importDictionary = new Dictionary<int, int>();
 
                 if (operation == SceneOperationKind.Load)
-                {
                     if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
                         TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
-                }
-                else if (operation == SceneOperationKind.Import)
-                {
-                    if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                    {
-                        Dictionary<int, byte[]> importTextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
-
-                        foreach (var x in importTextureDictionary)
-                            importDictionary[x.Key] = SetAndGetTextureID(x.Value);
-                    }
-                }
-                else if (operation == SceneOperationKind.Clear)
-                    return;
+                    else if (operation == SceneOperationKind.Import)
+                        if (data.data.TryGetValue(nameof(TextureDictionary), out texDic) && texDic != null)
+                            foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
+                                importDictionary[x.Key] = SetAndGetTextureID(x.Value);
+                        else if (operation == SceneOperationKind.Clear)
+                            return;
 
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
-                {
-                    var loadedRendererProperties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
-
-                    foreach (var loadedRendererProperty in loadedRendererProperties)
-                    {
-                        if (loadedItems.TryGetValue(loadedRendererProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        {
-                            foreach (var renderer in ociItem.objectItem.GetComponentsInChildren<Renderer>())
-                            {
-                                if (renderer.NameFormatted() == loadedRendererProperty.RendererName)
-                                {
-                                    RendererPropertyList.Add(new RendererProperty(GetObjectID(objectCtrlInfo), loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
-                                    SetRendererProperty(renderer, loadedRendererProperty.Property, int.Parse(loadedRendererProperty.Value));
-                                }
-                            }
-                        }
-                    }
-                }
+                    foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
+                        if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                            if (SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, int.Parse(loadedProperty.Value), ObjectType.StudioItem))
+                                RendererPropertyList.Add(new RendererProperty(GetObjectID(objectCtrlInfo), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
                 if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
-                {
-                    var loadedMaterialFloatProperties = MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties);
-
-                    foreach (var loadedMaterialFloatProperty in loadedMaterialFloatProperties)
-                    {
-                        if (loadedItems.TryGetValue(loadedMaterialFloatProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        {
-                            foreach (var rend in ociItem.objectItem.GetComponentsInChildren<Renderer>())
-                            {
-                                foreach (var mat in rend.materials)
-                                {
-                                    if (mat.NameFormatted() == loadedMaterialFloatProperty.MaterialName && mat.HasProperty($"_{loadedMaterialFloatProperty.Property}") && FloatProperties.Contains(loadedMaterialFloatProperty.Property))
-                                    {
-                                        var valueOriginal = mat.GetFloat($"_{loadedMaterialFloatProperty.Property}").ToString();
-                                        MaterialFloatPropertyList.Add(new MaterialFloatProperty(GetObjectID(objectCtrlInfo), loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, valueOriginal));
-                                        SetFloatProperty(ociItem.objectItem, mat, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, ObjectType.StudioItem);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                    foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
+                        if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                            if (SetFloatProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
+                                MaterialFloatPropertyList.Add(new MaterialFloatProperty(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
                 if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
-                {
-                    var loadedMaterialColorProperties = MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties);
-
-                    foreach (var loadedMaterialColorProperty in loadedMaterialColorProperties)
-                    {
-                        if (loadedItems.TryGetValue(loadedMaterialColorProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        {
-                            foreach (var rend in ociItem.objectItem.GetComponentsInChildren<Renderer>())
-                            {
-                                foreach (var mat in rend.materials)
-                                {
-                                    if (mat.NameFormatted() == loadedMaterialColorProperty.MaterialName && mat.HasProperty($"_{loadedMaterialColorProperty.Property}") && ColorProperties.Contains(loadedMaterialColorProperty.Property))
-                                    {
-                                        var valueOriginal = mat.GetColor($"_{loadedMaterialColorProperty.Property}");
-                                        MaterialColorPropertyList.Add(new MaterialColorProperty(GetObjectID(objectCtrlInfo), loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, valueOriginal));
-                                        SetColorProperty(ociItem.objectItem, mat, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, ObjectType.StudioItem);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                    foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
+                        if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                            if (SetColorProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
+                                MaterialColorPropertyList.Add(new MaterialColorProperty(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
                 if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
-                {
-                    var loadedMaterialTextureProperties = MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties);
-
-                    foreach (var loadedMaterialTextureProperty in loadedMaterialTextureProperties)
-                    {
-                        if (loadedItems.TryGetValue(loadedMaterialTextureProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                    foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
+                        if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                         {
-                            foreach (var rend in ociItem.objectItem.GetComponentsInChildren<Renderer>())
-                            {
-                                foreach (var mat in rend.materials)
-                                {
-                                    if (mat.NameFormatted() == loadedMaterialTextureProperty.MaterialName && mat.HasProperty($"_{loadedMaterialTextureProperty.Property}") && TextureProperties.Contains(loadedMaterialTextureProperty.Property))
-                                    {
-                                        int texID = operation == SceneOperationKind.Import ? importDictionary[loadedMaterialTextureProperty.TexID] : loadedMaterialTextureProperty.TexID;
-                                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(GetObjectID(objectCtrlInfo), loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, texID);
-                                        MaterialTexturePropertyList.Add(newTextureProperty);
-                                        SetTextureProperty(ociItem.objectItem, mat, newTextureProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem);
-                                    }
-                                }
-                            }
+                            int texID = operation == SceneOperationKind.Import ? importDictionary[loadedProperty.TexID] : loadedProperty.TexID;
+                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, texID);
+                            if (SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem))
+                                MaterialTexturePropertyList.Add(newTextureProperty);
                         }
-                    }
-                }
+            }
+
+            protected override void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems)
+            {
+                List<RendererProperty> rendererPropertyListNew = new List<RendererProperty>();
+                List<MaterialFloatProperty> materialFloatPropertyListNew = new List<MaterialFloatProperty>();
+                List<MaterialColorProperty> materialColorPropertyListNew = new List<MaterialColorProperty>();
+                List<MaterialTextureProperty> materialTexturePropertyListNew = new List<MaterialTextureProperty>();
+
+                foreach (var copiedItem in copiedItems)
+                    if (copiedItem.Value is OCIItem ociItem)
+                        foreach (var loadedProperty in RendererPropertyList.Where(x => x.ID == copiedItem.Key))
+                            if (SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
+                                rendererPropertyListNew.Add(new RendererProperty(copiedItem.Value.GetSceneId(), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+
+                foreach (var copiedItem in copiedItems)
+                    if (copiedItem.Value is OCIItem ociItem)
+                        foreach (var loadedProperty in MaterialFloatPropertyList.Where(x => x.ID == copiedItem.Key))
+                            if (SetFloatProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
+                                materialFloatPropertyListNew.Add(new MaterialFloatProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+
+                foreach (var copiedItem in copiedItems)
+                    if (copiedItem.Value is OCIItem ociItem)
+                        foreach (var loadedProperty in MaterialColorPropertyList.Where(x => x.ID == copiedItem.Key))
+                            if (SetColorProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
+                                materialColorPropertyListNew.Add(new MaterialColorProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+
+                foreach (var copiedItem in copiedItems)
+                    if (copiedItem.Value is OCIItem ociItem)
+                        foreach (var loadedProperty in MaterialTexturePropertyList.Where(x => x.ID == copiedItem.Key))
+                        {
+                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID);
+                            if (SetTextureProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem))
+                                materialTexturePropertyListNew.Add(newTextureProperty);
+                        }
+
+                RendererPropertyList.AddRange(rendererPropertyListNew);
+                MaterialFloatPropertyList.AddRange(materialFloatPropertyListNew);
+                MaterialColorPropertyList.AddRange(materialColorPropertyListNew);
+                MaterialTexturePropertyList.AddRange(materialTexturePropertyListNew);
             }
 
             private void Update()
@@ -210,10 +177,7 @@ namespace KK_MaterialEditor
                         Texture2D tex = new Texture2D(2, 2);
                         tex.LoadImage(TexBytes);
 
-                        foreach (var obj in GameObjectToSet.GetComponentsInChildren<Renderer>())
-                            foreach (var objMat in obj.materials)
-                                if (objMat.NameFormatted() == MatToSet)
-                                    objMat.SetTexture($"_{PropertyToSet}", tex);
+                        SetTextureProperty(GameObjectToSet, MatToSet, PropertyToSet, tex, ObjectType.StudioItem);
 
                         var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == IDToSet && x.Property == PropertyToSet && x.MaterialName == MatToSet);
                         if (textureProperty == null)

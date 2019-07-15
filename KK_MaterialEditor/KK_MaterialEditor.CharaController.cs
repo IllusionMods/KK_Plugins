@@ -1,5 +1,4 @@
-﻿using CommonCode;
-using ExtensibleSaveFormat;
+﻿using ExtensibleSaveFormat;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -41,10 +40,8 @@ namespace KK_MaterialEditor
 
                 List<int> IDsToPurge = new List<int>();
                 foreach (int texID in TextureDictionary.Keys)
-                {
                     if (!MaterialTexturePropertyList.Any(x => x.TexID == texID))
                         IDsToPurge.Add(texID);
-                }
 
                 foreach (int texID in IDsToPurge)
                     TextureDictionary.Remove(texID);
@@ -96,36 +93,20 @@ namespace KK_MaterialEditor
                     TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
 
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
-                {
-                    var loadedRendererProperties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
-
-                    foreach (var loadedRendererProperty in loadedRendererProperties)
+                    foreach (var loadedRendererProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
                         RendererPropertyList.Add(new RendererProperty(loadedRendererProperty.ObjectType, loadedRendererProperty.CoordinateIndex, loadedRendererProperty.Slot, loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
-                }
 
                 if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
-                {
-                    var loadedMaterialFloatProperties = MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties);
-
-                    foreach (var loadedMaterialFloatProperty in loadedMaterialFloatProperties)
+                    foreach (var loadedMaterialFloatProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
                         MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedMaterialFloatProperty.ObjectType, loadedMaterialFloatProperty.CoordinateIndex, loadedMaterialFloatProperty.Slot, loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, loadedMaterialFloatProperty.ValueOriginal));
-                }
 
                 if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
-                {
-                    var loadedColorProperties = MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties);
-
-                    foreach (var loadedMaterialColorProperty in loadedColorProperties)
+                    foreach (var loadedMaterialColorProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
                         MaterialColorPropertyList.Add(new MaterialColorProperty(loadedMaterialColorProperty.ObjectType, loadedMaterialColorProperty.CoordinateIndex, loadedMaterialColorProperty.Slot, loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, loadedMaterialColorProperty.ValueOriginal));
-                }
 
                 if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
-                {
-                    var loadedTextureProperties = MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties);
-
-                    foreach (var loadedMaterialTextureProperty in loadedTextureProperties)
+                    foreach (var loadedMaterialTextureProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
                         MaterialTexturePropertyList.Add(new MaterialTextureProperty(loadedMaterialTextureProperty.ObjectType, loadedMaterialTextureProperty.CoordinateIndex, loadedMaterialTextureProperty.Slot, loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, loadedMaterialTextureProperty.TexID));
-                }
 
                 ChaControl.StartCoroutine(LoadData(true, true, true));
             }
@@ -139,10 +120,7 @@ namespace KK_MaterialEditor
                         Texture2D tex = new Texture2D(2, 2);
                         tex.LoadImage(TexBytes);
 
-                        foreach (var obj in GetRendererList(GameObjectToSet, ObjectTypeToSet))
-                            foreach (var objMat in obj.materials)
-                                if (objMat.NameFormatted() == MatToSet)
-                                    objMat.SetTexture($"_{PropertyToSet}", tex);
+                        SetTextureProperty(GameObjectToSet, MatToSet, PropertyToSet, tex, ObjectTypeToSet);
 
                         var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == ObjectTypeToSet && x.CoordinateIndex == CoordinateIndexToSet && x.Slot == SlotToSet && x.Property == PropertyToSet && x.MaterialName == MatToSet);
                         if (textureProperty == null)
@@ -224,44 +202,24 @@ namespace KK_MaterialEditor
                 var importDictionary = new Dictionary<int, int>();
 
                 if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                {
-                    Dictionary<int, byte[]> importTextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
-
-                    foreach (var x in importTextureDictionary)
+                    foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
                         importDictionary[x.Key] = SetAndGetTextureID(x.Value);
-                }
 
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
-                {
-                    var loadedRendererProperties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
-
-                    foreach (var loadedRendererProperty in loadedRendererProperties)
+                    foreach (var loadedRendererProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
                         RendererPropertyList.Add(new RendererProperty(loadedRendererProperty.ObjectType, CurrentCoordinateIndex, loadedRendererProperty.Slot, loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
-                }
 
                 if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
-                {
-                    var loadedMaterialFloatProperties = MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties);
-
-                    foreach (var loadedMaterialFloatProperty in loadedMaterialFloatProperties)
+                    foreach (var loadedMaterialFloatProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
                         MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedMaterialFloatProperty.ObjectType, CurrentCoordinateIndex, loadedMaterialFloatProperty.Slot, loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, loadedMaterialFloatProperty.ValueOriginal));
-                }
 
                 if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
-                {
-                    var loadedColorProperties = MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties);
-
-                    foreach (var loadedMaterialColorProperty in loadedColorProperties)
+                    foreach (var loadedMaterialColorProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
                         MaterialColorPropertyList.Add(new MaterialColorProperty(loadedMaterialColorProperty.ObjectType, CurrentCoordinateIndex, loadedMaterialColorProperty.Slot, loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, loadedMaterialColorProperty.ValueOriginal));
-                }
 
                 if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
-                {
-                    var loadedTextureProperties = MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties);
-
-                    foreach (var loadedMaterialTextureProperty in loadedTextureProperties)
+                    foreach (var loadedMaterialTextureProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
                         MaterialTexturePropertyList.Add(new MaterialTextureProperty(loadedMaterialTextureProperty.ObjectType, CurrentCoordinateIndex, loadedMaterialTextureProperty.Slot, loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, importDictionary[loadedMaterialTextureProperty.TexID]));
-                }
 
                 CoordinateChanging = true;
 
@@ -276,128 +234,46 @@ namespace KK_MaterialEditor
                 foreach (var property in RendererPropertyList)
                 {
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
-                    {
-                        foreach (var rend in GetRendererList(ChaControl.objClothes[property.Slot], property.ObjectType))
-                            if (rend.NameFormatted() == property.RendererName)
-                                SetRendererProperty(rend, property.Property, int.Parse(property.Value));
-                    }
+                        SetRendererProperty(ChaControl.objClothes[property.Slot], property.RendererName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
-                    {
-                        foreach (var rend in GetRendererList(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.ObjectType))
-                            if (rend.name == property.RendererName)
-                                SetRendererProperty(rend, property.Property, int.Parse(property.Value));
-                    }
+                        SetRendererProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.RendererName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Hair && hair)
-                    {
-                        foreach (var rend in GetRendererList(ChaControl.objHair[property.Slot]?.gameObject, property.ObjectType))
-                            if (rend.name == property.RendererName)
-                                SetRendererProperty(rend, property.Property, int.Parse(property.Value));
-                    }
+                        SetRendererProperty(ChaControl.objHair[property.Slot], property.RendererName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Character)
-                    {
-                        List<Renderer> rendList = GetRendererList(ChaControl.gameObject, property.ObjectType);
-
-                        foreach (var rend in rendList)
-                            if (rend.name == property.RendererName)
-                                SetRendererProperty(rend, property.Property, int.Parse(property.Value));
-                    }
+                        SetRendererProperty(ChaControl.gameObject, property.RendererName, property.Property, property.Value, property.ObjectType);
                 }
                 foreach (var property in MaterialFloatPropertyList)
                 {
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
-                    {
-                        foreach (var rend in GetRendererList(ChaControl.objClothes[property.Slot], property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetFloatProperty(ChaControl.objClothes[property.Slot], mat, property.Property, property.Value, property.ObjectType);
-                    }
+                        SetFloatProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
-                    {
-                        foreach (var rend in GetRendererList(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetFloatProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, property.Value, property.ObjectType);
-                    }
+                        SetFloatProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Hair && hair)
-                    {
-                        foreach (var rend in GetRendererList(ChaControl.objHair[property.Slot]?.gameObject, property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetFloatProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, property.Value, property.ObjectType);
-                    }
+                        SetFloatProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Character)
-                    {
-                        List<Renderer> rendList = GetRendererList(ChaControl.gameObject, property.ObjectType);
-
-                        foreach (var rend in rendList)
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetFloatProperty(ChaControl.gameObject, mat, property.Property, property.Value, property.ObjectType);
-                    }
+                        SetFloatProperty(ChaControl.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
                 }
                 foreach (var property in MaterialColorPropertyList)
                 {
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
-                    {
-                        foreach (var rend in GetRendererList(ChaControl.objClothes[property.Slot], property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetColorProperty(ChaControl.objClothes[property.Slot], mat, property.Property, property.Value, property.ObjectType);
-                    }
+                        SetColorProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
-                    {
-                        foreach (var rend in GetRendererList(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetColorProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, property.Value, property.ObjectType);
-                    }
+                        SetColorProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Hair && hair)
-                    {
-                        foreach (var rend in GetRendererList(ChaControl.objHair[property.Slot]?.gameObject, property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetColorProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, property.Value, property.ObjectType);
-                    }
+                        SetColorProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Character)
-                    {
-                        List<Renderer> rendList = GetRendererList(ChaControl.gameObject, property.ObjectType);
-
-                        foreach (var rend in rendList)
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetColorProperty(ChaControl.gameObject, mat, property.Property, property.Value, property.ObjectType);
-                    }
+                        SetColorProperty(ChaControl.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
                 }
                 foreach (var property in MaterialTexturePropertyList)
                 {
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
-                    {
-                        foreach (var rend in GetRendererList(ChaControl.objClothes[property.Slot], property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(ChaControl.objClothes[property.Slot], mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
-                    }
+                        SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
-                    {
-                        foreach (var rend in GetRendererList(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
-                    }
+                        SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
                     else if (property.ObjectType == ObjectType.Hair && hair)
-                    {
-                        foreach (var rend in GetRendererList(ChaControl.objHair[property.Slot]?.gameObject, property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
-                    }
+                        SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
                     else if (property.ObjectType == ObjectType.Character)
-                    {
-                        foreach (var rend in GetRendererList(ChaControl.gameObject, property.ObjectType))
-                            foreach (var mat in rend.materials)
-                                if (mat.NameFormatted() == property.MaterialName)
-                                    SetTextureProperty(ChaControl.gameObject, mat, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
-                    }
+                        SetTextureProperty(ChaControl.gameObject, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
                 }
             }
             /// <summary>

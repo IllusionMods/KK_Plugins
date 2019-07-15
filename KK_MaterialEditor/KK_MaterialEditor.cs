@@ -59,22 +59,33 @@ namespace KK_MaterialEditor
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
 
-        private static void SetFloatProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
+        private static bool SetFloatProperty(GameObject go, string materialName, string property, string value, ObjectType objectType)
         {
             float floatValue = float.Parse(value);
+            bool didSet = false;
 
             foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
-                    if (objMat.name == mat.name)
+                    if (objMat.NameFormatted() == materialName)
+                    {
                         objMat.SetFloat($"_{property}", floatValue);
+                        didSet = true;
+                    }
+            return didSet;
         }
 
-        private static void SetColorProperty(GameObject go, Material mat, string property, Color value, ObjectType objectType)
+        private static bool SetColorProperty(GameObject go, string materialName, string property, Color value, ObjectType objectType)
         {
+            bool didSet = false;
+
             foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
-                    if (objMat.name == mat.name)
+                    if (objMat.NameFormatted() == materialName)
+                    {
                         objMat.SetColor($"_{property}", value);
+                        didSet = true;
+                    }
+            return didSet;
         }
 
         private static void SetColorRProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
@@ -84,7 +95,7 @@ namespace KK_MaterialEditor
 
             foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
-                    if (objMat.name == mat.name)
+                    if (objMat.NameFormatted() == mat.NameFormatted())
                         objMat.SetColor($"_{property}", new Color(floatValue, colorOrig.g, colorOrig.b, colorOrig.a));
         }
 
@@ -95,7 +106,7 @@ namespace KK_MaterialEditor
 
             foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
-                    if (objMat.name == mat.name)
+                    if (objMat.NameFormatted() == mat.NameFormatted())
                         objMat.SetColor($"_{property}", new Color(colorOrig.r, floatValue, colorOrig.b, colorOrig.a));
         }
 
@@ -106,7 +117,7 @@ namespace KK_MaterialEditor
 
             foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
-                    if (objMat.name == mat.name)
+                    if (objMat.NameFormatted() == mat.NameFormatted())
                         objMat.SetColor($"_{property}", new Color(colorOrig.r, colorOrig.g, floatValue, colorOrig.a));
         }
 
@@ -117,26 +128,49 @@ namespace KK_MaterialEditor
 
             foreach (var obj in GetRendererList(go, objectType))
                 foreach (var objMat in obj.materials)
-                    if (objMat.name == mat.name)
+                    if (objMat.NameFormatted() == mat.NameFormatted())
                         objMat.SetColor($"_{property}", new Color(colorOrig.r, colorOrig.g, colorOrig.b, floatValue));
         }
 
-        private static void SetRendererProperty(Renderer rend, RendererProperties property, int value)
+        private static bool SetRendererProperty(GameObject go, string rendererName, RendererProperties property, string value, ObjectType objectType) => SetRendererProperty(go, rendererName, property, int.Parse(value), objectType);
+        private static bool SetRendererProperty(GameObject go, string rendererName, RendererProperties property, int value, ObjectType objectType)
         {
-            if (property == RendererProperties.ShadowCastingMode)
-                rend.shadowCastingMode = (UnityEngine.Rendering.ShadowCastingMode)value;
-            else if (property == RendererProperties.ReceiveShadows)
-                rend.receiveShadows = value == 1;
-            else if (property == RendererProperties.Enabled)
-                rend.enabled = value == 1;
+            bool didSet = false;
+            foreach (var rend in GetRendererList(go, objectType))
+            {
+                if (rend.NameFormatted() == rendererName)
+                {
+                    if (property == RendererProperties.ShadowCastingMode)
+                    {
+                        rend.shadowCastingMode = (UnityEngine.Rendering.ShadowCastingMode)value;
+                        didSet = true;
+                    }
+                    else if (property == RendererProperties.ReceiveShadows)
+                    {
+                        rend.receiveShadows = value == 1;
+                        didSet = true;
+                    }
+                    else if (property == RendererProperties.Enabled)
+                    {
+                        rend.enabled = value == 1;
+                        didSet = true;
+                    }
+                }
+            }
+            return didSet;
         }
 
-        private static void SetTextureProperty(GameObject go, Material mat, string property, Texture2D value, ObjectType objectType)
+        private static bool SetTextureProperty(GameObject go, string materialName, string property, Texture2D value, ObjectType objectType)
         {
-            foreach (var obj in GetRendererList(go, objectType))
-                foreach (var objMat in obj.materials)
-                    if (objMat.name == mat.name)
-                        objMat.SetTexture($"_{property}", value);
+            bool didSet = false;
+            foreach (var rend in GetRendererList(go, objectType))
+                foreach (var mat in rend.materials)
+                    if (mat.NameFormatted() == materialName)
+                    {
+                        mat.SetTexture($"_{property}", value);
+                        didSet = true;
+                    }
+            return didSet;
         }
 
         public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32)

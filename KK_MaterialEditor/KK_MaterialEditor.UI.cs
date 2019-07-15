@@ -231,7 +231,7 @@ namespace KK_MaterialEditor
                         GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), valueEnabledInitial ? "1" : "0");
                     else
                         GetCharaController(chaControl).AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), valueEnabledInitial ? "1" : "0");
-                    SetRendererProperty(rend, RendererProperties.Enabled, value);
+                    SetRendererProperty(go, rend.NameFormatted(), RendererProperties.Enabled, value, objectType);
                 });
                 var dropdownEnabledLE = dropdownEnabled.gameObject.AddComponent<LayoutElement>();
                 dropdownEnabledLE.preferredWidth = dropdownWidth;
@@ -245,7 +245,7 @@ namespace KK_MaterialEditor
                         GetSceneController().RemoveRendererProperty(id, rend.NameFormatted(), RendererProperties.Enabled);
                     else
                         GetCharaController(chaControl).RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled);
-                    SetRendererProperty(rend, RendererProperties.Enabled, valueEnabledInitial ? 1 : 0);
+                    SetRendererProperty(go, rend.NameFormatted(), RendererProperties.Enabled, valueEnabledInitial ? 1 : 0, objectType);
                     dropdownEnabled.value = valueEnabledInitial ? 1 : 0;
                 });
                 var resetEnabledLE = resetEnabled.gameObject.AddComponent<LayoutElement>();
@@ -293,7 +293,7 @@ namespace KK_MaterialEditor
                         GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)valueShadowCastingModeInitial).ToString());
                     else
                         GetCharaController(chaControl).AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)valueShadowCastingModeInitial).ToString());
-                    SetRendererProperty(rend, RendererProperties.ShadowCastingMode, value);
+                    SetRendererProperty(go, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value, objectType);
                 });
                 var dropdownShadowCastingModeLE = dropdownShadowCastingMode.gameObject.AddComponent<LayoutElement>();
                 dropdownShadowCastingModeLE.preferredWidth = dropdownWidth;
@@ -307,7 +307,7 @@ namespace KK_MaterialEditor
                         GetSceneController().RemoveRendererProperty(id, rend.NameFormatted(), RendererProperties.ShadowCastingMode);
                     else
                         GetCharaController(chaControl).RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode);
-                    SetRendererProperty(rend, RendererProperties.ShadowCastingMode, (int)valueShadowCastingModeInitial);
+                    SetRendererProperty(go, rend.NameFormatted(), RendererProperties.ShadowCastingMode, (int)valueShadowCastingModeInitial, objectType);
                     dropdownShadowCastingMode.value = (int)valueShadowCastingModeInitial;
                 });
                 var resetShadowCastingModeLE = resetShadowCastingMode.gameObject.AddComponent<LayoutElement>();
@@ -353,7 +353,7 @@ namespace KK_MaterialEditor
                         GetSceneController().AddRendererProperty(id, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), valueReceiveShadowsInitial ? "1" : "0");
                     else
                         GetCharaController(chaControl).AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), valueReceiveShadowsInitial ? "1" : "0");
-                    SetRendererProperty(rend, RendererProperties.ReceiveShadows, value);
+                    SetRendererProperty(go, rend.NameFormatted(), RendererProperties.ReceiveShadows, value, objectType);
                 });
                 var dropdownReceiveShadowsLE = dropdownReceiveShadows.gameObject.AddComponent<LayoutElement>();
                 dropdownReceiveShadowsLE.preferredWidth = dropdownWidth;
@@ -367,7 +367,7 @@ namespace KK_MaterialEditor
                         GetSceneController().RemoveRendererProperty(id, rend.NameFormatted(), RendererProperties.ReceiveShadows);
                     else
                         GetCharaController(chaControl).RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows);
-                    SetRendererProperty(rend, RendererProperties.ReceiveShadows, valueReceiveShadowsInitial ? 1 : 0);
+                    SetRendererProperty(go, rend.NameFormatted(), RendererProperties.ReceiveShadows, valueReceiveShadowsInitial ? 1 : 0, objectType);
                     dropdownReceiveShadows.value = valueReceiveShadowsInitial ? 1 : 0;
                 });
                 var resetReceiveShadowsLE = resetReceiveShadows.gameObject.AddComponent<LayoutElement>();
@@ -540,7 +540,7 @@ namespace KK_MaterialEditor
                                     GetSceneController().RemoveMaterialColorProperty(id, mat.NameFormatted(), colorProperty);
                                 else
                                     GetCharaController(chaControl).RemoveMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty);
-                                SetColorProperty(go, mat, colorProperty, valueColorInitial, objectType);
+                                SetColorProperty(go, mat.NameFormatted(), colorProperty, valueColorInitial, objectType);
                                 textBoxR.text = valueColorInitial.r.ToString();
                                 textBoxG.text = valueColorInitial.g.ToString();
                                 textBoxB.text = valueColorInitial.b.ToString();
@@ -664,7 +664,7 @@ namespace KK_MaterialEditor
                                     GetSceneController().AddMaterialFloatProperty(id, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
                                 else
                                     GetCharaController(chaControl).AddMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
-                                SetFloatProperty(go, mat, floatProperty, value, objectType);
+                                SetFloatProperty(go, mat.NameFormatted(), floatProperty, value, objectType);
                             });
                             var textBoxFloatLE = textBoxFloat.gameObject.AddComponent<LayoutElement>();
                             textBoxFloatLE.preferredWidth = textBoxWidth;
@@ -678,7 +678,7 @@ namespace KK_MaterialEditor
                                     GetSceneController().RemoveMaterialFloatProperty(id, mat.NameFormatted(), floatProperty);
                                 else
                                     GetCharaController(chaControl).RemoveMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty);
-                                SetFloatProperty(go, mat, floatProperty, valueFloatInitial, objectType);
+                                SetFloatProperty(go, mat.NameFormatted(), floatProperty, valueFloatInitial, objectType);
                                 textBoxFloat.text = valueFloatInitial;
                             });
                             var resetEnabledLE = resetFloat.gameObject.AddComponent<LayoutElement>();
@@ -698,27 +698,27 @@ namespace KK_MaterialEditor
             InitUI();
 
             RectTransform original = GameObject.Find("StudioScene").transform.Find("Canvas Object List/Image Bar/Button Route").GetComponent<RectTransform>();
-            Button testButton = Instantiate(original.gameObject).GetComponent<Button>();
-            RectTransform testButtonRectTransform = testButton.transform as RectTransform;
-            testButton.transform.SetParent(original.parent, true);
-            testButton.transform.localScale = original.localScale;
-            testButtonRectTransform.SetRect(original.anchorMin, original.anchorMax, original.offsetMin, original.offsetMax);
-            testButtonRectTransform.anchoredPosition = original.anchoredPosition + new Vector2(-48f, 0f);
+            Button materialEditorButton = Instantiate(original.gameObject).GetComponent<Button>();
+            RectTransform materialEditorButtonRectTransform = materialEditorButton.transform as RectTransform;
+            materialEditorButton.transform.SetParent(original.parent, true);
+            materialEditorButton.transform.localScale = original.localScale;
+            materialEditorButtonRectTransform.SetRect(original.anchorMin, original.anchorMax, original.offsetMin, original.offsetMax);
+            materialEditorButtonRectTransform.anchoredPosition = original.anchoredPosition + new Vector2(-48f, 0f);
 
             Texture2D texture2D = new Texture2D(32, 32);
             texture2D.LoadImage(LoadIcon());
-            var MatEditorIcon = testButton.targetGraphic as Image;
+            var MatEditorIcon = materialEditorButton.targetGraphic as Image;
             MatEditorIcon.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 32, 32), new Vector2(16, 16));
             MatEditorIcon.color = Color.white;
 
-            testButton.onClick = new Button.ButtonClickedEvent();
-            testButton.onClick.AddListener(() => { PopulateListStudio(); });
+            materialEditorButton.onClick = new Button.ButtonClickedEvent();
+            materialEditorButton.onClick.AddListener(() => { PopulateListStudio(); });
         }
 
         private static void ExportTexture(Material mat, string property)
         {
             var tex = mat.GetTexture($"_{property}");
-            string filename = Path.Combine(ExportPath, $"{mat.NameFormatted()}_{property}_{System.DateTime.Now:yyyy-MM-dd-HH-mm-ss}.png");
+            string filename = Path.Combine(ExportPath, $"{System.DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{mat.NameFormatted()}_{property}.png");
             SaveTex(tex, filename);
             CC.Log($"Exported {filename}");
             CC.OpenFileInExplorer(filename);

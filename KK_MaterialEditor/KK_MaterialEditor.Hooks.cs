@@ -1,7 +1,8 @@
-﻿using ChaCustom;
+﻿using CommonCode;
 using Harmony;
-using KKAPI.Maker;
 using Studio;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace KK_MaterialEditor
 {
