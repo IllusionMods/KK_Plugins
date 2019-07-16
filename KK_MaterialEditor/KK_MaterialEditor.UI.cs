@@ -718,7 +718,7 @@ namespace KK_MaterialEditor
         private static void ExportTexture(Material mat, string property)
         {
             var tex = mat.GetTexture($"_{property}");
-            string filename = Path.Combine(ExportPath, $"{System.DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{mat.NameFormatted()}_{property}.png");
+            string filename = Path.Combine(ExportPath, $"_Export_{System.DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{mat.NameFormatted()}_{property}.png");
             SaveTex(tex, filename);
             CC.Log($"Exported {filename}");
             CC.OpenFileInExplorer(filename);
