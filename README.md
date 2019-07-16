@@ -315,6 +315,7 @@ Access the Material Editor by pressing the "Open Material Editor" button on clot
 <details><summary>Change Log</summary>
 v1.1 Fixed errors loading coordinates, errors loading scenes with multiple characters<br/>
 v1.2 Added the ability to change body and face materials<br/>
+v1.3 Copied studio items now copy Material Editor settings, changed filename format<br/>
 </details>
 
 # Experimental plugins
