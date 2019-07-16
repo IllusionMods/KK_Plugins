@@ -24,7 +24,7 @@ namespace InvisibleBody
         public const string GUID = "com.deathweasel.bepinex.invisiblebody";
         public const string PluginName = "Invisible Body";
         public const string PluginNameInternal = "KK_InvisibleBody";
-        public const string Version = "1.2.2";
+        public const string Version = "1.3";
 
         private static MakerToggle InvisibleToggle;
 
@@ -52,15 +52,26 @@ namespace InvisibleBody
 
         public class InvisibleBodyCharaController : CharaCustomFunctionController
         {
-            private bool visible = true;
+            private bool _visible = true;
+            /// <summary>
+            /// Gets or sets the visible state of a character
+            /// </summary>
             public bool Visible
             {
-                get => visible;
+                get => _visible;
                 set
                 {
-                    visible = value;
+                    _visible = value;
                     SetVisibleState();
                 }
+            }
+            /// <summary>
+            /// Same thing as Visible except backwards. Because logic is hard.
+            /// </summary>
+            public bool Invisible
+            {
+                get => !Visible;
+                set => Visible = !value;
             }
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
@@ -76,10 +87,10 @@ namespace InvisibleBody
 
                 var data = GetExtendedData();
                 if (data != null && data.data.TryGetValue("Visible", out var loadedVisibleState))
-                    visible = (bool)loadedVisibleState;
+                    _visible = (bool)loadedVisibleState;
 
                 if (MakerAPI.InsideAndLoaded)
-                    InvisibleToggle.SetValue(!Visible, false);
+                    InvisibleToggle.SetValue(Invisible, false);
 
                 if (Visible)
                     SetVisibleState();

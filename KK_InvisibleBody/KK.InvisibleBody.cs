@@ -1,10 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using Harmony;
+using KKAPI.Studio;
+using KKAPI.Studio.UI;
 using Studio;
 using System.ComponentModel;
-using System.Linq;
-using UnityEngine;
+using UniRx;
 using Logger = BepInEx.Logger;
 /// <summary>
 /// Sets the selected characters invisible in Studio. Invisible state saves and loads with the scene.
@@ -16,11 +17,6 @@ namespace InvisibleBody
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class InvisibleBody : BaseUnityPlugin
     {
-        [DisplayName("Invisibility Hotkey")]
-        [Description("Invisibility hotkey.\n" +
-             "Toggles invisibility of the selected character in studio.\n" +
-             "Sets the female character invisible in H scenes.")]
-        public static SavedKeyboardShortcut InvisibilityHotkey { get; private set; }
         [Category("Settings")]
         [DisplayName("Hide built-in hair accessories")]
         [Description("Whether or not to hide accesories (such as scrunchies) attached to back hairs.")]
@@ -31,32 +27,26 @@ namespace InvisibleBody
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(InvisibleBody));
 
-            InvisibilityHotkey = new SavedKeyboardShortcut("InvisibilityHotkey", PluginNameInternal, new KeyboardShortcut(KeyCode.KeypadPlus));
             HideHairAccessories = new ConfigWrapper<bool>("HideHairAccessories", PluginNameInternal, true);
+
+            if (StudioAPI.InsideStudio)
+                RegisterStudioControls();
         }
 
-        private void Update()
+        private static void RegisterStudioControls()
         {
-            if (InvisibilityHotkey.IsDown())
+            var invisibleSwitch = new CurrentStateCategorySwitch("Invisible Body", controller => controller.charInfo.GetComponent<InvisibleBodyCharaController>().Invisible);
+            invisibleSwitch.Value.Subscribe(Observer.Create((bool value) =>
             {
-                //In studio, toggle visibility state of any characters selected in the workspace
-                if (Singleton<Manager.Scene>.Instance.NowSceneNames.Any(sceneName => sceneName == "Studio"))
-                {
-                    TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
-                    for (int i = 0; i < selectNodes.Length; i++)
-                    {
-                        if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
-                        {
-                            if (objectCtrlInfo is OCIChar ociChar) //selected item is a character
-                            {
-                                var controller = GetController(ociChar.charInfo);
-                                controller.Visible = !controller.Visible;
-                            }
-                        }
-                    }
-                }
-            }
+                var controller = GetSelectedStudioController();
+                if (controller != null)
+                    controller.Invisible = value;
+            }));
+
+            StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(invisibleSwitch);
         }
+
+        private static InvisibleBodyCharaController GetSelectedStudioController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<InvisibleBodyCharaController>();
 
         public static void Log(LogLevel level, object text) => Logger.Log(level, text);
         public static void Log(object text) => Logger.Log(LogLevel.Info, text);
