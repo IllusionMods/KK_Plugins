@@ -78,8 +78,7 @@ v1.5.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 #### KK_InvisibleBody EC_InvisibleBody
-**v1.2.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v76/KK_InvisibleBody.v1.2.2.zip)** - For Koikatsu<br/>
-**v1.2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v75/EC_InvisibleBody.v1.2.1.zip)** - For EmotionCreators<br/>
+**v1.3 - [Download](https://www.patreon.com/posts/28424780)**<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
 
@@ -90,6 +89,7 @@ v1.1 Fixed studio items becoming visible when they were toggled off in the works
 v1.2 Added a character maker toggle, EmotionCreators port<br/>
 v1.2.1 Fixed an incompatibility with UncensorSelector<br/>
 v1.2.2 Updated for KK Darkness<br/>
+v1.3 Added a toggle button for Studio, removed hotkey<br/>
 </details>
 
 #### KK_InputHotkeyBlock
