@@ -187,6 +187,7 @@ namespace KK_MaterialEditor
         private static List<Renderer> GetRendererList(GameObject go, ObjectType objectType = ObjectType.Other)
         {
             List<Renderer> rendList = new List<Renderer>();
+            if (go == null) return rendList;
 
             if (objectType == ObjectType.Character)
                 _GetRendererList(go, rendList);
