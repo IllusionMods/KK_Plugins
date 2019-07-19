@@ -90,17 +90,15 @@ namespace KK_MaterialEditor
                 var importDictionary = new Dictionary<int, int>();
 
                 if (operation == SceneOperationKind.Load)
-                {
                     if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
                         TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
-                }
-                else if (operation == SceneOperationKind.Import)
-                {
+
+                if (operation == SceneOperationKind.Import)
                     if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
                         foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
                             importDictionary[x.Key] = SetAndGetTextureID(x.Value);
-                }
-                else if (operation == SceneOperationKind.Clear)
+
+                if (operation == SceneOperationKind.Clear)
                     return;
 
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
