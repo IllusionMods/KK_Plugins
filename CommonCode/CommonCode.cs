@@ -117,5 +117,9 @@ namespace CommonCode
         public static string NameFormatted(this Material go) => go.name.Replace("(Instance)", "").Trim();
         public static string NameFormatted(this Renderer go) => go.name.Replace("(Instance)", "").Trim();
         public static string NameFormatted(this Shader go) => go.name.Replace("(Instance)", "").Trim();
+        /// <summary>
+        /// Convert string to Color
+        /// </summary>
+        public static Color ToColor(this string color) => (Color)typeof(Color).GetProperty(color.ToLowerInvariant()).GetValue(null, null);
     }
 }

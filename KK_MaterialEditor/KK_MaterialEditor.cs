@@ -6,10 +6,14 @@ using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio.SaveLoad;
 using Studio;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,9 +30,8 @@ namespace KK_MaterialEditor
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
         public static readonly string XMLPath = Path.Combine(Paths.PluginPath, nameof(KK_MaterialEditor));
 
-        internal static Dictionary<string, Dictionary<string, string>> XMLShaderProperties = new Dictionary<string, Dictionary<string, string>>();
-        internal static Dictionary<string, string> XMLShaderPropertiesAll = new Dictionary<string, string>();
-        internal static Dictionary<string, Shader> LoadedShaders = new Dictionary<string, Shader>();
+        internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
+        internal static Dictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new Dictionary<string, Dictionary<string, ShaderPropertyData>>();
 
         [DisplayName("Enable advanced editing")]
         [Category("Config")]
@@ -52,6 +55,49 @@ namespace KK_MaterialEditor
             HarmonyInstance.Create(GUID).PatchAll(typeof(Hooks));
 
             AdvancedMode = new ConfigWrapper<bool>(nameof(AdvancedMode), PluginName, false);
+
+            LoadXML();
+        }
+
+        private void LoadXML()
+        {
+            var loadedManifests = Sideloader.Sideloader.LoadedManifests;
+            XMLShaderProperties["default"] = new Dictionary<string, ShaderPropertyData>();
+
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_MaterialEditor)}.Resources.default.xml"))
+            using (XmlReader reader = XmlReader.Create(stream))
+                LoadXML(XDocument.Load(reader).Element(nameof(KK_MaterialEditor)));
+
+            foreach (var manifest in loadedManifests)
+                LoadXML(manifest.manifestDocument?.Root?.Element(nameof(KK_MaterialEditor)));
+        }
+
+        private void LoadXML(XElement materialEditorElement)
+        {
+            if (materialEditorElement == null) return;
+
+            foreach (var shaderElement in materialEditorElement.Elements("Shader"))
+            {
+                string shaderName = shaderElement.Attribute("Name").Value;
+
+                if (int.TryParse(shaderElement.Attribute("RenderQueue")?.Value, out int renderQueue))
+                    LoadedShaders[shaderName] = new ShaderData(shaderName, shaderElement.Attribute("AssetBundle")?.Value, renderQueue);
+                else
+                    LoadedShaders[shaderName] = new ShaderData(shaderName, shaderElement.Attribute("AssetBundle")?.Value);
+
+                XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
+
+                foreach (XElement element in shaderElement.Elements("Property"))
+                {
+                    string propertyName = element.Attribute("Name").Value;
+                    ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), element.Attribute("Type").Value);
+                    string defaultValue = element.Attribute("DefaultValue")?.Value;
+                    ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue);
+
+                    XMLShaderProperties["default"][propertyName] = shaderPropertyData;
+                    XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;
+                }
+            }
         }
 
         private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
@@ -74,6 +120,7 @@ namespace KK_MaterialEditor
             return didSet;
         }
 
+        private static bool SetColorProperty(GameObject go, string materialName, string property, string value, ObjectType objectType) => SetColorProperty(go, materialName, property, value.ToColor(), objectType);
         private static bool SetColorProperty(GameObject go, string materialName, string property, Color value, ObjectType objectType)
         {
             bool didSet = false;
@@ -173,6 +220,33 @@ namespace KK_MaterialEditor
             return didSet;
         }
 
+        private static bool SetShader(GameObject go, string materialName, string shaderName, ObjectType objectType)
+        {
+            bool didSet = false;
+            foreach (var rend in GetRendererList(go, objectType))
+                foreach (var mat in rend.materials)
+                    if (mat.NameFormatted() == materialName)
+                    {
+                        if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null)
+                        {
+                            mat.shader = shaderData.Shader;
+                            if (shaderData.RenderQueue != null)
+                                mat.renderQueue = (int)shaderData.RenderQueue;
+
+                            if (XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
+                                foreach (var shaderPropertyData in shaderPropertyDataList.Values)
+                                    if (shaderPropertyData.DefaultValue != null)
+                                        if (shaderPropertyData.Type == ShaderPropertyType.Float)
+                                            SetFloatProperty(go, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue, objectType);
+                                        else if (shaderPropertyData.Type == ShaderPropertyType.Color)
+                                            SetColorProperty(go, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue, objectType);
+
+                            didSet = true;
+                        }
+                    }
+            return didSet;
+        }
+
         public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32)
         {
             if (texBytes == null || texBytes.Length == 0) return null;
@@ -216,8 +290,59 @@ namespace KK_MaterialEditor
         }
 
         public enum ObjectType { StudioItem, Clothing, Accessory, Hair, Character, Other };
+        public enum ShaderPropertyType { Texture, Color, Float }
         private static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
         public static MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
         public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();
+
+        public class ShaderData
+        {
+            public string ShaderName;
+            public string AssetBundlePath;
+            public Shader Shader;
+            public int? RenderQueue = null;
+
+            public ShaderData(string shaderName, string assetBundlePath, int renderQueue) => InitData(shaderName, assetBundlePath, renderQueue);
+            public ShaderData(string shaderName, string assetBundlePath) => InitData(shaderName, assetBundlePath);
+
+            private void InitData(string shaderName, string assetBundlePath = "", int? renderQueue = null)
+            {
+                ShaderName = shaderName;
+                AssetBundlePath = assetBundlePath;
+                RenderQueue = renderQueue;
+
+                if (AssetBundlePath.IsNullOrEmpty())
+                {
+                    AssetBundlePath = null;
+                    Shader = null;
+                }
+                else
+                {
+                    try
+                    {
+                        Shader = CommonLib.LoadAsset<Shader>(AssetBundlePath, $"{shaderName}");
+                    }
+                    catch
+                    {
+                        CC.Log(BepInEx.Logging.LogLevel.Warning, $"Unable to load shader: {shaderName}");
+                        Shader = null;
+                    }
+                }
+            }
+        }
+
+        public class ShaderPropertyData
+        {
+            public string Name;
+            public ShaderPropertyType Type;
+            public string DefaultValue;
+
+            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = "")
+            {
+                Name = name;
+                Type = type;
+                DefaultValue = defaultValue;
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ using KKAPI.Maker.UI;
 using Studio;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using UILib;
 using UnityEngine;
@@ -383,8 +384,9 @@ namespace KK_MaterialEditor
                 foreach (var mat in rend.materials)
                 {
                     if (mats.Contains(mat.NameFormatted())) continue;
-
                     mats.Add(mat.NameFormatted());
+
+                    string shaderName = mat.shader.NameFormatted();
 
                     var contentListHeader1 = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
                     contentListHeader1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
@@ -406,284 +408,391 @@ namespace KK_MaterialEditor
                     var labelShader = UIUtility.CreateText(mat.shader.NameFormatted(), contentListHeader2.transform, "Shader:");
                     labelShader.alignment = TextAnchor.MiddleLeft;
                     labelShader.color = Color.black;
-                    var labelShader2 = UIUtility.CreateText(mat.shader.NameFormatted(), contentListHeader2.transform, mat.shader.NameFormatted());
-                    labelShader2.alignment = TextAnchor.MiddleRight;
-                    labelShader2.color = Color.black;
+                    var labelShaderLE = labelShader.gameObject.AddComponent<LayoutElement>();
+                    labelShaderLE.preferredWidth = labelWidth;
+                    labelShaderLE.flexibleWidth = labelWidth;
 
-                    foreach (var colorProperty in ColorProperties)
+                    if (XMLShaderProperties.Count == 0)
                     {
-                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(colorProperty))
-                            continue;
-                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(colorProperty))
-                            continue;
-                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(colorProperty))
-                            continue;
-
-                        if (mat.HasProperty($"_{colorProperty}"))
-                        {
-                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
-                            contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                            contentList.gameObject.AddComponent<Mask>();
-                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-
-                            var label = UIUtility.CreateText(colorProperty, contentList.transform, $"{colorProperty}:");
-                            label.alignment = TextAnchor.MiddleLeft;
-                            label.color = Color.black;
-                            var labelLE = label.gameObject.AddComponent<LayoutElement>();
-                            labelLE.preferredWidth = labelWidth;
-                            labelLE.flexibleWidth = labelWidth;
-
-                            Color valueColor = mat.GetColor($"_{colorProperty}");
-                            Color valueColorInitial = valueColor;
-                            if (objectType == ObjectType.StudioItem)
-                            {
-                                Color c = GetSceneController().GetMaterialColorPropertyValueOriginal(id, mat.NameFormatted(), colorProperty);
-                                if (c.r != -1 && c.g != -1 && c.b != -1 && c.a != -1)
-                                    valueColorInitial = c;
-                            }
-
-                            var labelR = UIUtility.CreateText("R", contentList.transform, "R");
-                            labelR.alignment = TextAnchor.MiddleLeft;
-                            labelR.color = Color.black;
-                            var labelRLE = labelR.gameObject.AddComponent<LayoutElement>();
-                            labelRLE.preferredWidth = colorLabelWidth;
-                            labelRLE.flexibleWidth = 0;
-
-                            var textBoxR = UIUtility.CreateInputField(colorProperty, contentList.transform);
-                            textBoxR.text = valueColor.r.ToString();
-                            textBoxR.onEndEdit.AddListener((value) =>
-                            {
-                                SetColorRProperty(go, mat, colorProperty, value, objectType);
-                                if (objectType == ObjectType.Other) { }
-                                else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
-                                else
-                                    GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
-                            });
-                            var textBoxRLE = textBoxR.gameObject.AddComponent<LayoutElement>();
-                            textBoxRLE.preferredWidth = colorTextBoxWidth;
-                            textBoxRLE.flexibleWidth = 0;
-
-                            var labelG = UIUtility.CreateText("G", contentList.transform, "G");
-                            labelG.alignment = TextAnchor.MiddleLeft;
-                            labelG.color = Color.black;
-                            var labelGLE = labelG.gameObject.AddComponent<LayoutElement>();
-                            labelGLE.preferredWidth = colorLabelWidth;
-                            labelGLE.flexibleWidth = 0;
-
-                            var textBoxG = UIUtility.CreateInputField(colorProperty, contentList.transform);
-                            textBoxG.text = valueColor.g.ToString();
-                            textBoxG.onEndEdit.AddListener((value) =>
-                            {
-                                SetColorGProperty(go, mat, colorProperty, value, objectType);
-                                if (objectType == ObjectType.Other) { }
-                                else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
-                                else
-                                    GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
-                            });
-                            var textBoxGLE = textBoxG.gameObject.AddComponent<LayoutElement>();
-                            textBoxGLE.preferredWidth = colorTextBoxWidth;
-                            textBoxGLE.flexibleWidth = 0;
-
-                            var labelB = UIUtility.CreateText("B", contentList.transform, "B");
-                            labelB.alignment = TextAnchor.MiddleLeft;
-                            labelB.color = Color.black;
-                            var labelBLE = labelB.gameObject.AddComponent<LayoutElement>();
-                            labelBLE.preferredWidth = colorLabelWidth;
-                            labelBLE.flexibleWidth = 0;
-
-                            var textBoxB = UIUtility.CreateInputField(colorProperty, contentList.transform);
-                            textBoxB.text = valueColor.b.ToString();
-                            textBoxB.onEndEdit.AddListener((value) =>
-                            {
-                                SetColorBProperty(go, mat, colorProperty, value, objectType);
-                                if (objectType == ObjectType.Other) { }
-                                else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
-                                else
-                                    GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
-                            });
-
-                            var textBoxBLE = textBoxB.gameObject.AddComponent<LayoutElement>();
-                            textBoxBLE.preferredWidth = colorTextBoxWidth;
-                            textBoxBLE.flexibleWidth = 0;
-
-                            var labelA = UIUtility.CreateText("A", contentList.transform, "A");
-                            labelA.alignment = TextAnchor.MiddleLeft;
-                            labelA.color = Color.black;
-                            var labelALE = labelA.gameObject.AddComponent<LayoutElement>();
-                            labelALE.preferredWidth = colorLabelWidth;
-                            labelALE.flexibleWidth = 0;
-
-                            var textBoxA = UIUtility.CreateInputField(colorProperty, contentList.transform);
-                            textBoxA.text = valueColor.a.ToString();
-                            textBoxA.onEndEdit.AddListener((value) =>
-                            {
-                                SetColorAProperty(go, mat, colorProperty, value, objectType);
-                                if (objectType == ObjectType.Other) { }
-                                else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
-                                else
-                                    GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty, mat.GetColor($"_{colorProperty}"), valueColorInitial);
-                            });
-
-                            var textBoxALE = textBoxA.gameObject.AddComponent<LayoutElement>();
-                            textBoxALE.preferredWidth = colorTextBoxWidth;
-                            textBoxALE.flexibleWidth = 0;
-
-                            var resetColor = UIUtility.CreateButton($"Reset{colorProperty}", contentList.transform, "Reset");
-                            resetColor.onClick.AddListener(() =>
-                            {
-                                if (objectType == ObjectType.Other) { }
-                                else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().RemoveMaterialColorProperty(id, mat.NameFormatted(), colorProperty);
-                                else
-                                    GetCharaController(chaControl).RemoveMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), colorProperty);
-                                SetColorProperty(go, mat.NameFormatted(), colorProperty, valueColorInitial, objectType);
-                                textBoxR.text = valueColorInitial.r.ToString();
-                                textBoxG.text = valueColorInitial.g.ToString();
-                                textBoxB.text = valueColorInitial.b.ToString();
-                                textBoxA.text = valueColorInitial.a.ToString();
-                            });
-                            var resetColorLE = resetColor.gameObject.AddComponent<LayoutElement>();
-                            resetColorLE.preferredWidth = resetButtonWidth;
-                            resetColorLE.flexibleWidth = 0;
-                        }
+                        var labelShader2 = UIUtility.CreateText(mat.shader.NameFormatted(), contentListHeader2.transform, shaderName);
+                        labelShader2.alignment = TextAnchor.MiddleRight;
+                        labelShader2.color = Color.black;
                     }
-                    foreach (var textureProperty in TextureProperties)
+                    else
                     {
-                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(textureProperty))
-                            continue;
-                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(textureProperty))
-                            continue;
-                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(textureProperty))
-                            continue;
-
-                        if (mat.HasProperty($"_{textureProperty}"))
+                        string shaderNameInitial = shaderName;
+                        if (objectType == ObjectType.Other) { }
+                        if (objectType == ObjectType.StudioItem)
                         {
-                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
-                            contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                            contentList.gameObject.AddComponent<Mask>();
-                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                            shaderNameInitial = GetSceneController().GetMaterialShaderValueOriginal(id, mat.NameFormatted(), shaderName);
+                            if (shaderNameInitial.IsNullOrEmpty())
+                                shaderNameInitial = shaderName;
+                        }
+                        else
+                        {
+                            shaderNameInitial = GetCharaController(chaControl).GetMaterialShaderValueOriginal(objectType, coordinateIndex, slot, mat.NameFormatted());
+                            if (shaderNameInitial.IsNullOrEmpty())
+                                shaderNameInitial = shaderName;
+                        }
 
-                            var label = UIUtility.CreateText(textureProperty, contentList.transform, $"{textureProperty}:");
-                            label.alignment = TextAnchor.MiddleLeft;
-                            label.color = Color.black;
-                            var labelLE = label.gameObject.AddComponent<LayoutElement>();
-                            labelLE.preferredWidth = labelWidth;
-                            labelLE.flexibleWidth = labelWidth;
-
-                            var texture = mat.GetTexture($"_{textureProperty}");
-
-                            if (texture == null)
+                        var dropdownShader = UIUtility.CreateDropdown("Shader", contentListHeader2.transform, "Shader");
+                        dropdownShader.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
+                        dropdownShader.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
+                        dropdownShader.captionText.alignment = TextAnchor.MiddleLeft;
+                        dropdownShader.options.Clear();
+                        dropdownShader.options.Add(new Dropdown.OptionData(shaderNameInitial));
+                        foreach (var shader in XMLShaderProperties)
+                            if (shader.Key == shaderNameInitial || shader.Key == "default")
+                                continue;
+                            else
+                                dropdownShader.options.Add(new Dropdown.OptionData(shader.Key));
+                        dropdownShader.value = 0;
+                        dropdownShader.captionText.text = shaderName;
+                        dropdownShader.onValueChanged.AddListener((value) =>
+                        {
+                            if (value == 0)
                             {
-                                var labelNoTexture = UIUtility.CreateText($"NoTexture{textureProperty}", contentList.transform, "No Texture");
-                                labelNoTexture.alignment = TextAnchor.MiddleCenter;
-                                labelNoTexture.color = Color.black;
-                                var labelNoTextureLE = labelNoTexture.gameObject.AddComponent<LayoutElement>();
-                                labelNoTextureLE.preferredWidth = buttonWidth;
-                                labelNoTextureLE.flexibleWidth = 0;
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().RemoveMaterialShader(id, mat.NameFormatted());
+                                else
+                                    GetCharaController(chaControl).RemoveMaterialShader(objectType, coordinateIndex, slot, mat.NameFormatted());
+
+                                if (XMLShaderProperties.ContainsKey(shaderNameInitial))
+                                {
+                                    if (SetShader(go, mat.NameFormatted(), shaderNameInitial, objectType))
+                                        PopulateList(go, objectType, id, chaControl, coordinateIndex, slot);
+                                }
+                                else
+                                    BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Message, "Save and reload to refresh shader.");
                             }
                             else
                             {
-                                var exportButton = UIUtility.CreateButton($"ExportTexture{textureProperty}", contentList.transform, $"Export Texture");
-                                exportButton.onClick.AddListener(() => ExportTexture(mat, textureProperty));
-                                var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
-                                exportButtonLE.preferredWidth = buttonWidth;
-                                exportButtonLE.flexibleWidth = 0;
+                                int counter = 0;
+                                foreach (var shader in XMLShaderProperties)
+                                    if (shader.Key == shaderNameInitial || shader.Key == "default")
+                                        continue;
+                                    else
+                                    {
+                                        counter++;
+                                        if (counter == value)
+                                        {
+                                            if (objectType == ObjectType.Other) { }
+                                            else if (objectType == ObjectType.StudioItem)
+                                                GetSceneController().AddMaterialShader(id, mat.NameFormatted(), shader.Key, shaderNameInitial);
+                                            else
+                                                GetCharaController(chaControl).AddMaterialShader(objectType, coordinateIndex, slot, mat.NameFormatted(), shader.Key, shaderNameInitial);
+
+                                            if (SetShader(go, mat.NameFormatted(), shader.Key, objectType))
+                                                PopulateList(go, objectType, id, chaControl, coordinateIndex, slot);
+                                        }
+                                    }
                             }
+                        });
+                        var dropdownShaderLE = dropdownShader.gameObject.AddComponent<LayoutElement>();
+                        dropdownShaderLE.preferredWidth = dropdownWidth * 3;
+                        dropdownShaderLE.flexibleWidth = 0;
 
-                            var importButton = UIUtility.CreateButton($"ImportTexture{textureProperty}", contentList.transform, $"Import Texture");
-                            importButton.onClick.AddListener(() =>
-                            {
-                                if (objectType == ObjectType.Other) { }
-                                else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialTextureProperty(id, mat.NameFormatted(), textureProperty, go);
-                                else
-                                    GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), textureProperty, go);
-                            });
-                            var importButtonLE = importButton.gameObject.AddComponent<LayoutElement>();
-                            importButtonLE.preferredWidth = buttonWidth;
-                            importButtonLE.flexibleWidth = 0;
-
-                            var resetTexture = UIUtility.CreateButton($"Reset{textureProperty}", contentList.transform, "Reset");
-                            resetTexture.onClick.AddListener(() =>
-                            {
-                                if (objectType == ObjectType.Other) { }
-                                else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().RemoveMaterialTextureProperty(id, mat.NameFormatted(), textureProperty);
-                                else
-                                    GetCharaController(chaControl).RemoveMaterialTextureProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), textureProperty);
-                            });
-                            var reseTextureLE = resetTexture.gameObject.AddComponent<LayoutElement>();
-                            reseTextureLE.preferredWidth = resetButtonWidth;
-                            reseTextureLE.flexibleWidth = 0;
-                        }
-                    }
-                    foreach (var floatProperty in FloatProperties)
-                    {
-                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(floatProperty))
-                            continue;
-                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(floatProperty))
-                            continue;
-                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(floatProperty))
-                            continue;
-
-                        if (mat.HasProperty($"_{floatProperty}"))
+                        var resetShader = UIUtility.CreateButton("ResetShader", contentListHeader2.transform, "Reset");
+                        resetShader.onClick.AddListener(() =>
                         {
-                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
-                            contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                            contentList.gameObject.AddComponent<Mask>();
-                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-
-                            var label = UIUtility.CreateText(floatProperty, contentList.transform, $"{floatProperty}:");
-                            label.alignment = TextAnchor.MiddleLeft;
-                            label.color = Color.black;
-                            var labelLE = label.gameObject.AddComponent<LayoutElement>();
-                            labelLE.preferredWidth = labelWidth;
-                            labelLE.flexibleWidth = labelWidth;
-
-                            string valueFloat = mat.GetFloat($"_{floatProperty}").ToString();
-                            string valueFloatInitial = valueFloat;
                             if (objectType == ObjectType.Other) { }
                             else if (objectType == ObjectType.StudioItem)
+                                GetSceneController().RemoveMaterialShader(id, mat.NameFormatted());
+                            else
+                                GetCharaController(chaControl).RemoveMaterialShader(objectType, coordinateIndex, slot, mat.NameFormatted());
+
+                            if (XMLShaderProperties.ContainsKey(shaderNameInitial))
                             {
-                                if (GetSceneController().GetMaterialFloatPropertyValueOriginal(id, mat.NameFormatted(), floatProperty) != null)
-                                    valueFloatInitial = GetSceneController().GetMaterialFloatPropertyValueOriginal(id, mat.NameFormatted(), floatProperty);
+                                if (SetShader(go, mat.NameFormatted(), shaderNameInitial, objectType))
+                                    PopulateList(go, objectType, id, chaControl, coordinateIndex, slot);
                             }
-                            else if (GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty) != null)
-                                valueFloatInitial = GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty);
+                            else
+                                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Message, "Save and reload to refresh shader.");
+                        });
+                        var resetShaderLE = resetShader.gameObject.AddComponent<LayoutElement>();
+                        resetShaderLE.preferredWidth = resetButtonWidth;
+                        resetShaderLE.flexibleWidth = 0;
+                    }
 
-                            var textBoxFloat = UIUtility.CreateInputField(floatProperty, contentList.transform);
-                            textBoxFloat.text = valueFloat;
-                            textBoxFloat.onEndEdit.AddListener((value) =>
+                    foreach (var property in XMLShaderProperties["default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
+                    {
+                        string propertyName = property.Key;
+                        if (property.Value.Type == ShaderPropertyType.Color)
+                        {
+                            if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(propertyName))
+                                continue;
+                            if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(propertyName))
+                                continue;
+                            if (objectType == ObjectType.Hair && HairBlacklist.Contains(propertyName))
+                                continue;
+
+                            if (mat.HasProperty($"_{propertyName}"))
                             {
+                                var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                                contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
+                                contentList.gameObject.AddComponent<Mask>();
+                                contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+
+                                var label = UIUtility.CreateText(propertyName, contentList.transform, $"{propertyName}:");
+                                label.alignment = TextAnchor.MiddleLeft;
+                                label.color = Color.black;
+                                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                                labelLE.preferredWidth = labelWidth;
+                                labelLE.flexibleWidth = labelWidth;
+
+                                Color valueColor = mat.GetColor($"_{propertyName}");
+                                Color valueColorInitial = valueColor;
+                                if (objectType == ObjectType.StudioItem)
+                                {
+                                    Color c = GetSceneController().GetMaterialColorPropertyValueOriginal(id, mat.NameFormatted(), propertyName);
+                                    if (c.r != -1 && c.g != -1 && c.b != -1 && c.a != -1)
+                                        valueColorInitial = c;
+                                }
+
+                                var labelR = UIUtility.CreateText("R", contentList.transform, "R");
+                                labelR.alignment = TextAnchor.MiddleLeft;
+                                labelR.color = Color.black;
+                                var labelRLE = labelR.gameObject.AddComponent<LayoutElement>();
+                                labelRLE.preferredWidth = colorLabelWidth;
+                                labelRLE.flexibleWidth = 0;
+
+                                var textBoxR = UIUtility.CreateInputField(propertyName, contentList.transform);
+                                textBoxR.text = valueColor.r.ToString();
+                                textBoxR.onEndEdit.AddListener((value) =>
+                                {
+                                    SetColorRProperty(go, mat, propertyName, value, objectType);
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
+                                        GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), propertyName, mat.GetColor($"_{propertyName}"), valueColorInitial);
+                                    else
+                                        GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName, mat.GetColor($"_{propertyName}"), valueColorInitial);
+                                });
+                                var textBoxRLE = textBoxR.gameObject.AddComponent<LayoutElement>();
+                                textBoxRLE.preferredWidth = colorTextBoxWidth;
+                                textBoxRLE.flexibleWidth = 0;
+
+                                var labelG = UIUtility.CreateText("G", contentList.transform, "G");
+                                labelG.alignment = TextAnchor.MiddleLeft;
+                                labelG.color = Color.black;
+                                var labelGLE = labelG.gameObject.AddComponent<LayoutElement>();
+                                labelGLE.preferredWidth = colorLabelWidth;
+                                labelGLE.flexibleWidth = 0;
+
+                                var textBoxG = UIUtility.CreateInputField(propertyName, contentList.transform);
+                                textBoxG.text = valueColor.g.ToString();
+                                textBoxG.onEndEdit.AddListener((value) =>
+                                {
+                                    SetColorGProperty(go, mat, propertyName, value, objectType);
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
+                                        GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), propertyName, mat.GetColor($"_{propertyName}"), valueColorInitial);
+                                    else
+                                        GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName, mat.GetColor($"_{propertyName}"), valueColorInitial);
+                                });
+                                var textBoxGLE = textBoxG.gameObject.AddComponent<LayoutElement>();
+                                textBoxGLE.preferredWidth = colorTextBoxWidth;
+                                textBoxGLE.flexibleWidth = 0;
+
+                                var labelB = UIUtility.CreateText("B", contentList.transform, "B");
+                                labelB.alignment = TextAnchor.MiddleLeft;
+                                labelB.color = Color.black;
+                                var labelBLE = labelB.gameObject.AddComponent<LayoutElement>();
+                                labelBLE.preferredWidth = colorLabelWidth;
+                                labelBLE.flexibleWidth = 0;
+
+                                var textBoxB = UIUtility.CreateInputField(propertyName, contentList.transform);
+                                textBoxB.text = valueColor.b.ToString();
+                                textBoxB.onEndEdit.AddListener((value) =>
+                                {
+                                    SetColorBProperty(go, mat, propertyName, value, objectType);
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
+                                        GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), propertyName, mat.GetColor($"_{propertyName}"), valueColorInitial);
+                                    else
+                                        GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName, mat.GetColor($"_{propertyName}"), valueColorInitial);
+                                });
+
+                                var textBoxBLE = textBoxB.gameObject.AddComponent<LayoutElement>();
+                                textBoxBLE.preferredWidth = colorTextBoxWidth;
+                                textBoxBLE.flexibleWidth = 0;
+
+                                var labelA = UIUtility.CreateText("A", contentList.transform, "A");
+                                labelA.alignment = TextAnchor.MiddleLeft;
+                                labelA.color = Color.black;
+                                var labelALE = labelA.gameObject.AddComponent<LayoutElement>();
+                                labelALE.preferredWidth = colorLabelWidth;
+                                labelALE.flexibleWidth = 0;
+
+                                var textBoxA = UIUtility.CreateInputField(propertyName, contentList.transform);
+                                textBoxA.text = valueColor.a.ToString();
+                                textBoxA.onEndEdit.AddListener((value) =>
+                                {
+                                    SetColorAProperty(go, mat, propertyName, value, objectType);
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
+                                        GetSceneController().AddMaterialColorProperty(id, mat.NameFormatted(), propertyName, mat.GetColor($"_{propertyName}"), valueColorInitial);
+                                    else
+                                        GetCharaController(chaControl).AddMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName, mat.GetColor($"_{propertyName}"), valueColorInitial);
+                                });
+
+                                var textBoxALE = textBoxA.gameObject.AddComponent<LayoutElement>();
+                                textBoxALE.preferredWidth = colorTextBoxWidth;
+                                textBoxALE.flexibleWidth = 0;
+
+                                var resetColor = UIUtility.CreateButton($"Reset{propertyName}", contentList.transform, "Reset");
+                                resetColor.onClick.AddListener(() =>
+                                {
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
+                                        GetSceneController().RemoveMaterialColorProperty(id, mat.NameFormatted(), propertyName);
+                                    else
+                                        GetCharaController(chaControl).RemoveMaterialColorProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName);
+                                    SetColorProperty(go, mat.NameFormatted(), propertyName, valueColorInitial, objectType);
+                                    textBoxR.text = valueColorInitial.r.ToString();
+                                    textBoxG.text = valueColorInitial.g.ToString();
+                                    textBoxB.text = valueColorInitial.b.ToString();
+                                    textBoxA.text = valueColorInitial.a.ToString();
+                                });
+                                var resetColorLE = resetColor.gameObject.AddComponent<LayoutElement>();
+                                resetColorLE.preferredWidth = resetButtonWidth;
+                                resetColorLE.flexibleWidth = 0;
+                            }
+                        }
+                        if (property.Value.Type == ShaderPropertyType.Texture)
+                        {
+                            if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(propertyName))
+                                continue;
+                            if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(propertyName))
+                                continue;
+                            if (objectType == ObjectType.Hair && HairBlacklist.Contains(propertyName))
+                                continue;
+
+                            if (mat.HasProperty($"_{propertyName}"))
+                            {
+                                var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                                contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
+                                contentList.gameObject.AddComponent<Mask>();
+                                contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+
+                                var label = UIUtility.CreateText(propertyName, contentList.transform, $"{propertyName}:");
+                                label.alignment = TextAnchor.MiddleLeft;
+                                label.color = Color.black;
+                                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                                labelLE.preferredWidth = labelWidth;
+                                labelLE.flexibleWidth = labelWidth;
+
+                                var texture = mat.GetTexture($"_{propertyName}");
+
+                                if (texture == null)
+                                {
+                                    var labelNoTexture = UIUtility.CreateText($"NoTexture{propertyName}", contentList.transform, "No Texture");
+                                    labelNoTexture.alignment = TextAnchor.MiddleCenter;
+                                    labelNoTexture.color = Color.black;
+                                    var labelNoTextureLE = labelNoTexture.gameObject.AddComponent<LayoutElement>();
+                                    labelNoTextureLE.preferredWidth = buttonWidth;
+                                    labelNoTextureLE.flexibleWidth = 0;
+                                }
+                                else
+                                {
+                                    var exportButton = UIUtility.CreateButton($"ExportTexture{propertyName}", contentList.transform, $"Export Texture");
+                                    exportButton.onClick.AddListener(() => ExportTexture(mat, propertyName));
+                                    var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
+                                    exportButtonLE.preferredWidth = buttonWidth;
+                                    exportButtonLE.flexibleWidth = 0;
+                                }
+
+                                var importButton = UIUtility.CreateButton($"ImportTexture{propertyName}", contentList.transform, $"Import Texture");
+                                importButton.onClick.AddListener(() =>
+                                {
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
+                                        GetSceneController().AddMaterialTextureProperty(id, mat.NameFormatted(), propertyName, go);
+                                    else
+                                        GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName, go);
+                                });
+                                var importButtonLE = importButton.gameObject.AddComponent<LayoutElement>();
+                                importButtonLE.preferredWidth = buttonWidth;
+                                importButtonLE.flexibleWidth = 0;
+
+                                var resetTexture = UIUtility.CreateButton($"Reset{propertyName}", contentList.transform, "Reset");
+                                resetTexture.onClick.AddListener(() =>
+                                {
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
+                                        GetSceneController().RemoveMaterialTextureProperty(id, mat.NameFormatted(), propertyName);
+                                    else
+                                        GetCharaController(chaControl).RemoveMaterialTextureProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName);
+                                });
+                                var reseTextureLE = resetTexture.gameObject.AddComponent<LayoutElement>();
+                                reseTextureLE.preferredWidth = resetButtonWidth;
+                                reseTextureLE.flexibleWidth = 0;
+                            }
+                        }
+                        if (property.Value.Type == ShaderPropertyType.Float)
+                        {
+                            if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(propertyName))
+                                continue;
+                            if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(propertyName))
+                                continue;
+                            if (objectType == ObjectType.Hair && HairBlacklist.Contains(propertyName))
+                                continue;
+
+                            if (mat.HasProperty($"_{propertyName}"))
+                            {
+                                var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                                contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
+                                contentList.gameObject.AddComponent<Mask>();
+                                contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+
+                                var label = UIUtility.CreateText(propertyName, contentList.transform, $"{propertyName}:");
+                                label.alignment = TextAnchor.MiddleLeft;
+                                label.color = Color.black;
+                                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                                labelLE.preferredWidth = labelWidth;
+                                labelLE.flexibleWidth = labelWidth;
+
+                                string valueFloat = mat.GetFloat($"_{propertyName}").ToString();
+                                string valueFloatInitial = valueFloat;
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialFloatProperty(id, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
-                                else
-                                    GetCharaController(chaControl).AddMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty, value, valueFloatInitial);
-                                SetFloatProperty(go, mat.NameFormatted(), floatProperty, value, objectType);
-                            });
-                            var textBoxFloatLE = textBoxFloat.gameObject.AddComponent<LayoutElement>();
-                            textBoxFloatLE.preferredWidth = textBoxWidth;
-                            textBoxFloatLE.flexibleWidth = 0;
+                                {
+                                    if (GetSceneController().GetMaterialFloatPropertyValueOriginal(id, mat.NameFormatted(), propertyName) != null)
+                                        valueFloatInitial = GetSceneController().GetMaterialFloatPropertyValueOriginal(id, mat.NameFormatted(), propertyName);
+                                }
+                                else if (GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName) != null)
+                                    valueFloatInitial = GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName);
 
-                            var resetFloat = UIUtility.CreateButton($"Reset{floatProperty}", contentList.transform, "Reset");
-                            resetFloat.onClick.AddListener(() =>
-                            {
-                                if (objectType == ObjectType.Other) { }
-                                else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().RemoveMaterialFloatProperty(id, mat.NameFormatted(), floatProperty);
-                                else
-                                    GetCharaController(chaControl).RemoveMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), floatProperty);
-                                SetFloatProperty(go, mat.NameFormatted(), floatProperty, valueFloatInitial, objectType);
-                                textBoxFloat.text = valueFloatInitial;
-                            });
-                            var resetEnabledLE = resetFloat.gameObject.AddComponent<LayoutElement>();
-                            resetEnabledLE.preferredWidth = resetButtonWidth;
-                            resetEnabledLE.flexibleWidth = 0;
+                                var textBoxFloat = UIUtility.CreateInputField(propertyName, contentList.transform);
+                                textBoxFloat.text = valueFloat;
+                                textBoxFloat.onEndEdit.AddListener((value) =>
+                                {
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
+                                        GetSceneController().AddMaterialFloatProperty(id, mat.NameFormatted(), propertyName, value, valueFloatInitial);
+                                    else
+                                        GetCharaController(chaControl).AddMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName, value, valueFloatInitial);
+                                    SetFloatProperty(go, mat.NameFormatted(), propertyName, value, objectType);
+                                });
+                                var textBoxFloatLE = textBoxFloat.gameObject.AddComponent<LayoutElement>();
+                                textBoxFloatLE.preferredWidth = textBoxWidth;
+                                textBoxFloatLE.flexibleWidth = 0;
+
+                                var resetFloat = UIUtility.CreateButton($"Reset{propertyName}", contentList.transform, "Reset");
+                                resetFloat.onClick.AddListener(() =>
+                                {
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
+                                        GetSceneController().RemoveMaterialFloatProperty(id, mat.NameFormatted(), propertyName);
+                                    else
+                                        GetCharaController(chaControl).RemoveMaterialFloatProperty(objectType, coordinateIndex, slot, mat.NameFormatted(), propertyName);
+                                    SetFloatProperty(go, mat.NameFormatted(), propertyName, valueFloatInitial, objectType);
+                                    textBoxFloat.text = valueFloatInitial;
+                                });
+                                var resetEnabledLE = resetFloat.gameObject.AddComponent<LayoutElement>();
+                                resetEnabledLE.preferredWidth = resetButtonWidth;
+                                resetEnabledLE.flexibleWidth = 0;
+                            }
                         }
                     }
                 }
@@ -818,26 +927,6 @@ namespace KK_MaterialEditor
             "Color", "Color2", "Color3", "Color4", "HairGloss"
         };
 
-
-        public static HashSet<string> ColorProperties = new HashSet<string>()
-        {
-            "Clock", "Color", "Color1_2", "Color2", "Color2_2", "Color3", "Color3_2", "Color4", "Color_4", "Emission", "Line", "LiquidTiling", "Patternuv1", "Patternuv2", "Patternuv3", "Shadow",
-            "Spec", "Specular", "SpecularColor", "linecolor", "overcolor1", "overcolor2", "overcolor3", "refcolor", "shadowcolor"
-        };
-
-        public static HashSet<string> TextureProperties = new HashSet<string>()
-        {
-            "AnimationMask", "AlphaMask", "AnotherRamp", "BumpMap", "ColorMask", "DetailMask", "EmissionMap", "GlassRamp", "HairGloss", "LineMask", "MainTex", "MetallicGlossMap", "NormalMap",
-            "ParallaxMap", "PatternMask1", "PatternMask2", "PatternMask3", "Texture2", "Texture3", "liquidmask"
-        };
-        public static HashSet<string> FloatProperties = new HashSet<string>()
-        {
-            "AnotherRampFull", "BlendNormalMapScale", "BumpScale", "Cutoff", "CutoutClip", "DetailBLineG", "DetailNormalMapScale", "DetailRLineR", "DstBlend", "EmissionPower", "GlossMapScale",
-            "Glossiness", "GlossyReflections", "HairEffect", "LightCancel", "LineWidthS", "Metallic", "Mode", "OcclusionStrength", "Parallax", "SelectEmissionMap", "ShadowExtend",
-            "ShadowExtendAnother", "Smoothness", "SmoothnessTextureChannel", "SpeclarHeight", "SpecularPower", "SpecularPowerNail", "SrcBlend", "UPanner", "UVSec", "ZWrite", "alpha", "alpha_a",
-            "alpha_b", "ambientshadowOFF", "linetexon", "linewidth", "liquidbbot", "liquidbtop", "liquidface", "liquidfbot", "liquidftop", "nip", "nipsize", "node_6948", "notusetexspecular",
-            "patternclamp1", "patternclamp2", "patternclamp3", "patternrotator1", "patternrotator2", "patternrotator3", "refpower", "rimV", "rimpower"
-        };
         public enum RendererProperties
         {
             Enabled, ShadowCastingMode, ReceiveShadows
@@ -872,6 +961,5 @@ namespace KK_MaterialEditor
             RenderTexture.ReleaseTemporary(tmp);
         }
         #endregion
-
     }
 }
