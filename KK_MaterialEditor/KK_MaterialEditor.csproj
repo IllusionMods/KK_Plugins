@@ -91,6 +91,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\MaterialEditorIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\KK_Shaders.unity3d" />
+  </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

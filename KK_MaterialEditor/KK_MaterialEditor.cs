@@ -25,7 +25,7 @@ namespace KK_MaterialEditor
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "1.3.1";
+        public const string Version = "1.4";
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
         public static readonly string XMLPath = Path.Combine(Paths.PluginPath, nameof(KK_MaterialEditor));
@@ -80,10 +80,7 @@ namespace KK_MaterialEditor
             {
                 string shaderName = shaderElement.Attribute("Name").Value;
 
-                if (int.TryParse(shaderElement.Attribute("RenderQueue")?.Value, out int renderQueue))
-                    LoadedShaders[shaderName] = new ShaderData(shaderName, shaderElement.Attribute("AssetBundle")?.Value, renderQueue);
-                else
-                    LoadedShaders[shaderName] = new ShaderData(shaderName, shaderElement.Attribute("AssetBundle")?.Value);
+                LoadedShaders[shaderName] = new ShaderData(shaderName, shaderElement.Attribute("AssetBundle")?.Value, shaderElement.Attribute("RenderQueue")?.Value, shaderElement.Attribute("Asset")?.Value);
 
                 XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
 
@@ -176,42 +173,6 @@ namespace KK_MaterialEditor
             return didSet;
         }
 
-
-
-
-        private static void SetColorGProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
-        {
-            float floatValue = float.Parse(value);
-            Color colorOrig = mat.GetColor($"_{property}");
-
-            foreach (var obj in GetRendererList(go, objectType))
-                foreach (var objMat in obj.materials)
-                    if (objMat.NameFormatted() == mat.NameFormatted())
-                        objMat.SetColor($"_{property}", new Color(colorOrig.r, floatValue, colorOrig.b, colorOrig.a));
-        }
-
-        private static void SetColorBProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
-        {
-            float floatValue = float.Parse(value);
-            Color colorOrig = mat.GetColor($"_{property}");
-
-            foreach (var obj in GetRendererList(go, objectType))
-                foreach (var objMat in obj.materials)
-                    if (objMat.NameFormatted() == mat.NameFormatted())
-                        objMat.SetColor($"_{property}", new Color(colorOrig.r, colorOrig.g, floatValue, colorOrig.a));
-        }
-
-        private static void SetColorAProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
-        {
-            float floatValue = float.Parse(value);
-            Color colorOrig = mat.GetColor($"_{property}");
-
-            foreach (var obj in GetRendererList(go, objectType))
-                foreach (var objMat in obj.materials)
-                    if (objMat.NameFormatted() == mat.NameFormatted())
-                        objMat.SetColor($"_{property}", new Color(colorOrig.r, colorOrig.g, colorOrig.b, floatValue));
-        }
-
         private static bool SetRendererProperty(GameObject go, string rendererName, RendererProperties property, string value, ObjectType objectType) => SetRendererProperty(go, rendererName, property, int.Parse(value), objectType);
         private static bool SetRendererProperty(GameObject go, string rendererName, RendererProperties property, int value, ObjectType objectType)
         {
@@ -283,21 +244,26 @@ namespace KK_MaterialEditor
             else if (materialName == chaControl.customMatFace.NameFormatted())
                 mat = chaControl.customMatFace;
 
-            if (mat!=null &&LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null)
+            if (mat != null)
             {
-                mat.shader = shaderData.Shader;
-                if (shaderData.RenderQueue != null)
-                    mat.renderQueue = (int)shaderData.RenderQueue;
+                if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null)
+                {
+                    mat.shader = shaderData.Shader;
+                    if (shaderData.RenderQueue != null)
+                        mat.renderQueue = (int)shaderData.RenderQueue;
 
-                if (XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
-                    foreach (var shaderPropertyData in shaderPropertyDataList.Values)
-                        if (shaderPropertyData.DefaultValue != null)
-                            if (shaderPropertyData.Type == ShaderPropertyType.Float)
-                                SetFloatProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
-                            else if (shaderPropertyData.Type == ShaderPropertyType.Color)
-                                SetColorProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                    if (XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
+                        foreach (var shaderPropertyData in shaderPropertyDataList.Values)
+                            if (shaderPropertyData.DefaultValue != null)
+                                if (shaderPropertyData.Type == ShaderPropertyType.Float)
+                                    SetFloatProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                else if (shaderPropertyData.Type == ShaderPropertyType.Color)
+                                    SetColorProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
 
-                didSet = true;
+                    didSet = true;
+                }
+                else
+                    BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{nameof(KK_MaterialEditor)}]Could not load shader:{shaderName}");
             }
 
             return didSet ? didSet : SetShader(chaControl.gameObject, materialName, shaderName, ObjectType.Character);
@@ -315,6 +281,7 @@ namespace KK_MaterialEditor
                         if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null)
                         {
                             mat.shader = shaderData.Shader;
+
                             if (shaderData.RenderQueue != null)
                                 mat.renderQueue = (int)shaderData.RenderQueue;
 
@@ -328,6 +295,8 @@ namespace KK_MaterialEditor
 
                             didSet = true;
                         }
+                        else
+                            BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{nameof(KK_MaterialEditor)}]Could not load shader:{shaderName}");
                     }
 
             return didSet;
@@ -343,7 +312,7 @@ namespace KK_MaterialEditor
                 chaControl.customMatBody.renderQueue = (int)value;
                 didSet = true;
             }
-           else if (materialName == chaControl.customMatFace.NameFormatted())
+            else if (materialName == chaControl.customMatFace.NameFormatted())
             {
                 chaControl.customMatFace.renderQueue = (int)value;
                 didSet = true;
@@ -418,34 +387,77 @@ namespace KK_MaterialEditor
         public class ShaderData
         {
             public string ShaderName;
-            public string AssetBundlePath;
             public Shader Shader;
             public int? RenderQueue = null;
 
-            public ShaderData(string shaderName, string assetBundlePath, int renderQueue) => InitData(shaderName, assetBundlePath, renderQueue);
-            public ShaderData(string shaderName, string assetBundlePath) => InitData(shaderName, assetBundlePath);
-
-            private void InitData(string shaderName, string assetBundlePath = "", int? renderQueue = null)
+            public ShaderData(string shaderName, string assetBundlePath = "", string renderQueue = "", string assetPath = "")
             {
                 ShaderName = shaderName;
-                AssetBundlePath = assetBundlePath;
-                RenderQueue = renderQueue;
+                if (renderQueue.IsNullOrEmpty())
+                    RenderQueue = null;
+                else if (int.TryParse(renderQueue, out int result))
+                    RenderQueue = result;
+                else
+                    RenderQueue = null;
 
-                if (AssetBundlePath.IsNullOrEmpty())
+                if (assetBundlePath.IsNullOrEmpty())
                 {
-                    AssetBundlePath = null;
                     Shader = null;
                 }
                 else
                 {
-                    try
+                    if (assetPath.IsNullOrEmpty())
                     {
-                        Shader = CommonLib.LoadAsset<Shader>(AssetBundlePath, $"{shaderName}");
+                        try
+                        {
+                            if (assetBundlePath.StartsWith("Resources."))
+                            {
+                                AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_MaterialEditor)}.{assetBundlePath}"));
+                                Shader = bundle.LoadAsset<Shader>(shaderName);
+                                bundle.Unload(false);
+                            }
+                            else
+                                Shader = CommonLib.LoadAsset<Shader>(assetBundlePath, $"{shaderName}");
+                        }
+                        catch
+                        {
+                            CC.Log(BepInEx.Logging.LogLevel.Warning, $"Unable to load shader: {shaderName}");
+                            Shader = null;
+                        }
                     }
-                    catch
+                    else
                     {
-                        CC.Log(BepInEx.Logging.LogLevel.Warning, $"Unable to load shader: {shaderName}");
-                        Shader = null;
+                        try
+                        {
+                            if (assetBundlePath.StartsWith("Resources."))
+                            {
+                                AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_MaterialEditor)}.{assetBundlePath}"));
+                                Shader = bundle.LoadAsset<Shader>(shaderName);
+
+                                var go = bundle.LoadAsset<GameObject>(assetPath);
+                                foreach (var x in go.GetComponentsInChildren<Renderer>())
+                                    foreach (var y in x.materials)
+                                        if (y.shader.NameFormatted() == ShaderName)
+                                            Shader = y.shader;
+                                Destroy(go);
+
+                                bundle.Unload(false);
+                            }
+                            else
+                            {
+                                var go = CommonLib.LoadAsset<GameObject>(assetBundlePath, assetPath);
+                                foreach (var x in go.GetComponentsInChildren<Renderer>())
+                                    foreach (var y in x.materials)
+                                        if (y.shader.NameFormatted() == ShaderName)
+                                            Shader = y.shader;
+                                Destroy(go);
+                            }
+                        }
+                        catch
+                        {
+                            CC.Log(BepInEx.Logging.LogLevel.Warning, $"Unable to load shader: {shaderName}");
+                            Shader = null;
+                        }
                     }
                 }
             }

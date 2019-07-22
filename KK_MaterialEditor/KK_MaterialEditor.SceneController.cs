@@ -358,7 +358,7 @@ namespace KK_MaterialEditor
                     else
                     {
                         materialProperty.ShaderName = shaderName;
-                        materialProperty.ShaderName = shaderNameOriginal;
+                        materialProperty.ShaderNameOriginal = shaderNameOriginal;
                     }
                 }
             }
