@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using UniRx;
 using UnityEngine;
+using CommonCode;
 
 namespace KK_MaterialEditor
 {
@@ -101,7 +102,7 @@ namespace KK_MaterialEditor
 
                 if (data.data.TryGetValue(nameof(MaterialShaderList), out var shaderProperties) && shaderProperties != null)
                     foreach (var loadedShaderProperty in MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])shaderProperties))
-                        MaterialShaderList.Add(new MaterialShader(loadedShaderProperty.ObjectType, loadedShaderProperty.CoordinateIndex, loadedShaderProperty.Slot, loadedShaderProperty.MaterialName, loadedShaderProperty.Value, loadedShaderProperty.ValueOriginal));
+                        MaterialShaderList.Add(new MaterialShader(loadedShaderProperty.ObjectType, loadedShaderProperty.CoordinateIndex, loadedShaderProperty.Slot, loadedShaderProperty.MaterialName, loadedShaderProperty.ShaderName, loadedShaderProperty.ShaderNameOriginal, loadedShaderProperty.RenderQueue, loadedShaderProperty.RenderQueueOriginal));
 
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
                     foreach (var loadedRendererProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
@@ -131,7 +132,10 @@ namespace KK_MaterialEditor
                         Texture2D tex = new Texture2D(2, 2);
                         tex.LoadImage(TexBytes);
 
-                        SetTextureProperty(GameObjectToSet, MatToSet, PropertyToSet, tex, ObjectTypeToSet);
+                        if (ObjectTypeToSet == ObjectType.Character)
+                            SetTextureProperty(ChaControl, MatToSet, PropertyToSet, tex);
+                        else
+                            SetTextureProperty(GameObjectToSet, MatToSet, PropertyToSet, tex, ObjectTypeToSet);
 
                         var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == ObjectTypeToSet && x.CoordinateIndex == CoordinateIndexToSet && x.Slot == SlotToSet && x.Property == PropertyToSet && x.MaterialName == MatToSet);
                         if (textureProperty == null)
@@ -225,7 +229,7 @@ namespace KK_MaterialEditor
 
                 if (data.data.TryGetValue(nameof(MaterialShaderList), out var materialShaders) && materialShaders != null)
                     foreach (var loadedMaterialShaders in MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])materialShaders))
-                        MaterialShaderList.Add(new MaterialShader(loadedMaterialShaders.ObjectType, CurrentCoordinateIndex, loadedMaterialShaders.Slot, loadedMaterialShaders.MaterialName, loadedMaterialShaders.Value, loadedMaterialShaders.ValueOriginal));
+                        MaterialShaderList.Add(new MaterialShader(loadedMaterialShaders.ObjectType, CurrentCoordinateIndex, loadedMaterialShaders.Slot, loadedMaterialShaders.MaterialName, loadedMaterialShaders.ShaderName, loadedMaterialShaders.ShaderNameOriginal, loadedMaterialShaders.RenderQueue, loadedMaterialShaders.RenderQueueOriginal));
 
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
                     foreach (var loadedRendererProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
@@ -256,13 +260,25 @@ namespace KK_MaterialEditor
                 foreach (var property in MaterialShaderList)
                 {
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
-                        SetShader(ChaControl.objClothes[property.Slot], property.MaterialName, property.Value, property.ObjectType);
+                    {
+                        SetShader(ChaControl.objClothes[property.Slot], property.MaterialName, property.ShaderName, property.ObjectType);
+                        SetRenderQueue(ChaControl.objClothes[property.Slot], property.MaterialName, property.RenderQueue, property.ObjectType);
+                    }
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
-                        SetShader(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Value, property.ObjectType);
+                    {
+                        SetShader(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.ShaderName, property.ObjectType);
+                        SetRenderQueue(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.RenderQueue, property.ObjectType);
+                    }
                     else if (property.ObjectType == ObjectType.Hair && hair)
-                        SetShader(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Value, property.ObjectType);
+                    {
+                        SetShader(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.ShaderName, property.ObjectType);
+                        SetRenderQueue(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.RenderQueue, property.ObjectType);
+                    }
                     else if (property.ObjectType == ObjectType.Character)
-                        SetShader(ChaControl.gameObject, property.MaterialName, property.Value, property.ObjectType);
+                    {
+                        SetShader(ChaControl, property.MaterialName, property.ShaderName);
+                        SetRenderQueue(ChaControl, property.MaterialName, property.RenderQueue);
+                    }
                 }
                 foreach (var property in RendererPropertyList)
                 {
@@ -284,7 +300,7 @@ namespace KK_MaterialEditor
                     else if (property.ObjectType == ObjectType.Hair && hair)
                         SetFloatProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Character)
-                        SetFloatProperty(ChaControl.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
+                        SetFloatProperty(ChaControl, property.MaterialName, property.Property, property.Value);
                 }
                 foreach (var property in MaterialColorPropertyList)
                 {
@@ -295,7 +311,7 @@ namespace KK_MaterialEditor
                     else if (property.ObjectType == ObjectType.Hair && hair)
                         SetColorProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Character)
-                        SetColorProperty(ChaControl.gameObject, property.MaterialName, property.Property, property.Value, property.ObjectType);
+                        SetColorProperty(ChaControl, property.MaterialName, property.Property, property.Value);
                 }
                 foreach (var property in MaterialTexturePropertyList)
                 {
@@ -306,7 +322,7 @@ namespace KK_MaterialEditor
                     else if (property.ObjectType == ObjectType.Hair && hair)
                         SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
                     else if (property.ObjectType == ObjectType.Character)
-                        SetTextureProperty(ChaControl.gameObject, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
+                        SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[property.TexID]));
                 }
             }
             /// <summary>
@@ -390,7 +406,7 @@ namespace KK_MaterialEditor
                 List<MaterialTextureProperty> newAccessoryMaterialTexturePropertyList = new List<MaterialTextureProperty>();
 
                 foreach (var property in MaterialShaderList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SourceSlotIndex))
-                    newAccessoryMaterialShaderList.Add(new MaterialShader(property.ObjectType, CurrentCoordinateIndex, e.DestinationSlotIndex, property.MaterialName, property.Value, property.ValueOriginal));
+                    newAccessoryMaterialShaderList.Add(new MaterialShader(property.ObjectType, CurrentCoordinateIndex, e.DestinationSlotIndex, property.MaterialName, property.ShaderName, property.ShaderNameOriginal, property.RenderQueue, property.RenderQueueOriginal));
                 foreach (var property in RendererPropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SourceSlotIndex))
                     newAccessoryRendererPropertyList.Add(new RendererProperty(property.ObjectType, CurrentCoordinateIndex, e.DestinationSlotIndex, property.RendererName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialFloatPropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SourceSlotIndex))
@@ -427,7 +443,7 @@ namespace KK_MaterialEditor
                     List<MaterialTextureProperty> newAccessoryMaterialTexturePropertyList = new List<MaterialTextureProperty>();
 
                     foreach (var property in MaterialShaderList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
-                        newAccessoryMaterialShaderList.Add(new MaterialShader(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.Value, property.ValueOriginal));
+                        newAccessoryMaterialShaderList.Add(new MaterialShader(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.ShaderName, property.ShaderNameOriginal, property.RenderQueue, property.RenderQueueOriginal));
                     foreach (var property in RendererPropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
                         newAccessoryRendererPropertyList.Add(new RendererProperty(property.ObjectType, (int)e.CopyDestination, slot, property.RendererName, property.Property, property.Value, property.ValueOriginal));
                     foreach (var property in MaterialFloatPropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
@@ -606,25 +622,70 @@ namespace KK_MaterialEditor
                 MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
             }
 
-            public void AddMaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName, string value, string valueOriginal)
+            public void AddMaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName, string shaderName, string shaderNameOriginal)
             {
                 var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName);
                 if (materialProperty == null)
-                    MaterialShaderList.Add(new MaterialShader(objectType, coordinateIndex, slot, materialName, value, valueOriginal));
+                    MaterialShaderList.Add(new MaterialShader(objectType, coordinateIndex, slot, materialName, shaderName, shaderNameOriginal));
                 else
                 {
-                    if (value == materialProperty.ValueOriginal)
-                        MaterialShaderList.Remove(materialProperty);
+                    if (shaderName == materialProperty.ShaderNameOriginal)
+                    {
+                        materialProperty.ShaderName = null;
+                        materialProperty.ShaderNameOriginal = null;
+                        if (materialProperty.NullCheck())
+                            MaterialShaderList.Remove(materialProperty);
+                    }
                     else
-                        materialProperty.Value = value;
+                    {
+                        materialProperty.ShaderName = shaderName;
+                        materialProperty.ShaderNameOriginal = shaderNameOriginal;
+                    }
                 }
             }
-            public string GetMaterialShaderValue(ObjectType objectType, int coordinateIndex, int slot, string materialName) =>
-                MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.Value;
-            public string GetMaterialShaderValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName) =>
-                MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.ValueOriginal;
-            public void RemoveMaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName) =>
-                MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName);
+            public void AddMaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName, int renderQueue, int renderQueueOriginal)
+            {
+                var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName);
+                if (materialProperty == null)
+                    MaterialShaderList.Add(new MaterialShader(objectType, coordinateIndex, slot, materialName, renderQueue, renderQueueOriginal));
+                else
+                {
+                    if (renderQueue == materialProperty.RenderQueueOriginal)
+                    {
+                        materialProperty.RenderQueue = null;
+                        materialProperty.RenderQueueOriginal = null;
+                        if (materialProperty.NullCheck())
+                            MaterialShaderList.Remove(materialProperty);
+                    }
+                    else
+                    {
+                        materialProperty.RenderQueue = renderQueue;
+                        materialProperty.RenderQueueOriginal = renderQueueOriginal;
+                    }
+                }
+            }
+            public MaterialShader GetMaterialShaderValue(ObjectType objectType, int coordinateIndex, int slot, string materialName) =>
+                MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName);
+            public void RemoveMaterialShaderName(ObjectType objectType, int coordinateIndex, int slot, string materialName)
+            {
+                foreach (var materialProperty in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName))
+                {
+                    materialProperty.ShaderName = null;
+                    materialProperty.ShaderNameOriginal = null;
+                }
+
+                MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName && x.NullCheck());
+            }
+            public void RemoveMaterialShaderRenderQueue(ObjectType objectType, int coordinateIndex, int slot, string materialName)
+            {
+                foreach (var materialProperty in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName))
+                {
+                    materialProperty.RenderQueue = null;
+                    materialProperty.RenderQueueOriginal = null;
+                }
+
+                MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName && x.NullCheck());
+            }
 
             private bool coordinateChanging = false;
             public bool CoordinateChanging
@@ -827,7 +888,7 @@ namespace KK_MaterialEditor
             }
             [Serializable]
             [MessagePackObject]
-            private class MaterialShader
+            public class MaterialShader
             {
                 [Key("ObjectType")]
                 public ObjectType ObjectType;
@@ -837,20 +898,45 @@ namespace KK_MaterialEditor
                 public int Slot;
                 [Key("MaterialName")]
                 public string MaterialName;
-                [Key("Value")]
-                public string Value;
-                [Key("ValueOriginal")]
-                public string ValueOriginal;
+                [Key("ShaderName")]
+                public string ShaderName;
+                [Key("ShaderNameOriginal")]
+                public string ShaderNameOriginal;
+                [Key("RenderQueue")]
+                public int? RenderQueue;
+                [Key("RenderQueueOriginal")]
+                public int? RenderQueueOriginal;
 
-                public MaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName, string value, string valueOriginal)
+                public MaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName, string shaderName, string shaderNameOriginal, int? renderQueue, int? renderQueueOriginal)
                 {
                     ObjectType = objectType;
                     CoordinateIndex = coordinateIndex;
                     Slot = slot;
                     MaterialName = materialName.Replace("(Instance)", "").Trim();
-                    Value = value;
-                    ValueOriginal = valueOriginal;
+                    ShaderName = shaderName;
+                    ShaderNameOriginal = shaderNameOriginal;
+                    RenderQueue = renderQueue;
+                    RenderQueueOriginal = renderQueueOriginal;
                 }
+                public MaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName, string shaderName, string shaderNameOriginal)
+                {
+                    ObjectType = objectType;
+                    CoordinateIndex = coordinateIndex;
+                    Slot = slot;
+                    MaterialName = materialName.Replace("(Instance)", "").Trim();
+                    ShaderName = shaderName;
+                    ShaderNameOriginal = shaderNameOriginal;
+                }
+                public MaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName, int? renderQueue, int? renderQueueOriginal)
+                {
+                    ObjectType = objectType;
+                    CoordinateIndex = coordinateIndex;
+                    Slot = slot;
+                    MaterialName = materialName.Replace("(Instance)", "").Trim();
+                    RenderQueue = renderQueue;
+                    RenderQueueOriginal = renderQueueOriginal;
+                }
+                public bool NullCheck() => ShaderName.IsNullOrEmpty() && RenderQueue == null;
             }
         }
     }

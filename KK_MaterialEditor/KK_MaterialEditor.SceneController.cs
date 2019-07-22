@@ -110,8 +110,12 @@ namespace KK_MaterialEditor
                 if (data.data.TryGetValue(nameof(MaterialShaderList), out var shaderProperties) && shaderProperties != null)
                     foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])shaderProperties))
                         if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                            if (SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Value, ObjectType.StudioItem))
-                                MaterialShaderList.Add(new MaterialShader(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Value, loadedProperty.ValueOriginal));
+                        {
+                            bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName, ObjectType.StudioItem);
+                            bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue, ObjectType.StudioItem);
+                            if (setShader || setRenderQueue)
+                                MaterialShaderList.Add(new MaterialShader(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                        }
 
                 if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
                     foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
@@ -155,8 +159,12 @@ namespace KK_MaterialEditor
                     if (copiedItem.Value is OCIItem ociItem)
                     {
                         foreach (var loadedProperty in MaterialShaderList.Where(x => x.ID == copiedItem.Key))
-                            if (SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Value, ObjectType.StudioItem))
-                                materialShaderListNew.Add(new MaterialShader(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Value, loadedProperty.ValueOriginal));
+                        {
+                            bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName, ObjectType.StudioItem);
+                            bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue, ObjectType.StudioItem);
+                            if (setShader || setRenderQueue)
+                                materialShaderListNew.Add(new MaterialShader(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                        }
 
                         foreach (var loadedProperty in RendererPropertyList.Where(x => x.ID == copiedItem.Key))
                             if (SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
@@ -333,25 +341,70 @@ namespace KK_MaterialEditor
                 MaterialTexturePropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
             }
 
-            public void AddMaterialShader(int id, string materialName, string value, string valueOriginal)
+            public void AddMaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal)
             {
                 var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName);
                 if (materialProperty == null)
-                    MaterialShaderList.Add(new MaterialShader(id, materialName, value, valueOriginal));
+                    MaterialShaderList.Add(new MaterialShader(id, materialName, shaderName, shaderNameOriginal));
                 else
                 {
-                    if (value == materialProperty.ValueOriginal)
-                        MaterialShaderList.Remove(materialProperty);
+                    if (shaderName == materialProperty.ShaderNameOriginal)
+                    {
+                        materialProperty.ShaderName = null;
+                        materialProperty.ShaderNameOriginal = null;
+                        if (materialProperty.NullCheck())
+                            MaterialShaderList.Remove(materialProperty);
+                    }
                     else
-                        materialProperty.Value = value;
+                    {
+                        materialProperty.ShaderName = shaderName;
+                        materialProperty.ShaderName = shaderNameOriginal;
+                    }
                 }
             }
-            public string GetMaterialShaderValue(int id, string materialName, string shaderName) =>
-                MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName)?.Value;
-            public string GetMaterialShaderValueOriginal(int id, string materialName, string shaderName) =>
-                MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName)?.ValueOriginal;
-            public void RemoveMaterialShader(int id, string materialName) =>
-                MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == materialName);
+            public void AddMaterialShader(int id, string materialName, int renderQueue, int renderQueueOriginal)
+            {
+                var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName);
+                if (materialProperty == null)
+                    MaterialShaderList.Add(new MaterialShader(id, materialName, renderQueue, renderQueueOriginal));
+                else
+                {
+                    if (renderQueue == materialProperty.RenderQueueOriginal)
+                    {
+                        materialProperty.RenderQueue = null;
+                        materialProperty.RenderQueueOriginal = null;
+                        if (materialProperty.NullCheck())
+                            MaterialShaderList.Remove(materialProperty);
+                    }
+                    else
+                    {
+                        materialProperty.RenderQueue = renderQueue;
+                        materialProperty.RenderQueueOriginal = renderQueueOriginal;
+                    }
+                }
+            }
+            public MaterialShader GetMaterialShaderValue(int id, string materialName) =>
+                MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName);
+            public void RemoveMaterialShaderName(int id, string materialName)
+            {
+                foreach (var materialProperty in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == materialName))
+                {
+                    materialProperty.ShaderName = null;
+                    materialProperty.ShaderNameOriginal = null;
+                }
+
+                MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == materialName && x.NullCheck());
+            }
+            public void RemoveMaterialShaderRenderQueue(int id, string materialName)
+            {
+                foreach (var materialProperty in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == materialName))
+                {
+                    materialProperty.RenderQueue = null;
+                    materialProperty.RenderQueueOriginal = null;
+                }
+
+                MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == materialName && x.NullCheck());
+            }
 
             [Serializable]
             [MessagePackObject]
@@ -492,24 +545,46 @@ namespace KK_MaterialEditor
 
             [Serializable]
             [MessagePackObject]
-            private class MaterialShader
+            public class MaterialShader
             {
                 [Key("ID")]
                 public int ID;
                 [Key("MaterialName")]
                 public string MaterialName;
-                [Key("Value")]
-                public string Value;
-                [Key("ValueOriginal")]
-                public string ValueOriginal;
+                [Key("ShaderName")]
+                public string ShaderName;
+                [Key("ShaderNameOriginal")]
+                public string ShaderNameOriginal;
+                [Key("RenderQueue")]
+                public int? RenderQueue;
+                [Key("RenderQueueOriginal")]
+                public int? RenderQueueOriginal;
 
-                public MaterialShader(int id, string materialName, string value, string valueOriginal)
+                public MaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal, int? renderQueue, int? renderQueueOriginal)
                 {
                     ID = id;
                     MaterialName = materialName.Replace("(Instance)", "").Trim();
-                    Value = value;
-                    ValueOriginal = valueOriginal;
+                    ShaderName = shaderName;
+                    ShaderNameOriginal = shaderNameOriginal;
+                    RenderQueue = renderQueue;
+                    RenderQueueOriginal = renderQueueOriginal;
                 }
+                public MaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal)
+                {
+                    ID = id;
+                    MaterialName = materialName.Replace("(Instance)", "").Trim();
+                    ShaderName = shaderName;
+                    ShaderNameOriginal = shaderNameOriginal;
+                }
+                public MaterialShader(int id, string materialName, int renderQueue, int renderQueueOriginal)
+                {
+                    ID = id;
+                    MaterialName = materialName.Replace("(Instance)", "").Trim();
+                    RenderQueue = renderQueue;
+                    RenderQueueOriginal = renderQueueOriginal;
+                }
+
+                public bool NullCheck() => ShaderName.IsNullOrEmpty() && RenderQueue == null;
             }
         }
     }

@@ -105,6 +105,26 @@ namespace KK_MaterialEditor
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
 
+        private static bool SetFloatProperty(ChaControl chaControl, string materialName, string property, string value)
+        {
+            if (value == null) return false;
+
+            float floatValue = float.Parse(value);
+            bool didSet = false;
+            Material mat = null;
+
+            if (materialName == chaControl.customMatBody.NameFormatted())
+                mat = chaControl.customMatBody;
+            else if (materialName == chaControl.customMatFace.NameFormatted())
+                mat = chaControl.customMatFace;
+            if (materialName != null)
+            {
+                mat.SetFloat($"_{property}", floatValue);
+                didSet = true;
+            }
+
+            return didSet ? didSet : SetFloatProperty(chaControl.gameObject, materialName, property, value, ObjectType.Character);
+        }
         private static bool SetFloatProperty(GameObject go, string materialName, string property, string value, ObjectType objectType)
         {
             float floatValue = float.Parse(value);
@@ -118,6 +138,27 @@ namespace KK_MaterialEditor
                         didSet = true;
                     }
             return didSet;
+        }
+
+        private static bool SetColorProperty(ChaControl chaControl, string materialName, string property, string value) => SetColorProperty(chaControl, materialName, property, value.ToColor());
+        private static bool SetColorProperty(ChaControl chaControl, string materialName, string property, Color value)
+        {
+            if (value == null) return false;
+
+            bool didSet = false;
+            Material mat = null;
+
+            if (materialName == chaControl.customMatBody.NameFormatted())
+                mat = chaControl.customMatBody;
+            else if (materialName == chaControl.customMatFace.NameFormatted())
+                mat = chaControl.customMatFace;
+            if (materialName != null)
+            {
+                mat.SetColor($"_{property}", value);
+                didSet = true;
+            }
+
+            return didSet ? didSet : SetColorProperty(chaControl.gameObject, materialName, property, value, ObjectType.Character);
         }
 
         private static bool SetColorProperty(GameObject go, string materialName, string property, string value, ObjectType objectType) => SetColorProperty(go, materialName, property, value.ToColor(), objectType);
@@ -135,16 +176,8 @@ namespace KK_MaterialEditor
             return didSet;
         }
 
-        private static void SetColorRProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
-        {
-            float floatValue = float.Parse(value);
-            Color colorOrig = mat.GetColor($"_{property}");
 
-            foreach (var obj in GetRendererList(go, objectType))
-                foreach (var objMat in obj.materials)
-                    if (objMat.NameFormatted() == mat.NameFormatted())
-                        objMat.SetColor($"_{property}", new Color(floatValue, colorOrig.g, colorOrig.b, colorOrig.a));
-        }
+
 
         private static void SetColorGProperty(GameObject go, Material mat, string property, string value, ObjectType objectType)
         {
@@ -207,6 +240,25 @@ namespace KK_MaterialEditor
             return didSet;
         }
 
+        private static bool SetTextureProperty(ChaControl chaControl, string materialName, string property, Texture2D value)
+        {
+            if (value == null) return false;
+
+            bool didSet = false;
+            Material mat = null;
+
+            if (materialName == chaControl.customMatBody.NameFormatted())
+                mat = chaControl.customMatBody;
+            else if (materialName == chaControl.customMatFace.NameFormatted())
+                mat = chaControl.customMatFace;
+            if (materialName != null)
+            {
+                mat.SetTexture($"_{property}", value);
+                didSet = true;
+            }
+
+            return didSet ? didSet : SetTextureProperty(chaControl.gameObject, materialName, property, value, ObjectType.Character);
+        }
         private static bool SetTextureProperty(GameObject go, string materialName, string property, Texture2D value, ObjectType objectType)
         {
             bool didSet = false;
@@ -220,9 +272,42 @@ namespace KK_MaterialEditor
             return didSet;
         }
 
+        private static bool SetShader(ChaControl chaControl, string materialName, string shaderName)
+        {
+            bool didSet = false;
+            if (shaderName.IsNullOrEmpty()) return false;
+            Material mat = null;
+
+            if (materialName == chaControl.customMatBody.NameFormatted())
+                mat = chaControl.customMatBody;
+            else if (materialName == chaControl.customMatFace.NameFormatted())
+                mat = chaControl.customMatFace;
+
+            if (mat!=null &&LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null)
+            {
+                mat.shader = shaderData.Shader;
+                if (shaderData.RenderQueue != null)
+                    mat.renderQueue = (int)shaderData.RenderQueue;
+
+                if (XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
+                    foreach (var shaderPropertyData in shaderPropertyDataList.Values)
+                        if (shaderPropertyData.DefaultValue != null)
+                            if (shaderPropertyData.Type == ShaderPropertyType.Float)
+                                SetFloatProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                            else if (shaderPropertyData.Type == ShaderPropertyType.Color)
+                                SetColorProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+
+                didSet = true;
+            }
+
+            return didSet ? didSet : SetShader(chaControl.gameObject, materialName, shaderName, ObjectType.Character);
+
+        }
         private static bool SetShader(GameObject go, string materialName, string shaderName, ObjectType objectType)
         {
             bool didSet = false;
+            if (shaderName.IsNullOrEmpty()) return false;
+
             foreach (var rend in GetRendererList(go, objectType))
                 foreach (var mat in rend.materials)
                     if (mat.NameFormatted() == materialName)
@@ -243,6 +328,41 @@ namespace KK_MaterialEditor
 
                             didSet = true;
                         }
+                    }
+
+            return didSet;
+        }
+
+        private static bool SetRenderQueue(ChaControl chaControl, string materialName, int? value)
+        {
+            bool didSet = false;
+            if (value == null) return false;
+
+            if (materialName == chaControl.customMatBody.NameFormatted())
+            {
+                chaControl.customMatBody.renderQueue = (int)value;
+                didSet = true;
+            }
+           else if (materialName == chaControl.customMatFace.NameFormatted())
+            {
+                chaControl.customMatFace.renderQueue = (int)value;
+                didSet = true;
+            }
+
+            return didSet ? didSet : SetRenderQueue(chaControl.gameObject, materialName, value, ObjectType.Character);
+        }
+
+        private static bool SetRenderQueue(GameObject go, string materialName, int? value, ObjectType objectType)
+        {
+            bool didSet = false;
+            if (value == null) return false;
+
+            foreach (var obj in GetRendererList(go, objectType))
+                foreach (var objMat in obj.materials)
+                    if (objMat.NameFormatted() == materialName)
+                    {
+                        objMat.renderQueue = (int)value;
+                        didSet = true;
                     }
             return didSet;
         }
