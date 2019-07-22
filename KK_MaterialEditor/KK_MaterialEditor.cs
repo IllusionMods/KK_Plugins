@@ -114,7 +114,7 @@ namespace KK_MaterialEditor
                 mat = chaControl.customMatBody;
             else if (materialName == chaControl.customMatFace.NameFormatted())
                 mat = chaControl.customMatFace;
-            if (materialName != null)
+            if (mat != null)
             {
                 mat.SetFloat($"_{property}", floatValue);
                 didSet = true;
@@ -149,7 +149,7 @@ namespace KK_MaterialEditor
                 mat = chaControl.customMatBody;
             else if (materialName == chaControl.customMatFace.NameFormatted())
                 mat = chaControl.customMatFace;
-            if (materialName != null)
+            if (mat != null)
             {
                 mat.SetColor($"_{property}", value);
                 didSet = true;
@@ -212,7 +212,7 @@ namespace KK_MaterialEditor
                 mat = chaControl.customMatBody;
             else if (materialName == chaControl.customMatFace.NameFormatted())
                 mat = chaControl.customMatFace;
-            if (materialName != null)
+            if (mat != null)
             {
                 mat.SetTexture($"_{property}", value);
                 didSet = true;
@@ -306,15 +306,16 @@ namespace KK_MaterialEditor
         {
             bool didSet = false;
             if (value == null) return false;
+            Material mat = null;
 
             if (materialName == chaControl.customMatBody.NameFormatted())
-            {
-                chaControl.customMatBody.renderQueue = (int)value;
-                didSet = true;
-            }
+                mat = chaControl.customMatBody;
             else if (materialName == chaControl.customMatFace.NameFormatted())
+                mat = chaControl.customMatFace;
+
+            if (mat != null)
             {
-                chaControl.customMatFace.renderQueue = (int)value;
+                mat.renderQueue = (int)value;
                 didSet = true;
             }
 
