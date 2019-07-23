@@ -18,7 +18,7 @@ namespace KK_MaterialEditor
         private static ScrollRect MaterialEditorWindow;
 
         public const string FileExt = ".png";
-        public const string FileFilter = "Images (*.png)|*.png|All files|*.*";
+        public const string FileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
         private static readonly HashSet<string> BodyParts = new HashSet<string> {
             "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang", "n_tang_silhouette",  "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_mayuge", "cf_Ohitomi_L", "cf_Ohitomi_R",
             "cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_noseline", "cf_O_namida_L", "cf_O_namida_M", "o_dankon", "o_gomu", "o_dan_f", "cf_O_namida_S", "cf_O_gag_eye_00", "cf_O_gag_eye_01",
