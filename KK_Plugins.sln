@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_MaterialEditor", "KK_Mat
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommonCode", "CommonCode\CommonCode.shproj", "{841FFFF7-1940-4B7B-B21F-83E2F16333D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_MaleJuice", "KK_MaleJuice\KK_MaleJuice.csproj", "{8A811717-0CD1-4541-BD67-A0210586E4D0}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
@@ -102,6 +104,7 @@ Global
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
+		CommonCode\CommonCode.projitems*{8a811717-0cd1-4541-bd67-a0210586e4d0}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
@@ -260,6 +263,10 @@ Global
 		{B743E048-5913-4DEC-9067-8AFD1293A211}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B743E048-5913-4DEC-9067-8AFD1293A211}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B743E048-5913-4DEC-9067-8AFD1293A211}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A811717-0CD1-4541-BD67-A0210586E4D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A811717-0CD1-4541-BD67-A0210586E4D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A811717-0CD1-4541-BD67-A0210586E4D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A811717-0CD1-4541-BD67-A0210586E4D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
