@@ -120,6 +120,22 @@ namespace CommonCode
         /// <summary>
         /// Convert string to Color
         /// </summary>
-        public static Color ToColor(this string color) => (Color)typeof(Color).GetProperty(color.ToLowerInvariant()).GetValue(null, null);
+        public static Color ToColor(this string color)
+        {
+            var segments = color.Split(',');
+            if (color.Length >= 3)
+            {
+                if (float.TryParse(segments[0], out float r) &&
+                    float.TryParse(segments[1], out float g) &&
+                    float.TryParse(segments[2], out float b))
+                {
+                    var c = new Color(r, g, b);
+                    if (segments.Length == 4 && float.TryParse(segments[3], out float a))
+                        c.a = a;
+                    return c;
+                }
+            }
+            return Color.white;
+        }
     }
 }

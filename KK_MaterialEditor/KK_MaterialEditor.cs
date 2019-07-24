@@ -89,7 +89,8 @@ namespace KK_MaterialEditor
                     string propertyName = element.Attribute("Name").Value;
                     ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), element.Attribute("Type").Value);
                     string defaultValue = element.Attribute("DefaultValue")?.Value;
-                    ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue);
+                    string defaultValueAB = element.Attribute("DefaultValueAssetBundle")?.Value;
+                    ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB);
 
                     XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                     XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;
@@ -254,16 +255,35 @@ namespace KK_MaterialEditor
 
                     if (XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
                         foreach (var shaderPropertyData in shaderPropertyDataList.Values)
-                            if (shaderPropertyData.DefaultValue != null)
-                                if (shaderPropertyData.Type == ShaderPropertyType.Float)
-                                    SetFloatProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
-                                else if (shaderPropertyData.Type == ShaderPropertyType.Color)
-                                    SetColorProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                            if (!shaderPropertyData.DefaultValue.IsNullOrEmpty())
+                            {
+                                switch (shaderPropertyData.Type)
+                                {
+                                    case ShaderPropertyType.Float:
+                                        SetFloatProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                        break;
+                                    case ShaderPropertyType.Color:
+                                        SetColorProperty(chaControl, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                        break;
+                                    case ShaderPropertyType.Texture:
+                                        if (shaderPropertyData.DefaultValue.IsNullOrEmpty()) continue;
+                                        try
+                                        {
+                                            var tex = CommonLib.LoadAsset<Texture2D>(shaderPropertyData.DefaultValueAssetBundle, shaderPropertyData.DefaultValue);
+                                            SetTextureProperty(chaControl, materialName, shaderPropertyData.Name, tex);
+                                        }
+                                        catch
+                                        {
+                                            BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning, $"[{nameof(KK_MaterialEditor)}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
+                                        }
+                                        break;
+                                }
+                            }
 
                     didSet = true;
                 }
                 else
-                    BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{nameof(KK_MaterialEditor)}]Could not load shader:{shaderName}");
+                    BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{nameof(KK_MaterialEditor)}] Could not load shader:{shaderName}");
             }
 
             return didSet ? didSet : SetShader(chaControl.gameObject, materialName, shaderName, ObjectType.Character);
@@ -287,16 +307,34 @@ namespace KK_MaterialEditor
 
                             if (XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
                                 foreach (var shaderPropertyData in shaderPropertyDataList.Values)
-                                    if (shaderPropertyData.DefaultValue != null)
-                                        if (shaderPropertyData.Type == ShaderPropertyType.Float)
-                                            SetFloatProperty(go, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue, objectType);
-                                        else if (shaderPropertyData.Type == ShaderPropertyType.Color)
-                                            SetColorProperty(go, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue, objectType);
-
+                                    if (!shaderPropertyData.DefaultValue.IsNullOrEmpty())
+                                    {
+                                        switch (shaderPropertyData.Type)
+                                        {
+                                            case ShaderPropertyType.Float:
+                                                SetFloatProperty(go, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue, objectType);
+                                                break;
+                                            case ShaderPropertyType.Color:
+                                                SetColorProperty(go, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue, objectType);
+                                                break;
+                                            case ShaderPropertyType.Texture:
+                                                if (shaderPropertyData.DefaultValue.IsNullOrEmpty()) continue;
+                                                try
+                                                {
+                                                    var tex = CommonLib.LoadAsset<Texture2D>(shaderPropertyData.DefaultValueAssetBundle, shaderPropertyData.DefaultValue);
+                                                    SetTextureProperty(go, materialName, shaderPropertyData.Name, tex, objectType);
+                                                }
+                                                catch
+                                                {
+                                                    BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning, $"[{nameof(KK_MaterialEditor)}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
+                                                }
+                                                break;
+                                        }
+                                    }
                             didSet = true;
                         }
                         else
-                            BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{nameof(KK_MaterialEditor)}]Could not load shader:{shaderName}");
+                            BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{nameof(KK_MaterialEditor)}] Could not load shader:{shaderName}");
                     }
 
             return didSet;
@@ -468,13 +506,15 @@ namespace KK_MaterialEditor
         {
             public string Name;
             public ShaderPropertyType Type;
-            public string DefaultValue;
+            public string DefaultValue = null;
+            public string DefaultValueAssetBundle = null;
 
-            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = "")
+            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null)
             {
                 Name = name;
                 Type = type;
-                DefaultValue = defaultValue;
+                DefaultValue = defaultValue.IsNullOrEmpty() ? null : defaultValue;
+                DefaultValueAssetBundle = defaultValueAB.IsNullOrEmpty() ? null : defaultValueAB;
             }
         }
     }
