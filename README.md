@@ -57,11 +57,6 @@ When the category is * only GUID migration will be attempted and whatever you pu
 When the category is - the extended data will be stripped and will be treated as a hard mod
 </details>
 
-#### KK_CutsceneLockupFix
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v2/KK_CutsceneLockupFix.v1.0.zip)**<br/>
-
-Adds some extra error handling to the game so certain hair mods wont lock up the whole game when they appear in a cutscene.<br/>
-
 #### KK_ReloadCharaListOnChange
 **v1.5.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_ReloadCharaListOnChange.v1.5.1.zip)**<br/>
 
@@ -99,18 +94,6 @@ Blocks mod hotkeys from triggering while typing in input fields. Based on kisama
 
 <details><summary>Change Log</summary>
 v1.1 Blocks hotkeys in studio coordinate fields
-</details>
-
-#### KK_PersonalityCorrector
-**v1.3.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_PersonalityCorrector.v1.3.1.zip)**<br/>
-
-Replaces any cards with the modded story character personalities with the default "Pure" personality when attempting to added them to the class to prevent the game from breaking. Also defaults to "Pure" for characters using paid DLC personalities if you don't have the paid DLC installed.
-
-<details><summary>Change Log</summary>
-v1.1 Updated to support missing DLC personalities<br/>
-v1.2 Updated for 1221 DLC personalities<br/>
-v1.3 Now corrects personalities when using the random button<br/>
-v1.3.1 Removed log messages. Oops.
 </details>
 
 #### KK_UncensorSelector EC_UncensorSelector
@@ -201,18 +184,6 @@ Virgins in H scenes will appear to have slightly shaking eye highlights.<br/>
 
 Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
 
-#### KK_MiscFixes
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v43/KK_MiscFixes.v1.1.zip)**<br/>
-
-Miscellaneous fixes aimed at improving the performance of the game.<br/>
-
-* Improves load time of the list of characters in Free H<br/>
-* Improves load time when opening the class roster menu<br/>
-
-<details><summary>Change Log</summary>
-v1.1 Now uses full path instead of file name for compatibility with Marco's KK_BrowserFolders
-</details>
-
 #### KK_RandomCharacterGenerator
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v47/KK_RandomCharacterGenerator.v1.0.zip)**<br/>
 
@@ -268,22 +239,6 @@ Removes the mosaic from female characters. Based on the demosaic for Koikatsu by
 v1.1 Added a config option to disable the plugin<br/>
 </details>
 
-#### KK_HeadFix
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v89/KK_HeadFix.v1.1.zip)**<br/>
-Fixes a bug where alternate heads cannot load modded eyeliners and modded heads cannot load any eyeliners.<br/>
-
-<details><summary>Change Log</summary>
-v1.1 Support for Koikatsu Party<br/>
-</details>
-
-#### KK_SettingsFix
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v86/KK_SettingsFix.v1.1.zip)**<br/>
-Creates setup.xml if missing and makes CharaStudio read settings from the setup.xml. This means you no longer need to run InitSetting.exe to change Studio settings and registry entries are no longer required.<br/>
-
-<details><summary>Change Log</summary>
-v1.1 Setup.xml is tested for validity, deleted if broken<br/>
-</details>
-
 #### KK_FreeHRandom
 **v1.1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_FreeHRandom.v1.1.1.zip)**<br/>
 Adds buttons to Free H selection screen to get random characters for your H session.<br/>
@@ -324,6 +279,14 @@ v1.4 Add ability to change shaders, change skin and face material<br/>
 **v1.0 - [Download](https://www.patreon.com/posts/28608195)**<br/>
 
 Enables juice textures for males in H scenes and Studio<br/>
+
+#### KK_CutsceneLockupFix
+#### KK_HeadFix
+#### KK_MiscFixes
+#### KK_PersonalityCorrector
+#### KK_SettingsFix
+Moved to the [KoikatuFixes](https://github.com/ManlyMarco/KoikatuFixes/releases) repo.<br/>
+
 
 
 # Experimental plugins
