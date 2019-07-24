@@ -320,9 +320,14 @@ v1.3.1 Fixed error on importing studio objects with textures<br/>
 v1.4 Add ability to change shaders, change skin and face material<br/>
 </details>
 
+#### KK_MaleJuice
+**v1.0 - [Download](https://www.patreon.com/posts/28608195)**<br/>
+
+Enables juice textures for males in H scenes and Studio<br/>
+
+
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.<br/>
-
 
 #### KK_BodyShaders
 **Beta 2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v85/KK_BodyShaders.beta.2.zip)**<br/>
