@@ -39,6 +39,7 @@ namespace UILib
         public static readonly Color transparentGrayColor = new Color32(100, 99, 95, 90);
         public static Font defaultFont;
         public static int defaultFontSize;
+        public static int scrollSensitivity = 32;
         public static DefaultControls.Resources resources;
 
         private static bool _initCalled = false;
@@ -235,6 +236,10 @@ namespace UILib
                     text.rectTransform.SetRect(Vector2.zero, Vector2.one, new Vector2(20f, 1f), new Vector2(-10f, -2f));
             }
             go.transform.SetParent(parent, false);
+
+            foreach (ScrollRect scrollRect in go.GetComponentsInChildren<ScrollRect>(true))
+                scrollRect.scrollSensitivity = scrollSensitivity;
+
             return go.GetComponent<Dropdown>();
         }
 
@@ -261,6 +266,7 @@ namespace UILib
             GameObject go = DefaultControls.CreateScrollView(resources);
             go.name = objectName;
             go.transform.SetParent(parent, false);
+            go.GetComponent<ScrollRect>().scrollSensitivity = scrollSensitivity;
             return go.GetComponent<ScrollRect>();
         }
 
