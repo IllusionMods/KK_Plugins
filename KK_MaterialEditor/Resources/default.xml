@@ -167,6 +167,7 @@
     <Property Name="AlphaMask" Type="Texture" />
     <Property Name="AnotherRamp" Type="Texture" />
     <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
     <Property Name="HairGloss" Type="Texture" />
     <Property Name="MainTex" Type="Texture" />
     <Property Name="NormalMap" Type="Texture" />
