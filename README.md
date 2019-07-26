@@ -77,7 +77,7 @@ v1.5.1 Create card folders if missing to prevent errors<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
 
-Select characters in the Studio workspace and press numpad+ (configurable) to toggle them between invisible and visible. Any worn clothes or accessories and any attached studio items will remain visible. Invisible state saves and loads with the scene. <br/>
+Select characters in the Studio workspace and Anim->Current State->Invisible Body to toggle them between invisible and visible. Any worn clothes or accessories and any attached studio items will remain visible. Invisible state saves and loads with the scene. <br/>
 
 <details><summary>Change Log</summary> 
 v1.1 Fixed studio items becoming visible when they were toggled off in the workspace<br/>
