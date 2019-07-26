@@ -4,9 +4,6 @@ using KKAPI;
 using KKAPI.Chara;
 using Studio;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
 using UnityEngine;
 
 namespace KK_MaleJuice
@@ -19,17 +16,27 @@ namespace KK_MaleJuice
     {
         public const string GUID = "com.deathweasel.bepinex.malejuice";
         public const string PluginName = "Male Juice";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         private static Texture LiquidMask = null;
 
         private void Main()
         {
+            //Get the juice texture used by females
+            try
+            {
+                var mat = CommonLib.LoadAsset<Material>("chara/mm_base.unity3d", "cf_m_body");
+                LiquidMask = mat.GetTexture("_liquidmask");
+            }
+            catch
+            {
+                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Error, $"[{nameof(KK_MaleJuice)}] Could not load juice textures.");
+            }
+
+            if (LiquidMask == null)
+                return;
+
             CharacterApi.RegisterExtraBehaviour<MaleJuiceCharaController>(GUID);
             HarmonyInstance.Create(GUID).PatchAll(typeof(KK_MaleJuice));
-
-            //Get the juice texture used by females
-            var mat = CommonLib.LoadAsset<Material>("chara/mm_base.unity3d", "cf_m_body");
-            LiquidMask = mat.GetTexture("_liquidmask");
         }
 
         public class MaleJuiceCharaController : CharaCustomFunctionController
@@ -47,17 +54,12 @@ namespace KK_MaleJuice
             public void SetJuice() => ChaControl.StartCoroutine(_SetJuice());
             private IEnumerator _SetJuice()
             {
-                if (LiquidMask == null) yield break;
-                if (ChaControl.customMatBody.GetTexture("_liquidmask") != null) yield break;
-
                 yield return null;
-                ChaControl.customMatBody.SetTexture("_liquidmask", LiquidMask);
+
+                if (ChaControl.customMatBody.GetTexture("_liquidmask") == null)
+                    ChaControl.customMatBody.SetTexture("_liquidmask", LiquidMask);
             }
         }
-        /// <summary>
-        /// Get the MaleJuiceCharaController for a ChaControl
-        /// </summary>
-        private static MaleJuiceCharaController GetController(ChaControl character) => character?.gameObject?.GetComponent<MaleJuiceCharaController>();
         /// <summary>
         /// Set juice flags for males in Studio
         /// </summary>
@@ -77,40 +79,17 @@ namespace KK_MaleJuice
                 __result = charMale.male.GetSiruFlags(_parts);
         }
         /// <summary>
-        /// Remove the If and Else stuff so this method always enables juice texture selection in Studio
+        /// Enable the juice section in Studio always, not just for females
         /// </summary>
-        [HarmonyTranspiler, HarmonyPatch(typeof(MPCharCtrl.LiquidInfo), nameof(MPCharCtrl.LiquidInfo.UpdateInfo))]
-        public static IEnumerable<CodeInstruction> LiquidInfoUpdateInfoTranspiler(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPostfix, HarmonyPatch(typeof(MPCharCtrl.LiquidInfo), nameof(MPCharCtrl.LiquidInfo.UpdateInfo))]
+        public static void LiquidInfoUpdateInfo(OCIChar _char, MPCharCtrl.LiquidInfo __instance)
         {
-            List<CodeInstruction> instructionsList = instructions.ToList();
-
-            int counter = 0;
-            int ifStart = 0;
-            int elseStart = 0;
-            foreach (var x in instructionsList)
-            {
-                if (x.opcode == OpCodes.Bne_Un)
-                    ifStart = counter - 4;
-                if (x.opcode == OpCodes.Br)
-                    elseStart = counter;
-
-                counter++;
-            }
-
-            instructionsList.RemoveRange(elseStart, 4);
-            instructionsList.RemoveRange(ifStart, 5);
-
-            return instructionsList;
-        }
-        /// <summary>
-        /// On H scene start, set juice textures
-        /// </summary>
-        [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "MapSameObjectDisable")]
-        public static void MapSameObjectDisable(HSceneProc __instance)
-        {
-            foreach (var heroine in __instance.flags.lstHeroine)
-                GetController(heroine.chaCtrl)?.SetJuice();
-            GetController(__instance.flags.player.chaCtrl)?.SetJuice();
+            __instance.active = true;
+            __instance.face.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruKao);
+            __instance.breast.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruFrontUp);
+            __instance.back.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruBackUp);
+            __instance.belly.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruFrontDown);
+            __instance.hip.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruBackDown);
         }
     }
 }
