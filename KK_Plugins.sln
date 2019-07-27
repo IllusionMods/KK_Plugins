@@ -85,6 +85,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommonCode", "CommonCode\Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_MaleJuice", "KK_MaleJuice\KK_MaleJuice.csproj", "{8A811717-0CD1-4541-BD67-A0210586E4D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_FKIK", "KK_FKIK\KK_FKIK.csproj", "{90D733A9-3148-428D-AD87-E633A2A3A28B}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
@@ -237,6 +239,10 @@ Global
 		{8A811717-0CD1-4541-BD67-A0210586E4D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A811717-0CD1-4541-BD67-A0210586E4D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A811717-0CD1-4541-BD67-A0210586E4D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90D733A9-3148-428D-AD87-E633A2A3A28B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D733A9-3148-428D-AD87-E633A2A3A28B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D733A9-3148-428D-AD87-E633A2A3A28B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D733A9-3148-428D-AD87-E633A2A3A28B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
