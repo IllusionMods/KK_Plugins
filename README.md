@@ -278,9 +278,13 @@ v1.4.1 .jpg loading support, scroll speed increase, color and texture default va
 </details>
 
 #### KK_MaleJuice
-**v1.0 - [Download](https://www.patreon.com/posts/28608195)**<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/28608195)**<br/>
 
 Enables juice textures for males in H scenes and Studio<br/>
+
+<details><summary>Change Log</summary>
+v1.1 Fixed compatibility issues with UncensorSelector using male body type on female characters<br/>
+</details>
 
 #### KK_CutsceneLockupFix
 #### KK_HeadFix
