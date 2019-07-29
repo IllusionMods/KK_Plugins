@@ -280,11 +280,16 @@ v1.4.1 .jpg loading support, scroll speed increase, color and texture default va
 #### KK_MaleJuice
 **v1.1 - [Download](https://www.patreon.com/posts/28608195)**<br/>
 
-Enables juice textures for males in H scenes and Studio<br/>
+Enables juice textures for males in H scenes and Studio.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Fixed compatibility issues with UncensorSelector using male body type on female characters<br/>
 </details>
+
+#### KK_StudioObjectMoveHotkeys
+**v1.0 - [Download](https://www.patreon.com/posts/28743884)**<br/>
+
+Allows you to move objects in studio using hotkeys. Press Y/U/I to move along the X/Y/Z axes. You can also ues these keys for rotating and scaling, and when scaling you can also press T to scale all axes at once. Hotkeys can be configured in plugin settings.<br/>
 
 #### KK_CutsceneLockupFix
 #### KK_HeadFix
@@ -292,7 +297,6 @@ v1.1 Fixed compatibility issues with UncensorSelector using male body type on fe
 #### KK_PersonalityCorrector
 #### KK_SettingsFix
 Moved to the [KoikatuFixes](https://github.com/ManlyMarco/KoikatuFixes/releases) repo.<br/>
-
 
 
 # Experimental plugins
