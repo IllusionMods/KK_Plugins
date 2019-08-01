@@ -14,13 +14,9 @@ namespace KK_InputHotkeyBlock
     {
         public const string PluginName = "Input Hotkey Block";
         public const string GUID = "com.deathweasel.bepinex.inputhotkeyblock";
-        public const string Version = "1.1";
+        public const string Version = "1.2";
 
-        private void Main()
-        {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_InputHotkeyBlock));
-        }
+        private void Main() => HarmonyInstance.Create(GUID).PatchAll(typeof(KK_InputHotkeyBlock));
         /// <summary>
         /// Check if an input field is selected
         /// </summary>
@@ -42,16 +38,25 @@ namespace KK_InputHotkeyBlock
         }
         //GetKey hooks. When HotkeyBlock returns false the GetKey functions will be prevented from running.
         [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKey), new[] { typeof(KeyCode) })]
-        public static bool GetKeyCode(KeyCode key) => HotkeyBlock;
+        public static bool GetKeyCode() => HotkeyBlock;
         [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKey), new[] { typeof(string) })]
-        public static bool GetKeyString(string name) => HotkeyBlock;
+        public static bool GetKeyString() => HotkeyBlock;
         [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(KeyCode) })]
-        public static bool GetKeyDownCode(KeyCode key) => HotkeyBlock;
+        public static bool GetKeyDownCode() => HotkeyBlock;
         [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(string) })]
-        public static bool GetKeyDownString(string name) => HotkeyBlock;
+        public static bool GetKeyDownString() => HotkeyBlock;
         [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), new[] { typeof(KeyCode) })]
-        public static bool GetKeyUpCode(KeyCode key) => HotkeyBlock;
+        public static bool GetKeyUpCode() => HotkeyBlock;
         [HarmonyPrefix, HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), new[] { typeof(string) })]
-        public static bool GetKeyUpString(string name) => HotkeyBlock;
+        public static bool GetKeyUpString() => HotkeyBlock;
+        /// <summary>
+        /// Click was handled by a GUI element. Don't advance text.
+        /// </summary>
+        [HarmonyPrefix, HarmonyPatch(typeof(ADV.TextScenario), "MessageWindowProc")]
+        public static void MessageWindowProcPreHook(object nextInfo)
+        {
+            if (Event.current.type == EventType.Used)
+                Traverse.Create(nextInfo).Field("isNext").SetValue(false);
+        }
     }
 }
