@@ -88,12 +88,18 @@ v1.3 Added a toggle button for Studio, removed hotkey<br/>
 </details>
 
 #### KK_InputHotkeyBlock
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v28/KK_InputHotkeyBlock.v1.1.zip)**<br/>
+**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v107/KK_InputHotkeyBlock.v1.2.zip)**<br/>
 
-Blocks mod hotkeys from triggering while typing in input fields. Based on kisama.dll by Essu.
+Blocks mod hotkeys from triggering while typing in input fields and prevents clicks inside mod GUIs from advancing the story.
+
+<details><summary>Credits</summary>
+essu: Code for blocking hotkeys<br/>
+Kyne: Code for preventing mod GUI clicks from advancing the story<br/>
+</details>
 
 <details><summary>Change Log</summary>
-v1.1 Blocks hotkeys in studio coordinate fields
+v1.1 Blocks hotkeys in studio coordinate fields<br/>
+v1.2 Prevents clicks inside mod GUI elements from advancing the story (Thanks Kyne)<br/>
 </details>
 
 #### KK_UncensorSelector EC_UncensorSelector
