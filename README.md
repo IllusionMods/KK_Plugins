@@ -92,10 +92,9 @@ v1.3 Added a toggle button for Studio, removed hotkey<br/>
 
 Blocks mod hotkeys from triggering while typing in input fields and prevents clicks inside mod GUIs from advancing the story.
 
-<details><summary>Credits</summary>
-essu: Code for blocking hotkeys<br/>
-Kyne: Code for preventing mod GUI clicks from advancing the story<br/>
-</details>
+Credits:
+* essu: Code for blocking hotkeys
+* Kyne: Code for preventing mod GUI clicks from advancing the story
 
 <details><summary>Change Log</summary>
 v1.1 Blocks hotkeys in studio coordinate fields<br/>
