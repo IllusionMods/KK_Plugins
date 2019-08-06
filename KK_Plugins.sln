@@ -89,6 +89,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_FKIK", "KK_FKIK\KK_FKIK.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_StudioObjectMoveHotkeys", "KK_StudioObjectMoveHotkeys\KK_StudioObjectMoveHotkeys.csproj", "{BAA2D7C3-88F1-440D-A620-E0E4BC3ACCEC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity3DCompressor", "Unity3DCompressor\Unity3DCompressor.csproj", "{4F9DC084-C79D-437E-85BD-7F5B8EC2F32F}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
@@ -249,6 +251,10 @@ Global
 		{BAA2D7C3-88F1-440D-A620-E0E4BC3ACCEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAA2D7C3-88F1-440D-A620-E0E4BC3ACCEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAA2D7C3-88F1-440D-A620-E0E4BC3ACCEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F9DC084-C79D-437E-85BD-7F5B8EC2F32F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F9DC084-C79D-437E-85BD-7F5B8EC2F32F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F9DC084-C79D-437E-85BD-7F5B8EC2F32F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F9DC084-C79D-437E-85BD-7F5B8EC2F32F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
