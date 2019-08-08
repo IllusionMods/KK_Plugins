@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KK_Subtitles")]
-[assembly: AssemblyDescription("Subtitles for Koikatsu")]
+[assembly: AssemblyTitle("HS_Subtitles")]
+[assembly: AssemblyDescription("Subtitles for Honey Select")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("https://github.com/DeathWeasel1337/KK_Plugins")]
-[assembly: AssemblyProduct("KK_Subtitles")]
+[assembly: AssemblyProduct("HS_Subtitles")]
 [assembly: AssemblyCopyright("Copyright © DeathWeasel1337 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("aecdbbfb-b520-4589-ab30-edb96f5354f0")]
+[assembly: Guid("aecdbbfb-b520-4589-ab31-edb96f5354f0")]
 
 // Version information for an assembly consists of the following four values:
 //
