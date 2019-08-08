@@ -8,6 +8,7 @@ namespace Unity3DCompressor
 {
     internal class Program
     {
+        private static bool CABRandomization = false;
         private static readonly RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
 
         private static void Main(string[] args)
@@ -62,10 +63,12 @@ namespace Unity3DCompressor
             rng.GetBytes(rnbuf);
             string CAB = "CAB-" + string.Concat(rnbuf.Select((x) => ((int)x).ToString("X2")).ToArray()).ToLower();
 
+            sb.AppendLine($"Log(\"Compressing: {path}\")");
             sb.AppendLine($"unityParser4 = OpenUnity3d(path=\"{path}\")");
             sb.AppendLine("unityEditor4 = Unity3dEditor(parser=unityParser4)");
             sb.AppendLine("unityEditor4.GetAssetNames(filter=True)");
-            sb.AppendLine($"unityEditor4.RenameCabinet(cabinetIndex=0, name=\"{CAB}\")");
+            if (CABRandomization)
+                sb.AppendLine($"unityEditor4.RenameCabinet(cabinetIndex=0, name=\"{CAB}\")");
             sb.AppendLine("unityEditor4.SaveUnity3d(keepBackup=False, backupExtension=\".unit-y3d\", background=False, clearMainAsset=True, pathIDsMode=-1, compressionLevel=2, compressionBufferSize=262144)");
             sb.AppendLine();
             return sb.ToString();
