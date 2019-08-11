@@ -8,6 +8,7 @@ using System.ComponentModel;
 /// </summary>
 namespace KK_EyeShaking
 {
+    [BepInDependency(KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_EyeShaking : BaseUnityPlugin
     {

@@ -23,6 +23,7 @@ namespace KK_AnimationController
     /// Allows attaching IK nodes to objects to create custom animations
     /// </summary>
     [BepInProcess("CharaStudio")]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_AnimationController : BaseUnityPlugin
     {

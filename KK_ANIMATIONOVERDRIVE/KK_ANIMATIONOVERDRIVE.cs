@@ -1,11 +1,6 @@
-﻿using ActionGame;
-using BepInEx;
-using BepInEx.Logging;
-using FreeH;
+﻿using BepInEx;
 using Harmony;
-using Illusion.Game;
 using Studio;
-using System;
 using System.Linq;
 using UnityEngine.UI;
 
@@ -18,7 +13,7 @@ namespace KK_AnimationOverdrive
         public const string PluginName = "Animation Overdrive";
         public const string Version = "1.0";
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_AnimationOverdrive));
@@ -28,7 +23,7 @@ namespace KK_AnimationOverdrive
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(AnimeControl), "OnEndEditSpeed")]
         public static bool OnEndEditSpeed(string _text, AnimeControl __instance)
-        { 
+        {
             float speed = StringToFloat(_text);
 
             InputField inputSpeed = Traverse.Create(__instance).Field("inputSpeed").GetValue<InputField>();

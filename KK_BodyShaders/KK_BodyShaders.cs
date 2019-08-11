@@ -11,6 +11,8 @@ using UnityEngine;
 
 namespace KK_BodyShaders
 {
+    [BepInDependency(KoikatuAPI.GUID)]
+    [BepInDependency(ExtendedSave.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_BodyShaders : BaseUnityPlugin
     {

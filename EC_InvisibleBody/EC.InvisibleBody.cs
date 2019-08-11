@@ -5,6 +5,7 @@ using BepInEx.Logging;
 
 namespace InvisibleBody
 {
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class InvisibleBody

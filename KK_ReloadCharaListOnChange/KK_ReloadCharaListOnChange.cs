@@ -16,7 +16,8 @@ namespace KK_ReloadCharaListOnChange
     /// <summary>
     /// Watches the character folders for changes and updates the character/coordinate list in the chara maker and studio.
     /// </summary>
-    [BepInDependency("com.bepis.bepinex.sideloader")]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(ExtendedSave.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_ReloadCharaListOnChange : BaseUnityPlugin
     {

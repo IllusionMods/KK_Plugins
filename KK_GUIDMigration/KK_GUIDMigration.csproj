@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KK_GUIDMigration.cs" />
+    <Compile Include="KK_GUIDMigration.Hooks.cs" />
+    <Compile Include="KK_GUIDMigration.Migrate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

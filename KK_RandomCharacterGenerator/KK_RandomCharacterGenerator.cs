@@ -17,6 +17,7 @@ using UnityEngine.UI;
 /// </summary>
 namespace KK_RandomCharacterGenerator
 {
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_RandomCharacterGenerator : BaseUnityPlugin
     {

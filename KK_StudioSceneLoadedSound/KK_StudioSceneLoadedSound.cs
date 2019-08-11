@@ -16,7 +16,7 @@ namespace KK_StudioSceneLoadedSound
         public const string Version = "1.0";
         private static bool LoadOrImportClicked = false;
 
-        void Main()
+        private void Main()
         {
             var harmony = HarmonyInstance.Create(GUID);
             harmony.PatchAll(typeof(KK_StudioSceneLoadedSound));

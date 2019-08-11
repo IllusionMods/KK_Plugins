@@ -20,6 +20,7 @@ using UnityEngine.SceneManagement;
 
 namespace KK_MaterialEditor
 {
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class KK_MaterialEditor : BaseUnityPlugin
     {

@@ -1,6 +1,4 @@
-﻿//@INFO: Additional floor, tit and hands db/colliders (eroigame.net)
-//@VER: 1
-
+﻿//Additional floor, tit and hands db/colliders (eroigame.net)
 // Physics tweaks as described in http://eroigame.net/archives/1387
 // Done programatically, so it works on any skeleton and can adapt to tit sizes
 // Ported from Patchwork
@@ -15,6 +13,7 @@ using static ChaFileDefine;
 
 namespace KK_Colliders
 {
+    [BepInDependency(KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_Colliders : BaseUnityPlugin
     {

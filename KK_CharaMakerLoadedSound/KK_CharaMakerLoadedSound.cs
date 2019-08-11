@@ -6,6 +6,7 @@ namespace KK_CharaMakerLoadedSound
     /// <summary>
     /// When Chara Maker starts, wait a bit for lag to stop then play a sound
     /// </summary>
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_CharaMakerLoadedSound : BaseUnityPlugin
     {
