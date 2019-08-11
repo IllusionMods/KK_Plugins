@@ -1,5 +1,4 @@
-﻿using Harmony;
-using KKAPI;
+﻿using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using System;
@@ -9,13 +8,15 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using BepInEx.Logging;
+using ExtensibleSaveFormat;
+
 #if KK
 using KKAPI.Studio;
 #endif
 #if KK
-using ExtensibleSaveFormat;
-#elif EC
-using EC.Core.ExtensibleSaveFormat;
+using Harmony;
+#else
+using HarmonyLib;
 #endif
 
 namespace UncensorSelector

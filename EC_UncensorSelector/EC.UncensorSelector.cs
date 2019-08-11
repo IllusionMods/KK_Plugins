@@ -8,8 +8,8 @@ namespace UncensorSelector
     /// <summary>
     /// Plugin for assigning uncensors to characters individually
     /// </summary>
-    [BepInDependency(EC.Core.Sideloader.Sideloader.GUID)]
-    [BepInDependency(EC.Core.ExtensibleSaveFormat.ExtendedSave.GUID)]
+    [BepInDependency(Sideloader.Sideloader.GUID)]
+    [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID)]
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     internal partial class UncensorSelector : BaseUnityPlugin

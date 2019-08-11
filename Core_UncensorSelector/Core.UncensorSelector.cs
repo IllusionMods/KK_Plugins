@@ -9,11 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using UniRx;
-#if KK
-using Sideloader;
-#elif EC
-using EC.Core.Sideloader;
-#endif
 
 namespace UncensorSelector
 {
@@ -249,11 +244,7 @@ namespace UncensorSelector
             BallsDictionary.Add(DefaultBalls.BallsGUID, DefaultBalls);
             BallsConfigListFull.Add(DefaultBalls.DisplayName, DefaultBalls.BallsGUID);
 
-#if KK
             var loadedManifests = Sideloader.Sideloader.LoadedManifests;
-#elif EC
-            var loadedManifests = Sideloader.LoadedManifests;
-#endif
 
             foreach (var manifest in loadedManifests)
             {

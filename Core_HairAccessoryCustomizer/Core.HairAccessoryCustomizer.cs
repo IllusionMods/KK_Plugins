@@ -1,10 +1,14 @@
 ﻿using BepInEx;
-using Harmony;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using UnityEngine.UI;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace HairAccessoryCustomizer
 {

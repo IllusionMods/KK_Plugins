@@ -48,16 +48,16 @@
       <HintPath>..\lib\EC\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="EC.Core.ExtensibleSaveFormat">
-      <HintPath>..\lib\EC\EC.Core.ExtensibleSaveFormat.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="EC.Core.Sideloader">
-      <HintPath>..\lib\EC\EC.Core.Sideloader.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="ECAPI">
       <HintPath>..\lib\EC\ECAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="EC_ExtensibleSaveFormat">
+      <HintPath>..\lib\EC\EC_ExtensibleSaveFormat.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="EC_Sideloader">
+      <HintPath>..\lib\EC\EC_Sideloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL">

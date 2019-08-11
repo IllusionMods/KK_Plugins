@@ -1,5 +1,9 @@
 ﻿using BepInEx;
+#if KK
 using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace ClothingUnlocker
 {

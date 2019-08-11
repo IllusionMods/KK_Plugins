@@ -5,7 +5,7 @@ using BepInEx.Logging;
 
 namespace InvisibleBody
 {
-    [BepInDependency(EC.Core.ExtensibleSaveFormat.ExtendedSave.GUID)]
+    [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class InvisibleBody
     {

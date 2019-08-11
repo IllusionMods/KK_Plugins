@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using Harmony;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -8,10 +7,11 @@ using System.Collections;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-#if KK
 using ExtensibleSaveFormat;
-#elif EC
-using EC.Core.ExtensibleSaveFormat;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
 #endif
 /// <summary>
 /// Sets the selected characters invisible in Studio. Invisible state saves and loads with the scene.

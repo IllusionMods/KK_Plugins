@@ -1,8 +1,12 @@
-﻿using Harmony;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using UniRx;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace UncensorSelector
 {

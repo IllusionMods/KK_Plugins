@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Harmony;
-using Harmony;
+using HarmonyLib;
 
 namespace Demosaic
 {

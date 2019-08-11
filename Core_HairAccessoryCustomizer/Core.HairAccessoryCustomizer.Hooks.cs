@@ -1,6 +1,10 @@
-﻿using Harmony;
-using KKAPI.Maker;
+﻿using KKAPI.Maker;
 using UnityEngine.UI;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace HairAccessoryCustomizer
 {

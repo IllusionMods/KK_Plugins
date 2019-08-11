@@ -1,9 +1,4 @@
-﻿#if KK
-using ExtensibleSaveFormat;
-#elif EC
-using EC.Core.ExtensibleSaveFormat;
-#endif
-using Harmony;
+﻿using ExtensibleSaveFormat;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -12,6 +7,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace HairAccessoryCustomizer
 {
