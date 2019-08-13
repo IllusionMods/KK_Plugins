@@ -648,15 +648,10 @@ namespace KK_MaterialEditor
                 foreach (var property in XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
                 {
                     string propertyName = property.Key;
+                    if (CheckBlacklist(objectType, propertyName)) continue;
+
                     if (property.Value.Type == ShaderPropertyType.Color)
                     {
-                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(propertyName))
-                            continue;
-                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(propertyName))
-                            continue;
-                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(propertyName))
-                            continue;
-
                         if (mat.HasProperty($"_{propertyName}"))
                         {
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
@@ -830,13 +825,6 @@ namespace KK_MaterialEditor
                     }
                     if (property.Value.Type == ShaderPropertyType.Texture)
                     {
-                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(propertyName))
-                            continue;
-                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(propertyName))
-                            continue;
-                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(propertyName))
-                            continue;
-
                         if (mat.HasProperty($"_{propertyName}"))
                         {
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
@@ -900,13 +888,6 @@ namespace KK_MaterialEditor
                     }
                     if (property.Value.Type == ShaderPropertyType.Float)
                     {
-                        if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(propertyName))
-                            continue;
-                        if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(propertyName))
-                            continue;
-                        if (objectType == ObjectType.Hair && HairBlacklist.Contains(propertyName))
-                            continue;
-
                         if (mat.HasProperty($"_{propertyName}"))
                         {
                             var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
@@ -1102,6 +1083,24 @@ namespace KK_MaterialEditor
         {
             "Color", "Color2", "Color3", "Color4", "HairGloss"
         };
+
+        public static HashSet<string> CharacterBlacklist = new HashSet<string>()
+        {
+            "alpha_a", "alpha_b"
+        };
+
+        public static bool CheckBlacklist(ObjectType objectType, string propertyName)
+        {
+            if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(propertyName))
+                return true;
+            if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(propertyName))
+                return true;
+            if (objectType == ObjectType.Hair && HairBlacklist.Contains(propertyName))
+                return true;
+            if (objectType == ObjectType.Character && CharacterBlacklist.Contains(propertyName))
+                return true;
+            return false;
+        }
 
         public enum RendererProperties
         {

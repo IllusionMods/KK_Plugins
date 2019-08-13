@@ -293,6 +293,7 @@ namespace KK_MaterialEditor
                 }
                 foreach (var property in MaterialFloatPropertyList)
                 {
+                    if (CheckBlacklist(property.ObjectType, property.Property)) continue;
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                         SetFloatProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
@@ -304,6 +305,7 @@ namespace KK_MaterialEditor
                 }
                 foreach (var property in MaterialColorPropertyList)
                 {
+                    if (CheckBlacklist(property.ObjectType, property.Property)) continue;
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                         SetColorProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Value, property.ObjectType);
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
@@ -315,6 +317,7 @@ namespace KK_MaterialEditor
                 }
                 foreach (var property in MaterialTexturePropertyList)
                 {
+                    if (CheckBlacklist(property.ObjectType, property.Property)) continue;
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                         SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[property.TexID]), property.ObjectType);
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
