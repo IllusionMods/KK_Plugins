@@ -32,7 +32,7 @@ namespace KK_MaterialEditor
         public static readonly string XMLPath = Path.Combine(Paths.PluginPath, nameof(KK_MaterialEditor));
 
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
-        internal static Dictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new Dictionary<string, Dictionary<string, ShaderPropertyData>>();
+        internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
         [DisplayName("Enable advanced editing")]
         [Category("Config")]

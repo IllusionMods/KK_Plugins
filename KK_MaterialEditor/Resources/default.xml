@@ -382,4 +382,38 @@
     <Property Name="RimPower" Type="Float" />
     <Property Name="rimV" Type="Float" />
   </Shader>
+  <Shader Name="Shader Forge/main_skin" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_skin">
+    <Property Name="AnimationMask" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="liquidmask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="Texture2" Type="Texture" />
+    <Property Name="Texture3" Type="Texture" />
+    <Property Name="LiquidTiling" Type="Color" />
+    <Property Name="overcolor1" Type="Color" />
+    <Property Name="overcolor2" Type="Color" />
+    <Property Name="overcolor3" Type="Color" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="alpha_a" Type="Float" />
+    <Property Name="alpha_b" Type="Float" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="linetexon" Type="Float" />
+    <Property Name="liquidbbot" Type="Float" />
+    <Property Name="liquidbtop" Type="Float" />
+    <Property Name="liquidface" Type="Float" />
+    <Property Name="liquidfbot" Type="Float" />
+    <Property Name="liquidftop" Type="Float" />
+    <Property Name="nip" Type="Float" />
+    <Property Name="nipsize" Type="Float" />
+    <Property Name="notusetexspecular" Type="Float" />
+    <Property Name="RimPower" Type="Float" />
+    <Property Name="rimpower" Type="Float" />
+    <Property Name="rimV" Type="Float" />
+    <Property Name="ShadowExtend" Type="Float" />
+    <Property Name="SpeclarHeight" Type="Float" />
+    <Property Name="SpecularPower" Type="Float" />
+    <Property Name="SpecularPowerNail" Type="Float" />
+  </Shader>
 </KK_MaterialEditor>
