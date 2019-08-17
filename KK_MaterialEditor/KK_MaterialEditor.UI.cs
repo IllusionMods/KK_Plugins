@@ -213,7 +213,7 @@ namespace KK_MaterialEditor
                     labelRenderer2.alignment = TextAnchor.MiddleRight;
                     labelRenderer2.color = Color.black;
                     var labelRenderer2LE = labelRenderer2.gameObject.AddComponent<LayoutElement>();
-                    labelRenderer2LE.preferredWidth = 250;
+                    labelRenderer2LE.preferredWidth = 200;
                     labelRenderer2LE.flexibleWidth = 0;
 
                     var exportUVButton = UIUtility.CreateButton("ExportUVButton", contentListHeader.transform, "Export UV Map");
@@ -222,11 +222,11 @@ namespace KK_MaterialEditor
                     exportUVButtonLE.preferredWidth = 110;
                     exportUVButtonLE.flexibleWidth = 0;
 
-                    //var exportMeshButton = UIUtility.CreateButton("ExportUVButton", contentListHeader.transform, "Export .obj");
-                    //exportMeshButton.onClick.AddListener(() => { Export.ExportObj(rend); });
-                    //var exportMeshButtonLE = exportMeshButton.gameObject.AddComponent<LayoutElement>();
-                    //exportMeshButtonLE.preferredWidth = 110;
-                    //exportMeshButtonLE.flexibleWidth = 0;
+                    var exportMeshButton = UIUtility.CreateButton("ExportUVButton", contentListHeader.transform, "Export .obj");
+                    exportMeshButton.onClick.AddListener(() => { Export.ExportObj(rend); });
+                    var exportMeshButtonLE = exportMeshButton.gameObject.AddComponent<LayoutElement>();
+                    exportMeshButtonLE.preferredWidth = 85;
+                    exportMeshButtonLE.flexibleWidth = 0;
 
                     var contentItem1 = UIUtility.CreatePanel("ContentItem1", MaterialEditorWindow.content.transform);
                     contentItem1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
