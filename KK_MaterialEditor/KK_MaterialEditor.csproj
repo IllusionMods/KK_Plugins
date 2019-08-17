@@ -80,9 +80,11 @@
   <ItemGroup>
     <Compile Include="KK_MaterialEditor.CharaController.cs" />
     <Compile Include="KK_MaterialEditor.cs" />
+    <Compile Include="KK_MaterialEditor.Export.UV.cs" />
     <Compile Include="KK_MaterialEditor.Hooks.cs" />
     <Compile Include="KK_MaterialEditor.SceneController.cs" />
     <Compile Include="KK_MaterialEditor.UI.cs" />
+    <Compile Include="KK_MaterialEditor.Export.Obj.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
