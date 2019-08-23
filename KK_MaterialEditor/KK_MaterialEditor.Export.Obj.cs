@@ -38,19 +38,21 @@ namespace KK_MaterialEditor
 
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("g ").Append(rend.name).Append("\n");
-
-                foreach (Vector3 v in mesh.vertices)
-                    sb.Append(string.Format("v {0:0.000000} {1:0.000000} {2:0.000000}\n", -v.x, v.y, v.z));
-
-                foreach (Vector3 v in mesh.uv)
-                    sb.Append(string.Format("vt {0:0.000000} {1:0.000000}\n", v.x, v.y));
-
-                foreach (Vector3 v in mesh.normals)
-                    sb.Append(string.Format("vn {0:0.000000} {1:0.000000} {2:0.000000}\n", -v.x, v.y, v.z));
-
                 for (int x = 0; x < mesh.subMeshCount; x++)
                 {
+                    Mesh subMesh = mesh.Submesh(x);
+
+                    sb.Append("g ").Append($"{rend.NameFormatted()}_{x}").Append("\n");
+
+                    foreach (Vector3 v in subMesh.vertices)
+                        sb.Append(string.Format("v {0:0.000000} {1:0.000000} {2:0.000000}\n", -v.x, v.y, v.z));
+
+                    foreach (Vector3 v in subMesh.uv)
+                        sb.Append(string.Format("vt {0:0.000000} {1:0.000000}\n", v.x, v.y));
+
+                    foreach (Vector3 v in subMesh.normals)
+                        sb.Append(string.Format("vn {0:0.000000} {1:0.000000} {2:0.000000}\n", -v.x, v.y, v.z));
+
                     int[] triangles = mesh.GetTriangles(x);
                     for (int i = 0; i < triangles.Length; i += 3)
                         sb.Append(string.Format("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", triangles[i] + 1, triangles[i + 2] + 1, triangles[i + 1] + 1));
