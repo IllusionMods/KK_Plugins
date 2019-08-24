@@ -26,7 +26,7 @@ namespace KK_MaterialEditor
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "1.5";
+        public const string Version = "1.5.1";
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
         public static readonly string XMLPath = Path.Combine(Paths.PluginPath, nameof(KK_MaterialEditor));
