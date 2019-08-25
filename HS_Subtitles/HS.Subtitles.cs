@@ -15,7 +15,7 @@ namespace Subtitles
         public const string PluginNameInternal = "HS_Subtitles";
 
         private static ManualLogSource _logsource;
-        private readonly string XMLPath = Paths.PluginPath + $@"\HS_Plugins\{PluginNameInternal}";
+        private readonly string XMLPath = Paths.BepInExRootPath + $@"\Translation\{PluginNameInternal}";
 
         #region ConfigMgr
         public static ConfigWrapper<bool> showSubtitles { get; private set; }
