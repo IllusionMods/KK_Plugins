@@ -29,6 +29,9 @@ namespace KK_Plugins
 
         private void Awake()
         {
+#if HS
+            if (Application.productName != "HoneySelect") return;
+#endif
             Logger = base.Logger;
 
             ShowSubtitles = Config.GetSetting("Config", "Show Untranslated Text", true, new ConfigDescription("Whether or not to show untranslated text."));
