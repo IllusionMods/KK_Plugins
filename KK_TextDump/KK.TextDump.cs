@@ -14,7 +14,7 @@ namespace KK_Plugins
     /// </summary>
     [BepInProcess("CharaStudio")]
     [BepInPlugin(GUID, PluginName, Version)]
-    public class KK_TextDump : BaseUnityPlugin
+    public class TextDump : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.textdump";
         public const string PluginName = "KK_TextDump";

@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KK_TextDump")]
-[assembly: AssemblyDescription("Text Dump for Koikatsu")]
+[assembly: AssemblyTitle("HS_TextDump")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("https://github.com/DeathWeasel1337/KK_Plugins")]
-[assembly: AssemblyProduct("KK_TextDump")]
-[assembly: AssemblyCopyright("Copyright © DeathWeasel1337 2019")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("HS_TextDump")]
+[assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("98b3ad67-6608-420f-a3a4-d1abd9402905")]
+[assembly: Guid("4d019b66-3042-4abb-81a1-fc72d61844e5")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -31,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(KK_Plugins.TextDump.Version)]
-[assembly: AssemblyFileVersion(KK_Plugins.TextDump.Version)]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
