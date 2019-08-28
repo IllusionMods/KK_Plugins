@@ -1,10 +1,11 @@
 ﻿using BepInEx;
-using Harmony;
+using BepInEx.Configuration;
+using BepInEx.Harmony;
+using HarmonyLib;
 using System;
 using System.Collections;
-using System.ComponentModel;
 
-namespace KK_ForceHighPoly
+namespace KK_Plugins
 {
     /// <summary>
     /// Replaces all _low assets with normal assets, forcing everything to load as high poly
@@ -16,16 +17,14 @@ namespace KK_ForceHighPoly
         public const string PluginName = "Force High Poly";
         public const string PluginNameInternal = "KK_ForceHighPoly";
         public const string Version = "1.2";
-        [Category("Settings")]
-        [DisplayName("High poly mode")]
-        [Description("Whether or not to load high poly assets. May require exiting to main menu to take effect.")]
+
         public static ConfigWrapper<bool> Enabled { get; private set; }
 
         private void Main()
         {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_ForceHighPoly));
-            Enabled = new ConfigWrapper<bool>("Enabled", PluginNameInternal, true);
+            Enabled = Config.GetSetting("Config", "High poly mode", true, new ConfigDescription("Whether or not to load high poly assets. May require exiting to main menu to take effect."));
+
+            HarmonyWrapper.PatchAll(typeof(KK_ForceHighPoly));
         }
 
         [HarmonyPrefix]

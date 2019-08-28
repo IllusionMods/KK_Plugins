@@ -1,12 +1,8 @@
-﻿using KKAPI.Maker;
+﻿using HarmonyLib;
+using KKAPI.Maker;
 using UnityEngine.UI;
-#if KK
-using Harmony;
-#else
-using HarmonyLib;
-#endif
 
-namespace HairAccessoryCustomizer
+namespace KK_Plugins
 {
     internal partial class Hooks
     {

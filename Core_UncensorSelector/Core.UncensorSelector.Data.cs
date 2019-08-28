@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace UncensorSelector
+namespace KK_Plugins
 {
     internal partial class UncensorSelector
     {

@@ -1,5 +1,6 @@
 ﻿using BepInEx;
-using Harmony;
+using BepInEx.Harmony;
+using HarmonyLib;
 using Studio;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,7 @@ using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace KK_PoseFolders
+namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_PoseFolders : BaseUnityPlugin
@@ -29,8 +30,7 @@ namespace KK_PoseFolders
         private void Main()
         {
             if (!CurrentDirectory.Exists) CurrentDirectory.Create();
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_PoseFolders));
+            HarmonyWrapper.PatchAll(typeof(KK_PoseFolders));
         }
 
         private static string GetFolder()

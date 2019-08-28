@@ -1,12 +1,13 @@
 ﻿using BepInEx;
-using Harmony;
+using BepInEx.Harmony;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using Studio;
 using System.Collections;
 using UnityEngine;
 
-namespace KK_MaleJuice
+namespace KK_Plugins
 {
     /// <summary>
     /// Enables juice textures for male characters
@@ -30,14 +31,14 @@ namespace KK_MaleJuice
             }
             catch
             {
-                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Error, $"[{nameof(KK_MaleJuice)}] Could not load juice textures.");
+                Logger.LogError($"[{nameof(KK_MaleJuice)}] Could not load juice textures.");
             }
 
             if (LiquidMask == null)
                 return;
 
             CharacterApi.RegisterExtraBehaviour<MaleJuiceCharaController>(GUID);
-            HarmonyInstance.Create(GUID).PatchAll(typeof(KK_MaleJuice));
+            HarmonyWrapper.PatchAll(typeof(KK_MaleJuice));
         }
 
         public class MaleJuiceCharaController : CharaCustomFunctionController

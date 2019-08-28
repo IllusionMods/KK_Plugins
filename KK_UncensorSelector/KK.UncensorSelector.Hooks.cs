@@ -1,10 +1,10 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using UniRx;
 
-namespace UncensorSelector
+namespace KK_Plugins
 {
     internal partial class Hooks
     {

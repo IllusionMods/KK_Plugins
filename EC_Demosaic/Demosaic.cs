@@ -3,7 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Harmony;
 using HarmonyLib;
 
-namespace Demosaic
+namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
     public class Demosaic : BaseUnityPlugin
@@ -18,7 +18,7 @@ namespace Demosaic
 
         private void Main()
         {
-            Enabled = Config.Wrap("Settings", "Enabled", "Whether the plugin is enabled", true);
+            Enabled = Config.GetSetting("Settings", "Enabled", true, new ConfigDescription("Whether the plugin is enabled"));
             Enabled.SettingChanged += Enabled_SettingChanged;
             _enabled = Enabled.Value;
             HarmonyWrapper.PatchAll(typeof(Demosaic));

@@ -1,10 +1,7 @@
-﻿using CommonCode;
-using Harmony;
+﻿using HarmonyLib;
 using Studio;
-using UnityEngine.UI;
-using System.Collections.Generic;
 
-namespace KK_MaterialEditor
+namespace KK_Plugins
 {
     internal class Hooks
     {

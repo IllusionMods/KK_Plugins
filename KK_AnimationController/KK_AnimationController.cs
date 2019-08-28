@@ -1,8 +1,9 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using ExtensionMethods;
-using Harmony;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Studio;
@@ -15,15 +16,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using Logger = BepInEx.Logger;
 
-namespace KK_AnimationController
+namespace KK_Plugins
 {
     /// <summary>
     /// Allows attaching IK nodes to objects to create custom animations
     /// </summary>
     [BepInProcess("CharaStudio")]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_AnimationController : BaseUnityPlugin
     {
@@ -31,23 +31,27 @@ namespace KK_AnimationController
         public const string PluginNameInternal = nameof(KK_AnimationController);
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
         public const string Version = "2.1";
-        public static SavedKeyboardShortcut AnimationControllerHotkey { get; private set; }
+        internal static new ManualLogSource Logger;
         private bool GUIVisible = false;
         private int SelectedGuideObject = 0;
         private static readonly string[] IKGuideObjectsPretty = new string[] { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot", "Eyes", "Neck" };
         private static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
         private Rect AnimGUI = new Rect(70, 190, 200, 400);
 
+        public static ConfigWrapper<KeyboardShortcut> AnimationControllerHotkey { get; private set; }
+
+
         private void Main()
         {
-            AnimationControllerHotkey = new SavedKeyboardShortcut(nameof(AnimationControllerHotkey), nameof(KK_AnimationController), new KeyboardShortcut(KeyCode.Minus));
+            Logger = base.Logger;
+            AnimationControllerHotkey = Config.GetSetting("Keyboard Shortcuts", "Toggle Animation Controller Window", new KeyboardShortcut(KeyCode.Minus), new ConfigDescription("Show or hide the Animation Controller window in Studio"));
             CharacterApi.RegisterExtraBehaviour<AnimationControllerCharaController>(GUID);
             StudioSaveLoadApi.RegisterExtraBehaviour<AnimationControllerSceneController>(GUID);
         }
 
         private void Update()
         {
-            if (AnimationControllerHotkey.IsDown())
+            if (AnimationControllerHotkey.Value.IsDown())
                 GUIVisible = !GUIVisible;
         }
         /// <summary>

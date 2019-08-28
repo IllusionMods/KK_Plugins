@@ -1,9 +1,10 @@
 ﻿using BepInEx;
+using BepInEx.Harmony;
 using BepInEx.Logging;
 using ChaCustom;
-using CommonCode;
+using KK_Plugins.CommonCode;
 using ExtensibleSaveFormat;
-using Harmony;
+using HarmonyLib;
 using System;
 using System.IO;
 using System.Reflection;
@@ -11,7 +12,7 @@ using System.Threading;
 using UnityEngine.SceneManagement;
 using Timer = System.Timers.Timer;
 
-namespace KK_ReloadCharaListOnChange
+namespace KK_Plugins
 {
     /// <summary>
     /// Watches the character folders for changes and updates the character/coordinate list in the chara maker and studio.
@@ -24,6 +25,7 @@ namespace KK_ReloadCharaListOnChange
         public const string GUID = "com.deathweasel.bepinex.reloadcharalistonchange";
         public const string PluginName = "Reload Character List On Change";
         public const string Version = "1.5.1";
+        internal static new ManualLogSource Logger;
         private static FileSystemWatcher CharacterCardWatcher;
         private static FileSystemWatcher CoordinateCardWatcher;
         private static FileSystemWatcher StudioFemaleCardWatcher;
@@ -43,6 +45,8 @@ namespace KK_ReloadCharaListOnChange
 
         public void Main()
         {
+            Logger = base.Logger;
+
             //KK Party may not have these directories when first run, create them to avoid errors
             Directory.CreateDirectory(CC.Paths.FemaleCardPath);
             Directory.CreateDirectory(CC.Paths.MaleCardPath);
@@ -50,8 +54,7 @@ namespace KK_ReloadCharaListOnChange
 
             SceneManager.sceneUnloaded += SceneUnloaded;
 
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_ReloadCharaListOnChange));
+            var harmony = HarmonyWrapper.PatchAll(typeof(KK_ReloadCharaListOnChange));
             harmony.Patch(typeof(Studio.MPCharCtrl).GetNestedType("CostumeInfo", BindingFlags.NonPublic).GetMethod("InitFileList", AccessTools.all),
                           new HarmonyMethod(typeof(KK_ReloadCharaListOnChange).GetMethod(nameof(StudioCoordinateListPrefix), AccessTools.all)), null);
         }

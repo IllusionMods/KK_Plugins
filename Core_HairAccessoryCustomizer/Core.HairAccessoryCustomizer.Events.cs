@@ -2,7 +2,7 @@
 using KKAPI.Maker.UI;
 using UnityEngine;
 
-namespace HairAccessoryCustomizer
+namespace KK_Plugins
 {
     public partial class HairAccessoryCustomizer
     {

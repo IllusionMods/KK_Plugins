@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(Demosaic.Demosaic.Version)]
-[assembly: AssemblyFileVersion(Demosaic.Demosaic.Version)]
+[assembly: AssemblyVersion(KK_Plugins.Demosaic.Version)]
+[assembly: AssemblyFileVersion(KK_Plugins.Demosaic.Version)]

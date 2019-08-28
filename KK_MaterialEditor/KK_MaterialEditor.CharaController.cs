@@ -11,9 +11,8 @@ using System.IO;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using CommonCode;
 
-namespace KK_MaterialEditor
+namespace KK_Plugins
 {
     public partial class KK_MaterialEditor
     {
@@ -146,7 +145,7 @@ namespace KK_MaterialEditor
                 }
                 catch
                 {
-                    BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message, "Failed to load texture.");
+                    Logger.Log(BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message, "Failed to load texture.");
                 }
                 finally
                 {
@@ -621,7 +620,7 @@ namespace KK_MaterialEditor
             }
             public void RemoveMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property)
             {
-                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Message, "Save and reload character or change outfits to refresh textures.");
+                Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
                 MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
             }
 

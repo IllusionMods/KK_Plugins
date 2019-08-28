@@ -1,10 +1,11 @@
 ﻿using BepInEx;
-using Harmony;
+using BepInEx.Harmony;
+using HarmonyLib;
 using Studio;
 using System.Linq;
 using UnityEngine.UI;
 
-namespace KK_AnimationOverdrive
+namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_AnimationOverdrive : BaseUnityPlugin
@@ -13,11 +14,7 @@ namespace KK_AnimationOverdrive
         public const string PluginName = "Animation Overdrive";
         public const string Version = "1.0";
 
-        private void Main()
-        {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_AnimationOverdrive));
-        }
+        private void Main() => HarmonyWrapper.PatchAll(typeof(KK_AnimationOverdrive));
         /// <summary>
         /// Copy/paste decompiled code in to the prefix, return false. 10/10 programing skills
         /// </summary>

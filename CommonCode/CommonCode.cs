@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using UnityEngine;
 
-namespace CommonCode
+namespace KK_Plugins.CommonCode
 {
     internal class CC
     {
@@ -83,12 +83,6 @@ namespace CommonCode
             [DllImport("shell32.dll")]
             private static extern void ILFree(IntPtr pidl);
         }
-
-        internal static void Log(string text) => BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, text);
-        internal static void Log(BepInEx.Logging.LogLevel level, string text) => BepInEx.Logger.Log(level, text);
-        internal static void Log(object text) => BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Info, text?.ToString());
-        internal static void Log(BepInEx.Logging.LogLevel level, object text) => BepInEx.Logger.Log(level, text?.ToString());
-        internal static void StackTrace() => Log(new System.Diagnostics.StackTrace());
 
         internal static class Paths
         {

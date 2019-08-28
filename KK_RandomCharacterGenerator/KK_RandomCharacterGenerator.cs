@@ -1,6 +1,7 @@
 ﻿using BepInEx;
+using BepInEx.Harmony;
 using ChaCustom;
-using Harmony;
+using HarmonyLib;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using Manager;
@@ -12,11 +13,12 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-/// <summary>
-/// Generates random characters in the character maker
-/// </summary>
-namespace KK_RandomCharacterGenerator
+
+namespace KK_Plugins
 {
+    /// <summary>
+    /// Generates random characters in the character maker
+    /// </summary>
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_RandomCharacterGenerator : BaseUnityPlugin
@@ -33,9 +35,6 @@ namespace KK_RandomCharacterGenerator
 
         private void Main()
         {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_RandomCharacterGenerator));
-
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerExiting += (s, e) => CharacterSliderTemplate = new Dictionary<string, float>();
 
@@ -52,6 +51,8 @@ namespace KK_RandomCharacterGenerator
                     CharaMakerSliders.Add(new CharaMakerSlider(type, sliders));
                 }
             }
+
+            HarmonyWrapper.PatchAll(typeof(KK_RandomCharacterGenerator));
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
@@ -92,7 +93,7 @@ namespace KK_RandomCharacterGenerator
 
             foreach (var target in CharaMakerSliders)
             {
-                var cvsInstances = sceneObjects.SelectMany(x => x.GetComponentsInChildren(target.Type));
+                var cvsInstances = sceneObjects.SelectMany(x => x.GetComponentsInChildren(target.Type, true));
 
                 foreach (var cvs in cvsInstances.Where(x => x.name != "ShapeTop"))
                 {

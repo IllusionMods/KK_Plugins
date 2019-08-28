@@ -1,9 +1,10 @@
 ﻿using BepInEx;
-using Harmony;
+using BepInEx.Harmony;
+using HarmonyLib;
 using Illusion.Game;
 using UnityEngine.SceneManagement;
 
-namespace KK_StudioSceneLoadedSound
+namespace KK_Plugins
 {
     /// <summary>
     /// When a Studio scene is loaded or imported, play a sound
@@ -18,10 +19,8 @@ namespace KK_StudioSceneLoadedSound
 
         private void Main()
         {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_StudioSceneLoadedSound));
-            //Add our own method to the sceneLoaded event
             SceneManager.sceneLoaded += SceneLoaded;
+            HarmonyWrapper.PatchAll(typeof(KK_StudioSceneLoadedSound));
         }
         /// <summary>
         /// When the StudioNotification scene loads check if load or import was clicked previously and play a sound

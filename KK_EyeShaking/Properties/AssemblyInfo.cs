@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(KK_EyeShaking.KK_EyeShaking.Version)]
-[assembly: AssemblyFileVersion(KK_EyeShaking.KK_EyeShaking.Version)]
+[assembly: AssemblyVersion(KK_Plugins.KK_EyeShaking.Version)]
+[assembly: AssemblyFileVersion(KK_Plugins.KK_EyeShaking.Version)]

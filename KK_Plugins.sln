@@ -47,8 +47,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_RandomCharacterGenerator
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_PoseFolders", "KK_PoseFolders\KK_PoseFolders.csproj", "{4F27E216-A311-469C-891A-8E57F330A68F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_BodyShaders", "KK_BodyShaders\KK_BodyShaders.csproj", "{09DAFA76-0D44-4C62-9D60-9A78F1214B9E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ListOverride", "KK_ListOverride\KK_ListOverride.csproj", "{F609A9F5-E889-4729-9982-5E08FEBBF53E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_HairAccessoryCustomizer", "EC_HairAccessoryCustomizer\EC_HairAccessoryCustomizer.csproj", "{89FE73CD-0973-4E53-A29A-634C5926D7A1}"
@@ -216,10 +214,6 @@ Global
 		{4F27E216-A311-469C-891A-8E57F330A68F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F27E216-A311-469C-891A-8E57F330A68F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F27E216-A311-469C-891A-8E57F330A68F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{09DAFA76-0D44-4C62-9D60-9A78F1214B9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{09DAFA76-0D44-4C62-9D60-9A78F1214B9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{09DAFA76-0D44-4C62-9D60-9A78F1214B9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{09DAFA76-0D44-4C62-9D60-9A78F1214B9E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F609A9F5-E889-4729-9982-5E08FEBBF53E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F609A9F5-E889-4729-9982-5E08FEBBF53E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F609A9F5-E889-4729-9982-5E08FEBBF53E}.Release|Any CPU.ActiveCfg = Release|Any CPU

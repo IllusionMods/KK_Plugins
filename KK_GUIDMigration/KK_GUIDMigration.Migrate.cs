@@ -3,9 +3,8 @@ using Sideloader.AutoResolver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Logger = BepInEx.Logger;
 
-namespace KK_GUIDMigration
+namespace KK_Plugins
 {
     /// <summary>
     /// In it's own class to prevent type load exceptions when trying to load the plugin without Sideloader
@@ -33,9 +32,9 @@ namespace KK_GUIDMigration
                         if (!DidBlankGUIDMessage) //No need to spam it for every single thing
                         {
                             if (characterName == "")
-                                Logger.Log(LogLevel.Warning | LogLevel.Message, $"Blank GUID detected, attempting Compatibility Resolve");
+                                KK_GUIDMigration.Logger.Log(LogLevel.Warning | LogLevel.Message, $"Blank GUID detected, attempting Compatibility Resolve");
                             else
-                                Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{characterName}] Blank GUID detected, attempting Compatibility Resolve");
+                                KK_GUIDMigration.Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{characterName}] Blank GUID detected, attempting Compatibility Resolve");
                             DidBlankGUIDMessage = true;
                         }
                     }
@@ -66,7 +65,7 @@ namespace KK_GUIDMigration
                                 //We do not have the old mod installed, do migration. Whether we have the new mod is irrelevant.
                                 //If we don't have the new mod the user will get a missing mod warning for the new mod since they should be using that instead.
                                 //If we do it will load correctly.
-                                Logger.Log(LogLevel.Info, $"Migrating GUID {info.OldGUID} -> {info.NewGUID}");
+                                KK_GUIDMigration.Logger.Log(LogLevel.Info, $"Migrating GUID {info.OldGUID} -> {info.NewGUID}");
                                 ResolveInfo resolveInfoNew = new ResolveInfo();
                                 resolveInfoNew = resolveInfo;
                                 resolveInfoNew.GUID = info.NewGUID;
@@ -84,7 +83,7 @@ namespace KK_GUIDMigration
                                 else
                                 {
                                     //We have the old mod and the new, do migration so characters save with the new stuff
-                                    Logger.Log(LogLevel.Info, $"Migrating GUID {info.OldGUID} -> {info.NewGUID}");
+                                    KK_GUIDMigration.Logger.Log(LogLevel.Info, $"Migrating GUID {info.OldGUID} -> {info.NewGUID}");
                                     ResolveInfo resolveInfoNew = new ResolveInfo();
                                     resolveInfoNew = resolveInfo;
                                     resolveInfoNew.GUID = info.NewGUID;
@@ -105,7 +104,7 @@ namespace KK_GUIDMigration
                                 //We do not have the old mod installed, do migration. Whether we have the new mod is irrelevant.
                                 //If we don't have the new mod the user will get a missing mod warning for the new mod since they should be using that instead.
                                 //If we do it will load correctly.
-                                Logger.Log(LogLevel.Info, $"Migrating {info.OldGUID}:{info.OldID} -> {info.NewGUID}:{info.NewID}");
+                                KK_GUIDMigration.Logger.Log(LogLevel.Info, $"Migrating {info.OldGUID}:{info.OldID} -> {info.NewGUID}:{info.NewID}");
                                 ResolveInfo resolveInfoNew = new ResolveInfo();
                                 resolveInfoNew = resolveInfo;
                                 resolveInfoNew.GUID = info.NewGUID;
@@ -124,7 +123,7 @@ namespace KK_GUIDMigration
                                 else
                                 {
                                     //We have the old mod and the new, do migration so characters save with the new stuff
-                                    Logger.Log(LogLevel.Info, $"Migrating {info.OldGUID}:{info.OldID} -> {info.NewGUID}:{info.NewID}");
+                                    KK_GUIDMigration.Logger.Log(LogLevel.Info, $"Migrating {info.OldGUID}:{info.OldID} -> {info.NewGUID}:{info.NewID}");
                                     ResolveInfo b = new ResolveInfo();
                                     b = resolveInfo;
                                     b.GUID = info.NewGUID;
@@ -140,7 +139,7 @@ namespace KK_GUIDMigration
             catch (Exception ex)
             {
                 //If something goes horribly wrong, return the original extInfo
-                Logger.Log(LogLevel.Error, $"GUID migration cancelled due to error: {ex}");
+                KK_GUIDMigration.Logger.Log(LogLevel.Error, $"GUID migration cancelled due to error: {ex}");
                 return extInfo;
             }
 

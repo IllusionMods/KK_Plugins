@@ -1,14 +1,17 @@
 ﻿using HarmonyLib;
 
-namespace Subtitles
+namespace KK_Plugins
 {
-    internal static class Hooks
+    public partial class Subtitles
     {
-        [HarmonyPostfix, HarmonyPatch(typeof(LoadAudioBase), "Play")]
-        public static void PlayVoice(LoadAudioBase __instance)
+        internal static class Hooks
         {
-            if (Subtitles.SubtitleDictionary.TryGetValue(__instance.assetName, out string text))
-                Caption.DisplaySubtitle(__instance, text);
+            [HarmonyPostfix, HarmonyPatch(typeof(LoadAudioBase), "Play")]
+            public static void PlayVoice(LoadAudioBase __instance)
+            {
+                if (SubtitleDictionary.TryGetValue(__instance.assetName, out string text))
+                    Caption.DisplaySubtitle(__instance, text);
+            }
         }
     }
 }

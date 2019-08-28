@@ -3,15 +3,16 @@
 // Done programatically, so it works on any skeleton and can adapt to tit sizes
 // Ported from Patchwork
 using BepInEx;
-using Harmony;
+using BepInEx.Configuration;
+using BepInEx.Harmony;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using static ChaFileDefine;
 
-namespace KK_Colliders
+namespace KK_Plugins
 {
     [BepInDependency(KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
@@ -22,21 +23,16 @@ namespace KK_Colliders
         public const string PluginNameInternal = "KK_Colliders";
         public const string Version = "1.0";
 
-        [DisplayName("Breast Colliders")]
-        [Category("Config")]
         public static ConfigWrapper<bool> BreastColliders { get; private set; }
-        [DisplayName("Skirt Colliders")]
-        [Category("Config")]
         public static ConfigWrapper<bool> SkirtColliders { get; private set; }
 
         private void Main()
         {
             CharacterApi.RegisterExtraBehaviour<ColliderController>("com.deathweasel.bepinex.colliders");
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_Colliders));
+            HarmonyWrapper.PatchAll(typeof(KK_Colliders));
 
-            BreastColliders = new ConfigWrapper<bool>("BreastColliders", PluginNameInternal, true);
-            SkirtColliders = new ConfigWrapper<bool>("SkirtColliders", PluginNameInternal, true);
+            BreastColliders = Config.GetSetting("Config", "Breast Colliders", true, new ConfigDescription("Whether breast colliders are enabled. Makes breasts interact and collide with arms, hands, etc."));
+            SkirtColliders = Config.GetSetting("Config", "Skirt Colliders", true, new ConfigDescription("Whether breast colliders are enabled. Makes breasts interact and collide with legs, hands, etc."));
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload))]

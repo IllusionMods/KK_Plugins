@@ -2,7 +2,7 @@
 using Studio;
 using UnityEngine;
 
-namespace KK_FKIK
+namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_FKIK : BaseUnityPlugin

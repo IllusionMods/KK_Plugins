@@ -1,4 +1,4 @@
-﻿using CommonCode;
+﻿using KK_Plugins.CommonCode;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using Studio;
@@ -10,7 +10,7 @@ using UILib;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace KK_MaterialEditor
+namespace KK_Plugins
 {
     public partial class KK_MaterialEditor
     {
@@ -54,7 +54,7 @@ namespace KK_MaterialEditor
 
         private void InitUI()
         {
-            UIUtility.Init(nameof(KK_MaterialEditor));
+            UIUtility.Init(nameof(KK_Plugins));
 
             float marginSize = 5f;
             float headerSize = 20f;
@@ -497,7 +497,7 @@ namespace KK_MaterialEditor
                                     PopulateList(go, objectType, id, chaControl, coordinateIndex, slot, body: body, face: face);
                             }
                             else
-                                BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Message, "Save and reload to refresh shader.");
+                                Logger.LogMessage("Save and reload to refresh shader.");
                         }
                         else
                         {
@@ -577,7 +577,7 @@ namespace KK_MaterialEditor
                                 PopulateList(go, objectType, id, chaControl, coordinateIndex, slot, body: body, face: face);
                         }
                         else
-                            BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Message, "Save and reload to refresh shader.");
+                            Logger.LogMessage("Save and reload to refresh shader.");
                     });
                     var resetShaderLE = resetShader.gameObject.AddComponent<LayoutElement>();
                     resetShaderLE.preferredWidth = resetButtonWidth;
@@ -992,13 +992,13 @@ namespace KK_MaterialEditor
             var tex = mat.GetTexture($"_{property}");
             string filename = Path.Combine(ExportPath, $"_Export_{System.DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{mat.NameFormatted()}_{property}.png");
             SaveTex(tex, filename);
-            CC.Log($"Exported {filename}");
+            Logger.LogInfo($"Exported {filename}");
             CC.OpenFileInExplorer(filename);
         }
 
         private byte[] LoadIcon()
         {
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_MaterialEditor)}.Resources.MaterialEditorIcon.png"))
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.MaterialEditorIcon.png"))
             {
                 byte[] bytesInStream = new byte[stream.Length];
                 stream.Read(bytesInStream, 0, bytesInStream.Length);

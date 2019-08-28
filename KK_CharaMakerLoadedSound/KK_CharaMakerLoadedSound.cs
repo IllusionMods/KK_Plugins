@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using Illusion.Game;
 
-namespace KK_CharaMakerLoadedSound
+namespace KK_Plugins
 {
     /// <summary>
     /// When Chara Maker starts, wait a bit for lag to stop then play a sound

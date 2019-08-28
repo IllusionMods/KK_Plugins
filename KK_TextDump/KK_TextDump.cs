@@ -5,10 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using Logger = BepInEx.Logger;
 using Object = UnityEngine.Object;
 
-namespace KK_TextDump
+namespace KK_Plugins
 {
     /// <summary>
     /// Dumps untranslated text to .txt files

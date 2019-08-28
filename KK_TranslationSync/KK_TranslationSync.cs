@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using Logger = BepInEx.Logger;
 
-namespace KK_TranslationSync
+namespace KK_Plugins
 {
     /// <summary>
     /// Copies translations from one .txt file to another for the same personality
@@ -21,12 +21,12 @@ namespace KK_TranslationSync
         public const string PluginNameInternal = "KK_TranslationSync";
         public const string Version = "1.2";
         public static ConfigWrapper<string> Personality { get; private set; }
-        public static SavedKeyboardShortcut TranslationSyncHotkey { get; private set; }
+        public static ConfigWrapper<KeyboardShortcut> TranslationSyncHotkey { get; private set; }
 
         private void Main()
         {
-            Personality = new ConfigWrapper<string>("Personality", PluginNameInternal, "c00");
-            TranslationSyncHotkey = new SavedKeyboardShortcut(PluginNameInternal, PluginNameInternal, new KeyboardShortcut(KeyCode.Alpha0));
+            Personality = Config.GetSetting("Config", "Personality", "c00", new ConfigDescription("Personality to sync"));
+            TranslationSyncHotkey = Config.GetSetting("Keyboard Shortcuts", "Sync Translation Hotkey", new KeyboardShortcut(KeyCode.Alpha0), new ConfigDescription("Press to sync translations for the specified personality. Hold alt to force overwrite all translations if different (dangerous, make backups first). Hold ctrl to sync all translations for all personalities (may take a while)."));
         }
 
         private void Update()
@@ -38,15 +38,7 @@ namespace KK_TranslationSync
                 SyncTLs(TLType.H, true);
                 Logger.Log(LogLevel.Info, "Sync complete.");
             }
-            else if (TranslationSyncHotkey.IsDown())
-            {
-                //CountText();
-                SyncTLs(TLType.Scenario);
-                SyncTLs(TLType.Communication);
-                SyncTLs(TLType.H);
-                Logger.Log(LogLevel.Info, "Sync complete.");
-            }
-            if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKey(TranslationSyncHotkey.Value.MainKey))
+            else if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKey(TranslationSyncHotkey.Value.MainKey))
             {
                 for (int i = 0; i <= 37; i++)
                 {
@@ -64,6 +56,15 @@ namespace KK_TranslationSync
                 }
                 Logger.Log(LogLevel.Info, "Sync complete.");
             }
+            else if (TranslationSyncHotkey.Value.IsDown())
+            {
+                //CountText();
+                SyncTLs(TLType.Scenario);
+                SyncTLs(TLType.Communication);
+                SyncTLs(TLType.H);
+                Logger.Log(LogLevel.Info, "Sync complete.");
+            }
+
         }
 
         private void CountText()

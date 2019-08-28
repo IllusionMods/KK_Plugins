@@ -1,13 +1,13 @@
 ﻿using BepInEx;
+using BepInEx.Harmony;
 using BepInEx.Logging;
-using Harmony;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
-using Logger = BepInEx.Logger;
 
-namespace KK_ListOverride
+namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_ListOverride : BaseUnityPlugin
@@ -16,12 +16,13 @@ namespace KK_ListOverride
         public const string PluginName = "List Override";
         public const string PluginNameInternal = nameof(KK_ListOverride);
         public const string Version = "1.0";
-        private static readonly string ListOverrideFolder = Path.Combine(Paths.PluginPath, "KK_ListOverride");
+        internal static new ManualLogSource Logger;
+        private static readonly string ListOverrideFolder = Path.Combine(Paths.ConfigPath, "KK_ListOverride");
 
-        public KK_ListOverride()
+        private void Awake()
         {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_ListOverride));
+            Logger = base.Logger;
+            HarmonyWrapper.PatchAll(typeof(KK_ListOverride));
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaListControl), "LoadListInfoAll")]

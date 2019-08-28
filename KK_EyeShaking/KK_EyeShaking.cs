@@ -1,13 +1,15 @@
 ﻿using BepInEx;
-using Harmony;
+using BepInEx.Configuration;
+using BepInEx.Harmony;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
-using System.ComponentModel;
-/// <summary>
-/// Adds shaking to a character's eye highlights when she is a virgin in an H scene
-/// </summary>
-namespace KK_EyeShaking
+
+namespace KK_Plugins
 {
+    /// <summary>
+    /// Adds shaking to a character's eye highlights when she is a virgin in an H scene
+    /// </summary>
     [BepInDependency(KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_EyeShaking : BaseUnityPlugin
@@ -16,17 +18,15 @@ namespace KK_EyeShaking
         public const string PluginName = "Eye Shaking";
         public const string PluginNameInternal = "KK_EyeShaking";
         public const string Version = "1.0";
-        [DisplayName("Enabled")]
-        [Category("Config")]
-        [Description("When enabled, virgins in H scenes will appear to have shaking eye highlights")]
+
         public static ConfigWrapper<bool> Enabled { get; private set; }
 
         private void Main()
         {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_EyeShaking));
+            HarmonyWrapper.PatchAll(typeof(KK_EyeShaking));
             CharacterApi.RegisterExtraBehaviour<EyeShakingController>(GUID);
-            Enabled = new ConfigWrapper<bool>("Enabled", PluginNameInternal, true);
+
+            Enabled = Config.GetSetting("Config", "Enabled", true, new ConfigDescription("When enabled, virgins in H scenes will appear to have shaking eye highlights"));
         }
 
         private static EyeShakingController GetController(ChaControl character) => character?.gameObject?.GetComponent<EyeShakingController>();

@@ -1,5 +1,7 @@
-﻿using BepInEx;
+﻿using BepInEx.Configuration;
+using BepInEx.Harmony;
 using BepInEx.Logging;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -7,10 +9,11 @@ using KKAPI.Maker.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
 using UniRx;
 
-namespace UncensorSelector
+namespace KK_Plugins
 {
     /// <summary>
     /// Plugin for assigning uncensors to characters individually
@@ -21,6 +24,7 @@ namespace UncensorSelector
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
         public const string Version = "3.7";
+        internal static new ManualLogSource Logger;
         private static readonly HashSet<string> AllAdditionalParts = new HashSet<string>();
         public static readonly Dictionary<string, BodyData> BodyDictionary = new Dictionary<string, BodyData>();
         public static readonly Dictionary<string, PenisData> PenisDictionary = new Dictionary<string, PenisData>();
@@ -44,24 +48,46 @@ namespace UncensorSelector
         internal static string CurrentBodyGUID;
         internal static bool DidErrorMessage = false;
 
+        public static ConfigWrapper<bool> GenderBender { get; private set; }
+        public static ConfigWrapper<string> DefaultMaleBody { get; private set; }
+        public static ConfigWrapper<string> DefaultMalePenis { get; private set; }
+        public static ConfigWrapper<string> DefaultMaleBalls { get; private set; }
+        public static ConfigWrapper<string> DefaultFemaleBody { get; private set; }
+        public static ConfigWrapper<string> DefaultFemalePenis { get; private set; }
+        public static ConfigWrapper<string> DefaultFemaleBalls { get; private set; }
+        public static ConfigWrapper<bool> DefaultFemaleDisplayBalls { get; private set; }
+
+        private void Start()
+        {
+            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+
+#if KK
+            Type loadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).First(x => x.Name.StartsWith("<LoadAsync>c__Iterator"));
+            MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
+            harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), AccessTools.all)));
+#endif
+        }
+
         private void Main()
         {
-            if (KoikatuAPI.CheckIncompatiblePlugin(this, "koikatsu.cartoonuncensor", LogLevel.Error))
-            {
-                Logger.Log(LogLevel.Error | LogLevel.Message, "CartoonUncensor.dll is incompatible with KK_UncensorSelector! Please remove it and restart the game.");
-                return;
-            }
-            if (KoikatuAPI.CheckIncompatiblePlugin(this, "koikatsu.alexaebubblegum", LogLevel.Error))
-            {
-                Logger.Log(LogLevel.Error | LogLevel.Message, "AlexaeBubbleGum.dll is incompatible with KK_UncensorSelector! Please remove it and restart the game.");
-                return;
-            }
+            Logger = base.Logger;
+
+            GenderBender = Config.GetSetting("Config", "Genderbender Allowed", true, new ConfigDescription("Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility."));
+            DefaultMaleBody = Config.GetSetting("Config", "Default Male Body", "Random", new ConfigDescription("Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives."));
+            DefaultMalePenis = Config.GetSetting("Config", "Default Male Penis", "Random", new ConfigDescription("Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives."));
+            DefaultMaleBalls = Config.GetSetting("Config", "Default Male Balls", "Random", new ConfigDescription("Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives."));
+            DefaultFemaleBody = Config.GetSetting("Config", "Default Female Body", "Random", new ConfigDescription("Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives."));
+            DefaultFemalePenis = Config.GetSetting("Config", "Default Female Penis", "Random", new ConfigDescription("Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives."));
+            DefaultFemaleBalls = Config.GetSetting("Config", "Default Female Balls", "Random", new ConfigDescription("Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives."));
+            DefaultFemaleDisplayBalls = Config.GetSetting("Config", "Default Female Balls Display", false, new ConfigDescription("Whether balls will be displayed on females if not otherwise configured."));
 
             PopulateUncensorLists();
 
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             CharacterApi.RegisterExtraBehaviour<UncensorSelectorController>(GUID);
+
+            HarmonyWrapper.PatchAll(typeof(Hooks));
         }
         /// <summary>
         /// Initialize the character maker GUI
@@ -257,17 +283,17 @@ namespace UncensorSelector
                         BodyData bodyData = new BodyData(uncensorElement);
                         if (bodyData.BodyGUID == null)
                         {
-                            Log(LogLevel.Warning, "Body failed to load due to missing GUID.");
+                            Logger.LogWarning("Body failed to load due to missing GUID.");
                             continue;
                         }
                         if (bodyData.DisplayName == null)
                         {
-                            Log(LogLevel.Warning, "Body failed to load due to missing display name.");
+                            Logger.LogWarning("Body failed to load due to missing display name.");
                             continue;
                         }
                         if (bodyData.OOBase == Defaults.OOBase)
                         {
-                            Log(LogLevel.Warning, "Body was not loaded because oo_base is the default.");
+                            Logger.LogWarning("Body was not loaded because oo_base is the default.");
                             continue;
                         }
                         BodyDictionary.Add(bodyData.BodyGUID, bodyData);
@@ -280,22 +306,22 @@ namespace UncensorSelector
                         PenisData penisData = new PenisData(uncensorElement);
                         if (penisData.PenisGUID == null)
                         {
-                            Log(LogLevel.Warning, "Penis failed to load due to missing GUID.");
+                            Logger.LogWarning("Penis failed to load due to missing GUID.");
                             continue;
                         }
                         if (penisData.DisplayName == null)
                         {
-                            Log(LogLevel.Warning, "Penis failed to load due to missing display name.");
+                            Logger.LogWarning("Penis failed to load due to missing display name.");
                             continue;
                         }
                         if (penisData.File == null)
                         {
-                            Log(LogLevel.Warning, "Penis failed to load due to missing file.");
+                            Logger.LogWarning("Penis failed to load due to missing file.");
                             continue;
                         }
                         if (penisData.Asset == null)
                         {
-                            Log(LogLevel.Warning, "Penis failed to load due to missing asset.");
+                            Logger.LogWarning("Penis failed to load due to missing asset.");
                             continue;
                         }
                         PenisDictionary.Add(penisData.PenisGUID, penisData);
@@ -306,22 +332,22 @@ namespace UncensorSelector
                         BallsData ballsData = new BallsData(uncensorElement);
                         if (ballsData.BallsGUID == null)
                         {
-                            Log(LogLevel.Warning, "Balls failed to load due to missing GUID.");
+                            Logger.LogWarning("Balls failed to load due to missing GUID.");
                             continue;
                         }
                         if (ballsData.DisplayName == null)
                         {
-                            Log(LogLevel.Warning, "Balls failed to load due to missing display name.");
+                            Logger.LogWarning("Balls failed to load due to missing display name.");
                             continue;
                         }
                         if (ballsData.File == null)
                         {
-                            Log(LogLevel.Warning, "Balls failed to load due to missing file.");
+                            Logger.LogWarning("Balls failed to load due to missing file.");
                             continue;
                         }
                         if (ballsData.Asset == null)
                         {
-                            Log(LogLevel.Warning, "Balls failed to load due to missing asset.");
+                            Logger.LogWarning("Balls failed to load due to missing asset.");
                             continue;
                         }
                         BallsDictionary.Add(ballsData.BallsGUID, ballsData);
@@ -332,12 +358,12 @@ namespace UncensorSelector
                         MigrationData migrationData = new MigrationData(uncensorElement);
                         if (migrationData.UncensorGUID == null)
                         {
-                            Log(LogLevel.Warning, "Migration data failed to load due to missing Uncensor GUID.");
+                            Logger.LogWarning("Migration data failed to load due to missing Uncensor GUID.");
                             continue;
                         }
                         if (migrationData.BodyGUID == null)
                         {
-                            Log(LogLevel.Warning, "Migration data failed to load due to missing Body GUID.");
+                            Logger.LogWarning("Migration data failed to load due to missing Body GUID.");
                             continue;
                         }
                         MigrationDictionary.Add(migrationData.UncensorGUID, migrationData);

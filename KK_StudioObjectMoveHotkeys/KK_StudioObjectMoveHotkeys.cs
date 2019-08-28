@@ -1,10 +1,11 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using Studio;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace KK_StudioObjectMoveHotkeys
+namespace KK_Plugins
 {
     [BepInProcess("CharaStudio")]
     [BepInPlugin(GUID, PluginName, Version)]
@@ -27,17 +28,17 @@ namespace KK_StudioObjectMoveHotkeys
         public const float ROTATE_RATIO = 90f;
         public const float SCALE_RATIO = 0.5f;
 
-        public static SavedKeyboardShortcut HotkeyX { get; private set; }
-        public static SavedKeyboardShortcut HotkeyY { get; private set; }
-        public static SavedKeyboardShortcut HotkeyZ { get; private set; }
-        public static SavedKeyboardShortcut HotkeyAll { get; private set; }
+        public static ConfigWrapper<KeyboardShortcut> HotkeyX { get; private set; }
+        public static ConfigWrapper<KeyboardShortcut> HotkeyY { get; private set; }
+        public static ConfigWrapper<KeyboardShortcut> HotkeyZ { get; private set; }
+        public static ConfigWrapper<KeyboardShortcut> HotkeyAll { get; private set; }
 
         private void Main()
         {
-            HotkeyX = new SavedKeyboardShortcut(nameof(HotkeyX), nameof(KK_StudioObjectMoveHotkeys), new KeyboardShortcut(KeyCode.Y));
-            HotkeyY = new SavedKeyboardShortcut(nameof(HotkeyY), nameof(KK_StudioObjectMoveHotkeys), new KeyboardShortcut(KeyCode.U));
-            HotkeyZ = new SavedKeyboardShortcut(nameof(HotkeyZ), nameof(KK_StudioObjectMoveHotkeys), new KeyboardShortcut(KeyCode.I));
-            HotkeyAll = new SavedKeyboardShortcut(nameof(HotkeyAll), nameof(KK_StudioObjectMoveHotkeys), new KeyboardShortcut(KeyCode.T));
+            HotkeyX = Config.GetSetting("Keyboard Shortcuts", "Hotkey X", new KeyboardShortcut(KeyCode.Y), new ConfigDescription("Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse."));
+            HotkeyY = Config.GetSetting("Keyboard Shortcuts", "Hotkey Y", new KeyboardShortcut(KeyCode.U), new ConfigDescription("Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse."));
+            HotkeyZ = Config.GetSetting("Keyboard Shortcuts", "Hotkey Z", new KeyboardShortcut(KeyCode.I), new ConfigDescription("Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse."));
+            HotkeyAll = Config.GetSetting("Keyboard Shortcuts", "Hotkey All", new KeyboardShortcut(KeyCode.T), new ConfigDescription("Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse."));
         }
 
         public GuideObject GetTargetObject() => Singleton<GuideObjectManager>.Instance.operationTarget ?? Singleton<GuideObjectManager>.Instance.selectObject;
@@ -53,52 +54,52 @@ namespace KK_StudioObjectMoveHotkeys
             {
                 case Key.OBJ_MOVE_X:
                     Move(new Vector3(-vector.x, 0f, 0f));
-                    if (!HotkeyX.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_MOVE)
+                    if (!HotkeyX.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_MOVE)
                         FinishMove();
                     break;
                 case Key.OBJ_MOVE_Y:
                     Move(new Vector3(0f, vector.y, 0f));
-                    if (!HotkeyY.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_MOVE)
+                    if (!HotkeyY.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_MOVE)
                         FinishMove();
                     break;
                 case Key.OBJ_MOVE_Z:
                     Move(new Vector3(0f, 0f, -vector.y));
-                    if (!HotkeyZ.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_MOVE)
+                    if (!HotkeyZ.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_MOVE)
                         FinishMove();
                     break;
                 case Key.OBJ_ROT_X:
                     Rotate(new Vector3((vector.x + vector.y) / 2f, 0f, 0f));
-                    if (!HotkeyX.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_ROT)
+                    if (!HotkeyX.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_ROT)
                         FinishRotate();
                     break;
                 case Key.OBJ_ROT_Y:
                     Rotate(new Vector3(0f, (vector.x + vector.y) / 2f, 0f));
-                    if (!HotkeyY.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_ROT)
+                    if (!HotkeyY.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_ROT)
                         FinishRotate();
                     break;
                 case Key.OBJ_ROT_Z:
                     Rotate(new Vector3(0f, 0f, (vector.x + vector.y) / 2f));
-                    if (!HotkeyZ.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_ROT)
+                    if (!HotkeyZ.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_ROT)
                         FinishRotate();
                     break;
                 case Key.OBJ_SCALE_X:
                     Scale(Vector3.left * ((GetMousePos() - BeginMousePos).x + (GetMousePos() - BeginMousePos).y) / 2f);
-                    if (!HotkeyX.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_SCALE)
+                    if (!HotkeyX.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_SCALE)
                         FinishScale();
                     break;
                 case Key.OBJ_SCALE_Y:
                     Scale(Vector3.up * ((GetMousePos() - BeginMousePos).x + (GetMousePos() - BeginMousePos).y) / 2f);
-                    if (!HotkeyY.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_SCALE)
+                    if (!HotkeyY.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_SCALE)
                         FinishScale();
                     break;
                 case Key.OBJ_SCALE_Z:
                     Scale(Vector3.forward * ((GetMousePos() - BeginMousePos).x + (GetMousePos() - BeginMousePos).y) / 2f);
-                    if (!HotkeyZ.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_SCALE)
+                    if (!HotkeyZ.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_SCALE)
                         FinishScale();
                     break;
                 case Key.OBJ_SCALE_ALL:
                     Scale(Vector3.one * ((GetMousePos() - BeginMousePos).x + (GetMousePos() - BeginMousePos).y) / 2f);
-                    if (!HotkeyAll.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_SCALE)
+                    if (!HotkeyAll.Value.IsPressed() || guideObjectMode != GuideObjectMode.OBJ_SCALE)
                         FinishScale();
                     break;
                 case Key.NONE:
@@ -108,38 +109,38 @@ namespace KK_StudioObjectMoveHotkeys
                     switch (guideObjectMode)
                     {
                         case GuideObjectMode.OBJ_MOVE:
-                            if (HotkeyX.IsPressed())
+                            if (HotkeyX.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_MOVE_X;
                                 OldPos = CollectOldPos();
                             }
-                            else if (HotkeyY.IsPressed())
+                            else if (HotkeyY.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_MOVE_Y;
                                 OldPos = CollectOldPos();
                             }
-                            else if (HotkeyZ.IsPressed())
+                            else if (HotkeyZ.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_MOVE_Z;
                                 OldPos = CollectOldPos();
                             }
                             break;
                         case GuideObjectMode.OBJ_ROT:
-                            if (HotkeyX.IsPressed())
+                            if (HotkeyX.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_ROT_X;
                                 FirstTarget = GetTargetObject();
                                 OldPos = CollectOldPos();
                                 OldRot = CollectOldRot();
                             }
-                            else if (HotkeyY.IsPressed())
+                            else if (HotkeyY.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_ROT_Y;
                                 FirstTarget = GetTargetObject();
                                 OldPos = CollectOldPos();
                                 OldRot = CollectOldRot();
                             }
-                            else if (HotkeyZ.IsPressed())
+                            else if (HotkeyZ.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_ROT_Z;
                                 FirstTarget = GetTargetObject();
@@ -148,25 +149,25 @@ namespace KK_StudioObjectMoveHotkeys
                             }
                             break;
                         case GuideObjectMode.OBJ_SCALE:
-                            if (HotkeyX.IsPressed())
+                            if (HotkeyX.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_SCALE_X;
                                 OldScale = CollectOldScale();
                                 BeginMousePos = GetMousePos();
                             }
-                            else if (HotkeyY.IsPressed())
+                            else if (HotkeyY.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_SCALE_Y;
                                 OldScale = CollectOldScale();
                                 BeginMousePos = GetMousePos();
                             }
-                            else if (HotkeyZ.IsPressed())
+                            else if (HotkeyZ.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_SCALE_Z;
                                 OldScale = CollectOldScale();
                                 BeginMousePos = GetMousePos();
                             }
-                            else if (HotkeyAll.IsPressed())
+                            else if (HotkeyAll.Value.IsPressed())
                             {
                                 KeyMode = Key.OBJ_SCALE_ALL;
                                 OldScale = CollectOldScale();

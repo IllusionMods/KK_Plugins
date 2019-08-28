@@ -2,7 +2,7 @@
 using BepInEx.Logging;
 using UnityEngine.SceneManagement;
 
-namespace KK_TestPlugin
+namespace KK_Plugins
 {
     /// <summary>
     /// Displays the name of each scene in the log when it is loaded

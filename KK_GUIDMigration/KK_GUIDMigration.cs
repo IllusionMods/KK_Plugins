@@ -1,27 +1,29 @@
 ﻿using BepInEx;
+using BepInEx.Harmony;
 using BepInEx.Logging;
-using Harmony;
 using System.Collections.Generic;
 using System.IO;
-using Logger = BepInEx.Logger;
 
-namespace KK_GUIDMigration
+namespace KK_Plugins
 {
     /// <summary>
     /// Modifies the GUID or ID of items saved to a card
     /// </summary>
     [BepInDependency(Sideloader.Sideloader.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
-    public class KK_GUIDMigration : BaseUnityPlugin
+    public partial class KK_GUIDMigration : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.guidmigration";
         public const string PluginName = "GUID Migration";
         public const string Version = "1.5";
+        internal static new ManualLogSource Logger;
         internal static readonly List<MigrationInfo> MigrationInfoList = new List<MigrationInfo>();
-        private static readonly string GUIDMigrationFilePath = Path.Combine(Paths.PluginPath, "KK_GUIDMigration.csv");
+        private static readonly string GUIDMigrationFilePath = Path.Combine(Paths.ConfigPath, "KK_GUIDMigration.csv");
 
         private void Main()
         {
+            Logger = base.Logger;
+
             //Don't even bother if there's no mods directory
             if (!Directory.Exists(Path.Combine(Paths.GameRootPath, "mods")) || !Directory.Exists(Paths.PluginPath))
             {
@@ -43,8 +45,7 @@ namespace KK_GUIDMigration
                 return;
             }
 
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(Hooks));
+            HarmonyWrapper.PatchAll(typeof(Hooks));
         }
         /// <summary>
         /// Read the KK_GUIDMigration.csv and generate a dictionary of MigrationInfo

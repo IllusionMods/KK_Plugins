@@ -1,4 +1,6 @@
-﻿using KKAPI;
+﻿using ExtensibleSaveFormat;
+using HarmonyLib;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using System;
@@ -7,19 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using BepInEx.Logging;
-using ExtensibleSaveFormat;
-
 #if KK
 using KKAPI.Studio;
 #endif
-#if KK
-using Harmony;
-#else
-using HarmonyLib;
-#endif
 
-namespace UncensorSelector
+namespace KK_Plugins
 {
     internal partial class UncensorSelector
     {
@@ -487,7 +481,7 @@ namespace UncensorSelector
                     var uvCopy = src.sharedMesh.uv.ToArray();
                     if (AreUVsCorrupted(uvCopy) && !DidErrorMessage)
                     {
-                        Log(LogLevel.Error, $"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be corrupted. Consider updating your GPU drivers.");
+                        Logger.LogError($"UVs got corrupted when creating uncensor mesh {src.sharedMesh.name}, body textures might be corrupted. Consider updating your GPU drivers.");
                         DidErrorMessage = true;
                     }
 
@@ -518,12 +512,12 @@ namespace UncensorSelector
                     // Check if UVs got corrupted after moving the mesh, most common fail point
                     if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
                     {
-                        Log(LogLevel.Warning, $"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
+                        Logger.LogWarning($"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
                         dst.sharedMesh.uv = uvCopy;
                         yield return null;
 
                         if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
-                            Log(LogLevel.Error, "Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
+                            Logger.LogError("Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
                     }
                 }
 

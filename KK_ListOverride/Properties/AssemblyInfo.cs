@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(KK_ListOverride.KK_ListOverride.Version)]
-[assembly: AssemblyFileVersion(KK_ListOverride.KK_ListOverride.Version)]
+[assembly: AssemblyVersion(KK_Plugins.KK_ListOverride.Version)]
+[assembly: AssemblyFileVersion(KK_Plugins.KK_ListOverride.Version)]

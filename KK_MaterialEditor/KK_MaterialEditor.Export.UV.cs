@@ -1,8 +1,8 @@
-﻿using CommonCode;
+﻿using KK_Plugins.CommonCode;
 using System.IO;
 using UnityEngine;
 
-namespace KK_MaterialEditor
+namespace KK_Plugins
 {
     public partial class KK_MaterialEditor
     {
@@ -73,7 +73,7 @@ namespace KK_MaterialEditor
                     string filename = Path.Combine(ExportPath, $"{rend.NameFormatted()}_{x}.png");
                     File.WriteAllBytes(filename, png.EncodeToPNG());
                     DestroyImmediate(png);
-                    CC.Log($"Exported {filename}");
+                    Logger.LogInfo($"Exported {filename}");
                     if (!openedFile)
                         CC.OpenFileInExplorer(filename);
                     openedFile = true;

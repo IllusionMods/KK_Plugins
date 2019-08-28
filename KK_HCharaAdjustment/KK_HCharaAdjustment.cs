@@ -1,11 +1,13 @@
 ﻿using BepInEx;
-using Harmony;
+using BepInEx.Harmony;
+using HarmonyLib;
 using UnityEngine;
-/// <summary>
-/// Plugin for adjusting the female character in H scene independently of the male. Needs a UI.
-/// </summary>
-namespace KK_HCharaAdjustment
+
+namespace KK_Plugins
 {
+    /// <summary>
+    /// Plugin for adjusting the female character in H scene independently of the male. Needs a UI.
+    /// </summary>
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_HCharaAdjustment : BaseUnityPlugin
     {
@@ -14,11 +16,7 @@ namespace KK_HCharaAdjustment
         public const string PluginNameInternal = "KK_HCharaAdjustment";
         public const string Version = "1.0";
 
-        private void Main()
-        {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(KK_HCharaAdjustment));
-        }
+        private void Main() => HarmonyWrapper.PatchAll(typeof(KK_HCharaAdjustment));
 
         private static float AdjustmentX = 0;
         private static float AdjustmentY = 0;

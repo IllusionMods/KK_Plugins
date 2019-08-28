@@ -1,8 +1,8 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using KKAPI.Maker;
 using System.Collections;
 
-namespace HairAccessoryCustomizer
+namespace KK_Plugins
 {
     internal partial class Hooks
     {

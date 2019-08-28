@@ -1,7 +1,7 @@
 ﻿using BepInEx;
-using CommonCode;
-using Harmony;
+using HarmonyLib;
 using Illusion.Extensions;
+using KK_Plugins.CommonCode;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace KK_FreeHRandom
+namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
     public class KK_FreeHRandom : BaseUnityPlugin

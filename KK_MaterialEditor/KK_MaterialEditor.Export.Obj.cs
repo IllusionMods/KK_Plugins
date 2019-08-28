@@ -1,9 +1,9 @@
-﻿using CommonCode;
+﻿using KK_Plugins.CommonCode;
 using System.IO;
 using System.Text;
 using UnityEngine;
 
-namespace KK_MaterialEditor
+namespace KK_Plugins
 {
     public partial class KK_MaterialEditor
     {
@@ -21,7 +21,7 @@ namespace KK_MaterialEditor
                     if (!mesh.IsNullOrEmpty())
                     {
                         sw.Write(mesh);
-                        CC.Log($"Exported {filename}");
+                        Logger.LogInfo($"Exported {filename}");
                         CC.OpenFileInExplorer(filename);
                     }
                 }

@@ -1,36 +1,39 @@
 ﻿using ActionGame.Communication;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 
-namespace Subtitles
+namespace KK_Plugins
 {
-    internal static class Hooks
+    public partial class Subtitles
     {
-        [HarmonyPostfix, HarmonyPatch(typeof(LoadVoice), "Play")]
-        public static void PlayVoice(LoadVoice __instance)
+        internal static class Hooks
         {
-            if (__instance.audioSource == null || __instance.audioSource.clip == null || __instance.audioSource.loop)
-                return;
+            [HarmonyPostfix, HarmonyPatch(typeof(LoadAudioBase), "Play")]
+            public static void PlayVoice(LoadAudioBase __instance)
+            {
+                if (__instance.audioSource == null || __instance.audioSource.clip == null || __instance.audioSource.loop)
+                    return;
 
-            if (Subtitles.HSceneProcInstance != null)
-                Caption.DisplayHSubtitle(__instance);
-            else if (Subtitles.ActionGameInfoInstance != null && GameObject.Find("ActionScene/ADVScene") == null)
-                Caption.DisplayDialogueSubtitle(__instance);
-            else if (Subtitles.SubtitleDictionary.TryGetValue(__instance.assetName, out string text))
-                Caption.DisplaySubtitle(__instance, text);
-        }
+                if (HSceneProcInstance != null)
+                    Caption.DisplayHSubtitle(__instance);
+                else if (ActionGameInfoInstance != null && GameObject.Find("ActionScene/ADVScene") == null)
+                    Caption.DisplayDialogueSubtitle(__instance);
+                else if (SubtitleDictionary.TryGetValue(__instance.assetName, out string text))
+                    Caption.DisplaySubtitle(__instance, text);
+            }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(Info), "Init")]
-        public static void InfoInit(Info __instance)
-        {
-            Caption.InitGUI();
-            Subtitles.ActionGameInfoInstance = __instance;
-        }
-        [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
-        public static void HVoiceCtrlInit()
-        {
-            Caption.InitGUI();
-            Subtitles.HSceneProcInstance = Object.FindObjectOfType<HSceneProc>();
+            [HarmonyPostfix, HarmonyPatch(typeof(Info), "Init")]
+            public static void InfoInit(Info __instance)
+            {
+                Caption.InitGUI();
+                ActionGameInfoInstance = __instance;
+            }
+            [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
+            public static void HVoiceCtrlInit()
+            {
+                Caption.InitGUI();
+                HSceneProcInstance = FindObjectOfType<HSceneProc>();
+            }
         }
     }
 }

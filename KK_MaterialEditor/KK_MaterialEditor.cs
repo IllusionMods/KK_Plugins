@@ -1,14 +1,15 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
-using CommonCode;
-using Harmony;
+using BepInEx.Configuration;
+using BepInEx.Harmony;
+using BepInEx.Logging;
+using KK_Plugins.CommonCode;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio.SaveLoad;
 using Studio;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +19,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace KK_MaterialEditor
+namespace KK_Plugins
 {
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
@@ -27,6 +28,7 @@ namespace KK_MaterialEditor
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
         public const string Version = "1.5.1";
+        internal static new ManualLogSource Logger;
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
         public static readonly string XMLPath = Path.Combine(Paths.PluginPath, nameof(KK_MaterialEditor));
@@ -34,13 +36,11 @@ namespace KK_MaterialEditor
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
-        [DisplayName("Enable advanced editing")]
-        [Category("Config")]
-        [Description("Enables advanced editing of characters in the character maker. Note: Some textures and colors will override chracter maker selections but will not always appear to do so, especially after changing them from the in game color pickers. Save and reload to see the real effects.\nUse at your own risk.")]
         public static ConfigWrapper<bool> AdvancedMode { get; private set; }
 
         private void Main()
         {
+            Logger = base.Logger;
             Directory.CreateDirectory(ExportPath);
 
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
@@ -53,11 +53,10 @@ namespace KK_MaterialEditor
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
 
-            HarmonyInstance.Create(GUID).PatchAll(typeof(Hooks));
-
-            AdvancedMode = new ConfigWrapper<bool>(nameof(AdvancedMode), PluginName, false);
+            AdvancedMode = Config.GetSetting("Config", "Enable advanced editing", false, new ConfigDescription("Enables advanced editing of characters in the character maker. Note: Some textures and colors will override chracter maker selections but will not always appear to do so, especially after changing them from the in game color pickers. Save and reload to see the real effects.\nUse at your own risk."));
 
             LoadXML();
+            HarmonyWrapper.PatchAll(typeof(Hooks));
         }
 
         private void LoadXML()
@@ -65,7 +64,7 @@ namespace KK_MaterialEditor
             var loadedManifests = Sideloader.Sideloader.LoadedManifests;
             XMLShaderProperties["default"] = new Dictionary<string, ShaderPropertyData>();
 
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_MaterialEditor)}.Resources.default.xml"))
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.default.xml"))
             using (XmlReader reader = XmlReader.Create(stream))
                 LoadXML(XDocument.Load(reader).Element(nameof(KK_MaterialEditor)));
 
@@ -275,7 +274,7 @@ namespace KK_MaterialEditor
                                         }
                                         catch
                                         {
-                                            BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning, $"[{nameof(KK_MaterialEditor)}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
+                                            Logger.LogWarning($"[{nameof(KK_MaterialEditor)}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
                                         }
                                         break;
                                 }
@@ -284,7 +283,7 @@ namespace KK_MaterialEditor
                     didSet = true;
                 }
                 else
-                    BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{nameof(KK_MaterialEditor)}] Could not load shader:{shaderName}");
+                    Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{nameof(KK_MaterialEditor)}] Could not load shader:{shaderName}");
             }
 
             return didSet ? didSet : SetShader(chaControl.gameObject, materialName, shaderName, ObjectType.Character);
@@ -327,7 +326,7 @@ namespace KK_MaterialEditor
                                                 }
                                                 catch
                                                 {
-                                                    BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning, $"[{nameof(KK_MaterialEditor)}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
+                                                    Logger.LogWarning($"[{nameof(KK_MaterialEditor)}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
                                                 }
                                                 break;
                                         }
@@ -335,7 +334,7 @@ namespace KK_MaterialEditor
                             didSet = true;
                         }
                         else
-                            BepInEx.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{nameof(KK_MaterialEditor)}] Could not load shader:{shaderName}");
+                            Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{nameof(KK_MaterialEditor)}] Could not load shader:{shaderName}");
                     }
 
             return didSet;
@@ -452,7 +451,7 @@ namespace KK_MaterialEditor
                         {
                             if (assetBundlePath.StartsWith("Resources."))
                             {
-                                AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_MaterialEditor)}.{assetBundlePath}"));
+                                AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_Plugins)}.{assetBundlePath}"));
                                 Shader = bundle.LoadAsset<Shader>(shaderName);
                                 bundle.Unload(false);
                             }
@@ -461,7 +460,7 @@ namespace KK_MaterialEditor
                         }
                         catch
                         {
-                            CC.Log(BepInEx.Logging.LogLevel.Warning, $"Unable to load shader: {shaderName}");
+                            Logger.LogWarning($"Unable to load shader: {shaderName}");
                             Shader = null;
                         }
                     }
@@ -471,7 +470,7 @@ namespace KK_MaterialEditor
                         {
                             if (assetBundlePath.StartsWith("Resources."))
                             {
-                                AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_MaterialEditor)}.{assetBundlePath}"));
+                                AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_Plugins)}.{assetBundlePath}"));
                                 Shader = bundle.LoadAsset<Shader>(shaderName);
 
                                 var go = bundle.LoadAsset<GameObject>(assetPath);
@@ -495,7 +494,7 @@ namespace KK_MaterialEditor
                         }
                         catch
                         {
-                            CC.Log(BepInEx.Logging.LogLevel.Warning, $"Unable to load shader: {shaderName}");
+                            Logger.LogWarning($"Unable to load shader: {shaderName}");
                             Shader = null;
                         }
                     }

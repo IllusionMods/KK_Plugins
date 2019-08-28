@@ -1,68 +1,71 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 
-namespace Subtitles
+namespace KK_Plugins
 {
-    public partial class Caption
+    public partial class Subtitles
     {
-        internal static void DisplayDialogueSubtitle(LoadVoice voice)
+        public partial class Caption
         {
-            string text = "";
-            FindText();
-            void FindText()
+            internal static void DisplayDialogueSubtitle(LoadAudioBase voice)
             {
-                foreach (var a in Subtitles.ActionGameInfoInstance.dicTalkInfo)
+                string text = "";
+                FindText();
+                void FindText()
                 {
-                    foreach (var b in a.Value)
+                    foreach (var a in ActionGameInfoInstance.dicTalkInfo)
                     {
-                        foreach (var c in b.Value)
+                        foreach (var b in a.Value)
                         {
-                            foreach (var d in c.Value.Where(x => x is ActionGame.Communication.Info.GenericInfo).Select(x => x as ActionGame.Communication.Info.GenericInfo))
+                            foreach (var c in b.Value)
                             {
-                                text = d.talk.Where(x => x.assetbundle == voice.assetBundleName && x.file == voice.assetName).Select(x => x.text).FirstOrDefault();
+                                foreach (var d in c.Value.Where(x => x is ActionGame.Communication.Info.GenericInfo).Select(x => x as ActionGame.Communication.Info.GenericInfo))
+                                {
+                                    text = d.talk.Where(x => x.assetbundle == voice.assetBundleName && x.file == voice.assetName).Select(x => x.text).FirstOrDefault();
+                                    if (!text.IsNullOrEmpty())
+                                        return;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (text.IsNullOrEmpty())
+                    return;
+
+                DisplaySubtitle(voice, text);
+            }
+
+            internal static void DisplayHSubtitle(LoadAudioBase voice)
+            {
+                List<HActionBase> lstProc = (List<HActionBase>)AccessTools.Field(typeof(HSceneProc), "lstProc").GetValue(HSceneProcInstance);
+                HActionBase mode = lstProc[(int)HSceneProcInstance.flags.mode];
+                HVoiceCtrl voicectrl = (HVoiceCtrl)AccessTools.Field(typeof(HActionBase), "voice").GetValue(mode);
+
+                //At the start of the H scene, all the text was loaded. Look through the loaded stuff and find the text for the current spoken voice.
+                string text = "";
+                FindText();
+                void FindText()
+                {
+                    foreach (var a in voicectrl.dicVoiceIntos)
+                    {
+                        foreach (var b in a)
+                        {
+                            foreach (var c in b.Value)
+                            {
+                                text = c.Value.Where(x => x.Value.pathAsset == voice.assetBundleName && x.Value.nameFile == voice.assetName).Select(x => x.Value.word).FirstOrDefault();
                                 if (!text.IsNullOrEmpty())
                                     return;
                             }
                         }
                     }
                 }
+                if (text.IsNullOrEmpty())
+                    return;
+
+                DisplaySubtitle(voice, text, init: false);
             }
-            if (text.IsNullOrEmpty())
-                return;
-
-            DisplaySubtitle(voice, text);
-        }
-
-        internal static void DisplayHSubtitle(LoadVoice voice)
-        {
-            List<HActionBase> lstProc = (List<HActionBase>)AccessTools.Field(typeof(HSceneProc), "lstProc").GetValue(Subtitles.HSceneProcInstance);
-            HActionBase mode = lstProc[(int)Subtitles.HSceneProcInstance.flags.mode];
-            HVoiceCtrl voicectrl = (HVoiceCtrl)AccessTools.Field(typeof(HActionBase), "voice").GetValue(mode);
-
-            //At the start of the H scene, all the text was loaded. Look through the loaded stuff and find the text for the current spoken voice.
-            string text = "";
-            FindText();
-            void FindText()
-            {
-                foreach (var a in voicectrl.dicVoiceIntos)
-                {
-                    foreach (var b in a)
-                    {
-                        foreach (var c in b.Value)
-                        {
-                            text = c.Value.Where(x => x.Value.pathAsset == voice.assetBundleName && x.Value.nameFile == voice.assetName).Select(x => x.Value.word).FirstOrDefault();
-                            if (!text.IsNullOrEmpty())
-                                return;
-                        }
-                    }
-                }
-            }
-            if (text.IsNullOrEmpty())
-                return;
-
-            DisplaySubtitle(voice, text, init:false);
         }
     }
 }

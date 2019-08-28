@@ -1,16 +1,13 @@
 ﻿using BepInEx;
+using BepInEx.Harmony;
+using HarmonyLib;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using UnityEngine.UI;
-#if KK
-using Harmony;
-#else
-using HarmonyLib;
-#endif
 
-namespace HairAccessoryCustomizer
+namespace KK_Plugins
 {
     /// <summary>
     /// Individual customization of hair accessories for adding hair gloss, color matching, etc.
@@ -44,6 +41,8 @@ namespace HairAccessoryCustomizer
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
+
+            HarmonyWrapper.PatchAll(typeof(Hooks));
         }
         /// <summary>
         /// Hides the accessory color controls for the current slot

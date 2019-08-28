@@ -1,4 +1,7 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
+using ExtensibleSaveFormat;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -7,18 +10,12 @@ using System.Collections;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using ExtensibleSaveFormat;
-#if KK
-using Harmony;
-#else
-using HarmonyLib;
-#endif
-/// <summary>
-/// Sets the selected characters invisible in Studio. Invisible state saves and loads with the scene.
-/// Also sets female characters invisible in H scenes.
-/// </summary>
-namespace InvisibleBody
+
+namespace KK_Plugins
 {
+    /// <summary>
+    /// Sets the selected characters invisible in Studio or character maker. Invisible state saves and loads with the scene or card.
+    /// </summary>
     public partial class InvisibleBody : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.invisiblebody";
@@ -27,6 +24,7 @@ namespace InvisibleBody
         public const string Version = "1.3";
 
         private static MakerToggle InvisibleToggle;
+        public static ConfigWrapper<bool> HideHairAccessories { get; private set; }
 
         private void Awake()
         {
@@ -169,9 +167,9 @@ namespace InvisibleBody
                     if (HideHairAccessories.Value && go.name.StartsWith("a_n_") && go.transform.parent.gameObject.name == "ct_hairB")
                         //change visibility of accessories built in to back hairs
                         IterateVisible(go.transform.GetChild(i).gameObject);
-                    else if (go.name.StartsWith("a_n_")) { }
+                    else if (go.name.StartsWith("a_n_"))
                     //do not change visibility of attached items such as studio items and character accessories
-                    //Log(LogLevel.None, $"not hiding attached items for {go.name}");
+                    { }
                     else
                         //change visibility of everything else
                         IterateVisible(go.transform.GetChild(i).gameObject);
