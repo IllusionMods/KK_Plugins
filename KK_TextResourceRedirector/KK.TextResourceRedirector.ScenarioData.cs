@@ -9,7 +9,7 @@ namespace KK_Plugins
     public class ScenarioDataResourceRedirector : AssetLoadedHandlerBase<ScenarioData>
     {
         protected override string CalculateModificationFilePath(ScenarioData asset, IAssetOrResourceLoadedContext context) =>
-            context.GetPreferredFilePathWithCustomFileName(@"BepInEx\translation", asset, "translation.txt").Replace(".unity3d", "");
+            context.GetPreferredFilePathWithCustomFileName(@"BepInEx\translation", asset, "translation.txt").Replace(@"abdata\", "").Replace(".unity3d", "");
 
         protected override bool DumpAsset(string calculatedModificationPath, ScenarioData asset, IAssetOrResourceLoadedContext context)
         {
@@ -23,7 +23,7 @@ namespace KK_Plugins
                     {
                         var key = param.Args[i];
 
-                        if (!string.IsNullOrEmpty(key) && LanguageHelper.IsTranslatable(key))
+                        if (!key.IsNullOrWhiteSpace() && LanguageHelper.IsTranslatable(key))
                         {
                             cache.AddTranslationToCache(key, key);
                         }
@@ -45,7 +45,7 @@ namespace KK_Plugins
                     for (int i = 0; i < param.Args.Length; i++)
                     {
                         var key = param.Args[i];
-                        if (!string.IsNullOrEmpty(key))
+                        if (!key.IsNullOrWhiteSpace())
                         {
                             if (cache.TryGetTranslation(key, true, out var translated))
                             {

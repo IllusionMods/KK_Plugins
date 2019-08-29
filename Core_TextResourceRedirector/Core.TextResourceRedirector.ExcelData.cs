@@ -7,8 +7,8 @@ namespace KK_Plugins
 {
     public class ExcelDataResourceRedirector : AssetLoadedHandlerBase<ExcelData>
     {
-        protected override string CalculateModificationFilePath(ExcelData asset, IAssetOrResourceLoadedContext context) => 
-            context.GetPreferredFilePathWithCustomFileName(@"BepInEx\translation", asset, "translation.txt").Replace(".unity3d", "");
+        protected override string CalculateModificationFilePath(ExcelData asset, IAssetOrResourceLoadedContext context) =>
+            context.GetPreferredFilePathWithCustomFileName(@"BepInEx\translation", asset, "translation.txt").Replace(@"abdata\", "").Replace(".unity3d", "");
 
         protected override bool DumpAsset(string calculatedModificationPath, ExcelData asset, IAssetOrResourceLoadedContext context)
         {
@@ -19,7 +19,7 @@ namespace KK_Plugins
                 for (int i = 0; i < param.list.Count; i++)
                 {
                     var key = param.list[i];
-                    if (!string.IsNullOrEmpty(key) && LanguageHelper.IsTranslatable(key))
+                    if (!key.IsNullOrWhiteSpace() && LanguageHelper.IsTranslatable(key))
                     {
                         cache.AddTranslationToCache(key, key);
                     }
@@ -38,7 +38,7 @@ namespace KK_Plugins
                 for (int i = 0; i < param.list.Count; i++)
                 {
                     var key = param.list[i];
-                    if (!string.IsNullOrEmpty(key))
+                    if (!key.IsNullOrWhiteSpace())
                     {
                         if (cache.TryGetTranslation(key, true, out var translated))
                         {
