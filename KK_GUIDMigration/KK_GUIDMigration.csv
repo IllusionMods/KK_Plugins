@@ -140,6 +140,13 @@ ChaFileFace.eyelineUpId,RikkaEyeline,180009,mm.RikkaEyeline,180011
 ChaFileClothes.ClothesTop,com.mysto.demongodnochainmail,8960,com.mysto.modpack,45346747
 ChaFileClothes.ClothesTop,mat.Corset,1208,mat.Tops,1214
 ChaFileClothes.ClothesTop,mat.Tops,1216,mat.Tops,1215
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairS,623,yamadamod.acchairF,623
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairS,609,com.DeathWeasel.AccessoryHairFront,020
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairS,513,com.DeathWeasel.AccessoryHairFront,026
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairS,521,com.DeathWeasel.AccessoryHairFront,067
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairS,528,com.DeathWeasel.AccessoryHairFront,089
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairS,530,com.DeathWeasel.AccessoryHairFront,092
+ChaFileAccessory.PartsInfo.id,yamadamod.acchairS,532,com.DeathWeasel.AccessoryHairFront,095
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairS,537,com.DeathWeasel.AccessoryHairSide,1
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairS2,594,com.DeathWeasel.AccessoryHairSide,2
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairS2,595,com.DeathWeasel.AccessoryHairSide,3
@@ -285,3 +292,4 @@ ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,757,com.DeathWeasel.AccessoryH
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,758,com.DeathWeasel.AccessoryHairFront,189
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,638,com.DeathWeasel.AccessoryHairFront,190
 ChaFileClothes.ClothesTop,gyobobo.RiderSet,1660,gyobobo.RiderSet,1601
+ChaFileHair.HairFront,yamadamod.hairNicoichi,509,yamadamod.hairNicoichi,510
