@@ -19,6 +19,8 @@
 *,ZMX,0,ZMX006,0
 *,ShinyHighLegPanties,0,NinjaCostume,0
 *,PatternlessScarf,0,NinjaCostume,0
+*,rem27.YamiModPack,1,rem27.ToLoveRuModPack,0
+*,TedPanda.choker00,0,TedPanda.chokerpack,0
 -,Nexus.TrapClothes,0,Nexus.TrapClothes,0
 -,Nexus.Trapclothes,0,Nexus.Trapclothes,0
 ChaFileClothes.ClothesPants,<not set>,93,com.Quokka.thighhighs,93
@@ -293,3 +295,8 @@ ChaFileAccessory.PartsInfo.id,yamadamod.acchairF2,758,com.DeathWeasel.AccessoryH
 ChaFileAccessory.PartsInfo.id,yamadamod.acchairF,638,com.DeathWeasel.AccessoryHairFront,190
 ChaFileClothes.ClothesTop,gyobobo.RiderSet,1660,gyobobo.RiderSet,1601
 ChaFileHair.HairFront,yamadamod.hairNicoichi,509,yamadamod.hairNicoichi,510
+ChaFileClothes.ClothesJacketSubA,SL01_modified,1,rem27.ToLoveRuModPack,22
+ChaFileClothes.ClothesJacketSubA,rem27.NanaMomoModPack,1,rem27.ToLoveRuModPack,20
+ChaFileFace.eyelineUpId,rem27.NanaMomoModPack,1,rem27.ToLoveRuModPack,1
+ChaFileFace.eyelineUpId,rem27.NanaMomoModPack,2,rem27.ToLoveRuModPack,2
+ChaFileClothes.ClothesJacketSubB,rem27.NanaMomoModPack,1,rem27.ToLoveRuModPack,40
