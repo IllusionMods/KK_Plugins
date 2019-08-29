@@ -104,7 +104,9 @@ v1.2 Prevents clicks inside mod GUI elements from advancing the story (Thanks Ky
 #### KK_UncensorSelector EC_UncensorSelector
 **v3.7 - [Download](https://www.patreon.com/posts/28204946)**<br/>
 
-3.0 update note: Uncensors from previous versions are not compatible, download new versions [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS)<br/>
+Download uncensors:<br/>
+For Koikatsu click [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!S0IzlILZ)<br/>
+For EmotionCreators click [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!u4pUmKzb)<br/>
 
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
 
