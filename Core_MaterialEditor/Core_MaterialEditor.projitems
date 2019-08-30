@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>5a8fdb27-ffca-4a77-ab0f-afdef9a034ed</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Core_MaterialEditor</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CharaController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Export.Obj.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Export.UV.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.UI.cs" />
+  </ItemGroup>
+</Project>

@@ -1,7 +1,6 @@
 ﻿using KK_Plugins.CommonCode;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
-using Studio;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,10 +8,13 @@ using System.Reflection;
 using UILib;
 using UnityEngine;
 using UnityEngine.UI;
+#if KK
+using Studio;
+#endif
 
 namespace KK_Plugins
 {
-    public partial class KK_MaterialEditor
+    public partial class MaterialEditor
     {
         private static Canvas UISystem;
         private static ScrollRect MaterialEditorWindow;
@@ -43,9 +45,12 @@ namespace KK_Plugins
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Gloves, this)).OnClick.AddListener(delegate { PopulateListClothes(4); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Panst, this)).OnClick.AddListener(delegate { PopulateListClothes(5); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Socks, this)).OnClick.AddListener(delegate { PopulateListClothes(6); });
+#if KK
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.InnerShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(8); });
-
+#elif EC
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Shoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
+#endif
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Back, this)).OnClick.AddListener(delegate { PopulateListHair(0); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Front, this)).OnClick.AddListener(delegate { PopulateListHair(1); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Side, this)).OnClick.AddListener(delegate { PopulateListHair(2); });
@@ -104,6 +109,7 @@ namespace KK_Plugins
             MaterialEditorWindow.movementType = ScrollRect.MovementType.Clamped;
         }
 
+#if KK
         private static void PopulateListStudio()
         {
             if (Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes.Length != 1)
@@ -117,6 +123,7 @@ namespace KK_Plugins
                     else if (objectCtrlInfo is OCIChar ociChar)
                         PopulateList(ociChar?.charInfo.gameObject, ObjectType.Character, GetObjectID(objectCtrlInfo), ociChar?.charInfo);
         }
+#endif
 
         private static void PopulateListClothes(int index)
         {
@@ -470,10 +477,9 @@ namespace KK_Plugins
                     dropdownShader.options.Clear();
                     dropdownShader.options.Add(new Dropdown.OptionData(shaderNameInitial));
                     foreach (var shader in XMLShaderProperties)
-                        if (shader.Key == shaderNameInitial || shader.Key == "default")
-                            continue;
-                        else
-                            dropdownShader.options.Add(new Dropdown.OptionData(shader.Key));
+                    {
+                        dropdownShader.options.Add(new Dropdown.OptionData(shader.Key));
+                    }
                     dropdownShader.value = ShaderSelectedIndex();
                     dropdownShader.captionText.text = shaderName;
                     dropdownShader.onValueChanged.AddListener((value) =>
@@ -503,35 +509,32 @@ namespace KK_Plugins
                         {
                             int counter = 0;
                             foreach (var shader in XMLShaderProperties)
-                                if (shader.Key == shaderNameInitial || shader.Key == "default")
-                                    continue;
-                                else
+                            {
+                                counter++;
+                                if (counter == value)
                                 {
-                                    counter++;
-                                    if (counter == value)
+                                    if (objectType == ObjectType.Other) { }
+                                    else if (objectType == ObjectType.StudioItem)
                                     {
-                                        if (objectType == ObjectType.Other) { }
-                                        else if (objectType == ObjectType.StudioItem)
-                                        {
-                                            GetSceneController().AddMaterialShader(id, materialName, shader.Key, shaderNameInitial);
-                                            GetSceneController().RemoveMaterialShaderRenderQueue(id, materialName);
-                                        }
-                                        else
-                                        {
-                                            GetCharaController(chaControl).AddMaterialShader(objectType, coordinateIndex, slot, materialName, shader.Key, shaderNameInitial);
-                                            GetCharaController(chaControl).RemoveMaterialShaderRenderQueue(objectType, coordinateIndex, slot, materialName);
-                                        }
-
-                                        if (objectType == ObjectType.Character)
-                                        {
-                                            if (SetShader(chaControl, materialName, shader.Key))
-                                                PopulateList(go, objectType, id, chaControl, coordinateIndex, slot, body: body, face: face);
-
-                                        }
-                                        else if (SetShader(go, materialName, shader.Key, objectType))
-                                            PopulateList(go, objectType, id, chaControl, coordinateIndex, slot, body: body, face: face);
+                                        GetSceneController().AddMaterialShader(id, materialName, shader.Key, shaderNameInitial);
+                                        GetSceneController().RemoveMaterialShaderRenderQueue(id, materialName);
                                     }
+                                    else
+                                    {
+                                        GetCharaController(chaControl).AddMaterialShader(objectType, coordinateIndex, slot, materialName, shader.Key, shaderNameInitial);
+                                        GetCharaController(chaControl).RemoveMaterialShaderRenderQueue(objectType, coordinateIndex, slot, materialName);
+                                    }
+
+                                    if (objectType == ObjectType.Character)
+                                    {
+                                        if (SetShader(chaControl, materialName, shader.Key))
+                                            PopulateList(go, objectType, id, chaControl, coordinateIndex, slot, body: body, face: face);
+
+                                    }
+                                    else if (SetShader(go, materialName, shader.Key, objectType))
+                                        PopulateList(go, objectType, id, chaControl, coordinateIndex, slot, body: body, face: face);
                                 }
+                            }
                         }
                     });
                     var dropdownShaderLE = dropdownShader.gameObject.AddComponent<LayoutElement>();
@@ -961,7 +964,7 @@ namespace KK_Plugins
                 }
             }
         }
-
+#if KK
         private void InitStudioUI(string sceneName)
         {
             if (sceneName != "Studio")
@@ -986,7 +989,7 @@ namespace KK_Plugins
             materialEditorButton.onClick = new Button.ButtonClickedEvent();
             materialEditorButton.onClick.AddListener(() => { PopulateListStudio(); });
         }
-
+#endif
         private static void ExportTexture(Material mat, string property)
         {
             var tex = mat.GetTexture($"_{property}");

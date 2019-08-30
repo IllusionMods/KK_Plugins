@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KK_MaterialEditor")]
-[assembly: AssemblyDescription("Material Editor for Koikatsu")]
+[assembly: AssemblyTitle("EC_MaterialEditor")]
+[assembly: AssemblyDescription("Material Editor for EmotionCreators")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("https://github.com/DeathWeasel1337/KK_Plugins")]
-[assembly: AssemblyProduct("KK_MaterialEditor")]
+[assembly: AssemblyProduct("EC_MaterialEditor")]
 [assembly: AssemblyCopyright("Copyright © DeathWeasel1337 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b743e048-5913-4dec-9067-8afd1293a211")]
+[assembly: Guid("25e45f23-4d1d-4cd0-b0bc-653c8ae1c561")]
 
 // Version information for an assembly consists of the following four values:
 //

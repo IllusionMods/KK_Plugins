@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace KK_Plugins
 {
-    public partial class KK_MaterialEditor
+    public partial class MaterialEditor
     {
         public static partial class Export
         {

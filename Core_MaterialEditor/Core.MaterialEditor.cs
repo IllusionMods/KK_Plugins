@@ -6,8 +6,6 @@ using BepInEx.Logging;
 using KK_Plugins.CommonCode;
 using KKAPI.Chara;
 using KKAPI.Maker;
-using KKAPI.Studio.SaveLoad;
-using Studio;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,12 +16,14 @@ using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if KK
+using KKAPI.Studio.SaveLoad;
+using Studio;
+#endif
 
 namespace KK_Plugins
 {
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInPlugin(GUID, PluginName, Version)]
-    public partial class KK_MaterialEditor : BaseUnityPlugin
+    public partial class MaterialEditor
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
@@ -31,7 +31,7 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
-        public static readonly string XMLPath = Path.Combine(Paths.PluginPath, nameof(KK_MaterialEditor));
+        public static readonly string XMLPath = Path.Combine(Paths.PluginPath, PluginNameInternal);
 
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
@@ -43,15 +43,18 @@ namespace KK_Plugins
             Logger = base.Logger;
             Directory.CreateDirectory(ExportPath);
 
-            SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
-            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
 
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
+
+#if KK
+            SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
+            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
+#endif
 
             AdvancedMode = Config.GetSetting("Config", "Enable advanced editing", false, new ConfigDescription("Enables advanced editing of characters in the character maker. Note: Some textures and colors will override chracter maker selections but will not always appear to do so, especially after changing them from the in game color pickers. Save and reload to see the real effects.\nUse at your own risk."));
 
@@ -66,10 +69,10 @@ namespace KK_Plugins
 
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.default.xml"))
             using (XmlReader reader = XmlReader.Create(stream))
-                LoadXML(XDocument.Load(reader).Element(nameof(KK_MaterialEditor)));
+                LoadXML(XDocument.Load(reader).Element(PluginNameInternal));
 
             foreach (var manifest in loadedManifests)
-                LoadXML(manifest.manifestDocument?.Root?.Element(nameof(KK_MaterialEditor)));
+                LoadXML(manifest.manifestDocument?.Root?.Element(PluginNameInternal));
         }
 
         private void LoadXML(XElement materialEditorElement)
@@ -99,9 +102,11 @@ namespace KK_Plugins
         }
 
         private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
-        private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
+#if KK
+        private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
+#endif
 
         private static bool SetFloatProperty(ChaControl chaControl, string materialName, string property, string value)
         {
@@ -274,7 +279,7 @@ namespace KK_Plugins
                                         }
                                         catch
                                         {
-                                            Logger.LogWarning($"[{nameof(KK_MaterialEditor)}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
+                                            Logger.LogWarning($"[{PluginNameInternal}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
                                         }
                                         break;
                                 }
@@ -283,7 +288,7 @@ namespace KK_Plugins
                     didSet = true;
                 }
                 else
-                    Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{nameof(KK_MaterialEditor)}] Could not load shader:{shaderName}");
+                    Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{PluginNameInternal}] Could not load shader:{shaderName}");
             }
 
             return didSet ? didSet : SetShader(chaControl.gameObject, materialName, shaderName, ObjectType.Character);
@@ -326,7 +331,7 @@ namespace KK_Plugins
                                                 }
                                                 catch
                                                 {
-                                                    Logger.LogWarning($"[{nameof(KK_MaterialEditor)}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
+                                                    Logger.LogWarning($"[{PluginNameInternal}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
                                                 }
                                                 break;
                                         }
@@ -334,7 +339,7 @@ namespace KK_Plugins
                             didSet = true;
                         }
                         else
-                            Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{nameof(KK_MaterialEditor)}] Could not load shader:{shaderName}");
+                            Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{PluginNameInternal}] Could not load shader:{shaderName}");
                     }
 
             return didSet;
@@ -419,9 +424,12 @@ namespace KK_Plugins
 
         public enum ObjectType { StudioItem, Clothing, Accessory, Hair, Character, Other };
         public enum ShaderPropertyType { Texture, Color, Float }
-        private static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
-        public static MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
         public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();
+        public static MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
+
+#if KK
+        private static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
+#endif
 
         public class ShaderData
         {

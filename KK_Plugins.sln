@@ -107,13 +107,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS_TextResourceRedirector",
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_TextResourceRedirector", "Core_TextResourceRedirector\Core_TextResourceRedirector.shproj", "{DCFDE35B-C56B-48AA-8244-248EF1C805C3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MaterialEditor", "MaterialEditor", "{2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_MaterialEditor", "Core_MaterialEditor\Core_MaterialEditor.shproj", "{5A8FDB27-FFCA-4A77-AB0F-AFDEF9A034ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_MaterialEditor", "EC_MaterialEditor\EC_MaterialEditor.csproj", "{25E45F23-4D1D-4CD0-B0BC-653C8AE1C561}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
+		CommonCode\CommonCode.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		Core_MaterialEditor\Core_MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{49add937-3c6a-427c-910f-98a3ad1fccf9}*SharedItemsImports = 4
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
+		Core_MaterialEditor\Core_MaterialEditor.projitems*{5a8fdb27-ffca-4a77-ab0f-afdef9a034ed}*SharedItemsImports = 13
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
@@ -124,6 +134,7 @@ Global
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
 		Core_Subtitles\Core_Subtitles.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		Core_MaterialEditor\Core_MaterialEditor.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{c15b8820-0e24-452b-b076-1a052dd7c0fb}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{c2c68ac3-cb8f-4ba7-91ea-9a242851294d}*SharedItemsImports = 4
@@ -289,6 +300,10 @@ Global
 		{E0B39DBA-571C-4B01-8479-63B59AA86B88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0B39DBA-571C-4B01-8479-63B59AA86B88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0B39DBA-571C-4B01-8479-63B59AA86B88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25E45F23-4D1D-4CD0-B0BC-653C8AE1C561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25E45F23-4D1D-4CD0-B0BC-653C8AE1C561}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25E45F23-4D1D-4CD0-B0BC-653C8AE1C561}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25E45F23-4D1D-4CD0-B0BC-653C8AE1C561}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -308,12 +323,15 @@ Global
 		{587A82DD-6BC1-481A-B979-5CA6D247CF69} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
 		{0F7181C7-8D52-4576-9BFF-D4B7D08F42A2} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{AAE2BDC4-4CAB-4677-8F02-3290B6061097} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
+		{B743E048-5913-4DEC-9067-8AFD1293A211} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
 		{F28FC29B-5CD1-4AEA-9E93-03BC9BE51360} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 		{9B492E05-5822-4BB0-BE28-A468D1F318AB} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 		{4D019B66-3042-4ABB-81A1-FC72D61844E5} = {C09C475A-6755-4E09-8D60-36B8FA2ADE63}
 		{49ADD937-3C6A-427C-910F-98A3AD1FCCF9} = {57C76B28-11D8-4B59-AED0-AA3935FD7F93}
 		{E0B39DBA-571C-4B01-8479-63B59AA86B88} = {57C76B28-11D8-4B59-AED0-AA3935FD7F93}
 		{DCFDE35B-C56B-48AA-8244-248EF1C805C3} = {57C76B28-11D8-4B59-AED0-AA3935FD7F93}
+		{5A8FDB27-FFCA-4A77-AB0F-AFDEF9A034ED} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
+		{25E45F23-4D1D-4CD0-B0BC-653C8AE1C561} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

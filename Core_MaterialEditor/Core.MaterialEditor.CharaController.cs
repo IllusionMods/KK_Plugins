@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace KK_Plugins
 {
-    public partial class KK_MaterialEditor
+    public partial class MaterialEditor
     {
         public class MaterialEditorCharaController : CharaCustomFunctionController
         {
@@ -26,7 +26,11 @@ namespace KK_Plugins
 
             private Dictionary<int, byte[]> TextureDictionary = new Dictionary<int, byte[]>();
 
+#if KK
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
+#elif EC
+            public int CurrentCoordinateIndex => 0;
+#endif
             private byte[] TexBytes = null;
             private ObjectType ObjectTypeToSet;
             private string PropertyToSet;
@@ -427,7 +431,7 @@ namespace KK_Plugins
                 UISystem.gameObject.SetActive(false);
                 ChaControl.StartCoroutine(LoadData(false, true, false));
             }
-
+#if KK
             internal void AccessoriesCopiedEvent(object sender, AccessoryCopyEventArgs e)
             {
                 foreach (int slot in e.CopiedSlotIndexes)
@@ -465,6 +469,7 @@ namespace KK_Plugins
                 if ((int)e.CopyDestination == CurrentCoordinateIndex)
                     UISystem.gameObject.SetActive(false);
             }
+#endif
 
             internal void ChangeAccessoryEvent(int slot, int type)
             {
@@ -631,18 +636,8 @@ namespace KK_Plugins
                     MaterialShaderList.Add(new MaterialShader(objectType, coordinateIndex, slot, materialName, shaderName, shaderNameOriginal));
                 else
                 {
-                    if (shaderName == materialProperty.ShaderNameOriginal)
-                    {
-                        materialProperty.ShaderName = null;
-                        materialProperty.ShaderNameOriginal = null;
-                        if (materialProperty.NullCheck())
-                            MaterialShaderList.Remove(materialProperty);
-                    }
-                    else
-                    {
-                        materialProperty.ShaderName = shaderName;
-                        materialProperty.ShaderNameOriginal = shaderNameOriginal;
-                    }
+                    materialProperty.ShaderName = shaderName;
+                    materialProperty.ShaderNameOriginal = shaderNameOriginal;
                 }
             }
             public void AddMaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName, int renderQueue, int renderQueueOriginal)
