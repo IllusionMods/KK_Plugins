@@ -141,16 +141,18 @@ v3.6.4 Fix compatibility issues for non Darkness game versions<br/>
 v3.7 Fix shadows on male parts and reduce error spam<br/>
 </details>
 
-#### KK_Subtitles
-**v1.4 - [Download](https://www.patreon.com/posts/27699376)**<br/>
+#### KK_Subtitles AI_Subtitles
+**v1.5 - [Download](https://www.patreon.com/posts/27699376)**<br/>
 
-Subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
+For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
+For AI Girl trial version, adds subtitles for the character maker.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Fixed H subs not working for some people<br/>
 v1.2 Subtitles for idle lines in dialogue<br/>
 v1.3 Subtitles for character maker<br/>
 v1.4 Fixed subtitles in the character maker being under the UI<br/>
+v1.5 AI Girl port<br/>
 </details>
 
 #### KK_AnimationController
