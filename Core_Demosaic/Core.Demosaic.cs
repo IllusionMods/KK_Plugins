@@ -2,11 +2,13 @@
 using BepInEx.Configuration;
 using BepInEx.Harmony;
 using HarmonyLib;
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
-    [BepInPlugin(GUID, PluginName, Version)]
-    public class Demosaic : BaseUnityPlugin
+    public partial class Demosaic : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.demosaic";
         public const string PluginName = "Demosaic";
