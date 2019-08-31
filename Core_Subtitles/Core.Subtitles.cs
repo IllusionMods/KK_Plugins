@@ -34,7 +34,7 @@ namespace KK_Plugins
 #endif
             Logger = base.Logger;
 
-            ShowSubtitles = Config.GetSetting("Config", "Show Untranslated Text", true, new ConfigDescription("Whether or not to show untranslated text."));
+            ShowSubtitles = Config.GetSetting("Config", "Show Subtitles", true, new ConfigDescription("Enable or disable showing subtitles."));
             FontName = Config.GetSetting("Config", "Font Name", "Arial", new ConfigDescription("Name of the font to use for subtitle text."));
             FontSize = Config.GetSetting("Config", "Font Size", -5, new ConfigDescription("Font size of subtitles."));
             FontStyle = Config.GetSetting("Config", "Font Style", UnityEngine.FontStyle.Bold, new ConfigDescription("Font style of subtitles, i.e. bold, italic, etc."));
