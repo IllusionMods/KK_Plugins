@@ -1,4 +1,7 @@
 ﻿using HarmonyLib;
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {

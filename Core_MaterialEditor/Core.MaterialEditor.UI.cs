@@ -11,6 +11,9 @@ using UnityEngine.UI;
 #if KK
 using Studio;
 #endif
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
@@ -30,6 +33,7 @@ namespace KK_Plugins
         {
             InitUI();
 
+#if !AI
             MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(delegate { PopulateListAccessory(); });
             if (AdvancedMode.Value)
             {
@@ -46,15 +50,16 @@ namespace KK_Plugins
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Panst, this)).OnClick.AddListener(delegate { PopulateListClothes(5); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Socks, this)).OnClick.AddListener(delegate { PopulateListClothes(6); });
 #if KK
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.InnerShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(8); });
+                        e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.InnerShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
+                        e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(8); });
 #elif EC
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Shoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
+                        e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Shoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
 #endif
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Back, this)).OnClick.AddListener(delegate { PopulateListHair(0); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Front, this)).OnClick.AddListener(delegate { PopulateListHair(1); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Side, this)).OnClick.AddListener(delegate { PopulateListHair(2); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Extension, this)).OnClick.AddListener(delegate { PopulateListHair(3); });
+#endif
         }
 
         private void InitUI()
@@ -136,8 +141,14 @@ namespace KK_Plugins
         {
             var chaControl = MakerAPI.GetCharacterControl();
             int coordinateIndex = GetCharaController(chaControl).CurrentCoordinateIndex;
-            ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(MakerAPI.GetCharacterControl(), AccessoriesApi.SelectedMakerAccSlot);
+            //todo
+#if !AI
+            var chaAccessoryComponent = AccessoriesApi.GetAccessory(MakerAPI.GetCharacterControl(), AccessoriesApi.SelectedMakerAccSlot);
             PopulateList(chaAccessoryComponent?.gameObject, ObjectType.Accessory, 0, chaControl, coordinateIndex, AccessoriesApi.SelectedMakerAccSlot);
+#else
+            var chaAccessoryComponent = AccessoriesApi.GetAccessory(MakerAPI.GetCharacterControl(), 0);
+            PopulateList(chaAccessoryComponent?.gameObject, ObjectType.Accessory, 0, chaControl, coordinateIndex, 0);
+#endif
         }
 
         private static void PopulateListHair(int index)

@@ -11,6 +11,9 @@ using System.IO;
 using System.Linq;
 using UniRx;
 using UnityEngine;
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
@@ -28,7 +31,7 @@ namespace KK_Plugins
 
 #if KK
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
-#elif EC
+#else
             public int CurrentCoordinateIndex => 0;
 #endif
             private byte[] TexBytes = null;
@@ -368,6 +371,8 @@ namespace KK_Plugins
                     UISystem.gameObject.SetActive(false);
             }
 
+            //todo
+#if !AI
             internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
             {
                 if (AccessorySelectedSlotChanging)
@@ -431,6 +436,8 @@ namespace KK_Plugins
                 UISystem.gameObject.SetActive(false);
                 ChaControl.StartCoroutine(LoadData(false, true, false));
             }
+#endif
+
 #if KK
             internal void AccessoriesCopiedEvent(object sender, AccessoryCopyEventArgs e)
             {
@@ -766,7 +773,7 @@ namespace KK_Plugins
 
             [Serializable]
             [MessagePackObject]
-            private class RendererProperty
+            public class RendererProperty
             {
                 [Key("ObjectType")]
                 public ObjectType ObjectType;
@@ -797,7 +804,7 @@ namespace KK_Plugins
 
             [Serializable]
             [MessagePackObject]
-            private class MaterialFloatProperty
+            public class MaterialFloatProperty
             {
                 [Key("ObjectType")]
                 public ObjectType ObjectType;
@@ -828,7 +835,7 @@ namespace KK_Plugins
 
             [Serializable]
             [MessagePackObject]
-            private class MaterialColorProperty
+            public class MaterialColorProperty
             {
                 [Key("ObjectType")]
                 public ObjectType ObjectType;

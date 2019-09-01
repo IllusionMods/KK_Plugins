@@ -20,6 +20,9 @@ using UnityEngine.SceneManagement;
 using KKAPI.Studio.SaveLoad;
 using Studio;
 #endif
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
@@ -44,9 +47,12 @@ namespace KK_Plugins
             Directory.CreateDirectory(ExportPath);
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
+            //todo
+#if !AI
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
+#endif
 
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
 
@@ -101,9 +107,12 @@ namespace KK_Plugins
             }
         }
 
+        //todo
+#if !AI
         private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
+#endif
 #if KK
         private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
 #endif
@@ -288,7 +297,7 @@ namespace KK_Plugins
                     didSet = true;
                 }
                 else
-                    Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{PluginNameInternal}] Could not load shader:{shaderName}");
+                    Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{PluginNameInternal}] Could not load shader:{shaderName}");
             }
 
             return didSet ? didSet : SetShader(chaControl.gameObject, materialName, shaderName, ObjectType.Character);
@@ -339,7 +348,7 @@ namespace KK_Plugins
                             didSet = true;
                         }
                         else
-                            Logger.Log(LogLevel.Warning | LogLevel.Message, $"[{PluginNameInternal}] Could not load shader:{shaderName}");
+                            Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{PluginNameInternal}] Could not load shader:{shaderName}");
                     }
 
             return didSet;

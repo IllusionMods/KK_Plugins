@@ -125,6 +125,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_Demosaic", "Core_Demos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_Demosaic", "KK_Demosaic\KK_Demosaic.csproj", "{DFF56DBE-9617-48E7-9DAB-213890DBEE6A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_MaterialEditor", "AI_MaterialEditor\AI_MaterialEditor.csproj", "{36247DAB-4F43-4007-9856-03971A475D8F}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
@@ -133,6 +135,9 @@ Global
 		CommonCode\CommonCode.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		CommonCode\CommonCode.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		Core_MaterialEditor\Core_MaterialEditor.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		Core_Demosaic\Core_Demosaic.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
 		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{49add937-3c6a-427c-910f-98a3ad1fccf9}*SharedItemsImports = 4
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
@@ -337,6 +342,10 @@ Global
 		{DFF56DBE-9617-48E7-9DAB-213890DBEE6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFF56DBE-9617-48E7-9DAB-213890DBEE6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFF56DBE-9617-48E7-9DAB-213890DBEE6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36247DAB-4F43-4007-9856-03971A475D8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36247DAB-4F43-4007-9856-03971A475D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36247DAB-4F43-4007-9856-03971A475D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36247DAB-4F43-4007-9856-03971A475D8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -371,6 +380,7 @@ Global
 		{93A50359-A48F-4A3F-BDB8-86D2A320A99E} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
 		{CB53DB90-AC91-4DBC-95A5-2729F177D3F7} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
 		{DFF56DBE-9617-48E7-9DAB-213890DBEE6A} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
+		{36247DAB-4F43-4007-9856-03971A475D8F} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
