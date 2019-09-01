@@ -98,8 +98,7 @@ namespace KK_Plugins
 
                 var data = GetExtendedData();
 
-                if (data == null)
-                    return;
+                if (data == null) return;
 
                 CharacterLoading = true;
 
@@ -224,8 +223,7 @@ namespace KK_Plugins
                 MaterialColorPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
                 MaterialTexturePropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
 
-                if (data?.data == null)
-                    return;
+                if (data?.data == null) return;
 
                 var importDictionary = new Dictionary<int, int>();
 
@@ -353,10 +351,8 @@ namespace KK_Plugins
 
             internal void ClothesStateChangeEvent()
             {
-                if (CoordinateChanging)
-                    return;
-                if (MakerAPI.InsideMaker)
-                    return;
+                if (CoordinateChanging) return;
+                if (MakerAPI.InsideMaker) return;
 
                 ChaControl.StartCoroutine(LoadData(true, false, false));
             }
@@ -393,8 +389,7 @@ namespace KK_Plugins
 
             internal void AccessorySelectedSlotChangeEvent(object sender, AccessorySlotEventArgs e)
             {
-                if (!MakerAPI.InsideAndLoaded)
-                    return;
+                if (!MakerAPI.InsideAndLoaded) return;
 
                 AccessorySelectedSlotChanging = true;
 
@@ -480,12 +475,9 @@ namespace KK_Plugins
 
             internal void ChangeAccessoryEvent(int slot, int type)
             {
-                if (type != 120) //type 120 = no category, accessory being removed
-                    return;
-                if (!MakerAPI.InsideAndLoaded)
-                    return;
-                if (CoordinateChanging)
-                    return;
+                if (type != 120) return; //type 120 = no category, accessory being removed
+                if (!MakerAPI.InsideAndLoaded) return;
+                if (CoordinateChanging) return;
 
                 MaterialShaderList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
                 RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
@@ -498,16 +490,12 @@ namespace KK_Plugins
 
             internal void ChangeCustomClothesEvent(int slot)
             {
-                if (!MakerAPI.InsideAndLoaded)
-                    return;
-                if (CoordinateChanging)
-                    return;
-                if (ClothesChanging)
-                    return;
-                if (CharacterLoading)
-                    return;
-                if (RefreshingTextures)
-                    return;
+                if (!MakerAPI.InsideAndLoaded) return;
+                if (CoordinateChanging) return;
+                if (ClothesChanging) return;
+                if (CharacterLoading) return;
+                if (RefreshingTextures) return;
+                if (CustomClothesOverride) return;
                 if (new System.Diagnostics.StackTrace().ToString().Contains("KoiClothesOverlayController"))
                 {
                     RefreshingTextures = true;
@@ -527,10 +515,8 @@ namespace KK_Plugins
 
             internal void ChangeHairEvent(int slot)
             {
-                if (!MakerAPI.InsideAndLoaded)
-                    return;
-                if (CharacterLoading)
-                    return;
+                if (!MakerAPI.InsideAndLoaded) return;
+                if (CharacterLoading) return;
 
                 MaterialShaderList.RemoveAll(x => x.ObjectType == ObjectType.Hair && x.Slot == slot);
                 RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair && x.Slot == slot);
@@ -615,11 +601,8 @@ namespace KK_Plugins
 
                 void OnFileAccept(string[] strings)
                 {
-                    if (strings == null || strings.Length == 0)
-                        return;
-
-                    if (strings[0].IsNullOrEmpty())
-                        return;
+                    if (strings == null || strings.Length == 0) return;
+                    if (strings[0].IsNullOrEmpty()) return;
 
                     TexBytes = File.ReadAllBytes(strings[0]);
                     PropertyToSet = property;
@@ -767,6 +750,22 @@ namespace KK_Plugins
                     {
                         yield return null;
                         refreshingTextures = false;
+                    }
+                }
+            }
+
+            private bool customClothesOverride = false;
+            public bool CustomClothesOverride
+            {
+                get => customClothesOverride;
+                set
+                {
+                    customClothesOverride = value;
+                    ChaControl.StartCoroutine(Reset());
+                    IEnumerator Reset()
+                    {
+                        yield return null;
+                        customClothesOverride = false;
                     }
                 }
             }

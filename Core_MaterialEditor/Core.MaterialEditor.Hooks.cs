@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using KKAPI.Maker;
 #if AI
 using AIChara;
 #endif
@@ -21,6 +22,25 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), new[] { typeof(int), typeof(int), typeof(bool), typeof(bool) })]
             public static void ChangeHair(ChaControl __instance, int kind) => GetCharaController(__instance)?.ChangeHairEvent(kind);
 
+#if !AI
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdateCosColor))]
+            public static void FuncUpdateCosColorOverride() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdatePattern01))]
+            public static void FuncUpdatePattern01Override() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdatePattern02))]
+            public static void FuncUpdatePattern02Override() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdatePattern03))]
+            public static void FuncUpdatePattern03Override() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdatePattern04))]
+            public static void FuncUpdatePattern04Override() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdateAllPtnAndColor))]
+            public static void FuncUpdateAllPtnAndColorOverride() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+#endif
         }
     }
 }
