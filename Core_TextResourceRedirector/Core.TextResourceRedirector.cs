@@ -14,9 +14,7 @@ namespace KK_Plugins
         private void Awake()
         {
             _excelRedirector = new ExcelDataResourceRedirector();
-#if !HS
             _scenarioRedirector = new ScenarioDataResourceRedirector();
-#endif
             enabled = false;
         }
     }
