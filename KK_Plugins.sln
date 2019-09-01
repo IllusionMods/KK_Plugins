@@ -115,8 +115,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_MaterialEditor", "EC_Mat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_Subtitles", "AI_Subtitles\AI_Subtitles.csproj", "{CAD079E9-566D-4933-8390-10476A337347}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_TextDump", "AI_TextDump\AI_TextDump.csproj", "{F7A2D0A4-D386-40C2-930D-7A9A5A7D9E98}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_Demosaic", "AI_Demosaic\AI_Demosaic.csproj", "{93A50359-A48F-4A3F-BDB8-86D2A320A99E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demosaic", "Demosaic", "{2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}"
@@ -126,6 +124,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_Demosaic", "KK_Demosaic\KK_Demosaic.csproj", "{DFF56DBE-9617-48E7-9DAB-213890DBEE6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_MaterialEditor", "AI_MaterialEditor\AI_MaterialEditor.csproj", "{36247DAB-4F43-4007-9856-03971A475D8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_TextResourceRedirector", "AI_TextResourceRedirector\AI_TextResourceRedirector.csproj", "{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -152,6 +152,7 @@ Global
 		UIUtility\UIUtility.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
 		Core_Subtitles\Core_Subtitles.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
+		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{b697727b-9f9c-44b0-baa4-de9cbf184ea5}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
@@ -330,10 +331,6 @@ Global
 		{CAD079E9-566D-4933-8390-10476A337347}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAD079E9-566D-4933-8390-10476A337347}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAD079E9-566D-4933-8390-10476A337347}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7A2D0A4-D386-40C2-930D-7A9A5A7D9E98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7A2D0A4-D386-40C2-930D-7A9A5A7D9E98}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7A2D0A4-D386-40C2-930D-7A9A5A7D9E98}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7A2D0A4-D386-40C2-930D-7A9A5A7D9E98}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93A50359-A48F-4A3F-BDB8-86D2A320A99E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93A50359-A48F-4A3F-BDB8-86D2A320A99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93A50359-A48F-4A3F-BDB8-86D2A320A99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -346,6 +343,10 @@ Global
 		{36247DAB-4F43-4007-9856-03971A475D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36247DAB-4F43-4007-9856-03971A475D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36247DAB-4F43-4007-9856-03971A475D8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -376,11 +377,11 @@ Global
 		{5A8FDB27-FFCA-4A77-AB0F-AFDEF9A034ED} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
 		{25E45F23-4D1D-4CD0-B0BC-653C8AE1C561} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
 		{CAD079E9-566D-4933-8390-10476A337347} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
-		{F7A2D0A4-D386-40C2-930D-7A9A5A7D9E98} = {C09C475A-6755-4E09-8D60-36B8FA2ADE63}
 		{93A50359-A48F-4A3F-BDB8-86D2A320A99E} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
 		{CB53DB90-AC91-4DBC-95A5-2729F177D3F7} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
 		{DFF56DBE-9617-48E7-9DAB-213890DBEE6A} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
 		{36247DAB-4F43-4007-9856-03971A475D8F} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
+		{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5} = {57C76B28-11D8-4B59-AED0-AA3935FD7F93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

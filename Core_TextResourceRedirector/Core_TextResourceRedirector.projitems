@@ -11,5 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.ExcelData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.ScenarioData.cs" />
   </ItemGroup>
 </Project>

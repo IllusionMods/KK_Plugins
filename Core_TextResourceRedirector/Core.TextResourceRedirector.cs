@@ -9,14 +9,14 @@ namespace KK_Plugins
         public const string Version = "1.0";
 
         private ExcelDataResourceRedirector _excelRedirector;
+        private ScenarioDataResourceRedirector _scenarioRedirector;
 
         private void Awake()
         {
             _excelRedirector = new ExcelDataResourceRedirector();
-#if KK
+#if !HS
             _scenarioRedirector = new ScenarioDataResourceRedirector();
 #endif
-
             enabled = false;
         }
     }

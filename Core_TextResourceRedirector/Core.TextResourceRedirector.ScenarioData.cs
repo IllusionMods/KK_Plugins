@@ -1,4 +1,5 @@
-﻿using ADV;
+﻿#if !HS
+using ADV;
 using XUnity.AutoTranslator.Plugin.Core;
 using XUnity.AutoTranslator.Plugin.Core.AssetRedirection;
 using XUnity.AutoTranslator.Plugin.Core.Utilities;
@@ -66,3 +67,9 @@ namespace KK_Plugins
         protected override bool ShouldHandleAsset(ScenarioData asset, IAssetOrResourceLoadedContext context) => !context.HasReferenceBeenRedirectedBefore(asset);
     }
 }
+#else //Stub for HS which has no ScenarioData
+namespace KK_Plugins
+{
+    public class ScenarioDataResourceRedirector { }
+}
+#endif
