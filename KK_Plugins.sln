@@ -127,6 +127,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_MaterialEditor", "AI_Mat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_TextResourceRedirector", "AI_TextResourceRedirector\AI_TextResourceRedirector.csproj", "{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InputHotkeyBlock", "InputHotkeyBlock", "{06544F1F-7504-40FB-B614-B8B50B6D790D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_InputHotkeyBlock", "Core_InputHotkeyBlock\Core_InputHotkeyBlock.shproj", "{8E430F6C-8222-4F1B-950F-4D5595DDF7F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_InputHotkeyBlock", "AI_InputHotkeyBlock\AI_InputHotkeyBlock.csproj", "{BC2D1E37-D3C2-4225-8CE4-2E116E84E365}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_InputHotkeyBlock", "EC_InputHotkeyBlock\EC_InputHotkeyBlock.csproj", "{6BC022E8-B0BF-4A6A-8A0D-D3CE0A9D8E5A}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
@@ -135,6 +143,7 @@ Global
 		CommonCode\CommonCode.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
@@ -143,9 +152,11 @@ Global
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{5a8fdb27-ffca-4a77-ab0f-afdef9a034ed}*SharedItemsImports = 13
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
+		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{6bc022e8-b0bf-4a6a-8a0d-d3ce0a9d8e5a}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{8a811717-0cd1-4541-bd67-a0210586e4d0}*SharedItemsImports = 4
+		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{8e430f6c-8222-4f1b-950f-4d5595ddf7f7}*SharedItemsImports = 13
 		Core_Demosaic\Core_Demosaic.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
 		Core_Subtitles\Core_Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
@@ -156,6 +167,7 @@ Global
 		CommonCode\CommonCode.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{bc2d1e37-d3c2-4225-8ce4-2e116e84e365}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{c15b8820-0e24-452b-b076-1a052dd7c0fb}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{c2c68ac3-cb8f-4ba7-91ea-9a242851294d}*SharedItemsImports = 4
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{c71a1776-100b-49c9-a944-ed54c4312591}*SharedItemsImports = 13
@@ -347,12 +359,21 @@ Global
 		{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC2D1E37-D3C2-4225-8CE4-2E116E84E365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC2D1E37-D3C2-4225-8CE4-2E116E84E365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC2D1E37-D3C2-4225-8CE4-2E116E84E365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC2D1E37-D3C2-4225-8CE4-2E116E84E365}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BC022E8-B0BF-4A6A-8A0D-D3CE0A9D8E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BC022E8-B0BF-4A6A-8A0D-D3CE0A9D8E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BC022E8-B0BF-4A6A-8A0D-D3CE0A9D8E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BC022E8-B0BF-4A6A-8A0D-D3CE0A9D8E5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{17B56A36-764F-4670-941A-B0CB76558F37} = {CE8EA04B-6351-40C4-97AB-24CAE7020DCB}
+		{3557D31C-F7F1-4FC6-BB2F-4360CD50152A} = {06544F1F-7504-40FB-B614-B8B50B6D790D}
 		{190FE08F-1D2E-4615-8555-F036D5E48587} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
 		{AECDBBFB-B520-4589-AB30-EDB96F5354F0} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 		{98B3AD67-6608-420F-A3A4-D1ABD9402905} = {C09C475A-6755-4E09-8D60-36B8FA2ADE63}
@@ -382,6 +403,9 @@ Global
 		{DFF56DBE-9617-48E7-9DAB-213890DBEE6A} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
 		{36247DAB-4F43-4007-9856-03971A475D8F} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
 		{B697727B-9F9C-44B0-BAA4-DE9CBF184EA5} = {57C76B28-11D8-4B59-AED0-AA3935FD7F93}
+		{8E430F6C-8222-4F1B-950F-4D5595DDF7F7} = {06544F1F-7504-40FB-B614-B8B50B6D790D}
+		{BC2D1E37-D3C2-4225-8CE4-2E116E84E365} = {06544F1F-7504-40FB-B614-B8B50B6D790D}
+		{6BC022E8-B0BF-4A6A-8A0D-D3CE0A9D8E5A} = {06544F1F-7504-40FB-B614-B8B50B6D790D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
