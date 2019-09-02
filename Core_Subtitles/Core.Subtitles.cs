@@ -29,9 +29,6 @@ namespace KK_Plugins
 
         private void Awake()
         {
-#if HS
-            if (Application.productName != "HoneySelect") return;
-#endif
             Logger = base.Logger;
 
             ShowSubtitles = Config.GetSetting("Config", "Show Subtitles", true, new ConfigDescription("Enable or disable showing subtitles."));
@@ -43,6 +40,10 @@ namespace KK_Plugins
             OutlineThickness = Config.GetSetting("Config", "Outline Thickness", 2, new ConfigDescription("Outline thickness for subtitle text."));
             TextColor = Config.GetSetting("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, new ConfigDescription("Subtitle text color."));
             OutlineColor = Config.GetSetting("Config", "Outline Color", Color.black, new ConfigDescription("Subtitle text outline color."));
+
+#if HS
+            if (Application.productName != "HoneySelect") return;
+#endif
 
             LoadSubtitles();
 
