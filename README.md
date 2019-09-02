@@ -1,3 +1,6 @@
+Support me on Patreon!<br/>
+https://www.patreon.com/DeathWeasel
+
 # KK_Plugins
 Plugins for Koikatsu and EmotionCreators
 
