@@ -265,4 +265,58 @@
     <Property Name="PatternMask3" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
   </Shader>
+  <Shader Name="AIT/Skin True">
+    <Property Name="matcaptilling" Type="Float" />
+    <Property Name="matcapscale" Type="Float" />
+    <Property Name="Metallic" Type="Float" />
+    <Property Name="Gloss" Type="Float" />
+    <Property Name="OcclusionStrength" Type="Float" />
+    <Property Name="DetailMainScale" Type="Float" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="BumpScale2" Type="Float" />
+    <Property Name="Riality" Type="Float" />
+    <Property Name="NipGloss" Type="Float" />
+    <Property Name="NailGloss" Type="Float" />
+    <Property Name="ExGloss" Type="Float" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="NipScale" Type="Float" />
+    <Property Name="Texture3Rotator" Type="Float" />
+    <Property Name="Texture4Scale" Type="Float" />
+    <Property Name="WeatheringAll" Type="Float" />
+    <Property Name="WeatheringRange1" Type="Float" />
+    <Property Name="WeatheringRange2" Type="Float" />
+    <Property Name="WeatheringRange3" Type="Float" />
+    <Property Name="WeatheringRange4" Type="Float" />
+    <Property Name="WeatheringRange5" Type="Float" />
+    <Property Name="WeatheringRange6" Type="Float" />
+    <Property Name="Translucency" Type="Float" />
+    <Property Name="TransNormalDistortion" Type="Float" />
+    <Property Name="TransScattering" Type="Float" />
+    <Property Name="TransDirect" Type="Float" />
+    <Property Name="TransAmbient" Type="Float" />
+    <Property Name="TransShadow" Type="Float" />
+    <Property Name="_dirty" Type="Float" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="Color4" Type="Color" />
+    <Property Name="Color13" Type="Color" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Texture3UV" Type="Color" />
+    <Property Name="WeatheringUV" Type="Color" />
+    <Property Name="MatcapTexture" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="DetailMainTex" Type="Texture" />
+    <Property Name="HairBase" Type="Texture" />
+    <Property Name="Texture2" Type="Texture" />
+    <Property Name="Texture3" Type="Texture" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="BumpMap2" Type="Texture" />
+    <Property Name="DetailGlossMap" Type="Texture" />
+    <Property Name="WeatheringMap" Type="Texture" />
+    <Property Name="WeatheringMask" Type="Texture" />
+    <Property Name="texcoord" Type="Texture" />
+    <Property Name="texcoord2" Type="Texture" />
+    <Property Name="texcoord3" Type="Texture" />
+  </Shader>
 </AI_MaterialEditor>
