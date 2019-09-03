@@ -10,7 +10,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
-        public const string Version = "1.5";
+        public const string Version = "1.5.1";
         internal static new ManualLogSource Logger;
 
         internal static Dictionary<string, string> SubtitleDictionary = new Dictionary<string, string>();
