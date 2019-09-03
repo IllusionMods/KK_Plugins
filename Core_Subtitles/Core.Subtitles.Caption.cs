@@ -30,7 +30,7 @@ namespace KK_Plugins
                 (Pane.GetComponent<CanvasGroup>() ?? Pane.AddComponent<CanvasGroup>()).blocksRaycasts = false;
 
                 var vlg = Pane.GetComponent<VerticalLayoutGroup>() ?? Pane.AddComponent<VerticalLayoutGroup>();
-#if KK
+#if !HS
                 vlg.childControlHeight = false;
                 vlg.childControlWidth = false;
 #endif
