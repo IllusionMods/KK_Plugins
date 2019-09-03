@@ -145,7 +145,7 @@ v3.7 Fix shadows on male parts and reduce error spam<br/>
 </details>
 
 #### KK_Subtitles AI_Subtitles
-**v1.5 - [Download](https://www.patreon.com/posts/27699376)**<br/>
+**v1.5.1 - [Download](https://www.patreon.com/posts/27699376)**<br/>
 
 For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
 For AI Girl trial version, adds subtitles for the character maker.<br/>
@@ -156,6 +156,7 @@ v1.2 Subtitles for idle lines in dialogue<br/>
 v1.3 Subtitles for character maker<br/>
 v1.4 Fixed subtitles in the character maker being under the UI<br/>
 v1.5 AI Girl port<br/>
+v1.5.1 Fixed text wrapping, clarified config description<br/>
 </details>
 
 #### KK_AnimationController
