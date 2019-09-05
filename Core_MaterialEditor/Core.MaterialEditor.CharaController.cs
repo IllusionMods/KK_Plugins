@@ -474,7 +474,11 @@ namespace KK_Plugins
 
             internal void ChangeAccessoryEvent(int slot, int type)
             {
+#if AI
+                if (type != 350) return; //type 350 = no category, accessory being removed
+#else
                 if (type != 120) return; //type 120 = no category, accessory being removed
+#endif
                 if (!MakerAPI.InsideAndLoaded) return;
                 if (CoordinateChanging) return;
 

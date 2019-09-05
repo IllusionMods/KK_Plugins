@@ -91,7 +91,6 @@ namespace KK_Plugins
 #endif
         }
 
-
         private void InitUI()
         {
             UIUtility.Init(nameof(KK_Plugins));

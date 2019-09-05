@@ -16,6 +16,7 @@ using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using HarmonyLib;
 #if KK
 using KKAPI.Studio.SaveLoad;
 using Studio;
@@ -65,7 +66,15 @@ namespace KK_Plugins
             AdvancedMode = Config.GetSetting("Config", "Enable advanced editing", false, new ConfigDescription("Enables advanced editing of characters in the character maker. Note: Some textures and colors will override chracter maker selections but will not always appear to do so, especially after changing them from the in game color pickers. Save and reload to see the real effects.\nUse at your own risk."));
 
             LoadXML();
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+
+#if AI
+            foreach (var method in typeof(CharaCustom.CustomClothesPatternSelect).GetMethods().Where(x => x.Name.Contains("<ChangeLink>")))
+                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.OverrideHook), AccessTools.all)));
+
+            foreach (var method in typeof(CharaCustom.CustomClothesColorSet).GetMethods().Where(x => x.Name.Contains("<Initialize>")))
+                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.OverrideHook), AccessTools.all)));
+#endif
         }
 
         private void LoadXML()

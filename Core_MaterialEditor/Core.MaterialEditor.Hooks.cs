@@ -22,7 +22,9 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), new[] { typeof(int), typeof(int), typeof(bool), typeof(bool) })]
             public static void ChangeHair(ChaControl __instance, int kind) => GetCharaController(__instance)?.ChangeHairEvent(kind);
 
-#if !AI
+#if AI
+            public static void OverrideHook() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+#else
             [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdateCosColor))]
             public static void FuncUpdateCosColorOverride() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 
@@ -41,6 +43,7 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdateAllPtnAndColor))]
             public static void FuncUpdateAllPtnAndColorOverride() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 #endif
+
         }
     }
 }
