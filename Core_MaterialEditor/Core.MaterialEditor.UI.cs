@@ -35,20 +35,6 @@ namespace KK_Plugins
             "cf_O_gag_eye_02", "o_shadowcaster", "o_shadowcaster_cm", "o_mnpa", "o_mnpb", "n_body_silhouette" };
 #endif
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                InitUI();
-                PopulateListHair(0);
-            }
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                InitUI();
-                PopulateListHair(1);
-            }
-        }
-
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
             InitUI();
