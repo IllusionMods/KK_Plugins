@@ -24,22 +24,42 @@ namespace KK_Plugins
 
         public const string FileExt = ".png";
         public const string FileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
+#if AI
+        private static readonly HashSet<string> BodyParts = new HashSet<string> {
+            "o_eyebase_L", "o_eyebase_R", "o_eyelashes", "o_eyeshadow", "o_head", "o_namida", "o_tang", "o_tooth", "o_body_cf", "o_mnpa", "o_mnpb", "cm_o_dan00", "o_tang",
+            "cm_o_dan00", "o_tang", "o_silhouette_cf" };
+#else
         private static readonly HashSet<string> BodyParts = new HashSet<string> {
             "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang", "n_tang_silhouette",  "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_mayuge", "cf_Ohitomi_L", "cf_Ohitomi_R",
             "cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_noseline", "cf_O_namida_L", "cf_O_namida_M", "o_dankon", "o_gomu", "o_dan_f", "cf_O_namida_S", "cf_O_gag_eye_00", "cf_O_gag_eye_01",
             "cf_O_gag_eye_02", "o_shadowcaster", "o_shadowcaster_cm", "o_mnpa", "o_mnpb", "n_body_silhouette" };
+#endif
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                InitUI();
+                PopulateListHair(0);
+            }
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                InitUI();
+                PopulateListHair(1);
+            }
+        }
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
             InitUI();
 
-#if !AI
             MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(delegate { PopulateListAccessory(); });
+#if !AI
             if (AdvancedMode.Value)
             {
-                e.AddControl(new MakerButton("Open Material Editor (Body)", MakerConstants.Face.All, this)).OnClick.AddListener(delegate { PopulateListBody(); });
-                e.AddControl(new MakerButton("Open Material Editor (Face)", MakerConstants.Face.All, this)).OnClick.AddListener(delegate { PopulateListFace(); });
-                e.AddControl(new MakerButton("Open Material Editor (All)", MakerConstants.Face.All, this)).OnClick.AddListener(delegate { PopulateListCharacter(); });
+                e.AddControl(new MakerButton("Open Material Editor (Body)", MakerConstants.Body.All, this)).OnClick.AddListener(delegate { PopulateListBody(); });
+                e.AddControl(new MakerButton("Open Material Editor (Face)", MakerConstants.Body.All, this)).OnClick.AddListener(delegate { PopulateListFace(); });
+                e.AddControl(new MakerButton("Open Material Editor (All)", MakerConstants.Body.All, this)).OnClick.AddListener(delegate { PopulateListCharacter(); });
             }
 
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Top, this)).OnClick.AddListener(delegate { PopulateListClothes(0); });
@@ -50,10 +70,10 @@ namespace KK_Plugins
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Panst, this)).OnClick.AddListener(delegate { PopulateListClothes(5); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Socks, this)).OnClick.AddListener(delegate { PopulateListClothes(6); });
 #if KK
-                        e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.InnerShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
-                        e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(8); });
-#elif EC
-                        e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Shoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.InnerShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(delegate { PopulateListClothes(8); });
+#else
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Shoes, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
 #endif
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Back, this)).OnClick.AddListener(delegate { PopulateListHair(0); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Front, this)).OnClick.AddListener(delegate { PopulateListHair(1); });
@@ -61,6 +81,30 @@ namespace KK_Plugins
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Extension, this)).OnClick.AddListener(delegate { PopulateListHair(3); });
 #endif
         }
+
+        private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
+        {
+#if AI
+            MakerCategory hairCategory = new MakerCategory(MakerConstants.Hair.CategoryName, "ME", 0, "Material Editor");
+            e.AddControl(new MakerButton("Open Material Editor (Back)", hairCategory, this)).OnClick.AddListener(delegate { PopulateListHair(0); });
+            e.AddControl(new MakerButton("Open Material Editor (Front)", hairCategory, this)).OnClick.AddListener(delegate { PopulateListHair(1); });
+            e.AddControl(new MakerButton("Open Material Editor (Side)", hairCategory, this)).OnClick.AddListener(delegate { PopulateListHair(2); });
+            e.AddControl(new MakerButton("Open Material Editor (Extension)", hairCategory, this)).OnClick.AddListener(delegate { PopulateListHair(3); });
+            e.AddSubCategory(hairCategory);
+
+            MakerCategory clothesCategory = new MakerCategory(MakerConstants.Clothes.CategoryName, "ME", 0, "Material Editor");
+            e.AddControl(new MakerButton("Open Material Editor (Top)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(0); });
+            e.AddControl(new MakerButton("Open Material Editor (Bottom)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(1); });
+            e.AddControl(new MakerButton("Open Material Editor (Bra)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(2); });
+            e.AddControl(new MakerButton("Open Material Editor (Underwear)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(3); });
+            e.AddControl(new MakerButton("Open Material Editor (Gloves)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(4); });
+            e.AddControl(new MakerButton("Open Material Editor (Pantyhose)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(5); });
+            e.AddControl(new MakerButton("Open Material Editor (Socks)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(6); });
+            e.AddControl(new MakerButton("Open Material Editor (Shoes)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
+            e.AddSubCategory(clothesCategory);
+#endif
+        }
+
 
         private void InitUI()
         {
@@ -141,14 +185,8 @@ namespace KK_Plugins
         {
             var chaControl = MakerAPI.GetCharacterControl();
             int coordinateIndex = GetCharaController(chaControl).CurrentCoordinateIndex;
-            //todo
-#if !AI
             var chaAccessoryComponent = AccessoriesApi.GetAccessory(MakerAPI.GetCharacterControl(), AccessoriesApi.SelectedMakerAccSlot);
             PopulateList(chaAccessoryComponent?.gameObject, ObjectType.Accessory, 0, chaControl, coordinateIndex, AccessoriesApi.SelectedMakerAccSlot);
-#else
-            var chaAccessoryComponent = AccessoriesApi.GetAccessory(MakerAPI.GetCharacterControl(), 0);
-            PopulateList(chaAccessoryComponent?.gameObject, ObjectType.Accessory, 0, chaControl, coordinateIndex, 0);
-#endif
         }
 
         private static void PopulateListHair(int index)
@@ -487,7 +525,7 @@ namespace KK_Plugins
                     dropdownShader.captionText.alignment = TextAnchor.MiddleLeft;
                     dropdownShader.options.Clear();
                     dropdownShader.options.Add(new Dropdown.OptionData(shaderNameInitial));
-                    foreach (var shader in XMLShaderProperties)
+                    foreach (var shader in XMLShaderProperties.Where(x => x.Key != "default" && x.Key != shaderNameInitial))
                     {
                         dropdownShader.options.Add(new Dropdown.OptionData(shader.Key));
                     }
@@ -519,7 +557,7 @@ namespace KK_Plugins
                         else
                         {
                             int counter = 0;
-                            foreach (var shader in XMLShaderProperties)
+                            foreach (var shader in XMLShaderProperties.Where(x => x.Key != "default" && x.Key != shaderNameInitial))
                             {
                                 counter++;
                                 if (counter == value)
@@ -559,15 +597,12 @@ namespace KK_Plugins
                             return 0;
 
                         int counter = 0;
-                        foreach (var shader in XMLShaderProperties)
-                            if (shader.Key == shaderNameInitial || shader.Key == "default")
-                                continue;
-                            else
-                            {
-                                counter++;
-                                if (currentShaderName == shader.Key)
-                                    return counter;
-                            }
+                        foreach (var shader in XMLShaderProperties.Where(x => x.Key != "default" && x.Key != shaderNameInitial))
+                        {
+                            counter++;
+                            if (currentShaderName == shader.Key)
+                                return counter;
+                        }
                         return 0;
                     }
 

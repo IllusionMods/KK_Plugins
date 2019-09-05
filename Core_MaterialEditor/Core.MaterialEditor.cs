@@ -47,10 +47,10 @@ namespace KK_Plugins
             Directory.CreateDirectory(ExportPath);
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
-            //todo
-#if !AI
+            MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
+#if !AI
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
 #endif
 
@@ -107,12 +107,11 @@ namespace KK_Plugins
             }
         }
 
-        //todo
 #if !AI
-        private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
+      private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
+#endif
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
-#endif
 #if KK
         private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
 #endif

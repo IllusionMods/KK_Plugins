@@ -116,6 +116,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\EC_Shaders.unity3d" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\AI_Shaders.unity3d" />
+  </ItemGroup>
   <Import Project="..\Core_MaterialEditor\Core_MaterialEditor.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />

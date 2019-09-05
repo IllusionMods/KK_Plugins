@@ -367,8 +367,6 @@ namespace KK_Plugins
                     UISystem.gameObject.SetActive(false);
             }
 
-            //todo
-#if !AI
             internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
             {
                 if (AccessorySelectedSlotChanging)
@@ -396,6 +394,7 @@ namespace KK_Plugins
                 if (UISystem.gameObject.activeInHierarchy)
                     PopulateListAccessory();
             }
+#if !AI
 
             internal void AccessoryTransferredEvent(object sender, AccessoryTransferEventArgs e)
             {
