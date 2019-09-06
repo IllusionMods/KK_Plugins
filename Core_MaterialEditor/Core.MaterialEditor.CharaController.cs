@@ -394,7 +394,6 @@ namespace KK_Plugins
                 if (UISystem.gameObject.activeInHierarchy)
                     PopulateListAccessory();
             }
-#if !AI
 
             internal void AccessoryTransferredEvent(object sender, AccessoryTransferEventArgs e)
             {
@@ -430,7 +429,6 @@ namespace KK_Plugins
                 UISystem.gameObject.SetActive(false);
                 ChaControl.StartCoroutine(LoadData(false, true, false));
             }
-#endif
 
 #if KK
             internal void AccessoriesCopiedEvent(object sender, AccessoryCopyEventArgs e)

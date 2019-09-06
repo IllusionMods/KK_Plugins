@@ -31,7 +31,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "1.5.1";
+        public const string Version = "1.6";
         internal static new ManualLogSource Logger;
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
@@ -51,9 +51,7 @@ namespace KK_Plugins
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
-#if !AI
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
-#endif
 
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
 
@@ -116,9 +114,7 @@ namespace KK_Plugins
             }
         }
 
-#if !AI
-      private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
-#endif
+        private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
 #if KK
