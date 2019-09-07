@@ -16,18 +16,18 @@ Plugins for Koikatsu and EmotionCreators
 3. Install [ECAPI](https://github.com/ManlyMarco/KKAPI/releases)
 4. Extract the plugin .zip file to your Koikatu folder
 
-#### KK_CharaMakerLoadedSound
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip)**<br/>
+#### CharaMakerLoadedSound
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip)** - For Koikatsu<br/>
 
 Plays a sound when the Chara Maker finishes loading. Useful if you spend the load time alt-tabbed.
 
-#### KK_StudioSceneLoadedSound
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_StudioSceneLoadedSound.v1.0.zip)**<br/>
+#### StudioSceneLoadedSound
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_StudioSceneLoadedSound.v1.0.zip)** - For Koikatsu<br/>
 
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.<br/>
 
-#### KK_ForceHighPoly
-**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v70/KK_ForceHighPoly.v1.2.zip)**<br/>
+#### ForceHighPoly
+**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v70/KK_ForceHighPoly.v1.2.zip)** - For Koikatsu<br/>
 
 Forces all characters to load in high poly mode, even in the school exploration mode.<br/>
 
@@ -36,9 +36,9 @@ v1.1 Fixed locking up the game after special H scenes. Added config option to di
 v1.2 Fixed hair physics not working (Thanks Rau/Marco/Essu)<br/>
 </details>
 
-#### KK_GUIDMigration
-**v1.5.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v110/KK_GUIDMigration.v1.5.4.zip)**<br/>
-Note: Only to be used with BepisPlugins r10, earlier versions are incompatible!<br/>
+#### GUIDMigration
+**v1.5.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v110/KK_GUIDMigration.v1.5.4.zip)** - For Koikatsu<br/>
+Note: Only to be used with BepisPlugins r10 or higher, earlier versions are incompatible!<br/>
 
 Migrates information on your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.<br/>
 
@@ -60,8 +60,8 @@ When the category is * only GUID migration will be attempted and whatever you pu
 When the category is - the extended data will be stripped and will be treated as a hard mod
 </details>
 
-#### KK_ReloadCharaListOnChange
-**v1.5.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_ReloadCharaListOnChange.v1.5.1.zip)**<br/>
+#### ReloadCharaListOnChange
+**v1.5.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_ReloadCharaListOnChange.v1.5.1.zip)** - For Koikatsu<br/>
 
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.<br/>
 
@@ -75,8 +75,8 @@ v1.5 Koikatsu Party compatibility<br/>
 v1.5.1 Create card folders if missing to prevent errors<br/>
 </details>
 
-#### KK_InvisibleBody EC_InvisibleBody
-**v1.3 - [Download](https://www.patreon.com/posts/28424780)**<br/>
+#### InvisibleBody
+**v1.3 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu and Emotion Creators<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
 
@@ -90,22 +90,22 @@ v1.2.2 Updated for KK Darkness<br/>
 v1.3 Added a toggle button for Studio, removed hotkey<br/>
 </details>
 
-#### KK_InputHotkeyBlock
-**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v107/KK_InputHotkeyBlock.v1.2.zip)**<br/>
+#### InputHotkeyBlock
+**v1.2 - [Download](https://www.patreon.com/posts/29761547)** - For Koikatsu and AI Girl<br/>
 
 Blocks mod hotkeys from triggering while typing in input fields and prevents clicks inside mod GUIs from advancing the story.
 
 Credits:
 * essu: Code for blocking hotkeys
-* Kyne: Code for preventing mod GUI clicks from advancing the story
+* Kyne: Code for preventing mod GUI clicks from advancing the story in Koikatsu
 
 <details><summary>Change Log</summary>
 v1.1 Blocks hotkeys in studio coordinate fields<br/>
-v1.2 Prevents clicks inside mod GUI elements from advancing the story (Thanks Kyne)<br/>
+v1.2 Prevents clicks inside mod GUI elements from advancing the story in Koikatsu (Thanks Kyne)<br/>
 </details>
 
-#### KK_UncensorSelector EC_UncensorSelector
-**v3.7 - [Download](https://www.patreon.com/posts/28204946)**<br/>
+#### UncensorSelector
+**v3.7 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu and Emotion Creators<br/>
 
 Download uncensors:<br/>
 For Koikatsu click [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!S0IzlILZ)<br/>
@@ -144,8 +144,9 @@ v3.6.4 Fix compatibility issues for non Darkness game versions<br/>
 v3.7 Fix shadows on male parts and reduce error spam<br/>
 </details>
 
-#### KK_Subtitles AI_Subtitles
-**v1.5.1 - [Download](https://www.patreon.com/posts/27699376)**<br/>
+#### Subtitles
+**v1.4 - [Download](https://www.patreon.com/posts/27699376)** - For Koikatsu<br/>
+**v1.5.1 - [Download](https://www.patreon.com/posts/27699376)** - For AI Girl<br/>
 
 For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
 For AI Girl trial version, adds subtitles for the character maker.<br/>
@@ -159,8 +160,8 @@ v1.5 AI Girl port<br/>
 v1.5.1 Fixed text wrapping, clarified config description<br/>
 </details>
 
-#### KK_AnimationController
-**v2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v57/KK_AnimationController.v2.1.zip)**<br/>
+#### AnimationController
+**v2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v57/KK_AnimationController.v2.1.zip)** - For Koikatsu<br/>
 *Note: Mostly obsolete. [NodeConstraints](https://www.patreon.com/posts/26357789) does what this plugin does but better.*
 
 Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.<br/>
@@ -176,7 +177,7 @@ v2.0 Significant rewrite with KKAPI integration. Can now link eyes and neck to o
 v2.1 Fix neck link not working, fix linking after unlinking not working<br/>
 </details>
 
-#### KK_ClothingUnlocker EC_ClothingUnlocker
+#### ClothingUnlocker
 **v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v62/KK_ClothingUnlocker.v1.1.zip)** - For Koikatsu<br/>
 **v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v77/EC_ClothingUnlocker.v1.1.zip)** - For EmotionCreators<br/>
 
@@ -190,43 +191,39 @@ KK_ClothingUnlocker can unlock bras/skirts with any top. Go to plugin settings a
 v1.1 Added clothing unlocking for bras/skirts with any top<br/>
 </details>
 
-#### KK_EyeShaking
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_EyeShaking.v1.0.zip)**<br/>
+#### EyeShaking
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_EyeShaking.v1.0.zip)** - For Koikatsu<br/>
 
 Virgins in H scenes will appear to have slightly shaking eye highlights.<br/>
 
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
-
-#### KK_RandomCharacterGenerator
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v47/KK_RandomCharacterGenerator.v1.0.zip)**<br/>
+#### RandomCharacterGenerator
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v47/KK_RandomCharacterGenerator.v1.0.zip)** - For Koikatsu<br/>
 
 Generates random characters in the character maker.<br/>
 
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
-
-#### KK_PoseFolders
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v60/KK_PoseFolders.v1.0.zip)**<br/>
+#### PoseFolders
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v60/KK_PoseFolders.v1.0.zip)** - For Koikatsu<br/>
 
 Create new folders in userdata/studio/pose and place the pose data inside them. Folders will show up in your list of poses in Studio.<br/>
 
 Ported to Koikatsu from Essu's NEOpose List Folders plugin for Honey Select.<br/>
 
-#### KK_TranslationSync
-**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v61/KK_TranslationSync.v1.2.zip)**<br/>
+#### TranslationSync
+**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v61/KK_TranslationSync.v1.2.zip)** - For Koikatsu<br/>
 
 A plugin for correctly formatting translation files. Corrects formatting and copies translations from one file to another for the same personality in case of duplicate entries. Used by translators working on the [Koikatsu Translation](https://github.com/DeathWeasel1337/Koikatsu-Translations) project. No need to download unless you're working on translations.<br/>
 
 To use, open the plugin settings and set a personality, press the hotkey (default 0) to sync translations. Read your bepinex console or output_log.txt to see the changes made or any warnings and errors. Press alt+hotkey to force sync translation files in case of differing translations (warning: make backups first. It may not be obvious which translations are treated as the primary source). Press ctrl+hotkey to sync translations for all personalities (warning: very slow).<br/>
 
-#### KK_ListOverride
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip)**<br/>
+#### ListOverride
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip)** - For Koikatsu<br/>
 
 Allows you to override vanilla list files. Comes with some overrides that enable half off state for some vanilla pantyhose.<br/>
 
 Overriding list files can allow you to do things like enable bras with some shirts which don't normally allow it, or skirts with some tops, etc. Any part of of the list can be changed except for ID.<br/>
 
-#### KK_HairAccessoryCustomizer EC_HairAccessoryCustomizer
-**v1.1.2 - [Download](https://www.patreon.com/posts/27712341)**<br/>
+#### HairAccessoryCustomizer
+**v1.1.2 - [Download](https://www.patreon.com/posts/27712341)** - For Koikatsu and Emotion Creators<br/>
 
 Adds configuration options for hair accessories to the character maker. Hair accessories can be set to match color with the hair, enable hair gloss, modify outline color, and has a separate color picker for the hair tie part. Hairs that support a length slider can also hair their length adjusted, just like vanilla front hairs. Saves and loads to cards and coordinates.<br/>
 
@@ -242,7 +239,7 @@ v1.1.1 Fixed hair accessories matching color when they shouldn't.<br/>
 v1.1.2 Fixed hair accessories matching color when they shouldn't, again.<br/>
 </details>
 
-#### EC_Demosaic
+#### Demosaic
 **v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v73/EC_Demosaic.v1.1.zip)** - For EmotionCreators<br/>
 Note: Not required when using UncensorSelector<br/>
 
@@ -252,8 +249,8 @@ Removes the mosaic from female characters. Based on the demosaic for Koikatsu by
 v1.1 Added a config option to disable the plugin<br/>
 </details>
 
-#### KK_FreeHRandom
-**v1.1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_FreeHRandom.v1.1.1.zip)**<br/>
+#### FreeHRandom
+**v1.1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_FreeHRandom.v1.1.1.zip)** - For Koikatsu<br/>
 Adds buttons to Free H selection screen to get random characters for your H session.<br/>
 
 <details><summary>Change Log</summary>
@@ -261,13 +258,14 @@ v1.1 Added UI, KK Party support<br/>
 v1.1.1 Create card folders if missing to prevent errors<br/>
 </details>
 
-#### KK_Colliders
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_Colliders.v1.0.zip)**<br/>
+#### Colliders
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_Colliders.v1.0.zip)** - For Koikatsu<br/>
 
 Adds floor, breast, hand, and skirt colliders. Ported from Patchwork.<br/>
 
-#### KK_MaterialEditor
-**v1.5.1 - [Download](https://www.patreon.com/posts/27881027)**<br/>
+#### MaterialEditor
+**v1.5.1 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu<br/>
+**v1.6 - [Download](https://www.patreon.com/posts/27881027)** - For AI Girl<br/>
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
 Features:
@@ -291,8 +289,8 @@ v1.4.1 .jpg loading support, scroll speed increase, color and texture default va
 v1.5 Added main_skin shader, removed alpha_a and alpha_b properties for character skin<br/>
 </details>
 
-#### KK_MaleJuice
-**v1.1 - [Download](https://www.patreon.com/posts/28608195)**<br/>
+#### MaleJuice
+**v1.1 - [Download](https://www.patreon.com/posts/28608195)** - For Koikatsu<br/>
 
 Enables juice textures for males in H scenes and Studio.<br/>
 
@@ -300,8 +298,8 @@ Enables juice textures for males in H scenes and Studio.<br/>
 v1.1 Fixed compatibility issues with UncensorSelector using male body type on female characters<br/>
 </details>
 
-#### KK_StudioObjectMoveHotkeys
-**v1.0 - [Download](https://www.patreon.com/posts/28743884)**<br/>
+#### StudioObjectMoveHotkeys
+**v1.0 - [Download](https://www.patreon.com/posts/28743884)** - For Koikatsu<br/>
 
 Allows you to move objects in studio using hotkeys. Press Y/U/I to move along the X/Y/Z axes. You can also ues these keys for rotating and scaling, and when scaling you can also press T to scale all axes at once. Hotkeys can be configured in plugin settings.<br/>
 
@@ -316,22 +314,11 @@ Moved to the [KoikatuFixes](https://github.com/ManlyMarco/KoikatuFixes/releases)
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.<br/>
 
-#### KK_BodyShaders
-**Beta 2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v85/KK_BodyShaders.beta.2.zip)**<br/>
-
-Applies shaders to a character's body and hair. Currently only has a shader for making goo girls. Or boys, if you're in to that kind of thing. Also has bugs. Not a shader for making bug girls, the kind of bugs that might make your game act strange.<br/>
-
-Shaders by Essu. Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)<br/>
-
-<details><summary>Change Log</summary>
-Beta 2 Fix checkbox not working<br/>
-</details>
-
-#### KK_ANIMATIONOVERDRIVE
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v42/KK_ANIMATIONOVERDRIVE.zip)**<br/>
+#### ANIMATIONOVERDRIVE
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v42/KK_ANIMATIONOVERDRIVE.zip)** - For Koikatsu<br/>
 
 Type a value in to a gimmick's speed text box to use speeds higher than normally allowed.<br/>
 
-#### KK_HCharaAdjustment
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v46/KK_HCharaAdjustment.v1.0.zip)**<br/>
+#### HCharaAdjustment
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v46/KK_HCharaAdjustment.v1.0.zip)** - For Koikatsu<br/>
 Adjust the position of the female character in H scene by pressing some hotkeys, listed [here](https://github.com/DeathWeasel1337/KK_Plugins/blob/master/KK_HCharaAdjustment/KK_HCharaAdjustment.cs#L40).<br/>
