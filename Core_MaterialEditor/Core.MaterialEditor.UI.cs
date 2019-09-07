@@ -214,10 +214,10 @@ namespace KK_Plugins
             float labelWidth = 50f;
             float buttonWidth = 100f;
             float dropdownWidth = 100f;
-            float textBoxWidth = 150f;
+            float textBoxWidth = 75f;
             float colorLabelWidth = 10f;
-            float colorTextBoxWidth = 75f;
             float resetButtonWidth = 50f;
+            float sliderWidth = 150f;
             RectOffset padding = new RectOffset(3, 3, 0, 1);
 
             List<Renderer> rendList = GetRendererList(go, objectType);
@@ -749,7 +749,7 @@ namespace KK_Plugins
                                     SetColorProperty(go, materialName, propertyName, colorNew, objectType);
                             });
                             var textBoxRLE = textBoxR.gameObject.AddComponent<LayoutElement>();
-                            textBoxRLE.preferredWidth = colorTextBoxWidth;
+                            textBoxRLE.preferredWidth = textBoxWidth;
                             textBoxRLE.flexibleWidth = 0;
 
                             var labelG = UIUtility.CreateText("G", contentList.transform, "G");
@@ -778,7 +778,7 @@ namespace KK_Plugins
                                     SetColorProperty(go, materialName, propertyName, colorNew, objectType);
                             });
                             var textBoxGLE = textBoxG.gameObject.AddComponent<LayoutElement>();
-                            textBoxGLE.preferredWidth = colorTextBoxWidth;
+                            textBoxGLE.preferredWidth = textBoxWidth;
                             textBoxGLE.flexibleWidth = 0;
 
                             var labelB = UIUtility.CreateText("B", contentList.transform, "B");
@@ -808,7 +808,7 @@ namespace KK_Plugins
                             });
 
                             var textBoxBLE = textBoxB.gameObject.AddComponent<LayoutElement>();
-                            textBoxBLE.preferredWidth = colorTextBoxWidth;
+                            textBoxBLE.preferredWidth = textBoxWidth;
                             textBoxBLE.flexibleWidth = 0;
 
                             var labelA = UIUtility.CreateText("A", contentList.transform, "A");
@@ -838,7 +838,7 @@ namespace KK_Plugins
                             });
 
                             var textBoxALE = textBoxA.gameObject.AddComponent<LayoutElement>();
-                            textBoxALE.preferredWidth = colorTextBoxWidth;
+                            textBoxALE.preferredWidth = textBoxWidth;
                             textBoxALE.flexibleWidth = 0;
 
                             var resetColor = UIUtility.CreateButton($"Reset{propertyName}", contentList.transform, "Reset");
@@ -952,6 +952,25 @@ namespace KK_Plugins
                             }
                             else if (GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName) != null)
                                 valueFloatInitial = GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+                            float.TryParse(valueFloat, out float valueFloatF);
+                            bool doSlider = property.Value.MinValue != null && property.Value.MaxValue != null;
+
+                            Slider sliderFloat = null;
+                            if (doSlider)
+                            {
+                                sliderFloat = UIUtility.CreateSlider("Slider" + propertyName, contentList.transform);
+                                var sliderFloatLE = sliderFloat.gameObject.AddComponent<LayoutElement>();
+                                sliderFloatLE.preferredWidth = sliderWidth;
+                                sliderFloatLE.flexibleWidth = 0;
+                            }
+                            else
+                            {
+                                var placeholderPanel = UIUtility.CreatePanel(propertyName, contentList.transform);
+                                placeholderPanel.enabled = false;
+                                var placeholderPanelLE = placeholderPanel.gameObject.AddComponent<LayoutElement>();
+                                placeholderPanelLE.preferredWidth = sliderWidth;
+                                placeholderPanelLE.flexibleWidth = 0;
+                            }
 
                             var textBoxFloat = UIUtility.CreateInputField(propertyName, contentList.transform);
                             textBoxFloat.text = valueFloat;
@@ -967,10 +986,25 @@ namespace KK_Plugins
                                     SetFloatProperty(chaControl, materialName, propertyName, value);
                                 else
                                     SetFloatProperty(go, materialName, propertyName, value, objectType);
+
+                                if (doSlider && float.TryParse(value, out float valueF) && valueF <= sliderFloat.maxValue && valueF >= sliderFloat.minValue)
+                                    sliderFloat.value = valueF;
                             });
                             var textBoxFloatLE = textBoxFloat.gameObject.AddComponent<LayoutElement>();
                             textBoxFloatLE.preferredWidth = textBoxWidth;
                             textBoxFloatLE.flexibleWidth = 0;
+
+                            if (doSlider)
+                            {
+                                sliderFloat.minValue = (float)property.Value.MinValue;
+                                sliderFloat.maxValue = (float)property.Value.MaxValue;
+                                sliderFloat.value = valueFloatF;
+                                sliderFloat.onValueChanged.AddListener((value) =>
+                                {
+                                    textBoxFloat.text = value.ToString();
+                                    textBoxFloat.onEndEdit.Invoke(value.ToString());
+                                });
+                            }
 
                             var resetFloat = UIUtility.CreateButton($"Reset{propertyName}", contentList.transform, "Reset");
                             resetFloat.onClick.AddListener(() =>
@@ -986,6 +1020,8 @@ namespace KK_Plugins
                                 else
                                     SetFloatProperty(go, materialName, propertyName, valueFloatInitial, objectType);
                                 textBoxFloat.text = valueFloatInitial;
+                                if (doSlider && float.TryParse(valueFloatInitial, out float valueFloatInitialF))
+                                    sliderFloat.value = valueFloatInitialF;
                             });
                             var resetEnabledLE = resetFloat.gameObject.AddComponent<LayoutElement>();
                             resetEnabledLE.preferredWidth = resetButtonWidth;

@@ -106,7 +106,19 @@ namespace KK_Plugins
                     ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), element.Attribute("Type").Value);
                     string defaultValue = element.Attribute("DefaultValue")?.Value;
                     string defaultValueAB = element.Attribute("DefaultValueAssetBundle")?.Value;
-                    ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB);
+                    string range = element.Attribute("Range")?.Value;
+                    string min = null;
+                    string max = null;
+                    if (!range.IsNullOrWhiteSpace())
+                    {
+                        var rangeSplit = range.Split(',');
+                        if (rangeSplit.Length == 2)
+                        {
+                            min = rangeSplit[0];
+                            max = rangeSplit[1];
+                        }
+                    }
+                    ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, min, max);
 
                     XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                     XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;
@@ -529,13 +541,23 @@ namespace KK_Plugins
             public ShaderPropertyType Type;
             public string DefaultValue = null;
             public string DefaultValueAssetBundle = null;
+            public int? MinValue = null;
+            public int? MaxValue = null;
 
-            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null)
+            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string minValue = null, string maxValue = null)
             {
                 Name = name;
                 Type = type;
                 DefaultValue = defaultValue.IsNullOrEmpty() ? null : defaultValue;
                 DefaultValueAssetBundle = defaultValueAB.IsNullOrEmpty() ? null : defaultValueAB;
+                if (!minValue.IsNullOrWhiteSpace() && !maxValue.IsNullOrWhiteSpace())
+                {
+                    if (int.TryParse(minValue, out int min) && int.TryParse(maxValue, out int max))
+                    {
+                        MinValue = min;
+                        MaxValue = max;
+                    }
+                }
             }
         }
     }

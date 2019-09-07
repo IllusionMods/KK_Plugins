@@ -97,9 +97,9 @@
     <Property Name="patternrotator2" Type="Float" />
     <Property Name="patternrotator3" Type="Float" />
     <Property Name="refpower" Type="Float" />
-    <Property Name="RimPower" Type="Float" />
-    <Property Name="rimpower" Type="Float" />
-    <Property Name="rimV" Type="Float" />
+    <Property Name="RimPower" Type="Float"  Range="0,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="SelectEmissionMask" Type="Float" />
     <Property Name="SelectEmissionMap" Type="Float" />
     <Property Name="ShadowExtend" Type="Float" />
@@ -143,7 +143,7 @@
     <Property Name="liquidfbot" Type="Float" />
     <Property Name="liquidftop" Type="Float" />
     <Property Name="outline" Type="Float" />
-    <Property Name="rimpower" Type="Float" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" />
     <Property Name="SpecularPower" Type="Float" />
   </Shader>
@@ -158,8 +158,8 @@
     <Property Name="Color" Type="Color" />
     <Property Name="Color2" Type="Color" />
     <Property Name="Color3" Type="Color" />
-    <Property Name="rimpower" Type="Float" />
-    <Property Name="rimV" Type="Float" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" />
     <Property Name="SpeclarHeight" Type="Float" />
   </Shader>
@@ -174,8 +174,8 @@
     <Property Name="Color" Type="Color" />
     <Property Name="Color2" Type="Color" />
     <Property Name="Color3" Type="Color" />
-    <Property Name="rimpower" Type="Float" />
-    <Property Name="rimV" Type="Float" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" />
     <Property Name="SpeclarHeight" Type="Float" />
   </Shader>
@@ -194,8 +194,8 @@
     <Property Name="DetailRLineR" Type="Float" />
     <Property Name="LineWidthS" Type="Float" />
     <Property Name="notusetexspecular" Type="Float" />
-    <Property Name="rimpower" Type="Float" />
-    <Property Name="rimV" Type="Float" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" />
     <Property Name="ShadowExtendAnother" Type="Float" />
     <Property Name="SpeclarHeight" Type="Float" />
@@ -217,8 +217,8 @@
     <Property Name="DetailRLineR" Type="Float" />
     <Property Name="LineWidthS" Type="Float" />
     <Property Name="notusetexspecular" Type="Float" />
-    <Property Name="rimpower" Type="Float" />
-    <Property Name="rimV" Type="Float" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" />
     <Property Name="ShadowExtendAnother" Type="Float" />
     <Property Name="SpeclarHeight" Type="Float" />
@@ -267,8 +267,8 @@
     <Property Name="patternrotator1" Type="Float" />
     <Property Name="patternrotator2" Type="Float" />
     <Property Name="patternrotator3" Type="Float" />
-    <Property Name="rimpower" Type="Float" />
-    <Property Name="rimV" Type="Float" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" />
     <Property Name="ShadowExtendAnother" Type="Float" />
     <Property Name="SpeclarHeight" Type="Float" />
@@ -310,8 +310,8 @@
     <Property Name="patternrotator1" Type="Float" />
     <Property Name="patternrotator2" Type="Float" />
     <Property Name="patternrotator3" Type="Float" />
-    <Property Name="rimV" Type="Float" />
-    <Property Name="rimpower" Type="Float" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
   </Shader>
   <Shader Name="Shader Forge/main_opaque" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_opaque">
     <Property Name="AlphaMask" Type="Texture" />
@@ -333,8 +333,8 @@
     <Property Name="liquidfbot" Type="Float" />
     <Property Name="liquidftop" Type="Float" />
     <Property Name="notusetexspecular" Type="Float" />
-    <Property Name="rimpower" Type="Float" />
-    <Property Name="rimV" Type="Float" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" />
     <Property Name="ShadowExtendAnother" Type="Float" />
     <Property Name="SpeclarHeight" Type="Float" />
@@ -363,8 +363,8 @@
     <Property Name="Color4" Type="Color" />
     <Property Name="ColorInverse" Type="Float" />
     <Property Name="ColorSort" Type="Float" />
-    <Property Name="RimPower" Type="Float" />
-    <Property Name="rimV" Type="Float" />
+    <Property Name="RimPower" Type="Float"  Range="0,1"/>
+    <Property Name="rimV" Type="Float" Range="0,1" />
   </Shader>
   <Shader Name="Shader Forge/main_skin" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_skin">
     <Property Name="AnimationMask" Type="Texture" />
@@ -392,9 +392,9 @@
     <Property Name="nip" Type="Float" />
     <Property Name="nipsize" Type="Float" />
     <Property Name="notusetexspecular" Type="Float" />
-    <Property Name="RimPower" Type="Float" />
-    <Property Name="rimpower" Type="Float" />
-    <Property Name="rimV" Type="Float" />
+    <Property Name="RimPower" Type="Float"  Range="0,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" />
     <Property Name="SpeclarHeight" Type="Float" />
     <Property Name="SpecularPower" Type="Float" />
