@@ -1,10 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Harmony;
+using BepInEx.Logging;
+using HarmonyLib;
 using KKAPI.Studio;
 using Studio;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
 using static Studio.OIBoneInfo;
 
 namespace KK_Plugins
@@ -16,16 +15,23 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.fkik";
         public const string PluginName = "FK and IK";
         public const string Version = "1.0";
+        internal static new ManualLogSource Logger;
 
-        internal void Main() => HarmonyWrapper.PatchAll(typeof(Hooks));
+        internal void Main()
+        {
+            Logger = base.Logger;
+            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+            harmony.Patch(typeof(MPCharCtrl).GetNestedType("IKInfo", AccessTools.all).GetMethod("Init"), null, new HarmonyMethod(typeof(UI).GetMethod(nameof(UI.InitUI), AccessTools.all)));
+            harmony.Patch(typeof(MPCharCtrl).GetNestedType("IKInfo", AccessTools.all).GetMethod("UpdateInfo"), null, new HarmonyMethod(typeof(UI).GetMethod(nameof(UI.UpdateUI), AccessTools.all)));
+        }
 
         /// <summary>
-        /// Enable aimultaneous kinematics for the specified ChaControl
+        /// Enable simultaneous kinematics for the specified ChaControl
         /// </summary>
         public static void EnableFKIK(ChaControl chaControl) => EnableFKIK(StudioObjectExtensions.GetOCIChar(chaControl));
 
         /// <summary>
-        /// Enable aimultaneous kinematics for the specified OCIChar
+        /// Enable simultaneous kinematics for the specified OCIChar
         /// </summary>
         public static void EnableFKIK(OCIChar ociChar)
         {
@@ -45,36 +51,23 @@ namespace KK_Plugins
                 ociChar.ActiveFK(FKCtrl.parts[j], ociChar.oiCharInfo.activeFK[j], true);
         }
 
-        /// <summary>
-        /// Enable aimultaneous kinematics for all characters selected in the workspace
-        /// </summary>
-        internal static void EnableFKIK()
+        internal static void DisableFKIK(OCIChar ociChar)
         {
-            foreach (ObjectCtrlInfo objectCtrlInfo in Studio.Studio.Instance.treeNodeCtrl.selectObjectCtrl)
-                if (objectCtrlInfo is OCIChar)
-                    EnableFKIK((OCIChar)objectCtrlInfo);
+            ociChar.oiCharInfo.enableIK = false;
+            ociChar.oiCharInfo.enableFK = false;
+            ociChar.finalIK.enabled = true;
+            ociChar.ActiveKinematicMode(OICharInfo.KinematicMode.IK, false, true);
+            ociChar.ActiveKinematicMode(OICharInfo.KinematicMode.FK, false, true);
         }
 
-        /// <summary>
-        /// Add the UI button
-        /// </summary>
-        internal static void InitUI()
+        internal static void ToggleFKIK(bool toggle)
         {
-            Transform transform = Studio.Studio.Instance.gameObject.transform.Find("Canvas Main Menu/02_Manipulate/00_Chara/02_Kinematic/Viewport/Content");
-            if (transform.Find("FKIK_Button") == null)
+            foreach (OCIChar ociChar in StudioAPI.GetSelectedCharacters())
             {
-                Transform transform2 = transform.Find("Pose");
-                GameObject gameObject = Instantiate(transform2.gameObject);
-                gameObject.name = "FKIK_Button";
-                foreach (var x in gameObject.GetComponentsInChildren<TextMeshProUGUI>())
-                    x.text = "FK&IK";
-
-                gameObject.transform.SetParent(transform2.transform.parent);
-                Button component2 = gameObject.GetComponent<Button>();
-                component2.onClick = new Button.ButtonClickedEvent();
-                component2.onClick.AddListener(delegate { EnableFKIK(); });
-                gameObject.transform.localPosition = transform2.transform.localPosition - new Vector3(0f, 30f, 0f);
-                gameObject.transform.localScale = Vector3.one;
+                if (toggle)
+                    EnableFKIK(ociChar);
+                else
+                    DisableFKIK(ociChar);
             }
         }
     }

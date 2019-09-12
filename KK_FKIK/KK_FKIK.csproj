@@ -78,7 +78,11 @@
   <ItemGroup>
     <Compile Include="KK.FKIK.cs" />
     <Compile Include="KK.FKIK.Hooks.cs" />
+    <Compile Include="KK.FKIK.UI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Panel.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
