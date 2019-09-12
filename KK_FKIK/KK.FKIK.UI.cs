@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using KKAPI.Studio;
 using Studio;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -88,6 +89,7 @@ namespace KK_Plugins
                     Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("kinematic").SetValue(-1);
                     foreach (OCIChar ociChar in StudioAPI.GetSelectedCharacters())
                     {
+                        OverrideEvents = true;
                         ActiveButton.isOn = ociChar.oiCharInfo.enableIK && ociChar.oiCharInfo.enableFK;
                         break;
                     }
@@ -110,6 +112,7 @@ namespace KK_Plugins
                 ActiveButton.onValueChanged.RemoveAllListeners();
                 ActiveButton.onValueChanged.AddListener(delegate (bool val)
                 {
+                    if (OverrideEvents) return;
                     ToggleFKIK(val);
                 });
 
@@ -231,6 +234,22 @@ namespace KK_Plugins
 
             private enum KinematicsType { FK, IK }
             private enum ButtonType { Anime, Init }
+
+            private static bool overrideEvents = false;
+            internal static bool OverrideEvents
+            {
+                get => overrideEvents;
+                set
+                {
+                    overrideEvents = value;
+                    Instance.StartCoroutine(Reset());
+                    IEnumerator Reset()
+                    {
+                        yield return null;
+                        overrideEvents = false;
+                    }
+                }
+            }
         }
     }
 }

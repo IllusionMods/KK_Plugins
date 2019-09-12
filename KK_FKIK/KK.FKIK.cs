@@ -16,9 +16,11 @@ namespace KK_Plugins
         public const string PluginName = "FK and IK";
         public const string Version = "1.0";
         internal static new ManualLogSource Logger;
+        internal static FKIK Instance;
 
         internal void Main()
         {
+            Instance = this;
             Logger = base.Logger;
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
             harmony.Patch(typeof(MPCharCtrl).GetNestedType("IKInfo", AccessTools.all).GetMethod("Init"), null, new HarmonyMethod(typeof(UI).GetMethod(nameof(UI.InitUI), AccessTools.all)));
