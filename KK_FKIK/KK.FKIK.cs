@@ -64,13 +64,18 @@ namespace KK_Plugins
 
         internal static void ToggleFKIK(bool toggle)
         {
-            foreach (OCIChar ociChar in StudioAPI.GetSelectedCharacters())
-            {
-                if (toggle)
-                    EnableFKIK(ociChar);
-                else
-                    DisableFKIK(ociChar);
-            }
+            if (Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes.Length != 1)
+                return;
+
+            TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+
+            for (int i = 0; i < selectNodes.Length; i++)
+                if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
+                    if (objectCtrlInfo is OCIChar ociChar)
+                        if (toggle)
+                            EnableFKIK(ociChar);
+                        else
+                            DisableFKIK(ociChar);
         }
     }
 }
