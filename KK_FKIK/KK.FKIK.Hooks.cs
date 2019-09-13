@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Studio;
+using System.Collections;
 
 namespace KK_Plugins
 {
@@ -7,6 +8,8 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
+            private static bool ChangingChara = false;
+
             /// <summary>
             /// Enable simultaneous kinematics on pose load
             /// </summary>
@@ -47,6 +50,36 @@ namespace KK_Plugins
             {
                 if (__state)
                     EnableFKIK(_male);
+            }
+
+            /// <summary>
+            /// Set a flag when changing characters in Studio
+            /// </summary>
+            [HarmonyPrefix, HarmonyPatch(typeof(OCIChar), nameof(OCIChar.ChangeChara))]
+            internal static void ActiveKinematicMode() => ChangingChara = true;
+
+            /// <summary>
+            /// Enable simultaneous kinematics on character change. Pass the FK/IK state to the postfix
+            /// </summary>
+            [HarmonyPrefix, HarmonyPatch(typeof(OCIChar), nameof(OCIChar.ActiveKinematicMode))]
+            internal static void ActiveKinematicModePrefix(OCIChar __instance, ref bool __state) => __state = __instance.oiCharInfo.enableFK && __instance.oiCharInfo.enableIK;
+
+            /// <summary>
+            /// FK/IK state has been overwritten, check against the FK/IK state from prefix
+            /// </summary>
+            [HarmonyPostfix, HarmonyPatch(typeof(OCIChar), nameof(OCIChar.ActiveKinematicMode))]
+            internal static void ActiveKinematicModePostfix(OCIChar __instance, ref bool __state)
+            {
+
+                if (__state && ChangingChara)
+                    Instance.StartCoroutine(EnableFKIKCoroutine(__instance));
+            }
+
+            private static IEnumerator EnableFKIKCoroutine(OCIChar ociChar)
+            {
+                yield return null;
+                ChangingChara = false;
+                EnableFKIK(ociChar);
             }
         }
     }
