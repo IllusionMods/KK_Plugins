@@ -26,10 +26,12 @@ namespace KK_Plugins
         private static MakerToggle InvisibleToggle;
         public static ConfigWrapper<bool> HideHairAccessories { get; private set; }
 
-        private void Awake()
+        internal void Start()
         {
             CharacterApi.RegisterExtraBehaviour<InvisibleBodyCharaController>("KK_InvisibleBody");
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
+
+            HideHairAccessories = Config.GetSetting("Config", "Hide built-in hair accessories", true, new ConfigDescription("Whether or not to hide accesories (such as scrunchies) attached to back hairs."));
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
