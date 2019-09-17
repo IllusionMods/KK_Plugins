@@ -24,15 +24,15 @@ namespace Unity3DCompressor
 
             foreach (string path in args)
             {
-                if (File.Exists(path) && path.EndsWith(".unity3d", StringComparison.OrdinalIgnoreCase))
+                if (File.Exists(path) && FileIsAssetBundle(path))
                 {
                     sb.Append(ProcessFile(path));
                     processedFile = true;
                 }
                 else if (Directory.Exists(path))
                 {
-                    string[] allfiles = Directory.GetFiles(path, "*.unity3d", SearchOption.AllDirectories);
-                    foreach (var x in allfiles)
+                    var allfiles = Directory.GetFiles(path, "*", SearchOption.AllDirectories).Where(FileIsAssetBundle);
+                    foreach(var x in allfiles)
                     {
                         sb.Append(ProcessFile(x));
                         processedFile = true;
@@ -72,6 +72,17 @@ namespace Unity3DCompressor
             sb.AppendLine("unityEditor4.SaveUnity3d(keepBackup=False, backupExtension=\".unit-y3d\", background=False, clearMainAsset=True, pathIDsMode=-1, compressionLevel=2, compressionBufferSize=262144)");
             sb.AppendLine();
             return sb.ToString();
+        }
+
+        private static bool FileIsAssetBundle(string path)
+        {
+            byte[] buffer = new byte[7];
+            using(FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                fs.Read(buffer, 0, buffer.Length);
+                fs.Close();
+            }
+            return Encoding.UTF8.GetString(buffer, 0, buffer.Length) == "UnityFS";
         }
     }
 }
