@@ -12,6 +12,9 @@ using UnityEngine;
 #if KK
 using KKAPI.Studio;
 #endif
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
@@ -116,28 +119,28 @@ namespace KK_Plugins
                                 BodyDropdown.SetValue(BodyList.IndexOf(BodyGUID), false);
                             }
 
-                            if (PenisGUID == null || PenisList.IndexOf(PenisGUID) == -1)
+                            if (PenisGUID == null || PenisList?.IndexOf(PenisGUID) == -1)
                             {
-#if KK
-                                PenisDropdown.SetValue(DisplayPenis ? 0 : 1, false);
-#elif EC
-                                PenisDropdown.SetValue(0, false);
+#if KK || AI
+                                PenisDropdown?.SetValue(DisplayPenis ? 0 : 1, false);
+#else
+                                PenisDropdown?.SetValue(0, false);
 #endif
                                 PenisGUID = null;
                             }
                             else
                             {
-                                PenisDropdown.SetValue(PenisList.IndexOf(PenisGUID), false);
+                                PenisDropdown?.SetValue(PenisList.IndexOf(PenisGUID), false);
                             }
 
                             if (BallsGUID == null || BallsList.IndexOf(BallsGUID) == -1)
                             {
-                                BallsDropdown.SetValue(DisplayBalls ? 0 : 1, false);
+                                BallsDropdown?.SetValue(DisplayBalls ? 0 : 1, false);
                                 BallsGUID = null;
                             }
                             else
                             {
-                                BallsDropdown.SetValue(BallsList.IndexOf(BallsGUID), false);
+                                BallsDropdown?.SetValue(BallsList.IndexOf(BallsGUID), false);
                             }
                         }
                     }
@@ -145,14 +148,14 @@ namespace KK_Plugins
                     {
                         //Set the uncensor stuff to whatever is set in the maker
                         BodyGUID = BodyDropdown.Value == 0 ? null : BodyList[BodyDropdown.Value];
-#if KK
-                        PenisGUID = PenisDropdown.Value == 0 || PenisDropdown.Value == 1 ? null : PenisList[PenisDropdown.Value];
-                        DisplayPenis = PenisDropdown.Value == 1 ? false : true;
-#elif EC
+#if KK || AI
+                        PenisGUID = PenisDropdown?.Value == 0 || PenisDropdown?.Value == 1 ? null : PenisList[PenisDropdown.Value];
+                        DisplayPenis = PenisDropdown?.Value == 1 ? false : true;
+#else
                         PenisGUID = PenisDropdown.Value == 0 ? null : PenisList[PenisDropdown.Value];
 #endif
-                        BallsGUID = BallsDropdown.Value == 0 || BallsDropdown.Value == 1 ? null : BallsList[BallsDropdown.Value];
-                        DisplayBalls = BallsDropdown.Value == 1 ? false : true;
+                        BallsGUID = BallsDropdown?.Value == 0 || BallsDropdown?.Value == 1 ? null : BallsList[BallsDropdown.Value];
+                        DisplayBalls = BallsDropdown?.Value == 1 ? false : true;
                     }
                 }
 
@@ -182,7 +185,11 @@ namespace KK_Plugins
             /// <summary>
             /// In a separate method to avoid missing method exception
             /// </summary>
+#if KK || EC
             private static int ExType_internal(ChaControl chaControl) => chaControl.exType;
+#else
+            private static int ExType_internal(ChaControl _) => 0;
+#endif
             /// <summary>
             /// Current BodyData for this character
             /// </summary>
@@ -244,11 +251,7 @@ namespace KK_Plugins
             {
                 internal static BodyData GetDefaultOrRandomBody(ChaControl chaControl)
                 {
-#if KK
                     string uncensorKey = DisplayNameToBodyGuid(chaControl.sex == 0 ? DefaultMaleBody.Value : DefaultFemaleBody.Value);
-#elif EC
-                    string uncensorKey = chaControl.sex == 0 ? DefaultMaleBody.Value : DefaultFemaleBody.Value;
-#endif
 
                     //Return the default body if specified
                     if (BodyDictionary.TryGetValue(uncensorKey, out BodyData defaultBody))
@@ -262,19 +265,14 @@ namespace KK_Plugins
                 internal static BodyData GetRandomBody(ChaControl chaControl)
                 {
                     var uncensors = BodyDictionary.Where(x => x.Value.Sex == chaControl.sex && x.Value.AllowRandom).Select(x => x.Value).ToArray();
-                    if (uncensors.Count() == 0)
+                    if (uncensors.Length == 0)
                         return null;
-                    var randomIndex = new System.Random(chaControl.fileParam.birthDay + chaControl.fileParam.personality + chaControl.fileParam.bloodType).Next(uncensors.Count());
-                    return uncensors[randomIndex];
+                    return uncensors[GetRandomNumber(chaControl, uncensors.Length)];
                 }
 
                 internal static PenisData GetDefaultOrRandomPenis(ChaControl chaControl)
                 {
-#if KK
                     string uncensorKey = DisplayNameToPenisGuid(chaControl.sex == 0 ? DefaultMalePenis.Value : DefaultFemalePenis.Value);
-#elif EC
-                    string uncensorKey = chaControl.sex == 0 ? DefaultMalePenis.Value : DefaultFemalePenis.Value;
-#endif
 
                     //Return the default penis if specified
                     if (PenisDictionary.TryGetValue(uncensorKey, out PenisData defaultPenis))
@@ -288,19 +286,14 @@ namespace KK_Plugins
                 internal static PenisData GetRandomPenis(ChaControl chaControl)
                 {
                     var uncensors = PenisDictionary.Where(x => x.Value.AllowRandom).Select(x => x.Value).ToArray();
-                    if (uncensors.Count() == 0)
+                    if (uncensors.Length == 0)
                         return null;
-                    var randomIndex = new System.Random(chaControl.fileParam.birthDay + chaControl.fileParam.personality + chaControl.fileParam.bloodType).Next(uncensors.Count());
-                    return uncensors[randomIndex];
+                    return uncensors[GetRandomNumber(chaControl, uncensors.Length)];
                 }
 
                 internal static BallsData GetDefaultOrRandomBalls(ChaControl chaControl)
                 {
-#if KK
                     string uncensorKey = DisplayNameToBallsGuid(chaControl.sex == 0 ? DefaultMaleBalls.Value : DefaultFemaleBalls.Value);
-#elif EC
-                    string uncensorKey = chaControl.sex == 0 ? DefaultMaleBalls.Value : DefaultFemaleBalls.Value;
-#endif
 
                     //Return the default balls if specified
                     if (BallsDictionary.TryGetValue(uncensorKey, out BallsData defaultBalls))
@@ -314,10 +307,20 @@ namespace KK_Plugins
                 internal static BallsData GetRandomBalls(ChaControl chaControl)
                 {
                     var uncensors = BallsDictionary.Where(x => x.Value.AllowRandom).Select(x => x.Value).ToArray();
-                    if (uncensors.Count() == 0)
+                    if (uncensors.Length == 0)
                         return null;
-                    var randomIndex = new System.Random(chaControl.fileParam.birthDay + chaControl.fileParam.personality + chaControl.fileParam.bloodType).Next(uncensors.Count());
-                    return uncensors[randomIndex];
+                    return uncensors[GetRandomNumber(chaControl, uncensors.Length)];
+                }
+
+                private static int GetRandomNumber(ChaControl chaControl, int uncensorCount)
+                {
+                    int key = chaControl.fileParam.birthDay + chaControl.fileParam.personality;
+#if KK || EC
+                    key += chaControl.fileParam.bloodType;
+#else
+                    key += (int)(chaControl.fileParam.voicePitch * 100);
+#endif
+                    return new System.Random(key).Next(uncensorCount);
                 }
             }
             internal static class UncensorUpdate
@@ -339,7 +342,9 @@ namespace KK_Plugins
                         Traverse.Create(chaControl).Method("UpdateSiru", new object[] { true }).GetValue();
                         SetChestNormals(chaControl, bodyData);
 
+#if KK || EC
                         chaControl.customMatBody.SetTexture(ChaShader._AlphaMask, Traverse.Create(chaControl).Property("texBodyAlphaMask").GetValue() as Texture);
+#endif
                         Traverse.Create(chaControl).Property("updateAlphaMask").SetValue(true);
                     }
                 }
@@ -407,23 +412,23 @@ namespace KK_Plugins
 #endif
 
                     GameObject uncensorCopy = CommonLib.LoadAsset<GameObject>(OOBase, Asset, true);
-                    SkinnedMeshRenderer o_body_a = chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a");
+                    SkinnedMeshRenderer bodyMesh = chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => BodyNames.Contains(x.name));
 
                     //Copy any additional parts to the character
-                    if (bodyData != null && o_body_a != null && bodyData.AdditionalParts.Count > 0)
+                    if (bodyData != null && bodyMesh != null && bodyData.AdditionalParts.Count > 0)
                     {
                         foreach (var mesh in uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                         {
                             if (bodyData.AdditionalParts.Contains(mesh.name))
                             {
                                 SkinnedMeshRenderer part = chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name);
-                                Transform parent = o_body_a.gameObject.GetComponentsInChildren<Transform>(true).FirstOrDefault(c => c.name == mesh.transform.parent.name);
+                                Transform parent = bodyMesh.gameObject.GetComponentsInChildren<Transform>(true).FirstOrDefault(c => c.name == mesh.transform.parent.name);
                                 if (part == null && parent != null)
                                 {
                                     var copy = Instantiate(mesh);
                                     copy.name = mesh.name;
                                     copy.transform.parent = parent;
-                                    copy.bones = o_body_a.bones.Where(b => b != null && copy.bones.Any(t => t.name.Equals(b.name))).ToArray();
+                                    copy.bones = bodyMesh.bones.Where(b => b != null && copy.bones.Any(t => t.name.Equals(b.name))).ToArray();
                                 }
                             }
                         }
@@ -431,7 +436,7 @@ namespace KK_Plugins
 
                     foreach (var mesh in chaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                     {
-                        if (mesh.name == "o_body_a")
+                        if (BodyNames.Contains(mesh.name))
                             UpdateMeshRenderer(chaControl, uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh);
                         else if (BodyParts.Contains(mesh.name))
                             UpdateMeshRenderer(chaControl, uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
@@ -461,8 +466,13 @@ namespace KK_Plugins
                     else
                         Traverse.Create(chaControl).Method("InitBaseCustomTextureBody", new object[] { bodyData?.Sex ?? chaControl.sex }).GetValue();
 
+#if KK || EC
                     chaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
                     chaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
+#else
+                    chaControl.AddUpdateCMBodyTexFlags(true, true, true, true);
+                    chaControl.AddUpdateCMBodyColorFlags(true, true, true, true);
+#endif
                     chaControl.AddUpdateCMBodyLayoutFlags(true, true);
                     chaControl.SetBodyBaseMaterial();
                     chaControl.CreateBodyTexture();
@@ -497,11 +507,11 @@ namespace KK_Plugins
                     if (copyMaterials)
                         dst.materials = src.materials;
 
-                    if (src.sharedMesh.name != "o_dankon" && src.sharedMesh.name != "o_gomu" && src.sharedMesh.name != "o_dan_f")
+                    if (!PenisParts.Contains(src.sharedMesh.name) && !BallsParts.Contains(src.sharedMesh.name))
                         chaControl.StartCoroutine(HandleUVCorrupionsCo(dst, uvCopy));
 
                     //Regardless of the receive shadow settings configured for the mesh it's always set to false for dick and balls, change it so shadows work correctly
-                    if (dst.sharedMesh.name == "o_dankon" || dst.sharedMesh.name == "o_dan_f")
+                    if (PenisParts.Contains(dst.sharedMesh.name) || BallsParts.Contains(dst.sharedMesh.name))
                         dst.receiveShadows = true;
                 }
 
@@ -547,14 +557,15 @@ namespace KK_Plugins
                 /// </summary>
                 internal static void SetChestNormals(ChaControl chaControl, BodyData bodyData)
                 {
+#if KK || EC
                     if (chaControl.dictBustNormal.TryGetValue(ChaControl.BustNormalKind.NmlBody, out BustNormal bustNormal))
                         bustNormal.Release();
 
                     bustNormal = new BustNormal();
                     bustNormal.Init(chaControl.objBody, bodyData?.OOBase ?? Defaults.OOBase, bodyData?.Normals ?? Defaults.Normals, string.Empty);
                     chaControl.dictBustNormal[ChaControl.BustNormalKind.NmlBody] = bustNormal;
+#endif
                 }
-
             }
             internal static class SkinMatch
             {
@@ -597,6 +608,7 @@ namespace KK_Plugins
 
                 private static void SetSkinColor(ChaControl chaControl, ColorMatchPart colorMatchPart, string file)
                 {
+#if !AI
                     //get main tex
                     Texture2D mainTexture = CommonLib.LoadAsset<Texture2D>(file, colorMatchPart.MainTex, false, string.Empty);
                     if (mainTexture == null)
@@ -614,7 +626,7 @@ namespace KK_Plugins
                     if (gameObject == null)
                         return;
 
-                    if (!gameObject.GetComponent<Renderer>().material.HasProperty(ChaShader._MainTex))
+                    if (!gameObject.GetComponent<Renderer>().material.HasProperty("_MainTex"))
                         return;
 
                     var customTex = new CustomTextureControl(gameObject.transform);
@@ -632,10 +644,11 @@ namespace KK_Plugins
                         return;
 
                     Material mat = gameObject.GetComponent<Renderer>().material;
-                    var mt = mat.GetTexture(ChaShader._MainTex);
-                    mat.SetTexture(ChaShader._MainTex, newTex);
+                    var mt = mat.GetTexture("_MainTex");
+                    mat.SetTexture("_MainTex", newTex);
                     //Destroy the old texture to prevent memory leak
                     Destroy(mt);
+#endif
                 }
                 /// <summary>
                 /// Set the skin line visibility for every color matching object configured in the manifest.xml
@@ -676,11 +689,13 @@ namespace KK_Plugins
 
                 private static void SetLineVisibility(ChaControl chaControl, ColorMatchPart colorMatchPart)
                 {
+#if KK || EC
                     FindAssist findAssist = new FindAssist();
                     findAssist.Initialize(chaControl.objBody.transform);
                     GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
                     if (gameObject != null)
                         gameObject.GetComponent<Renderer>().material.SetFloat(ChaShader._linetexon, chaControl.chaFile.custom.body.drawAddLine ? 1f : 0f);
+#endif
                 }
                 /// <summary>
                 /// Set the skin gloss for every color matching object configured in the manifest.xml
@@ -721,11 +736,13 @@ namespace KK_Plugins
 
                 private static void SetSkinGloss(ChaControl chaControl, ColorMatchPart colorMatchPart)
                 {
+#if KK || EC
                     FindAssist findAssist = new FindAssist();
                     findAssist.Initialize(chaControl.objBody.transform);
                     GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
                     if (gameObject != null)
                         gameObject.GetComponent<Renderer>().material.SetFloat(ChaShader._SpecularPower, Mathf.Lerp(chaControl.chaFile.custom.body.skinGlossPower, 1f, chaControl.chaFile.status.skinTuyaRate));
+#endif
                 }
             }
         }

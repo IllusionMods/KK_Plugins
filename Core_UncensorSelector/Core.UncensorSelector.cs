@@ -12,6 +12,9 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using UniRx;
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
@@ -42,9 +45,10 @@ namespace KK_Plugins
         private static MakerDropdown BodyDropdown;
         private static MakerDropdown PenisDropdown;
         private static MakerDropdown BallsDropdown;
-        private static readonly HashSet<string> BodyParts = new HashSet<string>() { "o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster" };
-        private static readonly HashSet<string> PenisParts = new HashSet<string>() { "o_dankon", "o_gomu" };
-        private static readonly HashSet<string> BallsParts = new HashSet<string>() { "o_dan_f" };
+        private static readonly HashSet<string> BodyNames = new HashSet<string>() { "o_body_a", "o_body_cf", "o_body_cm" };
+        private static readonly HashSet<string> BodyParts = new HashSet<string>() { "o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster", "cm_o_dan00", "cm_o_dan_f" };
+        private static readonly HashSet<string> PenisParts = new HashSet<string>() { "o_dankon", "o_gomu", "cm_o_dan00" };
+        private static readonly HashSet<string> BallsParts = new HashSet<string>() { "o_dan_f", "cm_o_dan_f" };
         internal static string CurrentBodyGUID;
         internal static bool DidErrorMessage = false;
 
@@ -129,12 +133,13 @@ namespace KK_Plugins
                 controller.UpdateUncensor();
             }
 
+#if !AI
             PenisList.Clear();
             PenisListDisplay.Clear();
 
             PenisList.Add("Default");
             PenisListDisplay.Add("Default");
-#if KK
+#if KK || AI
             PenisList.Add("None");
             PenisListDisplay.Add("None");
 #endif
@@ -145,9 +150,9 @@ namespace KK_Plugins
                 PenisListDisplay.Add(penis.DisplayName);
             }
 
-#if KK
+#if KK || AI
             PenisDropdown = e.AddControl(new MakerDropdown("Penis", PenisListDisplay.ToArray(), MakerConstants.Body.All, characterSex == 0 ? 0 : 1, this));
-#elif EC
+#else
             PenisDropdown = e.AddControl(new MakerDropdown("Penis", PenisListDisplay.ToArray(), MakerConstants.Body.All, 0, this));
 #endif
             PenisDropdown.ValueChanged.Subscribe(Observer.Create<int>(PenisDropdownChanged));
@@ -157,10 +162,10 @@ namespace KK_Plugins
                     return;
 
                 var controller = GetController(MakerAPI.GetCharacterControl());
-#if KK
+#if KK || AI
                 controller.PenisGUID = ID == 0 || ID == 1 ? null : PenisList[ID];
                 controller.DisplayPenis = ID == 1 ? false : true;
-#elif EC
+#else
                 controller.PenisGUID = ID == 0 ? null : PenisList[ID];
                 controller.DisplayPenis = characterSex == 0;
 #endif
@@ -202,6 +207,7 @@ namespace KK_Plugins
                 dickToggle.ValueChanged.Subscribe(Observer.Create<bool>(delegate { MakerAPI.GetCharacterControl().fileStatus.visibleSonAlways = dickToggle.Value; }));
             }
 #endif
+#endif
 
             DoDropdownEvents = true;
         }
@@ -218,19 +224,18 @@ namespace KK_Plugins
                     BodyDropdown.SetValue(BodyList.IndexOf(controller.BodyGUID), false);
 
                 if (controller.PenisGUID != null && PenisList.IndexOf(controller.PenisGUID) != -1)
-                    PenisDropdown.SetValue(PenisList.IndexOf(controller.PenisGUID), false);
+                    PenisDropdown?.SetValue(PenisList.IndexOf(controller.PenisGUID), false);
                 else if (controller.PenisGUID == null)
-#if KK
-                    PenisDropdown.SetValue(controller.DisplayPenis ? 0 : 1, false);
-#elif EC
-                    PenisDropdown.SetValue(0, false);
+#if KK || AI
+                    PenisDropdown?.SetValue(controller.DisplayPenis ? 0 : 1, false);
+#else
+                        PenisDropdown.SetValue(0, false);
 #endif
 
                 if (controller.BallsGUID != null && BallsList.IndexOf(controller.BallsGUID) != -1)
-                    BallsDropdown.SetValue(BallsList.IndexOf(controller.BallsGUID), false);
+                    BallsDropdown?.SetValue(BallsList.IndexOf(controller.BallsGUID), false);
                 else if (controller.BallsGUID == null)
-                    BallsDropdown.SetValue(controller.DisplayBalls ? 0 : 1, false);
-
+                    BallsDropdown?.SetValue(controller.DisplayBalls ? 0 : 1, false);
             }
         }
         /// <summary>
@@ -248,9 +253,11 @@ namespace KK_Plugins
             //Add the default body options
             BodyConfigListFull.Add("Random", "Random");
 
+#if !AI
             BodyData DefaultMale = new BodyData(0, "Default.Body.Male", "Default Body M");
             BodyDictionary.Add(DefaultMale.BodyGUID, DefaultMale);
             BodyConfigListFull.Add($"[{(DefaultMale.Sex == 0 ? "Male" : "Female")}] {DefaultMale.DisplayName}", DefaultMale.BodyGUID);
+#endif
 
             BodyData DefaultFemale = new BodyData(1, "Default.Body.Female", "Default Body F");
             BodyDictionary.Add(DefaultFemale.BodyGUID, DefaultFemale);
