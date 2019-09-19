@@ -2,13 +2,15 @@
 using BepInEx.Harmony;
 using BepInEx.Logging;
 using ChaCustom;
-using KK_Plugins.CommonCode;
 using ExtensibleSaveFormat;
 using HarmonyLib;
+using KK_Plugins.CommonCode;
+using KKAPI.Maker;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using Timer = System.Timers.Timer;
 
@@ -43,7 +45,7 @@ namespace KK_Plugins
         private static CardEventType EventType;
         private static readonly ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim();
 
-        public void Main()
+        internal void Main()
         {
             Logger = base.Logger;
 
@@ -57,6 +59,30 @@ namespace KK_Plugins
             var harmony = HarmonyWrapper.PatchAll(typeof(KK_ReloadCharaListOnChange));
             harmony.Patch(typeof(Studio.MPCharCtrl).GetNestedType("CostumeInfo", BindingFlags.NonPublic).GetMethod("InitFileList", AccessTools.all),
                           new HarmonyMethod(typeof(KK_ReloadCharaListOnChange).GetMethod(nameof(StudioCoordinateListPrefix), AccessTools.all)), null);
+        }
+        /// <summary>
+        /// On a game update run the actual refresh. It must be run from an update or it causes all sorts of errors.
+        /// </summary>
+        internal void Update()
+        {
+            if (EventFromCharaMaker && DoRefresh)
+            {
+                //If we saved or deleted a card from the chara maker itself there's no need to refresh, the game will handle that.
+                CardTimer.Dispose();
+                EventFromCharaMaker = false;
+                DoRefresh = false;
+            }
+            else if (DoRefresh)
+            {
+                RefreshList();
+                CardTimer.Dispose();
+                DoRefresh = false;
+            }
+            if (Input.GetKeyDown(KeyCode.F5) && MakerAPI.InsideAndLoaded)
+            {
+                EventType = CardEventType.CharaMakerCharacter;
+                RefreshList();
+            }
         }
         /// <summary>
         /// When cards are added or removed from the folder set a flag
@@ -143,25 +169,6 @@ namespace KK_Plugins
             finally
             {
                 ExtendedSave.LoadEventsEnabled = true;
-            }
-        }
-        /// <summary>
-        /// On a game update run the actual refresh. It must be run from an update or it causes all sorts of errors.
-        /// </summary>
-        private void Update()
-        {
-            if (EventFromCharaMaker && DoRefresh)
-            {
-                //If we saved or deleted a card from the chara maker itself there's no need to refresh, the game will handle that.
-                CardTimer.Dispose();
-                EventFromCharaMaker = false;
-                DoRefresh = false;
-            }
-            else if (DoRefresh)
-            {
-                RefreshList();
-                CardTimer.Dispose();
-                DoRefresh = false;
             }
         }
         /// <summary>
