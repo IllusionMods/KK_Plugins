@@ -275,7 +275,17 @@ namespace KK_Plugins
             /// <summary>
             /// Checks if the specified accessory is a hair accessory
             /// </summary>
-            public bool IsHairAccessory(int slot) => AccessoriesApi.GetAccessory(ChaControl, slot)?.gameObject.GetComponent<ChaCustomHairComponent>() != null;
+            public bool IsHairAccessory(int slot)
+            {
+                try
+                {
+                    return AccessoriesApi.GetAccessory(ChaControl, slot)?.gameObject.GetComponent<ChaCustomHairComponent>() != null;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
             /// <summary>
             /// Checks if the specified accessory is a hair accessory and has accessory parts (rendAccessory in the ChaCustomHairComponent MonoBehavior)
             /// </summary>
