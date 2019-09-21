@@ -23,8 +23,30 @@ namespace KK_Plugins
             private static readonly string[] RemoveToggle = { "Toggle Visible", "Toggle Hair", "Toggle Neck", "Toggle Breast", "Toggle Body", "Toggle Right Hand", "Toggle Left Hand", "Toggle Skirt" };
             private static readonly string[] RemoveButton = { "Button To IK", "Button Hair Init", "Button For Anime (1)", "Button For Anime (2)", "Button For Anime (3)", "Button For Anime (4)", "Button Skirt Init" };
 
-            internal static GameObject FKIKPanel = null;
+            private static GameObject FKIKPanel = null;
             private static Toggle ActiveButton;
+            private static Toggle tglHair;
+            private static Toggle tglHairRef;
+            private static Toggle tglNeck;
+            private static Toggle tglNeckRef;
+            private static Toggle tglBreast;
+            private static Toggle tglBreastRef;
+            private static Toggle tglRightHand;
+            private static Toggle tglRightHandRef;
+            private static Toggle tglLeftHand;
+            private static Toggle tglLeftHandRef;
+            private static Toggle tglSkirt;
+            private static Toggle tglSkirtRef;
+            private static Toggle tglBody;
+            private static Toggle tglBodyRef;
+            private static Toggle tglRightArm;
+            private static Toggle tglRightArmRef;
+            private static Toggle tglLeftArm;
+            private static Toggle tglLeftArmRef;
+            private static Toggle tglRightLeg;
+            private static Toggle tglRightLegRef;
+            private static Toggle tglLeftLeg;
+            private static Toggle tglLeftLegRef;
 
             /// <summary>
             /// Add the UI button
@@ -38,7 +60,23 @@ namespace KK_Plugins
                 SetUpButtons();
             }
 
-            internal static void UpdateUI(OCIChar _char) => ActiveButton.isOn = _char.oiCharInfo.enableFK && _char.oiCharInfo.enableIK;
+            internal static void UpdateUI(OCIChar _char)
+            {
+                OverrideEvents = true;
+                ActiveButton.isOn = _char.oiCharInfo.enableFK && _char.oiCharInfo.enableIK;
+
+                tglHair.isOn = tglHairRef.isOn;
+                tglNeck.isOn = tglNeckRef.isOn;
+                tglBreast.isOn = tglBreastRef.isOn;
+                tglRightHand.isOn = tglRightHandRef.isOn;
+                tglLeftHand.isOn = tglLeftHandRef.isOn;
+                tglSkirt.isOn = tglSkirtRef.isOn;
+                tglBody.isOn = tglBodyRef.isOn;
+                tglRightArm.isOn = tglRightArmRef.isOn;
+                tglLeftArm.isOn = tglLeftArmRef.isOn;
+                tglRightLeg.isOn = tglRightLegRef.isOn;
+                tglLeftLeg.isOn = tglLeftLegRef.isOn;
+            }
 
             private static void CreateMenuEntry()
             {
@@ -123,46 +161,46 @@ namespace KK_Plugins
                 });
 
                 SetupText("FKIK Text Hair", 0, "Hair (FK)");
-                SetupToggle("FKIK Toggle Hair", 0, KinematicsType.FK, "toggleHair");
+                SetupToggle(ref tglHair, ref tglHairRef, "FKIK Toggle Hair", 0, KinematicsType.FK, "toggleHair");
                 SetupButton("FKIK Button Hair", 0, KinematicsType.FK, ButtonType.Init, 0);
 
                 SetupText("FKIK Text Neck", 1, "Neck (FK)");
-                SetupToggle("FKIK Toggle Neck", 1, KinematicsType.FK, "toggleNeck");
+                SetupToggle(ref tglNeck, ref tglNeckRef, "FKIK Toggle Neck", 1, KinematicsType.FK, "toggleNeck");
                 SetupButton("FKIK Button Neck", 1, KinematicsType.FK, ButtonType.Anime, 1);
 
                 SetupText("FKIK Text Breasts", 2, "Chest (FK)");
-                SetupToggle("FKIK Toggle Breasts", 2, KinematicsType.FK, "toggleBreast");
+                SetupToggle(ref tglBreast, ref tglBreastRef, "FKIK Toggle Breasts", 2, KinematicsType.FK, "toggleBreast");
 
                 SetupText("FKIK Text Right Hand", 3, "Right Hand (FK)");
-                SetupToggle("FKIK Toggle Right Hand", 3, KinematicsType.FK, "toggleRightHand");
+                SetupToggle(ref tglRightHand, ref tglRightHandRef, "FKIK Toggle Right Hand", 3, KinematicsType.FK, "toggleRightHand");
                 SetupButton("FKIK Button Right Hand", 3, KinematicsType.FK, ButtonType.Anime, 3);
 
                 SetupText("FKIK Text Left Hand", 4, "Left Hand (FK)");
-                SetupToggle("FKIK Toggle Left Hand", 4, KinematicsType.FK, "toggleLeftHand");
+                SetupToggle(ref tglLeftHand, ref tglLeftHandRef, "FKIK Toggle Left Hand", 4, KinematicsType.FK, "toggleLeftHand");
                 SetupButton("FKIK Button Left Hand", 4, KinematicsType.FK, ButtonType.Anime, 2);
 
                 SetupText("FKIK Text Skirt", 5, "Skirt (FK)");
-                SetupToggle("FKIK Toggle Skirt", 5, KinematicsType.FK, "toggleSkirt");
+                SetupToggle(ref tglSkirt, ref tglSkirtRef, "FKIK Toggle Skirt", 5, KinematicsType.FK, "toggleSkirt");
                 SetupButton("FKIK Button Skirt", 5, KinematicsType.FK, ButtonType.Init, 1);
 
                 SetupText("FKIK Text Body", 6, "Body (IK)");
-                SetupToggle("FKIK Toggle Body", 6, KinematicsType.IK, "toggleBody");
+                SetupToggle(ref tglBody, ref tglBodyRef, "FKIK Toggle Body", 6, KinematicsType.IK, "toggleBody");
                 SetupButton("FKIK Button Body", 6, KinematicsType.IK, ButtonType.Anime, 0);
 
                 SetupText("FKIK Text Right Arm", 7, "Right Arm (IK)");
-                SetupToggle("FKIK Toggle Right Arm", 7, KinematicsType.IK, "toggleRightHand");
+                SetupToggle(ref tglRightArm, ref tglRightArmRef, "FKIK Toggle Right Arm", 7, KinematicsType.IK, "toggleRightHand");
                 SetupButton("FKIK Button Right Arm", 7, KinematicsType.IK, ButtonType.Anime, 2);
 
                 SetupText("FKIK Text Left Arm", 8, "Left Arm (IK)");
-                SetupToggle("FKIK Toggle Left Arm", 8, KinematicsType.IK, "toggleLeftHand");
+                SetupToggle(ref tglLeftArm, ref tglLeftArmRef, "FKIK Toggle Left Arm", 8, KinematicsType.IK, "toggleLeftHand");
                 SetupButton("FKIK Button Left Arm", 8, KinematicsType.IK, ButtonType.Anime, 1);
 
                 SetupText("FKIK Text Right Leg", 9, "Right Leg (IK)");
-                SetupToggle("FKIK Toggle Right Leg", 9, KinematicsType.IK, "toggleRightLeg");
+                SetupToggle(ref tglRightLeg, ref tglRightLegRef, "FKIK Toggle Right Leg", 9, KinematicsType.IK, "toggleRightLeg");
                 SetupButton("FKIK Button Right Leg", 9, KinematicsType.IK, ButtonType.Anime, 4);
 
                 SetupText("FKIK Text Left Leg", 10, "Left Leg (IK)");
-                SetupToggle("FKIK Toggle Left Leg", 10, KinematicsType.IK, "toggleLeftLeg");
+                SetupToggle(ref tglLeftLeg, ref tglLeftLegRef, "FKIK Toggle Left Leg", 10, KinematicsType.IK, "toggleLeftLeg");
                 SetupButton("FKIK Button Left Leg", 10, KinematicsType.IK, ButtonType.Anime, 3);
 
                 var txtSize = GetPanelObject<Text>("Text Size");
@@ -191,20 +229,21 @@ namespace KK_Plugins
                 txt.transform.localPosition = new Vector3(txt.transform.localPosition.x, PositionBase + (PositionOffset * offset), txt.transform.localPosition.z);
             }
 
-            private static void SetupToggle(string name, int offset, KinematicsType kinematicsType, string referenceField)
+            private static void SetupToggle(ref Toggle tgl, ref Toggle tglRef, string name, int offset, KinematicsType kinematicsType, string referenceField)
             {
                 Toggle tglOriginal = GetPanelObject<Toggle>("Toggle Neck");
-                Toggle tgl = Instantiate(tglOriginal, FKIKPanel.transform);
-                tgl.name = name;
-                tgl.transform.localPosition = new Vector3(tgl.transform.localPosition.x, PositionBase + (PositionOffset * offset), tgl.transform.localPosition.z);
-
+                tgl = Instantiate(tglOriginal, FKIKPanel.transform);
+                Toggle tglNew = tgl;
+                tglNew.name = name;
+                tglNew.transform.localPosition = new Vector3(tglNew.transform.localPosition.x, PositionBase + (PositionOffset * offset), tglNew.transform.localPosition.z);
                 string fieldname = kinematicsType == KinematicsType.FK ? "fkInfo" : "ikInfo";
-                Toggle tglRef = Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field(fieldname).Field(referenceField).GetValue<Toggle>();
+                tglRef = Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field(fieldname).Field(referenceField).GetValue<Toggle>();
+                Toggle tglRefNew = tglRef;
 
-                tgl.onValueChanged.RemoveAllListeners();
-                tgl.isOn = tglRef.isOn;
-                tgl.onValueChanged.AddListener(delegate (bool value) { tglRef.onValueChanged.Invoke(value); });
-                tglRef.onValueChanged.AddListener(delegate (bool value) { tgl.isOn = value; });
+                tglNew.onValueChanged.RemoveAllListeners();
+                tglNew.isOn = tglRefNew.isOn;
+                tglNew.onValueChanged.AddListener(delegate (bool value) { if (!OverrideEvents) tglRefNew.onValueChanged.Invoke(value); });
+                tglRefNew.onValueChanged.AddListener(delegate (bool value) { if (!OverrideEvents) tglNew.isOn = value; });
             }
 
             private static void SetupButton(string name, int offset, KinematicsType kinematicsType, ButtonType buttonType, int index)
