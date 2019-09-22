@@ -14,7 +14,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.fkik";
         public const string PluginName = "FK and IK";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         internal static new ManualLogSource Logger;
         internal static FKIK Instance;
 
