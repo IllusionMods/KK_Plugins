@@ -23,16 +23,16 @@ namespace KK_Plugins
         public const string PluginNameInternal = "KK_Colliders";
         public const string Version = "1.0";
 
-        public static ConfigWrapper<bool> BreastColliders { get; private set; }
-        public static ConfigWrapper<bool> SkirtColliders { get; private set; }
+        public static ConfigEntry<bool> BreastColliders { get; private set; }
+        public static ConfigEntry<bool> SkirtColliders { get; private set; }
 
-        private void Main()
+        internal void Main()
         {
             CharacterApi.RegisterExtraBehaviour<ColliderController>("com.deathweasel.bepinex.colliders");
             HarmonyWrapper.PatchAll(typeof(KK_Colliders));
 
-            BreastColliders = Config.GetSetting("Config", "Breast Colliders", true, new ConfigDescription("Whether breast colliders are enabled. Makes breasts interact and collide with arms, hands, etc."));
-            SkirtColliders = Config.GetSetting("Config", "Skirt Colliders", true, new ConfigDescription("Whether breast colliders are enabled. Makes breasts interact and collide with legs, hands, etc."));
+            BreastColliders = Config.AddSetting("Config", "Breast Colliders", true, "Whether breast colliders are enabled. Makes breasts interact and collide with arms, hands, etc.");
+            SkirtColliders = Config.AddSetting("Config", "Skirt Colliders", true, "Whether breast colliders are enabled. Makes breasts interact and collide with legs, hands, etc.");
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload))]

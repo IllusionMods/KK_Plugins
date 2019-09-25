@@ -16,7 +16,7 @@ namespace KK_Plugins
         public const string PluginNameInternal = "KK_HCharaAdjustment";
         public const string Version = "1.0";
 
-        private void Main() => HarmonyWrapper.PatchAll(typeof(KK_HCharaAdjustment));
+        internal void Main() => HarmonyWrapper.PatchAll(typeof(KK_HCharaAdjustment));
 
         private static float AdjustmentX = 0;
         private static float AdjustmentY = 0;

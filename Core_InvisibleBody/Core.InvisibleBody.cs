@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using BepInEx.Harmony;
 using ExtensibleSaveFormat;
 using HarmonyLib;
 using KKAPI;
@@ -24,14 +25,15 @@ namespace KK_Plugins
         public const string Version = "1.3";
 
         private static MakerToggle InvisibleToggle;
-        public static ConfigWrapper<bool> HideHairAccessories { get; private set; }
+        public static ConfigEntry<bool> HideHairAccessories { get; private set; }
 
         internal void Start()
         {
             CharacterApi.RegisterExtraBehaviour<InvisibleBodyCharaController>("KK_InvisibleBody");
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
 
-            HideHairAccessories = Config.GetSetting("Config", "Hide built-in hair accessories", true, new ConfigDescription("Whether or not to hide accesories (such as scrunchies) attached to back hairs."));
+            HideHairAccessories = Config.AddSetting("Config", "Hide built-in hair accessories", true, "Whether or not to hide accesories (such as scrunchies) attached to back hairs.");
+            HarmonyWrapper.PatchAll(typeof(InvisibleBody));
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
@@ -44,7 +46,7 @@ namespace KK_Plugins
         /// </summary>
         /// <param name="__instance"></param>
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitShapeFace))]
-        public static void InitShapeFace(ChaControl __instance) => GetController(__instance).UpdateVisible(true);
+        internal static void InitShapeFace(ChaControl __instance) => GetController(__instance).UpdateVisible(true);
         /// <summary>
         /// Get the InvisibleBodyCharaController for the character
         /// </summary>

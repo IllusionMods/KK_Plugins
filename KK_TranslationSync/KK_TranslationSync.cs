@@ -20,16 +20,16 @@ namespace KK_Plugins
         public const string PluginName = "Translation Sync";
         public const string PluginNameInternal = "KK_TranslationSync";
         public const string Version = "1.2";
-        public static ConfigWrapper<string> Personality { get; private set; }
-        public static ConfigWrapper<KeyboardShortcut> TranslationSyncHotkey { get; private set; }
+        public static ConfigEntry<string> Personality { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> TranslationSyncHotkey { get; private set; }
 
-        private void Main()
+        internal void Main()
         {
-            Personality = Config.GetSetting("Config", "Personality", "c00", new ConfigDescription("Personality to sync"));
-            TranslationSyncHotkey = Config.GetSetting("Keyboard Shortcuts", "Sync Translation Hotkey", new KeyboardShortcut(KeyCode.Alpha0), new ConfigDescription("Press to sync translations for the specified personality. Hold alt to force overwrite all translations if different (dangerous, make backups first). Hold ctrl to sync all translations for all personalities (may take a while)."));
+            Personality = Config.AddSetting("Config", "Personality", "c00", "Personality to sync");
+            TranslationSyncHotkey = Config.AddSetting("Keyboard Shortcuts", "Sync Translation Hotkey", new KeyboardShortcut(KeyCode.Alpha0), "Press to sync translations for the specified personality. Hold alt to force overwrite all translations if different (dangerous, make backups first). Hold ctrl to sync all translations for all personalities (may take a while).");
         }
 
-        private void Update()
+        internal void Update()
         {
             if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) && Input.GetKey(TranslationSyncHotkey.Value.MainKey))
             {
@@ -67,7 +67,7 @@ namespace KK_Plugins
 
         }
 
-        private void CountText()
+        internal void CountText()
         {
             HashSet<string> AllJPText = new HashSet<string>();
 

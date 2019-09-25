@@ -14,7 +14,8 @@ namespace KK_Plugins
         public const string PluginName = "Animation Overdrive";
         public const string Version = "1.0";
 
-        private void Main() => HarmonyWrapper.PatchAll(typeof(KK_AnimationOverdrive));
+        internal void Main() => HarmonyWrapper.PatchAll(typeof(KK_AnimationOverdrive));
+
         /// <summary>
         /// Copy/paste decompiled code in to the prefix, return false. 10/10 programing skills
         /// </summary>

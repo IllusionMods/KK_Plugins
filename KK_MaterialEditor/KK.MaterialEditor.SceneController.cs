@@ -194,7 +194,7 @@ namespace KK_Plugins
                 MaterialShaderList.AddRange(materialShaderListNew);
             }
 
-            private void Update()
+            internal void Update()
             {
                 try
                 {

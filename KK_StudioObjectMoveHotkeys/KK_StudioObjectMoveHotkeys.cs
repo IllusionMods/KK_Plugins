@@ -28,22 +28,22 @@ namespace KK_Plugins
         public const float ROTATE_RATIO = 90f;
         public const float SCALE_RATIO = 0.5f;
 
-        public static ConfigWrapper<KeyboardShortcut> HotkeyX { get; private set; }
-        public static ConfigWrapper<KeyboardShortcut> HotkeyY { get; private set; }
-        public static ConfigWrapper<KeyboardShortcut> HotkeyZ { get; private set; }
-        public static ConfigWrapper<KeyboardShortcut> HotkeyAll { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> HotkeyX { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> HotkeyY { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> HotkeyZ { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> HotkeyAll { get; private set; }
 
-        private void Main()
+        internal void Main()
         {
-            HotkeyX = Config.GetSetting("Keyboard Shortcuts", "Hotkey X", new KeyboardShortcut(KeyCode.Y), new ConfigDescription("Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse."));
-            HotkeyY = Config.GetSetting("Keyboard Shortcuts", "Hotkey Y", new KeyboardShortcut(KeyCode.U), new ConfigDescription("Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse."));
-            HotkeyZ = Config.GetSetting("Keyboard Shortcuts", "Hotkey Z", new KeyboardShortcut(KeyCode.I), new ConfigDescription("Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse."));
-            HotkeyAll = Config.GetSetting("Keyboard Shortcuts", "Hotkey All", new KeyboardShortcut(KeyCode.T), new ConfigDescription("Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse."));
+            HotkeyX = Config.AddSetting("Keyboard Shortcuts", "Hotkey X", new KeyboardShortcut(KeyCode.Y), "Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse.");
+            HotkeyY = Config.AddSetting("Keyboard Shortcuts", "Hotkey Y", new KeyboardShortcut(KeyCode.U), "Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse.");
+            HotkeyZ = Config.AddSetting("Keyboard Shortcuts", "Hotkey Z", new KeyboardShortcut(KeyCode.I), "Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse.");
+            HotkeyAll = Config.AddSetting("Keyboard Shortcuts", "Hotkey All", new KeyboardShortcut(KeyCode.T), "Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse.");
         }
 
         public GuideObject GetTargetObject() => Singleton<GuideObjectManager>.Instance.operationTarget ?? Singleton<GuideObjectManager>.Instance.selectObject;
 
-        private void Update()
+        internal void Update()
         {
             if (Singleton<GuideObjectManager>.Instance == null) return;
             GuideObjectMode guideObjectMode = (GuideObjectMode)Singleton<GuideObjectManager>.Instance.mode;

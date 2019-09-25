@@ -17,7 +17,7 @@ namespace KK_Plugins
         public const string Version = "1.0";
         private static bool LoadOrImportClicked = false;
 
-        private void Main()
+        internal void Main()
         {
             SceneManager.sceneLoaded += SceneLoaded;
             HarmonyWrapper.PatchAll(typeof(KK_StudioSceneLoadedSound));

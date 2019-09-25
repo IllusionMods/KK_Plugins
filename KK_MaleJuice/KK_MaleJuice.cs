@@ -21,7 +21,7 @@ namespace KK_Plugins
         public const string Version = "1.1";
         private static Texture LiquidMask = null;
 
-        private void Main()
+        internal void Main()
         {
             //Get the juice texture used by females
             try

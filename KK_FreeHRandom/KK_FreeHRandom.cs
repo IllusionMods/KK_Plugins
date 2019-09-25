@@ -22,7 +22,7 @@ namespace KK_Plugins
 
         private enum CharacterType { Heroine, Partner, Female3P, Player }
 
-        private void Main()
+        internal void Main()
         {
             //KK Party may not have these directories when first run, create them to avoid errors
             Directory.CreateDirectory(CC.Paths.FemaleCardPath);

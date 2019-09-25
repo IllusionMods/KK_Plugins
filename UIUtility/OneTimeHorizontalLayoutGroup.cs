@@ -9,16 +9,11 @@ namespace UILib
         {
             base.OnEnable();
             if (Application.isEditor == false || Application.isPlaying)
-                this.ExecuteDelayed(() => this.enabled = false, 3);
+                this.ExecuteDelayed(() => enabled = false, 3);
         }
 
-        protected override void OnDisable()
-        {
-        }
+        protected override void OnDisable() { }
 
-        public void UpdateLayout()
-        {
-            this.enabled = true;
-        }
+        public void UpdateLayout() => enabled = true;
     }
 }

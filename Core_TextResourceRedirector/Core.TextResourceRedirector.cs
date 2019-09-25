@@ -8,10 +8,10 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.textresourceredirector";
         public const string Version = "1.0";
 
-        private ExcelDataResourceRedirector _excelRedirector;
-        private ScenarioDataResourceRedirector _scenarioRedirector;
+        internal ExcelDataResourceRedirector _excelRedirector;
+        internal ScenarioDataResourceRedirector _scenarioRedirector;
 
-        private void Awake()
+        internal void Awake()
         {
             _excelRedirector = new ExcelDataResourceRedirector();
             _scenarioRedirector = new ScenarioDataResourceRedirector();

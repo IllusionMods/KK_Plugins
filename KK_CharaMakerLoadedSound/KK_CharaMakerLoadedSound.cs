@@ -14,6 +14,6 @@ namespace KK_Plugins
         public const string PluginName = "Character Maker Loaded Sound";
         public const string Version = "1.0";
 
-        void Main() => KKAPI.Maker.MakerAPI.MakerFinishedLoading += (s, e) => Utils.Sound.Play(SystemSE.result_single);
+        internal void Main() => KKAPI.Maker.MakerAPI.MakerFinishedLoading += (s, e) => Utils.Sound.Play(SystemSE.result_single);
     }
 }

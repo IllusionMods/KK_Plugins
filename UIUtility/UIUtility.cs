@@ -218,7 +218,7 @@ namespace UILib
             return go.GetComponent<Toggle>();
         }
 
-        public static Dropdown CreateDropdown(string objectName = "New Dropdown", Transform parent = null, string label = "Label")
+        public static Dropdown CreateDropdown(string objectName = "New Dropdown", Transform parent = null)
         {
             GameObject go = DefaultControls.CreateDropdown(resources);
             go.name = objectName;
@@ -322,7 +322,7 @@ namespace UILib
             i.type = Image.Type.Sliced;
             i.fillCenter = true;
             i.color = whiteColor;
-            i.sprite = sprite == null ? backgroundSprite : sprite;
+            i.sprite = sprite ?? backgroundSprite;
             return i;
         }
 

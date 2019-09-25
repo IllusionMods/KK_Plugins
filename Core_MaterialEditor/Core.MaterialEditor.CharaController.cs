@@ -128,7 +128,7 @@ namespace KK_Plugins
                 ChaControl.StartCoroutine(LoadData(true, true, true));
             }
 
-            private new void Update()
+            internal new void Update()
             {
                 try
                 {

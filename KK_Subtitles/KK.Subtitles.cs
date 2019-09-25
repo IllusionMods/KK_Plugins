@@ -17,7 +17,7 @@ namespace KK_Plugins
         internal static Info ActionGameInfoInstance;
         internal static HSceneProc HSceneProcInstance;
 
-        private void Main() => LoadSubtitles();
+        internal void Main() => LoadSubtitles();
 
         private void LoadSubtitles()
         {

@@ -22,38 +22,38 @@ namespace UILib
         protected override void Awake()
         {
             base.Awake();
-            this._cameraControl = GameObject.FindObjectOfType<BaseCameraControl>();
+            _cameraControl = FindObjectOfType<BaseCameraControl>();
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (this.preventCameraControl && this._cameraControl)
+            if (preventCameraControl && _cameraControl)
             {
-                this._noControlFunctionCached = this._cameraControl.NoCtrlCondition;
-                this._cameraControl.NoCtrlCondition = () => true;
+                _noControlFunctionCached = _cameraControl.NoCtrlCondition;
+                _cameraControl.NoCtrlCondition = () => true;
             }
-            this._pointerDownCalled = true;
-            this._cachedDragPosition = this.toDrag.position;
-            this._cachedMousePosition = Input.mousePosition;
-            this.onPointerDown?.Invoke(eventData);
+            _pointerDownCalled = true;
+            _cachedDragPosition = toDrag.position;
+            _cachedMousePosition = Input.mousePosition;
+            onPointerDown?.Invoke(eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (this._pointerDownCalled == false)
+            if (_pointerDownCalled == false)
                 return;
-            this.toDrag.position = this._cachedDragPosition + ((Vector2)Input.mousePosition - this._cachedMousePosition);
-            this.onDrag?.Invoke(eventData);
+            toDrag.position = _cachedDragPosition + ((Vector2)Input.mousePosition - _cachedMousePosition);
+            onDrag?.Invoke(eventData);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (this._pointerDownCalled == false)
+            if (_pointerDownCalled == false)
                 return;
-            if (this.preventCameraControl && this._cameraControl)
-                this._cameraControl.NoCtrlCondition = this._noControlFunctionCached;
-            this._pointerDownCalled = false;
-            this.onPointerUp?.Invoke(eventData);
+            if (preventCameraControl && _cameraControl)
+                _cameraControl.NoCtrlCondition = _noControlFunctionCached;
+            _pointerDownCalled = false;
+            onPointerUp?.Invoke(eventData);
         }
     }
 }

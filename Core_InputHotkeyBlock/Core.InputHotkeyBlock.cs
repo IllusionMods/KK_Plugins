@@ -14,7 +14,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.inputhotkeyblock";
         public const string Version = "1.2";
 
-        private void Main() => HarmonyWrapper.PatchAll(typeof(Hooks));
+        internal void Main() => HarmonyWrapper.PatchAll(typeof(Hooks));
         /// <summary>
         /// Check if an input field is selected
         /// </summary>

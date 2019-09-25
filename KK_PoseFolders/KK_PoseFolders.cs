@@ -27,7 +27,7 @@ namespace KK_Plugins
         private static GameObject v_prefabNode;
         private static Transform v_transformRoot;
 
-        private void Main()
+        internal void Main()
         {
             if (!CurrentDirectory.Exists) CurrentDirectory.Create();
             HarmonyWrapper.PatchAll(typeof(KK_PoseFolders));

@@ -33,7 +33,7 @@ namespace KK_Plugins
         private static readonly System.Random Rand = new System.Random();
         private static MakerSlider DeviationSlider;
 
-        private void Main()
+        internal void Main()
         {
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerExiting += (s, e) => CharacterSliderTemplate = new Dictionary<string, float>();
@@ -329,7 +329,7 @@ namespace KK_Plugins
                 face.eyebrowColor = file.custom.hair.parts[0].baseColor;
                 categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.mt_nose);
                 face.noseId = categoryInfo.Keys.ElementAt(Rand.Next(categoryInfo.Keys.Count));
-                categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.mt_mole);
+                //categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.mt_mole);
                 face.moleId = 0;
                 categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.mt_lipline);
                 face.lipLineId = RandomBool() ? categoryInfo.Keys.ElementAt(Rand.Next(categoryInfo.Keys.Count)) : 0;

@@ -1,5 +1,4 @@
-﻿using UILib;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace UILib
@@ -10,16 +9,11 @@ namespace UILib
         {
             base.OnEnable();
             if (Application.isEditor == false || Application.isPlaying)
-                this.ExecuteDelayed(() => this.enabled = false, 2);
+                this.ExecuteDelayed(() => enabled = false, 2);
         }
 
-        protected override void OnDisable()
-        {
-        }
+        protected override void OnDisable() { }
 
-        public void UpdateLayout()
-        {
-            this.enabled = true;
-        }
+        public void UpdateLayout() => enabled = true;
     }
 }

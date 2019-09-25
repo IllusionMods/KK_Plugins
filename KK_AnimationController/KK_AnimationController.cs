@@ -38,18 +38,17 @@ namespace KK_Plugins
         private static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
         private Rect AnimGUI = new Rect(70, 190, 200, 400);
 
-        public static ConfigWrapper<KeyboardShortcut> AnimationControllerHotkey { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> AnimationControllerHotkey { get; private set; }
 
-
-        private void Main()
+        internal void Main()
         {
             Logger = base.Logger;
-            AnimationControllerHotkey = Config.GetSetting("Keyboard Shortcuts", "Toggle Animation Controller Window", new KeyboardShortcut(KeyCode.Minus), new ConfigDescription("Show or hide the Animation Controller window in Studio"));
+            AnimationControllerHotkey = Config.AddSetting("Keyboard Shortcuts", "Toggle Animation Controller Window", new KeyboardShortcut(KeyCode.Minus), "Show or hide the Animation Controller window in Studio");
             CharacterApi.RegisterExtraBehaviour<AnimationControllerCharaController>(GUID);
             StudioSaveLoadApi.RegisterExtraBehaviour<AnimationControllerSceneController>(GUID);
         }
 
-        private void Update()
+        internal void Update()
         {
             if (AnimationControllerHotkey.Value.IsDown())
                 GUIVisible = !GUIVisible;
@@ -117,7 +116,7 @@ namespace KK_Plugins
         /// <summary>
         /// Draws the GUI
         /// </summary>
-        private void OnGUI()
+        internal void OnGUI()
         {
             if (GUIVisible)
                 AnimGUI = GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
@@ -509,7 +508,7 @@ namespace ExtensionMethods
     public static class MPCharCtrlExtensions
     {
         private static MPCharCtrl _MPCharCtrl;
-        public static MPCharCtrl MPCharCtrl(this ManipulatePanelCtrl manipulatePanelCtrl)
+        public static MPCharCtrl MPCharCtrl(this ManipulatePanelCtrl _)
         {
             if (_MPCharCtrl == null)
             {
@@ -531,7 +530,7 @@ namespace ExtensionMethods
         }
 
         private static Slider _LookAtInfo_SliderSize;
-        public static Slider LookAtInfo_SliderSize(this MPCharCtrl mpCharCtrl)
+        public static Slider LookAtInfo_SliderSize(this MPCharCtrl _)
         {
             if (_LookAtInfo_SliderSize == null)
                 _LookAtInfo_SliderSize = (Slider)Traverse.Create(LookAtInfo).Field("sliderSize").GetValue();
@@ -539,7 +538,7 @@ namespace ExtensionMethods
         }
 
         private static Button[] _LookAtInfo_ButtonMode;
-        public static Button[] LookAtInfo_ButtonMode(this MPCharCtrl mpCharCtrl)
+        public static Button[] LookAtInfo_ButtonMode(this MPCharCtrl _)
         {
             if (_LookAtInfo_ButtonMode == null)
                 _LookAtInfo_ButtonMode = (Button[])Traverse.Create(LookAtInfo).Field("buttonMode").GetValue();
@@ -558,7 +557,7 @@ namespace ExtensionMethods
         }
 
         private static Button[] _NeckInfo_ButtonMode;
-        public static Button[] NeckInfo_ButtonMode(this MPCharCtrl mpCharCtrl)
+        public static Button[] NeckInfo_ButtonMode(this MPCharCtrl _)
         {
             if (_NeckInfo_ButtonMode == null)
                 _NeckInfo_ButtonMode = (Button[])Traverse.Create(MPCharCtrl_NeckInfo).Field("buttonMode").GetValue();

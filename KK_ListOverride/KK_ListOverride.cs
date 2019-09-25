@@ -19,14 +19,14 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
         private static readonly string ListOverrideFolder = Path.Combine(Paths.ConfigPath, "KK_ListOverride");
 
-        private void Awake()
+        internal void Awake()
         {
             Logger = base.Logger;
             HarmonyWrapper.PatchAll(typeof(KK_ListOverride));
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaListControl), "LoadListInfoAll")]
-        public static void LoadListInfoAllPostfix(ChaListControl __instance)
+        internal static void LoadListInfoAllPostfix(ChaListControl __instance)
         {
             if (!Directory.Exists(ListOverrideFolder)) return;
 

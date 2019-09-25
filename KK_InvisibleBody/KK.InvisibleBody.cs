@@ -14,7 +14,7 @@ namespace KK_Plugins
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class InvisibleBody : BaseUnityPlugin
     {
-        private void Main()
+        internal void Main()
         {
             if (StudioAPI.InsideStudio)
                 RegisterStudioControls();

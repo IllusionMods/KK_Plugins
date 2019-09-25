@@ -13,7 +13,7 @@ namespace KK_Plugins
 
         private readonly string XMLPath = Paths.BepInExRootPath + $@"\Translation\{PluginNameInternal}";
 
-        private void Main() => LoadSubtitles();
+        internal void Main() => LoadSubtitles();
 
         private void LoadSubtitles()
         {

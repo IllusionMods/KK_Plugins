@@ -18,11 +18,11 @@ namespace KK_Plugins
         public const string PluginName = "HS_TextDump";
         public const string Version = "1.1";
 
-        public static ConfigWrapper<bool> Enabled { get; private set; }
+        public static ConfigEntry<bool> Enabled { get; private set; }
 
-        private void Main()
+        internal void Main()
         {
-            Enabled = Config.GetSetting("Settings", "Enabled", true, new ConfigDescription("Whether the plugin is enabled"));
+            Enabled = Config.AddSetting("Settings", "Enabled", true, "Whether the plugin is enabled");
             if (!Enabled.Value) return;
 
             DumpText();

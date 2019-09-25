@@ -18,11 +18,11 @@ namespace KK_Plugins
         public const string PluginNameInternal = "KK_ForceHighPoly";
         public const string Version = "1.2";
 
-        public static ConfigWrapper<bool> Enabled { get; private set; }
+        public static ConfigEntry<bool> Enabled { get; private set; }
 
-        private void Main()
+        internal void Main()
         {
-            Enabled = Config.GetSetting("Config", "High poly mode", true, new ConfigDescription("Whether or not to load high poly assets. May require exiting to main menu to take effect."));
+            Enabled = Config.AddSetting("Config", "High poly mode", true, "Whether or not to load high poly assets. May require exiting to main menu to take effect.");
 
             HarmonyWrapper.PatchAll(typeof(KK_ForceHighPoly));
         }

@@ -16,11 +16,11 @@ namespace KK_Plugins
 
         private static bool _enabled = true;
 
-        public static ConfigWrapper<bool> Enabled { get; private set; }
+        public static ConfigEntry<bool> Enabled { get; private set; }
 
-        private void Main()
+        internal void Main()
         {
-            Enabled = Config.GetSetting("Settings", "Enabled", true, new ConfigDescription("Whether the plugin is enabled"));
+            Enabled = Config.AddSetting("Settings", "Enabled", true, "Whether the plugin is enabled");
             Enabled.SettingChanged += Enabled_SettingChanged;
             _enabled = Enabled.Value;
             HarmonyWrapper.PatchAll(typeof(Demosaic));

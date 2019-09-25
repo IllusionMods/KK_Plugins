@@ -16,30 +16,30 @@ namespace KK_Plugins
         internal static Dictionary<string, string> SubtitleDictionary = new Dictionary<string, string>();
 
         #region ConfigMgr
-        public static ConfigWrapper<bool> ShowSubtitles { get; private set; }
-        public static ConfigWrapper<string> FontName { get; private set; }
-        public static ConfigWrapper<int> FontSize { get; private set; }
-        public static ConfigWrapper<FontStyle> FontStyle { get; private set; }
-        public static ConfigWrapper<TextAnchor> TextAlign { get; private set; }
-        public static ConfigWrapper<int> TextOffset { get; private set; }
-        public static ConfigWrapper<int> OutlineThickness { get; private set; }
-        public static ConfigWrapper<Color> TextColor { get; private set; }
-        public static ConfigWrapper<Color> OutlineColor { get; private set; }
+        public static ConfigEntry<bool> ShowSubtitles { get; private set; }
+        public static ConfigEntry<string> FontName { get; private set; }
+        public static ConfigEntry<int> FontSize { get; private set; }
+        public static ConfigEntry<FontStyle> FontStyle { get; private set; }
+        public static ConfigEntry<TextAnchor> TextAlign { get; private set; }
+        public static ConfigEntry<int> TextOffset { get; private set; }
+        public static ConfigEntry<int> OutlineThickness { get; private set; }
+        public static ConfigEntry<Color> TextColor { get; private set; }
+        public static ConfigEntry<Color> OutlineColor { get; private set; }
         #endregion
 
-        private void Awake()
+        internal void Awake()
         {
             Logger = base.Logger;
 
-            ShowSubtitles = Config.GetSetting("Config", "Show Subtitles", true, new ConfigDescription("Enable or disable showing subtitles."));
-            FontName = Config.GetSetting("Config", "Font Name", "Arial", new ConfigDescription("Name of the font to use for subtitle text."));
-            FontSize = Config.GetSetting("Config", "Font Size", -5, new ConfigDescription("Font size of subtitles."));
-            FontStyle = Config.GetSetting("Config", "Font Style", UnityEngine.FontStyle.Bold, new ConfigDescription("Font style of subtitles, i.e. bold, italic, etc."));
-            TextAlign = Config.GetSetting("Config", "Text Align", TextAnchor.LowerCenter, new ConfigDescription("Text alignment of subtitles."));
-            TextOffset = Config.GetSetting("Config", "Text Offset", 10, new ConfigDescription("Distance from edge of the screen."));
-            OutlineThickness = Config.GetSetting("Config", "Outline Thickness", 2, new ConfigDescription("Outline thickness for subtitle text."));
-            TextColor = Config.GetSetting("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, new ConfigDescription("Subtitle text color."));
-            OutlineColor = Config.GetSetting("Config", "Outline Color", Color.black, new ConfigDescription("Subtitle text outline color."));
+            ShowSubtitles = Config.AddSetting("Config", "Show Subtitles", true, "Enable or disable showing subtitles.");
+            FontName = Config.AddSetting("Config", "Font Name", "Arial", "Name of the font to use for subtitle text.");
+            FontSize = Config.AddSetting("Config", "Font Size", -5, "Font size of subtitles.");
+            FontStyle = Config.AddSetting("Config", "Font Style", UnityEngine.FontStyle.Bold, "Font style of subtitles, i.e. bold, italic, etc.");
+            TextAlign = Config.AddSetting("Config", "Text Align", TextAnchor.LowerCenter, "Text alignment of subtitles.");
+            TextOffset = Config.AddSetting("Config", "Text Offset", 10, "Distance from edge of the screen.");
+            OutlineThickness = Config.AddSetting("Config", "Outline Thickness", 2, "Outline thickness for subtitle text.");
+            TextColor = Config.AddSetting("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, "Subtitle text color.");
+            OutlineColor = Config.AddSetting("Config", "Outline Color", Color.black, "Subtitle text outline color.");
 
 #if HS
             if (Application.productName != "HoneySelect") return;

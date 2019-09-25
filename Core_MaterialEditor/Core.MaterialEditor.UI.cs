@@ -180,19 +180,19 @@ namespace KK_Plugins
             PopulateList(chaControl.objHair[index], ObjectType.Hair, 0, chaControl, 0, index);
         }
 
-        private static void PopulateListBody()
+        internal static void PopulateListBody()
         {
             var chaControl = MakerAPI.GetCharacterControl();
             PopulateList(chaControl.gameObject, ObjectType.Character, 0, chaControl, body: true);
         }
 
-        private static void PopulateListFace()
+        internal static void PopulateListFace()
         {
             var chaControl = MakerAPI.GetCharacterControl();
             PopulateList(chaControl.gameObject, ObjectType.Character, 0, chaControl, face: true);
         }
 
-        private static void PopulateListCharacter()
+        internal static void PopulateListCharacter()
         {
             var chaControl = MakerAPI.GetCharacterControl();
             PopulateList(chaControl.gameObject, ObjectType.Character, 0, chaControl);
@@ -292,7 +292,7 @@ namespace KK_Plugins
                     else if (GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled) != null)
                         valueEnabledInitial = GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled) == "1";
 
-                    var dropdownEnabled = UIUtility.CreateDropdown("Enabled", contentItem1.transform, "Enabled");
+                    var dropdownEnabled = UIUtility.CreateDropdown("Enabled", contentItem1.transform);
                     dropdownEnabled.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                     dropdownEnabled.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
                     dropdownEnabled.captionText.alignment = TextAnchor.MiddleLeft;
@@ -352,7 +352,7 @@ namespace KK_Plugins
                     else if (GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode) != null)
                         valueShadowCastingModeInitial = (UnityEngine.Rendering.ShadowCastingMode)int.Parse(GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode));
 
-                    var dropdownShadowCastingMode = UIUtility.CreateDropdown("ShadowCastingMode", contentItem2.transform, "ShadowCastingMode");
+                    var dropdownShadowCastingMode = UIUtility.CreateDropdown("ShadowCastingMode", contentItem2.transform);
                     dropdownShadowCastingMode.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                     dropdownShadowCastingMode.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
                     dropdownShadowCastingMode.captionText.alignment = TextAnchor.MiddleLeft;
@@ -414,7 +414,7 @@ namespace KK_Plugins
                     else if (GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows) != null)
                         valueReceiveShadowsInitial = GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows) == "1";
 
-                    var dropdownReceiveShadows = UIUtility.CreateDropdown("ReceiveShadows", contentItem3.transform, "ReceiveShadows");
+                    var dropdownReceiveShadows = UIUtility.CreateDropdown("ReceiveShadows", contentItem3.transform);
                     dropdownReceiveShadows.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                     dropdownReceiveShadows.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
                     dropdownReceiveShadows.captionText.alignment = TextAnchor.MiddleLeft;
@@ -504,7 +504,7 @@ namespace KK_Plugins
                             shaderNameInitial = shaderName;
                     }
 
-                    var dropdownShader = UIUtility.CreateDropdown("Shader", contentListHeader2.transform, "Shader");
+                    var dropdownShader = UIUtility.CreateDropdown("Shader", contentListHeader2.transform);
                     dropdownShader.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                     dropdownShader.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
                     dropdownShader.captionText.alignment = TextAnchor.MiddleLeft;
@@ -1066,7 +1066,7 @@ namespace KK_Plugins
             CC.OpenFileInExplorer(filename);
         }
 
-        private byte[] LoadIcon()
+        internal byte[] LoadIcon()
         {
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.MaterialEditorIcon.png"))
             {
@@ -1075,8 +1075,6 @@ namespace KK_Plugins
                 return bytesInStream;
             }
         }
-
-
 
         public static HashSet<string> ClothesBlacklist = new HashSet<string>()
         {
@@ -1111,10 +1109,7 @@ namespace KK_Plugins
             return false;
         }
 
-        public enum RendererProperties
-        {
-            Enabled, ShadowCastingMode, ReceiveShadows
-        }
+        public enum RendererProperties { Enabled, ShadowCastingMode, ReceiveShadows }
 
         #region Helper Methods
         internal static Texture2D GetT2D(RenderTexture renderTexture)

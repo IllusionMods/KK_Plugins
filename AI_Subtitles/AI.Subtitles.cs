@@ -12,7 +12,7 @@ namespace KK_Plugins
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class Subtitles : BaseUnityPlugin
     {
-        private void Main() => LoadSubtitles();
+        internal void Main() => LoadSubtitles();
 
         private void LoadSubtitles()
         {

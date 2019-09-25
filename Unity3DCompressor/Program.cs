@@ -8,7 +8,7 @@ namespace Unity3DCompressor
 {
     internal class Program
     {
-        private static bool CABRandomization = false;
+        internal static bool CABRandomization = false;
         private static readonly RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
 
         private static void Main(string[] args)

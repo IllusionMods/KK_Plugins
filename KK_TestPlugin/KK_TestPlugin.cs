@@ -14,6 +14,6 @@ namespace KK_Plugins
         public const string PluginName = "Test Plugin";
         public const string Version = "1.0";
 
-        private void Main() => SceneManager.sceneLoaded += (s, lsm) => Logger.Log(LogLevel.Warning, $"Scene loaded: {s.name}");
+        internal void Main() => SceneManager.sceneLoaded += (s, lsm) => Logger.Log(LogLevel.Warning, $"Scene loaded: {s.name}");
     }
 }

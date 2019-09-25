@@ -42,9 +42,9 @@ namespace KK_Plugins
         public static readonly Dictionary<string, string> BodyConfigListFull = new Dictionary<string, string>();
         public static readonly Dictionary<string, string> PenisConfigListFull = new Dictionary<string, string>();
         public static readonly Dictionary<string, string> BallsConfigListFull = new Dictionary<string, string>();
-        private static MakerDropdown BodyDropdown;
-        private static MakerDropdown PenisDropdown;
-        private static MakerDropdown BallsDropdown;
+        internal static MakerDropdown BodyDropdown = null;
+        internal static MakerDropdown PenisDropdown = null;
+        internal static MakerDropdown BallsDropdown = null;
         private static readonly HashSet<string> BodyNames = new HashSet<string>() { "o_body_a", "o_body_cf", "o_body_cm" };
         private static readonly HashSet<string> BodyParts = new HashSet<string>() { "o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster", "cm_o_dan00", "cm_o_dan_f" };
         private static readonly HashSet<string> PenisParts = new HashSet<string>() { "o_dankon", "o_gomu", "cm_o_dan00" };
@@ -52,16 +52,16 @@ namespace KK_Plugins
         internal static string CurrentBodyGUID;
         internal static bool DidErrorMessage = false;
 
-        public static ConfigWrapper<bool> GenderBender { get; private set; }
-        public static ConfigWrapper<string> DefaultMaleBody { get; private set; }
-        public static ConfigWrapper<string> DefaultMalePenis { get; private set; }
-        public static ConfigWrapper<string> DefaultMaleBalls { get; private set; }
-        public static ConfigWrapper<string> DefaultFemaleBody { get; private set; }
-        public static ConfigWrapper<string> DefaultFemalePenis { get; private set; }
-        public static ConfigWrapper<string> DefaultFemaleBalls { get; private set; }
-        public static ConfigWrapper<bool> DefaultFemaleDisplayBalls { get; private set; }
+        public static ConfigEntry<bool> GenderBender { get; private set; }
+        public static ConfigEntry<string> DefaultMaleBody { get; private set; }
+        public static ConfigEntry<string> DefaultMalePenis { get; private set; }
+        public static ConfigEntry<string> DefaultMaleBalls { get; private set; }
+        public static ConfigEntry<string> DefaultFemaleBody { get; private set; }
+        public static ConfigEntry<string> DefaultFemalePenis { get; private set; }
+        public static ConfigEntry<string> DefaultFemaleBalls { get; private set; }
+        public static ConfigEntry<bool> DefaultFemaleDisplayBalls { get; private set; }
 
-        private void Start()
+        internal void Start()
         {
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
 
@@ -72,18 +72,18 @@ namespace KK_Plugins
 #endif
         }
 
-        private void Main()
+        internal void Main()
         {
             Logger = base.Logger;
 
-            GenderBender = Config.GetSetting("Config", "Genderbender Allowed", true, new ConfigDescription("Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility."));
-            DefaultMaleBody = Config.GetSetting("Config", "Default Male Body", "Random", new ConfigDescription("Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives."));
-            DefaultMalePenis = Config.GetSetting("Config", "Default Male Penis", "Random", new ConfigDescription("Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives."));
-            DefaultMaleBalls = Config.GetSetting("Config", "Default Male Balls", "Random", new ConfigDescription("Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives."));
-            DefaultFemaleBody = Config.GetSetting("Config", "Default Female Body", "Random", new ConfigDescription("Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives."));
-            DefaultFemalePenis = Config.GetSetting("Config", "Default Female Penis", "Random", new ConfigDescription("Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives."));
-            DefaultFemaleBalls = Config.GetSetting("Config", "Default Female Balls", "Random", new ConfigDescription("Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives."));
-            DefaultFemaleDisplayBalls = Config.GetSetting("Config", "Default Female Balls Display", false, new ConfigDescription("Whether balls will be displayed on females if not otherwise configured."));
+            GenderBender = Config.AddSetting("Config", "Genderbender Allowed", true, "Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.");
+            DefaultMaleBody = Config.AddSetting("Config", "Default Male Body", "Random", "Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives.");
+            DefaultMalePenis = Config.AddSetting("Config", "Default Male Penis", "Random", "Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.");
+            DefaultMaleBalls = Config.AddSetting("Config", "Default Male Balls", "Random", "Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.");
+            DefaultFemaleBody = Config.AddSetting("Config", "Default Female Body", "Random", "Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives.");
+            DefaultFemalePenis = Config.AddSetting("Config", "Default Female Penis", "Random", "Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.");
+            DefaultFemaleBalls = Config.AddSetting("Config", "Default Female Balls", "Random", "Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.");
+            DefaultFemaleDisplayBalls = Config.AddSetting("Config", "Default Female Balls Display", false, "Whether balls will be displayed on females if not otherwise configured.");
 
             PopulateUncensorLists();
 
@@ -391,9 +391,9 @@ namespace KK_Plugins
 
             return false;
         }
-        private object[] GetConfigBodyList() => BodyConfigListFull?.Keys.OrderBy(x => x[0] == '[').ThenBy(x => x).Cast<object>().ToArray();
-        private object[] GetConfigPenisList() => PenisConfigListFull?.Keys.OrderBy(x => x).Cast<object>().ToArray();
-        private object[] GetConfigBallsList() => BallsConfigListFull?.Keys.OrderBy(x => x).Cast<object>().ToArray();
+        internal object[] GetConfigBodyList() => BodyConfigListFull?.Keys.OrderBy(x => x[0] == '[').ThenBy(x => x).Cast<object>().ToArray();
+        internal object[] GetConfigPenisList() => PenisConfigListFull?.Keys.OrderBy(x => x).Cast<object>().ToArray();
+        internal object[] GetConfigBallsList() => BallsConfigListFull?.Keys.OrderBy(x => x).Cast<object>().ToArray();
         private static string DisplayNameToBodyGuid(string displayName)
         {
             BodyConfigListFull.TryGetValue(displayName, out var guid);
@@ -414,8 +414,8 @@ namespace KK_Plugins
             var displayName = BodyConfigListFull.FirstOrDefault(x => x.Value == guid).Key;
             return displayName.IsNullOrWhiteSpace() ? "Random" : displayName;
         }
-        private static string PenisGuidToDisplayName(string guid) => PenisConfigListFull.FirstOrDefault(x => x.Value == guid).Key ?? "Random";
-        private static string BallsGuidToDisplayName(string guid) => BallsConfigListFull.FirstOrDefault(x => x.Value == guid).Key ?? "Random";
+        internal static string PenisGuidToDisplayName(string guid) => PenisConfigListFull.FirstOrDefault(x => x.Value == guid).Key ?? "Random";
+        internal static string BallsGuidToDisplayName(string guid) => BallsConfigListFull.FirstOrDefault(x => x.Value == guid).Key ?? "Random";
         /// <summary>
         /// Returns the UncensorSelectorController for the specified character or null if it does not exist
         /// </summary>

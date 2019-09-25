@@ -40,9 +40,9 @@ namespace KK_Plugins
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
-        public static ConfigWrapper<bool> AdvancedMode { get; private set; }
+        public static ConfigEntry<bool> AdvancedMode { get; private set; }
 
-        private void Main()
+        internal void Main()
         {
             Logger = base.Logger;
             Directory.CreateDirectory(ExportPath);
@@ -61,7 +61,7 @@ namespace KK_Plugins
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
 #endif
 
-            AdvancedMode = Config.GetSetting("Config", "Enable advanced editing", false, new ConfigDescription("Enables advanced editing of characters in the character maker. Note: Some textures and colors will override chracter maker selections but will not always appear to do so, especially after changing them from the in game color pickers. Save and reload to see the real effects.\nUse at your own risk."));
+            AdvancedMode = Config.AddSetting("Config", "Enable advanced editing", false, "Enables advanced editing of characters in the character maker. Note: Some textures and colors will override chracter maker selections but will not always appear to do so, especially after changing them from the in game color pickers. Save and reload to see the real effects.\nUse at your own risk.");
 
             LoadXML();
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));

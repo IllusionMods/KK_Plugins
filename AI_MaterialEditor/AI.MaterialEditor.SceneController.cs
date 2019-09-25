@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#pragma warning disable IDE0060 // Remove unused parameter
+using UnityEngine;
 
 namespace KK_Plugins
 {
@@ -46,3 +47,4 @@ namespace KK_Plugins
         }
     }
 }
+#pragma warning restore IDE0060 // Remove unused parameter

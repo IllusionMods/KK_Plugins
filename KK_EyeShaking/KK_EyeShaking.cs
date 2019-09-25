@@ -19,14 +19,14 @@ namespace KK_Plugins
         public const string PluginNameInternal = "KK_EyeShaking";
         public const string Version = "1.0";
 
-        public static ConfigWrapper<bool> Enabled { get; private set; }
+        public static ConfigEntry<bool> Enabled { get; private set; }
 
-        private void Main()
+        internal void Main()
         {
             HarmonyWrapper.PatchAll(typeof(KK_EyeShaking));
             CharacterApi.RegisterExtraBehaviour<EyeShakingController>(GUID);
 
-            Enabled = Config.GetSetting("Config", "Enabled", true, new ConfigDescription("When enabled, virgins in H scenes will appear to have shaking eye highlights"));
+            Enabled = Config.AddSetting("Config", "Enabled", true, "When enabled, virgins in H scenes will appear to have shaking eye highlights");
         }
 
         private static EyeShakingController GetController(ChaControl character) => character?.gameObject?.GetComponent<EyeShakingController>();

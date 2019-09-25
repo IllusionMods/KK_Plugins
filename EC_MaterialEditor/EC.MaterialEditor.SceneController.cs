@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿#pragma warning disable IDE0060 // Remove unused parameter
+using UnityEngine;
 
 namespace KK_Plugins
 {
     public partial class MaterialEditor
     {
         /// <summary>
-        /// Stubs for all public methods so I don't have to do conditional compilation. Don't actually try to use this class in EC or you will be disapointed.
+        /// Stubs for all public methods so I don't have to do conditional compilation. Don't actually try to use this class or you will be disapointed.
         /// </summary>
         public class MaterialEditorSceneController
         {
@@ -46,3 +47,4 @@ namespace KK_Plugins
         }
     }
 }
+#pragma warning restore IDE0060 // Remove unused parameter

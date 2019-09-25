@@ -11,15 +11,15 @@ namespace KK_Plugins
         public const string PluginName = "Clothing Unlocker";
         public const string Version = "1.1";
 
-        public static ConfigWrapper<bool> EnableCrossdressing;
-        public static ConfigWrapper<bool> EnableBras;
-        public static ConfigWrapper<bool> EnableSkirts;
+        public static ConfigEntry<bool> EnableCrossdressing;
+        public static ConfigEntry<bool> EnableBras;
+        public static ConfigEntry<bool> EnableSkirts;
 
-        private void Start()
+        internal void Start()
         {
-            EnableCrossdressing = Config.GetSetting("Config", "Enable clothing for either gender", true, new ConfigDescription("Allows any clothing to be worn by either gender."));
-            EnableBras = Config.GetSetting("Config", "Enable bras for all tops", false, new ConfigDescription("Enable bras for all tops for all characters. May cause clipping or other undesired effects."));
-            EnableSkirts = Config.GetSetting("Config", "Enable skirts for all tops", false, new ConfigDescription("Enable skirts for all tops for all characters. May cause clipping or other undesired effects."));
+            EnableCrossdressing = Config.AddSetting("Config", "Enable clothing for either gender", true, "Allows any clothing to be worn by either gender.");
+            EnableBras = Config.AddSetting("Config", "Enable bras for all tops", false, "Enable bras for all tops for all characters. May cause clipping or other undesired effects.");
+            EnableSkirts = Config.AddSetting("Config", "Enable skirts for all tops", false, "Enable skirts for all tops for all characters. May cause clipping or other undesired effects.");
 
             HarmonyWrapper.PatchAll(typeof(ClothingUnlocker));
         }

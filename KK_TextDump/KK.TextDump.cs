@@ -20,7 +20,7 @@ namespace KK_Plugins
         public const string PluginName = "KK_TextDump";
         public const string Version = "1.1";
 
-        private void Main() => DumpText();
+        internal void Main() => DumpText();
 
         private void DumpText()
         {
