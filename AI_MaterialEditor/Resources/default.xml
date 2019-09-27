@@ -18,9 +18,12 @@
     <Property Name="PatternMask1" Type="Texture" />
     <Property Name="PatternMask2" Type="Texture" />
     <Property Name="PatternMask3" Type="Texture" />
+    <Property Name="texcoord" Type="Texture" />
     <Property Name="Texture1" Type="Texture" />
     <Property Name="Texture2" Type="Texture" />
     <Property Name="Texture3" Type="Texture" />
+    <Property Name="Texture4" Type="Texture" />
+    <Property Name="TextureSample0" Type="Texture" />
 
     <Property Name="Clock" Type="Color" />
     <Property Name="Color" Type="Color" />
@@ -33,9 +36,11 @@
     <Property Name="Color_4" Type="Color" />
     <Property Name="Color5" Type="Color" />
     <Property Name="Emission" Type="Color" />
+    <Property Name="eyebaseoffset" Type="Color" />
     <Property Name="Line" Type="Color" />
     <Property Name="linecolor" Type="Color" />
     <Property Name="LiquidTiling" Type="Color" />
+    <Property Name="MainColor" Type="Color" />
     <Property Name="Patternuv1" Type="Color" />
     <Property Name="Patternuv2" Type="Color" />
     <Property Name="Patternuv3" Type="Color" />
@@ -50,7 +55,11 @@
     <Property Name="paint1" Type="Color" />
     <Property Name="refcolor" Type="Color" />
     <Property Name="shadowcolor" Type="Color" />
+    <Property Name="texture2uv" Type="Color" />
+    <Property Name="texture3uv" Type="Color" />
+    <Property Name="Texture4UV" Type="Color" />
 
+    <Property Name="_dirty" Type="Float" Range="0,1"/>
     <Property Name="alpha" Type="Float" Range="0,1"/>
     <Property Name="alpha_a" Type="Float" Range="0,1"/>
     <Property Name="alpha_b" Type="Float" Range="0,1"/>
@@ -67,6 +76,7 @@
     <Property Name="DetailNormalMapScale" Type="Float" Range="0,1"/>
     <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
     <Property Name="DstBlend" Type="Float" />
+    <Property Name="Emission" Type="Float" Range="0,1"/>
     <Property Name="EmissionPower" Type="Float" Range="0,1"/>
     <Property Name="GlossMapScale" Type="Float" />
     <Property Name="Glossiness" Type="Float" Range="0,1" />
@@ -89,9 +99,9 @@
     <Property Name="nip_specular" Type="Float" Range="0,1"/>
     <Property Name="node_6948" Type="Float" />
     <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
-    <Property Name="OcclusionStrength" Type="Float" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1"/>
     <Property Name="outline" Type="Float" Range="0,1"/>
-    <Property Name="Parallax" Type="Float" Range="0,0.08" />
+    <Property Name="Parallax" Type="Float" Range="-1,1" />
     <Property Name="patternclamp1" Type="Float" Range="0,1"/>
     <Property Name="patternclamp2" Type="Float" Range="0,1"/>
     <Property Name="patternclamp3" Type="Float" Range="0,1"/>
@@ -106,7 +116,8 @@
     <Property Name="SelectEmissionMap" Type="Float" />
     <Property Name="ShadowExtend" Type="Float" Range="0,1" />
     <Property Name="ShadowExtendAnother" Type="Float" Range="0,1" />
-    <Property Name="Smoothness" Type="Float" />
+    <Property Name="Shininess" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
     <Property Name="SmoothnessTextureChannel" Type="Float" />
     <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
     <Property Name="SpeclarPallaxU" Type="Float" />
@@ -119,6 +130,13 @@
     <Property Name="SpecularPowerNail" Type="Float" Range="0,1" />
     <Property Name="SrcBlend" Type="Float" />
     <Property Name="tex1mask" Type="Float" Range="0,1" />
+    <Property Name="Texture4Rotator" Type="Float" Range="-1,1" />
+    <Property Name="Translucency" Type="Float" Range="0,50" />
+    <Property Name="TransNormalDistortion" Type="Float" Range="0,1" />
+    <Property Name="TransScattering" Type="Float" Range="0,50" />
+    <Property Name="TransDirect" Type="Float" Range="0,1" />
+    <Property Name="TransAmbient" Type="Float" Range="0,1" />
+    <Property Name="TransShadow" Type="Float" Range="0,1" />
     <Property Name="UPanner" Type="Float" Range="-1,1" />
     <Property Name="UVSec" Type="Float" />
     <Property Name="VPanner" Type="Float" Range="-1,1" />
