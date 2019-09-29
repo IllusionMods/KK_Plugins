@@ -66,14 +66,15 @@
     <Property Name="ambientshadowOFF" Type="Float" Range="0,1"/>
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="BlendNormalMapScale" Type="Float" />
-    <Property Name="BumpScale" Type="Float" Range="-1,3" />
+    <Property Name="BumpScale" Type="Float" Range="0,1"/>
     <Property Name="ColorInverse" Type="Float" Range="0,1"/>
     <Property Name="ColorSort" Type="Float" Range="0,1"/>
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="CutoutClip" Type="Float" />
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineGA" Type="Float" Range="0,1"/>
-    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
+    <Property Name="DetailNormalMapScale2" Type="Float" Range="0,9"/>
     <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
     <Property Name="DstBlend" Type="Float" />
     <Property Name="Emission" Type="Float" Range="0,1"/>
@@ -92,7 +93,7 @@
     <Property Name="liquidface" Type="Float" Range="0,2"/>
     <Property Name="liquidfbot" Type="Float" Range="0,2"/>
     <Property Name="liquidftop" Type="Float" Range="0,2"/>
-    <Property Name="Metallic" Type="Float" />
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
     <Property Name="Mode" Type="Float" />
     <Property Name="nip" Type="Float" Range="0,1"/>
     <Property Name="nipsize" Type="Float" Range="0,1"/>
@@ -143,41 +144,41 @@
     <Property Name="ZWrite" Type="Float" />
   </Shader>
   <Shader Name="AIT/Clothes True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes_true">
-    <Property Name="DitherSwitch" Type="Float" />
-    <Property Name="YabureDitherSwitch" Type="Float" />
-    <Property Name="VertexColor" Type="Float" />
-    <Property Name="EmissionRim" Type="Float" />
-    <Property Name="EmissionColorTexBase" Type="Float" />
-    <Property Name="Float0" Type="Float" />
+    <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
+    <Property Name="YabureDitherSwitch" Type="Float" Range="0,1"/>
+    <Property Name="VertexColor" Type="Float" Range="0,1"/>
+    <Property Name="EmissionRim" Type="Float" Range="0,3"/>
+    <Property Name="EmissionColorTexBase" Type="Float" Range="0,1"/>
+    <Property Name="Float0" Type="Float" Range="0,9"/>
     <Property Name="ExGloss" Type="Float" Range="0,5" />
-    <Property Name="OcculusionStrength" Type="Float" />
-    <Property Name="EmissionStrength" Type="Float" />
-    <Property Name="AlphaEx" Type="Float" />
-    <Property Name="CarvatureStrength" Type="Float" />
-    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1"/>
-    <Property Name="DetailNormalMapScale2" Type="Float" />
-    <Property Name="DetailMetallicScale" Type="Float" />
-    <Property Name="DetailMetallicScale2" Type="Float" />
-    <Property Name="DetailGlossScale" Type="Float" />
-    <Property Name="DetailGlossScale2" Type="Float" />
-    <Property Name="DetailOcculusionScale" Type="Float" />
-    <Property Name="DetailOcculusionScale2" Type="Float" />
-    <Property Name="DetailUVRotator" Type="Float" />
-    <Property Name="DetailUV2Rotator" Type="Float" />
-    <Property Name="TransmissionStrength" Type="Float" />
-    <Property Name="WeatheringAll" Type="Float" />
-    <Property Name="WeatheringRange1" Type="Float" />
-    <Property Name="WeatheringRange2" Type="Float" />
-    <Property Name="WeatheringRange3" Type="Float" />
-    <Property Name="WeatheringRange4" Type="Float" />
-    <Property Name="WeatheringRange5" Type="Float" />
-    <Property Name="WeatheringRange6" Type="Float" />
-    <Property Name="Translucency" Type="Float" />
-    <Property Name="TransNormalDistortion" Type="Float" />
-    <Property Name="TransDirect" Type="Float" />
-    <Property Name="TransAmbient" Type="Float" />
-    <Property Name="TransShadow" Type="Float" />
-    <Property Name="dirty" Type="Float" />
+    <Property Name="OcculusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="EmissionStrength" Type="Float" Range="0,9"/>
+    <Property Name="AlphaEx" Type="Float" Range="0,1"/>
+    <Property Name="CarvatureStrength" Type="Float" Range="0,1"/>
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
+    <Property Name="DetailNormalMapScale2" Type="Float" Range="0,9"/>
+    <Property Name="DetailMetallicScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailMetallicScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailGlossScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailGlossScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailOcculusionScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailOcculusionScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailUVRotator" Type="Float" Range="-1,1"/>
+    <Property Name="DetailUV2Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="TransmissionStrength" Type="Float" Range="0,5"/>
+    <Property Name="WeatheringAll" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange1" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange2" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange3" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange4" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange5" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange6" Type="Float" Range="0,1"/>
+    <Property Name="Translucency" Type="Float" Range="0,50"/>
+    <Property Name="TransNormalDistortion" Type="Float" Range="0,1" />
+    <Property Name="TransDirect" Type="Float" Range="0,1" />
+    <Property Name="TransAmbient" Type="Float" Range="0,1" />
+    <Property Name="TransShadow" Type="Float" Range="0,1"/>
+    <Property Name="_dirty" Type="Float" Range="0,1" />
     <Property Name="UVScalePattern" Type="Color" />
     <Property Name="BaseColor" Type="Color" />
     <Property Name="EmissionColor" Type="Color" />
@@ -198,53 +199,53 @@
   </Shader>
   <Shader Name="AIT/Clothes" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
-    <Property Name="DitherSwitch" Type="Float" />
-    <Property Name="VertexColor" Type="Float" />
-    <Property Name="EmissionRim" Type="Float" />
-    <Property Name="EmissionColorTexBase" Type="Float" />
-    <Property Name="Float0" Type="Float" />
-    <Property Name="ExGloss" Type="Float" />
-    <Property Name="OcculusionStrength" Type="Float" />
-    <Property Name="EmissionStrength" Type="Float" />
-    <Property Name="AlphaEx" Type="Float" />
-    <Property Name="CarvatureStrength" Type="Float" />
-    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1"/>
-    <Property Name="DetailNormalMapScale2" Type="Float" />
-    <Property Name="DetailMetallicScale" Type="Float" />
-    <Property Name="DetailMetallicScale2" Type="Float" />
-    <Property Name="DetailGlossScale" Type="Float" />
-    <Property Name="DetailGlossScale2" Type="Float" />
-    <Property Name="DetailOcculusionScale" Type="Float" />
-    <Property Name="DetailOcculusionScale2" Type="Float" />
-    <Property Name="DetailUVRotator" Type="Float" />
-    <Property Name="DetailUV2Rotator" Type="Float" />
-    <Property Name="TransmissionStrength" Type="Float" />
-    <Property Name="patternuv1Rotator" Type="Float" />
-    <Property Name="patternuv2Rotator" Type="Float" />
-    <Property Name="patternuv3Rotator" Type="Float" />
-    <Property Name="Metallic" Type="Float" />
-    <Property Name="Metallic2" Type="Float" />
-    <Property Name="Metallic3" Type="Float" />
-    <Property Name="Metallic4" Type="Float" />
+    <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
+    <Property Name="VertexColor" Type="Float" Range="0,1"/>
+    <Property Name="EmissionRim" Type="Float" Range="0,3"/>
+    <Property Name="EmissionColorTexBase" Type="Float" Range="0,1"/>
+    <Property Name="Float0" Type="Float" Range="0,9"/>
+    <Property Name="ExGloss" Type="Float" Range="0,1"/>
+    <Property Name="OcculusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="EmissionStrength" Type="Float" Range="0,9"/>
+    <Property Name="AlphaEx" Type="Float" Range="0,1"/>
+    <Property Name="CarvatureStrength" Type="Float" Range="0,1"/>
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
+    <Property Name="DetailNormalMapScale2" Type="Float" Range="0,9"/>
+    <Property Name="DetailMetallicScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailMetallicScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailGlossScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailGlossScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailOcculusionScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailOcculusionScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailUVRotator" Type="Float" Range="-1,1"/>
+    <Property Name="DetailUV2Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="TransmissionStrength" Type="Float" Range="0,5"/>
+    <Property Name="patternuv1Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="patternuv2Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="patternuv3Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="Metallic2" Type="Float" Range="0,1"/>
+    <Property Name="Metallic3" Type="Float" Range="0,1"/>
+    <Property Name="Metallic4" Type="Float" Range="0,1"/>
     <Property Name="Glossiness" Type="Float" Range="0,1" />
-    <Property Name="Glossiness2" Type="Float" />
-    <Property Name="Glossiness3" Type="Float" />
-    <Property Name="Glossiness4" Type="Float" />
-    <Property Name="VertexColorMask" Type="Float" />
-    <Property Name="Translucency" Type="Float" />
-    <Property Name="TransNormalDistortion" Type="Float" />
-    <Property Name="TransScattering" Type="Float" />
-    <Property Name="TransDirect" Type="Float" />
-    <Property Name="TransAmbient" Type="Float" />
-    <Property Name="TransShadow" Type="Float" />
-    <Property Name="WeatheringAll" Type="Float" />
-    <Property Name="WeatheringRange1" Type="Float" />
-    <Property Name="WeatheringRange2" Type="Float" />
-    <Property Name="WeatheringRange3" Type="Float" />
-    <Property Name="WeatheringRange4" Type="Float" />
-    <Property Name="WeatheringRange5" Type="Float" />
-    <Property Name="WeatheringRange6" Type="Float" />
-    <Property Name="_dirty" Type="Float" />
+    <Property Name="Glossiness2" Type="Float" Range="0,1" />
+    <Property Name="Glossiness3" Type="Float" Range="0,1" />
+    <Property Name="Glossiness4" Type="Float" Range="0,1" />
+    <Property Name="VertexColorMask" Type="Float" Range="0,1"/>
+    <Property Name="Translucency" Type="Float" Range="0,50"/>
+    <Property Name="TransNormalDistortion" Type="Float" Range="0,1" />
+    <Property Name="TransScattering" Type="Float" Range="0,50"/>
+    <Property Name="TransDirect" Type="Float" Range="0,1" />
+    <Property Name="TransAmbient" Type="Float" Range="0,1" />
+    <Property Name="TransShadow" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringAll" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange1" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange2" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange3" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange4" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange5" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange6" Type="Float" Range="0,1"/>
+    <Property Name="_dirty" Type="Float" Range="0,1" />
     <Property Name="BaseColor" Type="Color" />
     <Property Name="EmissionColor" Type="Color" />
     <Property Name="DetailUV" Type="Color" />
@@ -276,14 +277,14 @@
     <Property Name="texcoord" Type="Texture" />
   </Shader>
   <Shader Name="Shader Forge/hair_07" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_hair_07">
-    <Property Name="TopGradation" Type="Float" />
-    <Property Name="UnderGradation" Type="Float" />
-    <Property Name="Metallic" Type="Float" />
-    <Property Name="Smoothness" Type="Float" />
-    <Property Name="DetailScale" Type="Float" />
-    <Property Name="HighLight" Type="Float" />
-    <Property Name="Rimpower" Type="Float" />
-    <Property Name="ExGloss" Type="Float" />
+    <Property Name="TopGradation" Type="Float" Range="0,5"/>
+    <Property Name="UnderGradation" Type="Float" Range="0,5"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="Smoothness" Type="Float" Range="0,1"/>
+    <Property Name="DetailScale" Type="Float" Range="0,1"/>
+    <Property Name="HighLight" Type="Float" Range="0,20"/>
+    <Property Name="Rimpower" Type="Float"  Range="0,20"/>
+    <Property Name="ExGloss" Type="Float" Range="0,1"/>
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="Color" Type="Color" />
     <Property Name="Specular" Type="Color" />
@@ -296,47 +297,48 @@
   </Shader>
   <Shader Name="AIT/Item" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
-    <Property Name="FresnelScale" Type="Float" />
-    <Property Name="bitangentrim" Type="Float" />
-    <Property Name="DitherSwitch" Type="Float" />
-    <Property Name="VertexColor" Type="Float" />
-    <Property Name="EmissionRim" Type="Float" />
-    <Property Name="EmissionColorTexBase" Type="Float" />
-    <Property Name="ExGloss" Type="Float" />
-    <Property Name="OcculusionStrength" Type="Float" />
-    <Property Name="EmissionStrength" Type="Float" />
-    <Property Name="AlphaEx" Type="Float" />
-    <Property Name="CarvatureStrength" Type="Float" />
-    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1"/>
-    <Property Name="DetailNormalMapScale2" Type="Float" />
-    <Property Name="DetailMetallicScale" Type="Float" />
-    <Property Name="DetailMetallicScale2" Type="Float" />
-    <Property Name="DetailGlossScale" Type="Float" />
-    <Property Name="DetailGlossScale2" Type="Float" />
-    <Property Name="DetailOcculusionScale" Type="Float" />
-    <Property Name="DetailOcculusionScale2" Type="Float" />
-    <Property Name="TransmissionStrength" Type="Float" />
-    <Property Name="DetailUVRotator" Type="Float" />
-    <Property Name="DetailUV2Rotator" Type="Float" />
-    <Property Name="patternuv1Rotator" Type="Float" />
-    <Property Name="patternuv2Rotator" Type="Float" />
-    <Property Name="patternuv3Rotator" Type="Float" />
-    <Property Name="Metallic" Type="Float" />
-    <Property Name="Metallic2" Type="Float" />
-    <Property Name="Metallic3" Type="Float" />
-    <Property Name="Metallic4" Type="Float" />
+    <Property Name="FresnelScale" Type="Float" Range="0,1"/>
+    <Property Name="bitangentrim" Type="Float" Range="0,1"/>
+    <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
+    <Property Name="VertexColor" Type="Float" Range="0,1"/>
+    <Property Name="EmissionRim" Type="Float" Range="0,3"/>
+    <Property Name="EmissionColorTexBase" Type="Float" Range="0,1"/>
+    <Property Name="ExGloss" Type="Float" Range="0,1"/>
+    <Property Name="Float0" Type="Float" Range="0,9"/>
+    <Property Name="OcculusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="EmissionStrength" Type="Float" Range="0,9"/>
+    <Property Name="AlphaEx" Type="Float" Range="0,1"/>
+    <Property Name="CarvatureStrength" Type="Float" Range="0,1"/>
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
+    <Property Name="DetailNormalMapScale2" Type="Float" Range="0,9"/>
+    <Property Name="DetailMetallicScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailMetallicScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailGlossScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailGlossScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailOcculusionScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailOcculusionScale2" Type="Float" Range="0,1"/>
+    <Property Name="TransmissionStrength" Type="Float" Range="0,5"/>
+    <Property Name="DetailUVRotator" Type="Float" Range="-1,1"/>
+    <Property Name="DetailUV2Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="patternuv1Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="patternuv2Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="patternuv3Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="Metallic2" Type="Float" Range="0,1"/>
+    <Property Name="Metallic3" Type="Float" Range="0,1"/>
+    <Property Name="Metallic4" Type="Float" Range="0,1"/>
     <Property Name="Glossiness" Type="Float" Range="0,1" />
-    <Property Name="Glossiness2" Type="Float" />
-    <Property Name="Glossiness3" Type="Float" />
-    <Property Name="Glossiness4" Type="Float" />
-    <Property Name="VertexColorMask" Type="Float" />
-    <Property Name="Translucency" Type="Float" />
-    <Property Name="TransNormalDistortion" Type="Float" />
-    <Property Name="TransScattering" Type="Float" />
-    <Property Name="TransDirect" Type="Float" />
-    <Property Name="TransAmbient" Type="Float" />
-    <Property Name="TransShadow" Type="Float" />
-    <Property Name="_dirty" Type="Float" />
+    <Property Name="Glossiness2" Type="Float" Range="0,1" />
+    <Property Name="Glossiness3" Type="Float" Range="0,1" />
+    <Property Name="Glossiness4" Type="Float" Range="0,1" />
+    <Property Name="VertexColorMask" Type="Float" Range="0,1"/>
+    <Property Name="Translucency" Type="Float" Range="0,50"/>
+    <Property Name="TransNormalDistortion" Type="Float" Range="0,1" />
+    <Property Name="TransScattering" Type="Float" Range="0,50"/>
+    <Property Name="TransDirect" Type="Float" Range="0,1" />
+    <Property Name="TransAmbient" Type="Float" Range="0,1" />
+    <Property Name="TransShadow" Type="Float" Range="0,1"/>
+    <Property Name="_dirty" Type="Float" Range="0,1" />
     <Property Name="UVScalePattern" Type="Color" />
     <Property Name="BaseColor" Type="Color" />
     <Property Name="EmissionColor" Type="Color" />
@@ -366,36 +368,36 @@
     <Property Name="texcoord" Type="Texture" />
   </Shader>
   <Shader Name="AIT/Skin True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_true">
-    <Property Name="matcaptilling" Type="Float" />
-    <Property Name="matcapscale" Type="Float" />
-    <Property Name="Metallic" Type="Float" />
-    <Property Name="Gloss" Type="Float" />
-    <Property Name="OcclusionStrength" Type="Float" />
-    <Property Name="DetailMainScale" Type="Float" />
-    <Property Name="BumpScale" Type="Float" Range="-1,3" />
-    <Property Name="BumpScale2" Type="Float" />
-    <Property Name="Riality" Type="Float" />
-    <Property Name="NipGloss" Type="Float" />
-    <Property Name="NailGloss" Type="Float" />
-    <Property Name="ExGloss" Type="Float" />
-    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1"/>
-    <Property Name="NipScale" Type="Float" />
-    <Property Name="Texture3Rotator" Type="Float" />
-    <Property Name="Texture4Scale" Type="Float" />
-    <Property Name="WeatheringAll" Type="Float" />
-    <Property Name="WeatheringRange1" Type="Float" />
-    <Property Name="WeatheringRange2" Type="Float" />
-    <Property Name="WeatheringRange3" Type="Float" />
-    <Property Name="WeatheringRange4" Type="Float" />
-    <Property Name="WeatheringRange5" Type="Float" />
-    <Property Name="WeatheringRange6" Type="Float" />
-    <Property Name="Translucency" Type="Float" />
-    <Property Name="TransNormalDistortion" Type="Float" />
-    <Property Name="TransScattering" Type="Float" />
-    <Property Name="TransDirect" Type="Float" />
-    <Property Name="TransAmbient" Type="Float" />
-    <Property Name="TransShadow" Type="Float" />
-    <Property Name="_dirty" Type="Float" />
+    <Property Name="matcaptilling" Type="Float" Range="0,1"/>
+    <Property Name="matcapscale" Type="Float" Range="0,1"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="Gloss" Type="Float" Range="0,1"/>
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="DetailMainScale" Type="Float" Range="0,1"/>
+    <Property Name="BumpScale" Type="Float" Range="0,1"/>
+    <Property Name="BumpScale2" Type="Float" Range="0,1"/>
+    <Property Name="Riality" Type="Float" Range="0,1"/>
+    <Property Name="NipGloss" Type="Float" Range="0,1"/>
+    <Property Name="NailGloss" Type="Float" Range="0,1"/>
+    <Property Name="ExGloss" Type="Float" Range="0,1"/>
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
+    <Property Name="NipScale" Type="Float" Range="0,1"/>
+    <Property Name="Texture3Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="Texture4Scale" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringAll" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange1" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange2" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange3" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange4" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange5" Type="Float" Range="0,1"/>
+    <Property Name="WeatheringRange6" Type="Float" Range="0,1"/>
+    <Property Name="Translucency" Type="Float" Range="0,50"/>
+    <Property Name="TransNormalDistortion" Type="Float" Range="0,1" />
+    <Property Name="TransScattering" Type="Float" Range="0,50"/>
+    <Property Name="TransDirect" Type="Float" Range="0,1" />
+    <Property Name="TransAmbient" Type="Float" Range="0,1" />
+    <Property Name="TransShadow" Type="Float" Range="0,1"/>
+    <Property Name="_dirty" Type="Float" Range="0,1" />
     <Property Name="Color2" Type="Color" />
     <Property Name="Color3" Type="Color" />
     <Property Name="Color4" Type="Color" />
@@ -680,7 +682,7 @@
     <Property Name="SpecularColor" Type="Color" />
     <Property Name="alpha_a" Type="Float" Range="0,1"/>
     <Property Name="alpha_b" Type="Float" Range="0,1"/>
-    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
     <Property Name="linetexon" Type="Float" Range="0,1"/>
     <Property Name="liquidbbot" Type="Float" Range="0,2"/>
     <Property Name="liquidbtop" Type="Float" Range="0,2"/>
