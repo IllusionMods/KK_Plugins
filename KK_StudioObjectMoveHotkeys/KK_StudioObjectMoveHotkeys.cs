@@ -247,7 +247,7 @@ namespace KK_Plugins
             {
                 if (guideObject.enablePos)
                 {
-                    guideObject.transformTarget.position = guideObject.transformTarget.position + delta;
+                    guideObject.transformTarget.position += delta;
                     guideObject.changeAmount.pos = guideObject.transformTarget.localPosition;
                 }
             }
