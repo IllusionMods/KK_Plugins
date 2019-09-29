@@ -436,7 +436,7 @@ namespace KK_Plugins
             if (go == null) return;
 
             //Iterating over o_body_a destroys the body mask for some reason so we skip it. Iterating over cf_O_face destroys juice textures.
-            if (go.name != "o_body_a" && go.name != "cf_O_face")
+            if (go.name != "o_body_a" && go.name != "cf_O_face" && go.name != "o_body_cf")
             {
                 Renderer rend = go.GetComponent<Renderer>();
                 if (rend != null && BodyParts.Contains(rend.NameFormatted()))
