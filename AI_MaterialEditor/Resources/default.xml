@@ -368,7 +368,7 @@
     <Property Name="texcoord" Type="Texture" />
   </Shader>
   <Shader Name="AIT/Skin True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_true">
-    <Property Name="matcaptilling" Type="Float" Range="0,1"/>
+    <Property Name="matcaptilling" Type="Float" Range="0,5"/>
     <Property Name="matcapscale" Type="Float" Range="0,1"/>
     <Property Name="Metallic" Type="Float" Range="0,1"/>
     <Property Name="Gloss" Type="Float" Range="0,1"/>
