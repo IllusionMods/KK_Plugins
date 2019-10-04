@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
+using KoiSkinOverlayX;
 #if KK
 using KKAPI.Studio;
 #endif
@@ -23,6 +24,7 @@ namespace KK_Plugins
         public class UncensorSelectorController : CharaCustomFunctionController
         {
             private bool DoHandleUVCorrupions = true;
+            private KoiSkinOverlayController _ksox;
             /// <summary> BodyGUID saved to the character. Use BodyData.BodyGUID to get the current BodyGUID.</summary>
             internal string BodyGUID { get; set; }
             /// <summary> PenisGUID saved to the character. Use PenisData.PenisGUID to get the current PenisGUID.</summary>
@@ -33,6 +35,12 @@ namespace KK_Plugins
             internal bool DisplayPenis { get; set; }
             /// <summary> Visibility of the balls as saved to the character.</summary>
             internal bool DisplayBalls { get; set; }
+
+            protected override void Start()
+            {
+                _ksox = GetComponent<KoiSkinOverlayController>();
+                base.Start();
+            }
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
@@ -348,6 +356,8 @@ namespace KK_Plugins
 #endif
                     Traverse.Create(ChaControl).Property("updateAlphaMask").SetValue(true);
                 }
+
+                UpdateSkinOverlay();
             }
             /// <summary>
             /// Update the mesh of the penis and set the visibility
@@ -478,6 +488,27 @@ namespace KK_Plugins
                 ChaControl.SetBodyBaseMaterial();
                 ChaControl.CreateBodyTexture();
                 ChaControl.ChangeCustomBodyWithoutCustomTexture();
+            }
+            /// <summary>
+            /// Apply overlay textures of the uncensor if any
+            /// </summary>
+            private void UpdateSkinOverlay()
+            {
+                _ksox.AdditionalTextures.RemoveAll(x => (object)x.Tag == this);
+
+                try
+                {
+                    if (BodyData?.UncensorOverlay != null && BodyData?.OOBase != Defaults.OOBase)
+                    {
+                        Texture2D uncensorTexture = CommonLib.LoadAsset<Texture2D>(BodyData.OOBase, BodyData.UncensorOverlay);
+                        _ksox.AdditionalTextures.Add(new AdditionalTexture(uncensorTexture, TexType.BodyOver, this));
+                    }
+                }
+                catch
+                {
+                    Logger.LogError($"Unable to apply uncensor overlay");
+                }
+                _ksox.UpdateTexture(TexType.BodyOver);
             }
             /// <summary>
             /// Copy the mesh from one SkinnedMeshRenderer to another. If there is a significant mismatch in the number of bones

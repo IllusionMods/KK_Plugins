@@ -42,6 +42,10 @@
     <Reference Include="AI_ExtensibleSaveFormat">
       <HintPath>..\lib\AIGirl\AI_ExtensibleSaveFormat.dll</HintPath>
     </Reference>
+    <Reference Include="AI_OverlayMods">
+      <HintPath>..\lib\AIGirl\AI_OverlayMods.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="AI_Sideloader">
       <HintPath>..\lib\AIGirl\AI_Sideloader.dll</HintPath>
     </Reference>

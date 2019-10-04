@@ -19,6 +19,7 @@ namespace KK_Plugins
             public string BodyMaterial;
             public string BodyMaterialCreate;
             public string Asset;
+            public string UncensorOverlay;
             public List<ColorMatchPart> ColorMatchList = new List<ColorMatchPart>();
             public List<string> AdditionalParts = new List<string>();
 
@@ -44,6 +45,7 @@ namespace KK_Plugins
                     BodyMainTex = oo_base.Element("mainTex")?.Value;
                     BodyColorMask = oo_base.Element("colorMask")?.Value;
                     Normals = oo_base.Element("normals")?.Value;
+                    UncensorOverlay = oo_base.Element("uncensorOverlay")?.Value;
 
                     foreach (XElement parts in oo_base.Elements("additionalPart"))
                     {
