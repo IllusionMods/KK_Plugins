@@ -76,16 +76,16 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
 
-            GenderBender = Config.AddSetting("Config", "Genderbender Allowed", true, "Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.");
-            DefaultMaleBody = Config.AddSetting("Config", "Default Male Body", "Random", "Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives.");
-            DefaultMalePenis = Config.AddSetting("Config", "Default Male Penis", "Random", "Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.");
-            DefaultMaleBalls = Config.AddSetting("Config", "Default Male Balls", "Random", "Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.");
-            DefaultFemaleBody = Config.AddSetting("Config", "Default Female Body", "Random", "Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives.");
-            DefaultFemalePenis = Config.AddSetting("Config", "Default Female Penis", "Random", "Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.");
-            DefaultFemaleBalls = Config.AddSetting("Config", "Default Female Balls", "Random", "Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.");
-            DefaultFemaleDisplayBalls = Config.AddSetting("Config", "Default Female Balls Display", false, "Whether balls will be displayed on females if not otherwise configured.");
-
             PopulateUncensorLists();
+
+            GenderBender = Config.AddSetting("Config", "Genderbender Allowed", true, "Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.");
+            DefaultMaleBody = Config.AddSetting("Config", "Default Male Body", "Random", new ConfigDescription("Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigBodyList())));
+            DefaultMalePenis = Config.AddSetting("Config", "Default Male Penis", "Random", new ConfigDescription("Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigPenisList())));
+            DefaultMaleBalls = Config.AddSetting("Config", "Default Male Balls", "Random", new ConfigDescription("Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigBallsList())));
+            DefaultFemaleBody = Config.AddSetting("Config", "Default Female Body", "Random", new ConfigDescription("Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigBodyList())));
+            DefaultFemalePenis = Config.AddSetting("Config", "Default Female Penis", "Random", new ConfigDescription("Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigPenisList())));
+            DefaultFemaleBalls = Config.AddSetting("Config", "Default Female Balls", "Random", new ConfigDescription("Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigBallsList())));
+            DefaultFemaleDisplayBalls = Config.AddSetting("Config", "Default Female Balls Display", false, "Whether balls will be displayed on females if not otherwise configured.");
 
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
@@ -391,9 +391,11 @@ namespace KK_Plugins
 
             return false;
         }
-        internal object[] GetConfigBodyList() => BodyConfigListFull?.Keys.OrderBy(x => x[0] == '[').ThenBy(x => x).Cast<object>().ToArray();
-        internal object[] GetConfigPenisList() => PenisConfigListFull?.Keys.OrderBy(x => x).Cast<object>().ToArray();
-        internal object[] GetConfigBallsList() => BallsConfigListFull?.Keys.OrderBy(x => x).Cast<object>().ToArray();
+
+        internal string[] GetConfigBodyList() => BodyConfigListFull?.Keys.OrderBy(x => x[0] == '[').ThenBy(x => x).ToArray();
+        internal string[] GetConfigPenisList() => PenisConfigListFull?.Keys.OrderBy(x => x).ToArray();
+        internal string[] GetConfigBallsList() => BallsConfigListFull?.Keys.OrderBy(x => x).ToArray();
+
         private static string DisplayNameToBodyGuid(string displayName)
         {
             BodyConfigListFull.TryGetValue(displayName, out var guid);
