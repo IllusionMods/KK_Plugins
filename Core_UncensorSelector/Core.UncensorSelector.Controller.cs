@@ -496,6 +496,7 @@ namespace KK_Plugins
             {
                 _ksox.AdditionalTextures.RemoveAll(x => (object)x.Tag == this);
 
+                //Apply uncensor overlay texture
                 try
                 {
                     if (BodyData?.UncensorOverlay != null && BodyData?.OOBase != Defaults.OOBase)
@@ -508,7 +509,23 @@ namespace KK_Plugins
                 {
                     Logger.LogError($"Unable to apply uncensor overlay");
                 }
+
+                //Apply uncensor underlay texture
+                try
+                {
+                    if (BodyData?.UncensorUnderlay != null && BodyData?.OOBase != Defaults.OOBase)
+                    {
+                        Texture2D uncensorTexture = CommonLib.LoadAsset<Texture2D>(BodyData.OOBase, BodyData.UncensorUnderlay);
+                        _ksox.AdditionalTextures.Add(new AdditionalTexture(uncensorTexture, TexType.BodyUnder, this));
+                    }
+                }
+                catch
+                {
+                    Logger.LogError($"Unable to apply uncensor underlay");
+                }
+
                 _ksox.UpdateTexture(TexType.BodyOver);
+                _ksox.UpdateTexture(TexType.BodyUnder);
             }
             /// <summary>
             /// Copy the mesh from one SkinnedMeshRenderer to another. If there is a significant mismatch in the number of bones
