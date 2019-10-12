@@ -106,6 +106,7 @@ v1.2 Prevents clicks inside mod GUI elements from advancing the story in Koikats
 
 #### UncensorSelector
 **v3.7 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu and Emotion Creators<br/>
+**v3.8.1 - [Download](https://www.patreon.com/posts/28204946)** - For AI Girl<br/>
 
 Download uncensors:<br/>
 For Koikatsu click [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!S0IzlILZ)<br/>
@@ -142,6 +143,8 @@ v3.6.2 Fix replacing janitor's body when it shouldn't<br/>
 v3.6.3 Fix janitor's uncensor<br/>
 v3.6.4 Fix compatibility issues for non Darkness game versions<br/>
 v3.7 Fix shadows on male parts and reduce error spam<br/>
+v3.8 AI Girl version<br/>
+v3.8.1 Fix broken config stuff (thanks Keelhauled)<br/>
 </details>
 
 #### Subtitles
