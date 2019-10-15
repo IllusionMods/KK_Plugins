@@ -31,6 +31,10 @@
         <mainTex></mainTex>
         <colorMask></colorMask>
       </colorMatch>
+      <!--Optional - Overlay texture, applied by the overlay plugin-->
+      <uncensorOverlay></uncensorOverlay>
+      <!--Optional - Underlay texture, applied by the overlay plugin-->
+      <uncensorUnderlay></uncensorUnderlay>
     </oo_base>
     <!--Optional-->
     <mm_base>
