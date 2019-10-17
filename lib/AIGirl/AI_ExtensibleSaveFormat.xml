@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AI_ExtensibleSaveFormat</name>
+    </assembly>
+    <members>
+        <member name="T:ExtensibleSaveFormat.ExtendedSave">
+            <summary>
+            A set of tools for reading and writing extra data to card and scene files.
+            </summary>
+        </member>
+        <member name="F:ExtensibleSaveFormat.ExtendedSave.GUID">
+            <summary> Plugin GUID </summary>
+        </member>
+        <member name="F:ExtensibleSaveFormat.ExtendedSave.PluginName">
+            <summary> Plugin name </summary>
+        </member>
+        <member name="F:ExtensibleSaveFormat.ExtendedSave.Version">
+            <summary> Plugin version </summary>
+        </member>
+        <member name="F:ExtensibleSaveFormat.ExtendedSave.Marker">
+            <summary> Marker that indicates the extended save region on cards </summary>
+        </member>
+        <member name="F:ExtensibleSaveFormat.ExtendedSave.DataVersion">
+            <summary> Version of the extended save data on cards </summary>
+        </member>
+        <member name="F:ExtensibleSaveFormat.ExtendedSave.LoadEventsEnabled">
+            <summary>
+            Whether extended data load events should be triggered. Temporarily disable it when extended data will never be used, for example loading lists of cards.
+            </summary>
+        </member>
+        <member name="M:ExtensibleSaveFormat.ExtendedSave.GetAllExtendedData(AIChara.ChaFile)">
+            <summary>
+            Get a dictionary of ID, PluginData containing all extended data for a ChaFile
+            </summary>
+            <param name="file">ChaFile for which to get extended data</param>
+            <returns>Dictionary of ID, PluginData</returns>
+        </member>
+        <member name="M:ExtensibleSaveFormat.ExtendedSave.GetExtendedDataById(AIChara.ChaFile,System.String)">
+            <summary>
+            Get PluginData for a ChaFile for the specified extended save data ID
+            </summary>
+            <param name="file">ChaFile for which to get extended data</param>
+            <param name="id">ID of the data saved to the card</param>
+            <returns>PluginData</returns>
+        </member>
+        <member name="M:ExtensibleSaveFormat.ExtendedSave.SetExtendedDataById(AIChara.ChaFile,System.String,ExtensibleSaveFormat.PluginData)">
+            <summary>
+            Set PluginData for a ChaFile for the specified extended save data ID
+            </summary>
+            <param name="file">ChaFile for which to set extended data</param>
+            <param name="id">ID of the data to be saved to the card</param>
+            <param name="extendedFormatData">PluginData to save to the card</param>
+        </member>
+        <member name="M:ExtensibleSaveFormat.ExtendedSave.GetAllExtendedData(AIChara.ChaFileCoordinate)">
+            <summary>
+            Get a dictionary of ID, PluginData containing all extended data for a ChaFileCoordinate
+            </summary>
+            <param name="file">ChaFileCoordinate for which to get extended data</param>
+            <returns>Dictionary of ID, PluginData</returns>
+        </member>
+        <member name="M:ExtensibleSaveFormat.ExtendedSave.GetExtendedDataById(AIChara.ChaFileCoordinate,System.String)">
+            <summary>
+            Get PluginData for a ChaFileCoordinate for the specified extended save data ID
+            </summary>
+            <param name="file">ChaFileCoordinate for which to get extended data</param>
+            <param name="id">ID of the data saved to the card</param>
+            <returns>PluginData</returns>
+        </member>
+        <member name="M:ExtensibleSaveFormat.ExtendedSave.SetExtendedDataById(AIChara.ChaFileCoordinate,System.String,ExtensibleSaveFormat.PluginData)">
+            <summary>
+            Set PluginData for a ChaFileCoordinate for the specified extended save data ID
+            </summary>
+            <param name="file">ChaFileCoordinate for which to set extended data</param>
+            <param name="id">ID of the data to be saved to the card</param>
+            <param name="extendedFormatData">PluginData to save to the card</param>
+        </member>
+        <member name="T:ExtensibleSaveFormat.ExtendedSave.CardEventHandler">
+            <summary> CardEventHandler </summary>
+        </member>
+        <member name="E:ExtensibleSaveFormat.ExtendedSave.CardBeingSaved">
+            <summary> Register methods to trigger on card being saved </summary>
+        </member>
+        <member name="E:ExtensibleSaveFormat.ExtendedSave.CardBeingLoaded">
+            <summary> Register methods to trigger on card being loaded </summary>
+        </member>
+        <member name="T:ExtensibleSaveFormat.ExtendedSave.CoordinateEventHandler">
+            <summary> CoordinateEventHandler </summary>
+        </member>
+        <member name="E:ExtensibleSaveFormat.ExtendedSave.CoordinateBeingSaved">
+            <summary> Register methods to trigger on coordinate being saved </summary>
+        </member>
+        <member name="E:ExtensibleSaveFormat.ExtendedSave.CoordinateBeingLoaded">
+            <summary> Register methods to trigger on coordinate being loaded </summary>
+        </member>
+        <member name="T:ExtensibleSaveFormat.PluginData">
+            <summary>
+            An object containing data saved to and loaded from cards.
+            </summary>
+        </member>
+        <member name="F:ExtensibleSaveFormat.PluginData.version">
+            <summary>
+            Version of the plugin data saved to the card. Get or set this if ever your plugin data format changes and use it to differentiate.
+            </summary>
+        </member>
+        <member name="F:ExtensibleSaveFormat.PluginData.data">
+            <summary>
+            Dictionary of objects saved to or loaded loaded from the card.
+            </summary>
+        </member>
+        <member name="M:Extensions.Replace(System.String,System.String,System.String,System.StringComparison)">
+            <summary>
+            Returns a new string in which all occurrences of a specified string in the current instance are replaced with another 
+            specified string according the type of search to use for the specified string.
+            </summary>
+            <param name="str">The string performing the replace method.</param>
+            <param name="oldValue">The string to be replaced.</param>
+            <param name="newValue">The string replace all occurrences of <paramref name="oldValue"/>. 
+            If value is equal to <c>null</c>, than all occurrences of <paramref name="oldValue"/> will be removed from the <paramref name="str"/>.</param>
+            <param name="comparisonType">One of the enumeration values that specifies the rules for the search.</param>
+            <returns>A string that is equivalent to the current string except that all instances of <paramref name="oldValue"/> are replaced with <paramref name="newValue"/>. 
+            If <paramref name="oldValue"/> is not found in the current instance, the method returns the current instance unchanged.</returns>
+        </member>
+        <member name="F:BepisPlugins.Metadata.PluginsVersion">
+            <summary>
+            Version number used be all plugins. Must be convertible to <see cref="T:System.Version"/>
+            Use ReleaseVersion.HotfixVersion format
+            </summary>
+        </member>
+    </members>
+</doc>
