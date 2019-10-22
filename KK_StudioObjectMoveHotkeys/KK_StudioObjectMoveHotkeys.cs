@@ -45,7 +45,7 @@ namespace KK_Plugins
 
         internal void Update()
         {
-            if (Singleton<GuideObjectManager>.Instance == null) return;
+            if (!Singleton<GuideObjectManager>.IsInstance()) return;
             GuideObjectMode guideObjectMode = (GuideObjectMode)Singleton<GuideObjectManager>.Instance.mode;
 
             Vector2 vector = GetMousePos() - LastMousePos;
