@@ -1,5 +1,7 @@
 ﻿#if !HS
 using ADV;
+using System.IO;
+using System.Linq;
 using XUnity.AutoTranslator.Plugin.Core;
 using XUnity.AutoTranslator.Plugin.Core.AssetRedirection;
 using XUnity.AutoTranslator.Plugin.Core.Utilities;
@@ -7,14 +9,19 @@ using XUnity.ResourceRedirector;
 
 namespace KK_Plugins
 {
-    public class ScenarioDataResourceRedirector : AssetLoadedHandlerBase<ScenarioData>
+    public class ScenarioDataResourceRedirector : AssetLoadedHandlerBaseV2<ScenarioData>
     {
+        public ScenarioDataResourceRedirector() => CheckDirectory = true;
+
         protected override string CalculateModificationFilePath(ScenarioData asset, IAssetOrResourceLoadedContext context) =>
-            context.GetPreferredFilePathWithCustomFileName(@"BepInEx\translation", asset, "translation.txt").Replace(@"abdata\", "").Replace(".unity3d", "");
+            context.GetPreferredFilePathWithCustomFileName(asset, null).Replace(".unity3d", "");
 
         protected override bool DumpAsset(string calculatedModificationPath, ScenarioData asset, IAssetOrResourceLoadedContext context)
         {
-            var cache = new SimpleTextTranslationCache(calculatedModificationPath, false);
+            var defaultTranslationFile = Path.Combine(calculatedModificationPath, "translation.txt");
+            var cache = new SimpleTextTranslationCache(
+               file: defaultTranslationFile,
+               loadTranslationsInFile: false);
 
             foreach (var param in asset.list)
             {
@@ -24,7 +31,7 @@ namespace KK_Plugins
                     {
                         var key = param.Args[i];
 
-                        if (!key.IsNullOrWhiteSpace() && LanguageHelper.IsTranslatable(key))
+                        if (!string.IsNullOrEmpty(key) && LanguageHelper.IsTranslatable(key))
                         {
                             cache.AddTranslationToCache(key, key);
                         }
@@ -37,7 +44,14 @@ namespace KK_Plugins
 
         protected override bool ReplaceOrUpdateAsset(string calculatedModificationPath, ref ScenarioData asset, IAssetOrResourceLoadedContext context)
         {
-            var cache = new SimpleTextTranslationCache(calculatedModificationPath, true);
+            var defaultTranslationFile = Path.Combine(calculatedModificationPath, "translation.txt");
+            var redirectedResources = RedirectedDirectory.GetFilesInDirectory(calculatedModificationPath, ".txt");
+            var streams = redirectedResources.Select(x => x.OpenStream());
+            var cache = new SimpleTextTranslationCache(
+               outputFile: defaultTranslationFile,
+               inputStreams: streams,
+               allowTranslationOverride: false,
+               closeStreams: true);
 
             foreach (var param in asset.list)
             {
@@ -46,13 +60,13 @@ namespace KK_Plugins
                     for (int i = 0; i < param.Args.Length; i++)
                     {
                         var key = param.Args[i];
-                        if (!key.IsNullOrWhiteSpace())
+                        if (!string.IsNullOrEmpty(key))
                         {
                             if (cache.TryGetTranslation(key, true, out var translated))
                             {
                                 param.Args[i] = translated;
                             }
-                            else if (IsDumpingEnabled && LanguageHelper.IsTranslatable(key))
+                            else if (AutoTranslatorSettings.IsDumpingRedirectedResourcesEnabled && LanguageHelper.IsTranslatable(key))
                             {
                                 cache.AddTranslationToCache(key, key);
                             }
