@@ -135,6 +135,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_InputHotkeyBlock", "EC_I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_UncensorSelector", "AI_UncensorSelector\AI_UncensorSelector.csproj", "{F89251CB-3FB1-439E-84D4-3CF9310FECAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_TextDump", "AI_TextDump\AI_TextDump.csproj", "{4026BB4C-6A7D-41B7-AEBD-6044C9326523}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
@@ -368,6 +370,10 @@ Global
 		{F89251CB-3FB1-439E-84D4-3CF9310FECAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F89251CB-3FB1-439E-84D4-3CF9310FECAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F89251CB-3FB1-439E-84D4-3CF9310FECAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4026BB4C-6A7D-41B7-AEBD-6044C9326523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4026BB4C-6A7D-41B7-AEBD-6044C9326523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4026BB4C-6A7D-41B7-AEBD-6044C9326523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4026BB4C-6A7D-41B7-AEBD-6044C9326523}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
