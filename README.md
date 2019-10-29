@@ -76,7 +76,7 @@ v1.5.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 #### InvisibleBody
-**v1.3 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu and Emotion Creators<br/>
+**v1.3 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
 
@@ -105,8 +105,7 @@ v1.2 Prevents clicks inside mod GUI elements from advancing the story in Koikats
 </details>
 
 #### UncensorSelector
-**v3.7 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu and Emotion Creators<br/>
-**v3.8.1 - [Download](https://www.patreon.com/posts/28204946)** - For AI Girl<br/>
+**v3.8.3 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
 
 Download uncensors:<br/>
 For Koikatsu click [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!S0IzlILZ)<br/>
@@ -114,7 +113,10 @@ For EmotionCreators click [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7G
 
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
 
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager, ExtensibleSaveFormat, and Sideloader.<br/>
+Requirements:
+* Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)
+* Marco's [Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods/releases)
+* [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat and Sideloader.
 
 UncensorSelector compatible uncensors can be found [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS) For makers of uncensors, see the [template](https://github.com/DeathWeasel1337/KK_Plugins/blob/master/Core_UncensorSelector/Template.xml) for how to configure your uncensor for UncensorSelector compatibility.<br/>
 
@@ -145,6 +147,7 @@ v3.6.4 Fix compatibility issues for non Darkness game versions<br/>
 v3.7 Fix shadows on male parts and reduce error spam<br/>
 v3.8 AI Girl version<br/>
 v3.8.1 Fix broken config stuff (thanks Keelhauled)<br/>
+v3.8.3 Fix uncensors not working in AI Girl main game<br/>
 </details>
 
 #### Subtitles
@@ -205,11 +208,11 @@ Virgins in H scenes will appear to have slightly shaking eye highlights.<br/>
 Generates random characters in the character maker.<br/>
 
 #### PoseFolders
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v60/KK_PoseFolders.v1.0.zip)** - For Koikatsu<br/>
+**v1.0 - [Download](https://www.patreon.com/posts/31127973)** - For Koikatsu and AI Girl<br/>
 
 Create new folders in userdata/studio/pose and place the pose data inside them. Folders will show up in your list of poses in Studio.<br/>
 
-Ported to Koikatsu from Essu's NEOpose List Folders plugin for Honey Select.<br/>
+Ported from Essu's NEOpose List Folders plugin for Honey Select.<br/>
 
 #### TranslationSync
 **v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v61/KK_TranslationSync.v1.2.zip)** - For Koikatsu<br/>
