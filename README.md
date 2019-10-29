@@ -205,11 +205,11 @@ Virgins in H scenes will appear to have slightly shaking eye highlights.<br/>
 Generates random characters in the character maker.<br/>
 
 #### PoseFolders
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v60/KK_PoseFolders.v1.0.zip)** - For Koikatsu<br/>
+**v1.0 - [Download](https://www.patreon.com/posts/31127973)** - For Koikatsu and AI Girl<br/>
 
 Create new folders in userdata/studio/pose and place the pose data inside them. Folders will show up in your list of poses in Studio.<br/>
 
-Ported to Koikatsu from Essu's NEOpose List Folders plugin for Honey Select.<br/>
+Ported from Essu's NEOpose List Folders plugin for Honey Select.<br/>
 
 #### TranslationSync
 **v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v61/KK_TranslationSync.v1.2.zip)** - For Koikatsu<br/>
