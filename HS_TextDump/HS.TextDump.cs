@@ -22,8 +22,11 @@ namespace KK_Plugins
 
         internal void Main()
         {
-            Enabled = Config.AddSetting("Settings", "Enabled", true, "Whether the plugin is enabled");
+            Enabled = Config.AddSetting("Settings", "Enabled", false, "Whether the plugin is enabled");
             if (!Enabled.Value) return;
+
+            if (Directory.Exists(Path.Combine(Paths.GameRootPath, "TextDump")))
+                Directory.Delete(Path.Combine(Paths.GameRootPath, "TextDump"), true);
 
             DumpText();
         }
@@ -77,20 +80,18 @@ namespace KK_Plugins
                     XmlWriterSettings settings = new XmlWriterSettings();
                     settings.Indent = true;
 
-                    using (XmlWriter writer = XmlWriter.Create(FilePath, settings))
-                    {
-                        writer.WriteStartElement("HS_Subtitles");
+                    using XmlWriter writer = XmlWriter.Create(FilePath, settings);
+                    writer.WriteStartElement("HS_Subtitles");
 
-                        foreach (var tl in Translations)
-                        {
-                            writer.WriteStartElement("Sub");
-                            writer.WriteAttributeString("Asset", tl.Key.Trim());
-                            writer.WriteAttributeString("Text", tl.Value.Trim());
-                            writer.WriteEndElement();
-                        }
+                    foreach (var tl in Translations)
+                    {
+                        writer.WriteStartElement("Sub");
+                        writer.WriteAttributeString("Asset", tl.Key.Trim());
+                        writer.WriteAttributeString("Text", tl.Value.Trim());
                         writer.WriteEndElement();
-                        writer.Flush();
                     }
+                    writer.WriteEndElement();
+                    writer.Flush();
                 }
             }
 

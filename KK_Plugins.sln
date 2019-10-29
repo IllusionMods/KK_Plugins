@@ -145,6 +145,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_PoseFolders", "AI_PoseFo
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_PoseFolders", "Core_PoseFolders\Core_PoseFolders.shproj", "{FDA2A8D5-C989-4A94-9A61-E6B60746D4B8}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_TextDump", "Core_TextDump\Core_TextDump.shproj", "{DDA0A733-3E5D-4F70-A91C-DC4FBF88E410}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
@@ -158,6 +160,7 @@ Global
 		CommonCode\CommonCode.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		Core_TextDump\Core_TextDump.projitems*{4026bb4c-6a7d-41b7-aebd-6044c9326523}*SharedItemsImports = 4
 		Core_Demosaic\Core_Demosaic.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
 		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{49add937-3c6a-427c-910f-98a3ad1fccf9}*SharedItemsImports = 4
 		Core_PoseFolders\Core_PoseFolders.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
@@ -172,6 +175,7 @@ Global
 		CommonCode\CommonCode.projitems*{8a811717-0cd1-4541-bd67-a0210586e4d0}*SharedItemsImports = 4
 		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{8e430f6c-8222-4f1b-950f-4d5595ddf7f7}*SharedItemsImports = 13
 		Core_Demosaic\Core_Demosaic.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
+		Core_TextDump\Core_TextDump.projitems*{98b3ad67-6608-420f-a3a4-d1abd9402905}*SharedItemsImports = 4
 		Core_Subtitles\Core_Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
@@ -191,6 +195,7 @@ Global
 		Core_Demosaic\Core_Demosaic.projitems*{cb53db90-ac91-4dbc-95a5-2729f177d3f7}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
 		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{dcfde35b-c56b-48aa-8244-248ef1c805c3}*SharedItemsImports = 13
+		Core_TextDump\Core_TextDump.projitems*{dda0a733-3e5d-4f70-a91c-dc4fbf88e410}*SharedItemsImports = 13
 		Core_Demosaic\Core_Demosaic.projitems*{dff56dbe-9617-48e7-9dab-213890dbee6a}*SharedItemsImports = 4
 		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{e0b39dba-571c-4b01-8479-63b59aa86b88}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
@@ -434,10 +439,12 @@ Global
 		{BC2D1E37-D3C2-4225-8CE4-2E116E84E365} = {06544F1F-7504-40FB-B614-B8B50B6D790D}
 		{6BC022E8-B0BF-4A6A-8A0D-D3CE0A9D8E5A} = {06544F1F-7504-40FB-B614-B8B50B6D790D}
 		{F89251CB-3FB1-439E-84D4-3CF9310FECAC} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
+		{4026BB4C-6A7D-41B7-AEBD-6044C9326523} = {C09C475A-6755-4E09-8D60-36B8FA2ADE63}
 		{B43D16F2-1542-423F-BA3C-C6ABC82C4281} = {CE8EA04B-6351-40C4-97AB-24CAE7020DCB}
 		{81DE7D3B-A8A0-43C2-AC9D-F65AC528B997} = {CE8EA04B-6351-40C4-97AB-24CAE7020DCB}
 		{7162D8CC-6EFC-411A-87B3-656BADA98468} = {6F0DF0B5-3EC0-40D1-8874-6960D8377E6D}
 		{FDA2A8D5-C989-4A94-9A61-E6B60746D4B8} = {6F0DF0B5-3EC0-40D1-8874-6960D8377E6D}
+		{DDA0A733-3E5D-4F70-A91C-DC4FBF88E410} = {C09C475A-6755-4E09-8D60-36B8FA2ADE63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
