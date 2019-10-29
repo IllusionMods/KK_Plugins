@@ -629,8 +629,8 @@ namespace KK_Plugins
                 bustNormal.Init(ChaControl.objBody, BodyData?.OOBase ?? Defaults.OOBase, BodyData?.Normals ?? Defaults.Normals, string.Empty);
                 ChaControl.dictBustNormal[ChaControl.BustNormalKind.NmlBody] = bustNormal;
 #else
-                ChaControl.bustNormal.Release();
-                ChaControl.bustNormal.Init(ChaControl.objBody, BodyData?.OOBase ?? Defaults.OOBase, BodyData?.Normals ?? Defaults.Normals, string.Empty);
+                ChaControl.bustNormal?.Release();
+                ChaControl.bustNormal?.Init(ChaControl.objBody, BodyData?.OOBase ?? Defaults.OOBase, BodyData?.Normals ?? Defaults.Normals, string.Empty);
 #endif
             }
 
