@@ -133,6 +133,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_InputHotkeyBlock", "EC_I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_UncensorSelector", "AI_UncensorSelector\AI_UncensorSelector.csproj", "{F89251CB-3FB1-439E-84D4-3CF9310FECAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_TextDump", "AI_TextDump\AI_TextDump.csproj", "{4026BB4C-6A7D-41B7-AEBD-6044C9326523}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_InvisibleBody", "AI_InvisibleBody\AI_InvisibleBody.csproj", "{B43D16F2-1542-423F-BA3C-C6ABC82C4281}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_InvisibleBody_Studio", "Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.shproj", "{81DE7D3B-A8A0-43C2-AC9D-F65AC528B997}"
@@ -379,6 +381,10 @@ Global
 		{F89251CB-3FB1-439E-84D4-3CF9310FECAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F89251CB-3FB1-439E-84D4-3CF9310FECAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F89251CB-3FB1-439E-84D4-3CF9310FECAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4026BB4C-6A7D-41B7-AEBD-6044C9326523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4026BB4C-6A7D-41B7-AEBD-6044C9326523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4026BB4C-6A7D-41B7-AEBD-6044C9326523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4026BB4C-6A7D-41B7-AEBD-6044C9326523}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B43D16F2-1542-423F-BA3C-C6ABC82C4281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B43D16F2-1542-423F-BA3C-C6ABC82C4281}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B43D16F2-1542-423F-BA3C-C6ABC82C4281}.Release|Any CPU.ActiveCfg = Release|Any CPU
