@@ -76,7 +76,7 @@ v1.5.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 #### InvisibleBody
-**v1.3 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu and Emotion Creators<br/>
+**v1.3 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
 
