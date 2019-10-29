@@ -11,8 +11,7 @@ using UnityEngine.Events;
 
 namespace KK_Plugins
 {
-    [BepInPlugin(GUID, PluginName, Version)]
-    public class KK_PoseFolders : BaseUnityPlugin
+    public partial class KK_PoseFolders
     {
         public const string GUID = "com.deathweasel.bepinex.posefolders";
         public const string PluginName = "Pose Folders";
