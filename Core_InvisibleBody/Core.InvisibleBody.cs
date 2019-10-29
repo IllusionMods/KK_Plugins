@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Harmony;
+using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using HarmonyLib;
 using KKAPI;
@@ -11,6 +12,9 @@ using System.Collections;
 using System.Linq;
 using UniRx;
 using UnityEngine;
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
@@ -23,12 +27,15 @@ namespace KK_Plugins
         public const string PluginName = "Invisible Body";
         public const string PluginNameInternal = "KK_InvisibleBody";
         public const string Version = "1.3";
+        internal static new ManualLogSource Logger;
 
         private static MakerToggle InvisibleToggle;
         public static ConfigEntry<bool> HideHairAccessories { get; private set; }
 
         internal void Start()
         {
+            Logger = base.Logger;
+
             CharacterApi.RegisterExtraBehaviour<InvisibleBodyCharaController>("KK_InvisibleBody");
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
 
@@ -131,6 +138,23 @@ namespace KK_Plugins
                 if (ChaControl?.objBody?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a")?.GetComponent<Renderer>().enabled == Visible)
                     return;
 
+#if AI
+                //male
+                Transform p_cm_body_00 = ChaControl.gameObject.transform.Find("BodyTop/p_cm_body_00");
+                if (p_cm_body_00 != null)
+                    IterateVisible(p_cm_body_00.gameObject);
+
+                //female
+                Transform p_cf_body_00 = ChaControl.gameObject.transform.Find("BodyTop/p_cf_body_00");
+                if (p_cf_body_00 != null)
+                    IterateVisible(p_cf_body_00.gameObject);
+
+                //both
+                Transform p_cf_anim = ChaControl.gameObject.transform.Find("BodyTop/p_cf_anim");
+                if (p_cf_anim != null)
+                    IterateVisible(p_cf_anim.gameObject);
+#else
+
                 Transform cf_j_root = ChaControl.gameObject.transform.Find("BodyTop/p_cf_body_bone/cf_j_root");
                 if (cf_j_root != null)
                     IterateVisible(cf_j_root.gameObject);
@@ -159,13 +183,14 @@ namespace KK_Plugins
                 Transform cf_o_rootm_low = ChaControl.gameObject.transform.Find("BodyTop/p_cm_body_00_low/cf_o_root/");
                 if (cf_o_rootm_low != null)
                     IterateVisible(cf_o_rootm_low.gameObject);
+#endif
             }
             /// <summary>
             /// Sets the visible state of the game object and all it's children.
             /// </summary>
             private void IterateVisible(GameObject go)
             {
-                //Log($"Game Object:{DebugFullObjectPath(go)}");
+                //Logger.LogInfo($"Game Object:{DebugFullObjectPath(go)}");
                 for (int i = 0; i < go.transform.childCount; i++)
                 {
                     if (HideHairAccessories.Value && go.name.StartsWith("a_n_") && go.transform.parent.gameObject.name == "ct_hairB")
