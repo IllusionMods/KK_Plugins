@@ -80,18 +80,20 @@ namespace KK_Plugins
                     XmlWriterSettings settings = new XmlWriterSettings();
                     settings.Indent = true;
 
-                    using XmlWriter writer = XmlWriter.Create(FilePath, settings);
-                    writer.WriteStartElement("HS_Subtitles");
-
-                    foreach (var tl in Translations)
+                    using (XmlWriter writer = XmlWriter.Create(FilePath, settings))
                     {
-                        writer.WriteStartElement("Sub");
-                        writer.WriteAttributeString("Asset", tl.Key.Trim());
-                        writer.WriteAttributeString("Text", tl.Value.Trim());
+                        writer.WriteStartElement("HS_Subtitles");
+
+                        foreach (var tl in Translations)
+                        {
+                            writer.WriteStartElement("Sub");
+                            writer.WriteAttributeString("Asset", tl.Key.Trim());
+                            writer.WriteAttributeString("Text", tl.Value.Trim());
+                            writer.WriteEndElement();
+                        }
                         writer.WriteEndElement();
+                        writer.Flush();
                     }
-                    writer.WriteEndElement();
-                    writer.Flush();
                 }
             }
 
