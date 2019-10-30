@@ -57,6 +57,7 @@
     </Reference>
     <Reference Include="KK.OverlayMods">
       <HintPath>..\lib\Koikatsu\KK.OverlayMods.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="KKAPI">
       <HintPath>..\lib\Koikatsu\KKAPI.dll</HintPath>

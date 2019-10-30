@@ -50,6 +50,7 @@
     </Reference>
     <Reference Include="EC.OverlayMods">
       <HintPath>..\lib\EmotionCreators\EC.OverlayMods.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ECAPI">
       <HintPath>..\lib\EmotionCreators\ECAPI.dll</HintPath>
