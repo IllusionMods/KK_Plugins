@@ -38,23 +38,16 @@ namespace KK_Plugins
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
             InitUI();
+#if AI
+            var ButtonAllLocation = MakerConstants.Body.All;
+#else
+            var ButtonAllLocation = MakerConstants.Face.All;
+#endif
 
             MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(delegate { PopulateListAccessory(); });
-#if AI
-            if (AdvancedMode.Value)
-            {
-                e.AddControl(new MakerButton("Open Material Editor (Body)", MakerConstants.Body.All, this)).OnClick.AddListener(delegate { PopulateListBody(); });
-                e.AddControl(new MakerButton("Open Material Editor (Face)", MakerConstants.Body.All, this)).OnClick.AddListener(delegate { PopulateListFace(); });
-                e.AddControl(new MakerButton("Open Material Editor (All)", MakerConstants.Body.All, this)).OnClick.AddListener(delegate { PopulateListCharacter(); });
-            }
-#else
-            if (AdvancedMode.Value)
-            {
-                e.AddControl(new MakerButton("Open Material Editor (Body)", MakerConstants.Face.All, this)).OnClick.AddListener(delegate { PopulateListBody(); });
-                e.AddControl(new MakerButton("Open Material Editor (Face)", MakerConstants.Face.All, this)).OnClick.AddListener(delegate { PopulateListFace(); });
-                e.AddControl(new MakerButton("Open Material Editor (All)", MakerConstants.Face.All, this)).OnClick.AddListener(delegate { PopulateListCharacter(); });
-            }
-#endif
+            e.AddControl(new MakerButton("Open Material Editor (Body)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListBody(); });
+            e.AddControl(new MakerButton("Open Material Editor (Face)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListFace(); });
+            e.AddControl(new MakerButton("Open Material Editor (All)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListCharacter(); });
 
 #if !AI
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Top, this)).OnClick.AddListener(delegate { PopulateListClothes(0); });
@@ -1120,7 +1113,7 @@ namespace KK_Plugins
 
         public enum RendererProperties { Enabled, ShadowCastingMode, ReceiveShadows }
 
-        #region Helper Methods
+#region Helper Methods
         internal static Texture2D GetT2D(RenderTexture renderTexture)
         {
             var currentActiveRT = RenderTexture.active;
@@ -1148,6 +1141,6 @@ namespace KK_Plugins
             RenderTexture.active = currentActiveRT;
             RenderTexture.ReleaseTemporary(tmp);
         }
-        #endregion
+#endregion
     }
 }
