@@ -702,4 +702,240 @@
     <Property Name="SpecularPowerNail" Type="Float" Range="0,1" />
     <Property Name="tex1mask" Type="Float" Range="0,1" />
   </Shader>
+  <Shader Name="AIT/Additive" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_additive">
+    <Property Name="Emissive" Type="Float" Range="0,1"/>
+    <Property Name="UVPannerTime" Type="Float" Range="0,1"/>
+    <Property Name="UVPannerSpeedy" Type="Float" Range="0,1"/>
+    <Property Name="UVPannerSpeedx" Type="Float" Range="0,1"/>
+    <Property Name="Glossiness" Type="Float" Range="0,1"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="Color" Type="Color" />
+    <Property Name="Vector0" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="TimeMask" Type="Texture" />
+  </Shader>
+  <Shader Name="AIT/Item studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item_studio">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
+    <Property Name="alpha" Type="Float" Range="0,1"/>
+    <Property Name="BitangentRim" Type="Float" Range="0,1"/>
+    <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
+    <Property Name="YabureDitherSwitch" Type="Float" Range="0,1"/>
+    <Property Name="VertexColor" Type="Float" Range="0,1"/>
+    <Property Name="EmissionColorTexBase" Type="Float" Range="0,1"/>
+    <Property Name="Float0" Type="Float" Range="0,9"/>
+    <Property Name="ExGloss" Type="Float" Range="0,1"/>
+    <Property Name="OcculusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="EmissionStrength" Type="Float" Range="0,9"/>
+    <Property Name="CarvatureStrength" Type="Float" Range="0,1"/>
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
+    <Property Name="DetailNormalMapScale2" Type="Float" Range="0,9"/>
+    <Property Name="DetailMetallicScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailMetallicScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailGlossScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailGlossScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailOcculusionScale" Type="Float" Range="0,1"/>
+    <Property Name="DetailOcculusionScale2" Type="Float" Range="0,1"/>
+    <Property Name="DetailUVRotator" Type="Float" Range="-1,1"/>
+    <Property Name="DetailUV2Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="TransmissionStrength" Type="Float" Range="0,5"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="Metallic2" Type="Float" Range="0,1"/>
+    <Property Name="Metallic3" Type="Float" Range="0,1"/>
+    <Property Name="Metallic4" Type="Float" Range="0,1"/>
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="Glossiness2" Type="Float" Range="0,1" />
+    <Property Name="Glossiness3" Type="Float" Range="0,1" />
+    <Property Name="Glossiness4" Type="Float" Range="0,1" />
+    <Property Name="VertexColorMask" Type="Float" Range="0,1"/>
+    <Property Name="patternuv1Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="patternuv2Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="patternuv3Rotator" Type="Float" Range="-1,1"/>
+    <Property Name="patternclamp1" Type="Float" Range="0,1" />
+    <Property Name="patternclamp2" Type="Float" Range="0,1" />
+    <Property Name="patternclamp3" Type="Float" Range="0,1" />
+    <Property Name="Translucency" Type="Float" Range="0,50"/>
+    <Property Name="TransNormalDistortion" Type="Float" Range="0,1" />
+    <Property Name="TransScattering" Type="Float" Range="0,50"/>
+    <Property Name="TransDirect" Type="Float" Range="0,1" />
+    <Property Name="TransAmbient" Type="Float" Range="0,1" />
+    <Property Name="TransShadow" Type="Float" Range="0,1"/>
+    <Property Name="_dirty" Type="Float" Range="0,1" />
+    <Property Name="UVScalePattern" Type="Color" />
+    <Property Name="BaseColor" Type="Color" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="DetailUV" Type="Color" />
+    <Property Name="DetailUV2" Type="Color" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color1_2" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color2_2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="Color3_2" Type="Color" />
+    <Property Name="Color4" Type="Color" />
+    <Property Name="patternuv1" Type="Color" />
+    <Property Name="patternuv2" Type="Color" />
+    <Property Name="patternuv3" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailGlossMap" Type="Texture" />
+    <Property Name="DetailGlossMap2" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="PatternMask1" Type="Texture" />
+    <Property Name="PatternMask2" Type="Texture" />
+    <Property Name="PatternMask3" Type="Texture" />
+    <Property Name="texcoord" Type="Texture" />
+  </Shader>
+  <Shader Name="AIT/main standard2" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
+    <Property Name="AlphaEx" Type="Float" Range="0,1"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="Float1" Type="Float" Range="0,9"/>
+    <Property Name="Parallax" Type="Float" Range="-1,1"/>
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="EmissionMainColorBase" Type="Float" Range="0,1"/>
+    <Property Name="Emission" Type="Float" Range="0,1" />
+    <Property Name="DetailAlbedoMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailAlbedoNormalScale" Type="Float" Range="0,9" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
+    <Property Name="EmissionPower" Type="Float" Range="0,9" />
+    <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
+    <Property Name="_dirty" Type="Float" Range="0,1" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color1_2" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color2_2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="Color3_2" Type="Color" />
+    <Property Name="Color4" Type="Color" />
+    <Property Name="UV" Type="Color" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="UVSec" Type="Color" />
+    <Property Name="patternuv1" Type="Color" />
+    <Property Name="patternuv2" Type="Color" />
+    <Property Name="patternuv3" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissonMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="PatternMask1" Type="Texture" />
+    <Property Name="PatternMask2" Type="Texture" />
+    <Property Name="PatternMask3" Type="Texture" />
+    <Property Name="texcoord" Type="Texture" />
+  </Shader>
+  <Shader Name="AIT/main standard2 studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2_studio">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
+    <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
+    <Property Name="alpha" Type="Float" Range="0,1"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="Metallic2" Type="Float" Range="0,1"/>
+    <Property Name="Metallic3" Type="Float" Range="0,1"/>
+    <Property Name="Metallic4" Type="Float" Range="0,1"/>
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="Glossiness2" Type="Float" Range="0,1" />
+    <Property Name="Glossiness3" Type="Float" Range="0,1" />
+    <Property Name="Glossiness4" Type="Float" Range="0,1" />
+    <Property Name="Float1" Type="Float" Range="0,9"/>
+    <Property Name="Parallax" Type="Float" Range="-1,1"/>
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="EmissionStrength" Type="Float" Range="0,9" />
+    <Property Name="DetailAlbedoMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailAlbedoNormalScale" Type="Float" Range="0,9" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
+    <Property Name="patternuv1Rotator" Type="Float" Range="-1,1" />
+    <Property Name="patternuv2Rotator" Type="Float" Range="-1,1" />
+    <Property Name="patternuv3Rotator" Type="Float" Range="-1,1" />
+    <Property Name="patternclamp1" Type="Float" Range="0,1" />
+    <Property Name="patternclamp2" Type="Float" Range="0,1" />
+    <Property Name="patternclamp3" Type="Float" Range="0,1" />
+    <Property Name="EmissionMainColorBase" Type="Float" Range="0,1" />
+    <Property Name="_dirty" Type="Float" Range="0,1" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color1_2" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color2_2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="Color3_2" Type="Color" />
+    <Property Name="Color4" Type="Color" />
+    <Property Name="UV" Type="Color" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="UVSec" Type="Color" />
+    <Property Name="patternuv1" Type="Color" />
+    <Property Name="patternuv2" Type="Color" />
+    <Property Name="patternuv3" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissonMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="PatternMask1" Type="Texture" />
+    <Property Name="PatternMask2" Type="Texture" />
+    <Property Name="PatternMask3" Type="Texture" />
+    <Property Name="texcoord" Type="Texture" />
+  </Shader>
+  <Shader Name="AIT/main standard2 studio alpha" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2_studio_alpha">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
+    <Property Name="alpha" Type="Float" Range="0,1"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="Metallic2" Type="Float" Range="0,1"/>
+    <Property Name="Metallic3" Type="Float" Range="0,1"/>
+    <Property Name="Metallic4" Type="Float" Range="0,1"/>
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="Glossiness2" Type="Float" Range="0,1" />
+    <Property Name="Glossiness3" Type="Float" Range="0,1" />
+    <Property Name="Glossiness4" Type="Float" Range="0,1" />
+    <Property Name="Float1" Type="Float" Range="0,9"/>
+    <Property Name="Parallax" Type="Float" Range="-1,1"/>
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="EmissionStrength" Type="Float" Range="0,9" />
+    <Property Name="DetailAlbedoMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailAlbedoNormalScale" Type="Float" Range="0,9" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,9"/>
+    <Property Name="EmissionMainColorBase" Type="Float" Range="0,1" />
+    <Property Name="patternuv1Rotator" Type="Float" Range="-1,1" />
+    <Property Name="patternuv2Rotator" Type="Float" Range="-1,1" />
+    <Property Name="patternuv3Rotator" Type="Float" Range="-1,1" />
+    <Property Name="patternclamp1" Type="Float" Range="0,1" />
+    <Property Name="patternclamp2" Type="Float" Range="0,1" />
+    <Property Name="patternclamp3" Type="Float" Range="0,1" />
+    <Property Name="_dirty" Type="Float" Range="0,1" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color1_2" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color2_2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="Color3_2" Type="Color" />
+    <Property Name="Color4" Type="Color" />
+    <Property Name="UV" Type="Color" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="UVSec" Type="Color" />
+    <Property Name="patternuv1" Type="Color" />
+    <Property Name="patternuv2" Type="Color" />
+    <Property Name="patternuv3" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissonMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="PatternMask1" Type="Texture" />
+    <Property Name="PatternMask2" Type="Texture" />
+    <Property Name="PatternMask3" Type="Texture" />
+    <Property Name="texcoord" Type="Texture" />
+  </Shader>
 </AI_MaterialEditor>

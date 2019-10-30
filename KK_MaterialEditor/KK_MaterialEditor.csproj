@@ -84,7 +84,6 @@
   <ItemGroup>
     <Compile Include="KK.MaterialEditor.cs" />
     <Compile Include="KK.MaterialEditor.Hooks.cs" />
-    <Compile Include="KK.MaterialEditor.SceneController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -99,6 +98,7 @@
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="..\Core_MaterialEditor\Core_MaterialEditor.projitems" Label="Shared" />
+  <Import Project="..\Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) KK</PostBuildEvent>

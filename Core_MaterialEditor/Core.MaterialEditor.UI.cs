@@ -8,7 +8,7 @@ using System.Reflection;
 using UILib;
 using UnityEngine;
 using UnityEngine.UI;
-#if KK
+#if KK || AI
 using Studio;
 #endif
 #if AI
@@ -152,7 +152,7 @@ namespace KK_Plugins
             MaterialEditorWindow.movementType = ScrollRect.MovementType.Clamped;
         }
 
-#if KK
+#if KK || AI
         private static void PopulateListStudio()
         {
             if (Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes.Length != 1)
@@ -1040,7 +1040,7 @@ namespace KK_Plugins
                 }
             }
         }
-#if KK
+#if KK || AI
         private void InitStudioUI(string sceneName)
         {
             if (sceneName != "Studio")

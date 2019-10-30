@@ -17,7 +17,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using HarmonyLib;
-#if KK
+#if KK || AI
 using KKAPI.Studio.SaveLoad;
 using Studio;
 #endif
@@ -31,7 +31,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "1.7";
+        public const string Version = "1.8";
         internal static new ManualLogSource Logger;
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
@@ -51,14 +51,16 @@ namespace KK_Plugins
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
-            AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
 
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
 
-#if KK
+#if KK || AI
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
-            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
+#endif
+#if KK
+            AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
+            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
 
             AdvancedMode = Config.AddSetting("Config", "Enable advanced editing", false, "Enables advanced editing of characters in the character maker. Note: Some textures and colors will override chracter maker selections but will not always appear to do so, especially after changing them from the in game color pickers. Save and reload to see the real effects.\nUse at your own risk.");
@@ -452,7 +454,7 @@ namespace KK_Plugins
         public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();
         public static MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
 
-#if KK
+#if KK || AI
         private static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
 #endif
 

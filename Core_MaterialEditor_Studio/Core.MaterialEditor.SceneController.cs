@@ -408,7 +408,7 @@ namespace KK_Plugins
 
             [Serializable]
             [MessagePackObject]
-            private class RendererProperty
+            public class RendererProperty
             {
                 [Key("ID")]
                 public int ID;
@@ -433,7 +433,7 @@ namespace KK_Plugins
 
             [Serializable]
             [MessagePackObject]
-            private class MaterialFloatProperty
+            public class MaterialFloatProperty
             {
                 [Key("ID")]
                 public int ID;
@@ -458,7 +458,7 @@ namespace KK_Plugins
 
             [Serializable]
             [MessagePackObject]
-            private class MaterialColorProperty
+            public class MaterialColorProperty
             {
                 [Key("ID")]
                 public int ID;
