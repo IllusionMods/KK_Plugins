@@ -1,6 +1,9 @@
 ﻿using HarmonyLib;
 using Studio;
 using System.Collections;
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {

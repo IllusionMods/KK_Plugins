@@ -157,9 +157,16 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_StudioObjectMoveHotkey
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_StudioObjectMoveHotkeys", "AI_StudioObjectMoveHotkeys\AI_StudioObjectMoveHotkeys.csproj", "{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FKIK", "FKIK", "{781E2AFE-9DB0-4403-83A5-F0F327EDB9FB}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_FKIK", "Core_FKIK\Core_FKIK.shproj", "{81D88C3E-4094-436C-8EED-BA18A81A96A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_FKIK", "AI_FKIK\AI_FKIK.csproj", "{144F9206-641B-40C1-8464-BC035B255DD4}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
+		Core_FKIK\Core_FKIK.projitems*{144f9206-641b-40c1-8464-bc035b255dd4}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
 		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
@@ -182,11 +189,13 @@ Global
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{6bc022e8-b0bf-4a6a-8a0d-d3ce0a9d8e5a}*SharedItemsImports = 4
 		Core_PoseFolders\Core_PoseFolders.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
+		Core_FKIK\Core_FKIK.projitems*{81d88c3e-4094-436c-8eed-ba18a81a96a4}*SharedItemsImports = 13
 		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{81de7d3b-a8a0-43c2-ac9d-f65ac528b997}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{8a811717-0cd1-4541-bd67-a0210586e4d0}*SharedItemsImports = 4
 		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{8e430f6c-8222-4f1b-950f-4d5595ddf7f7}*SharedItemsImports = 13
+		Core_FKIK\Core_FKIK.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
 		Core_Demosaic\Core_Demosaic.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
 		Core_TextDump\Core_TextDump.projitems*{98b3ad67-6608-420f-a3a4-d1abd9402905}*SharedItemsImports = 4
 		Core_Subtitles\Core_Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
@@ -421,6 +430,10 @@ Global
 		{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{144F9206-641B-40C1-8464-BC035B255DD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{144F9206-641B-40C1-8464-BC035B255DD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{144F9206-641B-40C1-8464-BC035B255DD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{144F9206-641B-40C1-8464-BC035B255DD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -444,6 +457,7 @@ Global
 		{0F7181C7-8D52-4576-9BFF-D4B7D08F42A2} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{AAE2BDC4-4CAB-4677-8F02-3290B6061097} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{B743E048-5913-4DEC-9067-8AFD1293A211} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
+		{90D733A9-3148-428D-AD87-E633A2A3A28B} = {781E2AFE-9DB0-4403-83A5-F0F327EDB9FB}
 		{BAA2D7C3-88F1-440D-A620-E0E4BC3ACCEC} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
 		{F28FC29B-5CD1-4AEA-9E93-03BC9BE51360} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 		{9B492E05-5822-4BB0-BE28-A468D1F318AB} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
@@ -473,6 +487,8 @@ Global
 		{A5E0B487-CF0F-41D1-BBC8-A4B72CA62564} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
 		{25352133-33B7-41E0-867A-D07C613AC3E9} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
 		{F1103E35-DBB1-4431-A8F6-8208CC0C65BD} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
+		{81D88C3E-4094-436C-8EED-BA18A81A96A4} = {781E2AFE-9DB0-4403-83A5-F0F327EDB9FB}
+		{144F9206-641B-40C1-8464-BC035B255DD4} = {781E2AFE-9DB0-4403-83A5-F0F327EDB9FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
