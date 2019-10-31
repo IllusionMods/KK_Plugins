@@ -307,7 +307,7 @@ v1.1 Fixed compatibility issues with UncensorSelector using male body type on fe
 </details>
 
 #### StudioObjectMoveHotkeys
-**v1.0 - [Download](https://www.patreon.com/posts/28743884)** - For Koikatsu<br/>
+**v1.0 - [Download](https://www.patreon.com/posts/28743884)** - For Koikatsu and EmotionCreators<br/>
 
 Allows you to move objects in studio using hotkeys. Press Y/U/I to move along the X/Y/Z axes. You can also ues these keys for rotating and scaling, and when scaling you can also press T to scale all axes at once. Hotkeys can be configured in plugin settings.<br/>
 
