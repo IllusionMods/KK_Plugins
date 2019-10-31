@@ -254,31 +254,31 @@ namespace KK_Plugins
             BallsConfigListFull.Clear();
 
             //Add the default body options
-            BodyConfigListFull.Add("Random", "Random");
+            BodyConfigListFull["Random"] = "Random";
 
 #if !AI
             BodyData DefaultMale = new BodyData(0, "Default.Body.Male", "Default Body M");
-            BodyDictionary.Add(DefaultMale.BodyGUID, DefaultMale);
-            BodyConfigListFull.Add($"[{(DefaultMale.Sex == 0 ? "Male" : "Female")}] {DefaultMale.DisplayName}", DefaultMale.BodyGUID);
+            BodyDictionary[DefaultMale.BodyGUID] = DefaultMale;
+            BodyConfigListFull[$"[{(DefaultMale.Sex == 0 ? "Male" : "Female")}] {DefaultMale.DisplayName}"] = DefaultMale.BodyGUID;
 #endif
 
             BodyData DefaultFemale = new BodyData(1, "Default.Body.Female", "Default Body F");
-            BodyDictionary.Add(DefaultFemale.BodyGUID, DefaultFemale);
-            BodyConfigListFull.Add($"[{(DefaultFemale.Sex == 0 ? "Male" : "Female")}] {DefaultFemale.DisplayName}", DefaultFemale.BodyGUID);
+            BodyDictionary[DefaultFemale.BodyGUID] = DefaultFemale;
+            BodyConfigListFull[$"[{(DefaultFemale.Sex == 0 ? "Male" : "Female")}] {DefaultFemale.DisplayName}"] = DefaultFemale.BodyGUID;
 
             //Add the default penis options
-            PenisConfigListFull.Add("Random", "Random");
+            PenisConfigListFull["Random"] = "Random";
 
             PenisData DefaultPenis = new PenisData("Default.Penis", "Mosaic Penis");
-            PenisDictionary.Add(DefaultPenis.PenisGUID, DefaultPenis);
-            PenisConfigListFull.Add(DefaultPenis.DisplayName, DefaultPenis.PenisGUID);
+            PenisDictionary[DefaultPenis.PenisGUID] = DefaultPenis;
+            PenisConfigListFull[DefaultPenis.DisplayName] = DefaultPenis.PenisGUID;
 
             //Add the default balls options
-            BallsConfigListFull.Add("Random", "Random");
+            BallsConfigListFull["Random"] = "Random";
 
             BallsData DefaultBalls = new BallsData("Default.Balls", "Mosaic Balls");
-            BallsDictionary.Add(DefaultBalls.BallsGUID, DefaultBalls);
-            BallsConfigListFull.Add(DefaultBalls.DisplayName, DefaultBalls.BallsGUID);
+            BallsDictionary[DefaultBalls.BallsGUID] = DefaultBalls;
+            BallsConfigListFull[DefaultBalls.DisplayName] = DefaultBalls.BallsGUID;
 
             var loadedManifests = Sideloader.Sideloader.LoadedManifests;
 
@@ -306,8 +306,8 @@ namespace KK_Plugins
                             Logger.LogWarning("Body was not loaded because oo_base is the default.");
                             continue;
                         }
-                        BodyDictionary.Add(bodyData.BodyGUID, bodyData);
-                        BodyConfigListFull.Add($"[{(bodyData.Sex == 0 ? "Male" : "Female")}] {bodyData.DisplayName}", bodyData.BodyGUID);
+                        BodyDictionary[bodyData.BodyGUID] = bodyData;
+                        BodyConfigListFull[$"[{(bodyData.Sex == 0 ? "Male" : "Female")}] {bodyData.DisplayName}"] = bodyData.BodyGUID;
                         foreach (var part in bodyData.AdditionalParts)
                             AllAdditionalParts.Add(part);
                     }
@@ -334,8 +334,8 @@ namespace KK_Plugins
                             Logger.LogWarning("Penis failed to load due to missing asset.");
                             continue;
                         }
-                        PenisDictionary.Add(penisData.PenisGUID, penisData);
-                        PenisConfigListFull.Add(penisData.DisplayName, penisData.PenisGUID);
+                        PenisDictionary[penisData.PenisGUID] = penisData;
+                        PenisConfigListFull[penisData.DisplayName] = penisData.PenisGUID;
                     }
                     foreach (XElement uncensorElement in uncensorSelectorElement.Elements("balls"))
                     {
@@ -360,8 +360,8 @@ namespace KK_Plugins
                             Logger.LogWarning("Balls failed to load due to missing asset.");
                             continue;
                         }
-                        BallsDictionary.Add(ballsData.BallsGUID, ballsData);
-                        BallsConfigListFull.Add(ballsData.DisplayName, ballsData.BallsGUID);
+                        BallsDictionary[ballsData.BallsGUID] = ballsData;
+                        BallsConfigListFull[ballsData.DisplayName] = ballsData.BallsGUID;
                     }
                     foreach (XElement uncensorElement in uncensorSelectorElement.Elements("migration"))
                     {
@@ -376,7 +376,7 @@ namespace KK_Plugins
                             Logger.LogWarning("Migration data failed to load due to missing Body GUID.");
                             continue;
                         }
-                        MigrationDictionary.Add(migrationData.UncensorGUID, migrationData);
+                        MigrationDictionary[migrationData.UncensorGUID] = migrationData;
                     }
                 }
             }
