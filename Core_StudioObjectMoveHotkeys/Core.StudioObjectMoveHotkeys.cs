@@ -7,9 +7,7 @@ using UnityEngine;
 
 namespace KK_Plugins
 {
-    [BepInProcess("CharaStudio")]
-    [BepInPlugin(GUID, PluginName, Version)]
-    public class KK_StudioObjectMoveHotkeys : BaseUnityPlugin
+    public partial class KK_StudioObjectMoveHotkeys
     {
         public const string GUID = "com.deathweasel.bepinex.studioobjectmovehotkeys";
         public const string PluginName = "Studio Object Move Hotkeys";

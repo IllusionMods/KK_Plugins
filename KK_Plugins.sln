@@ -151,6 +151,12 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_MaterialEditor_Studio"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_UncensorSelector_Studio", "Core_UncensorSelector_Studio\Core_UncensorSelector_Studio.shproj", "{A5E0B487-CF0F-41D1-BBC8-A4B72CA62564}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioObjectMoveHotkeys", "StudioObjectMoveHotkeys", "{5890839F-EACD-4DE3-89CB-A75CFC94BA85}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_StudioObjectMoveHotkeys", "Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.shproj", "{25352133-33B7-41E0-867A-D07C613AC3E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_StudioObjectMoveHotkeys", "AI_StudioObjectMoveHotkeys\AI_StudioObjectMoveHotkeys.csproj", "{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
@@ -158,6 +164,7 @@ Global
 		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
 		Core_UncensorSelector_Studio\Core_UncensorSelector_Studio.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
+		Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.projitems*{25352133-33b7-41e0-867a-d07c613ac3e9}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
@@ -195,6 +202,7 @@ Global
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
 		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{bc2d1e37-d3c2-4225-8ce4-2e116e84e365}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{c15b8820-0e24-452b-b076-1a052dd7c0fb}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{c2c68ac3-cb8f-4ba7-91ea-9a242851294d}*SharedItemsImports = 4
@@ -210,6 +218,7 @@ Global
 		UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{ea82bb52-404c-416a-9bf8-a36a90f6da93}*SharedItemsImports = 13
 		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{f0772d38-cabb-4e99-9c5a-336f5da499cb}*SharedItemsImports = 4
+		Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.projitems*{f1103e35-dbb1-4431-a8f6-8208cc0c65bd}*SharedItemsImports = 4
 		Core_Subtitles\Core_Subtitles.projitems*{f28fc29b-5cd1-4aea-9e93-03bc9be51360}*SharedItemsImports = 4
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
 		Core_UncensorSelector_Studio\Core_UncensorSelector_Studio.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
@@ -408,6 +417,10 @@ Global
 		{7162D8CC-6EFC-411A-87B3-656BADA98468}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7162D8CC-6EFC-411A-87B3-656BADA98468}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7162D8CC-6EFC-411A-87B3-656BADA98468}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -431,6 +444,7 @@ Global
 		{0F7181C7-8D52-4576-9BFF-D4B7D08F42A2} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{AAE2BDC4-4CAB-4677-8F02-3290B6061097} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{B743E048-5913-4DEC-9067-8AFD1293A211} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
+		{BAA2D7C3-88F1-440D-A620-E0E4BC3ACCEC} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
 		{F28FC29B-5CD1-4AEA-9E93-03BC9BE51360} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 		{9B492E05-5822-4BB0-BE28-A468D1F318AB} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 		{4D019B66-3042-4ABB-81A1-FC72D61844E5} = {C09C475A-6755-4E09-8D60-36B8FA2ADE63}
@@ -457,6 +471,8 @@ Global
 		{DDA0A733-3E5D-4F70-A91C-DC4FBF88E410} = {C09C475A-6755-4E09-8D60-36B8FA2ADE63}
 		{CAB936A6-622D-4498-BB82-A6CAB53541E4} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
 		{A5E0B487-CF0F-41D1-BBC8-A4B72CA62564} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
+		{25352133-33B7-41E0-867A-D07C613AC3E9} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
+		{F1103E35-DBB1-4431-A8F6-8208CC0C65BD} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
