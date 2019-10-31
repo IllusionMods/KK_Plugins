@@ -92,6 +92,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="..\Core_UncensorSelector\Core_UncensorSelector.projitems" Label="Shared" />
+  <Import Project="..\Core_UncensorSelector_Studio\Core_UncensorSelector_Studio.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) AI</PostBuildEvent>

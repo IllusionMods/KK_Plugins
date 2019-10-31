@@ -90,6 +90,9 @@ namespace KK_Plugins
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             CharacterApi.RegisterExtraBehaviour<UncensorSelectorController>(GUID);
+#if !EC
+            RegisterStudioControls();
+#endif
 
             HarmonyWrapper.PatchAll(typeof(Hooks));
         }
