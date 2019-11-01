@@ -29,11 +29,13 @@ namespace KK_Plugins
         public const string PluginName = "Animation Controller";
         public const string PluginNameInternal = nameof(KK_AnimationController);
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
-        public const string Version = "2.1";
+        public const string Version = "2.2";
         internal static new ManualLogSource Logger;
 
         private bool GUIVisible = false;
         private int SelectedGuideObject = 0;
+        private Rect AnimGUI = new Rect(70, 190, 200, 400);
+
         private static readonly string[] IKGuideObjectsPretty = new string[] { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot", "Eyes", "Neck" };
 #if KK
         private static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
@@ -41,7 +43,6 @@ namespace KK_Plugins
         private static readonly string[] IKGuideObjects = new string[] { "cf_J_Hips", "cf_J_ArmUp00_L", "cf_J_ArmLow01_L", "cf_J_Hand_L", "cf_J_ArmUp00_R", "cf_J_ArmLow01_R", "cf_J_Hand_R", "cf_J_LegUp00_L", "cf_J_LegLow01_L", "cf_J_Foot01_L", "cf_J_LegUp00_R", "cf_J_LegLow01_R", "cf_J_Foot01_R", "eyes", "neck" };
 #endif
 
-        private Rect AnimGUI = new Rect(70, 190, 200, 400);
 
         public static ConfigEntry<KeyboardShortcut> AnimationControllerHotkey { get; private set; }
 
@@ -51,6 +52,12 @@ namespace KK_Plugins
             AnimationControllerHotkey = Config.AddSetting("Keyboard Shortcuts", "Toggle Animation Controller Window", new KeyboardShortcut(KeyCode.Minus), "Show or hide the Animation Controller window in Studio");
             CharacterApi.RegisterExtraBehaviour<AnimationControllerCharaController>(GUID);
             StudioSaveLoadApi.RegisterExtraBehaviour<AnimationControllerSceneController>(GUID);
+
+            //Change window location for different resolutions. Probably a better way to do this, but I don't care.
+            if (Screen.height == 900)
+                AnimGUI = new Rect(90, 350, 200, 400);
+            else if (Screen.height == 1080)
+                AnimGUI = new Rect(110, 510, 200, 400);
         }
 
         internal void Update()
@@ -124,7 +131,7 @@ namespace KK_Plugins
         internal void OnGUI()
         {
             if (GUIVisible)
-                AnimGUI = GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
+                GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
         }
         /// <summary>
         /// The AnimationController GUI
