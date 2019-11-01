@@ -76,7 +76,7 @@ v1.5.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 #### InvisibleBody
-**v1.3 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
+**v1.3.1 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
 
@@ -88,6 +88,7 @@ v1.2 Added a character maker toggle, EmotionCreators port<br/>
 v1.2.1 Fixed an incompatibility with UncensorSelector<br/>
 v1.2.2 Updated for KK Darkness<br/>
 v1.3 Added a toggle button for Studio, removed hotkey<br/>
+v1.3.1 Fixed accessories and items attached by animations from turning invisible in AI version<br/>
 </details>
 
 #### InputHotkeyBlock
@@ -167,12 +168,12 @@ v1.5.1 Fixed text wrapping, clarified config description<br/>
 </details>
 
 #### AnimationController
-**v2.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v57/KK_AnimationController.v2.1.zip)** - For Koikatsu<br/>
-*Note: Mostly obsolete. [NodeConstraints](https://www.patreon.com/posts/26357789) does what this plugin does but better.*
+**v2.2 - [Download](https://www.patreon.com/posts/31229780)** - For Koikatsu and AI Girl<br/>
+*Koikatsu version: Mostly obsolete. [NodeConstraints](https://www.patreon.com/posts/26357789) does what this plugin does but better.*
 
 Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.<br/>
 
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) 1.2 or higher and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ConfigurationManager and ExtensibleSaveFormat.<br/>
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat.<br/>
 
 Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro  
 
@@ -181,6 +182,7 @@ v1.1 Gimmicks can now rotate hands and feet properly<br/>
 v1.2 Rotating characters doesn't break everything anymore<br/>
 v2.0 Significant rewrite with KKAPI integration. Can now link eyes and neck to objects, scene import support, Drag and Drop plugin support<br/>
 v2.1 Fix neck link not working, fix linking after unlinking not working<br/>
+v2.2 AI version, window position adjustment<br/>
 </details>
 
 #### ClothingUnlocker
