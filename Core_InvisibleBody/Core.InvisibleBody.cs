@@ -1,6 +1,4 @@
-﻿using BepInEx;
-using BepInEx.Configuration;
-using BepInEx.Harmony;
+﻿using BepInEx.Harmony;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using HarmonyLib;
@@ -21,25 +19,23 @@ namespace KK_Plugins
     /// <summary>
     /// Sets the selected characters invisible in Studio or character maker. Invisible state saves and loads with the scene or card.
     /// </summary>
-    public partial class InvisibleBody : BaseUnityPlugin
+    public partial class InvisibleBody
     {
         public const string GUID = "com.deathweasel.bepinex.invisiblebody";
         public const string PluginName = "Invisible Body";
         public const string PluginNameInternal = "KK_InvisibleBody";
-        public const string Version = "1.3";
+        public const string Version = "1.3.1";
         internal static new ManualLogSource Logger;
 
         private static MakerToggle InvisibleToggle;
-        public static ConfigEntry<bool> HideHairAccessories { get; private set; }
 
         internal void Start()
         {
             Logger = base.Logger;
 
-            CharacterApi.RegisterExtraBehaviour<InvisibleBodyCharaController>("KK_InvisibleBody");
+            CharacterApi.RegisterExtraBehaviour<InvisibleBodyCharaController>(PluginNameInternal);
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
 
-            HideHairAccessories = Config.AddSetting("Config", "Hide built-in hair accessories", true, "Whether or not to hide accesories (such as scrunchies) attached to back hairs.");
             HarmonyWrapper.PatchAll(typeof(InvisibleBody));
         }
 
@@ -135,7 +131,7 @@ namespace KK_Plugins
             private void SetVisibleState()
             {
                 //Don't set the visible state if it is already set
-                if (ChaControl?.objBody?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a")?.GetComponent<Renderer>().enabled == Visible)
+                if (ChaControl?.objBody?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a" || x.name == "o_body_cf" || x.name == "o_body_cm")?.GetComponent<Renderer>().enabled == Visible)
                     return;
 
 #if AI
@@ -191,21 +187,21 @@ namespace KK_Plugins
             private void IterateVisible(GameObject go)
             {
                 //Logger.LogInfo($"Game Object:{DebugFullObjectPath(go)}");
-                for (int i = 0; i < go.transform.childCount; i++)
-                {
-                    if (HideHairAccessories.Value && go.name.StartsWith("a_n_") && go.transform.parent.gameObject.name == "ct_hairB")
-                        //change visibility of accessories built in to back hairs
-                        IterateVisible(go.transform.GetChild(i).gameObject);
-                    else if (go.name.StartsWith("a_n_"))
-                    //do not change visibility of attached items such as studio items and character accessories
-                    { }
-                    else
-                        //change visibility of everything else
-                        IterateVisible(go.transform.GetChild(i).gameObject);
-                }
 
-                if (go.GetComponent<Renderer>())
-                    go.GetComponent<Renderer>().enabled = Visible;
+                //Search through all child transforms and toggle visibility, except for transforms that contain accessories or studio objects
+                for (int i = 0; i < go.transform.childCount; i++)
+                    if (!go.name.StartsWith("a_n_") && !go.name.StartsWith("ca_slot"))
+                        IterateVisible(go.transform.GetChild(i).gameObject);
+
+                Renderer rend = go.GetComponent<Renderer>();
+                if (rend != null)
+                {
+#if AI
+                    if (RendererBlacklist.Contains(rend.name))
+                        return;
+#endif
+                    rend.enabled = Visible;
+                }
             }
             /// <summary>
             /// Recursively finds the parents of a game object and builds a string of the full path. Only used for debug purposes.
