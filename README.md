@@ -314,7 +314,7 @@ v1.1 Fixed compatibility issues with UncensorSelector using male body type on fe
 Allows you to move objects in studio using hotkeys. Press Y/U/I to move along the X/Y/Z axes. You can also ues these keys for rotating and scaling, and when scaling you can also press T to scale all axes at once. Hotkeys can be configured in plugin settings.<br/>
 
 #### FKIK
-**v1.1 - [Download](https://www.patreon.com/posts/29928651)** - For Koikatsu<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/29928651)** - For Koikatsu and AI Girl<br/>
 
 Enables FK and IK at the same time. Pose characters in IK mode while still being able to adjust skirts, hair, and hands as if they were in FK mode.<br/>
 
