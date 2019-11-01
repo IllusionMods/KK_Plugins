@@ -1,5 +1,4 @@
-﻿using BepInEx;
-using BepInEx.Configuration;
+﻿using BepInEx.Configuration;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using ExtensionMethods;
@@ -16,26 +15,32 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
     /// <summary>
     /// Allows attaching IK nodes to objects to create custom animations
     /// </summary>
-    [BepInProcess("CharaStudio")]
-    [BepInDependency(KoikatuAPI.GUID)]
-    [BepInPlugin(GUID, PluginName, Version)]
-    public class KK_AnimationController : BaseUnityPlugin
+    public partial class KK_AnimationController
     {
         public const string PluginName = "Animation Controller";
         public const string PluginNameInternal = nameof(KK_AnimationController);
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
         public const string Version = "2.1";
         internal static new ManualLogSource Logger;
+
         private bool GUIVisible = false;
         private int SelectedGuideObject = 0;
         private static readonly string[] IKGuideObjectsPretty = new string[] { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot", "Eyes", "Neck" };
+#if KK
         private static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
+#else
+        private static readonly string[] IKGuideObjects = new string[] { "cf_J_Hips", "cf_J_ArmUp00_L", "cf_J_ArmLow01_L", "cf_J_Hand_L", "cf_J_ArmUp00_R", "cf_J_ArmLow01_R", "cf_J_Hand_R", "cf_J_LegUp00_L", "cf_J_LegLow01_L", "cf_J_Foot01_L", "cf_J_LegUp00_R", "cf_J_LegLow01_R", "cf_J_Foot01_R", "eyes", "neck" };
+#endif
+
         private Rect AnimGUI = new Rect(70, 190, 200, 400);
 
         public static ConfigEntry<KeyboardShortcut> AnimationControllerHotkey { get; private set; }
@@ -64,7 +69,7 @@ namespace KK_Plugins
 
             if (selectNodes.Count() != 2)
             {
-                Logger.Log(LogLevel.Info | LogLevel.Message, "Select both the character and object to link.");
+                Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "Select both the character and object to link.");
                 return;
             }
 
@@ -89,7 +94,7 @@ namespace KK_Plugins
             if (SelectedObject != null && SelectedCharacter != null)
                 GetController(SelectedCharacter as OCIChar).AddLink(IKGuideObjects[SelectedGuideObject], SelectedObject);
             else
-                Logger.Log(LogLevel.Info | LogLevel.Message, "Select both the character and object to link.");
+                Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "Select both the character and object to link.");
         }
         /// <summary>
         /// Called by GUI button click. Unlinks the selected node.
@@ -110,7 +115,7 @@ namespace KK_Plugins
                 }
             }
             if (!DidUnlink)
-                Logger.Log(LogLevel.Info | LogLevel.Message, "Select a character.");
+                Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "Select a character.");
         }
 
         /// <summary>
@@ -181,12 +186,12 @@ namespace KK_Plugins
                     data.version = 2;
                     SetExtendedData(data);
 
-                    Logger.Log(LogLevel.Debug, $"Saved KK_AnimationController animations for character {ChaControl.chaFile.parameter.fullname.Trim()}");
+                    Logger.LogDebug($"Saved KK_AnimationController animations for character {ChaControl.chaFile.parameter.fullname.Trim()}");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Error | LogLevel.Message, "Could not save KK_AnimationController animations.");
-                    Logger.Log(LogLevel.Error, ex.ToString());
+                    Logger.Log(BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message, "Could not save KK_AnimationController animations.");
+                    Logger.LogError(ex.ToString());
                 }
             }
 
@@ -301,12 +306,12 @@ namespace KK_Plugins
                                 AddNeckLink(loadedItems[(int)loadedNeckLink]);
                         }
                     }
-                    Logger.Log(LogLevel.Debug, $"Loaded KK_AnimationController animations for character {ChaControl.chaFile.parameter.fullname.Trim()}");
+                    Logger.LogDebug($"Loaded KK_AnimationController animations for character {ChaControl.chaFile.parameter.fullname.Trim()}");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Error | LogLevel.Message, "Could not load KK_AnimationController animations.");
-                    Logger.Log(LogLevel.Error, ex.ToString());
+                    Logger.Log(BepInEx.Logging.LogLevel.Debug | BepInEx.Logging.LogLevel.Message, "Could not load KK_AnimationController animations.");
+                    Logger.LogError(ex.ToString());
                 }
             }
             /// <summary>
