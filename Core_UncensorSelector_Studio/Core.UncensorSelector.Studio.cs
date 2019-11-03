@@ -31,7 +31,13 @@ namespace KK_Plugins
                 if (controller != null)
                 {
 #if AI
-                    if (controller.ChaControl.sex == 0) return;
+                    if (controller.ChaControl.sex == 0)
+                    {
+                        bodyDropdown.Visible.OnNext(false);
+                        return;
+                    }
+                    else
+                        bodyDropdown.Visible.OnNext(true);
 #endif
                     var guid = bodyList[value];
                     if (controller.BodyData?.BodyGUID != guid)
