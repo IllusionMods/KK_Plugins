@@ -8,7 +8,7 @@ namespace KK_Plugins
 {
     internal partial class UncensorSelector
     {
-        const string StudioCategoryName = "Uncensor Selector";
+        private const string StudioCategoryName = "Uncensor Selector";
 
         private static void RegisterStudioControls()
         {
@@ -30,6 +30,9 @@ namespace KK_Plugins
 
                 if (controller != null)
                 {
+#if AI
+                    if (controller.ChaControl.sex == 0) return;
+#endif
                     var guid = bodyList[value];
                     if (controller.BodyData?.BodyGUID != guid)
                     {
@@ -46,7 +49,6 @@ namespace KK_Plugins
             }
             StudioAPI.GetOrCreateCurrentStateCategory(StudioCategoryName).AddControl(bodyDropdown);
 
-#if KK
             List<string> penisList = new List<string>();
             List<string> penisListDisplay = new List<string>();
 
@@ -129,7 +131,6 @@ namespace KK_Plugins
                 return ballsList.IndexOf(controller.BallsData?.BallsGUID);
             }
             StudioAPI.GetOrCreateCurrentStateCategory(StudioCategoryName).AddControl(ballsDropdown);
-#endif
         }
 
         private static UncensorSelectorController GetSelectedStudioController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<UncensorSelectorController>();

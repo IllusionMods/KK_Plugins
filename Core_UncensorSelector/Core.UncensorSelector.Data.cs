@@ -227,7 +227,11 @@ namespace KK_Plugins
                 ColorMask = colorMask.IsNullOrWhiteSpace() ? null : colorMask;
             }
 
+#if AI
+            public bool Verify() => Object != null;
+#else
             public bool Verify() => Object != null && Material != null && MaterialCreate != null && MainTex != null && ColorMask != null;
+#endif
         }
 
         public class MigrationData

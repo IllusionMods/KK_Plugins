@@ -2,7 +2,6 @@
 using BepInEx.Harmony;
 using BepInEx.Logging;
 using HarmonyLib;
-using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
@@ -12,6 +11,8 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using UniRx;
+using UnityEngine;
+using UnityEngine.UI;
 #if AI
 using AIChara;
 #endif
@@ -52,7 +53,12 @@ namespace KK_Plugins
         internal static string CurrentBodyGUID;
         internal static bool DidErrorMessage = false;
 
-        public static ConfigEntry<bool> GenderBender { get; private set; }
+#if KK
+        public static ConfigEntry<bool> _GenderBender { get; private set; }
+        public static bool GenderBender => _GenderBender.Value;
+#else
+        public static bool GenderBender => false;
+#endif
         public static ConfigEntry<string> DefaultMaleBody { get; private set; }
         public static ConfigEntry<string> DefaultMalePenis { get; private set; }
         public static ConfigEntry<string> DefaultMaleBalls { get; private set; }
@@ -78,7 +84,9 @@ namespace KK_Plugins
 
             PopulateUncensorLists();
 
-            GenderBender = Config.AddSetting("Config", "Genderbender Allowed", true, "Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.");
+#if KK
+            _GenderBender = Config.AddSetting("Config", "Genderbender Allowed", true, "Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.");
+#endif
             DefaultMaleBody = Config.AddSetting("Config", "Default Male Body", "Random", new ConfigDescription("Body to use if the character does not have one set. The censored body will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigBodyList())));
             DefaultMalePenis = Config.AddSetting("Config", "Default Male Penis", "Random", new ConfigDescription("Penis to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigPenisList())));
             DefaultMaleBalls = Config.AddSetting("Config", "Default Male Balls", "Random", new ConfigDescription("Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigBallsList())));
@@ -136,13 +144,12 @@ namespace KK_Plugins
                 controller.UpdateUncensor();
             }
 
-#if !AI
             PenisList.Clear();
             PenisListDisplay.Clear();
 
             PenisList.Add("Default");
             PenisListDisplay.Add("Default");
-#if KK || AI
+#if KK
             PenisList.Add("None");
             PenisListDisplay.Add("None");
 #endif
@@ -153,7 +160,7 @@ namespace KK_Plugins
                 PenisListDisplay.Add(penis.DisplayName);
             }
 
-#if KK || AI
+#if KK
             PenisDropdown = e.AddControl(new MakerDropdown("Penis", PenisListDisplay.ToArray(), MakerConstants.Body.All, characterSex == 0 ? 0 : 1, this));
 #else
             PenisDropdown = e.AddControl(new MakerDropdown("Penis", PenisListDisplay.ToArray(), MakerConstants.Body.All, 0, this));
@@ -165,9 +172,11 @@ namespace KK_Plugins
                     return;
 
                 var controller = GetController(MakerAPI.GetCharacterControl());
-#if KK || AI
+#if KK
                 controller.PenisGUID = ID == 0 || ID == 1 ? null : PenisList[ID];
                 controller.DisplayPenis = ID == 1 ? false : true;
+#elif AI
+                controller.PenisGUID = ID == 0 ? null : PenisList[ID];
 #else
                 controller.PenisGUID = ID == 0 ? null : PenisList[ID];
                 controller.DisplayPenis = characterSex == 0;
@@ -210,6 +219,13 @@ namespace KK_Plugins
                 dickToggle.ValueChanged.Subscribe(Observer.Create<bool>(delegate { MakerAPI.GetCharacterControl().fileStatus.visibleSonAlways = dickToggle.Value; }));
             }
 #endif
+
+#if AI
+            if (characterSex == 0)
+                BodyDropdown.Visible.OnNext(false);
+            else
+                TogglePenisBallsUI(false);
+
 #endif
 
             DoDropdownEvents = true;
@@ -229,18 +245,38 @@ namespace KK_Plugins
                 if (controller.PenisGUID != null && PenisList.IndexOf(controller.PenisGUID) != -1)
                     PenisDropdown?.SetValue(PenisList.IndexOf(controller.PenisGUID), false);
                 else if (controller.PenisGUID == null)
-#if KK || AI
+#if KK
                     PenisDropdown?.SetValue(controller.DisplayPenis ? 0 : 1, false);
 #else
-                        PenisDropdown.SetValue(0, false);
+                    PenisDropdown.SetValue(0, false);
 #endif
 
                 if (controller.BallsGUID != null && BallsList.IndexOf(controller.BallsGUID) != -1)
                     BallsDropdown?.SetValue(BallsList.IndexOf(controller.BallsGUID), false);
                 else if (controller.BallsGUID == null)
                     BallsDropdown?.SetValue(controller.DisplayBalls ? 0 : 1, false);
+
+#if AI
+                if (controller.ChaControl.sex == 1)
+                {
+                    GameObject goFutanari = GameObject.Find("CharaCustom/CustomControl/CanvasMain/SubMenu/SubMenuBody/Scroll View/Viewport/Content/Category/CategoryTop/Futanari/tglFutanari");
+                    var tglFutanari = goFutanari.GetComponent<Toggle>();
+                    tglFutanari.onValueChanged.AddListener(delegate (bool value)
+                    {
+                        TogglePenisBallsUI(value);
+                        controller.ChaControl.fileStatus.visibleSonAlways = value;
+                    });
+                }
+#endif
             }
         }
+#if AI
+        private static void TogglePenisBallsUI(bool visible)
+        {
+            PenisDropdown.Visible.OnNext(visible);
+            BallsDropdown.Visible.OnNext(visible);
+        }
+#endif
         /// <summary>
         /// Read all the manifest.xml files and generate a dictionary of uncensors to be used in config manager dropdown
         /// </summary>
@@ -256,11 +292,9 @@ namespace KK_Plugins
             //Add the default body options
             BodyConfigListFull["Random"] = "Random";
 
-#if !AI
             BodyData DefaultMale = new BodyData(0, "Default.Body.Male", "Default Body M");
             BodyDictionary[DefaultMale.BodyGUID] = DefaultMale;
             BodyConfigListFull[$"[{(DefaultMale.Sex == 0 ? "Male" : "Female")}] {DefaultMale.DisplayName}"] = DefaultMale.BodyGUID;
-#endif
 
             BodyData DefaultFemale = new BodyData(1, "Default.Body.Female", "Default Body F");
             BodyDictionary[DefaultFemale.BodyGUID] = DefaultFemale;
@@ -386,7 +420,7 @@ namespace KK_Plugins
         /// </summary>
         public static bool BodyAllowedInMaker(byte bodySex, byte characterSex)
         {
-            if (GenderBender.Value)
+            if (GenderBender)
                 return true;
 
             if (bodySex == characterSex)

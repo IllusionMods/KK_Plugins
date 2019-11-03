@@ -14,8 +14,14 @@ namespace KK_Plugins
         /// <summary>
         /// Do color matching whenever the body texture is changed
         /// </summary>
+#if AI
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
+        public static void CreateBodyTexture(ChaControl __instance) => UncensorSelector.GetController(__instance)?.UpdateSkinColor();
+#else
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetBodyBaseMaterial))]
         public static void SetBodyBaseMaterial(ChaControl __instance) => UncensorSelector.GetController(__instance)?.UpdateSkinColor();
+#endif
+
 
 #if KK || EC
         /// <summary>

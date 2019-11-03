@@ -10,11 +10,11 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using KoiSkinOverlayX;
-#if KK
-using KKAPI.Studio;
-#endif
 #if AI
 using AIChara;
+#endif
+#if KK || AI
+using KKAPI.Studio;
 #endif
 
 namespace KK_Plugins
@@ -32,7 +32,11 @@ namespace KK_Plugins
             /// <summary> BallsGUID saved to the character. Use BallsData.BallsGUID to get the current BallsGUID.</summary>
             internal string BallsGUID { get; set; }
             /// <summary> Visibility of the penis as saved to the character.</summary>
+#if AI
+            internal bool DisplayPenis => ChaControl.sex == 0 ? true : IsFuta;
+#else
             internal bool DisplayPenis { get; set; }
+#endif
             /// <summary> Visibility of the balls as saved to the character.</summary>
             internal bool DisplayBalls { get; set; }
 
@@ -59,7 +63,9 @@ namespace KK_Plugins
                 BodyGUID = null;
                 PenisGUID = null;
                 BallsGUID = null;
+#if !AI
                 DisplayPenis = ChaControl.sex == 0;
+#endif
                 DisplayBalls = ChaControl.sex == 0 ? true : DefaultFemaleDisplayBalls.Value;
 
                 var data = GetExtendedData();
@@ -79,8 +85,10 @@ namespace KK_Plugins
                                 BodyGUID = migrationData.BodyGUID;
                                 PenisGUID = migrationData.PenisGUID;
                                 BallsGUID = migrationData.BallsGUID;
+#if !AI
                                 if (PenisGUID != null)
                                     DisplayPenis = true;
+#endif
                             }
                         }
                     }
@@ -94,9 +102,10 @@ namespace KK_Plugins
 
                         if (data.data.TryGetValue("BallsGUID", out var loadedBallsGUID) && loadedBallsGUID != null)
                             BallsGUID = loadedBallsGUID.ToString();
-
+#if !AI
                         if (data.data.TryGetValue("DisplayPenis", out var loadedDisplayPenis))
                             DisplayPenis = (bool)loadedDisplayPenis;
+#endif
 
                         if (data.data.TryGetValue("DisplayBalls", out var loadedDisplayBalls))
                             DisplayBalls = (bool)loadedDisplayBalls;
@@ -130,7 +139,7 @@ namespace KK_Plugins
 
                             if (PenisGUID == null || PenisList?.IndexOf(PenisGUID) == -1)
                             {
-#if KK || AI
+#if KK
                                 PenisDropdown?.SetValue(DisplayPenis ? 0 : 1, false);
 #else
                                 PenisDropdown?.SetValue(0, false);
@@ -157,7 +166,7 @@ namespace KK_Plugins
                     {
                         //Set the uncensor stuff to whatever is set in the maker
                         BodyGUID = BodyDropdown.Value == 0 ? null : BodyList[BodyDropdown.Value];
-#if KK || AI
+#if KK
                         PenisGUID = PenisDropdown?.Value == 0 || PenisDropdown?.Value == 1 ? null : PenisList[PenisDropdown.Value];
                         DisplayPenis = PenisDropdown?.Value == 1 ? false : true;
 #else
@@ -166,11 +175,14 @@ namespace KK_Plugins
                         BallsGUID = BallsDropdown?.Value == 0 || BallsDropdown?.Value == 1 ? null : BallsList[BallsDropdown.Value];
                         DisplayBalls = BallsDropdown?.Value == 1 ? false : true;
                     }
+#if AI
+                    TogglePenisBallsUI(DisplayPenis);
+#endif
                 }
 
 #if KK
                 //Correct characters if genderbender is not permitted, except in Studio where it may be required for scene compatibility
-                if (GenderBender.Value == false && !StudioAPI.InsideStudio)
+                if (GenderBender == false && !StudioAPI.InsideStudio)
                 {
                     DisplayPenis = ChaControl.sex == 0;
                     DisplayBalls = ChaControl.sex == 0;
@@ -199,6 +211,9 @@ namespace KK_Plugins
 #else
             private static int ExType(ChaControl _) => 0;
 #endif
+#if AI
+            public bool IsFuta => ChaControl.chaFile.parameter.futanari && ChaControl.sex == 1;
+#endif
             /// <summary>
             /// Current BodyData for this character
             /// </summary>
@@ -210,8 +225,8 @@ namespace KK_Plugins
 
                     if (BodyGUID != null && BodyDictionary.TryGetValue(BodyGUID, out var body))
                         bodyData = body;
-#if KK
-                    if (!StudioAPI.InsideStudio && bodyData != null && GenderBender.Value == false && ChaControl.sex != bodyData.Sex)
+#if !EC
+                    if (!StudioAPI.InsideStudio && bodyData != null && GenderBender == false && ChaControl.sex != bodyData.Sex)
                         bodyData = null;
 #endif
                     if (bodyData == null)
@@ -325,11 +340,7 @@ namespace KK_Plugins
                 private static int GetRandomNumber(ChaControl chaControl, int uncensorCount)
                 {
                     int key = chaControl.fileParam.birthDay + chaControl.fileParam.personality;
-#if KK || EC
-                    key += chaControl.fileParam.bloodType;
-#else
                     key += (int)(chaControl.fileParam.voicePitch * 100);
-#endif
                     return new System.Random(key).Next(uncensorCount);
                 }
             }
@@ -364,15 +375,14 @@ namespace KK_Plugins
             /// </summary>
             private void ReloadCharacterPenis()
             {
-#if KK
                 bool temp = ChaControl.fileStatus.visibleSonAlways;
+#if KK
                 if (ChaControl.hiPoly == false)
                     return;
 #endif
 
                 if (PenisData != null)
                 {
-
                     GameObject dick = CommonLib.LoadAsset<GameObject>(PenisData.File, PenisData.Asset, true);
 
                     foreach (var mesh in dick.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
@@ -382,7 +392,7 @@ namespace KK_Plugins
                     Destroy(dick);
                 }
 
-#if KK
+#if KK || AI
                 ChaControl.fileStatus.visibleSonAlways = StudioAPI.InsideStudio ? temp : DisplayPenis;
 #endif
             }
@@ -406,7 +416,7 @@ namespace KK_Plugins
                     Destroy(balls);
                 }
 
-                SkinnedMeshRenderer ballsSMR = ChaControl?.objBody?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x?.name == "o_dan_f");
+                SkinnedMeshRenderer ballsSMR = ChaControl?.objBody?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => BallsParts.Any(y => y == x.name));
                 if (ballsSMR != null)
                     ballsSMR.gameObject.GetComponent<Renderer>().enabled = DisplayBalls;
             }
@@ -652,7 +662,23 @@ namespace KK_Plugins
 
             private void SetSkinColor(ColorMatchPart colorMatchPart, string file)
             {
-#if !AI
+#if AI
+                if (ChaControl.objBody == null)
+                    return;
+
+                //find the game object
+                FindAssist findAssist = new FindAssist();
+                findAssist.Initialize(ChaControl.objBody.transform);
+                GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
+                if (gameObject == null)
+                    return;
+
+                Material mat = gameObject.GetComponent<Renderer>()?.material;
+                if (mat == null)
+                    return;
+
+                mat.SetColor(ChaShader.SkinColor, ChaControl.chaFile.custom.body.skinColor);
+#else
                 //get main tex
                 Texture2D mainTexture = CommonLib.LoadAsset<Texture2D>(file, colorMatchPart.MainTex, false, string.Empty);
                 if (mainTexture == null)
