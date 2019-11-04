@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KK_AnimationOverdrive")]
-[assembly: AssemblyDescription("Animation Overdrive for Koikatsu")]
+[assembly: AssemblyTitle("AI_AnimationOverdrive")]
+[assembly: AssemblyDescription("Animation Overdrive for AI Girl")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("https://github.com/DeathWeasel1337/KK_Plugins")]
-[assembly: AssemblyProduct("KK_AnimationOverdrive")]
-[assembly: AssemblyCopyright("Copyright © DeathWeasel1337 2019")]
+[assembly: AssemblyProduct("AI_AnimationOverdrive")]
+[assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d7fabe27-7568-49b1-a81a-cdce5708970f")]
+[assembly: Guid("f32ba203-579f-413b-8f31-13ad03f5e6d5")]
 
 // Version information for an assembly consists of the following four values:
 //
