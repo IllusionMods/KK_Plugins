@@ -322,21 +322,30 @@ Enables FK and IK at the same time. Pose characters in IK mode while still being
 v1.1 Fix toggles going out of sync, FK being disabled when switching between characters<br/>
 </details>
 
+#### AnimationOverdrive
+**v1.1 - [Download](https://www.patreon.com/posts/31292617)** - For Koikatsu and AI Girl<br/>
+
+Type in to the animation speed box in Studio for gimmicks and character animations to go past the normal limit of 3.<br/>
+
+<details><summary>Change Log</summary>
+v1.1 AI Girl port, capped animation speed at 1000 to prevent animations breaking<br/>
+</details>
+
+#### TextResourceRedirector
+**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/tag/v124)** - For Koikatsu, HoneySelect, and AI Girl<br/>
+
+Allows translations to override individual assets. Required for some translations to function correctly. Requires [Unity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator).
+
 #### KK_CutsceneLockupFix
 #### KK_HeadFix
 #### KK_MiscFixes
 #### KK_PersonalityCorrector
 #### KK_SettingsFix
-Moved to the [KoikatuFixes](https://github.com/ManlyMarco/KoikatuFixes/releases) repo.<br/>
+Moved to the [IllusionFixes](https://github.com/IllusionMods/IllusionFixes) repo.<br/>
 
 
 # Experimental plugins
 Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.<br/>
-
-#### ANIMATIONOVERDRIVE
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v42/KK_ANIMATIONOVERDRIVE.zip)** - For Koikatsu<br/>
-
-Type a value in to a gimmick's speed text box to use speeds higher than normally allowed.<br/>
 
 #### HCharaAdjustment
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v46/KK_HCharaAdjustment.v1.0.zip)** - For Koikatsu<br/>
