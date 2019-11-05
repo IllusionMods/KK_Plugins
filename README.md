@@ -106,7 +106,7 @@ v1.2 Prevents clicks inside mod GUI elements from advancing the story in Koikats
 </details>
 
 #### UncensorSelector
-**v3.8.3 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
+**v3.9 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
 
 Download uncensors:<br/>
 For Koikatsu click [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!S0IzlILZ)<br/>
@@ -149,6 +149,7 @@ v3.7 Fix shadows on male parts and reduce error spam<br/>
 v3.8 AI Girl version<br/>
 v3.8.1 Fix broken config stuff (thanks Keelhauled)<br/>
 v3.8.3 Fix uncensors not working in AI Girl main game<br/>
+v3.9 Fix crash with duplicate uncensor GUIDs, implement dick/balls support for AI Girl<br/>
 </details>
 
 #### Subtitles
