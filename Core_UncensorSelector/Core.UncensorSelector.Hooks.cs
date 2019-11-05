@@ -11,13 +11,36 @@ namespace KK_Plugins
 {
     internal partial class Hooks
     {
+#if AI
         /// <summary>
         /// Do color matching whenever the body texture is changed
         /// </summary>
-#if AI
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
         public static void CreateBodyTexture(ChaControl __instance) => UncensorSelector.GetController(__instance)?.UpdateSkinColor();
+
+        /// <summary>
+        /// Postfix patch to check underwear clothing state and hide objDanTop when the clothes are on. Would be better as a transpiler.
+        /// </summary>
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), "UpdateVisible")]
+        public static void UpdateVisible(ChaControl __instance, bool ___drawSimple, bool ___confSon, List<bool> ___lstActive)
+        {
+            if (!___drawSimple && __instance.cmpBody && __instance.cmpBody.targetEtc.objDanTop)
+            {
+                bool pantsOff = !__instance.IsClothesStateKind(1) || __instance.fileStatus.clothesState[1] != 0;
+                bool underwearOff = !__instance.IsClothesStateKind(3) || __instance.fileStatus.clothesState[3] != 0; //Added check
+
+                ___lstActive.Clear();
+                ___lstActive.Add(__instance.visibleAll);
+                ___lstActive.Add(___drawSimple || (pantsOff && underwearOff) || __instance.fileStatus.visibleSon);
+                ___lstActive.Add(___confSon);
+                ___lstActive.Add(__instance.fileStatus.visibleSonAlways);
+                YS_Assist.SetActiveControl(__instance.cmpBody.targetEtc.objDanTop, ___lstActive);
+            }
+        }
 #else
+        /// <summary>
+        /// Do color matching whenever the body texture is changed
+        /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetBodyBaseMaterial))]
         public static void SetBodyBaseMaterial(ChaControl __instance) => UncensorSelector.GetController(__instance)?.UpdateSkinColor();
 #endif
