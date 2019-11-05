@@ -83,7 +83,9 @@ namespace KK_Plugins
             int PenisIndex()
             {
                 var controller = GetSelectedStudioController();
-                return penisList.IndexOf(controller.PenisData?.PenisGUID);
+                if (controller.PenisData?.PenisGUID == null)
+                    return penisList.IndexOf(DefaultPenisGUID);
+                return penisList.IndexOf(controller.PenisData.PenisGUID);
             }
             StudioAPI.GetOrCreateCurrentStateCategory(StudioCategoryName).AddControl(penisDropdown);
 
@@ -132,8 +134,10 @@ namespace KK_Plugins
             int BallsIndex()
             {
                 var controller = GetSelectedStudioController();
-                if (controller.BallsData?.BallsGUID == null || controller.DisplayBalls == false)
-                    return 0;
+                if (controller.DisplayBalls == false)
+                    return ballsList.IndexOf("None");
+                if (controller.BallsData?.BallsGUID == null)
+                    return ballsList.IndexOf(DefaultBallsGUID);
                 return ballsList.IndexOf(controller.BallsData?.BallsGUID);
             }
             StudioAPI.GetOrCreateCurrentStateCategory(StudioCategoryName).AddControl(ballsDropdown);

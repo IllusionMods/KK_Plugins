@@ -27,7 +27,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "3.8.3";
+        public const string Version = "3.9";
         internal static new ManualLogSource Logger;
         private static readonly HashSet<string> AllAdditionalParts = new HashSet<string>();
         public static readonly Dictionary<string, BodyData> BodyDictionary = new Dictionary<string, BodyData>();
@@ -52,6 +52,11 @@ namespace KK_Plugins
         private static readonly HashSet<string> BallsParts = new HashSet<string>() { "o_dan_f", "cm_o_dan_f" };
         internal static string CurrentBodyGUID;
         internal static bool DidErrorMessage = false;
+
+        public const string DefaultBodyFemaleGUID = "Default.Body.Female";
+        public const string DefaultBodyMaleGUID = "Default.Body.Male";
+        public const string DefaultPenisGUID = "Default.Penis";
+        public const string DefaultBallsGUID = "Default.Balls";
 
 #if KK
         public static ConfigEntry<bool> _GenderBender { get; private set; }
@@ -292,25 +297,27 @@ namespace KK_Plugins
             //Add the default body options
             BodyConfigListFull["Random"] = "Random";
 
-            BodyData DefaultMale = new BodyData(0, "Default.Body.Male", "Default Body M");
+#if !AI
+            BodyData DefaultMale = new BodyData(0, DefaultBodyMaleGUID, "Default Body M");
             BodyDictionary[DefaultMale.BodyGUID] = DefaultMale;
             BodyConfigListFull[$"[{(DefaultMale.Sex == 0 ? "Male" : "Female")}] {DefaultMale.DisplayName}"] = DefaultMale.BodyGUID;
+#endif
 
-            BodyData DefaultFemale = new BodyData(1, "Default.Body.Female", "Default Body F");
+            BodyData DefaultFemale = new BodyData(1, DefaultBodyFemaleGUID, "Default Body F");
             BodyDictionary[DefaultFemale.BodyGUID] = DefaultFemale;
             BodyConfigListFull[$"[{(DefaultFemale.Sex == 0 ? "Male" : "Female")}] {DefaultFemale.DisplayName}"] = DefaultFemale.BodyGUID;
 
             //Add the default penis options
             PenisConfigListFull["Random"] = "Random";
 
-            PenisData DefaultPenis = new PenisData("Default.Penis", "Mosaic Penis");
+            PenisData DefaultPenis = new PenisData(DefaultPenisGUID, "Mosaic Penis");
             PenisDictionary[DefaultPenis.PenisGUID] = DefaultPenis;
             PenisConfigListFull[DefaultPenis.DisplayName] = DefaultPenis.PenisGUID;
 
             //Add the default balls options
             BallsConfigListFull["Random"] = "Random";
 
-            BallsData DefaultBalls = new BallsData("Default.Balls", "Mosaic Balls");
+            BallsData DefaultBalls = new BallsData(DefaultBallsGUID, "Mosaic Balls");
             BallsDictionary[DefaultBalls.BallsGUID] = DefaultBalls;
             BallsConfigListFull[DefaultBalls.DisplayName] = DefaultBalls.BallsGUID;
 
