@@ -48,16 +48,16 @@
       <HintPath>..\lib\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="EC.OverlayMods">
-      <HintPath>..\lib\EmotionCreators\EC.OverlayMods.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="ECAPI">
       <HintPath>..\lib\EmotionCreators\ECAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="EC_ExtensibleSaveFormat">
       <HintPath>..\lib\EmotionCreators\EC_ExtensibleSaveFormat.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="EC_OverlayMods">
+      <HintPath>..\lib\EmotionCreators\EC_OverlayMods.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="EC_Sideloader">

@@ -1,29 +1,83 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>AIAPI</name>
+        <name>ECAPI</name>
     </assembly>
     <members>
+        <member name="T:KKAPI.KoikatuAPI">
+            <summary>
+            Provides overall information about the game and the API itself, and provides some useful tools.
+            More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
+            </summary>
+        </member>
+        <member name="M:KKAPI.KoikatuAPI.GetCurrentGameMode">
+            <summary>
+            Get current game mode. 
+            </summary>
+        </member>
+        <member name="M:KKAPI.KoikatuAPI.GetGameVersion">
+            <summary>
+            Get current version of the game.
+            </summary>
+        </member>
+        <member name="F:KKAPI.KoikatuAPI.VersionConst">
+            <summary>
+            Version of this assembly/plugin.
+            WARNING: This is a const field, therefore it will be copied to your assembly!
+            Use this field to check if the installed version of the plugin is up to date by adding this attribute to your plugin class:
+            <code>[BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]</code>
+            THIS VALUE WILL NOT BE READ FROM THE INSTALLED VERSION, YOU WILL READ THE VALUE FROM THIS VERSION THAT YOU COMPILE YOUR PLUGIN AGAINST!
+            More info: https://stackoverflow.com/questions/55984/what-is-the-difference-between-const-and-readonly
+            </summary>
+        </member>
+        <member name="F:KKAPI.KoikatuAPI.GUID">
+            <summary>
+            GUID of this plugin, use for checking dependancies with <see cref="T:BepInEx.BepInDependency"/> and <see cref="M:KKAPI.KoikatuAPI.CheckRequiredPlugin(BepInEx.BaseUnityPlugin,System.String,System.Version,BepInEx.Logging.LogLevel)"/>
+            </summary>
+        </member>
+        <member name="P:KKAPI.KoikatuAPI.EnableDebugLogging">
+            <summary>
+            Enables display of additional log messages when certain events are triggered within KKAPI. 
+            Useful for plugin devs to understand when controller messages are fired.
+            </summary>
+        </member>
+        <member name="M:KKAPI.KoikatuAPI.#ctor">
+            <summary>
+            Don't use manually
+            </summary>
+        </member>
+        <member name="M:KKAPI.KoikatuAPI.CheckRequiredPlugin(BepInEx.BaseUnityPlugin,System.String,System.Version,BepInEx.Logging.LogLevel)">
+            <summary>
+            Check if a plugin is loaded and has at least the minimum version. 
+            If the plugin is missing or older than minimumVersion, user is shown an error message on screen and false is returned.
+            Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet!
+            </summary>
+            <param name="origin">Your plugin</param>
+            <param name="guid">Guid of the plugin your plugin is dependant on</param>
+            <param name="minimumVersion">Minimum version of the required plugin</param>
+            <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
+            <returns>True if plugin exists and it's version equals or is newer than minimumVersion, otherwise false</returns>
+        </member>
+        <member name="M:KKAPI.KoikatuAPI.CheckIncompatiblePlugin(BepInEx.BaseUnityPlugin,System.String,BepInEx.Logging.LogLevel)">
+            <summary>
+            Check if a plugin that is not compatible with your plugin is loaded. 
+            If the plugin is loaded, user is shown a warning message on screen and true is returned.
+            Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet!
+            </summary>
+            <param name="origin">Your plugin</param>
+            <param name="guid">Guid of the plugin your plugin is incompatible with</param>
+            <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
+            <returns>True if plugin exists, otherwise false</returns>
+        </member>
+        <member name="M:KKAPI.KoikatuAPI.SynchronizedInvoke(System.Action)">
+            <summary>
+            Invoke the Action on the main unity thread. Use to synchronize your threads.
+            </summary>
+        </member>
         <member name="T:KKAPI.Chara.CharacterApi">
             <summary>
             Provides an easy way to add custom logic to all characters in the game and in studio. 
             It takes care of all the error-prone plumbing and lets you easily save and load data to the character cards.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Chara.CharacterApi.Hooks.ChaFile_CopyChaFileHook(AIChara.ChaFile,AIChara.ChaFile)">
-            <summary>
-            Copy extended data when moving between class roster and main game data, and in free h
-            (the character data gets transferred to predefined slots instead of creating new characters)
-            </summary>
-        </member>
-        <member name="M:KKAPI.Chara.CharacterApi.Hooks.ReloadAsyncPostHook(System.Boolean,System.Boolean,System.Boolean,System.Boolean,AIChara.ChaControl,System.Collections.IEnumerator@)">
-            <summary>
-            Needed for some edge cases, replacing characters in scene maker in EC
-            </summary>//
-        </member>
-        <member name="M:KKAPI.Chara.CharacterApi.Hooks.CharaData_InitializePost(ADV.CharaData)">
-            <summary>
-            Needed to update controllers after ADV scene finishes loading since characters get loaded async so other events fire too early
             </summary>
         </member>
         <member name="T:KKAPI.Chara.CharacterApi.ControllerRegistration">
@@ -60,7 +114,7 @@
         </member>
         <member name="P:KKAPI.Chara.CharacterApi.ControllerRegistration.MaintainCoordinateState">
             <summary>
-            If true, the current state of all controllers of this kind should be preserved inside <see cref="M:KKAPI.Chara.CharaCustomFunctionController.OnCoordinateBeingLoaded(AIChara.ChaFileCoordinate,System.Boolean)"/>.
+            If true, the current state of all controllers of this kind should be preserved inside <see cref="M:KKAPI.Chara.CharaCustomFunctionController.OnCoordinateBeingLoaded(ChaFileCoordinate,System.Boolean)"/>.
             New extended data will not be read, instead currently data will be reused, or the load will not happen at all.
             </summary>
         </member>
@@ -77,12 +131,12 @@
             <param name="dst">Copy current character's ext data to this character</param>
             <param name="src">Current character to copy the data from</param>
         </member>
-        <member name="M:KKAPI.Chara.CharacterApi.FileControlToChaControl(AIChara.ChaFileControl)">
+        <member name="M:KKAPI.Chara.CharacterApi.FileControlToChaControl(ChaFileControl)">
             <summary>
             Get ChaControl that is using the specified ChaFileControl.
             </summary>
         </member>
-        <member name="M:KKAPI.Chara.CharacterApi.GetBehaviours(AIChara.ChaControl)">
+        <member name="M:KKAPI.Chara.CharacterApi.GetBehaviours(ChaControl)">
             <summary>
             Get all extra behaviours for specified character. If null, returns extra behaviours for all characters.
             </summary>
@@ -139,12 +193,33 @@
             Fired just before a coordinate card is saved, but after all controllers wrote their data.
             </summary>
         </member>
+        <member name="M:KKAPI.Chara.CharacterApi.Hooks.CvsExit_ExitSceneRestoreStatus(System.String,ChaCustom.CvsExit)">
+            <summary>
+            Needed for saving in class maker, rest is handled by ExtendedSave.CardBeingSaved
+            </summary>
+        </member>
+        <member name="M:KKAPI.Chara.CharacterApi.Hooks.ChaFile_CopyChaFileHook(ChaFile,ChaFile)">
+            <summary>
+            Copy extended data when moving between class roster and main game data, and in free h
+            (the character data gets transferred to predefined slots instead of creating new characters)
+            </summary>
+        </member>
+        <member name="M:KKAPI.Chara.CharacterApi.Hooks.ReloadAsyncPostHook(System.Boolean,System.Boolean,System.Boolean,System.Boolean,ChaControl,System.Collections.IEnumerator@)">
+            <summary>
+            Needed for some edge cases, replacing characters in scene maker in EC
+            </summary>
+        </member>
+        <member name="F:KKAPI.Chara.CharacterApi.Hooks.ClothesFileControlLoading">
+            <summary>
+            Prevents firing coordinate load events when the coordinate window is populating
+            </summary>
+        </member>
         <member name="T:KKAPI.Chara.CharacterExtensions">
             <summary>
             Extensions for use with ChaControl, ChaFile and similar
             </summary>
         </member>
-        <member name="M:KKAPI.Chara.CharacterExtensions.GetChaControl(AIChara.ChaFile)">
+        <member name="M:KKAPI.Chara.CharacterExtensions.GetChaControl(ChaFile)">
             <summary>
             Get ChaControl that is using this ChaFile if any exist.
             </summary>
@@ -203,13 +278,13 @@
             </summary>
             <param name="data">Your custom data to be written to the character card. Can be null to remove the data.</param>
         </member>
-        <member name="M:KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(AIChara.ChaFileCoordinate)">
+        <member name="M:KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(ChaFileCoordinate)">
             <summary>
             Get extended data of the specified coordinate by using the ID you specified when registering this controller.
             </summary>
             <param name="coordinate">Coordinate you want to get the data from</param>
         </member>
-        <member name="M:KKAPI.Chara.CharaCustomFunctionController.SetCoordinateExtendedData(AIChara.ChaFileCoordinate,ExtensibleSaveFormat.PluginData)">
+        <member name="M:KKAPI.Chara.CharaCustomFunctionController.SetCoordinateExtendedData(ChaFileCoordinate,ExtensibleSaveFormat.PluginData)">
             <summary>
             Set extended data to the specified coordinate by using the ID you specified when registering this controller.
             </summary>
@@ -252,25 +327,25 @@
             </summary>
             <param name="currentGameMode">Game mode we are currently in</param>
         </member>
-        <member name="M:KKAPI.Chara.CharaCustomFunctionController.OnCoordinateBeingSaved(AIChara.ChaFileCoordinate)">
+        <member name="M:KKAPI.Chara.CharaCustomFunctionController.OnCoordinateBeingSaved(ChaFileCoordinate)">
             <summary>
-            Fired just before current coordinate is saved to a coordinate card. Use <see cref="M:KKAPI.Chara.CharaCustomFunctionController.SetCoordinateExtendedData(AIChara.ChaFileCoordinate,ExtensibleSaveFormat.PluginData)"/> to save data to it. 
+            Fired just before current coordinate is saved to a coordinate card. Use <see cref="M:KKAPI.Chara.CharaCustomFunctionController.SetCoordinateExtendedData(ChaFileCoordinate,ExtensibleSaveFormat.PluginData)"/> to save data to it. 
             You might need to wait for the next frame with <see cref="M:UnityEngine.MonoBehaviour.StartCoroutine(System.Collections.IEnumerator)"/> before handling this.
             </summary>
         </member>
-        <member name="M:KKAPI.Chara.CharaCustomFunctionController.OnCoordinateBeingLoaded(AIChara.ChaFileCoordinate,System.Boolean)">
+        <member name="M:KKAPI.Chara.CharaCustomFunctionController.OnCoordinateBeingLoaded(ChaFileCoordinate,System.Boolean)">
             <summary>
             Fired just after loading a coordinate card into the current coordinate slot.
-            Use <see cref="M:KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(AIChara.ChaFileCoordinate)"/> to get save data of the loaded coordinate.
+            Use <see cref="M:KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(ChaFileCoordinate)"/> to get save data of the loaded coordinate.
             </summary>
             <param name="coordinate">Coordinate being currently loaded.</param>
             <param name="maintainState">If true, the current state should be preserved.
             Do not load new extended data, instead reuse what you currently have or do nothing.</param>
         </member>
-        <member name="M:KKAPI.Chara.CharaCustomFunctionController.OnCoordinateBeingLoaded(AIChara.ChaFileCoordinate)">
+        <member name="M:KKAPI.Chara.CharaCustomFunctionController.OnCoordinateBeingLoaded(ChaFileCoordinate)">
             <summary>
             Fired just after loading a coordinate card into the current coordinate slot.
-            Use <see cref="M:KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(AIChara.ChaFileCoordinate)"/> to get save data of the loaded coordinate.
+            Use <see cref="M:KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(ChaFileCoordinate)"/> to get save data of the loaded coordinate.
             Will not get fired if disabled in <see cref="P:KKAPI.Chara.CharacterApi.RegisteredHandlers"/>, 
             use overloads with maintainState parameter in that case.
             </summary>
@@ -338,236 +413,89 @@
             <param name="dataId">Key to save the data under (usually plugin GUID)</param>
             <param name="data">Data to set</param>
         </member>
-        <member name="T:KKAPI.Maker.AccessoriesApi">
+        <member name="T:KKAPI.GameMode">
             <summary>
-            Collection of methods useful for interfacing with character accessories. Has methods both for chara maker and
-            everywhere else.
-            Abstracts away MoreAccessories so you don't have to worry if it's installed or not.
+            Current gameplay mode the game is in
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.AccessoriesApi.AccessoryCanvasVisible">
+        <member name="F:KKAPI.GameMode.Unknown">
             <summary>
-            Returns true if the accessory tab in maker is currently selected.
-            If you want to know if the user can actually see the tab on the screen check <see cref="M:KKAPI.Maker.MakerAPI.IsInterfaceVisible"/>.
+            Anywhere else, including main menu
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.AccessoriesApi.MoreAccessoriesInstalled">
+        <member name="F:KKAPI.GameMode.Maker">
             <summary>
-            True if the MoreAccessories mod is installed.
-            Avoid relying on this and instead use other methods in this class since they will handle this for you.
+            Inside character maker (can be started from main menu or from class roster)
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.AccessoriesApi.SelectedMakerAccSlot">
+        <member name="F:KKAPI.GameMode.Studio">
             <summary>
-            Get the index of the currently selected accessory slot under Accessories group in Chara Maker.
-            If none are selected or chara maker is not opened, returns -1. 0-indexed.
-            Use <see cref="E:KKAPI.Maker.AccessoriesApi.SelectedMakerAccSlotChanged"/> to get notified when the selected slot changes.
+            Anywhere inside CharaStudio.exe
             </summary>
         </member>
-        <member name="E:KKAPI.Maker.AccessoriesApi.SelectedMakerAccSlotChanged">
+        <member name="F:KKAPI.GameMode.MainGame">
             <summary>
-            Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.
-            This happens when user click on another slot.
+            Anywhere inside the main game.
+            Includes everything after starting a new game from title screen and after loading a saved game.
+            This means this includes story scenes, night menu, roaming around and h scenes inside story mode.
+            This does not hoverwer include the character maker launched from within the class menu.
             </summary>
         </member>
-        <member name="E:KKAPI.Maker.AccessoriesApi.AccessoryKindChanged">
+        <member name="T:KKAPI.Maker.CharacterLoadFlags">
             <summary>
-            Fires when user selects a different accessory in the accessory window.
+            Specifies which parts of the character will be loaded when loading a card in character maker.
+            (It's the toggles at the bottom of load window) Only includes stock toggles.
             </summary>
         </member>
-        <member name="E:KKAPI.Maker.AccessoriesApi.AccessoryTransferred">
+        <member name="T:KKAPI.Maker.CoordinateLoadFlags">
             <summary>
-            Fires after user copies an accessory within a single coordinate by using the Transfer window.
+            Specifies which parts of the coordinate will be loaded when loading a clothing card in character maker.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.AccessoriesApi.GetAccessory(AIChara.ChaControl,System.Int32)">
+        <member name="P:KKAPI.Maker.ChaFileLoadedEventArgs.LoadedChaFile">
             <summary>
-            Get the accessory given a slot index.
+            Use this to get extended data on the character
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.AccessoriesApi.GetAccessoryIndex(AIChara.CmpAccessory)">
+        <member name="T:KKAPI.Maker.RegisterCustomControlsEvent">
             <summary>
-            Get slot index of his accessory, useful for referencing to the accesory in extended data.
+            Event fired when character maker is starting and plugins are given an opportunity to register custom controls
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.AccessoriesApi.GetCvsAccessory">
+        <member name="M:KKAPI.Maker.RegisterCustomControlsEvent.AddControl``1(``0)">
             <summary>
-            Get accessory UI entry in maker.
-            Only works inside chara maker.
+            Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.AccessoriesApi.GetPartsInfo(System.Int32)">
+        <member name="M:KKAPI.Maker.RegisterCustomControlsEvent.AddSidebarControl``1(``0)">
             <summary>
-            Get accessory PartsInfo entry in maker.
-            Only works inside chara maker.
+            Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.)
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.AccessoriesApi.GetCvsAccessoryCount">
+        <member name="M:KKAPI.Maker.RegisterCustomControlsEvent.AddLoadToggle(KKAPI.Maker.UI.MakerLoadToggle)">
             <summary>
-            Get count of the UI entries for accessories (accessory slots).
-            Returns 0 outside of chara maker.
+            Add a toggle to the bottom of the "Load character" window that allows for partial loading of characters.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.AccessoriesApi.GetOwningChaControl(AIChara.CmpAccessory)">
+        <member name="M:KKAPI.Maker.RegisterCustomControlsEvent.AddCoordinateLoadToggle(KKAPI.Maker.UI.MakerCoordinateLoadToggle)">
             <summary>
-            Get the ChaControl that owns this accessory
+            Add a toggle to the bottom of the "Load coordinate/clothes" window that allows for partial loading of coordinate cards.
             </summary>
         </member>
-        <member name="T:KKAPI.Maker.AccessoryControlWrapper`2">
+        <member name="T:KKAPI.Maker.RegisterSubCategoriesEvent">
             <summary>
-            A wrapper for custom controls used in accessory window (added by using <see cref="M:KKAPI.Maker.MakerAPI.AddAccessoryWindowControl``1(``0)"/>).
-            It abstracts away switching between accessory slots and provides a simple list of values for each accessory.
-            </summary>
-            <typeparam name="T">Type of the control to be wrapped. The control has to be added by using <see cref="M:KKAPI.Maker.MakerAPI.AddAccessoryWindowControl``1(``0)"/> or results will be undefined.</typeparam>
-            <typeparam name="TVal">Type of the control's value.</typeparam>
-        </member>
-        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.#ctor(`0)">
-            <summary>
-            Create a new wrapper.
-            </summary>
-            <param name="control">Control to be wrapped. The control has to be added by using <see cref="M:KKAPI.Maker.MakerAPI.AddAccessoryWindowControl``1(``0)"/> or results will be undefined.</param>
-        </member>
-        <member name="P:KKAPI.Maker.AccessoryControlWrapper`2.Control">
-            <summary>
-            The wrapped control.
+            Event fired when character maker is starting and plugins are given an opportunity to register custom categories and controls
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.GetValue(System.Int32)">
+        <member name="M:KKAPI.Maker.RegisterSubCategoriesEvent.AddSubCategory(KKAPI.Maker.MakerCategory)">
             <summary>
-            Get value of the control for the specified accessory.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.GetSelectedValue">
-            <summary>
-            Get value of the control for the currently selected accessory.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.SetValue(System.Int32,`1)">
-            <summary>
-            Set value of the control for the specified accessory.
-            </summary>
-            <param name="accessoryIndex">Index of the accessory to set the value for</param>
-            <param name="value">Value to set</param>
-        </member>
-        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.SetValue(System.Int32,`1,System.Boolean)">
-            <summary>
-            Set value of the control for the specified accessory.
-            </summary>
-            <param name="accessoryIndex">Index of the accessory to set the value for</param>
-            <param name="value">Value to set</param>
-            <param name="fireEvents">Fire the <see cref="E:KKAPI.Maker.AccessoryControlWrapper`2.ValueChanged"/> event if the value actually changed.</param>
-        </member>
-        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.SetSelectedValue(`1)">
-            <summary>
-            Set value of the control for the currently selected accessory.
-            </summary>
-            <param name="value">Value to set</param>
-        </member>
-        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.SetSelectedValue(`1,System.Boolean)">
-            <summary>
-            Set value of the control for the currently selected accessory.
-            </summary>
-            <param name="value">Value to set</param>
-            <param name="fireEvents">Fire the <see cref="E:KKAPI.Maker.AccessoryControlWrapper`2.ValueChanged"/> event if the value actually changed.</param>
-        </member>
-        <member name="P:KKAPI.Maker.AccessoryControlWrapper`2.CurrentlySelectedIndex">
-            <summary>
-            Index of the currently selected accessory.
-            </summary>
-        </member>
-        <member name="E:KKAPI.Maker.AccessoryControlWrapper`2.ValueChanged">
-            <summary>
-            Fired when the value of this control changes for any of the accessories.
-            </summary>
-        </member>
-        <member name="E:KKAPI.Maker.AccessoryControlWrapper`2.VisibleIndexChanged">
-            <summary>
-            Fired when the currently visible accessory was changed by the user clicking on one of the slots.
-            </summary>
-        </member>
-        <member name="E:KKAPI.Maker.AccessoryControlWrapper`2.AccessoryKindChanged">
-            <summary>
-            Fires when user selects a different accessory in the accessory window.
-            </summary>
-        </member>
-        <member name="E:KKAPI.Maker.AccessoryControlWrapper`2.AccessoryTransferred">
-            <summary>
-            Fires after user copies an accessory within a single coordinate by using the Transfer window.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.AccessoryControlWrapper`2.IsDisposed">
-            <summary>
-            If true, the control has been disposed and can no longer be used, likely because the character maker exited.
-            A new control has to be created to be used again.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Maker.AccessorySlotEventArgs">
-            <summary>
-            Event args for events that are related to accessory slot indexes.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.AccessorySlotEventArgs.#ctor(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="P:KKAPI.Maker.AccessorySlotEventArgs.SlotIndex">
-            <summary>
-            Currently opened accessory slot index. 0-indexed.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.AccessorySlotEventArgs.CvsAccessory">
-            <summary>
-            Get accessory UI entry in maker.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.AccessorySlotEventArgs.AccessoryComponent">
-            <summary>
-            Get accessory component.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Maker.AccessoryTransferEventArgs">
-            <summary>
-            Event args for accessory transfer events.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.AccessoryTransferEventArgs.#ctor(System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="P:KKAPI.Maker.AccessoryTransferEventArgs.SourceSlotIndex">
-            <summary>
-            Index of the source accessory.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.AccessoryTransferEventArgs.DestinationSlotIndex">
-            <summary>
-            Index the source accessory is copied to.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Maker.AccessoryWindowControlValueChangedEventArgs`1">
-            <summary>
-            Event args used in <see cref="T:KKAPI.Maker.AccessoryControlWrapper`2"/>.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.AccessoryWindowControlValueChangedEventArgs`1.#ctor(`0,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="P:KKAPI.Maker.AccessoryWindowControlValueChangedEventArgs`1.NewValue">
-            <summary>
-            Newly assigned value.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.AccessoryWindowControlValueChangedEventArgs`1.SlotIndex">
-            <summary>
-            Index of the accessory the value was assigned to.
+            Add custom sub categories. They need to be added before maker starts loading,
+            or in the RegisterCustomSubCategories event.
             </summary>
         </member>
         <member name="T:KKAPI.Maker.MakerAPI">
             <summary>
             Provides a way to add custom items to the in-game Character Maker, and gives useful methods for interfacing with the maker.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.MakerAPI.Hooks.CustomClothesWindow_ButtonClickedHook(CharaCustom.CustomClothesWindow)">
-            <summary>
-            Store which coord load button was pressed before running the stock game code
             </summary>
         </member>
         <member name="M:KKAPI.Maker.MakerAPI.AddControl``1(``0)">
@@ -711,19 +639,221 @@
             Useful for knowing when to display OnGui mod windows in maker.
             </summary>
         </member>
-        <member name="T:KKAPI.Maker.MakerConstants">
+        <member name="M:KKAPI.Maker.MakerAPI.Hooks.LoadButtonOverride(UnityEngine.UI.Selectable,System.Boolean@)">
             <summary>
-            Useful values from the character maker. Mostly built-in categories for use with registering custom controls.
+            Keep Load button in maker character load list enabled if any of the extra toggles are enabled, but none of the stock ones are. 
             </summary>
         </member>
-        <member name="F:KKAPI.Maker.MakerConstants.DefaultControlTextColor">
+        <member name="T:KKAPI.Maker.MakerCategory">
             <summary>
-            Default text color for maker controls.
+            Specifies a category inside character maker.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.MakerInterfaceCreator.AddMissingSubCategories(CharaCustom.CvsSelectWindow)">
+        <member name="M:KKAPI.Maker.MakerCategory.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:KKAPI.Maker.MakerCategory.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:KKAPI.Maker.MakerCategory.#ctor(System.String,System.String,System.Int32,System.String)">
             <summary>
-            Needs to run before UI_ToggleGroupCtrl.Start of the category runs, or it won't get added properly
+            Make a new custom subcategory. 
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.MakerCategory.CategoryName">
+            <summary>
+            Main category gameObject name. Main categories are the square buttons at the top-left edge of the screen.
+            They contain multiple subcategories (tabs on the left edge of the screen).
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.MakerCategory.SubCategoryName">
+            <summary>
+            Sub category gameObject name. Sub categories are the named tabs on the left edge of the screen.
+            They contain the actual controls (inside the window on the right of the tabs).
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.MakerCategory.Position">
+            <summary>
+            Numeric position of the subcategory.
+            When making new subcategories you can set this value to be in-between stock subcategories.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.MakerCategory.DisplayName">
+            <summary>
+            The text displayed on the subcategory tab on the left edge of the screen.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.MakerCategory.ToString">
+            <summary>
+            Get combined name for logging etc.
+            </summary>
+        </member>
+        <member name="T:KKAPI.Maker.UI.BaseEditableGuiEntry`1">
+            <summary>
+            Base of custom controls that have a value that can be changed and watched for changes.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.BaseEditableGuiEntry`1.#ctor(KKAPI.Maker.MakerCategory,`0,BepInEx.BaseUnityPlugin)">
+            <inheritdoc />
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.Value">
+            <summary>
+            Buttons 1, 2, 3 are values 0, 1, 2
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged">
+            <summary>
+            Fired every time the value is changed, and once when the control is created.
+            Buttons 1, 2, 3 are values 0, 1, 2
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.BufferedValueChanged">
+            <summary>
+            Use to get value changes for controls. Fired by external value set and by SetNewValue.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.BaseEditableGuiEntry`1.SetValue(`0)">
+            <summary>
+            Set the new value and trigger the <see cref="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged"/> event if the control has been created and the value actually changed.
+            </summary>
+            <param name="newValue">Value to set</param>
+        </member>
+        <member name="M:KKAPI.Maker.UI.BaseEditableGuiEntry`1.SetValue(`0,System.Boolean)">
+            <summary>
+            Set the new value and optionally trigger the <see cref="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged"/> event if the control has been created.
+            </summary>
+            <param name="newValue">Value to set</param>
+            <param name="fireEvents">Fire the <see cref="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged"/> event if the value actually changed.</param>
+        </member>
+        <member name="M:KKAPI.Maker.UI.BaseEditableGuiEntry`1.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:KKAPI.Maker.UI.BaseGuiEntry">
+            <summary>
+            Base of all custom character maker controls.
+            </summary>
+        </member>
+        <member name="F:KKAPI.Maker.UI.BaseGuiEntry.GuiApiNameAppendix">
+            <summary>
+            Added to the end of most custom controls to mark them as being created by this API.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.#ctor(KKAPI.Maker.MakerCategory,BepInEx.BaseUnityPlugin)">
+            <summary>
+            Create a new custom control
+            </summary>
+            <param name="category">Category the control will be created under</param>
+            <param name="owner">Plugin that owns the control</param>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.Category">
+            <summary>
+            Category and subcategory that this control is inside of.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.GuiCacheTransfrom">
+            <summary>
+            Parent transform that holds temporary gui entries used to instantiate custom controls.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.GetExistingControl(System.String,System.String)">
+            <summary>
+            Find first control of this name under the specified category transform
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.Initialize">
+            <summary>
+            Called before OnCreateControl to setup the object before instantiating the control.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.Dispose">
+            <summary>
+            Remove the control. Called when maker is quitting.
+            </summary>
+            <inheritdoc />
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.IsDisposed">
+            <summary>
+            If true, the control has been disposed and can no longer be used, likely because the character maker exited.
+            A new control has to be created to be used again.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.OnCreateControl(UnityEngine.Transform)">
+            <summary>
+            Used by the API to actually create the custom control.
+            Should return main GameObject of the control
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.TextColor">
+            <summary>
+            Text color of the control's description text (usually on the left).
+            Can only set this before the control is created.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.Owner">
+            <summary>
+            The plugin that owns this custom control.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.Visible">
+            <summary>
+            The control is visible to the user (usually the same as it's GameObject being active).
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.ControlObjects">
+            <summary>
+            GameObject(s) of the control. Populated once instantiated.
+            Contains 1 item in most cases, can contain multiple in case of accessory window controls.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.ControlObject">
+            <summary>
+            GameObject of the control. Populated once instantiated.
+            If there are multiple objects, returns one of them. Use <see cref="P:KKAPI.Maker.UI.BaseGuiEntry.ControlObjects"/> in that case.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.Exists">
+            <summary>
+            True if the control is currently instantiated in the scene
+            </summary>
+        </member>
+        <member name="T:KKAPI.Maker.UI.Sidebar.ISidebarControl">
+            <summary>
+            Marks the control as being intended for use on Control Panel sidebar in chara maker
+            </summary>
+        </member>
+        <member name="T:KKAPI.Maker.UI.Sidebar.SidebarSeparator">
+            <summary>
+            A separator to be used in the right "Control Panel" sidebar in character maker.
+            The space is limited so use sparingly.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.Sidebar.SidebarSeparator.#ctor(BepInEx.BaseUnityPlugin)">
+            <inheritdoc />
+        </member>
+        <member name="M:KKAPI.Maker.UI.Sidebar.SidebarSeparator.Initialize">
+            <inheritdoc />
+        </member>
+        <member name="M:KKAPI.Maker.UI.Sidebar.SidebarSeparator.OnCreateControl(UnityEngine.Transform)">
+            <inheritdoc />
+        </member>
+        <member name="T:KKAPI.Maker.UI.Sidebar.SidebarToggle">
+            <summary>
+            A toggle to be used in the right "Control Panel" sidebar in character maker.
+            The space is limited so use sparingly.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.Sidebar.SidebarToggle.#ctor(System.String,System.Boolean,BepInEx.BaseUnityPlugin)">
+            <inheritdoc />
+        </member>
+        <member name="M:KKAPI.Maker.UI.Sidebar.SidebarToggle.Initialize">
+            <inheritdoc />
+        </member>
+        <member name="M:KKAPI.Maker.UI.Sidebar.SidebarToggle.OnCreateControl(UnityEngine.Transform)">
+            <inheritdoc />
+        </member>
+        <member name="P:KKAPI.Maker.UI.Sidebar.SidebarToggle.Text">
+            <summary>
+            Text displayed next to the checkbox
             </summary>
         </member>
         <member name="T:KKAPI.Maker.UI.MakerButton">
@@ -785,6 +915,13 @@
             <summary>
             If true, the color selector will allow the user to change alpha of the color.
             If false, no color slider is shown and alpha is always 1f.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.MakerColor.ColorBoxWidth">
+            <summary>
+            Width of the color box. Can adjust this to allow for longer label text.
+            Default width is 276 and might need to get lowered to allow longer labels.
+            The default color boxes in accessory window are 230 wide.
             </summary>
         </member>
         <member name="M:KKAPI.Maker.UI.MakerColor.Initialize">
@@ -1036,6 +1173,36 @@
         <member name="M:KKAPI.Maker.UI.MakerText.OnCreateControl(UnityEngine.Transform)">
             <inheritdoc />
         </member>
+        <member name="T:KKAPI.Maker.UI.MakerTextbox">
+            <summary>
+            Custom control that draws a single-line text box.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.MakerTextbox.ContentType">
+            <summary>
+            Type of content filtering to do on the input.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.UI.MakerTextbox.CharacterLimit">
+            <summary>
+            Maximum number of characters, about 22 are visible at once.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.UI.MakerTextbox.#ctor(KKAPI.Maker.MakerCategory,System.String,System.String,BepInEx.BaseUnityPlugin)">
+            <summary>
+            Create a new custom control. Create and register it in <see cref="E:KKAPI.Maker.MakerAPI.RegisterCustomSubCategories"/>.
+            </summary>
+            <param name="settingName">Text displayed next to the slider</param>
+            <param name="category">Category the control will be created under</param>
+            <param name="owner">Plugin that owns the control</param>
+            <param name="defaultValue">Value the textbox will be set to after creation</param>
+        </member>
+        <member name="M:KKAPI.Maker.UI.MakerTextbox.Initialize">
+            <inheritdoc />
+        </member>
+        <member name="M:KKAPI.Maker.UI.MakerTextbox.OnCreateControl(UnityEngine.Transform)">
+            <inheritdoc />
+        </member>
         <member name="T:KKAPI.Maker.UI.MakerToggle">
             <summary>
             Custom control that displays a toggle
@@ -1069,331 +1236,257 @@
         <member name="M:KKAPI.Maker.UI.MakerToggle.OnCreateControl(UnityEngine.Transform)">
             <inheritdoc />
         </member>
-        <member name="T:KKAPI.Maker.UI.BaseEditableGuiEntry`1">
+        <member name="T:KKAPI.Maker.AccessoriesApi">
             <summary>
-            Base of custom controls that have a value that can be changed and watched for changes.
+            Collection of methods useful for interfacing with character accessories. Has methods both for chara maker and
+            everywhere else.
+            Abstracts away MoreAccessories so you don't have to worry if it's installed or not.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.UI.BaseEditableGuiEntry`1.#ctor(KKAPI.Maker.MakerCategory,`0,BepInEx.BaseUnityPlugin)">
-            <inheritdoc />
-        </member>
-        <member name="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.Value">
+        <member name="P:KKAPI.Maker.AccessoriesApi.AccessoryCanvasVisible">
             <summary>
-            Buttons 1, 2, 3 are values 0, 1, 2
+            Returns true if the accessory tab in maker is currently selected.
+            If you want to know if the user can actually see the tab on the screen check <see cref="M:KKAPI.Maker.MakerAPI.IsInterfaceVisible"/>.
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged">
+        <member name="P:KKAPI.Maker.AccessoriesApi.MoreAccessoriesInstalled">
             <summary>
-            Fired every time the value is changed, and once when the control is created.
-            Buttons 1, 2, 3 are values 0, 1, 2
+            True if the MoreAccessories mod is installed.
+            Avoid relying on this and instead use other methods in this class since they will handle this for you.
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.BufferedValueChanged">
+        <member name="P:KKAPI.Maker.AccessoriesApi.SelectedMakerAccSlot">
             <summary>
-            Use to get value changes for controls. Fired by external value set and by SetNewValue.
+            Get the index of the currently selected accessory slot under Accessories group in Chara Maker.
+            If none are selected or chara maker is not opened, returns -1. 0-indexed.
+            Use <see cref="E:KKAPI.Maker.AccessoriesApi.SelectedMakerAccSlotChanged"/> to get notified when the selected slot changes.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.UI.BaseEditableGuiEntry`1.SetValue(`0)">
+        <member name="E:KKAPI.Maker.AccessoriesApi.SelectedMakerAccSlotChanged">
             <summary>
-            Set the new value and trigger the <see cref="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged"/> event if the control has been created and the value actually changed.
-            </summary>
-            <param name="newValue">Value to set</param>
-        </member>
-        <member name="M:KKAPI.Maker.UI.BaseEditableGuiEntry`1.SetValue(`0,System.Boolean)">
-            <summary>
-            Set the new value and optionally trigger the <see cref="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged"/> event if the control has been created.
-            </summary>
-            <param name="newValue">Value to set</param>
-            <param name="fireEvents">Fire the <see cref="P:KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged"/> event if the value actually changed.</param>
-        </member>
-        <member name="M:KKAPI.Maker.UI.BaseEditableGuiEntry`1.Dispose">
-            <inheritdoc />
-        </member>
-        <member name="T:KKAPI.Maker.UI.BaseGuiEntry">
-            <summary>
-            Base of all custom character maker controls.
+            Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.
+            This happens when user click on another slot.
             </summary>
         </member>
-        <member name="F:KKAPI.Maker.UI.BaseGuiEntry.GuiApiNameAppendix">
+        <member name="E:KKAPI.Maker.AccessoriesApi.MakerAccSlotAdded">
             <summary>
-            Added to the end of most custom controls to mark them as being created by this API.
+            A new slot was added by MoreAccessories. Adding 10 slots triggers this 10 times.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.#ctor(KKAPI.Maker.MakerCategory,BepInEx.BaseUnityPlugin)">
+        <member name="E:KKAPI.Maker.AccessoriesApi.AccessoryKindChanged">
             <summary>
-            Create a new custom control
-            </summary>
-            <param name="category">Category the control will be created under</param>
-            <param name="owner">Plugin that owns the control</param>
-        </member>
-        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.Category">
-            <summary>
-            Category and subcategory that this control is inside of.
+            Fires when user selects a different accessory in the accessory window.
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.GuiCacheTransfrom">
+        <member name="E:KKAPI.Maker.AccessoriesApi.AccessoryTransferred">
             <summary>
-            Parent transform that holds temporary gui entries used to instantiate custom controls.
+            Fires after user copies an accessory within a single coordinate by using the Transfer window.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.GetExistingControl(System.String,System.String)">
+        <member name="M:KKAPI.Maker.AccessoriesApi.GetAccessory(ChaControl,System.Int32)">
             <summary>
-            Find first control of this name under the specified category transform
+            Get the accessory given a slot index.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.Initialize">
+        <member name="M:KKAPI.Maker.AccessoriesApi.GetAccessoryIndex(ChaAccessoryComponent)">
             <summary>
-            Called before OnCreateControl to setup the object before instantiating the control.
+            Get slot index of his accessory, useful for referencing to the accesory in extended data.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.Dispose">
+        <member name="M:KKAPI.Maker.AccessoriesApi.GetCvsAccessory(System.Int32)">
             <summary>
-            Remove the control. Called when maker is quitting.
+            Get accessory UI entry in maker.
+            Only works inside chara maker.
             </summary>
-            <inheritdoc />
         </member>
-        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.IsDisposed">
+        <member name="M:KKAPI.Maker.AccessoriesApi.GetPartsInfo(System.Int32)">
+            <summary>
+            Get accessory PartsInfo entry in maker.
+            Only works inside chara maker.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoriesApi.GetCvsAccessoryCount">
+            <summary>
+            Get count of the UI entries for accessories (accessory slots).
+            Returns 0 outside of chara maker.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoriesApi.GetOwningChaControl(ChaAccessoryComponent)">
+            <summary>
+            Get the ChaControl that owns this accessory
+            </summary>
+        </member>
+        <member name="T:KKAPI.Maker.AccessoryControlWrapper`2">
+            <summary>
+            A wrapper for custom controls used in accessory window (added by using <see cref="M:KKAPI.Maker.MakerAPI.AddAccessoryWindowControl``1(``0)"/>).
+            It abstracts away switching between accessory slots and provides a simple list of values for each accessory.
+            </summary>
+            <typeparam name="T">Type of the control to be wrapped. The control has to be added by using <see cref="M:KKAPI.Maker.MakerAPI.AddAccessoryWindowControl``1(``0)"/> or results will be undefined.</typeparam>
+            <typeparam name="TVal">Type of the control's value.</typeparam>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.#ctor(`0)">
+            <summary>
+            Create a new wrapper.
+            </summary>
+            <param name="control">Control to be wrapped. The control has to be added by using <see cref="M:KKAPI.Maker.MakerAPI.AddAccessoryWindowControl``1(``0)"/> or results will be undefined.</param>
+        </member>
+        <member name="P:KKAPI.Maker.AccessoryControlWrapper`2.Control">
+            <summary>
+            The wrapped control.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.GetValue(System.Int32)">
+            <summary>
+            Get value of the control for the specified accessory.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.GetSelectedValue">
+            <summary>
+            Get value of the control for the currently selected accessory.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.SetValue(System.Int32,`1)">
+            <summary>
+            Set value of the control for the specified accessory.
+            </summary>
+            <param name="accessoryIndex">Index of the accessory to set the value for</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.SetValue(System.Int32,`1,System.Boolean)">
+            <summary>
+            Set value of the control for the specified accessory.
+            </summary>
+            <param name="accessoryIndex">Index of the accessory to set the value for</param>
+            <param name="value">Value to set</param>
+            <param name="fireEvents">Fire the <see cref="E:KKAPI.Maker.AccessoryControlWrapper`2.ValueChanged"/> event if the value actually changed.</param>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.SetSelectedValue(`1)">
+            <summary>
+            Set value of the control for the currently selected accessory.
+            </summary>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoryControlWrapper`2.SetSelectedValue(`1,System.Boolean)">
+            <summary>
+            Set value of the control for the currently selected accessory.
+            </summary>
+            <param name="value">Value to set</param>
+            <param name="fireEvents">Fire the <see cref="E:KKAPI.Maker.AccessoryControlWrapper`2.ValueChanged"/> event if the value actually changed.</param>
+        </member>
+        <member name="P:KKAPI.Maker.AccessoryControlWrapper`2.CurrentlySelectedIndex">
+            <summary>
+            Index of the currently selected accessory.
+            </summary>
+        </member>
+        <member name="E:KKAPI.Maker.AccessoryControlWrapper`2.ValueChanged">
+            <summary>
+            Fired when the value of this control changes for any of the accessories.
+            </summary>
+        </member>
+        <member name="E:KKAPI.Maker.AccessoryControlWrapper`2.VisibleIndexChanged">
+            <summary>
+            Fired when the currently visible accessory was changed by the user clicking on one of the slots.
+            </summary>
+        </member>
+        <member name="E:KKAPI.Maker.AccessoryControlWrapper`2.AccessoryKindChanged">
+            <summary>
+            Fires when user selects a different accessory in the accessory window.
+            </summary>
+        </member>
+        <member name="E:KKAPI.Maker.AccessoryControlWrapper`2.AccessoryTransferred">
+            <summary>
+            Fires after user copies an accessory within a single coordinate by using the Transfer window.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.AccessoryControlWrapper`2.IsDisposed">
             <summary>
             If true, the control has been disposed and can no longer be used, likely because the character maker exited.
             A new control has to be created to be used again.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.UI.BaseGuiEntry.OnCreateControl(UnityEngine.Transform)">
+        <member name="T:KKAPI.Maker.AccessorySlotEventArgs">
             <summary>
-            Used by the API to actually create the custom control.
-            Should return main GameObject of the control
+            Event args for events that are related to accessory slot indexes.
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.TextColor">
-            <summary>
-            Text color of the control's description text (usually on the left).
-            Can only set this before the control is created.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.Owner">
-            <summary>
-            The plugin that owns this custom control.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.Visible">
-            <summary>
-            The control is visible to the user (usually the same as it's GameObject being active).
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.ControlObjects">
-            <summary>
-            GameObject(s) of the control. Populated once instantiated.
-            Contains 1 item in most cases, can contain multiple in case of accessory window controls.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.ControlObject">
-            <summary>
-            GameObject of the control. Populated once instantiated.
-            If there are multiple objects, returns one of them. Use <see cref="P:KKAPI.Maker.UI.BaseGuiEntry.ControlObjects"/> in that case.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.UI.BaseGuiEntry.Exists">
-            <summary>
-            True if the control is currently instantiated in the scene
-            </summary>
-        </member>
-        <member name="T:KKAPI.Maker.UI.Sidebar.ISidebarControl">
-            <summary>
-            Marks the control as being intended for use on Control Panel sidebar in chara maker
-            </summary>
-        </member>
-        <member name="T:KKAPI.Maker.CharacterLoadFlags">
-            <summary>
-            Specifies which parts of the character will be loaded when loading a card in character maker.
-            (It's the toggles at the bottom of load window) Only includes stock toggles.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Maker.CoordinateLoadFlags">
-            <summary>
-            Specifies which parts of the coordinate will be loaded when loading a clothing card in character maker.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Maker.ChaFileLoadedEventArgs.LoadedChaFile">
-            <summary>
-            Use this to get extended data on the character
-            </summary>
-        </member>
-        <member name="T:KKAPI.Maker.RegisterCustomControlsEvent">
-            <summary>
-            Event fired when character maker is starting and plugins are given an opportunity to register custom controls
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.RegisterCustomControlsEvent.AddControl``1(``0)">
-            <summary>
-            Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.RegisterCustomControlsEvent.AddSidebarControl``1(``0)">
-            <summary>
-            Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.)
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.RegisterCustomControlsEvent.AddLoadToggle(KKAPI.Maker.UI.MakerLoadToggle)">
-            <summary>
-            Add a toggle to the bottom of the "Load character" window that allows for partial loading of characters.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.RegisterCustomControlsEvent.AddCoordinateLoadToggle(KKAPI.Maker.UI.MakerCoordinateLoadToggle)">
-            <summary>
-            Add a toggle to the bottom of the "Load coordinate/clothes" window that allows for partial loading of coordinate cards.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Maker.RegisterSubCategoriesEvent">
-            <summary>
-            Event fired when character maker is starting and plugins are given an opportunity to register custom categories and controls
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.RegisterSubCategoriesEvent.AddSubCategory(KKAPI.Maker.MakerCategory)">
-            <summary>
-            Add custom sub categories. They need to be added before maker starts loading,
-            or in the RegisterCustomSubCategories event.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Maker.MakerCategory">
-            <summary>
-            Specifies a category inside character maker.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Maker.MakerCategory.Equals(System.Object)">
+        <member name="M:KKAPI.Maker.AccessorySlotEventArgs.#ctor(System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:KKAPI.Maker.MakerCategory.GetHashCode">
+        <member name="P:KKAPI.Maker.AccessorySlotEventArgs.SlotIndex">
+            <summary>
+            Currently opened accessory slot index. 0-indexed.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.AccessorySlotEventArgs.CvsAccessory">
+            <summary>
+            Get accessory UI entry in maker.
+            </summary>
+        </member>
+        <member name="P:KKAPI.Maker.AccessorySlotEventArgs.AccessoryComponent">
+            <summary>
+            Get accessory component.
+            </summary>
+        </member>
+        <member name="T:KKAPI.Maker.AccessoryTransferEventArgs">
+            <summary>
+            Event args for accessory transfer events.
+            </summary>
+        </member>
+        <member name="M:KKAPI.Maker.AccessoryTransferEventArgs.#ctor(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:KKAPI.Maker.MakerCategory.#ctor(System.String,System.String,System.Int32,System.String)">
+        <member name="P:KKAPI.Maker.AccessoryTransferEventArgs.SourceSlotIndex">
             <summary>
-            Make a new custom subcategory. 
+            Index of the source accessory.
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.MakerCategory.CategoryName">
+        <member name="P:KKAPI.Maker.AccessoryTransferEventArgs.DestinationSlotIndex">
             <summary>
-            Main category gameObject name. Main categories are the square buttons at the top-left edge of the screen.
-            They contain multiple subcategories (tabs on the left edge of the screen).
+            Index the source accessory is copied to.
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.MakerCategory.SubCategoryName">
+        <member name="T:KKAPI.Maker.AccessoryWindowControlValueChangedEventArgs`1">
             <summary>
-            Sub category gameObject name. Sub categories are the named tabs on the left edge of the screen.
-            They contain the actual controls (inside the window on the right of the tabs).
+            Event args used in <see cref="T:KKAPI.Maker.AccessoryControlWrapper`2"/>.
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.MakerCategory.Position">
+        <member name="M:KKAPI.Maker.AccessoryWindowControlValueChangedEventArgs`1.#ctor(`0,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:KKAPI.Maker.AccessoryWindowControlValueChangedEventArgs`1.NewValue">
             <summary>
-            Numeric position of the subcategory.
-            When making new subcategories you can set this value to be in-between stock subcategories.
+            Newly assigned value.
             </summary>
         </member>
-        <member name="P:KKAPI.Maker.MakerCategory.DisplayName">
+        <member name="P:KKAPI.Maker.AccessoryWindowControlValueChangedEventArgs`1.SlotIndex">
             <summary>
-            The text displayed on the subcategory tab on the left edge of the screen.
+            Index of the accessory the value was assigned to.
             </summary>
         </member>
-        <member name="M:KKAPI.Maker.MakerCategory.ToString">
+        <member name="T:KKAPI.Maker.MakerConstants">
             <summary>
-            Get combined name for logging etc.
+            Useful values from the character maker. Mostly built-in categories for use with registering custom controls.
             </summary>
         </member>
-        <member name="T:KKAPI.KoikatuAPI">
+        <member name="F:KKAPI.Maker.MakerConstants.DefaultControlTextColor">
             <summary>
-            Provides overall information about the game and the API itself, and provides some useful tools.
-            More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
+            Default text color for maker controls.
             </summary>
         </member>
-        <member name="M:KKAPI.KoikatuAPI.GetCurrentGameMode">
+        <member name="P:KKAPI.Maker.MakerConstants.BuiltInCategories">
             <summary>
-            Get current game mode. 
+            All ategories that are built-into the character maker by default.
             </summary>
         </member>
-        <member name="M:KKAPI.KoikatuAPI.GetGameVersion">
+        <member name="M:KKAPI.Maker.MakerConstants.GetBuiltInCategory(System.String,System.String)">
             <summary>
-            Get current version of the game.
+            Quick search for a built-in category. If you know what category you want to use at 
+            compile time you can use the shortcuts instead, e.g. <see cref="P:KKAPI.Maker.MakerConstants.Face.Ear"/> 
             </summary>
         </member>
-        <member name="F:KKAPI.KoikatuAPI.VersionConst">
+        <member name="M:KKAPI.Maker.MakerInterfaceCreator.AddMissingSubCategories(UI_ToggleGroupCtrl)">
             <summary>
-            Version of this assembly/plugin.
-            WARNING: This is a const field, therefore it will be copied to your assembly!
-            Use this field to check if the installed version of the plugin is up to date by adding this attribute to your plugin class:
-            <code>[BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]</code>
-            THIS VALUE WILL NOT BE READ FROM THE INSTALLED VERSION, YOU WILL READ THE VALUE FROM THIS VERSION THAT YOU COMPILE YOUR PLUGIN AGAINST!
-            More info: https://stackoverflow.com/questions/55984/what-is-the-difference-between-const-and-readonly
-            </summary>
-        </member>
-        <member name="F:KKAPI.KoikatuAPI.GUID">
-            <summary>
-            GUID of this plugin, use for checking dependancies with <see cref="T:BepInEx.BepInDependency"/> and <see cref="M:KKAPI.KoikatuAPI.CheckRequiredPlugin(BepInEx.BaseUnityPlugin,System.String,System.Version,BepInEx.Logging.LogLevel)"/>
-            </summary>
-        </member>
-        <member name="P:KKAPI.KoikatuAPI.EnableDebugLogging">
-            <summary>
-            Enables display of additional log messages when certain events are triggered within KKAPI. 
-            Useful for plugin devs to understand when controller messages are fired.
-            </summary>
-        </member>
-        <member name="M:KKAPI.KoikatuAPI.#ctor">
-            <summary>
-            Don't use manually
-            </summary>
-        </member>
-        <member name="M:KKAPI.KoikatuAPI.CheckRequiredPlugin(BepInEx.BaseUnityPlugin,System.String,System.Version,BepInEx.Logging.LogLevel)">
-            <summary>
-            Check if a plugin is loaded and has at least the minimum version. 
-            If the plugin is missing or older than minimumVersion, user is shown an error message on screen and false is returned.
-            Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet!
-            </summary>
-            <param name="origin">Your plugin</param>
-            <param name="guid">Guid of the plugin your plugin is dependant on</param>
-            <param name="minimumVersion">Minimum version of the required plugin</param>
-            <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
-            <returns>True if plugin exists and it's version equals or is newer than minimumVersion, otherwise false</returns>
-        </member>
-        <member name="M:KKAPI.KoikatuAPI.CheckIncompatiblePlugin(BepInEx.BaseUnityPlugin,System.String,BepInEx.Logging.LogLevel)">
-            <summary>
-            Check if a plugin that is not compatible with your plugin is loaded. 
-            If the plugin is loaded, user is shown a warning message on screen and true is returned.
-            Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet!
-            </summary>
-            <param name="origin">Your plugin</param>
-            <param name="guid">Guid of the plugin your plugin is incompatible with</param>
-            <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
-            <returns>True if plugin exists, otherwise false</returns>
-        </member>
-        <member name="M:KKAPI.KoikatuAPI.SynchronizedInvoke(System.Action)">
-            <summary>
-            Invoke the Action on the main unity thread. Use to synchronize your threads.
-            </summary>
-        </member>
-        <member name="T:KKAPI.GameMode">
-            <summary>
-            Current gameplay mode the game is in
-            </summary>
-        </member>
-        <member name="F:KKAPI.GameMode.Unknown">
-            <summary>
-            Anywhere else, including main menu
-            </summary>
-        </member>
-        <member name="F:KKAPI.GameMode.Maker">
-            <summary>
-            Inside character maker (can be started from main menu or from class roster)
-            </summary>
-        </member>
-        <member name="F:KKAPI.GameMode.Studio">
-            <summary>
-            Anywhere inside CharaStudio.exe
-            </summary>
-        </member>
-        <member name="F:KKAPI.GameMode.MainGame">
-            <summary>
-            Anywhere inside the main game.
-            Includes everything after starting a new game from title screen and after loading a saved game.
-            This means this includes story scenes, night menu, roaming around and h scenes inside story mode.
-            This does not hoverwer include the character maker launched from within the class menu.
+            Needs to run before UI_ToggleGroupCtrl.Start of the category runs, or it won't get added properly
             </summary>
         </member>
         <member name="T:KKAPI.Utilities.CoroutineUtils">
@@ -1743,463 +1836,6 @@
             <summary>
             Compare two strings with rules used by Windows Explorer to logically sort files.
             </summary>
-        </member>
-        <member name="T:KKAPI.Studio.SaveLoad.ObjectsCopiedEventArgs">
-            <summary>
-            Arguments used in objects copied events
-            </summary>
-            <inheritdoc />
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.ObjectsCopiedEventArgs.#ctor(KKAPI.Utilities.ReadOnlyDictionary{System.Int32,Studio.ObjectCtrlInfo})">
-            <inheritdoc />
-            <param name="loadedObjects">Objects copied by the event</param>
-        </member>
-        <member name="P:KKAPI.Studio.SaveLoad.ObjectsCopiedEventArgs.LoadedObjects">
-            <summary>
-            Objects copied by the event and their original IDs
-            </summary>
-        </member>
-        <member name="T:KKAPI.Studio.SaveLoad.SceneCustomFunctionController">
-            <summary>
-            Base type for custom scene/studio extensions.
-            It provides many useful methods that abstract away the nasty hooks needed to figure out when
-            a scene is loaded or imported, or how to save and load your custom data to the scene file.
-            
-            This controller is a MonoBehaviour that is created upon registration in <see cref="M:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour``1(System.String)"/>. 
-            The controller is created only once. If it's created too late it might miss some scene load events.
-            It's recommended to register controllers in your Start method.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.SceneCustomFunctionController.OnSceneLoad(KKAPI.Studio.SaveLoad.SceneOperationKind,KKAPI.Utilities.ReadOnlyDictionary{System.Int32,Studio.ObjectCtrlInfo})">
-            <summary>
-            Fired when a scene is successfully changed, either by loading, importing or resetting.
-            </summary>
-            <param name="operation">Operation that caused this event</param>
-            <param name="loadedItems">A dictionary of items loaded by this operation and their original IDs.
-            The IDs are identical to the IDs at the time of saving the scene, even during import.
-            Warning: The IDs here might not be the same as IDs of the objects in the scene!
-            To get current scene ID of the object call <see cref="M:KKAPI.Studio.StudioObjectExtensions.GetSceneId(Studio.ObjectCtrlInfo)"/></param>
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.SceneCustomFunctionController.OnSceneSave">
-            <summary>
-            Fired when a scene is about to be saved and any exteneded data needs to be written.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.SceneCustomFunctionController.OnObjectsCopied(KKAPI.Utilities.ReadOnlyDictionary{System.Int32,Studio.ObjectCtrlInfo})">
-            <summary>
-            Fired when objects are copied.
-            </summary>
-            <param name="copiedItems">A dictionary of items loaded by this operation and their original IDs.
-            The IDs match the original object in the scene.
-            To get current scene ID of the object call <see cref="M:KKAPI.Studio.StudioObjectExtensions.GetSceneId(Studio.ObjectCtrlInfo)"/></param>
-        </member>
-        <member name="P:KKAPI.Studio.SaveLoad.SceneCustomFunctionController.ExtendedDataId">
-            <summary>
-            ID used for extended data by this controller. It's set when registering the controller
-            with <see cref="M:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour``1(System.String)"/>
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.SceneCustomFunctionController.GetExtendedData">
-            <summary>
-            Get extended data of the last loaded scene by using the ID you specified when registering this controller.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.SceneCustomFunctionController.SetExtendedData(ExtensibleSaveFormat.PluginData)">
-            <summary>
-            Save your custom data to the scene under the ID you specified when registering this controller.
-            </summary>
-            <param name="data">Your custom data to be written to the scene. Can be null to remove the data.</param>
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.SceneCustomFunctionController.GetStudio">
-            <summary>
-            Get the instance of the Studio game manager object.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Studio.SaveLoad.SceneLoadEventArgs">
-            <summary>
-            Arguments used in scene loaded/imported events
-            </summary>
-            <inheritdoc />
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.SceneLoadEventArgs.#ctor(KKAPI.Studio.SaveLoad.SceneOperationKind,KKAPI.Utilities.ReadOnlyDictionary{System.Int32,Studio.ObjectCtrlInfo})">
-            <inheritdoc />
-            <param name="operation">Operation that caused the event</param>
-            <param name="loadedObjects">Objects loaded by the event</param>
-        </member>
-        <member name="P:KKAPI.Studio.SaveLoad.SceneLoadEventArgs.Operation">
-            <summary>
-            Operation that caused the event
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.SaveLoad.SceneLoadEventArgs.LoadedObjects">
-            <summary>
-            Objects loaded by the event and their original IDs (from the time the scene was saved)
-            </summary>
-        </member>
-        <member name="T:KKAPI.Studio.SaveLoad.SceneOperationKind">
-            <summary>
-            Scene load/change operations
-            </summary>
-        </member>
-        <member name="F:KKAPI.Studio.SaveLoad.SceneOperationKind.Load">
-            <summary>
-            Scene is being loaded and will replace what's currently loaded.
-            </summary>
-        </member>
-        <member name="F:KKAPI.Studio.SaveLoad.SceneOperationKind.Import">
-            <summary>
-            Scene is being loaded and will be added to what's currently loaded. 
-            <remarks>IDs in the scene will be different from the IDs in the file of the scene being imported, 
-            use <see cref="T:KKAPI.Studio.SaveLoad.SceneCustomFunctionController"/> to get IDs from the scene file.</remarks>
-            </summary>
-        </member>
-        <member name="F:KKAPI.Studio.SaveLoad.SceneOperationKind.Clear">
-            <summary>
-            Scene is being cleared of all state (by default, only user clicking the "Reset" button can trigger this).
-            This is not triggered when studio starts.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Studio.SaveLoad.StudioSaveLoadApi">
-            <summary>
-            Provides API for loading and saving scenes, as well as a convenient way for registering custom studio functions.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour``1(System.String)">
-            <summary>
-            Register new functionality that will be added to studio. Offers easy API for saving and loading extended data.
-            All necessary hooking and event subscribing is done for you. Importing scenes is also handled for you.
-            All you have to do is create a type that inherits from <see cref="T:KKAPI.Studio.SaveLoad.SceneCustomFunctionController"/>>
-            (don't make instances, the API will make them for you). Warning: The custom controller is immediately
-            created when it's registered, but its OnSceneLoad method is not called until a scene actually loads.
-            This might mean that if the registration happens too late you will potentially miss some load events. 
-            </summary>
-            <typeparam name="T">Type with your custom logic to add to a character</typeparam>
-            <param name="extendedDataId">Extended data ID used by this behaviour. Set to null if not used.</param>
-        </member>
-        <member name="E:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.SceneLoad">
-            <summary>
-            Fired right after a scene is succesfully imported, loaded or cleared. 
-            Runs immediately after all <see cref="T:KKAPI.Studio.SaveLoad.SceneCustomFunctionController"/> objects trigger their events.
-            </summary>
-        </member>
-        <member name="E:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.SceneSave">
-            <summary>
-            Fired right before a scene is saved to file. 
-            Runs immediately after all <see cref="T:KKAPI.Studio.SaveLoad.SceneCustomFunctionController"/> objects trigger their events.
-            </summary>
-        </member>
-        <member name="E:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.ObjectsCopied">
-            <summary>
-            Fired when objects in the scene are copied
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.ImportInProgress">
-            <summary>
-            A scene is currently being imported
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.LoadInProgress">
-            <summary>
-            A scene is currently being loaded (not imported or cleared)
-            </summary>
-        </member>
-        <member name="F:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.Hooks.ImportDictionary">
-            <summary>
-            A lookup for original dicKey IDs. It is generated on scene import, and only useful then.
-            Key is the new ID in the scene (needs to be used currently), while Value is the old ID
-            in the save file (same as at the time scene was saved).
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.SaveLoad.StudioSaveLoadApi.Hooks.ObjectInfoLoadTranspiler(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})">
-            <summary>
-            The original code reads the dicKey of an object on import and does nothing with it. Capture that variable and use it to
-            construct an import dictionary.
-            GetNewIndex is called before this and will be used to get the dicKey used in the scene.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Studio.StudioAPI">
-            <summary>
-            Provides a way to add custom menu items to CharaStudio, and gives useful methods for interfacing with the studio.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.StudioAPI.CreateCurrentStateCategory(KKAPI.Studio.UI.CurrentStateCategory)">
-            <summary>
-            Add a new custom category to the Anim > CurrentState tab in the studio top-left menu.
-            Can use this at any point.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.StudioAPI.GetOrCreateCurrentStateCategory(System.String)">
-            <summary>
-            Add a new custom category to the Anim > CurrentState tab in the studio top-left menu.
-            Can use this at any point. Always returns null outside of studio.
-            If the name is empty or null, the Misc/Other category is returned.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.StudioAPI.GetSelectedControllers``1">
-            <summary>
-            Get all instances of this controller that belong to characters that are selected in Studio's Workspace.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.StudioAPI.GetSelectedCharacters">
-            <summary>
-            Get all character objects currently selected in Studio's Workspace.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.StudioAPI.GetSelectedObjects">
-            <summary>
-            Get all objects (all types) currently selected in Studio's Workspace.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.StudioAPI.InsideStudio">
-            <summary>
-            True if we are currently inside CharaStudio.exe
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.StudioAPI.StudioLoaded">
-            <summary>
-            True inside studio after it finishes loading the interface (when the starting loading screen finishes), 
-            right before custom controls are created.
-            </summary>
-        </member>
-        <member name="E:KKAPI.Studio.StudioAPI.StudioLoadedChanged">
-            <summary>
-            Fires once after studio finished loading the interface, right before custom controls are created.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Studio.StudioObjectExtensions">
-            <summary>
-            Useful extensions for studio metaobjects
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.StudioObjectExtensions.GetObjectCtrlInfo(Studio.ObjectInfo)">
-            <summary>
-            Get the ObjectCtrlInfo object that uses this ObjectInfo.
-            If the object was not found in current scene, null is returned.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.StudioObjectExtensions.GetSceneId(Studio.ObjectCtrlInfo)">
-            <summary>
-            Get the ID of this object as used in the currently loaded scene.
-            If the object was not found in current scene, -1 is returned.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.StudioObjectExtensions.GetSceneId(Studio.ObjectInfo)">
-            <summary>
-            Get the ID of this object as used in the currently loaded scene.
-            If the object was not found in current scene, -1 is returned.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.StudioObjectExtensions.GetOCIChar(AIChara.ChaControl)">
-            <summary>
-            Get GetOCIChar that is assigned to this character. Only works in CharaStudio, returns null elsewhere.
-            </summary>
-        </member>
-        <member name="T:KKAPI.Studio.UI.BaseCurrentStateEditableGuiEntry`1">
-            <summary>
-            Base class of controls that hold a value. 
-            Subscribe to <see cref="P:KKAPI.Studio.UI.BaseCurrentStateEditableGuiEntry`1.Value"/> to update your control's state whenever the value changes.
-            </summary>
-            <typeparam name="T">Type of the held value</typeparam>
-        </member>
-        <member name="M:KKAPI.Studio.UI.BaseCurrentStateEditableGuiEntry`1.#ctor(System.String,System.Func{Studio.OCIChar,`0},`0)">
-            <summary>
-            Create a new control that holds a value
-            </summary>
-            <param name="name">Name of the control</param>
-            <param name="updateValue">Function called every time current character changes and the value needs to be updated</param>
-            <param name="initialValue">Initial value used before first updateValue call</param>
-        </member>
-        <member name="P:KKAPI.Studio.UI.BaseCurrentStateEditableGuiEntry`1.Value">
-            <summary>
-            Current value of this control
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.BaseCurrentStateEditableGuiEntry`1.OnUpdateInfo(Studio.OCIChar)">
-            <inheritdoc />
-        </member>
-        <member name="T:KKAPI.Studio.UI.CurrentStateCategory">
-            <summary>
-            Category under the Anim > CustomState tab
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategory.#ctor(System.String,System.Collections.Generic.IEnumerable{KKAPI.Studio.UI.CurrentStateCategorySubItemBase})">
-            <summary>
-            Create a new custom CurrentState category
-            </summary>
-            <param name="categoryName">Name of the category</param>
-            <param name="subItems">Controls under this category</param>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategory.#ctor(System.String)">
-            <summary>
-            Create a new custom CurrentState category
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategory.CategoryName">
-            <summary>
-            Name of the category. Controls are drawn under it.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategory.SubItems">
-            <summary>
-            All custom controls under this category.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategory.CreateCategory(UnityEngine.GameObject)">
-            <summary>
-            Used by the API to actually create the custom control object
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategory.Created">
-            <summary>
-            The category was created and still exists.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategory.UpdateInfo(Studio.OCIChar)">
-            <summary>
-            Fired when currently selected character changes and the controls need to be updated
-            </summary>
-            <param name="ociChar">Newly selected character</param>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategory.AddControl``1(``0)">
-            <summary>
-            Add new control to this category
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategory.AddControls(KKAPI.Studio.UI.CurrentStateCategorySubItemBase[])">
-            <summary>
-            Add new controls to this category
-            </summary>
-        </member>
-        <member name="T:KKAPI.Studio.UI.CurrentStateCategoryDropdown">
-            <summary>
-            Custom control that draws a dropdown menu in the Chara > CurrentState studio menu.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategoryDropdown.#ctor(System.String,System.String[],System.Func{Studio.OCIChar,System.Int32})">
-            <summary>
-            A dropdown for the Chara > CurrentState studio menu.
-            </summary>
-            <param name="name">Name of the button, shown on left.</param>
-            <param name="items">Items shown in the dropdown box. Value is the currently selected index.</param>
-            <param name="updateValue">Function called when the current character changes and the on/off state needs to be updated.
-            <code>OCIChar</code> is the newly selected character. Return the new state. Can't be null.</param>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategoryDropdown.CreateItem(UnityEngine.GameObject)">
-            <inheritdoc />
-        </member>
-        <member name="T:KKAPI.Studio.UI.CurrentStateCategorySlider">
-            <summary>
-            Custom control that draws a slider in the Chara > CurrentState studio menu.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategorySlider.MinValue">
-            <summary>
-            Minimum value of the slider
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategorySlider.MaxValue">
-            <summary>
-            Maximum value of the slider
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategorySlider.#ctor(System.String,System.Func{Studio.OCIChar,System.Single},System.Single,System.Single)">
-            <summary>
-            Custom control that draws a slider in the Chara > CurrentState studio menu.
-            </summary>
-            <param name="name">Name of the button, shown on left</param> 
-            <param name="updateValue">Function called when the current character changes and the slider value needs to be updated.
-            <code>OCIChar</code> is the newly selected character. Return the new state. Can't be null.</param>
-            <param name="minValue">Minimum value of the slider</param>
-            <param name="maxValue">Maximum value of the slider</param>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategorySlider.CreateItem(UnityEngine.GameObject)">
-            <inheritdoc />
-        </member>
-        <member name="T:KKAPI.Studio.UI.CurrentStateCategorySubItemBase">
-            <summary>
-            Base of custom controls created under CurrentState category
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategorySubItemBase.#ctor(System.String)">
-            <summary>
-            Create a new custom CurrentState control
-            </summary>
-            <param name="name">Name of the setting displayed on the left</param>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategorySubItemBase.Name">
-            <summary>
-            Name of the setting, displayed to the left
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategorySubItemBase.CreateItem(UnityEngine.GameObject)">
-            <summary>
-            Fired when API wants to create the control. Should return the control's root GameObject
-            </summary>
-            <param name="categoryObject">Parent object of the control to be created</param>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategorySubItemBase.OnUpdateInfo(Studio.OCIChar)">
-            <summary>
-            Fired when currently selected character changes and the control need to be updated
-            </summary>
-            <param name="ociChar">Newly selected character</param>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategorySubItemBase.RootGameObject">
-            <summary>
-            The control's root gameobject. null if the control was not created yet.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategorySubItemBase.Created">
-            <summary>
-            The control was created and still exists.
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategorySubItemBase.Visible">
-            <summary>
-            The control is visible to the user (usually the same as it's GameObject being active).
-            </summary>
-        </member>
-        <member name="T:KKAPI.Studio.UI.CurrentStateCategoryToggle">
-            <summary>
-            Custom control that draws from 2 to 4 radio buttons (they are drawn like toggles)
-            </summary>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategoryToggle.ToggleCount">
-            <summary>
-            Number of the radio buttons, can be 2, 3 or 4
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategoryToggle.#ctor(System.String,System.Int32,System.Func{Studio.OCIChar,System.Int32})">
-            <summary>
-            A toggle list for the Chara &gt; CurrentState studio menu.
-            </summary>
-            <param name="name">Name of the list, shown on left</param>
-            <param name="toggleCount">Number of the toggles, can be 2, 3 or 4</param>
-            <param name="onUpdateSelection">Function called when the current character changes and the selected index needs to be updated.
-            <code>OCIChar</code> is the newly selected character. Return the new selected index. Can't be null.</param>
-        </member>
-        <member name="P:KKAPI.Studio.UI.CurrentStateCategoryToggle.SelectedIndex">
-            <summary>
-            Currently selected button (starts at 0)
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategoryToggle.CreateItem(UnityEngine.GameObject)">
-            <inheritdoc />
-        </member>
-        <member name="T:KKAPI.Studio.UI.CurrentStateCategorySwitch">
-            <summary>
-            Custom control that draws a single, circular button with an on/off state in the Chara > CurrentState studio menu.
-            </summary>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategorySwitch.#ctor(System.String,System.Func{Studio.OCIChar,System.Boolean})">
-            <summary>
-            A single button for the Chara > CurrentState studio menu.
-            </summary>
-            <param name="name">Name of the button, shown on left</param> 
-            <param name="updateValue">Function called when the current character changes and the on/off state needs to be updated.
-            <code>OCIChar</code> is the newly selected character. Return the new state. Can't be null.</param>
-        </member>
-        <member name="M:KKAPI.Studio.UI.CurrentStateCategorySwitch.CreateItem(UnityEngine.GameObject)">
-            <inheritdoc />
         </member>
     </members>
 </doc>
