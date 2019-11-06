@@ -427,7 +427,7 @@ namespace KK_Plugins
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
 
                 UISystem.gameObject.SetActive(false);
-                ChaControl.StartCoroutine(LoadData(false, true, false));
+                ChaControl.StartCoroutine(LoadData(true, true, false));
             }
 
 #if KK

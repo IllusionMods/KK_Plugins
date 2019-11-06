@@ -25,6 +25,9 @@ namespace KK_Plugins
 #if AI
             public static void OverrideHook() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 #else
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsAccessoryChange), "CopyAcs")]
+            public static void CopyAcsOverride() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+
             [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdateCosColor))]
             public static void FuncUpdateCosColorOverride() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 
