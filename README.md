@@ -76,7 +76,7 @@ v1.5.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 #### InvisibleBody
-**v1.3.1 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
+**v1.3.2 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
 
@@ -89,6 +89,7 @@ v1.2.1 Fixed an incompatibility with UncensorSelector<br/>
 v1.2.2 Updated for KK Darkness<br/>
 v1.3 Added a toggle button for Studio, removed hotkey<br/>
 v1.3.1 Fixed accessories and items attached by animations from turning invisible in AI version<br/>
+v1.3.2 Fixed Studio items turning invisible in AI version<br/>
 </details>
 
 #### InputHotkeyBlock
