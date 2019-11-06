@@ -87,6 +87,7 @@ namespace KK_Plugins
                     MaterialFloatPropertyList.Clear();
                     MaterialColorPropertyList.Clear();
                     MaterialTexturePropertyList.Clear();
+                    MaterialShaderList.Clear();
                     TextureDictionary.Clear();
                 }
 
@@ -231,6 +232,7 @@ namespace KK_Plugins
                 MaterialFloatPropertyList.RemoveAll(x => x.ID == ID);
                 MaterialColorPropertyList.RemoveAll(x => x.ID == ID);
                 MaterialTexturePropertyList.RemoveAll(x => x.ID == ID);
+                MaterialShaderList.RemoveAll(x => x.ID == ID);
             }
             /// <summary>
             /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
