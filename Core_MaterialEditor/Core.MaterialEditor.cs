@@ -230,6 +230,49 @@ namespace KK_Plugins
             return didSet;
         }
 
+        private static bool SetTextureProperty(ChaControl chaControl, string materialName, string property, TexturePropertyType propertyType, Vector2? value) => value == null ? false : SetTextureProperty(chaControl, materialName, property, propertyType, (Vector2)value);
+        private static bool SetTextureProperty(ChaControl chaControl, string materialName, string property, TexturePropertyType propertyType, Vector2 value)
+        {
+            if (value == null) return false;
+
+            bool didSet = false;
+            Material mat = null;
+
+            if (materialName == chaControl.customMatBody.NameFormatted())
+                mat = chaControl.customMatBody;
+            else if (materialName == chaControl.customMatFace.NameFormatted())
+                mat = chaControl.customMatFace;
+            if (mat != null)
+            {
+                if (propertyType == TexturePropertyType.Offset)
+                    mat.SetTextureOffset($"_{property}", value);
+                else
+                    mat.SetTextureScale($"_{property}", value);
+
+                didSet = true;
+            }
+
+            return didSet ? didSet : SetTextureProperty(chaControl.gameObject, materialName, property, propertyType, value, ObjectType.Character);
+        }
+
+        private static bool SetTextureProperty(GameObject go, string materialName, string property, TexturePropertyType propertyType, Vector2? value, ObjectType objectType) => value == null ? false : SetTextureProperty(go, materialName, property, propertyType, (Vector2)value, objectType);
+        private static bool SetTextureProperty(GameObject go, string materialName, string property, TexturePropertyType propertyType, Vector2 value, ObjectType objectType)
+        {
+            bool didSet = false;
+
+            foreach (var obj in GetRendererList(go, objectType))
+                foreach (var objMat in obj.materials)
+                    if (objMat.NameFormatted() == materialName)
+                    {
+                        if (propertyType == TexturePropertyType.Offset)
+                            objMat.SetTextureOffset($"_{property}", value);
+                        else
+                            objMat.SetTextureScale($"_{property}", value);
+                        didSet = true;
+                    }
+            return didSet;
+        }
+
         private static bool SetTextureProperty(ChaControl chaControl, string materialName, string property, Texture2D value)
         {
             if (value == null) return false;
@@ -447,6 +490,7 @@ namespace KK_Plugins
 
         public enum ObjectType { StudioItem, Clothing, Accessory, Hair, Character, Other };
         public enum ShaderPropertyType { Texture, Color, Float }
+        public enum TexturePropertyType { Texture, Offset, Scale }
         public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();
         public static MaterialEditorSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<MaterialEditorSceneController>();
 

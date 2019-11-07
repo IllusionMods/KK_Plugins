@@ -21,12 +21,15 @@ namespace KK_Plugins
             public void RemoveMaterialFloatProperty(int id, string materialName, string property) { }
 
             public void AddMaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal) { }
-
             public Color GetMaterialColorPropertyValue(int id, string materialName, string property) => Color.white;
-
             public Color GetMaterialColorPropertyValueOriginal(int id, string materialName, string property) => Color.white;
             public void RemoveMaterialColorProperty(int id, string materialName, string property) { }
+
+            public void AddMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal) { }
             public void AddMaterialTextureProperty(int id, string materialName, string property, GameObject go) { }
+            public Vector2? GetMaterialTexturePropertyValue(int id, string materialName, string property, TexturePropertyType propertyType) => null;
+            public Vector2? GetMaterialTexturePropertyValueOriginal(int id, string materialName, string property, TexturePropertyType propertyType) => null;
+            public void RemoveMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType) { }
             public void RemoveMaterialTextureProperty(int id, string materialName, string property) { }
 
             public void AddMaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal) { }

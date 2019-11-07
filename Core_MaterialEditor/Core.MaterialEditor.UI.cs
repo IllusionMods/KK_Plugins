@@ -220,6 +220,9 @@ namespace KK_Plugins
             float colorLabelWidth = 10f;
             float resetButtonWidth = 50f;
             float sliderWidth = 150f;
+            float labelXWidth = 50f;
+            float labelYWidth = 10f;
+            float textBoxXYWidth = 50f;
             RectOffset padding = new RectOffset(3, 3, 0, 1);
 
             List<Renderer> rendList = GetRendererList(go, objectType);
@@ -921,11 +924,214 @@ namespace KK_Plugins
                                 else if (objectType == ObjectType.StudioItem)
                                     GetSceneController().RemoveMaterialTextureProperty(id, materialName, propertyName);
                                 else
-                                    GetCharaController(chaControl).RemoveMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName);
+                                    GetCharaController(chaControl).RemoveMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Texture);
                             });
-                            var reseTextureLE = resetTexture.gameObject.AddComponent<LayoutElement>();
-                            reseTextureLE.preferredWidth = resetButtonWidth;
-                            reseTextureLE.flexibleWidth = 0;
+                            var resetTextureLE = resetTexture.gameObject.AddComponent<LayoutElement>();
+                            resetTextureLE.preferredWidth = resetButtonWidth;
+                            resetTextureLE.flexibleWidth = 0;
+
+                            var contentList2 = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                            contentList2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
+                            contentList2.gameObject.AddComponent<Mask>();
+                            contentList2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+
+                            var label2 = UIUtility.CreateText(propertyName, contentList2.transform, "");
+                            label2.alignment = TextAnchor.MiddleLeft;
+                            label2.color = Color.black;
+                            var label2LE = label2.gameObject.AddComponent<LayoutElement>();
+                            label2LE.preferredWidth = labelWidth;
+                            label2LE.flexibleWidth = labelWidth;
+
+                            //Offset
+                            Vector2 textureOffset = mat.GetTextureOffset($"_{propertyName}");
+                            Vector2 textureOffsetInitial = textureOffset;
+                            if (objectType == ObjectType.Other) { }
+                            else if (objectType == ObjectType.StudioItem)
+                            {
+                                var valueInitial = GetSceneController().GetMaterialTexturePropertyValueOriginal(id, materialName, propertyName, TexturePropertyType.Offset);
+                                if (valueInitial != null)
+                                    textureOffsetInitial = (Vector2)valueInitial;
+                            }
+                            else
+                            {
+                                var valueInitial = GetCharaController(chaControl).GetMaterialTexturePropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Offset);
+                                if (valueInitial != null)
+                                    textureOffsetInitial = (Vector2)valueInitial;
+                            }
+
+                            var labelOffsetX = UIUtility.CreateText("OffsetX", contentList2.transform, "Offset X");
+                            labelOffsetX.alignment = TextAnchor.MiddleLeft;
+                            labelOffsetX.color = Color.black;
+                            var labelOffsetXLE = labelOffsetX.gameObject.AddComponent<LayoutElement>();
+                            labelOffsetXLE.preferredWidth = labelXWidth;
+                            labelOffsetXLE.flexibleWidth = 0;
+
+                            var textBoxOffsetX = UIUtility.CreateInputField("OffsetX", contentList2.transform);
+                            textBoxOffsetX.text = textureOffset.x.ToString();
+                            textBoxOffsetX.onEndEdit.AddListener((value) =>
+                            {
+                                if (!float.TryParse(value, out float offsetX)) return;
+                                float offsetY = mat.GetTextureOffset($"_{propertyName}").y;
+                                Vector2 offset = new Vector2(offsetX, offsetY);
+
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialTextureProperty(id, materialName, propertyName, TexturePropertyType.Offset, offset, textureOffsetInitial);
+                                else
+                                    GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Offset, offset, textureOffsetInitial);
+
+                                if (objectType == ObjectType.Character)
+                                    SetTextureProperty(chaControl, materialName, propertyName, TexturePropertyType.Offset, offset);
+                                else
+                                    SetTextureProperty(go, materialName, propertyName, TexturePropertyType.Offset, offset, objectType);
+                            });
+                            var textBoxOffsetXLE = textBoxOffsetX.gameObject.AddComponent<LayoutElement>();
+                            textBoxOffsetXLE.preferredWidth = textBoxXYWidth;
+                            textBoxOffsetXLE.flexibleWidth = 0;
+
+                            var labelOffsetY = UIUtility.CreateText("OffsetY", contentList2.transform, "Y");
+                            labelOffsetY.alignment = TextAnchor.MiddleLeft;
+                            labelOffsetY.color = Color.black;
+                            var labelOffsetYLE = labelOffsetY.gameObject.AddComponent<LayoutElement>();
+                            labelOffsetYLE.preferredWidth = labelYWidth;
+                            labelOffsetYLE.flexibleWidth = 0;
+
+                            var textBoxOffsetY = UIUtility.CreateInputField("OffsetY", contentList2.transform);
+                            textBoxOffsetY.text = textureOffset.y.ToString();
+                            textBoxOffsetY.onEndEdit.AddListener((value) =>
+                            {
+                                if (!float.TryParse(value, out float offsetY)) return;
+                                float offsetX = mat.GetTextureOffset($"_{propertyName}").x;
+
+                                Vector2 offset = new Vector2(offsetX, offsetY);
+
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialTextureProperty(id, materialName, propertyName, TexturePropertyType.Offset, offset, textureOffsetInitial);
+                                else
+                                    GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Offset, offset, textureOffsetInitial);
+
+                                if (objectType == ObjectType.Character)
+                                    SetTextureProperty(chaControl, materialName, propertyName, TexturePropertyType.Offset, offset);
+                                else
+                                    SetTextureProperty(go, materialName, propertyName, TexturePropertyType.Offset, offset, objectType);
+                            });
+                            var textBoxOffsetYLE = textBoxOffsetY.gameObject.AddComponent<LayoutElement>();
+                            textBoxOffsetYLE.preferredWidth = textBoxXYWidth;
+                            textBoxOffsetYLE.flexibleWidth = 0;
+
+                            //Scale
+                            Vector2 textureScale = mat.GetTextureScale($"_{propertyName}");
+                            Vector2 textureScaleInitial = textureScale;
+                            if (objectType == ObjectType.Other) { }
+                            else if (objectType == ObjectType.StudioItem)
+                            {
+                                var valueInitial = GetSceneController().GetMaterialTexturePropertyValueOriginal(id, materialName, propertyName, TexturePropertyType.Scale);
+                                if (valueInitial != null)
+                                    textureScaleInitial = (Vector2)valueInitial;
+                            }
+                            else
+                            {
+                                var valueInitial = GetCharaController(chaControl).GetMaterialTexturePropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Scale);
+                                if (valueInitial != null)
+                                    textureScaleInitial = (Vector2)valueInitial;
+                            }
+                            var labelScaleX = UIUtility.CreateText("ScaleX", contentList2.transform, "Scale X");
+                            labelScaleX.alignment = TextAnchor.MiddleLeft;
+                            labelScaleX.color = Color.black;
+                            var labelScaleXLE = labelScaleX.gameObject.AddComponent<LayoutElement>();
+                            labelScaleXLE.preferredWidth = labelXWidth;
+                            labelScaleXLE.flexibleWidth = 0;
+
+                            var textBoxScaleX = UIUtility.CreateInputField("ScaleX", contentList2.transform);
+                            textBoxScaleX.text = textureScale.x.ToString();
+                            textBoxScaleX.onEndEdit.AddListener((value) =>
+                            {
+                                if (!float.TryParse(value, out float scaleX)) return;
+                                float scaleY = mat.GetTextureScale($"_{propertyName}").y;
+                                Vector2 scale = new Vector2(scaleX, scaleY);
+
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialTextureProperty(id, materialName, propertyName, TexturePropertyType.Scale, scale, textureScaleInitial);
+                                else
+                                    GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Scale, scale, textureScaleInitial);
+
+                                if (objectType == ObjectType.Character)
+                                    SetTextureProperty(chaControl, materialName, propertyName, TexturePropertyType.Scale, scale);
+                                else
+                                    SetTextureProperty(go, materialName, propertyName, TexturePropertyType.Scale, scale, objectType);
+                            });
+                            var textBoxScaleXLE = textBoxScaleX.gameObject.AddComponent<LayoutElement>();
+                            textBoxScaleXLE.preferredWidth = textBoxXYWidth;
+                            textBoxScaleXLE.flexibleWidth = 0;
+
+                            var labelScaleY = UIUtility.CreateText("ScaleY", contentList2.transform, "Y");
+                            labelScaleY.alignment = TextAnchor.MiddleLeft;
+                            labelScaleY.color = Color.black;
+                            var labelScaleYLE = labelScaleY.gameObject.AddComponent<LayoutElement>();
+                            labelScaleYLE.preferredWidth = labelYWidth;
+                            labelScaleYLE.flexibleWidth = 0;
+
+                            var textBoxScaleY = UIUtility.CreateInputField("ScaleY", contentList2.transform);
+                            textBoxScaleY.text = textureScale.y.ToString();
+                            textBoxScaleY.onEndEdit.AddListener((value) =>
+                            {
+                                if (!float.TryParse(value, out float scaleY)) return;
+                                float scaleX = mat.GetTextureScale($"_{propertyName}").x;
+                                Vector2 scale = new Vector2(scaleX, scaleY);
+
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                    GetSceneController().AddMaterialTextureProperty(id, materialName, propertyName, TexturePropertyType.Scale, scale, textureScaleInitial);
+                                else
+                                    GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Scale, scale, textureScaleInitial);
+
+                                if (objectType == ObjectType.Character)
+                                    SetTextureProperty(chaControl, materialName, propertyName, TexturePropertyType.Scale, scale);
+                                else
+                                    SetTextureProperty(go, materialName, propertyName, TexturePropertyType.Scale, scale, objectType);
+                            });
+                            var textBoxScaleYLE = textBoxScaleY.gameObject.AddComponent<LayoutElement>();
+                            textBoxScaleYLE.preferredWidth = textBoxXYWidth;
+                            textBoxScaleYLE.flexibleWidth = 0;
+
+                            var resetTextureOffsetScale = UIUtility.CreateButton($"Reset{propertyName}", contentList2.transform, "Reset");
+                            resetTextureOffsetScale.onClick.AddListener(() =>
+                            {
+                                if (objectType == ObjectType.Other) { }
+                                else if (objectType == ObjectType.StudioItem)
+                                {
+                                    GetSceneController().RemoveMaterialTextureProperty(id, materialName, propertyName, TexturePropertyType.Offset);
+                                    GetSceneController().RemoveMaterialTextureProperty(id, materialName, propertyName, TexturePropertyType.Scale);
+                                }
+                                else
+                                {
+                                    GetCharaController(chaControl).RemoveMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Offset);
+                                    GetCharaController(chaControl).RemoveMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Scale);
+                                }
+
+                                textBoxOffsetX.text = textureOffsetInitial.x.ToString();
+                                textBoxOffsetY.text = textureOffsetInitial.y.ToString();
+                                textBoxScaleX.text = textureScaleInitial.x.ToString();
+                                textBoxScaleY.text = textureScaleInitial.y.ToString();
+
+                                if (objectType == ObjectType.Character)
+                                {
+                                    SetTextureProperty(chaControl, materialName, propertyName, TexturePropertyType.Offset, textureOffsetInitial);
+                                    SetTextureProperty(chaControl, materialName, propertyName, TexturePropertyType.Scale, textureScaleInitial);
+                                }
+                                else
+                                {
+                                    SetTextureProperty(go, materialName, propertyName, TexturePropertyType.Offset, textureOffsetInitial, objectType);
+                                    SetTextureProperty(go, materialName, propertyName, TexturePropertyType.Scale, textureScaleInitial, objectType);
+                                }
+                            });
+                            var resetTextureOffsetScaleLE = resetTextureOffsetScale.gameObject.AddComponent<LayoutElement>();
+                            resetTextureOffsetScaleLE.preferredWidth = resetButtonWidth;
+                            resetTextureOffsetScaleLE.flexibleWidth = 0;
+
+
                         }
                     }
                     if (property.Value.Type == ShaderPropertyType.Float)
@@ -1085,12 +1291,12 @@ namespace KK_Plugins
 
         public static HashSet<string> AccessoryBlacklist = new HashSet<string>()
         {
-            "Color", "Color2", "Color3", "Color4", "HairGloss"
+            "Color", "Color2", "Color3", "Color4"
         };
 
         public static HashSet<string> HairBlacklist = new HashSet<string>()
         {
-            "Color", "Color2", "Color3", "Color4", "HairGloss"
+            "Color", "Color2", "Color3", "Color4"
         };
 
         public static HashSet<string> CharacterBlacklist = new HashSet<string>()
@@ -1113,7 +1319,7 @@ namespace KK_Plugins
 
         public enum RendererProperties { Enabled, ShadowCastingMode, ReceiveShadows }
 
-#region Helper Methods
+        #region Helper Methods
         internal static Texture2D GetT2D(RenderTexture renderTexture)
         {
             var currentActiveRT = RenderTexture.active;
@@ -1141,6 +1347,6 @@ namespace KK_Plugins
             RenderTexture.active = currentActiveRT;
             RenderTexture.ReleaseTemporary(tmp);
         }
-#endregion
+        #endregion
     }
 }

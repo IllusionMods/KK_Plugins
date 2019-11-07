@@ -140,9 +140,25 @@ namespace KK_Plugins
                     foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
                         if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                         {
-                            int texID = operation == SceneOperationKind.Import ? importDictionary[loadedProperty.TexID] : loadedProperty.TexID;
-                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, texID);
-                            if (SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem))
+                            int? texID = null;
+                            if (operation == SceneOperationKind.Import)
+                            {
+                                if (loadedProperty.TexID != null)
+                                    texID = importDictionary[(int)loadedProperty.TexID];
+                            }
+                            else
+                                texID = loadedProperty.TexID;
+
+                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+
+                            bool setTex = false;
+                            if (newTextureProperty.TexID != null)
+                                setTex = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem);
+
+                            bool setOffset = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Offset, newTextureProperty.Offset, ObjectType.StudioItem);
+                            bool setScale = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Scale, newTextureProperty.Scale, ObjectType.StudioItem);
+
+                            if (setTex || setOffset || setScale)
                                 MaterialTexturePropertyList.Add(newTextureProperty);
                         }
             }
@@ -181,9 +197,17 @@ namespace KK_Plugins
 
                         foreach (var loadedProperty in MaterialTexturePropertyList.Where(x => x.ID == copiedItem.Key))
                         {
-                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID);
-                            if (SetTextureProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem))
-                                materialTexturePropertyListNew.Add(newTextureProperty);
+                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+
+                            bool setTex = false;
+                            if (loadedProperty.TexID != null)
+                                setTex = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem);
+
+                            bool setOffset = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Offset, newTextureProperty.Offset, ObjectType.StudioItem);
+                            bool setScale = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Scale, newTextureProperty.Scale, ObjectType.StudioItem);
+
+                            if (setTex || setOffset || setScale)
+                                MaterialTexturePropertyList.Add(newTextureProperty);
                         }
                     }
                 }
@@ -318,6 +342,51 @@ namespace KK_Plugins
             }
             public void RemoveMaterialColorProperty(int id, string materialName, string property) =>
                 MaterialColorPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+
+            public void AddMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal)
+            {
+                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
+                if (textureProperty == null)
+                {
+                    if (propertyType == TexturePropertyType.Offset)
+                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(id, materialName, property, offset: value, offsetOriginal: valueOriginal));
+                    else if (propertyType == TexturePropertyType.Scale)
+                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(id, materialName, property, scale: value, scaleOriginal: valueOriginal));
+                }
+                else
+                {
+                    if (propertyType == TexturePropertyType.Offset)
+                    {
+                        if (value == textureProperty.OffsetOriginal)
+                        {
+                            textureProperty.Offset = null;
+                            textureProperty.OffsetOriginal = null;
+                            if (textureProperty.NullCheck())
+                                MaterialTexturePropertyList.Remove(textureProperty);
+                        }
+                        else
+                        {
+                            textureProperty.Offset = value;
+                            textureProperty.OffsetOriginal = valueOriginal;
+                        }
+                    }
+                    else if (propertyType == TexturePropertyType.Scale)
+                    {
+                        if (value == textureProperty.ScaleOriginal)
+                        {
+                            textureProperty.Scale = null;
+                            textureProperty.ScaleOriginal = null;
+                            if (textureProperty.NullCheck())
+                                MaterialTexturePropertyList.Remove(textureProperty);
+                        }
+                        else
+                        {
+                            textureProperty.Scale = value;
+                            textureProperty.ScaleOriginal = valueOriginal;
+                        }
+                    }
+                }
+            }
             public void AddMaterialTextureProperty(int id, string materialName, string property, GameObject go)
             {
                 OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, FileFilter, FileExt);
@@ -335,6 +404,52 @@ namespace KK_Plugins
                     MatToSet = materialName;
                     GameObjectToSet = go;
                     IDToSet = id;
+                }
+            }
+            public Vector2? GetMaterialTexturePropertyValue(int id, string materialName, string property, TexturePropertyType propertyType)
+            {
+                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
+                if (propertyType == TexturePropertyType.Offset)
+                    return textureProperty?.Offset;
+                if (propertyType == TexturePropertyType.Scale)
+                    return textureProperty?.Scale;
+                return null;
+            }
+            public Vector2? GetMaterialTexturePropertyValueOriginal(int id, string materialName, string property, TexturePropertyType propertyType)
+            {
+                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
+                if (propertyType == TexturePropertyType.Offset)
+                    return textureProperty?.OffsetOriginal;
+                if (propertyType == TexturePropertyType.Scale)
+                    return textureProperty?.ScaleOriginal;
+                return null;
+            }
+            public void RemoveMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType)
+            {
+                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
+                if (textureProperty != null)
+                {
+                    if (propertyType == TexturePropertyType.Texture)
+                    {
+                        Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
+                        textureProperty.TexID = null;
+                        if (textureProperty.NullCheck())
+                            MaterialTexturePropertyList.Remove(textureProperty);
+                    }
+                    else if (propertyType == TexturePropertyType.Offset)
+                    {
+                        textureProperty.Offset = null;
+                        textureProperty.OffsetOriginal = null;
+                        if (textureProperty.NullCheck())
+                            MaterialTexturePropertyList.Remove(textureProperty);
+                    }
+                    else if (propertyType == TexturePropertyType.Scale)
+                    {
+                        textureProperty.Scale = null;
+                        textureProperty.ScaleOriginal = null;
+                        if (textureProperty.NullCheck())
+                            MaterialTexturePropertyList.Remove(textureProperty);
+                    }
                 }
             }
             public void RemoveMaterialTextureProperty(int id, string materialName, string property)
@@ -493,7 +608,15 @@ namespace KK_Plugins
                 [Key("Property")]
                 public string Property;
                 [Key("TexID")]
-                public int TexID;
+                public int? TexID;
+                [Key("Offset")]
+                public Vector2? Offset;
+                [Key("OffsetOriginal")]
+                public Vector2? OffsetOriginal;
+                [Key("Scale")]
+                public Vector2? Scale;
+                [Key("ScaleOriginal")]
+                public Vector2? ScaleOriginal;
 
                 [IgnoreMember]
                 private byte[] _data;
@@ -524,13 +647,18 @@ namespace KK_Plugins
                     }
                 }
 
-                public MaterialTextureProperty(int id, string materialName, string property, int texID)
+                public MaterialTextureProperty(int id, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null)
                 {
                     ID = id;
                     MaterialName = materialName.Replace("(Instance)", "").Trim();
                     Property = property;
                     TexID = texID;
-                    Data = TextureDictionary[texID];
+                    Offset = offset;
+                    OffsetOriginal = offsetOriginal;
+                    Scale = scale;
+                    ScaleOriginal = scaleOriginal;
+                    if (texID != null)
+                        Data = TextureDictionary[(int)texID];
                 }
 
                 public void Dispose()
@@ -543,6 +671,8 @@ namespace KK_Plugins
                 }
 
                 public bool IsEmpty() => Data == null;
+                public bool NullCheck() => TexID == null && Offset == null && Scale == null;
+
             }
 
             [Serializable]
