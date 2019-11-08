@@ -38,9 +38,9 @@ namespace KK_Plugins
         private const float labelXWidth = 60f;
         private const float labelYWidth = 10f;
         private const float textBoxXYWidth = 50f;
-        private static Color evenRowColor = new Color(1f, 1f, 1f, 1f);
-        private static Color oddRowColor = new Color(0.95f, 0.95f, 0.95f, 1f);
-        private static RectOffset padding = new RectOffset(3, 3, 0, 1);
+        private static readonly Color evenRowColor = new Color(1f, 1f, 1f, 1f);
+        private static readonly Color oddRowColor = new Color(0.95f, 0.95f, 0.95f, 1f);
+        private static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
 
 #if AI
         private static readonly HashSet<string> BodyParts = new HashSet<string> {
@@ -1210,18 +1210,18 @@ namespace KK_Plugins
                                     return;
                                 }
                                 float scaleX = mat.GetTextureScale($"_{propertyName}").x;
-                                Vector2 scale = new Vector2(scaleX, scaleY);
+                                textureScale = new Vector2(scaleX, scaleY);
 
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialTextureProperty(id, materialName, propertyName, TexturePropertyType.Scale, scale, textureScaleInitial);
+                                    GetSceneController().AddMaterialTextureProperty(id, materialName, propertyName, TexturePropertyType.Scale, textureScale, textureScaleInitial);
                                 else
-                                    GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Scale, scale, textureScaleInitial);
+                                    GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Scale, textureScale, textureScaleInitial);
 
                                 if (objectType == ObjectType.Character)
-                                    SetTextureProperty(chaControl, materialName, propertyName, TexturePropertyType.Scale, scale);
+                                    SetTextureProperty(chaControl, materialName, propertyName, TexturePropertyType.Scale, textureScale);
                                 else
-                                    SetTextureProperty(go, materialName, propertyName, TexturePropertyType.Scale, scale, objectType);
+                                    SetTextureProperty(go, materialName, propertyName, TexturePropertyType.Scale, textureScale, objectType);
 
                                 label2.text = labelOffsetScaleText();
                             });
