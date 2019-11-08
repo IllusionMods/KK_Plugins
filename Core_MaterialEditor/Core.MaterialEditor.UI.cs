@@ -1436,20 +1436,20 @@ namespace KK_Plugins
             }
         }
 
-        public static HashSet<string> ClothesBlacklist = new HashSet<string>()
-        {
-            "MainTex"
-        };
+        //public static HashSet<string> ClothesBlacklist = new HashSet<string>()
+        //{
+        //    "MainTex"
+        //};
 
-        public static HashSet<string> AccessoryBlacklist = new HashSet<string>()
-        {
-            "Color", "Color2", "Color3", "Color4"
-        };
+        //public static HashSet<string> AccessoryBlacklist = new HashSet<string>()
+        //{
+        //    "Color", "Color2", "Color3", "Color4"
+        //};
 
-        public static HashSet<string> HairBlacklist = new HashSet<string>()
-        {
-            "Color", "Color2", "Color3", "Color4"
-        };
+        //public static HashSet<string> HairBlacklist = new HashSet<string>()
+        //{
+        //    "Color", "Color2", "Color3", "Color4"
+        //};
 
         public static HashSet<string> CharacterBlacklist = new HashSet<string>()
         {
@@ -1458,12 +1458,12 @@ namespace KK_Plugins
 
         public static bool CheckBlacklist(ObjectType objectType, string propertyName)
         {
-            if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(propertyName))
-                return true;
-            if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(propertyName))
-                return true;
-            if (objectType == ObjectType.Hair && HairBlacklist.Contains(propertyName))
-                return true;
+            //if (objectType == ObjectType.Clothing && ClothesBlacklist.Contains(propertyName))
+            //    return true;
+            //if (objectType == ObjectType.Accessory && AccessoryBlacklist.Contains(propertyName))
+            //    return true;
+            //if (objectType == ObjectType.Hair && HairBlacklist.Contains(propertyName))
+            //    return true;
             if (objectType == ObjectType.Character && CharacterBlacklist.Contains(propertyName))
                 return true;
             return false;
