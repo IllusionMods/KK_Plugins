@@ -24,6 +24,24 @@ namespace KK_Plugins
 
         public const string FileExt = ".png";
         public const string FileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
+        private const float marginSize = 5f;
+        private const float headerSize = 20f;
+        private const float scrollOffsetX = -15f;
+        private const float windowMargin = 130f;
+        private const float labelWidth = 50f;
+        private const float buttonWidth = 100f;
+        private const float dropdownWidth = 100f;
+        private const float textBoxWidth = 75f;
+        private const float colorLabelWidth = 10f;
+        private const float resetButtonWidth = 50f;
+        private const float sliderWidth = 150f;
+        private const float labelXWidth = 60f;
+        private const float labelYWidth = 10f;
+        private const float textBoxXYWidth = 50f;
+        private static Color evenRowColor = new Color(1f, 1f, 1f, 1f);
+        private static Color oddRowColor = new Color(0.95f, 0.95f, 0.95f, 1f);
+        private static RectOffset padding = new RectOffset(3, 3, 0, 1);
+
 #if AI
         private static readonly HashSet<string> BodyParts = new HashSet<string> {
             "o_eyebase_L", "o_eyebase_R", "o_eyelashes", "o_eyeshadow", "o_head", "o_namida", "o_tang", "o_tooth", "o_body_cf", "o_mnpa", "o_mnpb", "cm_o_dan00", "o_tang",
@@ -97,11 +115,6 @@ namespace KK_Plugins
         {
             UIUtility.Init(nameof(KK_Plugins));
 
-            float marginSize = 5f;
-            float headerSize = 20f;
-            float scrollOffsetX = -15f;
-            float windowMargin = 130f;
-
             UISystem = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
             UISystem.gameObject.SetActive(false);
             UISystem.gameObject.transform.SetParent(transform);
@@ -129,11 +142,11 @@ namespace KK_Plugins
             var x1 = UIUtility.CreatePanel("x1", close.transform);
             x1.transform.SetRect(0f, 0f, 1f, 1f, 8f, 0f, -8f);
             x1.rectTransform.eulerAngles = new Vector3(0f, 0f, 45f);
-            x1.color = new Color(0f, 0f, 0f, 1f);
+            x1.color = Color.black;
             var x2 = UIUtility.CreatePanel("x2", close.transform);
             x2.transform.SetRect(0f, 0f, 1f, 1f, 8f, 0f, -8f);
             x2.rectTransform.eulerAngles = new Vector3(0f, 0f, -45f);
-            x2.color = new Color(0f, 0f, 0f, 1f);
+            x2.color = Color.black;
 
             MaterialEditorWindow = UIUtility.CreateScrollView("MaterialEditorWindow", mainPanel.transform);
             MaterialEditorWindow.transform.SetRect(0f, 0f, 1f, 1f, marginSize, marginSize, -marginSize, -headerSize - marginSize / 2f);
@@ -213,20 +226,10 @@ namespace KK_Plugins
             if (objectType == ObjectType.Hair || objectType == ObjectType.Character)
                 coordinateIndex = 0;
 
-            float labelWidth = 50f;
-            float buttonWidth = 100f;
-            float dropdownWidth = 100f;
-            float textBoxWidth = 75f;
-            float colorLabelWidth = 10f;
-            float resetButtonWidth = 50f;
-            float sliderWidth = 150f;
-            float labelXWidth = 50f;
-            float labelYWidth = 10f;
-            float textBoxXYWidth = 50f;
-            RectOffset padding = new RectOffset(3, 3, 0, 1);
-
             List<Renderer> rendList = GetRendererList(go, objectType);
             List<string> mats = new List<string>();
+            int rowCounter = 0;
+            Color RowColor() => rowCounter % 2 == 0 ? evenRowColor : oddRowColor;
 
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
             if (body)
@@ -247,6 +250,8 @@ namespace KK_Plugins
                     contentListHeader.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentListHeader.gameObject.AddComponent<Mask>();
                     contentListHeader.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                    contentListHeader.color = RowColor();
+                    rowCounter++;
 
                     var labelRenderer = UIUtility.CreateText(rend.NameFormatted(), contentListHeader.transform, "Renderer:");
                     labelRenderer.alignment = TextAnchor.MiddleLeft;
@@ -278,6 +283,8 @@ namespace KK_Plugins
                     contentItem1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentItem1.gameObject.AddComponent<Mask>();
                     contentItem1.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                    contentItem1.color = RowColor();
+                    rowCounter++;
 
                     bool valueEnabled = rend.enabled;
                     bool valueEnabledInitial = rend.enabled;
@@ -343,6 +350,8 @@ namespace KK_Plugins
                     contentItem2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentItem2.gameObject.AddComponent<Mask>();
                     contentItem2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                    contentItem2.color = RowColor();
+                    rowCounter++;
 
                     var valueShadowCastingMode = rend.shadowCastingMode;
                     var valueShadowCastingModeInitial = rend.shadowCastingMode;
@@ -410,6 +419,8 @@ namespace KK_Plugins
                     contentItem3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentItem3.gameObject.AddComponent<Mask>();
                     contentItem3.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                    contentItem3.color = RowColor();
+                    rowCounter++;
 
                     bool valueReceiveShadows = rend.receiveShadows;
                     bool valueReceiveShadowsInitial = rend.receiveShadows;
@@ -481,6 +492,8 @@ namespace KK_Plugins
                 contentListHeader1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                 contentListHeader1.gameObject.AddComponent<Mask>();
                 contentListHeader1.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                contentListHeader1.color = RowColor();
+                rowCounter++;
 
                 var labelMat = UIUtility.CreateText(materialName, contentListHeader1.transform, "Material:");
                 labelMat.alignment = TextAnchor.MiddleLeft;
@@ -493,6 +506,8 @@ namespace KK_Plugins
                 contentListHeader2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                 contentListHeader2.gameObject.AddComponent<Mask>();
                 contentListHeader2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                contentListHeader2.color = RowColor();
+                rowCounter++;
 
                 var labelShader = UIUtility.CreateText(mat.shader.NameFormatted(), contentListHeader2.transform, "Shader:");
                 labelShader.alignment = TextAnchor.MiddleLeft;
@@ -651,6 +666,8 @@ namespace KK_Plugins
                     contentListHeader3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentListHeader3.gameObject.AddComponent<Mask>();
                     contentListHeader3.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                    contentListHeader3.color = RowColor();
+                    rowCounter++;
 
                     int renderQueue = mat.renderQueue;
                     int renderQueueOriginal = mat.renderQueue;
@@ -738,6 +755,8 @@ namespace KK_Plugins
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
                             contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                            contentList.color = RowColor();
+                            rowCounter++;
 
                             Color valueColor = mat.GetColor($"_{propertyName}");
                             Color valueColorInitial = valueColor;
@@ -946,6 +965,8 @@ namespace KK_Plugins
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
                             contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                            contentList.color = RowColor();
+                            rowCounter++;
 
                             bool defaultValue = true;
                             if (objectType == ObjectType.Other) { }
@@ -1020,6 +1041,8 @@ namespace KK_Plugins
                             contentList2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList2.gameObject.AddComponent<Mask>();
                             contentList2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                            contentList2.color = RowColor();
+                            rowCounter++;
 
                             Vector2 textureOffset = mat.GetTextureOffset($"_{propertyName}");
                             Vector2 textureOffsetInitial = textureOffset;
@@ -1253,6 +1276,8 @@ namespace KK_Plugins
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
                             contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                            contentList.color = RowColor();
+                            rowCounter++;
 
                             float valueFloat = mat.GetFloat($"_{propertyName}");
                             float valueFloatInitial = valueFloat;
