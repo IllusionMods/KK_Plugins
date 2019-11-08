@@ -696,6 +696,8 @@ namespace KK_Plugins
                     return textureProperty?.Offset;
                 if (propertyType == TexturePropertyType.Scale)
                     return textureProperty?.Scale;
+                if (propertyType == TexturePropertyType.Texture) 
+                    return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
                 return null;
             }
             public Vector2? GetMaterialTexturePropertyValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType)
@@ -705,6 +707,8 @@ namespace KK_Plugins
                     return textureProperty?.OffsetOriginal;
                 if (propertyType == TexturePropertyType.Scale)
                     return textureProperty?.ScaleOriginal;
+                if (propertyType == TexturePropertyType.Texture)
+                    return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
                 return null;
             }
             public void RemoveMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType)
