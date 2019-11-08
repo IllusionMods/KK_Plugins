@@ -162,6 +162,8 @@
     <Property Name="Color" Type="Color" />
     <Property Name="Color2" Type="Color" />
     <Property Name="Color3" Type="Color" />
+    <Property Name="LineColor" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="rimpower" Type="Float" Range="0,1" />
     <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" Range="0,1" />
@@ -178,6 +180,8 @@
     <Property Name="Color" Type="Color" />
     <Property Name="Color2" Type="Color" />
     <Property Name="Color3" Type="Color" />
+    <Property Name="LineColor" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="rimpower" Type="Float" Range="0,1" />
     <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" Range="0,1" />
