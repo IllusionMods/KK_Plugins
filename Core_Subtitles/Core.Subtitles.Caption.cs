@@ -82,7 +82,7 @@ namespace KK_Plugins
 
                 subtitleText.text = speaker.IsNullOrEmpty() ? text : $"{speaker}:{text}";
 
-                Logger.LogDebug($"{text}");
+                Logger.LogDebug($"[{voice.assetName}]:{text}");
 
                 voice.OnDestroyAsObservable().Subscribe(delegate (Unit _)
                 {

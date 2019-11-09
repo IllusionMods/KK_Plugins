@@ -1,4 +1,4 @@
-<CharaMakerSubs>
+<AI_Subtitles>
   <Sub Asset="ai_csv_00_00" Text="あなたはいろんなこと、知ってる"/>
   <Sub Asset="ai_csv_00_01" Text="あなたの言うことは、やっぱりわからない"/>
   <Sub Asset="ai_csv_00_02" Text="ありがとう"/>
@@ -17,4 +17,4 @@
   <Sub Asset="ai_csv_05_00" Text="難しいこと考えても、分かんないし"/>
   <Sub Asset="ai_csv_05_01" Text="どう？どう、どう？びっくりした？"/>
   <Sub Asset="ai_csv_05_02" Text="おっはよ~！　ん？　それともこんにちは？こんばんは？"/>
-</CharaMakerSubs>
+</AI_Subtitles>

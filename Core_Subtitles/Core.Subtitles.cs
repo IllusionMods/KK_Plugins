@@ -1,16 +1,25 @@
-﻿using BepInEx.Configuration;
+﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Harmony;
 using BepInEx.Logging;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace KK_Plugins
 {
+    /// <summary>
+    /// Displays subitles on screen for H scenes and in dialogues
+    /// </summary>
     public partial class Subtitles
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
-        public const string Version = "1.5.1";
+        public const string Version = "1.6";
         internal static new ManualLogSource Logger;
 
         internal static Dictionary<string, string> SubtitleDictionary = new Dictionary<string, string>();
@@ -25,6 +34,7 @@ namespace KK_Plugins
         public static ConfigEntry<int> OutlineThickness { get; private set; }
         public static ConfigEntry<Color> TextColor { get; private set; }
         public static ConfigEntry<Color> OutlineColor { get; private set; }
+        public static ConfigEntry<string> SubtitleDirectory { get; private set; }
         #endregion
 
         internal void Awake()
@@ -40,6 +50,7 @@ namespace KK_Plugins
             OutlineThickness = Config.AddSetting("Config", "Outline Thickness", 2, "Outline thickness for subtitle text.");
             TextColor = Config.AddSetting("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, "Subtitle text color.");
             OutlineColor = Config.AddSetting("Config", "Outline Color", Color.black, "Subtitle text outline color.");
+            SubtitleDirectory = Config.AddSetting("Config", "Subtitle Directory", $"Translation\\en\\{PluginNameInternal}", "Directory containing subtitle xml info, relative to the BepInEx folder.");
 
 #if HS
             if (Application.productName != "HoneySelect") return;
@@ -48,6 +59,37 @@ namespace KK_Plugins
             LoadSubtitles();
 
             HarmonyWrapper.PatchAll(typeof(Hooks));
+        }
+
+        private void LoadSubtitles()
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.CharaMakerSubs.xml"))
+                if (stream != null)
+                    using (XmlReader reader = XmlReader.Create(stream))
+                    {
+                        XDocument doc = XDocument.Load(reader);
+                        foreach (var element in doc.Element(PluginNameInternal).Elements("Sub"))
+                            SubtitleDictionary[element.Attribute("Asset").Value] = element.Attribute("Text").Value;
+                    }
+
+            string XMLPath = Path.Combine(Paths.BepInExRootPath, SubtitleDirectory.Value);
+            if (Directory.Exists(XMLPath))
+            {
+                foreach (var fileName in Directory.GetFiles(XMLPath))
+                {
+                    try
+                    {
+                        XDocument doc = XDocument.Load(fileName);
+                        foreach (var element in doc.Element(PluginNameInternal).Elements("Sub"))
+                            SubtitleDictionary[element.Attribute("Asset").Value] = element.Attribute("Text").Value;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError($"Failed to load {PluginNameInternal} xml file.");
+                        Logger.LogError(ex);
+                    }
+                }
+            }
         }
     }
 }
