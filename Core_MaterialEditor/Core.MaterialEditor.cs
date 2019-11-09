@@ -63,6 +63,10 @@ namespace KK_Plugins
             LoadXML();
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
 
+#if KK
+            foreach (var method in typeof(ChaCustom.CvsAccessoryChange).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>m__4")))
+                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.OverrideHook), AccessTools.all)));
+#endif
 #if AI
             foreach (var method in typeof(CharaCustom.CustomClothesPatternSelect).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<ChangeLink>")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.OverrideHook), AccessTools.all)));

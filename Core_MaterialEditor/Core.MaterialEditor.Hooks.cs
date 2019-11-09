@@ -28,6 +28,8 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(CharaCustom.CvsA_Copy), "CopyAccessory")]
             public static void CopyAccessoryOverride() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 #else
+            public static void OverrideHook() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+
             [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsAccessoryChange), "CopyAcs")]
             public static void CopyAcsOverride() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 
