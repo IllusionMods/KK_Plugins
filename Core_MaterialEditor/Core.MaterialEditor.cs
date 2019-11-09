@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
-using BepInEx.Configuration;
 using BepInEx.Harmony;
 using BepInEx.Logging;
 using KK_Plugins.CommonCode;
@@ -65,10 +64,10 @@ namespace KK_Plugins
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
 
 #if AI
-            foreach (var method in typeof(CharaCustom.CustomClothesPatternSelect).GetMethods().Where(x => x.Name.Contains("<ChangeLink>")))
+            foreach (var method in typeof(CharaCustom.CustomClothesPatternSelect).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<ChangeLink>")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.OverrideHook), AccessTools.all)));
 
-            foreach (var method in typeof(CharaCustom.CustomClothesColorSet).GetMethods().Where(x => x.Name.Contains("<Initialize>")))
+            foreach (var method in typeof(CharaCustom.CustomClothesColorSet).GetMethods(AccessTools.all).Where(x => x.Name.StartsWith("<Initialize>")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.OverrideHook), AccessTools.all)));
 #endif
         }
