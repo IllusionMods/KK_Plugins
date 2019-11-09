@@ -251,11 +251,11 @@
     <Property Name="DetailUV" Type="Color" />
     <Property Name="DetailUV2" Type="Color" />
     <Property Name="Color" Type="Color" />
-    <Property Name="Color12" Type="Color" />
+    <Property Name="Color1_2" Type="Color" />
     <Property Name="Color2" Type="Color" />
-    <Property Name="Color22" Type="Color" />
+    <Property Name="Color2_2" Type="Color" />
     <Property Name="Color3" Type="Color" />
-    <Property Name="Color32" Type="Color" />
+    <Property Name="Color3_2" Type="Color" />
     <Property Name="Color4" Type="Color" />
     <Property Name="patternuv1" Type="Color" />
     <Property Name="patternuv2" Type="Color" />
@@ -345,11 +345,11 @@
     <Property Name="DetailUV" Type="Color" />
     <Property Name="DetailUV2" Type="Color" />
     <Property Name="Color" Type="Color" />
-    <Property Name="Color12" Type="Color" />
+    <Property Name="Color1_2" Type="Color" />
     <Property Name="Color2" Type="Color" />
-    <Property Name="Color22" Type="Color" />
+    <Property Name="Color2_2" Type="Color" />
     <Property Name="Color3" Type="Color" />
-    <Property Name="Color32" Type="Color" />
+    <Property Name="Color3_2" Type="Color" />
     <Property Name="Color4" Type="Color" />
     <Property Name="patternuv1" Type="Color" />
     <Property Name="patternuv2" Type="Color" />
