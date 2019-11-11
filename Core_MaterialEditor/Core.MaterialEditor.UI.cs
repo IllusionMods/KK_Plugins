@@ -27,7 +27,7 @@ namespace KK_Plugins
         private const float marginSize = 5f;
         private const float headerSize = 20f;
         private const float scrollOffsetX = -15f;
-        private const float windowMargin = 130f;
+        private const float windowSize = 200f;
         private const float labelWidth = 50f;
         private const float buttonWidth = 100f;
         private const float dropdownWidth = 100f;
@@ -41,6 +41,7 @@ namespace KK_Plugins
         private static readonly Color evenRowColor = new Color(1f, 1f, 1f, 1f);
         private static readonly Color oddRowColor = new Color(0.95f, 0.95f, 0.95f, 1f);
         private static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
+        private static float UIScale = 1f;
 
 #if AI
         private static readonly HashSet<string> BodyParts = new HashSet<string> {
@@ -116,13 +117,14 @@ namespace KK_Plugins
             UIUtility.Init(nameof(KK_Plugins));
 
             UISystem = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
+            UISystem.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale, 1080f / UIScale);
             UISystem.gameObject.SetActive(false);
             UISystem.gameObject.transform.SetParent(transform);
             UISystem.sortingOrder = 1000;
 
             var mainPanel = UIUtility.CreatePanel("Panel", UISystem.transform);
             mainPanel.color = Color.white;
-            mainPanel.transform.SetRect(0.25f, 0f, 1f, 1f, windowMargin, windowMargin, -windowMargin, -windowMargin);
+            mainPanel.transform.SetRect(0.05f, 0.05f, 0.3f, 0.45f);
             UIUtility.AddOutlineToObject(mainPanel.transform, Color.black);
 
             var drag = UIUtility.CreatePanel("Draggable", mainPanel.transform);
