@@ -30,11 +30,10 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "1.8";
+        public const string Version = "1.9";
         internal static new ManualLogSource Logger;
 
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
-        public static readonly string XMLPath = Path.Combine(Paths.PluginPath, PluginNameInternal);
 
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
