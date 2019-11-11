@@ -57,19 +57,22 @@ namespace KK_Plugins
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
 #endif
 #if KK
-           AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
+            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
 
             LoadXML();
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
 
 #if KK || EC
+            //Hooks for transfering accessories (MoreAccessories compatibility)
             foreach (var method in typeof(ChaCustom.CvsAccessoryChange).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>m__4")))
-                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));
+                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.AccessoryTransferHook), AccessTools.all)));
 #elif AI
+            //Hooks for changing clothing pattern
             foreach (var method in typeof(CharaCustom.CustomClothesPatternSelect).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<ChangeLink>")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));
 
+            //hooks for changing clothing color
             foreach (var method in typeof(CharaCustom.CustomClothesColorSet).GetMethods(AccessTools.all).Where(x => x.Name.StartsWith("<Initialize>")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));
 #endif
