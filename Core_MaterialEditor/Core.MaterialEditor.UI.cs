@@ -8,6 +8,7 @@ using System.Reflection;
 using UILib;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 #if KK || AI
 using Studio;
 #endif
@@ -19,15 +20,15 @@ namespace KK_Plugins
 {
     public partial class MaterialEditor
     {
-        private static Canvas UISystem;
-        private static ScrollRect MaterialEditorWindow;
+        private static Canvas MaterialEditorWindow;
+        private static Image MaterialEditorMainPanel;
+        private static ScrollRect MaterialEditorScrollableUI;
 
         public const string FileExt = ".png";
         public const string FileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
         private const float marginSize = 5f;
         private const float headerSize = 20f;
         private const float scrollOffsetX = -15f;
-        private const float windowSize = 200f;
         private const float labelWidth = 50f;
         private const float buttonWidth = 100f;
         private const float dropdownWidth = 100f;
@@ -41,7 +42,6 @@ namespace KK_Plugins
         private static readonly Color evenRowColor = new Color(1f, 1f, 1f, 1f);
         private static readonly Color oddRowColor = new Color(0.95f, 0.95f, 0.95f, 1f);
         private static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
-        private static float UIScale = 1f;
 
 #if AI
         private static readonly HashSet<string> BodyParts = new HashSet<string> {
@@ -116,21 +116,22 @@ namespace KK_Plugins
         {
             UIUtility.Init(nameof(KK_Plugins));
 
-            UISystem = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
-            UISystem.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale, 1080f / UIScale);
-            UISystem.gameObject.SetActive(false);
-            UISystem.gameObject.transform.SetParent(transform);
-            UISystem.sortingOrder = 1000;
+            MaterialEditorWindow = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
+            MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
+            MaterialEditorWindow.gameObject.SetActive(false);
+            MaterialEditorWindow.gameObject.transform.SetParent(transform);
+            MaterialEditorWindow.sortingOrder = 1000;
 
-            var mainPanel = UIUtility.CreatePanel("Panel", UISystem.transform);
-            mainPanel.color = Color.white;
-            mainPanel.transform.SetRect(0.05f, 0.05f, 0.3f, 0.45f);
-            UIUtility.AddOutlineToObject(mainPanel.transform, Color.black);
+            MaterialEditorMainPanel = UIUtility.CreatePanel("Panel", MaterialEditorWindow.transform);
+            MaterialEditorMainPanel.color = Color.white;
+            MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
 
-            var drag = UIUtility.CreatePanel("Draggable", mainPanel.transform);
+            UIUtility.AddOutlineToObject(MaterialEditorMainPanel.transform, Color.black);
+
+            var drag = UIUtility.CreatePanel("Draggable", MaterialEditorMainPanel.transform);
             drag.transform.SetRect(0f, 1f, 1f, 1f, 0f, -headerSize);
             drag.color = Color.gray;
-            UIUtility.MakeObjectDraggable(drag.rectTransform, mainPanel.rectTransform);
+            UIUtility.MakeObjectDraggable(drag.rectTransform, MaterialEditorMainPanel.rectTransform);
 
             var nametext = UIUtility.CreateText("Nametext", drag.transform, "Material Editor");
             nametext.transform.SetRect(0f, 0f, 1f, 1f, 0f, 0f, 0f);
@@ -138,7 +139,7 @@ namespace KK_Plugins
 
             var close = UIUtility.CreateButton("CloseButton", drag.transform, "");
             close.transform.SetRect(1f, 0f, 1f, 1f, -20f);
-            close.onClick.AddListener(() => UISystem.gameObject.SetActive(false));
+            close.onClick.AddListener(() => MaterialEditorWindow.gameObject.SetActive(false));
 
             //X button
             var x1 = UIUtility.CreatePanel("x1", close.transform);
@@ -150,14 +151,19 @@ namespace KK_Plugins
             x2.rectTransform.eulerAngles = new Vector3(0f, 0f, -45f);
             x2.color = Color.black;
 
-            MaterialEditorWindow = UIUtility.CreateScrollView("MaterialEditorWindow", mainPanel.transform);
-            MaterialEditorWindow.transform.SetRect(0f, 0f, 1f, 1f, marginSize, marginSize, -marginSize, -headerSize - marginSize / 2f);
-            MaterialEditorWindow.gameObject.AddComponent<Mask>();
-            MaterialEditorWindow.content.gameObject.AddComponent<VerticalLayoutGroup>();
-            MaterialEditorWindow.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            MaterialEditorWindow.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(scrollOffsetX, 0f);
-            MaterialEditorWindow.viewport.offsetMax = new Vector2(scrollOffsetX, 0f);
-            MaterialEditorWindow.movementType = ScrollRect.MovementType.Clamped;
+            MaterialEditorScrollableUI = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
+            MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, marginSize, marginSize, -marginSize, -headerSize - marginSize / 2f);
+            MaterialEditorScrollableUI.gameObject.AddComponent<Mask>();
+            MaterialEditorScrollableUI.content.gameObject.AddComponent<VerticalLayoutGroup>();
+            MaterialEditorScrollableUI.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(scrollOffsetX, 0f);
+            MaterialEditorScrollableUI.viewport.offsetMax = new Vector2(scrollOffsetX, 0f);
+            MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
+        }
+        private void UISettingChanged(object sender, EventArgs e)
+        {
+            MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
+            MaterialEditorMainPanel?.transform?.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
         }
 
 #if KK || AI
@@ -217,9 +223,11 @@ namespace KK_Plugins
 
         private static void PopulateList(GameObject go, ObjectType objectType, int id = 0, ChaControl chaControl = null, int coordinateIndex = 0, int slot = 0, bool body = false, bool face = false)
         {
-            UISystem.gameObject.SetActive(true);
+            MaterialEditorWindow.gameObject.SetActive(true);
+            MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
+            MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
 
-            foreach (Transform child in MaterialEditorWindow.content)
+            foreach (Transform child in MaterialEditorScrollableUI.content)
                 Destroy(child.gameObject);
 
             if (go == null)
@@ -248,7 +256,7 @@ namespace KK_Plugins
                         else
                             matList[mat.NameFormatted()] = mat;
 
-                    var contentListHeader = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                    var contentListHeader = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
                     contentListHeader.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentListHeader.gameObject.AddComponent<Mask>();
                     contentListHeader.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -281,7 +289,7 @@ namespace KK_Plugins
                     exportMeshButtonLE.preferredWidth = 85;
                     exportMeshButtonLE.flexibleWidth = 0;
 
-                    var contentItem1 = UIUtility.CreatePanel("ContentItem1", MaterialEditorWindow.content.transform);
+                    var contentItem1 = UIUtility.CreatePanel("ContentItem1", MaterialEditorScrollableUI.content.transform);
                     contentItem1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentItem1.gameObject.AddComponent<Mask>();
                     contentItem1.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -348,7 +356,7 @@ namespace KK_Plugins
                     resetEnabledLE.preferredWidth = resetButtonWidth;
                     resetEnabledLE.flexibleWidth = 0;
 
-                    var contentItem2 = UIUtility.CreatePanel("ContentItem2", MaterialEditorWindow.content.transform);
+                    var contentItem2 = UIUtility.CreatePanel("ContentItem2", MaterialEditorScrollableUI.content.transform);
                     contentItem2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentItem2.gameObject.AddComponent<Mask>();
                     contentItem2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -417,7 +425,7 @@ namespace KK_Plugins
                     resetShadowCastingModeLE.preferredWidth = resetButtonWidth;
                     resetShadowCastingModeLE.flexibleWidth = 0;
 
-                    var contentItem3 = UIUtility.CreatePanel("ContentItem3", MaterialEditorWindow.content.transform);
+                    var contentItem3 = UIUtility.CreatePanel("ContentItem3", MaterialEditorScrollableUI.content.transform);
                     contentItem3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentItem3.gameObject.AddComponent<Mask>();
                     contentItem3.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -490,7 +498,7 @@ namespace KK_Plugins
                 string materialName = mat.NameFormatted();
                 string shaderName = mat.shader.NameFormatted();
 
-                var contentListHeader1 = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                var contentListHeader1 = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
                 contentListHeader1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                 contentListHeader1.gameObject.AddComponent<Mask>();
                 contentListHeader1.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -504,7 +512,7 @@ namespace KK_Plugins
                 labelMat2.alignment = TextAnchor.MiddleRight;
                 labelMat2.color = Color.black;
 
-                var contentListHeader2 = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                var contentListHeader2 = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
                 contentListHeader2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                 contentListHeader2.gameObject.AddComponent<Mask>();
                 contentListHeader2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -664,7 +672,7 @@ namespace KK_Plugins
                     resetShaderLE.preferredWidth = resetButtonWidth;
                     resetShaderLE.flexibleWidth = 0;
 
-                    var contentListHeader3 = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                    var contentListHeader3 = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
                     contentListHeader3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                     contentListHeader3.gameObject.AddComponent<Mask>();
                     contentListHeader3.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -753,7 +761,7 @@ namespace KK_Plugins
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
-                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
                             contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -963,7 +971,7 @@ namespace KK_Plugins
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
-                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
                             contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -1039,7 +1047,7 @@ namespace KK_Plugins
                             resetTextureLE.flexibleWidth = 0;
 
                             //Offset & Scale
-                            var contentList2 = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                            var contentList2 = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
                             contentList2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList2.gameObject.AddComponent<Mask>();
                             contentList2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
@@ -1274,7 +1282,7 @@ namespace KK_Plugins
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
-                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorWindow.content.transform);
+                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
                             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
                             contentList.gameObject.AddComponent<Mask>();
                             contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;

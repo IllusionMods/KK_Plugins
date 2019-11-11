@@ -395,7 +395,7 @@ namespace KK_Plugins
                 ChaControl.StartCoroutine(LoadData(true, true, false));
 
                 if (MakerAPI.InsideAndLoaded)
-                    UISystem.gameObject.SetActive(false);
+                    MaterialEditorWindow.gameObject.SetActive(false);
             }
 
             internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
@@ -412,7 +412,7 @@ namespace KK_Plugins
                 MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
                 MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
 
-                if (UISystem.gameObject.activeInHierarchy)
+                if (MaterialEditorWindow.gameObject.activeInHierarchy)
                     PopulateListAccessory();
             }
 
@@ -422,7 +422,7 @@ namespace KK_Plugins
 
                 AccessorySelectedSlotChanging = true;
 
-                if (UISystem.gameObject.activeInHierarchy)
+                if (MaterialEditorWindow.gameObject.activeInHierarchy)
                     PopulateListAccessory();
             }
 
@@ -457,7 +457,7 @@ namespace KK_Plugins
                 MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
 
-                UISystem.gameObject.SetActive(false);
+                MaterialEditorWindow.gameObject.SetActive(false);
                 ChaControl.StartCoroutine(LoadData(true, true, false));
             }
 
@@ -497,7 +497,7 @@ namespace KK_Plugins
                 }
 
                 if ((int)e.CopyDestination == CurrentCoordinateIndex)
-                    UISystem.gameObject.SetActive(false);
+                    MaterialEditorWindow.gameObject.SetActive(false);
             }
 #endif
 
@@ -517,7 +517,7 @@ namespace KK_Plugins
                 MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
                 MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
 
-                UISystem.gameObject.SetActive(false);
+                MaterialEditorWindow.gameObject.SetActive(false);
             }
 
             internal void ChangeCustomClothesEvent(int slot)
@@ -542,7 +542,7 @@ namespace KK_Plugins
                 MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
                 MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
 
-                UISystem.gameObject.SetActive(false);
+                MaterialEditorWindow.gameObject.SetActive(false);
             }
 
             internal void ChangeHairEvent(int slot)
@@ -556,7 +556,7 @@ namespace KK_Plugins
                 MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair && x.Slot == slot);
                 MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair && x.Slot == slot);
 
-                UISystem.gameObject.SetActive(false);
+                MaterialEditorWindow.gameObject.SetActive(false);
             }
             /// <summary>
             /// Refresh the clothes MainTex, typically called after editing colors in the character maker

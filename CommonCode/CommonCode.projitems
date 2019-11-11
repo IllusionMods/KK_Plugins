@@ -10,5 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommonCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfigurationManagerAttributes.cs" />
   </ItemGroup>
 </Project>

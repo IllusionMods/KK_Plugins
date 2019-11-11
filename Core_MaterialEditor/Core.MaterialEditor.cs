@@ -16,6 +16,8 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using HarmonyLib;
+using BepInEx.Configuration;
+using CommonCode;
 #if KK || AI
 using KKAPI.Studio.SaveLoad;
 using Studio;
@@ -38,10 +40,22 @@ namespace KK_Plugins
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
+        public static ConfigEntry<float> UIScale { get; private set; }
+        public static ConfigEntry<float> UIWidth { get; private set; }
+        public static ConfigEntry<float> UIHeight { get; private set; }
+
         internal void Main()
         {
             Logger = base.Logger;
             Directory.CreateDirectory(ExportPath);
+
+            UIScale = Config.AddSetting("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 3 }));
+            UIWidth = Config.AddSetting("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 2, ShowRangeAsPercent = false }));
+            UIHeight = Config.AddSetting("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 1, ShowRangeAsPercent = false }));
+
+            UIScale.SettingChanged += UISettingChanged;
+            UIWidth.SettingChanged += UISettingChanged;
+            UIHeight.SettingChanged += UISettingChanged;
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
