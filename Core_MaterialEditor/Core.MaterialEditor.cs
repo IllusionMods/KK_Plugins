@@ -48,6 +48,7 @@ namespace KK_Plugins
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
+            AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
 
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
 
@@ -56,23 +57,21 @@ namespace KK_Plugins
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
 #endif
 #if KK
-            AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
-            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
+           AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
 
             LoadXML();
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
 
-#if KK
+#if KK || EC
             foreach (var method in typeof(ChaCustom.CvsAccessoryChange).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>m__4")))
-                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.OverrideHook), AccessTools.all)));
-#endif
-#if AI
+                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));
+#elif AI
             foreach (var method in typeof(CharaCustom.CustomClothesPatternSelect).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<ChangeLink>")))
-                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.OverrideHook), AccessTools.all)));
+                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));
 
             foreach (var method in typeof(CharaCustom.CustomClothesColorSet).GetMethods(AccessTools.all).Where(x => x.Name.StartsWith("<Initialize>")))
-                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.OverrideHook), AccessTools.all)));
+                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));
 #endif
         }
 

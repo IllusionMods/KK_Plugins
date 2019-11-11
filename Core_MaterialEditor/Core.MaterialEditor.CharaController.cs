@@ -558,6 +558,41 @@ namespace KK_Plugins
 
                 UISystem.gameObject.SetActive(false);
             }
+            /// <summary>
+            /// Refresh the clothes MainTex, typically called after editing colors in the character maker
+            /// </summary>
+            public void RefreshClothesMainTex() => StartCoroutine(RefreshClothesMainTexCoroutine());
+            private IEnumerator RefreshClothesMainTexCoroutine()
+            {
+                yield return new WaitForEndOfFrame();
+                foreach (var property in MaterialTexturePropertyList)
+                {
+                    if (CheckBlacklist(property.ObjectType, property.Property))
+                        continue;
+
+                    if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
+                        if (property.TexID != null)
+                            SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]), property.ObjectType);
+                }
+            }
+            /// <summary>
+            /// Refresh the body MainTex, typically called after editing colors in the character maker
+            /// </summary>
+            public void RefreshBodyMainTex() => StartCoroutine(RefreshBodyMainTexCoroutine());
+            private IEnumerator RefreshBodyMainTexCoroutine()
+            {
+                yield return new WaitForEndOfFrame();
+
+                foreach (var property in MaterialTexturePropertyList)
+                {
+                    if (CheckBlacklist(property.ObjectType, property.Property))
+                        continue;
+
+                    if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")
+                        if (property.TexID != null)
+                            SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]));
+                }
+            }
 
             public void AddRendererProperty(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property, string value, string valueOriginal)
             {
@@ -696,7 +731,7 @@ namespace KK_Plugins
                     return textureProperty?.Offset;
                 if (propertyType == TexturePropertyType.Scale)
                     return textureProperty?.Scale;
-                if (propertyType == TexturePropertyType.Texture) 
+                if (propertyType == TexturePropertyType.Texture)
                     return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
                 return null;
             }
