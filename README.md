@@ -2,19 +2,13 @@ Support me on Patreon!<br/>
 https://www.patreon.com/DeathWeasel
 
 # KK_Plugins
-Plugins for Koikatsu and EmotionCreators
+Plugins for Koikatsu, EmotionCreators, and AI Girl
 
-## Installation - Koikatsu
-1. Install [BepInEx](https://github.com/BepInEx/BepInEx/releases)
+## Installation
+1. Install the latest [Bleeding Edge build of BepInEx](https://builds.bepis.io/projects/bepinex_be)
 2. Install [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases)
-3. Install [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)
-4. Extract the plugin .zip file to your Koikatu folder
-
-## Installation - EmotionCreators
-1. Install [Bepinex 5](https://builds.bepis.io/bepinex_be) BepInEx build for post-Unity 2018 game (x64) - Build 133
-2. Install [EC_CorePlugins](https://builds.bepis.io/ec_coreplugins)
-3. Install [ECAPI](https://github.com/ManlyMarco/KKAPI/releases)
-4. Extract the plugin .zip file to your Koikatu folder
+3. Install [IllusionModdingAPI](https://github.com/IllusionMods/IllusionModdingAPI)
+4. Extract the plugin .zip file to your game folder
 
 #### CharaMakerLoadedSound
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip)** - For Koikatsu<br/>
