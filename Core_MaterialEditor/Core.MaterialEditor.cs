@@ -49,9 +49,9 @@ namespace KK_Plugins
             Logger = base.Logger;
             Directory.CreateDirectory(ExportPath);
 
-            UIScale = Config.AddSetting("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 3 }));
-            UIWidth = Config.AddSetting("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 2, ShowRangeAsPercent = false }));
-            UIHeight = Config.AddSetting("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 1, ShowRangeAsPercent = false }));
+            UIScale = Config.Bind("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 3 }));
+            UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 2, ShowRangeAsPercent = false }));
+            UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 1, ShowRangeAsPercent = false }));
 
             UIScale.SettingChanged += UISettingChanged;
             UIWidth.SettingChanged += UISettingChanged;

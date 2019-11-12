@@ -41,16 +41,16 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
 
-            ShowSubtitles = Config.AddSetting("Config", "Show Subtitles", true, "Enable or disable showing subtitles.");
-            FontName = Config.AddSetting("Config", "Font Name", "Arial", "Name of the font to use for subtitle text.");
-            FontSize = Config.AddSetting("Config", "Font Size", -5, "Font size of subtitles.");
-            FontStyle = Config.AddSetting("Config", "Font Style", UnityEngine.FontStyle.Bold, "Font style of subtitles, i.e. bold, italic, etc.");
-            TextAlign = Config.AddSetting("Config", "Text Align", TextAnchor.LowerCenter, "Text alignment of subtitles.");
-            TextOffset = Config.AddSetting("Config", "Text Offset", 10, "Distance from edge of the screen.");
-            OutlineThickness = Config.AddSetting("Config", "Outline Thickness", 2, "Outline thickness for subtitle text.");
-            TextColor = Config.AddSetting("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, "Subtitle text color.");
-            OutlineColor = Config.AddSetting("Config", "Outline Color", Color.black, "Subtitle text outline color.");
-            SubtitleDirectory = Config.AddSetting("Config", "Subtitle Directory", $"Translation\\en\\{PluginNameInternal}", "Directory containing subtitle xml info, relative to the BepInEx folder.");
+            ShowSubtitles = Config.Bind("Config", "Show Subtitles", true, "Enable or disable showing subtitles.");
+            FontName = Config.Bind("Config", "Font Name", "Arial", "Name of the font to use for subtitle text.");
+            FontSize = Config.Bind("Config", "Font Size", -5, "Font size of subtitles.");
+            FontStyle = Config.Bind("Config", "Font Style", UnityEngine.FontStyle.Bold, "Font style of subtitles, i.e. bold, italic, etc.");
+            TextAlign = Config.Bind("Config", "Text Align", TextAnchor.LowerCenter, "Text alignment of subtitles.");
+            TextOffset = Config.Bind("Config", "Text Offset", 10, "Distance from edge of the screen.");
+            OutlineThickness = Config.Bind("Config", "Outline Thickness", 2, "Outline thickness for subtitle text.");
+            TextColor = Config.Bind("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, "Subtitle text color.");
+            OutlineColor = Config.Bind("Config", "Outline Color", Color.black, "Subtitle text outline color.");
+            SubtitleDirectory = Config.Bind("Config", "Subtitle Directory", $"Translation\\en\\{PluginNameInternal}", "Directory containing subtitle xml info, relative to the BepInEx folder.");
 
 #if HS
             if (Application.productName != "HoneySelect") return;

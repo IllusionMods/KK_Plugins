@@ -20,7 +20,7 @@ namespace KK_Plugins
 
         internal void Main()
         {
-            Enabled = Config.AddSetting("Settings", "Enabled", false, "Whether the plugin is enabled");
+            Enabled = Config.Bind("Settings", "Enabled", false, "Whether the plugin is enabled");
             if (!Enabled.Value) return;
 
             if (Directory.Exists(Path.Combine(Paths.GameRootPath, "TextDump")))

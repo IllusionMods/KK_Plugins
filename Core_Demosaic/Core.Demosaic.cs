@@ -20,7 +20,7 @@ namespace KK_Plugins
 
         internal void Main()
         {
-            Enabled = Config.AddSetting("Settings", "Enabled", true, "Whether the plugin is enabled");
+            Enabled = Config.Bind("Settings", "Enabled", true, "Whether the plugin is enabled");
             Enabled.SettingChanged += Enabled_SettingChanged;
             _enabled = Enabled.Value;
             HarmonyWrapper.PatchAll(typeof(Demosaic));

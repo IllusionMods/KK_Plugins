@@ -311,6 +311,15 @@
             Writes the config to disk.
             </summary>
         </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.GetSetting``1(BepInEx.Configuration.ConfigDefinition)">
+            <summary>
+            Access one of the existing settings. If the setting has not been added yet, null is returned.
+            If the setting exists but has a different type than T, an exception is thrown.
+            New settings should be added with <see cref="M:BepInEx.Configuration.ConfigFile.AddSetting``1(BepInEx.Configuration.ConfigDefinition,``0,BepInEx.Configuration.ConfigDescription)"/>.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="configDefinition">Section and Key of the setting.</param>
+        </member>
         <member name="M:BepInEx.Configuration.ConfigFile.GetSetting``1(System.String,System.String)">
             <summary>
             Access one of the existing settings. If the setting has not been added yet, null is returned.
@@ -320,6 +329,59 @@
             <typeparam name="T">Type of the value contained in this setting.</typeparam>
             <param name="section">Section/category/group of the setting. Settings are grouped by this.</param>
             <param name="key">Name of the setting.</param>
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.TryGetEntry``1(BepInEx.Configuration.ConfigDefinition,BepInEx.Configuration.ConfigEntry{``0}@)">
+            <summary>
+            Access one of the existing settings. If the setting has not been added yet, false is returned. Otherwise, true.
+            If the setting exists but has a different type than T, an exception is thrown.
+            New settings should be added with <see cref="M:BepInEx.Configuration.ConfigFile.Bind``1(BepInEx.Configuration.ConfigDefinition,``0,BepInEx.Configuration.ConfigDescription)"/>.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="configDefinition">Section and Key of the setting.</param>
+            <param name="entry">The ConfigEntry value to return.</param>
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.TryGetEntry``1(System.String,System.String,BepInEx.Configuration.ConfigEntry{``0}@)">
+            <summary>
+            Access one of the existing settings. If the setting has not been added yet, null is returned.
+            If the setting exists but has a different type than T, an exception is thrown.
+            New settings should be added with <see cref="M:BepInEx.Configuration.ConfigFile.Bind``1(BepInEx.Configuration.ConfigDefinition,``0,BepInEx.Configuration.ConfigDescription)"/>.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="section">Section/category/group of the setting. Settings are grouped by this.</param>
+            <param name="key">Name of the setting.</param>
+            <param name="entry">The ConfigEntry value to return.</param>
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.Bind``1(BepInEx.Configuration.ConfigDefinition,``0,BepInEx.Configuration.ConfigDescription)">
+            <summary>
+            Create a new setting. The setting is saved to drive and loaded automatically.
+            Each definition can be used to add only one setting, trying to add a second setting will throw an exception.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="configDefinition">Section and Key of the setting.</param>
+            <param name="defaultValue">Value of the setting if the setting was not created yet.</param>
+            <param name="configDescription">Description of the setting shown to the user and other metadata.</param>
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.Bind``1(System.String,System.String,``0,BepInEx.Configuration.ConfigDescription)">
+            <summary>
+            Create a new setting. The setting is saved to drive and loaded automatically.
+            Each section and key pair can be used to add only one setting, trying to add a second setting will throw an exception.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="section">Section/category/group of the setting. Settings are grouped by this.</param>
+            <param name="key">Name of the setting.</param>
+            <param name="defaultValue">Value of the setting if the setting was not created yet.</param>
+            <param name="configDescription">Description of the setting shown to the user and other metadata.</param>
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.Bind``1(System.String,System.String,``0,System.String)">
+            <summary>
+            Create a new setting. The setting is saved to drive and loaded automatically.
+            Each section and key pair can be used to add only one setting, trying to add a second setting will throw an exception.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="section">Section/category/group of the setting. Settings are grouped by this.</param>
+            <param name="key">Name of the setting.</param>
+            <param name="defaultValue">Value of the setting if the setting was not created yet.</param>
+            <param name="description">Simple description of the setting shown to the user.</param>
         </member>
         <member name="M:BepInEx.Configuration.ConfigFile.AddSetting``1(BepInEx.Configuration.ConfigDefinition,``0,BepInEx.Configuration.ConfigDescription)">
             <summary>
@@ -355,12 +417,12 @@
         </member>
         <member name="M:BepInEx.Configuration.ConfigFile.Wrap``1(System.String,System.String,System.String,``0)">
             <summary>
-            Access a setting. Use AddSetting and GetSetting instead.
+            Access a setting. Use Bind instead.
             </summary>
         </member>
         <member name="M:BepInEx.Configuration.ConfigFile.Wrap``1(BepInEx.Configuration.ConfigDefinition,``0)">
             <summary>
-            Access a setting. Use AddSetting and GetSetting instead.
+            Access a setting. Use Bind instead.
             </summary>
         </member>
         <member name="E:BepInEx.Configuration.ConfigFile.ConfigReloaded">
@@ -371,6 +433,55 @@
         <member name="E:BepInEx.Configuration.ConfigFile.SettingChanged">
             <summary>
             Fired when one of the settings is changed.
+            </summary>
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.Contains(System.Collections.Generic.KeyValuePair{BepInEx.Configuration.ConfigDefinition,BepInEx.Configuration.ConfigEntryBase})">
+            <inheritdoc />
+        </member>
+        <member name="P:BepInEx.Configuration.ConfigFile.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:BepInEx.Configuration.ConfigFile.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.ContainsKey(BepInEx.Configuration.ConfigDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.Add(BepInEx.Configuration.ConfigDefinition,BepInEx.Configuration.ConfigEntryBase)">
+            <inheritdoc />
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.Remove(BepInEx.Configuration.ConfigDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.Clear">
+            <inheritdoc />
+        </member>
+        <member name="P:BepInEx.Configuration.ConfigFile.System#Collections#Generic#IDictionary{BepInEx#Configuration#ConfigDefinition,BepInEx#Configuration#ConfigEntryBase}#Item(BepInEx.Configuration.ConfigDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="P:BepInEx.Configuration.ConfigFile.Item(BepInEx.Configuration.ConfigDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="P:BepInEx.Configuration.ConfigFile.Item(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="section"></param>
+            <param name="key"></param>
+        </member>
+        <member name="P:BepInEx.Configuration.ConfigFile.Keys">
+            <summary>
+            Returns the ConfigDefinitions that the ConfigFile contains.
+            <para>Creates a new array when the property is accessed. Thread-safe.</para>
+            </summary>
+        </member>
+        <member name="P:BepInEx.Configuration.ConfigFile.System#Collections#Generic#IDictionary{BepInEx#Configuration#ConfigDefinition,BepInEx#Configuration#ConfigEntryBase}#Values">
+            <summary>
+            Returns the ConfigEntryBase values that the ConfigFile contains.
+            <para>Creates a new array when the property is accessed. Thread-safe.</para>
             </summary>
         </member>
         <member name="T:BepInEx.Configuration.ConfigWrapper`1">
@@ -410,7 +521,7 @@
             triggered when the user presses the exact combination. For example, <c>F + LeftCtrl</c> will trigger only if user 
             presses and holds only LeftCtrl, and then presses F. If any other keys are pressed, the shortcut will not trigger.
             
-            Can be used as a value of a setting in <see cref="M:BepInEx.Configuration.ConfigFile.AddSetting``1(BepInEx.Configuration.ConfigDefinition,``0,BepInEx.Configuration.ConfigDescription)"/> 
+            Can be used as a value of a setting in <see cref="M:BepInEx.Configuration.ConfigFile.Bind``1(BepInEx.Configuration.ConfigDefinition,``0,BepInEx.Configuration.ConfigDescription)"/> 
             to allow user to change this shortcut and have the changes saved.
             
             How to use: Use <see cref="M:BepInEx.Configuration.KeyboardShortcut.IsDown"/> in this class instead of <see cref="M:UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode)"/> in the Update loop.
@@ -720,7 +831,7 @@
             The GameObject that all plugins are attached to as components.
             </summary>
         </member>
-        <member name="M:BepInEx.Bootstrap.Chainloader.Initialize(System.String,System.Boolean)">
+        <member name="M:BepInEx.Bootstrap.Chainloader.Initialize(System.String,System.Boolean,System.Collections.Generic.ICollection{BepInEx.Logging.LogEventArgs})">
             <summary>
             Initializes BepInEx to be able to start the chainloader.
             </summary>
@@ -777,7 +888,7 @@
             <param name="typeSelector">A function to check if a type should be selected and to build the type metadata.</param>
             <param name="assemblyFilter">A filter function to quickly determine if the assembly can be loaded.</param>
             <param name="cacheName">The name of the cache to get cached types from.</param>
-            <returns>A list of all loadable type metadatas indexed by the full path to the assembly that contains the types.</returns>
+            <returns>A dictionary of all assemblies in the directory and the list of type metadatas of types that match the selector.</returns>
         </member>
         <member name="M:BepInEx.Bootstrap.TypeLoader.LoadAssemblyCache``1(System.String)">
             <summary>
@@ -827,6 +938,7 @@
             <summary>
             Create a new instance of a plugin and all of its tied in objects.
             </summary>
+            <exception cref="T:System.InvalidOperationException">BepInPlugin attribute is missing.</exception>
         </member>
         <member name="T:BepInEx.Logging.DiskLogListener">
             <summary>

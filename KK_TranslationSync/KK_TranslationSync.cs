@@ -25,8 +25,8 @@ namespace KK_Plugins
 
         internal void Main()
         {
-            Personality = Config.AddSetting("Config", "Personality", "c00", "Personality to sync");
-            TranslationSyncHotkey = Config.AddSetting("Keyboard Shortcuts", "Sync Translation Hotkey", new KeyboardShortcut(KeyCode.Alpha0), "Press to sync translations for the specified personality. Hold alt to force overwrite all translations if different (dangerous, make backups first). Hold ctrl to sync all translations for all personalities (may take a while).");
+            Personality = Config.Bind("Config", "Personality", "c00", "Personality to sync");
+            TranslationSyncHotkey = Config.Bind("Keyboard Shortcuts", "Sync Translation Hotkey", new KeyboardShortcut(KeyCode.Alpha0), "Press to sync translations for the specified personality. Hold alt to force overwrite all translations if different (dangerous, make backups first). Hold ctrl to sync all translations for all personalities (may take a while).");
         }
 
         internal void Update()

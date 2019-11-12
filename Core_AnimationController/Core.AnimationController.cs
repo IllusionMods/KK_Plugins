@@ -49,7 +49,7 @@ namespace KK_Plugins
         internal void Main()
         {
             Logger = base.Logger;
-            AnimationControllerHotkey = Config.AddSetting("Keyboard Shortcuts", "Toggle Animation Controller Window", new KeyboardShortcut(KeyCode.Minus), "Show or hide the Animation Controller window in Studio");
+            AnimationControllerHotkey = Config.Bind("Keyboard Shortcuts", "Toggle Animation Controller Window", new KeyboardShortcut(KeyCode.Minus), "Show or hide the Animation Controller window in Studio");
             CharacterApi.RegisterExtraBehaviour<AnimationControllerCharaController>(GUID);
             StudioSaveLoadApi.RegisterExtraBehaviour<AnimationControllerSceneController>(GUID);
 

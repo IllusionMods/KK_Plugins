@@ -70,5 +70,17 @@
             </summary>
             <param name="harmonyInstanceId">The ID for the Harmony instance to create, which will be used.</param>
         </member>
+        <member name="T:BepInEx.Harmony.HarmonyExtensions">
+            <summary>
+            An extension class for Harmony based operations.
+            </summary>
+        </member>
+        <member name="M:BepInEx.Harmony.HarmonyExtensions.PatchAll(HarmonyLib.Harmony,System.Type)">
+            <summary>
+            Applies all patches specified in the type.
+            </summary>
+            <param name="harmonyInstance">The HarmonyInstance to use.</param>
+            <param name="type">The type to scan.</param>
+        </member>
     </members>
 </doc>

@@ -17,9 +17,9 @@ namespace KK_Plugins
 
         internal void Start()
         {
-            EnableCrossdressing = Config.AddSetting("Config", "Enable clothing for either gender", true, "Allows any clothing to be worn by either gender.");
-            EnableBras = Config.AddSetting("Config", "Enable bras for all tops", false, "Enable bras for all tops for all characters. May cause clipping or other undesired effects.");
-            EnableSkirts = Config.AddSetting("Config", "Enable skirts for all tops", false, "Enable skirts for all tops for all characters. May cause clipping or other undesired effects.");
+            EnableCrossdressing = Config.Bind("Config", "Enable clothing for either gender", true, "Allows any clothing to be worn by either gender.");
+            EnableBras = Config.Bind("Config", "Enable bras for all tops", false, "Enable bras for all tops for all characters. May cause clipping or other undesired effects.");
+            EnableSkirts = Config.Bind("Config", "Enable skirts for all tops", false, "Enable skirts for all tops for all characters. May cause clipping or other undesired effects.");
 
             HarmonyWrapper.PatchAll(typeof(ClothingUnlocker));
         }

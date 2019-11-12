@@ -22,7 +22,7 @@ namespace KK_Plugins
 
         internal void Main()
         {
-            Enabled = Config.AddSetting("Config", "High poly mode", true, "Whether or not to load high poly assets. May require exiting to main menu to take effect.");
+            Enabled = Config.Bind("Config", "High poly mode", true, "Whether or not to load high poly assets. May require exiting to main menu to take effect.");
 
             HarmonyWrapper.PatchAll(typeof(KK_ForceHighPoly));
         }
