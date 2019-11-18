@@ -143,8 +143,7 @@ namespace KK_Plugins
                 {
                     if (TexBytes != null)
                     {
-                        Texture2D tex = new Texture2D(2, 2);
-                        tex.LoadImage(TexBytes);
+                        Texture2D tex = TextureFromBytes(TexBytes);
 
                         if (ObjectTypeToSet == ObjectType.Character)
                             SetTextureProperty(ChaControl, MatToSet, PropertyToSet, tex);

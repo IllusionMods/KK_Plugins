@@ -464,11 +464,11 @@ namespace KK_Plugins
             return didSet;
         }
 
-        public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32)
+        public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
         {
             if (texBytes == null || texBytes.Length == 0) return null;
 
-            var tex = new Texture2D(2, 2, format, false);
+            var tex = new Texture2D(2, 2, format, mipmaps);
             tex.LoadImage(texBytes);
             return tex;
         }
