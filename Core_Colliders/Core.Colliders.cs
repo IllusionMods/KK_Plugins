@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using BepInEx.Logging;
 using IllusionUtility.GetUtility;
+using System.Collections;
 #if AI
 using AIChara;
 using static AIChara.ChaFileDefine;
@@ -38,7 +39,7 @@ namespace KK_Plugins
             HarmonyWrapper.PatchAll(typeof(KK_Colliders));
 
             BreastColliders = Config.Bind("Config", "Breast Colliders", true, "Whether breast colliders are enabled. Makes breasts interact and collide with arms, hands, etc.");
-            SkirtColliders = Config.Bind("Config", "Skirt Colliders", true, "Whether breast colliders are enabled. Makes breasts interact and collide with legs, hands, etc.");
+            SkirtColliders = Config.Bind("Config", "Skirt Colliders", true, "Whether skirt colliders will be modified. Modifies skirt colliders to cause less clipping problems");
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload))]
@@ -48,15 +49,12 @@ namespace KK_Plugins
 
         public partial class ColliderController : CharaCustomFunctionController
         {
-            private bool DidColliders = false;
-
             protected override void OnCardBeingSaved(GameMode currentGameMode) { }
             protected override void OnReload(GameMode currentGameMode, bool maintainState) => SetUpColliders();
 
             public void SetUpColliders()
             {
-                if (DidColliders)
-                    return;
+                if (DidColliders) return;
 
                 TweakBody();
 #if KK
@@ -72,20 +70,12 @@ namespace KK_Plugins
 
                 var bc = new List<DynamicBoneCollider>();
 
-                // floor pseudo-collider
-                bc.Add(AddCollider(RootBoneName, sz: 100, t: new Vector3(0, -10.01f, -0.01f)));
-
                 float titsize = ChaControl.chaFile.custom.body.shapeValueBody[(int)BodyShapeIdx.BustSize];
-                //XXX: maybe skip for small tits in general?
-                //if (ctrl.sex == 0) return;
-                //if (titsize < 0.2f) return;
+                float cowfactor = titsize * 1.2f;
 
                 // bind colliders to hands
-                foreach (var armBone in ArmBoneNames)
-                    bc.Add(AddCollider(armBone, sx: 0.35f, sy: 0.35f, sz: 0.3f));
-
-                // large tits need special case as the standard hitbox morph doesn't like shape values above 1
-                var cowfactor = System.Math.Max(1f, titsize);
+                foreach (var collider in ColliderList)
+                    bc.Add(AddCollider(collider.BoneName, collider.ColliderRadius, collider.CollierHeight, collider.ColliderCenter));
 
                 // tell the tits that hands collide it
                 foreach (var tit in ChaControl.objAnim.GetComponentsInChildren<DynamicBone_Ver02>(true))
@@ -101,8 +91,13 @@ namespace KK_Plugins
                     // expand the collision radius for the first two dynbones
                     foreach (var pat in tit.Patterns)
                     {
+#if KK
                         pat.Params[0].CollisionRadius = 0.08f * cowfactor;
                         pat.Params[1].CollisionRadius = 0.06f * cowfactor;
+#elif AI
+                        pat.Params[2].CollisionRadius = 0.8f * cowfactor;
+                        pat.Params[3].CollisionRadius = 0.6f * cowfactor;
+#endif
                     }
 
                     tit.GetType().GetMethod("InitNodeParticle", AccessTools.all).Invoke(tit, null);
@@ -114,9 +109,9 @@ namespace KK_Plugins
                 }
             }
 
-            private DynamicBoneCollider AddCollider(string boneName, float sx = 1, float sy = 1, float sz = 1, Vector3 r = new Vector3(), Vector3 t = new Vector3())
+            private DynamicBoneCollider AddCollider(string boneName, float colliderRadius = 0.5f, float collierHeight = 0f, Vector3 colliderCenter = new Vector3())
             {
-                string hitbone = boneName + "_hit";
+                string hitbone = "KK_Colliders_" + boneName;
 
                 // check if the bone exists
                 var bone = ChaControl.objAnim.transform.FindLoop(boneName);
@@ -131,14 +126,46 @@ namespace KK_Plugins
                 // build the collider
                 var nb = new GameObject(hitbone);
                 var col = nb.AddComponent<DynamicBoneCollider>();
-                col.m_Radius = 0.1f;
-                col.m_Direction = DynamicBoneCollider.Direction.Y;
+                col.m_Radius = colliderRadius;
+                col.m_Height = collierHeight;
+                col.m_Center = colliderCenter;
+                col.m_Direction = DynamicBoneCollider.Direction.X;
                 nb.transform.SetParent(bone.transform, false);
-                nb.transform.localScale = new Vector3(sx, sy, sz);
-                nb.transform.localEulerAngles = r;
-                nb.transform.localPosition = t;
-                nb.layer = 12;
                 return col;
+            }
+
+            private bool didColliders = false;
+            public bool DidColliders
+            {
+                get => didColliders;
+                set
+                {
+                    didColliders = value;
+                    ChaControl.StartCoroutine(Reset());
+                    IEnumerator Reset()
+                    {
+                        yield return null;
+                        yield return null;
+                        yield return null;
+                        didColliders = false;
+                    }
+                }
+            }
+        }
+
+        private class ColliderData
+        {
+            public string BoneName;
+            public float ColliderRadius;
+            public float CollierHeight;
+            public Vector3 ColliderCenter;
+
+            public ColliderData(string boneName, float colliderRadius, float collierHeight, Vector3 colliderCenter)
+            {
+                BoneName = boneName;
+                ColliderRadius = colliderRadius;
+                CollierHeight = collierHeight;
+                ColliderCenter = colliderCenter;
             }
         }
     }
