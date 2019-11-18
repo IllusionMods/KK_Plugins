@@ -207,7 +207,7 @@ namespace KK_Plugins
                             bool setScale = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Scale, newTextureProperty.Scale, ObjectType.StudioItem);
 
                             if (setTex || setOffset || setScale)
-                                MaterialTexturePropertyList.Add(newTextureProperty);
+                                materialTexturePropertyListNew.Add(newTextureProperty);
                         }
                     }
                 }
