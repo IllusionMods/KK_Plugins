@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28729.10
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.852
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_CharaMakerLoadedSound", "KK_CharaMakerLoadedSound\KK_CharaMakerLoadedSound.csproj", "{6463C4B8-12CE-496B-8578-48D424F61400}"
 EndProject
@@ -181,6 +181,14 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_AnimationOverdrive", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_AnimationOverdrive", "AI_AnimationOverdrive\AI_AnimationOverdrive.csproj", "{F32BA203-579F-413B-8F31-13AD03F5E6D5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TextResourceHelper", "TextResourceHelper", "{BBFC4A4F-16DE-4182-8BE1-D364D0F165A2}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_TextResourceHelper", "Core_TextResourceHelper\Core_TextResourceHelper.shproj", "{94670AF2-2A1F-49AF-A66F-03FA381A9F02}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AI_TextResourceHelper", "AI_TextResourceHelper\AI_TextResourceHelper.shproj", "{6F1B1AE0-204D-4CB4-A290-A06A3DD56377}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "KK_TextResourceHelper", "KK_TextResourceHelper\KK_TextResourceHelper.shproj", "{50BA3BAF-50D9-4E53-BF4A-2B804CE0E19B}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_AnimationController\Core_AnimationController.projitems*{0a702757-ce40-48fe-bed1-00be3b717417}*SharedItemsImports = 13
@@ -200,15 +208,21 @@ Global
 		Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		Core_Colliders\Core_Colliders.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
+		AI_TextResourceHelper\AI_TextResourceHelper.projitems*{4026bb4c-6a7d-41b7-aebd-6044c9326523}*SharedItemsImports = 4
 		Core_TextDump\Core_TextDump.projitems*{4026bb4c-6a7d-41b7-aebd-6044c9326523}*SharedItemsImports = 4
+		Core_TextResourceHelper\Core_TextResourceHelper.projitems*{4026bb4c-6a7d-41b7-aebd-6044c9326523}*SharedItemsImports = 4
 		Core_Demosaic\Core_Demosaic.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
+		Core_TextResourceHelper\Core_TextResourceHelper.projitems*{49add937-3c6a-427c-910f-98a3ad1fccf9}*SharedItemsImports = 4
 		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{49add937-3c6a-427c-910f-98a3ad1fccf9}*SharedItemsImports = 4
+		KK_TextResourceHelper\KK_TextResourceHelper.projitems*{49add937-3c6a-427c-910f-98a3ad1fccf9}*SharedItemsImports = 4
 		Core_PoseFolders\Core_PoseFolders.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
+		KK_TextResourceHelper\KK_TextResourceHelper.projitems*{50ba3baf-50d9-4e53-bf4a-2b804ce0e19b}*SharedItemsImports = 13
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{5a8fdb27-ffca-4a77-ab0f-afdef9a034ed}*SharedItemsImports = 13
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		Core_AnimationController\Core_AnimationController.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 4
 		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{6bc022e8-b0bf-4a6a-8a0d-d3ce0a9d8e5a}*SharedItemsImports = 4
+		AI_TextResourceHelper\AI_TextResourceHelper.projitems*{6f1b1ae0-204d-4cb4-a290-a06a3dd56377}*SharedItemsImports = 13
 		Core_PoseFolders\Core_PoseFolders.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
 		Core_FKIK\Core_FKIK.projitems*{81d88c3e-4094-436c-8eed-ba18a81a96a4}*SharedItemsImports = 13
 		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{81de7d3b-a8a0-43c2-ac9d-f65ac528b997}*SharedItemsImports = 13
@@ -220,7 +234,10 @@ Global
 		Core_FKIK\Core_FKIK.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
 		Core_Demosaic\Core_Demosaic.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
 		Core_AnimationOverdrive\Core_AnimationOverdrive.projitems*{93bda08c-f6d2-44bb-b872-ba0f0a16d46b}*SharedItemsImports = 13
+		Core_TextResourceHelper\Core_TextResourceHelper.projitems*{94670af2-2a1f-49af-a66f-03fa381a9f02}*SharedItemsImports = 13
 		Core_TextDump\Core_TextDump.projitems*{98b3ad67-6608-420f-a3a4-d1abd9402905}*SharedItemsImports = 4
+		Core_TextResourceHelper\Core_TextResourceHelper.projitems*{98b3ad67-6608-420f-a3a4-d1abd9402905}*SharedItemsImports = 4
+		KK_TextResourceHelper\KK_TextResourceHelper.projitems*{98b3ad67-6608-420f-a3a4-d1abd9402905}*SharedItemsImports = 4
 		Core_Subtitles\Core_Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
@@ -229,6 +246,8 @@ Global
 		Core_Subtitles\Core_Subtitles.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
 		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
+		AI_TextResourceHelper\AI_TextResourceHelper.projitems*{b697727b-9f9c-44b0-baa4-de9cbf184ea5}*SharedItemsImports = 4
+		Core_TextResourceHelper\Core_TextResourceHelper.projitems*{b697727b-9f9c-44b0-baa4-de9cbf184ea5}*SharedItemsImports = 4
 		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{b697727b-9f9c-44b0-baa4-de9cbf184ea5}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
@@ -249,6 +268,7 @@ Global
 		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{dcfde35b-c56b-48aa-8244-248ef1c805c3}*SharedItemsImports = 13
 		Core_TextDump\Core_TextDump.projitems*{dda0a733-3e5d-4f70-a91c-dc4fbf88e410}*SharedItemsImports = 13
 		Core_Demosaic\Core_Demosaic.projitems*{dff56dbe-9617-48e7-9dab-213890dbee6a}*SharedItemsImports = 4
+		Core_TextResourceHelper\Core_TextResourceHelper.projitems*{e0b39dba-571c-4b01-8479-63b59aa86b88}*SharedItemsImports = 4
 		Core_TextResourceRedirector\Core_TextResourceRedirector.projitems*{e0b39dba-571c-4b01-8479-63b59aa86b88}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
 		Core_UncensorSelector\Core_UncensorSelector.projitems*{ea82bb52-404c-416a-9bf8-a36a90f6da93}*SharedItemsImports = 13
@@ -537,6 +557,9 @@ Global
 		{BCF83F6E-CBE1-438E-96CA-A832B42519E6} = {877CDF4C-3018-40BD-BDBB-4B6039FB42CB}
 		{93BDA08C-F6D2-44BB-B872-BA0F0A16D46B} = {E209182D-50F5-4081-89DF-1CF337A5AD64}
 		{F32BA203-579F-413B-8F31-13AD03F5E6D5} = {E209182D-50F5-4081-89DF-1CF337A5AD64}
+		{94670AF2-2A1F-49AF-A66F-03FA381A9F02} = {BBFC4A4F-16DE-4182-8BE1-D364D0F165A2}
+		{6F1B1AE0-204D-4CB4-A290-A06A3DD56377} = {BBFC4A4F-16DE-4182-8BE1-D364D0F165A2}
+		{50BA3BAF-50D9-4E53-BF4A-2B804CE0E19B} = {BBFC4A4F-16DE-4182-8BE1-D364D0F165A2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
