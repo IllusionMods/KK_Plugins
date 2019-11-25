@@ -1,6 +1,9 @@
 ﻿using BepInEx;
-using HarmonyLib;
+using BepInEx.Configuration;
+using BepInEx.Harmony;
+using CommonCode;
 using KKAPI;
+using KKAPI.Studio;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,43 +11,53 @@ namespace KK_Plugins
 {
     [BepInDependency(KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
-    public partial class KK_Colliders : BaseUnityPlugin
+    public partial class Colliders : BaseUnityPlugin
     {
-        private static readonly List<ColliderData> ColliderList = new List<ColliderData>() {
-            { new ColliderData("cf_j_root", 10f, 0f, new Vector3(0, -10.01f, 0f)) },
+        public const string PluginNameInternal = "KK_Colliders";
+        public static ConfigEntry<bool> ConfigSkirtColliders { get; private set; }
+
+        internal static ColliderData FloorColliderData = new ColliderData("cf_j_root", 100f, 0f, new Vector3(0, -100.01f, 0f));
+        internal static readonly List<ColliderData> ArmColliderDataList = new List<ColliderData>() {
             { new ColliderData("cf_s_hand_L", 0.020f, 0.075f, new Vector3(-0.03f, -0.005f, 0f)) },
             { new ColliderData("cf_s_hand_R", 0.020f, 0.075f, new Vector3(0.03f, -0.005f, 0f)) },
             { new ColliderData("cf_s_forearm02_L", 0.025f, 0.25f, new Vector3(-0.03f, 0f, 0f)) },
             { new ColliderData("cf_s_forearm02_R", 0.025f, 0.25f, new Vector3(0.03f, 0f, 0f)) },
-            { new ColliderData("cf_s_arm02_L", 0.025f, 0.25f, new Vector3(0.0f, 0f, 0f)) },
-            { new ColliderData("cf_s_arm02_R", 0.025f, 0.25f, new Vector3(0.0f, 0f, 0f)) },
+            { new ColliderData("cf_s_arm02_L", 0.025f, 0.25f, new Vector3(0f, 0f, 0f)) },
+            { new ColliderData("cf_s_arm02_R", 0.025f, 0.25f, new Vector3(0f, 0f, 0f)) },
             };
-        private static readonly HashSet<string> TitComments = new HashSet<string>() { "右胸", "左胸" };
-        private static readonly float[] SkirtRadius = new float[] { 0.04f, 0.045f, 0.035f, 0.045f, 0.03f, 0.045f, 0.035f, 0.045f };
+        internal static readonly List<ColliderData> LegColliderDataList = new List<ColliderData>() {
+            { new ColliderData("cf_s_thigh01_L", 0.095f, 0.32f, new Vector3(0.05f, -0.1f, -0.015f), DynamicBoneCollider.Direction.Y) },
+            { new ColliderData("cf_s_thigh01_R", 0.095f, 0.32f, new Vector3(-0.05f, -0.1f, -0.015f), DynamicBoneCollider.Direction.Y) },
+            { new ColliderData("cf_s_thigh01_L", 0.095f, 0.32f, new Vector3(0.01f, -0.125f, -0.015f), DynamicBoneCollider.Direction.Y, "_2") },
+            { new ColliderData("cf_s_thigh01_R", 0.095f, 0.32f, new Vector3(-0.01f, -0.125f, -0.015f), DynamicBoneCollider.Direction.Y, "_2") },
+            { new ColliderData("cf_s_thigh02_L", 0.083f, 0.35f, new Vector3(-0.0065f, 0f, -0.012f), DynamicBoneCollider.Direction.Y) },
+            { new ColliderData("cf_s_thigh02_R", 0.083f, 0.35f, new Vector3(0.0065f, 0f, -0.012f), DynamicBoneCollider.Direction.Y) },
+            };
 
-        public partial class ColliderController
+        internal static readonly HashSet<string> BreastDBComments = new HashSet<string>() { "右胸", "左胸" };
+
+        internal void Start()
         {
-            private void TweakSkirt()
-            {
-                if (!SkirtColliders.Value) return;
+            ConfigSkirtColliders = Config.Bind("Config", "Skirt Colliders", true, new ConfigDescription("Extra colliders for the legs to cause less skirt clipping.", null, new ConfigurationManagerAttributes { Order = 5 }));
+            ConfigSkirtColliders.SettingChanged += ConfigSkirtColliders_SettingChanged;
 
-                foreach (DynamicBone db in ChaControl?.gameObject?.GetComponentsInChildren<DynamicBone>(true))
-                {
-                    if (db.name == "ct_clothesBot")
-                    {
-                        int idx = int.Parse(db.m_Root.name.Split('_')[3]);
-                        db.m_Radius = SkirtRadius[idx];
-                        db.m_FreezeAxis = DynamicBone.FreezeAxis.X;
-                        if (idx == 0)
-                        {
-                            var keys = db.m_RadiusDistrib.keys;
-                            keys[keys.Length - 1].value = 1.6f;
-                            keys[keys.Length - 2].value = 1.25f;
-                            db.m_RadiusDistrib.keys = keys;
-                        }
-                        db.GetType().GetMethod("SetupParticles", AccessTools.all).Invoke(db, null);
-                    }
-                }
+            HarmonyWrapper.PatchAll(typeof(Hooks));
+        }
+
+        /// <summary>
+        /// Apply colliders on setting change
+        /// </summary>
+        private void ConfigSkirtColliders_SettingChanged(object sender, System.EventArgs e)
+        {
+            if (StudioAPI.InsideStudio) return;
+
+            foreach (var chaControl in FindObjectsOfType<ChaControl>())
+            {
+                var controller = GetController(chaControl);
+                if (controller == null) continue;
+
+                controller.SkirtCollidersEnabled = ConfigSkirtColliders.Value;
+                GetController(chaControl).ApplySkirtColliders();
             }
         }
     }

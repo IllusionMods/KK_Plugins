@@ -199,6 +199,7 @@ Global
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		CommonCode\CommonCode.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
 		Core_Colliders\Core_Colliders.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
 		Core_TextDump\Core_TextDump.projitems*{4026bb4c-6a7d-41b7-aebd-6044c9326523}*SharedItemsImports = 4
 		Core_Demosaic\Core_Demosaic.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
@@ -212,6 +213,7 @@ Global
 		Core_PoseFolders\Core_PoseFolders.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
 		Core_FKIK\Core_FKIK.projitems*{81d88c3e-4094-436c-8eed-ba18a81a96a4}*SharedItemsImports = 13
 		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{81de7d3b-a8a0-43c2-ac9d-f65ac528b997}*SharedItemsImports = 13
+		CommonCode\CommonCode.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
 		Core_Colliders\Core_Colliders.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
 		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4

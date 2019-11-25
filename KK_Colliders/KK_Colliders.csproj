@@ -40,12 +40,20 @@
       <HintPath>..\lib\Koikatsu\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\lib\Koikatsu\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\lib\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Harmony">
       <HintPath>..\lib\BepInEx.Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ExtensibleSaveFormat">
+      <HintPath>..\lib\Koikatsu\ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KKAPI">
@@ -62,12 +70,19 @@
       <HintPath>..\lib\Koikatsu\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\lib\Koikatsu\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KK.Colliders.Controller.cs" />
     <Compile Include="KK.Colliders.cs" />
+    <Compile Include="KK.Colliders.Hooks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="..\Core_Colliders\Core_Colliders.projitems" Label="Shared" />
+  <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) KK</PostBuildEvent>

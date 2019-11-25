@@ -40,6 +40,10 @@
       <HintPath>..\lib\AIGirl\AIAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="AI_ExtensibleSaveFormat">
+      <HintPath>..\lib\AIGirl\AI_ExtensibleSaveFormat.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\lib\AIGirl\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -60,6 +64,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="UniRx">
+      <HintPath>..\lib\AIGirl\UniRx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\lib\AIGirl\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -74,6 +82,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="..\Core_Colliders\Core_Colliders.projitems" Label="Shared" />
+  <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) AI</PostBuildEvent>

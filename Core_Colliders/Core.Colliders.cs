@@ -1,172 +1,128 @@
-﻿//Additional floor, tit and hands db/colliders (eroigame.net)
-// Physics tweaks as described in http://eroigame.net/archives/1387
-// Done programatically, so it works on any skeleton and can adapt to tit sizes
-// Ported from Patchwork
-using BepInEx.Configuration;
-using BepInEx.Harmony;
-using HarmonyLib;
-using KKAPI;
-using KKAPI.Chara;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using BepInEx.Configuration;
 using BepInEx.Logging;
-using IllusionUtility.GetUtility;
-using System.Collections;
+using CommonCode;
+using KKAPI.Chara;
+using KKAPI.Studio;
+using KKAPI.Studio.UI;
+using Studio;
+using UniRx;
 #if AI
 using AIChara;
-using static AIChara.ChaFileDefine;
-#else
-using static ChaFileDefine;
 #endif
 
 namespace KK_Plugins
 {
-    public partial class KK_Colliders
+    public partial class Colliders
     {
-        public const string GUID = "com.deathweasel.bepinex.colliders";
+        public const string GUID = "com.deathweasel.bepinex.studiocolliders";
         public const string PluginName = "Colliders";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         internal static new ManualLogSource Logger;
 
-        public static ConfigEntry<bool> BreastColliders { get; private set; }
-        public static ConfigEntry<bool> SkirtColliders { get; private set; }
+        public static ConfigEntry<bool> ConfigBreastColliders { get; private set; }
+        public static ConfigEntry<bool> ConfigFloorCollider { get; private set; }
+        public static ConfigEntry<DefaultStudioSettings> ConfigDefaultStudioSettings { get; private set; }
+        public enum DefaultStudioSettings { Config, On, Off }
 
         internal void Main()
         {
             Logger = base.Logger;
+            CharacterApi.RegisterExtraBehaviour<ColliderController>(GUID);
 
-            CharacterApi.RegisterExtraBehaviour<ColliderController>("com.deathweasel.bepinex.colliders");
-            HarmonyWrapper.PatchAll(typeof(KK_Colliders));
+            ConfigBreastColliders = Config.Bind("Config", "Breast Colliders", true, new ConfigDescription("Whether breast colliders are enabled. Makes breasts interact and collide with arms, hands, etc.", null, new ConfigurationManagerAttributes { Order = 10 }));
+            ConfigFloorCollider = Config.Bind("Config", "Floor Collider", true, new ConfigDescription("Adds a floor collider so hair doesn't clip through the floor when laying down.", null, new ConfigurationManagerAttributes { Order = 1 }));
+            ConfigDefaultStudioSettings = Config.Bind("Config", "Default Studio Settings", DefaultStudioSettings.Off, new ConfigDescription("Default state of colliders for new characters in Studio or for older scenes.\nScenes made with this plugin will load with colliders enabled or disabled depending on how the character in scene was configured.", null, new ConfigurationManagerAttributes { Order = 0 }));
 
-            BreastColliders = Config.Bind("Config", "Breast Colliders", true, "Whether breast colliders are enabled. Makes breasts interact and collide with arms, hands, etc.");
-            SkirtColliders = Config.Bind("Config", "Skirt Colliders", true, "Whether skirt colliders will be modified. Modifies skirt colliders to cause less clipping problems");
+            ConfigBreastColliders.SettingChanged += ConfigBreastColliders_SettingChanged;
+            ConfigFloorCollider.SettingChanged += ConfigFloorCollider_SettingChanged;
+
+            RegisterStudioControls();
         }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Reload))]
-        public static void Reload(ChaControl __instance) => GetController(__instance).SetUpColliders();
-
-        private static ColliderController GetController(ChaControl character) => character?.gameObject?.GetComponent<ColliderController>();
-
-        public partial class ColliderController : CharaCustomFunctionController
+        /// <summary>
+        /// Apply colliders on setting change
+        /// </summary>
+        private void ConfigBreastColliders_SettingChanged(object sender, System.EventArgs e)
         {
-            protected override void OnCardBeingSaved(GameMode currentGameMode) { }
-            protected override void OnReload(GameMode currentGameMode, bool maintainState) => SetUpColliders();
+            if (StudioAPI.InsideStudio) return;
 
-            public void SetUpColliders()
+            foreach (var chaControl in FindObjectsOfType<ChaControl>())
             {
-                if (DidColliders) return;
+                var controller = GetController(chaControl);
+                if (controller == null) continue;
 
-                TweakBody();
-#if KK
-                TweakSkirt();
-#endif
-                DidColliders = true;
-            }
-
-            private void TweakBody()
-            {
-                if (!BreastColliders.Value)
-                    return;
-
-                var bc = new List<DynamicBoneCollider>();
-
-                float titsize = ChaControl.chaFile.custom.body.shapeValueBody[(int)BodyShapeIdx.BustSize];
-                float cowfactor = titsize * 1.2f;
-
-                // bind colliders to hands
-                foreach (var collider in ColliderList)
-                    bc.Add(AddCollider(collider.BoneName, collider.ColliderRadius, collider.CollierHeight, collider.ColliderCenter));
-
-                // tell the tits that hands collide it
-                foreach (var tit in ChaControl.objAnim.GetComponentsInChildren<DynamicBone_Ver02>(true))
-                {
-                    if (!TitComments.Contains(tit.Comment))
-                        continue;
-
-                    // register the colliders if not already there
-                    foreach (var c in bc)
-                        if (c != null && !tit.Colliders.Contains(c))
-                            tit.Colliders.Add(c);
-
-                    // expand the collision radius for the first two dynbones
-                    foreach (var pat in tit.Patterns)
-                    {
-#if KK
-                        pat.Params[0].CollisionRadius = 0.08f * cowfactor;
-                        pat.Params[1].CollisionRadius = 0.06f * cowfactor;
-#elif AI
-                        pat.Params[2].CollisionRadius = 0.8f * cowfactor;
-                        pat.Params[3].CollisionRadius = 0.6f * cowfactor;
-#endif
-                    }
-
-                    tit.GetType().GetMethod("InitNodeParticle", AccessTools.all).Invoke(tit, null);
-                    tit.GetType().GetMethod("SetupParticles", AccessTools.all).Invoke(tit, null);
-                    tit.InitLocalPosition();
-                    if ((bool)tit.GetType().GetMethod("IsRefTransform", AccessTools.all).Invoke(tit, null))
-                        tit.setPtn(0, true);
-                    tit.GetType().GetMethod("InitTransforms", AccessTools.all).Invoke(tit, null);
-                }
-            }
-
-            private DynamicBoneCollider AddCollider(string boneName, float colliderRadius = 0.5f, float collierHeight = 0f, Vector3 colliderCenter = new Vector3())
-            {
-                string hitbone = "KK_Colliders_" + boneName;
-
-                // check if the bone exists
-                var bone = ChaControl.objAnim.transform.FindLoop(boneName);
-                if (bone == null)
-                    return null;
-
-                // some collider is already in there, so just keep that
-                var bo = ChaControl.objAnim.transform.FindLoop(hitbone);
-                if (bo != null)
-                    return null;
-
-                // build the collider
-                var nb = new GameObject(hitbone);
-                var col = nb.AddComponent<DynamicBoneCollider>();
-                col.m_Radius = colliderRadius;
-                col.m_Height = collierHeight;
-                col.m_Center = colliderCenter;
-                col.m_Direction = DynamicBoneCollider.Direction.X;
-                nb.transform.SetParent(bone.transform, false);
-                return col;
-            }
-
-            private bool didColliders = false;
-            public bool DidColliders
-            {
-                get => didColliders;
-                set
-                {
-                    didColliders = value;
-                    ChaControl.StartCoroutine(Reset());
-                    IEnumerator Reset()
-                    {
-                        yield return null;
-                        yield return null;
-                        yield return null;
-                        didColliders = false;
-                    }
-                }
+                controller.BreastCollidersEnabled = ConfigBreastColliders.Value;
+                GetController(chaControl).ApplyBreastColliders();
             }
         }
 
-        private class ColliderData
+        /// <summary>
+        /// Apply colliders on setting change
+        /// </summary>
+        private void ConfigFloorCollider_SettingChanged(object sender, System.EventArgs e)
         {
-            public string BoneName;
-            public float ColliderRadius;
-            public float CollierHeight;
-            public Vector3 ColliderCenter;
+            if (StudioAPI.InsideStudio) return;
 
-            public ColliderData(string boneName, float colliderRadius, float collierHeight, Vector3 colliderCenter)
+            foreach (var chaControl in FindObjectsOfType<ChaControl>())
             {
-                BoneName = boneName;
-                ColliderRadius = colliderRadius;
-                CollierHeight = collierHeight;
-                ColliderCenter = colliderCenter;
+                var controller = GetController(chaControl);
+                if (controller == null) continue;
+
+                controller.FloorColliderEnabled = ConfigFloorCollider.Value;
+                GetController(chaControl).ApplyFloorCollider();
             }
         }
+
+        private static void RegisterStudioControls()
+        {
+            if (!StudioAPI.InsideStudio) return;
+
+            var breast = new CurrentStateCategorySwitch("Breast", ocichar => ocichar.charInfo.GetComponent<ColliderController>().BreastCollidersEnabled);
+            breast.Value.Subscribe(value =>
+            {
+                var controller = GetSelectedController();
+                if (controller == null) return;
+                if (controller.BreastCollidersEnabled != value)
+                {
+                    controller.BreastCollidersEnabled = value;
+                    controller.ApplyBreastColliders();
+                }
+            });
+
+#if KK
+            var skirt = new CurrentStateCategorySwitch("Skirt", ocichar => ocichar.charInfo.GetComponent<ColliderController>().SkirtCollidersEnabled);
+            skirt.Value.Subscribe(value =>
+            {
+                var controller = GetSelectedController();
+                if (controller == null) return;
+                if (controller.SkirtCollidersEnabled != value)
+                {
+                    controller.SkirtCollidersEnabled = value;
+                    controller.ApplySkirtColliders();
+                }
+            });
+#endif
+
+            var floor = new CurrentStateCategorySwitch("Floor", ocichar => ocichar.charInfo.GetComponent<ColliderController>().FloorColliderEnabled);
+            floor.Value.Subscribe(value =>
+            {
+                var controller = GetSelectedController();
+                if (controller == null) return;
+                if (controller.FloorColliderEnabled != value)
+                {
+                    controller.FloorColliderEnabled = value;
+                    controller.ApplyFloorCollider();
+                }
+            });
+
+            StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(breast);
+#if KK
+            StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(skirt);
+#endif
+            StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(floor);
+        }
+
+        public static ColliderController GetController(ChaControl chaControl) => chaControl.GetComponent<ColliderController>();
+        private static ColliderController GetSelectedController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<ColliderController>();
     }
 }
