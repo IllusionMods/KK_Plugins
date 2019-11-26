@@ -321,9 +321,9 @@ namespace KK_Plugins
             BallsDictionary[DefaultBalls.BallsGUID] = DefaultBalls;
             BallsConfigListFull[DefaultBalls.DisplayName] = DefaultBalls.BallsGUID;
 
-            var loadedManifests = Sideloader.Sideloader.LoadedManifests;
+            var loadedManifests = Sideloader.Sideloader.Manifests;
 
-            foreach (var manifest in loadedManifests)
+            foreach (var manifest in loadedManifests.Values)
             {
                 XDocument manifestDocument = manifest.manifestDocument;
                 XElement uncensorSelectorElement = manifestDocument?.Root?.Element(PluginNameInternal);

@@ -93,14 +93,14 @@ namespace KK_Plugins
 
         private void LoadXML()
         {
-            var loadedManifests = Sideloader.Sideloader.LoadedManifests;
+            var loadedManifests = Sideloader.Sideloader.Manifests;
             XMLShaderProperties["default"] = new Dictionary<string, ShaderPropertyData>();
 
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.default.xml"))
             using (XmlReader reader = XmlReader.Create(stream))
                 LoadXML(XDocument.Load(reader).Element(PluginNameInternal));
 
-            foreach (var manifest in loadedManifests)
+            foreach (var manifest in loadedManifests.Values)
                 LoadXML(manifest.manifestDocument?.Root?.Element(PluginNameInternal));
         }
 
