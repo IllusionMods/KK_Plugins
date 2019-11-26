@@ -56,6 +56,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="..\Core_TextDump\Core_TextDump.projitems" Label="Shared" />
+  <Import Project="..\AI_TextResourceHelper\AI_TextResourceHelper.projitems" Label="Shared" />
+  <Import Project="..\Core_TextResourceHelper\Core_TextResourceHelper.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) AI</PostBuildEvent>
