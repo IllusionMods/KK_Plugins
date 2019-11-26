@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +33,7 @@ namespace KK_Plugins
             int a = DumpCommunicationText();
             int b = DumpScenarioText();
             int c = DumpHText();
-            Logger.Log(LogLevel.Info, $"[TextDump] Total lines:{a + b + c}");
+            Logger.LogInfo($"[TextDump] Total lines:{a + b + c}");
         }
 
         private int DumpCommunicationText()
@@ -103,7 +102,7 @@ namespace KK_Plugins
                     }
                 }
             }
-            Logger.Log(LogLevel.Info, $"[TextDump] Total Communication unique lines:{AllJPText.Count}");
+            Logger.LogInfo($"[TextDump] Total Communication unique lines:{AllJPText.Count}");
             return AllJPText.Count;
         }
 
@@ -199,7 +198,7 @@ namespace KK_Plugins
 #endif
                         else
                         {
-                            Logger.Log(LogLevel.Debug, $"[TextDump] Unsupported command: {param.Command}: {string.Join(",", param.Args.Select((a) => a?.ToString() ?? string.Empty).ToArray())}");
+                            Logger.LogDebug($"[TextDump] Unsupported command: {param.Command}: {string.Join(",", param.Args.Select((a) => a?.ToString() ?? string.Empty).ToArray())}");
                         }
                     }
 
@@ -237,7 +236,7 @@ namespace KK_Plugins
                     }
                 }
             }
-            Logger.Log(LogLevel.Info, $"[TextDump] Total Scenario unique lines:{AllJPText.Count}");
+            Logger.LogInfo($"[TextDump] Total Scenario unique lines:{AllJPText.Count}");
             return AllJPText.Count;
         }
 
@@ -299,7 +298,7 @@ namespace KK_Plugins
                     }
                 }
             }
-            Logger.Log(LogLevel.Info, $"[TextDump] Total H-Scene unique lines:{AllJPText.Count}");
+            Logger.LogInfo($"[TextDump] Total H-Scene unique lines:{AllJPText.Count}");
             return AllJPText.Count;
         }
 
