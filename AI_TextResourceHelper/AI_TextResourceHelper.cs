@@ -15,8 +15,6 @@ namespace KK_Plugins
             SupportedCommands[ADV.Command.Format] = true;
             SupportedCommands[ADV.Command.Choice] = true;
             SupportedCommands[ADV.Command.Switch] = true;
-
         }
-
     }
 }

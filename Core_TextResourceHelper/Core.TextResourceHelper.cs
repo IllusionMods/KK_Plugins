@@ -9,8 +9,8 @@ namespace KK_Plugins
     public class TextResourceHelper
     {
 #if !HS
-        protected readonly static string ChoiceDelimiter = ",";
-        protected readonly static string SpecializedKeyDelimiter = ":";
+        protected static readonly string ChoiceDelimiter = ",";
+        protected static readonly string SpecializedKeyDelimiter = ":";
 
         // Contains strings that should not be replaced in `Command.Text` based resources
         public HashSet<string> TextKeysBlacklist { get; protected set; }
@@ -23,10 +23,7 @@ namespace KK_Plugins
             { ADV.Command.Text, true }
         };
 
-        public static bool ContainsNonAscii(string input)
-        {
-            return input.ToCharArray().Any((c) => c > sbyte.MaxValue);
-        }
+        public static bool ContainsNonAscii(string input) => input.ToCharArray().Any((c) => c > sbyte.MaxValue);
 
         public bool IsSupportedCommand(Command command)
         {
@@ -66,10 +63,7 @@ namespace KK_Plugins
             return string.Join(SpecializedKeyDelimiter, new string[] { param.Command.ToString().ToUpperInvariant(), toTranslate });
         }
 
-        public string GetSpecializedKey(ScenarioData.Param param, int i)
-        {
-            return GetSpecializedKey(param, i, out string unused);
-        }
+        public string GetSpecializedKey(ScenarioData.Param param, int i) => GetSpecializedKey(param, i, out string _);
 
         // For commands that encode multiple pieces of data into their strings
         // keep all the extra data from the asset file and only replace the         

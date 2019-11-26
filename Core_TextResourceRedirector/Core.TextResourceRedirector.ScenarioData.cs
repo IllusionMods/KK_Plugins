@@ -12,7 +12,7 @@ namespace KK_Plugins
 {
     public class ScenarioDataResourceRedirector : AssetLoadedHandlerBaseV2<ScenarioData>
     {
-        private TextResourceHelper textResourceHelper;
+        private readonly TextResourceHelper textResourceHelper;
 
         public ScenarioDataResourceRedirector(TextResourceHelper helper)
         {
