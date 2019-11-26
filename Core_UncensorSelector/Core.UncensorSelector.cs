@@ -72,17 +72,6 @@ namespace KK_Plugins
         public static ConfigEntry<string> DefaultFemaleBalls { get; private set; }
         public static ConfigEntry<bool> DefaultFemaleDisplayBalls { get; private set; }
 
-        internal void Start()
-        {
-            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
-
-#if KK
-            Type loadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).First(x => x.Name.StartsWith("<LoadAsync>c__Iterator"));
-            MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
-            harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), AccessTools.all)));
-#endif
-        }
-
         internal void Main()
         {
             Logger = base.Logger;
@@ -107,7 +96,13 @@ namespace KK_Plugins
             RegisterStudioControls();
 #endif
 
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+
+#if KK
+            Type loadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).First(x => x.Name.StartsWith("<LoadAsync>c__Iterator"));
+            MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
+            harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), AccessTools.all)));
+#endif
         }
         /// <summary>
         /// Initialize the character maker GUI
