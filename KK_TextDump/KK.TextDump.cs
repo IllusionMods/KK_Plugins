@@ -7,5 +7,7 @@ namespace KK_Plugins
     /// </summary>
     [BepInProcess("CharaStudio")]
     [BepInPlugin(GUID, PluginName, Version)]
-    public partial class TextDump : BaseUnityPlugin { }
+    public partial class TextDump : BaseUnityPlugin {
+        private TextResourceHelper textResourceHelper = new KK_TextResourceHelper();
+    }
 }

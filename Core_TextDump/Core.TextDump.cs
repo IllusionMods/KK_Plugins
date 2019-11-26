@@ -122,6 +122,11 @@ namespace KK_Plugins
 
                     foreach (var param in Asset.list)
                     {
+                        if (!textResourceHelper.IsSupportedCommand(param.Command))
+                        {
+                            continue;
+                        }
+
                         if (param.Command == ADV.Command.Text)
                         {
                             if (param.Args.Length >= 2 && !param.Args[1].IsNullOrEmpty())
@@ -131,6 +136,70 @@ namespace KK_Plugins
                                 if (param.Args.Length >= 3 && !param.Args[2].IsNullOrEmpty())
                                     Translations[param.Args[1]] = param.Args[2];
                             }
+                        }
+                        else if (param.Command == ADV.Command.Calc)
+                        {
+                            if (param.Args.Length >= 3 && textResourceHelper.CalcKeys.Contains(param.Args[0]))
+                            {
+                                var key = textResourceHelper.GetSpecializedKey(param, 2, out string value);
+                                AllJPText.Add(key);
+                                Translations[key] = value;
+                            }
+                        }
+                        else if (param.Command == ADV.Command.Format)
+                        {
+                            if (param.Args.Length >= 2 && textResourceHelper.FormatKeys.Contains(param.Args[0]))
+                            {
+                                AllJPText.Add(param.Args[1]);
+                                Translations[param.Args[1]] = "";
+                            }
+                        }
+                        else if (param.Command == ADV.Command.Choice)
+                        {
+                            for (int i = 0; i < param.Args.Length; i++)
+                            {
+                                var key = textResourceHelper.GetSpecializedKey(param, i, out string value);
+                                if (!key.IsNullOrEmpty())
+                                {
+                                    AllJPText.Add(key);
+                                    Translations[key] = value;
+                                }
+                            }
+                        }
+#if false
+                        else if (param.Command == ADV.Command.Switch)
+                        {
+                            for (int i = 0; i < param.Args.Length; i++)
+                            {
+                                var key = textResourceHelper.GetSpecializedKey(param, i, out string value);
+                                AllJPText.Add(key);
+                                Translations[key] = value;
+                            }
+                        }
+#endif
+#if false
+                        else if (param.Command == ADV.Command.InfoText)
+                        {
+                            for (int i = 2; i < param.Args.Length; i += 2)
+                            {
+                                AllJPText.Add(param.Args[i]);
+                                Translations[param.Args[i]] = "";
+                            }
+                        }
+#endif
+#if false
+                        else if (param.Command == ADV.Command.Jump)
+                        {
+                            if (param.Args.Length >= 1 && !AllAscii.IsMatch(param.Args[0]))
+                            {
+                                AllJPText.Add(param.Args[0]);
+                                Translations[param.Args[0]] = "Jump";
+                            }
+                        }
+#endif
+                        else
+                        {
+                            Logger.Log(LogLevel.Debug, $"[TextDump] Unsupported command: {param.Command}: {string.Join(",", param.Args.Select((a) => a?.ToString() ?? string.Empty).ToArray())}");
                         }
                     }
 
