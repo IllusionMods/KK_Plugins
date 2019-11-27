@@ -207,6 +207,9 @@ namespace KK_Plugins
 #else //Stub for HS which has no ScenarioData
 namespace KK_Plugins
 {
-    public class ScenarioDataResourceRedirector { }
+    public class ScenarioDataResourceRedirector
+    {
+        public ScenarioDataResourceRedirector(TextResourceHelper _ = null) { }
+    }
 }
 #endif

@@ -12,20 +12,13 @@ namespace KK_Plugins
         internal ScenarioDataResourceRedirector _scenarioRedirector;
         internal TextResourceHelper _textResourceHelper;
 
-
-
         internal void Awake()
         {
             _textResourceHelper = GetTextResourceHelper();
             _excelRedirector = new ExcelDataResourceRedirector();
-            _scenarioRedirector = new ScenarioDataResourceRedirector(
-#if !HS 
-                _textResourceHelper
-#endif
-            );
+            _scenarioRedirector = new ScenarioDataResourceRedirector(_textResourceHelper);
+
             enabled = false;
         }
-
-        
     }
 }
