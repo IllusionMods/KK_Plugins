@@ -6,7 +6,7 @@ namespace KK_Plugins
     {
         public const string PluginName = "Text Resource Redirector";
         public const string GUID = "com.deathweasel.bepinex.textresourceredirector";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
 
         internal ExcelDataResourceRedirector _excelRedirector;
         internal ScenarioDataResourceRedirector _scenarioRedirector;
