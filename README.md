@@ -330,7 +330,7 @@ v1.1 AI Girl port, capped animation speed at 1000 to prevent animations breaking
 </details>
 
 #### TextResourceRedirector
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/tag/v124)** - For Koikatsu, HoneySelect, and AI Girl<br/>
+**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/tag/v129)** - For Koikatsu, HoneySelect, and AI Girl<br/>
 
 Allows translations to override individual assets. Required for some translations to function correctly. Requires [Unity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator).
 
