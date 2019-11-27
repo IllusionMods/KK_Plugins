@@ -9,6 +9,7 @@
     <Import_RootNamespace>Core_TextResourceRedirector</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.ExcelData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.ScenarioData.cs" />

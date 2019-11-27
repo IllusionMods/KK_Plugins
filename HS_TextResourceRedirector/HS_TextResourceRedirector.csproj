@@ -61,10 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HS.TextResourceRedirector.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="..\Core_TextResourceRedirector\Core_TextResourceRedirector.projitems" Label="Shared" />
   <Import Project="..\Core_TextResourceHelper\Core_TextResourceHelper.projitems" Label="Shared" />
