@@ -9,6 +9,7 @@
     <Import_RootNamespace>Core_UncensorSelector</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.UncensorSelector.Controller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.UncensorSelector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.UncensorSelector.Data.cs" />

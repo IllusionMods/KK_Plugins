@@ -53,12 +53,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KK.StudioObjectMoveHotkeys.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="..\Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.projitems" Label="Shared" />
+  <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) KK</PostBuildEvent>

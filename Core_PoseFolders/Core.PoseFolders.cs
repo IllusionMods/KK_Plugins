@@ -1,17 +1,15 @@
-﻿using BepInEx;
-using BepInEx.Harmony;
+﻿using BepInEx.Harmony;
 using HarmonyLib;
 using Studio;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace KK_Plugins
 {
-    public partial class KK_PoseFolders
+    public partial class PoseFolders
     {
         public const string GUID = "com.deathweasel.bepinex.posefolders";
         public const string PluginName = "Pose Folders";
@@ -29,7 +27,7 @@ namespace KK_Plugins
         internal void Main()
         {
             if (!CurrentDirectory.Exists) CurrentDirectory.Create();
-            HarmonyWrapper.PatchAll(typeof(KK_PoseFolders));
+            HarmonyWrapper.PatchAll(typeof(Hooks));
         }
 
         private static string GetFolder()
@@ -49,19 +47,13 @@ namespace KK_Plugins
                 if (inst.opcode == OpCodes.Ldstr && inst.operand?.ToString() == DEFAULT_ROOT)
                 {
                     inst.opcode = OpCodes.Call;
-                    inst.operand = AccessTools.Method(typeof(KK_PoseFolders), nameof(GetFolder));
+                    inst.operand = AccessTools.Method(typeof(PoseFolders), nameof(GetFolder));
                     break;
                 }
             }
 
             return instructions;
         }
-
-        [HarmonyTranspiler, HarmonyPatch(typeof(PauseRegistrationList), "InitList")]
-        public static IEnumerable<CodeInstruction> tpl_PauseRegistrationList_InitList(IEnumerable<CodeInstruction> _instructions) => ReplacePath(_instructions);
-
-        [HarmonyTranspiler, HarmonyPatch(typeof(PauseCtrl), "Save")]
-        public static IEnumerable<CodeInstruction> tpl_PauseCtrl_Save(IEnumerable<CodeInstruction> _instructions) => ReplacePath(_instructions);
 
         private static Transform AddListButton(string text, UnityAction callback)
         {
@@ -73,34 +65,6 @@ namespace KK_Plugins
             component.text = text;
 
             return prefabNode.transform;
-        }
-
-        [HarmonyPostfix, HarmonyPatch(typeof(PauseRegistrationList), "InitList")]
-        public static void post_PauseRegistrationList_InitList(PauseRegistrationList __instance)
-        {
-            if (v_prefabNode == null)
-            {
-                v_prefabNode = (GameObject)AccessTools.Field(typeof(PauseRegistrationList), "prefabNode").GetValue(__instance);
-                v_transformRoot = (Transform)AccessTools.Field(typeof(PauseRegistrationList), "transformRoot").GetValue(__instance);
-            }
-
-            foreach (var subDir in CurrentDirectory.GetDirectories().Reverse())
-            {
-                AddListButton($"[{subDir.Name}]", () =>
-                {
-                    CurrentDirectory = subDir;
-                    Traverse.Create(__instance).Method("InitList").GetValue();
-                }).SetAsFirstSibling();
-            }
-            var fn = CurrentDirectory.FullName;
-            if (fn.Length > DefaultRootLength)
-            {
-                AddListButton("..", () =>
-                {
-                    CurrentDirectory = CurrentDirectory.Parent;
-                    Traverse.Create(__instance).Method("InitList").GetValue();
-                }).SetAsFirstSibling();
-            }
         }
     }
 }

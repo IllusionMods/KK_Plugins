@@ -5,10 +5,12 @@ namespace KK_Plugins
     /// <summary>
     /// Dumps untranslated text to .txt files
     /// </summary>
-    [BepInProcess("StudioNEOV2")]
+    [BepInProcess(Constants.StudioProcessName)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class TextDump : BaseUnityPlugin
     {
+        public const string PluginNameInternal = "AI_TextDump";
+
         private readonly TextResourceHelper textResourceHelper = new AI_TextResourceHelper();
     }
 }

@@ -71,7 +71,6 @@
     <Compile Include="KK.Subtitles.cs" />
     <Compile Include="KK.Subtitles.Caption.cs" />
     <Compile Include="KK.Subtitles.Hooks.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -79,7 +78,11 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\CharaMakerSubs.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="..\Core_Subtitles\Core_Subtitles.projitems" Label="Shared" />
+  <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) KK</PostBuildEvent>

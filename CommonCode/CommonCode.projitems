@@ -9,7 +9,10 @@
     <Import_RootNamespace>CommonCode</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)CommonCode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ConfigurationManagerAttributes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared.CommonCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared.ConfigurationManagerAttributes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared.Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared.Extensions.cs" />
   </ItemGroup>
 </Project>

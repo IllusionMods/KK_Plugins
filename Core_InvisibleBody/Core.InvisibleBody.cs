@@ -1,7 +1,6 @@
 ﻿using BepInEx.Harmony;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
-using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -46,7 +45,7 @@ namespace KK_Plugins
             CharacterApi.RegisterExtraBehaviour<InvisibleBodyCharaController>(PluginNameInternal);
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
 
-            HarmonyWrapper.PatchAll(typeof(InvisibleBody));
+            HarmonyWrapper.PatchAll(typeof(Hooks));
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
@@ -54,12 +53,7 @@ namespace KK_Plugins
             InvisibleToggle = e.AddControl(new MakerToggle(MakerConstants.Body.All, "Invisible Body", false, this));
             InvisibleToggle.ValueChanged.Subscribe(Observer.Create<bool>(delegate { GetController(MakerAPI.GetCharacterControl()).Visible = !InvisibleToggle.Value; }));
         }
-        /// <summary>
-        /// For changing head shape. Also for low poly.
-        /// </summary>
-        /// <param name="__instance"></param>
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitShapeFace))]
-        internal static void InitShapeFace(ChaControl __instance) => GetController(__instance).UpdateVisible(true);
+
         /// <summary>
         /// Get the InvisibleBodyCharaController for the character
         /// </summary>

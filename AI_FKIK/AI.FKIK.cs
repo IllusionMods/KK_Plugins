@@ -3,7 +3,10 @@
 namespace KK_Plugins
 {
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInProcess("StudioNEOV2")]
+    [BepInProcess(Constants.StudioProcessName)]
     [BepInPlugin(GUID, PluginName, Version)]
-    public partial class FKIK : BaseUnityPlugin { }
+    public partial class FKIK : BaseUnityPlugin
+    {
+        public const string PluginNameInternal = "AI_FKIK";
+    }
 }

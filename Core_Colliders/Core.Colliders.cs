@@ -1,6 +1,5 @@
 ﻿using BepInEx.Configuration;
 using BepInEx.Logging;
-using CommonCode;
 using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;

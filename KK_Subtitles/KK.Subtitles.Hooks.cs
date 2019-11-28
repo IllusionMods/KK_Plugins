@@ -9,7 +9,7 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(LoadAudioBase), "Play")]
-            public static void PlayVoice(LoadAudioBase __instance)
+            internal static void PlayVoice(LoadAudioBase __instance)
             {
                 if (__instance.audioSource == null || __instance.audioSource.clip == null || __instance.audioSource.loop)
                     return;
@@ -23,13 +23,14 @@ namespace KK_Plugins
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(Info), "Init")]
-            public static void InfoInit(Info __instance)
+            internal static void InfoInit(Info __instance)
             {
                 Caption.InitGUI();
                 ActionGameInfoInstance = __instance;
             }
+
             [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
-            public static void HVoiceCtrlInit()
+            internal static void HVoiceCtrlInit()
             {
                 Caption.InitGUI();
                 HSceneProcInstance = FindObjectOfType<HSceneProc>();

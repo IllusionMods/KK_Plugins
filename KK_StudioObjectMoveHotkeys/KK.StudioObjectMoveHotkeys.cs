@@ -2,7 +2,10 @@
 
 namespace KK_Plugins
 {
-    [BepInProcess("CharaStudio")]
+    [BepInProcess(Constants.StudioProcessName)]
     [BepInPlugin(GUID, PluginName, Version)]
-    public partial class KK_StudioObjectMoveHotkeys : BaseUnityPlugin { }
+    public partial class StudioObjectMoveHotkeys : BaseUnityPlugin
+    {
+        public const string PluginNameInternal = "KK_StudioObjectMoveHotkeys";
+    }
 }

@@ -3,5 +3,8 @@
 namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
-    public partial class InputHotkeyBlock : BaseUnityPlugin { }
+    public partial class InputHotkeyBlock : BaseUnityPlugin
+    {
+        public const string PluginNameInternal = "EC_InputHotkeyBlock";
+    }
 }

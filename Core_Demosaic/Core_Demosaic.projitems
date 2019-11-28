@@ -9,6 +9,8 @@
     <Import_RootNamespace>Core_Demosaic</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.Demosaic.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.Demosaic.Hooks.cs" />
   </ItemGroup>
 </Project>

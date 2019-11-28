@@ -6,8 +6,9 @@ namespace KK_Plugins
 {
     internal partial class Hooks
     {
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), new[] { typeof(ChaFileDefine.CoordinateType), typeof(bool) })]
-        public static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
+        internal static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));
+
         private static IEnumerator ChangeCoordinateActions(ChaControl __instance)
         {
             var controller = HairAccessoryCustomizer.GetController(__instance);
@@ -32,6 +33,5 @@ namespace KK_Plugins
             controller.UpdateAccessories(true);
             HairAccessoryCustomizer.ReloadingChara = false;
         }
-
     }
 }

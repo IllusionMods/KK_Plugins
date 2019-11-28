@@ -9,6 +9,7 @@
     <Import_RootNamespace>Core_TextDump</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.TextDump.cs" />
   </ItemGroup>
 </Project>

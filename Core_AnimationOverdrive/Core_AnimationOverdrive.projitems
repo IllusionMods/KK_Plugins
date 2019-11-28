@@ -9,6 +9,8 @@
     <Import_RootNamespace>Core_AnimationOverdrive</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.AnimationOverdrive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.AnimationOverdrive.Hooks.cs" />
   </ItemGroup>
 </Project>

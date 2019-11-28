@@ -9,6 +9,7 @@
     <Import_RootNamespace>Core_FKIK</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.FKIK.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.FKIK.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.FKIK.UI.cs" />

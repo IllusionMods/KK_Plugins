@@ -82,7 +82,6 @@
   <ItemGroup>
     <Compile Include="KK.MaterialEditor.cs" />
     <Compile Include="KK.MaterialEditor.Hooks.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />
@@ -95,6 +94,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />

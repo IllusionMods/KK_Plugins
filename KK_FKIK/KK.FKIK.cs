@@ -3,7 +3,10 @@
 namespace KK_Plugins
 {
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInProcess("CharaStudio")]
+    [BepInProcess(Constants.StudioProcessName)]
     [BepInPlugin(GUID, PluginName, Version)]
-    public partial class FKIK : BaseUnityPlugin { }
+    public partial class FKIK : BaseUnityPlugin
+    {
+        public const string PluginNameInternal = "KK_FKIK";
+    }
 }

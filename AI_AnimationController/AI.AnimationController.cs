@@ -3,8 +3,11 @@ using KKAPI;
 
 namespace KK_Plugins
 {
-    [BepInProcess("StudioNEOV2")]
+    [BepInProcess(Constants.StudioProcessName)]
     [BepInDependency(KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
-    public partial class KK_AnimationController : BaseUnityPlugin { }
+    public partial class AnimationController : BaseUnityPlugin
+    {
+        public const string PluginNameInternal = "AI_AnimationController";
+    }
 }

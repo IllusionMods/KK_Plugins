@@ -11,7 +11,7 @@ namespace KK_Plugins
         /// <summary>
         /// Change the male _low asset to the female _low asset. Female has more bones so trying to change male body to female doesn't work. Load as female and change to male as a workaround.
         /// </summary>
-        public static IEnumerable<CodeInstruction> LoadAsyncTranspiler(IEnumerable<CodeInstruction> instructions)
+        internal static IEnumerable<CodeInstruction> LoadAsyncTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> instructionsList = instructions.ToList();
 

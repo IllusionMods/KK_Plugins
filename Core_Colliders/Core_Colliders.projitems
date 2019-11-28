@@ -9,6 +9,7 @@
     <Import_RootNamespace>Core_Colliders</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.Colliders.ColliderData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.Colliders.Controller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.Colliders.cs" />

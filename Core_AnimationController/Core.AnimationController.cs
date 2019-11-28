@@ -24,10 +24,9 @@ namespace KK_Plugins
     /// <summary>
     /// Allows attaching IK nodes to objects to create custom animations
     /// </summary>
-    public partial class KK_AnimationController
+    public partial class AnimationController
     {
         public const string PluginName = "Animation Controller";
-        public const string PluginNameInternal = nameof(KK_AnimationController);
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
         public const string Version = "2.2";
         internal static new ManualLogSource Logger;
@@ -42,7 +41,6 @@ namespace KK_Plugins
 #else
         private static readonly string[] IKGuideObjects = new string[] { "cf_J_Hips", "cf_J_ArmUp00_L", "cf_J_ArmLow01_L", "cf_J_Hand_L", "cf_J_ArmUp00_R", "cf_J_ArmLow01_R", "cf_J_Hand_R", "cf_J_LegUp00_L", "cf_J_LegLow01_L", "cf_J_Foot01_L", "cf_J_LegUp00_R", "cf_J_LegLow01_R", "cf_J_Foot01_R", "eyes", "neck" };
 #endif
-
 
         public static ConfigEntry<KeyboardShortcut> AnimationControllerHotkey { get; private set; }
 

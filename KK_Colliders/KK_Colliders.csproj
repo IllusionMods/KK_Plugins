@@ -79,10 +79,12 @@
     <Compile Include="KK.Colliders.Controller.cs" />
     <Compile Include="KK.Colliders.cs" />
     <Compile Include="KK.Colliders.Hooks.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="..\Core_Colliders\Core_Colliders.projitems" Label="Shared" />
   <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />

@@ -2,7 +2,6 @@
 using BepInEx.Bootstrap;
 using BepInEx.Harmony;
 using BepInEx.Logging;
-using KK_Plugins.CommonCode;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using System;
@@ -17,7 +16,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using HarmonyLib;
 using BepInEx.Configuration;
-using CommonCode;
 #if KK || AI
 using KKAPI.Studio.SaveLoad;
 using Studio;

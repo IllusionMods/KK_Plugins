@@ -3,5 +3,8 @@
 namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
-    public partial class Demosaic : BaseUnityPlugin { }
+    public partial class Demosaic : BaseUnityPlugin
+    {
+        public const string PluginNameInternal = "EC_Demosaic";
+    }
 }

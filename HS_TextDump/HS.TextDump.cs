@@ -15,7 +15,8 @@ namespace KK_Plugins
     public class TextDump : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.textdump";
-        public const string PluginName = "HS_TextDump";
+        public const string PluginName = "Text Dump";
+        public const string PluginNameInternal = "HS_TextDump";
         public const string Version = "1.1";
 
         public static ConfigEntry<bool> Enabled { get; private set; }
