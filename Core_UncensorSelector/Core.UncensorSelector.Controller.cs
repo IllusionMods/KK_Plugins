@@ -279,10 +279,17 @@ namespace KK_Plugins
                     string uncensorKey = DisplayNameToBodyGuid(chaControl.sex == 0 ? DefaultMaleBody.Value : DefaultFemaleBody.Value);
 
                     //Return the default body if specified
-                    if (BodyDictionary.TryGetValue(uncensorKey, out BodyData defaultBody))
-                        return defaultBody;
+                    if (BodyDictionary.TryGetValue(uncensorKey, out BodyData bodyData))
+                        return bodyData;
 
-                    return GetRandomBody(chaControl);
+                    //Get random if none specified
+                    bodyData = GetRandomBody(chaControl);
+
+                    //None available, return the default
+                    if (bodyData == null)
+                        BodyDictionary.TryGetValue(chaControl.sex == 0 ? DefaultBodyMaleGUID : DefaultBodyFemaleGUID, out bodyData);
+
+                    return bodyData;
                 }
                 /// <summary>
                 /// Generate a random number based on character parameters so the same character will generate the same number every time and get a body based on this number.
@@ -300,10 +307,17 @@ namespace KK_Plugins
                     string uncensorKey = DisplayNameToPenisGuid(chaControl.sex == 0 ? DefaultMalePenis.Value : DefaultFemalePenis.Value);
 
                     //Return the default penis if specified
-                    if (PenisDictionary.TryGetValue(uncensorKey, out PenisData defaultPenis))
-                        return defaultPenis;
+                    if (PenisDictionary.TryGetValue(uncensorKey, out PenisData penisData))
+                        return penisData;
 
-                    return GetRandomPenis(chaControl);
+                    //Get random if none specified
+                    penisData = GetRandomPenis(chaControl);
+
+                    //None available, return the default
+                    if (penisData == null)
+                        PenisDictionary.TryGetValue(DefaultPenisGUID, out penisData);
+
+                    return penisData;
                 }
                 /// <summary>
                 /// Generate a random number based on character parameters so the same character will generate the same number every time and get a penis based on this number.
@@ -321,10 +335,17 @@ namespace KK_Plugins
                     string uncensorKey = DisplayNameToBallsGuid(chaControl.sex == 0 ? DefaultMaleBalls.Value : DefaultFemaleBalls.Value);
 
                     //Return the default balls if specified
-                    if (BallsDictionary.TryGetValue(uncensorKey, out BallsData defaultBalls))
-                        return defaultBalls;
+                    if (BallsDictionary.TryGetValue(uncensorKey, out BallsData ballsData))
+                        return ballsData;
 
-                    return GetRandomBalls(chaControl);
+                    //Get random if none specified
+                    ballsData = GetRandomBalls(chaControl);
+
+                    //None available, return the default
+                    if (ballsData == null)
+                        BallsDictionary.TryGetValue(DefaultBallsGUID, out ballsData);
+
+                    return ballsData;
                 }
                 /// <summary>
                 /// Generate a random number based on character parameters so the same character will generate the same number every time and get balls based on this number.
