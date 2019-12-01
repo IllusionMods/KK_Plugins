@@ -30,30 +30,6 @@ v1.1 Fixed locking up the game after special H scenes. Added config option to di
 v1.2 Fixed hair physics not working (Thanks Rau/Marco/Essu)<br/>
 </details>
 
-#### GUIDMigration
-**v1.5.4 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v110/KK_GUIDMigration.v1.5.4.zip)** - For Koikatsu<br/>
-Note: Only to be used with BepisPlugins r10 or higher, earlier versions are incompatible!<br/>
-
-Migrates information on your character cards in cases where a mod's GUID or IDs changed so you don't have to manually reselect everything. Will not attempt migration if you have the old mod but not the new.<br/>
-
-Also attempts to fix cards saved with a blank GUID (Missing Mod []) by stripping the GUID and forcing sideloader to treat it as a hard mod. May not work 100%, so check your cards.<br/>
-
-<details><summary>Change Log</summary>
-v1.1 Added character name for blank GUID messages<br/>
-v1.2 Fixed hard coded path<br/>
-v1.3 Added support for stripping extended data, fix errors resulting from missing .csv<br/>
-v1.4 Added support for coordinate cards (Thanks Kokaiinum), fix errors caused by wrong sideloader version<br/>
-v1.4 BepisPlugins r10 support, MoreAccessories support<br/>
-</details>
-
-<details><summary>Configuration</summary>
-Comes preconfigured with a whole bunch of migration info. Unless I stopped maintaining it you shouldn't need to mess with this stuff.<br/>
-KK_GUIDMigration.csv is a comma separated file in the form Category,Old GUID,Old ID,New GUID,New ID.<br/>
-Category is the internal one used by sideloader, not the numeric category.<br/>
-When the category is * only GUID migration will be attempted and whatever you put for Old/New ID will be ignored. Use only in cases where a GUID changed and the IDs stay the same.<br/>
-When the category is - the extended data will be stripped and will be treated as a hard mod
-</details>
-
 #### ReloadCharaListOnChange
 **v1.5.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_ReloadCharaListOnChange.v1.5.1.zip)** - For Koikatsu<br/>
 
@@ -145,6 +121,7 @@ v3.8 AI Girl version<br/>
 v3.8.1 Fix broken config stuff (thanks Keelhauled)<br/>
 v3.8.3 Fix uncensors not working in AI Girl main game<br/>
 v3.9 Fix crash with duplicate uncensor GUIDs, implement dick/balls support for AI Girl<br/>
+v3.9.1 Fix error in Studio resulting from having no uncensors<br/>
 </details>
 
 #### Subtitles
@@ -340,6 +317,9 @@ Allows translations to override individual assets. Required for some translation
 #### KK_PersonalityCorrector
 #### KK_SettingsFix
 Moved to the [IllusionFixes](https://github.com/IllusionMods/IllusionFixes) repo.<br/>
+
+#### GUIDMigration
+Obsolete, features merged in to Sideloader iself
 
 
 # Experimental plugins
