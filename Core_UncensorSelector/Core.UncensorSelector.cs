@@ -431,9 +431,9 @@ namespace KK_Plugins
             return false;
         }
 
-        internal string[] GetConfigBodyList() => BodyConfigListFull?.Keys.OrderBy(x => x[0] == '[').ThenBy(x => x).ToArray();
-        internal string[] GetConfigPenisList() => PenisConfigListFull?.Keys.OrderBy(x => x).ToArray();
-        internal string[] GetConfigBallsList() => BallsConfigListFull?.Keys.OrderBy(x => x).ToArray();
+        internal string[] GetConfigBodyList() => BodyConfigListFull?.Keys.OrderByDescending(x => x == "Random").ThenBy(x => x[0] == '[').ThenBy(x => x).ToArray();
+        internal string[] GetConfigPenisList() => PenisConfigListFull?.Keys.OrderByDescending(x => x == "Random").ThenBy(x => x).ToArray();
+        internal string[] GetConfigBallsList() => BallsConfigListFull?.Keys.OrderByDescending(x => x == "Random").ThenBy(x => x).ToArray();
 
         private static string DisplayNameToBodyGuid(string displayName)
         {
