@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using KKAPI.Studio.SaveLoad;
 using System;
-using System.Linq;
 using System.Reflection;
 
 namespace KK_Plugins
@@ -16,11 +16,13 @@ namespace KK_Plugins
             {
                 var assembly = dragDropPlugin?.GetType()?.Assembly;
 
+                StudioSaveLoadApi.SceneLoad += SceneLoad;
+
                 InstallPrefix(assembly, "DragAndDrop.StudioHandler", "Scene_Load",
-                    AccessTools.Method(typeof(Hooks), nameof(Hooks.OnClickLoadPrefix)));
+                    AccessTools.Method(typeof(DragAndDropPatches), nameof(DragAndDrop_StudioHandler_Prefix)));
 
                 InstallPrefix(assembly, "DragAndDrop.StudioHandler", "Scene_Import",
-                    AccessTools.Method(typeof(Hooks), nameof(Hooks.OnClickImportPrefix)));
+                    AccessTools.Method(typeof(DragAndDropPatches), nameof(DragAndDrop_StudioHandler_Prefix)));
             }
 
             private static void InstallPrefix(Assembly assembly, string targetTypeName, string targetMethodName, MethodInfo prefixMethod)
@@ -30,11 +32,26 @@ namespace KK_Plugins
                     var targetMethod = FindTargetMethod(assembly, targetTypeName, targetMethodName);
                     if (targetMethod != null)
                     {
+#if DEBUG
                         Logger.LogDebug($"patching {targetMethod}");
-
+#endif
                         harmonyInstance = harmonyInstance ?? new Harmony($"harmonywrapper-auto-{Guid.NewGuid()}");
                         harmonyInstance.Patch(targetMethod, new HarmonyMethod(prefixMethod));
                     }
+                }
+            }
+
+            internal static void DragAndDrop_StudioHandler_Prefix()
+            {
+                DragAndDropped = true;
+            }
+
+            private static void SceneLoad(object sender, SceneLoadEventArgs e)
+            {
+                if (DragAndDropped && (e.Operation == SceneOperationKind.Load || e.Operation == SceneOperationKind.Import))
+                {
+                    DragAndDropped = false;
+                    PlayAlertSound();
                 }
             }
 

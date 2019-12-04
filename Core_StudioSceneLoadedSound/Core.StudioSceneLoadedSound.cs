@@ -12,6 +12,7 @@ namespace KK_Plugins
     /// </summary>
     [BepInPlugin(GUID, PluginName, Version)]
     [BepInProcess(Constants.StudioProcessName)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInDependency(DragDrop_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     public partial class StudioSceneLoadedSound
     {
@@ -22,8 +23,7 @@ namespace KK_Plugins
         private const string DragDrop_GUID = "keelhauled.draganddrop";
 
         private static bool LoadOrImportClicked = false;
-
-        private readonly HashSet<string> AlertSceneNames = new HashSet<string>(new string[] { "StudioNotification" });
+        private static bool DragAndDropped = false;
 
         internal static new ManualLogSource Logger;
 
@@ -31,7 +31,7 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
             SceneManager.sceneLoaded += SceneLoaded;
-            HarmonyWrapper.PatchAll(typeof(StudioSceneLoadedSound.Hooks));
+            HarmonyWrapper.PatchAll(typeof(Hooks));
         }
 
         internal void Start()
@@ -39,7 +39,6 @@ namespace KK_Plugins
             if (Chainloader.PluginInfos.TryGetValue(DragDrop_GUID, out PluginInfo dragDropPluginInfo))
             {
                 Logger.LogDebug($"Patching {DragDrop_GUID}");
-                AlertSceneNames.Add("studio_map00");
                 DragAndDropPatches.InstallPatches(dragDropPluginInfo.Instance);
             }
         }
@@ -49,7 +48,7 @@ namespace KK_Plugins
         /// </summary>
         private void SceneLoaded(Scene s, LoadSceneMode lsm)
         {
-            if (LoadOrImportClicked && AlertSceneNames.Contains(s.name))
+            if (s.name == "StudioNotification" && LoadOrImportClicked)
             {
                 LoadOrImportClicked = false;
                 PlayAlertSound();

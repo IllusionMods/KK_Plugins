@@ -8,7 +8,7 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.SceneLoadScene), "OnClickLoad")]
-            internal static void OnClickLoadPrefix() => LoadOrImportClicked = true;
+            internal static void OnClickLoadPrefix()  => LoadOrImportClicked = true;
 
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.SceneLoadScene), "OnClickImport")]
             internal static void OnClickImportPrefix() => LoadOrImportClicked = true;

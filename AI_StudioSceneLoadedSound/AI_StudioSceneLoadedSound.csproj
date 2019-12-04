@@ -35,6 +35,10 @@
       <HintPath>..\packages\IllusionLibs.BepInEx.Harmony.2.0.0-beta\lib\net46\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="AIAPI, Version=1.9.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionModdingAPI.AIAPI.1.9.5\lib\net46\AIAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IllusionLibs.AIGirl.Assembly-CSharp.2019.11.29\lib\net46\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
