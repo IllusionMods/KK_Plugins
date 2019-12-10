@@ -189,6 +189,12 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AI_TextResourceHelper", "AI
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "KK_TextResourceHelper", "KK_TextResourceHelper\KK_TextResourceHelper.shproj", "{50BA3BAF-50D9-4E53-BF4A-2B804CE0E19B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioSceneLoadedSound", "StudioSceneLoadedSound", "{92DF1BEE-7CB1-449B-873A-21988E061EFB}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_StudioSceneLoadedSound", "Core_StudioSceneLoadedSound\Core_StudioSceneLoadedSound.shproj", "{46C0C1ED-0307-4D93-97D5-D71A8D682EEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_StudioSceneLoadedSound", "AI_StudioSceneLoadedSound\AI_StudioSceneLoadedSound.csproj", "{CEE04077-20C2-4AAE-9E45-930695AB03E8}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_AnimationController\Core_AnimationController.projitems*{0a702757-ce40-48fe-bed1-00be3b717417}*SharedItemsImports = 13
@@ -219,6 +225,7 @@ Global
 		Core_TextDump\Core_TextDump.projitems*{4026bb4c-6a7d-41b7-aebd-6044c9326523}*SharedItemsImports = 4
 		Core_TextResourceHelper\Core_TextResourceHelper.projitems*{4026bb4c-6a7d-41b7-aebd-6044c9326523}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{42f4ccee-063c-482f-aee7-5e8d34433c95}*SharedItemsImports = 4
+		Core_StudioSceneLoadedSound\Core_StudioSceneLoadedSound.projitems*{46c0c1ed-0307-4d93-97d5-d71a8d682eea}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
 		Core_Demosaic\Core_Demosaic.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{49add937-3c6a-427c-910f-98a3ad1fccf9}*SharedItemsImports = 4
@@ -244,6 +251,7 @@ Global
 		CommonCode\CommonCode.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
 		Core_PoseFolders\Core_PoseFolders.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 4
+		Core_StudioSceneLoadedSound\Core_StudioSceneLoadedSound.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{7b514b4e-a0bc-4da9-b2a8-0b72515e8033}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{7e21e1cc-356e-41bb-abdd-bd0f99710361}*SharedItemsImports = 4
 		Core_FKIK\Core_FKIK.projitems*{81d88c3e-4094-436c-8eed-ba18a81a96a4}*SharedItemsImports = 13
@@ -298,6 +306,8 @@ Global
 		CommonCode\CommonCode.projitems*{cad079e9-566d-4933-8390-10476a337347}*SharedItemsImports = 4
 		Core_Subtitles\Core_Subtitles.projitems*{cad079e9-566d-4933-8390-10476a337347}*SharedItemsImports = 4
 		Core_Demosaic\Core_Demosaic.projitems*{cb53db90-ac91-4dbc-95a5-2729f177d3f7}*SharedItemsImports = 13
+		CommonCode\CommonCode.projitems*{cee04077-20c2-4aae-9e45-930695ab03e8}*SharedItemsImports = 4
+		Core_StudioSceneLoadedSound\Core_StudioSceneLoadedSound.projitems*{cee04077-20c2-4aae-9e45-930695ab03e8}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
 		Core_AnimationOverdrive\Core_AnimationOverdrive.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
@@ -539,11 +549,16 @@ Global
 		{F32BA203-579F-413B-8F31-13AD03F5E6D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F32BA203-579F-413B-8F31-13AD03F5E6D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F32BA203-579F-413B-8F31-13AD03F5E6D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEE04077-20C2-4AAE-9E45-930695AB03E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEE04077-20C2-4AAE-9E45-930695AB03E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEE04077-20C2-4AAE-9E45-930695AB03E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEE04077-20C2-4AAE-9E45-930695AB03E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{78D47E8D-B2F7-4D7C-8BE8-213E4394A1FA} = {92DF1BEE-7CB1-449B-873A-21988E061EFB}
 		{17B56A36-764F-4670-941A-B0CB76558F37} = {CE8EA04B-6351-40C4-97AB-24CAE7020DCB}
 		{3557D31C-F7F1-4FC6-BB2F-4360CD50152A} = {06544F1F-7504-40FB-B614-B8B50B6D790D}
 		{190FE08F-1D2E-4615-8555-F036D5E48587} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
@@ -607,6 +622,8 @@ Global
 		{94670AF2-2A1F-49AF-A66F-03FA381A9F02} = {BBFC4A4F-16DE-4182-8BE1-D364D0F165A2}
 		{6F1B1AE0-204D-4CB4-A290-A06A3DD56377} = {BBFC4A4F-16DE-4182-8BE1-D364D0F165A2}
 		{50BA3BAF-50D9-4E53-BF4A-2B804CE0E19B} = {BBFC4A4F-16DE-4182-8BE1-D364D0F165A2}
+		{46C0C1ED-0307-4D93-97D5-D71A8D682EEA} = {92DF1BEE-7CB1-449B-873A-21988E061EFB}
+		{CEE04077-20C2-4AAE-9E45-930695AB03E8} = {92DF1BEE-7CB1-449B-873A-21988E061EFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
