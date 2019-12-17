@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Harmony;
+using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -17,6 +18,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.hairaccessorycustomizer";
         public const string PluginName = "Hair Accessory Customizer";
         public const string Version = "1.1.2";
+        internal static new ManualLogSource Logger;
 
         internal static bool ReloadingChara = false;
         internal static AccessoryControlWrapper<MakerToggle, bool> ColorMatchToggle;
@@ -32,6 +34,7 @@ namespace KK_Plugins
 
         internal void Start()
         {
+            Logger = base.Logger;
             CharacterApi.RegisterExtraBehaviour<HairAccessoryController>(GUID);
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;

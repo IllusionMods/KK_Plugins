@@ -4,34 +4,37 @@ using System.Collections;
 
 namespace KK_Plugins
 {
-    internal partial class Hooks
+    public partial class HairAccessoryCustomizer
     {
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
-        internal static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));
-
-        private static IEnumerator ChangeCoordinateActions(ChaControl __instance)
+        internal partial class Hooks
         {
-            var controller = HairAccessoryCustomizer.GetController(__instance);
-            if (controller == null) yield break;
-            if (HairAccessoryCustomizer.ReloadingChara) yield break;
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
+            internal static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));
 
-            HairAccessoryCustomizer.ReloadingChara = true;
-            yield return null;
-
-            if (MakerAPI.InsideAndLoaded)
+            private static IEnumerator ChangeCoordinateActions(ChaControl __instance)
             {
-                if (controller.InitHairAccessoryInfo(AccessoriesApi.SelectedMakerAccSlot))
+                var controller = GetController(__instance);
+                if (controller == null) yield break;
+                if (ReloadingChara) yield break;
+
+                ReloadingChara = true;
+                yield return null;
+
+                if (MakerAPI.InsideAndLoaded)
                 {
-                    //switching to a hair accessory that previously had no data. Meaning this card was made before this plugin. ColorMatch and HairGloss should be off.
-                    controller.SetColorMatch(false);
-                    controller.SetHairGloss(false);
+                    if (controller.InitHairAccessoryInfo(AccessoriesApi.SelectedMakerAccSlot))
+                    {
+                        //switching to a hair accessory that previously had no data. Meaning this card was made before this plugin. ColorMatch and HairGloss should be off.
+                        controller.SetColorMatch(false);
+                        controller.SetHairGloss(false);
+                    }
+
+                    InitCurrentSlot(controller);
                 }
 
-                HairAccessoryCustomizer.InitCurrentSlot(controller);
+                controller.UpdateAccessories(true);
+                ReloadingChara = false;
             }
-
-            controller.UpdateAccessories(true);
-            HairAccessoryCustomizer.ReloadingChara = false;
         }
     }
 }
