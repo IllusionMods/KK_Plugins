@@ -311,6 +311,11 @@ v1.1 AI Girl port, capped animation speed at 1000 to prevent animations breaking
 
 Allows translations to override individual assets. Required for some translations to function correctly. Requires [Unity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator).
 
+#### CharacterExport
+**v1.0 - [Download](https://www.patreon.com/posts/32434052)** - For Koikatsu, EmotionCreators, and AI Girl<br/>
+
+Press Ctrl+E (configurable) to export all loaded character. Used for exporting characters from Studio scenes and such.<br/>
+
 #### KK_CutsceneLockupFix
 #### KK_HeadFix
 #### KK_MiscFixes
