@@ -16,9 +16,13 @@ Plugins for Koikatsu, EmotionCreators, and AI Girl
 Plays a sound when the Chara Maker finishes loading. Useful if you spend the load time alt-tabbed.
 
 #### StudioSceneLoadedSound
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v1/KK_StudioSceneLoadedSound.v1.0.zip)** - For Koikatsu<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/32459105)** - For Koikatsu and AI Girl<br/>
 
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.<br/>
+
+<details><summary>Change Log</summary>
+v1.1 Config options, AI version (thanks GeBo!)<br/>
+</details>
 
 #### ForceHighPoly
 **v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v70/KK_ForceHighPoly.v1.2.zip)** - For Koikatsu<br/>
