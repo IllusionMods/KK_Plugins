@@ -10,9 +10,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneLoadedSound.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneLoadedSound.Hooks.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneLoadedSound.DragAndDropPatches.cs" />
   </ItemGroup>
 </Project>
