@@ -1,6 +1,6 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Harmony;
-using HarmonyLib;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -14,51 +14,35 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.hcharaadjustment";
         public const string PluginName = "H Character Adjustment";
         public const string PluginNameInternal = "KK_HCharaAdjustment";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
 
         private static float AdjustmentX = 0;
         private static float AdjustmentY = 0;
         private static float AdjustmentZ = 0;
 
-        internal void Main() => HarmonyWrapper.PatchAll(typeof(Hooks));
+        public static ConfigEntry<KeyboardShortcut> AdjustmentXPlus { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> AdjustmentXMinus { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> AdjustmentXReset { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> AdjustmentYPlus { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> AdjustmentYMinus { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> AdjustmentYReset { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> AdjustmentZPlus { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> AdjustmentZMinus { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> AdjustmentZReset { get; private set; }
 
-        [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "EndProc")]
-        public static void EndProc()
+        internal void Main()
         {
-            AdjustmentX = 0f;
-            AdjustmentY = 0f;
-            AdjustmentZ = 0f;
-        }
+            HarmonyWrapper.PatchAll(typeof(Hooks));
 
-        [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "LateShortCut")]
-        public static void LateShortCut(HSceneProc __instance)
-        {
-            ChaControl heroine = __instance.flags.lstHeroine[0].chaCtrl;
-
-            if (Input.GetKeyDown(KeyCode.P))
-                AdjustmentX += 0.01f;
-            if (Input.GetKeyDown(KeyCode.O))
-                AdjustmentX -= 0.01f;
-            if (Input.GetKeyDown(KeyCode.I))
-                AdjustmentX = 0f;
-            if (Input.GetKeyDown(KeyCode.L))
-                AdjustmentY += 0.01f;
-            if (Input.GetKeyDown(KeyCode.K))
-                AdjustmentY -= 0.01f;
-            if (Input.GetKeyDown(KeyCode.J))
-                AdjustmentY = 0f;
-            if (Input.GetKeyDown(KeyCode.M))
-                AdjustmentZ += 0.01f;
-            if (Input.GetKeyDown(KeyCode.N))
-                AdjustmentZ -= 0.01f;
-            if (Input.GetKeyDown(KeyCode.B))
-                AdjustmentZ = 0f;
-
-            Vector3 pos = heroine.GetPosition();
-            pos.x += AdjustmentX;
-            pos.y += AdjustmentY;
-            pos.z += AdjustmentZ;
-            heroine.SetPosition(pos);
+            AdjustmentXPlus = Config.Bind("Keyboard Shortcuts", "Adjustment X Plus", new KeyboardShortcut(KeyCode.P), "Increase X axis adjustment");
+            AdjustmentXMinus = Config.Bind("Keyboard Shortcuts", "Adjustment X Minus", new KeyboardShortcut(KeyCode.O), "Decrease X axis adjustment");
+            AdjustmentXReset = Config.Bind("Keyboard Shortcuts", "Adjustment X Reset", new KeyboardShortcut(KeyCode.I), "Reset X axis adjustment");
+            AdjustmentYPlus = Config.Bind("Keyboard Shortcuts", "Adjustment Y Plus", new KeyboardShortcut(KeyCode.L), "Increase Y axis adjustment");
+            AdjustmentYMinus = Config.Bind("Keyboard Shortcuts", "Adjustment Y Minus", new KeyboardShortcut(KeyCode.K), "Decrease Y axis adjustment");
+            AdjustmentYReset = Config.Bind("Keyboard Shortcuts", "Adjustment Y Reset", new KeyboardShortcut(KeyCode.J), "Reset Y axis adjustment");
+            AdjustmentZPlus = Config.Bind("Keyboard Shortcuts", "Adjustment Z Plus", new KeyboardShortcut(KeyCode.M), "Increase Z axis adjustment");
+            AdjustmentZMinus = Config.Bind("Keyboard Shortcuts", "Adjustment Z Minus", new KeyboardShortcut(KeyCode.N), "Decrease Z axis adjustment");
+            AdjustmentZReset = Config.Bind("Keyboard Shortcuts", "Adjustment Z Reset", new KeyboardShortcut(KeyCode.B), "Reset Z axis adjustment");
         }
     }
 }

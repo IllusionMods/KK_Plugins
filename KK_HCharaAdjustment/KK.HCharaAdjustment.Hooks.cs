@@ -20,23 +20,23 @@ namespace KK_Plugins
             {
                 ChaControl heroine = __instance.flags.lstHeroine[0].chaCtrl;
 
-                if (Input.GetKeyDown(KeyCode.P))
+                if (AdjustmentXPlus.Value.IsDown())
                     AdjustmentX += 0.01f;
-                if (Input.GetKeyDown(KeyCode.O))
+                if (AdjustmentXMinus.Value.IsDown())
                     AdjustmentX -= 0.01f;
-                if (Input.GetKeyDown(KeyCode.I))
+                if (AdjustmentXReset.Value.IsDown())
                     AdjustmentX = 0f;
-                if (Input.GetKeyDown(KeyCode.L))
+                if (AdjustmentYPlus.Value.IsDown())
                     AdjustmentY += 0.01f;
-                if (Input.GetKeyDown(KeyCode.K))
+                if (AdjustmentYMinus.Value.IsDown())
                     AdjustmentY -= 0.01f;
-                if (Input.GetKeyDown(KeyCode.J))
+                if (AdjustmentYReset.Value.IsDown())
                     AdjustmentY = 0f;
-                if (Input.GetKeyDown(KeyCode.M))
+                if (AdjustmentZPlus.Value.IsDown())
                     AdjustmentZ += 0.01f;
-                if (Input.GetKeyDown(KeyCode.N))
+                if (AdjustmentZMinus.Value.IsDown())
                     AdjustmentZ -= 0.01f;
-                if (Input.GetKeyDown(KeyCode.B))
+                if (AdjustmentZReset.Value.IsDown())
                     AdjustmentZ = 0f;
 
                 Vector3 pos = heroine.GetPosition();
