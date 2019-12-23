@@ -1,6 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Harmony;
+using BepInEx.Logging;
+using KKAPI.Chara;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -14,35 +16,31 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.hcharaadjustment";
         public const string PluginName = "H Character Adjustment";
         public const string PluginNameInternal = "KK_HCharaAdjustment";
-        public const string Version = "1.0.1";
+        public const string Version = "2.0";
+        internal static new ManualLogSource Logger;
 
-        private static float AdjustmentX = 0;
-        private static float AdjustmentY = 0;
-        private static float AdjustmentZ = 0;
-
-        public static ConfigEntry<KeyboardShortcut> AdjustmentXPlus { get; private set; }
-        public static ConfigEntry<KeyboardShortcut> AdjustmentXMinus { get; private set; }
-        public static ConfigEntry<KeyboardShortcut> AdjustmentXReset { get; private set; }
-        public static ConfigEntry<KeyboardShortcut> AdjustmentYPlus { get; private set; }
-        public static ConfigEntry<KeyboardShortcut> AdjustmentYMinus { get; private set; }
-        public static ConfigEntry<KeyboardShortcut> AdjustmentYReset { get; private set; }
-        public static ConfigEntry<KeyboardShortcut> AdjustmentZPlus { get; private set; }
-        public static ConfigEntry<KeyboardShortcut> AdjustmentZMinus { get; private set; }
-        public static ConfigEntry<KeyboardShortcut> AdjustmentZReset { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> Female1GuideObject { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> Female2GuideObject { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> MaleGuideObject { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> Female1GuideObjectReset { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> Female2GuideObjectReset { get; private set; }
+        public static ConfigEntry<KeyboardShortcut> MaleGuideObjectReset { get; private set; }
 
         internal void Main()
         {
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Logger = base.Logger;
 
-            AdjustmentXPlus = Config.Bind("Keyboard Shortcuts", "Adjustment X Plus", new KeyboardShortcut(KeyCode.P), "Increase X axis adjustment");
-            AdjustmentXMinus = Config.Bind("Keyboard Shortcuts", "Adjustment X Minus", new KeyboardShortcut(KeyCode.O), "Decrease X axis adjustment");
-            AdjustmentXReset = Config.Bind("Keyboard Shortcuts", "Adjustment X Reset", new KeyboardShortcut(KeyCode.I), "Reset X axis adjustment");
-            AdjustmentYPlus = Config.Bind("Keyboard Shortcuts", "Adjustment Y Plus", new KeyboardShortcut(KeyCode.L), "Increase Y axis adjustment");
-            AdjustmentYMinus = Config.Bind("Keyboard Shortcuts", "Adjustment Y Minus", new KeyboardShortcut(KeyCode.K), "Decrease Y axis adjustment");
-            AdjustmentYReset = Config.Bind("Keyboard Shortcuts", "Adjustment Y Reset", new KeyboardShortcut(KeyCode.J), "Reset Y axis adjustment");
-            AdjustmentZPlus = Config.Bind("Keyboard Shortcuts", "Adjustment Z Plus", new KeyboardShortcut(KeyCode.M), "Increase Z axis adjustment");
-            AdjustmentZMinus = Config.Bind("Keyboard Shortcuts", "Adjustment Z Minus", new KeyboardShortcut(KeyCode.N), "Decrease Z axis adjustment");
-            AdjustmentZReset = Config.Bind("Keyboard Shortcuts", "Adjustment Z Reset", new KeyboardShortcut(KeyCode.B), "Reset Z axis adjustment");
+            Female1GuideObject = Config.Bind("Keyboard Shortcuts", "Show Female 1 Guide Object", new KeyboardShortcut(KeyCode.O), new ConfigDescription("Show the guide object for adjusting girl 1 position", null, new ConfigurationManagerAttributes { Order = 6 }));
+            Female2GuideObject = Config.Bind("Keyboard Shortcuts", "Show Female 2 Guide Object", new KeyboardShortcut(KeyCode.P), new ConfigDescription("Show the guide object for adjusting girl 2 position", null, new ConfigurationManagerAttributes { Order = 5 }));
+            MaleGuideObject = Config.Bind("Keyboard Shortcuts", "Show Male Guide Object", new KeyboardShortcut(KeyCode.I), new ConfigDescription("Show the guide object for adjusting the boy's position", null, new ConfigurationManagerAttributes { Order = 4 }));
+            Female1GuideObjectReset = Config.Bind("Keyboard Shortcuts", "Reset Female 1 Position", new KeyboardShortcut(KeyCode.O, KeyCode.RightControl), new ConfigDescription("Reset adjustments for girl 1 position", null, new ConfigurationManagerAttributes { Order = 3 }));
+            Female2GuideObjectReset = Config.Bind("Keyboard Shortcuts", "Reset Female 2 Position", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl), new ConfigDescription("Reset adjustments for girl 2 position", null, new ConfigurationManagerAttributes { Order = 2 }));
+            MaleGuideObjectReset = Config.Bind("Keyboard Shortcuts", "Reset Male Position", new KeyboardShortcut(KeyCode.I, KeyCode.RightControl), new ConfigDescription("Reset adjustments for girl 2 position", null, new ConfigurationManagerAttributes { Order = 1 }));
+
+            HarmonyWrapper.PatchAll(typeof(Hooks));
+            CharacterApi.RegisterExtraBehaviour<HCharaAdjustmentController>(GUID);
         }
+
+        public static HCharaAdjustmentController GetController(ChaControl chaControl) => chaControl.GetComponent<HCharaAdjustmentController>();
     }
 }

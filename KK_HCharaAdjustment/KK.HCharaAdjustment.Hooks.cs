@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using UnityEngine;
 
 namespace KK_Plugins
 {
@@ -7,43 +6,41 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "EndProc")]
-            internal static void EndProc()
+            /// <summary>
+            /// Something that happens at the end of H scene loading, good enough place to initialize stuff
+            /// </summary>
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "MapSameObjectDisable")]
+            internal static void MapSameObjectDisable(HSceneProc __instance)
             {
-                AdjustmentX = 0f;
-                AdjustmentY = 0f;
-                AdjustmentZ = 0f;
+                for (int i = 0; i < __instance.flags.lstHeroine.Count; i++)
+                    if (i == 0)
+                        GetController(__instance.flags.lstHeroine[i].chaCtrl).CreateGuideObject(__instance, HCharaAdjustmentController.CharacterType.Female1);
+                    else if (i == 1)
+                        GetController(__instance.flags.lstHeroine[i].chaCtrl).CreateGuideObject(__instance, HCharaAdjustmentController.CharacterType.Female2);
+                    else continue;
+                GetController(__instance.flags.player.chaCtrl).CreateGuideObject(__instance, HCharaAdjustmentController.CharacterType.Male);
             }
 
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "LateShortCut")]
-            internal static void LateShortCut(HSceneProc __instance)
+            /// <summary>
+            /// Hide the guide objects when the H point picker scene is displayed
+            /// </summary>
+            /// <param name="__instance"></param>
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "GotoPointMoveScene")]
+            internal static void GotoPointMoveScene(HSceneProc __instance)
             {
-                ChaControl heroine = __instance.flags.lstHeroine[0].chaCtrl;
+                foreach (var heroine in __instance.flags.lstHeroine)
+                    GetController(heroine.chaCtrl).HideGuideObject();
+            }
 
-                if (AdjustmentXPlus.Value.IsDown())
-                    AdjustmentX += 0.01f;
-                if (AdjustmentXMinus.Value.IsDown())
-                    AdjustmentX -= 0.01f;
-                if (AdjustmentXReset.Value.IsDown())
-                    AdjustmentX = 0f;
-                if (AdjustmentYPlus.Value.IsDown())
-                    AdjustmentY += 0.01f;
-                if (AdjustmentYMinus.Value.IsDown())
-                    AdjustmentY -= 0.01f;
-                if (AdjustmentYReset.Value.IsDown())
-                    AdjustmentY = 0f;
-                if (AdjustmentZPlus.Value.IsDown())
-                    AdjustmentZ += 0.01f;
-                if (AdjustmentZMinus.Value.IsDown())
-                    AdjustmentZ -= 0.01f;
-                if (AdjustmentZReset.Value.IsDown())
-                    AdjustmentZ = 0f;
-
-                Vector3 pos = heroine.GetPosition();
-                pos.x += AdjustmentX;
-                pos.y += AdjustmentY;
-                pos.z += AdjustmentZ;
-                heroine.SetPosition(pos);
+            /// <summary>
+            /// Set the new original position when changing positions via the H point picker scene
+            /// </summary>
+            /// <param name="__instance"></param>
+            [HarmonyPostfix, HarmonyPatch(typeof(HSceneProc), "ChangeCategory")]
+            internal static void ChangeCategory(HSceneProc __instance)
+            {
+                foreach (var heroine in __instance.flags.lstHeroine)
+                    GetController(heroine.chaCtrl).SetGuideObjectOriginalPosition();
             }
         }
     }

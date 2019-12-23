@@ -48,6 +48,10 @@
       <HintPath>..\packages\IllusionLibs.BepInEx.Harmony.2.0.0-beta\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KKAPI, Version=1.9.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionModdingAPI.KKAPI.1.9.5\lib\net35\KKAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KK.HCharaAdjustment.Controller.cs" />
     <Compile Include="KK.HCharaAdjustment.cs" />
     <Compile Include="KK.HCharaAdjustment.Hooks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
