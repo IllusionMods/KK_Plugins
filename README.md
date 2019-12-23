@@ -321,6 +321,15 @@ Allows translations to override individual assets. Required for some translation
 
 Press Ctrl+E (configurable) to export all loaded character. Used for exporting characters from Studio scenes and such.<br/>
 
+#### HCharaAdjustment
+**v2.0 - [Download](https://www.patreon.com/posts/32552349)** - For Koikatsu<br/>
+Adjust the position of the female character in H scene by pressing some hotkeys, which are configurable in the plugin settings.<br/>
+
+<details><summary>Change Log</summary>
+v1.0.1 Made the hotkeys configurable<br/>
+v2.0 Added a guide object instead of hotkeys for positioning<br/>
+</details>
+
 #### KK_CutsceneLockupFix
 #### KK_HeadFix
 #### KK_MiscFixes
@@ -330,15 +339,3 @@ Moved to the [IllusionFixes](https://github.com/IllusionMods/IllusionFixes) repo
 
 #### GUIDMigration
 Obsolete, features merged in to Sideloader iself
-
-
-# Experimental plugins
-Experimental or unfinished plugins. No support will be given and most likely no fixes will be made. Feel free to report bugs that aren't already listed but don't expect a fix. Anyone who wants to improve these plugins is welcome to do so, all the source code is available.<br/>
-
-#### HCharaAdjustment
-**v1.0.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v134/KK_HCharaAdjustment.v1.0.1.zip)** - For Koikatsu<br/>
-Adjust the position of the female character in H scene by pressing some hotkeys, which are configurable in the plugin settings.<br/>
-
-<details><summary>Change Log</summary>
-v1.0.1 Made the hotkeys configurable<br/>
-</details>
