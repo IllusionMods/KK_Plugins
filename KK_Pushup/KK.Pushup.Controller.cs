@@ -16,8 +16,6 @@ namespace KK_Plugins
 
             private bool _forceBodyRecalc;
 
-            private Wearing _wasWearing;
-
             private ChaFileBody _activeFileBody;
             private bool _updateChaFile;
 
@@ -52,7 +50,6 @@ namespace KK_Plugins
                 InfoDictionary = new Dictionary<int, PushupInfo>();
                 _activeFileBody = ChaControl.fileBody;
 
-                _wasWearing = Wearing.None;
                 _forceBodyRecalc = true;
             }
 
@@ -81,29 +78,25 @@ namespace KK_Plugins
                     _updateChaFile = false;
                 }
 
-                if (ChaControl != null && ChaControl.fileBody == _activeFileBody)
+                if (_forceBodyRecalc && ChaControl.fileBody == _activeFileBody)
                 {
                     Wearing nowWearing = isWearing();
-
-                    if (_forceBodyRecalc || nowWearing != _wasWearing)
+                    if (nowWearing != Wearing.None)
                     {
-                        if (nowWearing != Wearing.None)
-                        {
-                            CurrentInfo.CalculatePush(nowWearing);
-                            mapBodyInfoToChaFile(CurrentInfo.PushupData);
-                        }
-                        else
-                        {
-                            mapBodyInfoToChaFile(CurrentInfo.BaseData);
-                        }
-
-                        _wasWearing = nowWearing;
-                        _forceBodyRecalc = false;
+                        CurrentInfo.CalculatePush(nowWearing);
+                        mapBodyInfoToChaFile(CurrentInfo.PushupData);
                     }
+                    else
+                    {
+                        mapBodyInfoToChaFile(CurrentInfo.BaseData);
+                    }
+                    _forceBodyRecalc = false;
                 }
 
                 base.Update();
             }
+
+            internal void ClothesStateChangeEvent() => _forceBodyRecalc = true;
 
             private Wearing isWearing()
             {

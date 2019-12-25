@@ -83,6 +83,7 @@
     <Compile Include="KK.Pushup.Controller.cs" />
     <Compile Include="KK.Pushup.cs" />
     <Compile Include="KK.Pushup.GUI.cs" />
+    <Compile Include="KK.Pushup.Hooks.cs" />
     <Compile Include="KK.Pushup.SliderManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

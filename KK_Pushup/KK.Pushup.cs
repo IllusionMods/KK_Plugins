@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using BepInEx.Harmony;
 using BepInEx.Logging;
 using KKAPI;
 using KKAPI.Chara;
@@ -37,7 +38,10 @@ namespace KK_Plugins
             ConfigFlattenNipplesDefault = Config.Bind("Config", "Flatten Nipples Default", false, new ConfigDescription("Flatten nipples while a bra is worn.", null, new ConfigurationManagerAttributes { Order = 3 }));
 
             CharacterApi.RegisterExtraBehaviour<PushupController>(GUID);
+            HarmonyWrapper.PatchAll(typeof(Hooks));
         }
+
+        public static PushupController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<PushupController>();
 
         internal enum Wearing { None, Bra, Top, Both }
 
