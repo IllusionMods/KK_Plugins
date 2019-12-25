@@ -11,6 +11,8 @@ namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
     [BepInDependency(Pushup.GUID)]
+    [BepInProcess(Constants.MainGameProcessName)]
+    [BepInProcess(Constants.MainGameProcessNameSteam)]
     public class PushupGUI : BaseUnityPlugin
     {
         public const string GUID = Pushup.GUID + ".gui";
