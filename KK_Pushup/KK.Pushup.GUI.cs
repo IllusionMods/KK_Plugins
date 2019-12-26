@@ -1,5 +1,4 @@
-﻿using BepInEx;
-using ChaCustom;
+﻿using ChaCustom;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using System;
@@ -9,16 +8,8 @@ using UnityEngine.EventSystems;
 
 namespace KK_Plugins
 {
-    [BepInPlugin(GUID, PluginName, Version)]
-    [BepInDependency(Pushup.GUID)]
-    [BepInProcess(Constants.MainGameProcessName)]
-    [BepInProcess(Constants.MainGameProcessNameSteam)]
-    public class PushupGUI : BaseUnityPlugin
+    public partial class Pushup
     {
-        public const string GUID = Pushup.GUID + ".gui";
-        public const string PluginName = Pushup.PluginName + " GUI";
-        public const string Version = Pushup.Version;
-
         //Sliders and toggles
         internal static MakerToggle EnablePushUpToggle;
 
@@ -49,20 +40,10 @@ namespace KK_Plugins
 
         internal static MakerRadioButtons SelectButtons;
 
-        private Pushup.PushupInfo _pushUpInfo;
+        private static PushupController _pushUpController;
+        private static SliderManager _sliderManager;
 
-        private Pushup.PushupController _pushUpController;
-        private SliderManager _sliderManager;
-
-        private Pushup.ClothData _activeClothData;
-
-        internal void Start()
-        {
-            MakerAPI.RegisterCustomSubCategories += RegisterCustomSubCategories;
-            MakerAPI.ReloadCustomInterface += (sender, args) => ReLoadPushUp();
-            MakerAPI.MakerExiting += MakerExiting;
-            MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
-        }
+        private static ClothData _activeClothData;
 
         private void MakerFinishedLoading(object sender, EventArgs e)
         {
@@ -83,13 +64,18 @@ namespace KK_Plugins
             tglPushupTrigger.triggers.Add(tglPushupEntry);
         }
 
-        private void ReLoadPushUp()
+        private void MakerExiting(object sender, EventArgs e)
+        {
+            _pushUpController = null;
+            _sliderManager = null;
+        }
+
+        private static void ReLoadPushUp()
         {
             _sliderManager = new SliderManager();
 
             _pushUpController = GetMakerController();
-            _pushUpInfo = _pushUpController.CurrentInfo;
-            _activeClothData = SelectButtons.Value == 0 ? _pushUpInfo.Bra : _pushUpInfo.Top;
+            _activeClothData = SelectButtons.Value == 0 ? _pushUpController.CurrentBraData : _pushUpController.CurrentTopData;
 
             _sliderManager.InitSliders(_pushUpController);
 
@@ -121,7 +107,7 @@ namespace KK_Plugins
             UpdateToggleSubscription(AdvancedModeToggle, _activeClothData.UseAdvanced, b => { _activeClothData.UseAdvanced = b; });
         }
 
-        private void UpdateToggleSubscription(MakerToggle toggle, bool value, Action<bool> action)
+        private static void UpdateToggleSubscription(MakerToggle toggle, bool value, Action<bool> action)
         {
             var pushObserver = Observer.Create<bool>(b =>
             {
@@ -133,7 +119,7 @@ namespace KK_Plugins
             toggle.SetValue(value);
         }
 
-        private void UpdateSliderSubscription(PushUpSlider slider, float value, Action<float> action)
+        private static void UpdateSliderSubscription(PushUpSlider slider, float value, Action<float> action)
         {
             slider.onUpdate = f =>
             {
@@ -147,14 +133,7 @@ namespace KK_Plugins
             slider.MakerSlider.SetValue(value);
         }
 
-        private void MakerExiting(object sender, EventArgs e)
-        {
-            _pushUpInfo = null;
-            _pushUpController = null;
-            _sliderManager = null;
-        }
-
-        private static Pushup.PushupController GetMakerController() => MakerAPI.GetCharacterControl().gameObject.GetComponent<Pushup.PushupController>();
+        private static PushupController GetMakerController() => MakerAPI.GetCharacterControl().gameObject.GetComponent<PushupController>();
 
         private void RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent ev)
         {
@@ -168,11 +147,11 @@ namespace KK_Plugins
             EnablePushUpToggle = new MakerToggle(category, "Enabled", true, this);
             ev.AddControl(EnablePushUpToggle);
 
-            FirmnessSlider = MakeSlider(category, "Firmness", ev, Pushup.ConfigFirmnessDefault.Value);
-            LiftSlider = MakeSlider(category, "Lift", ev, Pushup.ConfigLiftDefault.Value);
-            PushTogetherSlider = MakeSlider(category, "Push Together", ev, Pushup.ConfigPushTogetherDefault.Value);
-            SqueezeSlider = MakeSlider(category, "Squeeze", ev, Pushup.ConfigSqueezeDefault.Value);
-            CenterSlider = MakeSlider(category, "Center Nipples", ev, Pushup.ConfigNippleCenteringDefault.Value);
+            FirmnessSlider = MakeSlider(category, "Firmness", ev, ConfigFirmnessDefault.Value);
+            LiftSlider = MakeSlider(category, "Lift", ev, ConfigLiftDefault.Value);
+            PushTogetherSlider = MakeSlider(category, "Push Together", ev, ConfigPushTogetherDefault.Value);
+            SqueezeSlider = MakeSlider(category, "Squeeze", ev, ConfigSqueezeDefault.Value);
+            CenterSlider = MakeSlider(category, "Center Nipples", ev, ConfigNippleCenteringDefault.Value);
 
             FlattenNippleToggle = new MakerToggle(category, "Flatten Nipples", true, this);
             ev.AddControl(FlattenNippleToggle);
@@ -191,33 +170,33 @@ namespace KK_Plugins
             ev.AddControl(copyBasicButton);
             copyBasicButton.OnClick.AddListener(CopyBasicToSliders);
 
-            PushSizeSlider = MakeSlider(category, "Size", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexSize]);
-            PushVerticalPositionSlider = MakeSlider(category, "Vertical Position", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexVerticalPosition]);
-            PushHorizontalAngleSlider = MakeSlider(category, "Horizontal Angle", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexHorizontalAngle]);
-            PushHorizontalPositionSlider = MakeSlider(category, "Horizontal Position", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexHorizontalPosition]);
-            PushVerticalAngleSlider = MakeSlider(category, "Vertical Angle", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexVerticalAngle]);
-            PushDepthSlider = MakeSlider(category, "Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexDepth]);
-            PushRoundnessSlider = MakeSlider(category, "Roundness", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexRoundness]);
+            PushSizeSlider = MakeSlider(category, "Size", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexSize]);
+            PushVerticalPositionSlider = MakeSlider(category, "Vertical Position", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexVerticalPosition]);
+            PushHorizontalAngleSlider = MakeSlider(category, "Horizontal Angle", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexHorizontalAngle]);
+            PushHorizontalPositionSlider = MakeSlider(category, "Horizontal Position", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexHorizontalPosition]);
+            PushVerticalAngleSlider = MakeSlider(category, "Vertical Angle", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexVerticalAngle]);
+            PushDepthSlider = MakeSlider(category, "Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexDepth]);
+            PushRoundnessSlider = MakeSlider(category, "Roundness", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexRoundness]);
 
             PushSoftnessSlider = MakeSlider(category, "Softness", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.bustSoftness);
             PushWeightSlider = MakeSlider(category, "Weight", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.bustWeight);
 
-            PushAreolaDepthSlider = MakeSlider(category, "Areola Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexAreolaDepth]);
-            PushNippleWidthSlider = MakeSlider(category, "Nipple Width", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexNippleWidth]);
-            PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[Pushup.PushupConstants.IndexNippleDepth]);
+            PushAreolaDepthSlider = MakeSlider(category, "Areola Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexAreolaDepth]);
+            PushNippleWidthSlider = MakeSlider(category, "Nipple Width", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleWidth]);
+            PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleDepth]);
 
             ev.AddSubCategory(category);
         }
 
-        private void CopyBodyToSliders() => copyToSliders(_pushUpController.CurrentInfo.BaseData);
+        private void CopyBodyToSliders() => copyToSliders(_pushUpController.BaseData);
 
         private void CopyBasicToSliders()
         {
-            _pushUpInfo.CalculatePushFromClothes(_activeClothData, false);
-            copyToSliders(_pushUpController.CurrentInfo.PushupData);
+            _pushUpController.CalculatePushFromClothes(_activeClothData, false);
+            copyToSliders(_pushUpController.CurrentPushupData);
         }
 
-        private void copyToSliders(Pushup.BodyData infoBase)
+        private void copyToSliders(BodyData infoBase)
         {
             PushSoftnessSlider.MakerSlider.SetValue(infoBase.Softness);
             PushWeightSlider.MakerSlider.SetValue(infoBase.Weight);

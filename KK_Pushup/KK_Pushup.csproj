@@ -80,6 +80,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KK.Pushup.BodyData.cs" />
+    <Compile Include="KK.Pushup.ClothData.cs" />
+    <Compile Include="KK.Pushup.Constants.cs" />
     <Compile Include="KK.Pushup.Controller.cs" />
     <Compile Include="KK.Pushup.cs" />
     <Compile Include="KK.Pushup.GUI.cs" />

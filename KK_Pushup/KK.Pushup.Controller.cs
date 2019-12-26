@@ -2,9 +2,10 @@
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
+using MessagePack;
 using System;
 using System.Collections.Generic;
-using MessagePack;
+using UniRx;
 
 namespace KK_Plugins
 {
@@ -12,55 +13,64 @@ namespace KK_Plugins
     {
         public class PushupController : CharaCustomFunctionController
         {
-            private Dictionary<int, PushupInfo> InfoDictionary = new Dictionary<int, PushupInfo>();
+            public BodyData BaseData;
+
+            private Dictionary<int, BodyData> PushupDataDictionary = new Dictionary<int, BodyData>();
+            private Dictionary<int, ClothData> BraDataDictionary = new Dictionary<int, ClothData>();
+            private Dictionary<int, ClothData> TopDataDictionary = new Dictionary<int, ClothData>();
 
             private bool _forceBodyRecalc;
 
-            private ChaFileBody _activeFileBody;
-            private bool _updateChaFile;
-
-            public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
-            public PushupInfo CurrentInfo
+            protected override void Start()
             {
-                get
-                {
-                    InfoDictionary.TryGetValue(CurrentCoordinateIndex, out var info);
-                    if (info == null)
-                    {
-                        info = new PushupInfo(ChaControl.fileBody);
-                        InfoDictionary[CurrentCoordinateIndex] = info;
-                    }
-                    return info;
-                }
-                set
-                {
-                    if (value == null)
-                        InfoDictionary[CurrentCoordinateIndex] = new PushupInfo(ChaControl.fileBody);
-                    else
-                        InfoDictionary[CurrentCoordinateIndex] = value;
-                }
+                CurrentCoordinate.Subscribe(value => { OnCoordinateChanged(value); });
+                base.Start();
             }
-            public void RecalculateBody() => _forceBodyRecalc = true;
+
+            protected override void OnCardBeingSaved(GameMode currentGameMode)
+            {
+                MapBodyInfoToChaFile(BaseData);
+
+                var data = new PluginData();
+                data.data.Add($"Pushup_{nameof(PushupDataDictionary)}", MessagePackSerializer.Serialize(PushupDataDictionary));
+                data.data.Add($"Pushup_{nameof(BraDataDictionary)}", MessagePackSerializer.Serialize(BraDataDictionary));
+                data.data.Add($"Pushup_{nameof(TopDataDictionary)}", MessagePackSerializer.Serialize(TopDataDictionary));
+                SetExtendedData(data);
+
+                _forceBodyRecalc = true;
+            }
 
             protected override void OnReload(GameMode currentGameMode)
             {
                 base.OnReload(currentGameMode);
                 SliderManager.SlidersActive = false;
 
-                InfoDictionary = new Dictionary<int, PushupInfo>();
-                _activeFileBody = ChaControl.fileBody;
+                BaseData = new BodyData(ChaControl.fileBody);
 
-                _forceBodyRecalc = true;
-            }
+                PushupDataDictionary = new Dictionary<int, BodyData>();
+                BraDataDictionary = new Dictionary<int, ClothData>();
+                TopDataDictionary = new Dictionary<int, ClothData>();
 
-            protected override void OnCardBeingSaved(GameMode currentGameMode)
-            {
+                var data = GetExtendedData();
+                if (data != null && data.data.TryGetValue($"Pushup_{nameof(PushupDataDictionary)}", out var loadedPushupData) && loadedPushupData != null)
+                    PushupDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, BodyData>>((byte[])loadedPushupData);
+
+                if (data != null && data.data.TryGetValue($"Pushup_{nameof(BraDataDictionary)}", out var loadedBraData) && loadedBraData != null)
+                    BraDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedBraData);
+
+                if (data != null && data.data.TryGetValue($"Pushup_{nameof(TopDataDictionary)}", out var loadedTopData) && loadedTopData != null)
+                    TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
+
                 _forceBodyRecalc = true;
             }
 
             protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
             {
-
+                var data = new PluginData();
+                data.data.Add($"PushupCoordinate_{nameof(PushupDataDictionary)}", MessagePackSerializer.Serialize(PushupDataDictionary));
+                data.data.Add($"PushupCoordinate_{nameof(BraDataDictionary)}", MessagePackSerializer.Serialize(BraDataDictionary));
+                data.data.Add($"PushupCoordinate_{nameof(TopDataDictionary)}", MessagePackSerializer.Serialize(TopDataDictionary));
+                SetCoordinateExtendedData(coordinate, data);
             }
 
             protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate)
@@ -68,27 +78,43 @@ namespace KK_Plugins
                 _forceBodyRecalc = true;
                 if (MakerAPI.GetCoordinateLoadFlags()?.Clothes == false) return;
 
+                PushupDataDictionary = new Dictionary<int, BodyData>();
+                BraDataDictionary = new Dictionary<int, ClothData>();
+                TopDataDictionary = new Dictionary<int, ClothData>();
+
+                var data = GetCoordinateExtendedData(coordinate);
+                if (data != null && data.data.TryGetValue($"PushupCoordinate_{nameof(PushupDataDictionary)}", out var loadedPushupData) && loadedPushupData != null)
+                    PushupDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, BodyData>>((byte[])loadedPushupData);
+
+                if (data != null && data.data.TryGetValue($"PushupCoordinate_{nameof(BraDataDictionary)}", out var loadedBraData) && loadedBraData != null)
+                    BraDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedBraData);
+
+                if (data != null && data.data.TryGetValue($"PushupCoordinate_{nameof(TopDataDictionary)}", out var loadedTopData) && loadedTopData != null)
+                    TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
+            }
+
+            private void OnCoordinateChanged(ChaFileDefine.CoordinateType coordinateType)
+            {
+                if (MakerAPI.InsideAndLoaded)
+                {
+                    SliderManager.SlidersActive = false;
+                    ReLoadPushUp();
+                }
             }
 
             protected override void Update()
             {
-                if (_updateChaFile)
+                if (_forceBodyRecalc)
                 {
-                    _activeFileBody = ChaControl.fileBody;
-                    _updateChaFile = false;
-                }
-
-                if (_forceBodyRecalc && ChaControl.fileBody == _activeFileBody)
-                {
-                    Wearing nowWearing = isWearing();
+                    Wearing nowWearing = CurrentlyWearing;
                     if (nowWearing != Wearing.None)
                     {
-                        CurrentInfo.CalculatePush(nowWearing);
-                        mapBodyInfoToChaFile(CurrentInfo.PushupData);
+                        CalculatePush(nowWearing);
+                        MapBodyInfoToChaFile(CurrentPushupData);
                     }
                     else
                     {
-                        mapBodyInfoToChaFile(CurrentInfo.BaseData);
+                        MapBodyInfoToChaFile(BaseData);
                     }
                     _forceBodyRecalc = false;
                 }
@@ -98,21 +124,14 @@ namespace KK_Plugins
 
             internal void ClothesStateChangeEvent() => _forceBodyRecalc = true;
 
-            private Wearing isWearing()
+            /// <summary>
+            /// Sets the body values to the values stored in the BodyData.
+            /// </summary>
+            internal void MapBodyInfoToChaFile(BodyData bodyData)
             {
-                var braIsOnAndEnabled = BraIsOnAndEnabled;
-                var topIsOnAndEnabled = TopIsOnAndEnabled;
+                if (MakerAPI.InsideAndLoaded && bodyData == BaseData)
+                    SliderManager.SlidersActive = true;
 
-                if (topIsOnAndEnabled)
-                {
-                    return braIsOnAndEnabled ? Wearing.Both : Wearing.Top;
-                }
-
-                return braIsOnAndEnabled ? Wearing.Bra : Wearing.None;
-            }
-
-            internal void mapBodyInfoToChaFile(BodyData bodyData)
-            {
                 void setShapeValue(int idx, float val)
                 {
                     ChaControl.fileBody.shapeValueBody[idx] = val;
@@ -134,72 +153,36 @@ namespace KK_Plugins
                 setShapeValue(PushupConstants.IndexNippleDepth, bodyData.NippleDepth);
             }
 
-            private bool BraIsOnAndEnabled => ChaControl.IsClothesStateKind((int)ChaFileDefine.ClothesKind.bra) &&
-                       ChaControl.fileStatus.clothesState[(int)ChaFileDefine.ClothesKind.bra] == 0 && CurrentInfo.Bra.EnablePushUp;
-
-            private bool TopIsOnAndEnabled => ChaControl.IsClothesStateKind((int)ChaFileDefine.ClothesKind.top) &&
-                       ChaControl.fileStatus.clothesState[(int)ChaFileDefine.ClothesKind.top] == 0 && CurrentInfo.Top.EnablePushUp;
-        }
-
-        public class PushupInfo
-        {
-            public BodyData BaseData;
-            public BodyData PushupData;
-
-            public ClothData Bra;
-            public ClothData Top;
-
-            public PushupInfo(ChaFileBody baseBody)
-            {
-                BaseData = new BodyData();
-                Bra = new ClothData();
-                Top = new ClothData();
-                PushupData = new BodyData();
-
-                BaseData.Softness = baseBody.bustSoftness;
-                BaseData.Weight = baseBody.bustWeight;
-                BaseData.Size = baseBody.shapeValueBody[PushupConstants.IndexSize];
-                BaseData.VerticalPosition = baseBody.shapeValueBody[PushupConstants.IndexVerticalPosition];
-                BaseData.HorizontalAngle = baseBody.shapeValueBody[PushupConstants.IndexHorizontalAngle];
-                BaseData.HorizontalPosition = baseBody.shapeValueBody[PushupConstants.IndexHorizontalPosition];
-                BaseData.VerticalAngle = baseBody.shapeValueBody[PushupConstants.IndexVerticalAngle];
-                BaseData.Depth = baseBody.shapeValueBody[PushupConstants.IndexDepth];
-                BaseData.Roundness = baseBody.shapeValueBody[PushupConstants.IndexRoundness];
-                BaseData.AreolaDepth = baseBody.shapeValueBody[PushupConstants.IndexAreolaDepth];
-                BaseData.NippleWidth = baseBody.shapeValueBody[PushupConstants.IndexNippleWidth];
-                BaseData.NippleDepth = baseBody.shapeValueBody[PushupConstants.IndexNippleDepth];
-            }
-
             internal void CalculatePush(Wearing wearing)
             {
                 if (wearing == Wearing.Bra)
                 {
-                    CalculatePushFromClothes(Bra, Bra.UseAdvanced);
+                    CalculatePushFromClothes(CurrentBraData, CurrentBraData.UseAdvanced);
                     return;
                 }
                 else if (wearing == Wearing.Top)
                 {
-                    CalculatePushFromClothes(Top, Top.UseAdvanced);
+                    CalculatePushFromClothes(CurrentTopData, CurrentTopData.UseAdvanced);
                     return;
                 }
-                else if (Top.UseAdvanced)
+                else if (CurrentTopData.UseAdvanced)
                 {
-                    CalculatePushFromClothes(Top, true);
+                    CalculatePushFromClothes(CurrentTopData, true);
                     return;
                 }
-                else if (Bra.UseAdvanced)
+                else if (CurrentBraData.UseAdvanced)
                 {
-                    CalculatePushFromClothes(Bra, true);
+                    CalculatePushFromClothes(CurrentBraData, true);
                     return;
                 }
 
                 var combo = new ClothData();
-                combo.Firmness = Math.Max(Bra.Firmness, Top.Firmness);
-                combo.Lift = Math.Max(Bra.Lift, Top.Lift);
-                combo.Squeeze = Math.Max(Bra.Squeeze, Top.Squeeze);
-                combo.PushTogether = Math.Max(Bra.PushTogether, Top.PushTogether);
-                combo.CenterNipples = Math.Max(Bra.CenterNipples, Top.CenterNipples);
-                combo.FlattenNipples = Bra.FlattenNipples || Top.FlattenNipples;
+                combo.Firmness = Math.Max(CurrentBraData.Firmness, CurrentTopData.Firmness);
+                combo.Lift = Math.Max(CurrentBraData.Lift, CurrentTopData.Lift);
+                combo.Squeeze = Math.Max(CurrentBraData.Squeeze, CurrentTopData.Squeeze);
+                combo.PushTogether = Math.Max(CurrentBraData.PushTogether, CurrentTopData.PushTogether);
+                combo.CenterNipples = Math.Max(CurrentBraData.CenterNipples, CurrentTopData.CenterNipples);
+                combo.FlattenNipples = CurrentBraData.FlattenNipples || CurrentTopData.FlattenNipples;
                 combo.EnablePushUp = true;
 
                 CalculatePushFromClothes(combo, false);
@@ -209,124 +192,171 @@ namespace KK_Plugins
             {
                 if (useAdvanced)
                 {
-                    cData.CopyTo(PushupData);
+                    cData.CopyTo(CurrentPushupData);
                     return;
                 }
 
                 if (1f - cData.Firmness < BaseData.Softness)
                 {
-                    PushupData.Softness = 1 - cData.Firmness;
+                    CurrentPushupData.Softness = 1 - cData.Firmness;
                 }
                 else
                 {
-                    PushupData.Softness = BaseData.Softness;
+                    CurrentPushupData.Softness = BaseData.Softness;
                 }
 
                 if (cData.Lift > BaseData.VerticalPosition)
                 {
-                    PushupData.VerticalPosition = cData.Lift;
+                    CurrentPushupData.VerticalPosition = cData.Lift;
                 }
                 else
                 {
-                    PushupData.VerticalPosition = BaseData.VerticalPosition;
+                    CurrentPushupData.VerticalPosition = BaseData.VerticalPosition;
                 }
 
                 if (1f - cData.PushTogether < BaseData.HorizontalAngle)
                 {
-                    PushupData.HorizontalAngle = 1 - cData.PushTogether;
+                    CurrentPushupData.HorizontalAngle = 1 - cData.PushTogether;
                 }
                 else
                 {
-                    PushupData.HorizontalAngle = BaseData.HorizontalAngle;
+                    CurrentPushupData.HorizontalAngle = BaseData.HorizontalAngle;
                 }
 
                 if (1f - cData.PushTogether < BaseData.HorizontalPosition)
                 {
-                    PushupData.HorizontalPosition = 1 - cData.PushTogether;
+                    CurrentPushupData.HorizontalPosition = 1 - cData.PushTogether;
                 }
                 else
                 {
-                    PushupData.HorizontalPosition = BaseData.HorizontalPosition;
+                    CurrentPushupData.HorizontalPosition = BaseData.HorizontalPosition;
                 }
 
                 if (1f - cData.Squeeze < BaseData.Depth)
                 {
-                    PushupData.Depth = 1 - cData.Squeeze;
-                    PushupData.Size = BaseData.Size + (BaseData.Depth - (1 - cData.Squeeze)) / 10;
+                    CurrentPushupData.Depth = 1 - cData.Squeeze;
+                    CurrentPushupData.Size = BaseData.Size + (BaseData.Depth - (1 - cData.Squeeze)) / 10;
                 }
                 else
                 {
-                    PushupData.Depth = BaseData.Depth;
-                    PushupData.Size = BaseData.Size;
+                    CurrentPushupData.Depth = BaseData.Depth;
+                    CurrentPushupData.Size = BaseData.Size;
                 }
 
                 if (cData.FlattenNipples)
                 {
-                    PushupData.NippleDepth = 0f;
-                    PushupData.AreolaDepth = 0f;
+                    CurrentPushupData.NippleDepth = 0f;
+                    CurrentPushupData.AreolaDepth = 0f;
                 }
                 else
                 {
-                    PushupData.NippleDepth = BaseData.NippleDepth;
-                    PushupData.AreolaDepth = BaseData.AreolaDepth;
+                    CurrentPushupData.NippleDepth = BaseData.NippleDepth;
+                    CurrentPushupData.AreolaDepth = BaseData.AreolaDepth;
                 }
 
-                PushupData.NippleWidth = BaseData.NippleWidth;
+                CurrentPushupData.NippleWidth = BaseData.NippleWidth;
 
                 var nipDeviation = 0.5f - BaseData.VerticalAngle;
-                PushupData.VerticalAngle = 0.5f - (nipDeviation - (nipDeviation * cData.CenterNipples));
+                CurrentPushupData.VerticalAngle = 0.5f - (nipDeviation - (nipDeviation * cData.CenterNipples));
 
-                PushupData.Weight = BaseData.Weight;
-                PushupData.Roundness = BaseData.Roundness;
+                CurrentPushupData.Weight = BaseData.Weight;
+                CurrentPushupData.Roundness = BaseData.Roundness;
             }
-        }
 
-        public class BodyData
-        {
-            public float Size { get; set; }
-            public float VerticalPosition { get; set; }
-            public float HorizontalAngle { get; set; }
-            public float HorizontalPosition { get; set; }
-            public float VerticalAngle { get; set; }
-            public float Depth { get; set; }
-            public float Roundness { get; set; }
-
-            public float Softness { get; set; }
-            public float Weight { get; set; }
-
-            public float AreolaDepth { get; set; }
-            public float NippleWidth { get; set; }
-            public float NippleDepth { get; set; }
-        }
-
-        public class ClothData : BodyData
-        {
-            public float Firmness { get; set; } = ConfigFirmnessDefault.Value;
-            public float Lift { get; set; } = ConfigLiftDefault.Value;
-            public float PushTogether { get; set; } = ConfigPushTogetherDefault.Value;
-            public float Squeeze { get; set; } = ConfigSqueezeDefault.Value;
-            public float CenterNipples { get; set; } = ConfigNippleCenteringDefault.Value;
-
-            public bool EnablePushUp { get; set; } = ConfigEnablePushup.Value;
-            public bool FlattenNipples { get; set; } = ConfigEnablePushup.Value;
-
-            public bool UseAdvanced { get; set; } = false;
-
-            public void CopyTo(BodyData data)
+            public BodyData GetPushupData(int coordinateIndex)
             {
-                data.Size = Size;
-                data.VerticalPosition = VerticalPosition;
-                data.HorizontalAngle = HorizontalAngle;
-                data.HorizontalPosition = HorizontalPosition;
-                data.VerticalAngle = VerticalAngle;
-                data.Depth = Depth;
-                data.Roundness = Roundness;
-                data.Softness = Softness;
-                data.Weight = Weight;
-                data.AreolaDepth = AreolaDepth;
-                data.NippleWidth = NippleWidth;
-                data.NippleDepth = NippleDepth;
+                PushupDataDictionary.TryGetValue(coordinateIndex, out var bodyData);
+                if (bodyData == null)
+                {
+                    bodyData = new BodyData(ChaControl.fileBody);
+                    PushupDataDictionary[coordinateIndex] = bodyData;
+                }
+                return bodyData;
             }
+            public void SetPushupData(int coordinateIndex, BodyData bodyData)
+            {
+                if (bodyData == null)
+                    PushupDataDictionary[coordinateIndex] = new BodyData(ChaControl.fileBody);
+                else
+                    PushupDataDictionary[coordinateIndex] = bodyData;
+            }
+            public BodyData CurrentPushupData
+            {
+                get => GetPushupData(CurrentCoordinateIndex);
+                set => SetPushupData(CurrentCoordinateIndex, value);
+            }
+
+            public ClothData GetBraData(int coordinateIndex)
+            {
+                BraDataDictionary.TryGetValue(coordinateIndex, out var clothData);
+                if (clothData == null)
+                {
+                    clothData = new ClothData(BaseData);
+                    BraDataDictionary[coordinateIndex] = clothData;
+                }
+                return clothData;
+            }
+            public void SetBraData(int coordinateIndex, ClothData clothData)
+            {
+                if (clothData == null)
+                    BraDataDictionary[coordinateIndex] = new ClothData(BaseData);
+                else
+                    BraDataDictionary[coordinateIndex] = clothData;
+            }
+            public ClothData CurrentBraData
+            {
+                get => GetBraData(CurrentCoordinateIndex);
+                set => SetBraData(CurrentCoordinateIndex, value);
+            }
+
+            public ClothData GetTopData(int coordinateIndex)
+            {
+                TopDataDictionary.TryGetValue(coordinateIndex, out var clothData);
+                if (clothData == null)
+                {
+                    clothData = new ClothData(BaseData);
+                    TopDataDictionary[coordinateIndex] = clothData;
+                }
+                return clothData;
+            }
+            public void SetTopData(int coordinateIndex, ClothData clothData)
+            {
+                if (clothData == null)
+                    TopDataDictionary[coordinateIndex] = new ClothData(BaseData);
+                else
+                    TopDataDictionary[coordinateIndex] = clothData;
+            }
+            public ClothData CurrentTopData
+            {
+                get => GetTopData(CurrentCoordinateIndex);
+                set => SetTopData(CurrentCoordinateIndex, value);
+            }
+
+            private Wearing CurrentlyWearing
+            {
+                get
+                {
+                    var braIsOnAndEnabled = BraIsOnAndEnabled;
+                    var topIsOnAndEnabled = TopIsOnAndEnabled;
+
+                    if (topIsOnAndEnabled)
+                        return braIsOnAndEnabled ? Wearing.Both : Wearing.Top;
+
+                    return braIsOnAndEnabled ? Wearing.Bra : Wearing.None;
+                }
+            }
+
+            private bool BraIsOnAndEnabled => ChaControl.IsClothesStateKind((int)ChaFileDefine.ClothesKind.bra) &&
+                                              ChaControl.fileStatus.clothesState[(int)ChaFileDefine.ClothesKind.bra] == 0 &&
+                                              CurrentBraData.EnablePushUp;
+
+            private bool TopIsOnAndEnabled => ChaControl.IsClothesStateKind((int)ChaFileDefine.ClothesKind.top) &&
+                                              ChaControl.fileStatus.clothesState[(int)ChaFileDefine.ClothesKind.top] == 0 &&
+                                              CurrentTopData.EnablePushUp;
+
+            public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
+
+            public void RecalculateBody() => _forceBodyRecalc = true;
         }
     }
 }

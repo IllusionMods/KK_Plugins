@@ -4,6 +4,7 @@ using BepInEx.Harmony;
 using BepInEx.Logging;
 using KKAPI;
 using KKAPI.Chara;
+using KKAPI.Maker;
 
 namespace KK_Plugins
 {
@@ -38,25 +39,16 @@ namespace KK_Plugins
             ConfigFlattenNipplesDefault = Config.Bind("Config", "Flatten Nipples Default", false, new ConfigDescription("Flatten nipples while a bra is worn.", null, new ConfigurationManagerAttributes { Order = 3 }));
 
             CharacterApi.RegisterExtraBehaviour<PushupController>(GUID);
+            MakerAPI.RegisterCustomSubCategories += RegisterCustomSubCategories;
+            MakerAPI.ReloadCustomInterface += (sender, args) => ReLoadPushUp();
+            MakerAPI.MakerExiting += MakerExiting;
+            MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
+
             HarmonyWrapper.PatchAll(typeof(Hooks));
         }
 
         public static PushupController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<PushupController>();
 
         internal enum Wearing { None, Bra, Top, Both }
-
-        internal class PushupConstants
-        {
-            internal const int IndexSize = 4;
-            internal const int IndexVerticalPosition = 5;
-            internal const int IndexHorizontalAngle = 6;
-            internal const int IndexHorizontalPosition = 7;
-            internal const int IndexVerticalAngle = 8;
-            internal const int IndexDepth = 9;
-            internal const int IndexRoundness = 10;
-            internal const int IndexAreolaDepth = 11;
-            internal const int IndexNippleWidth = 12;
-            internal const int IndexNippleDepth = 13;
-        }
     }
 }
