@@ -1,6 +1,9 @@
 ﻿using ChaCustom;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
+using KKAPI.Studio;
+using KKAPI.Studio.UI;
+using Studio;
 using System;
 using UniRx;
 using UnityEngine;
@@ -227,7 +230,42 @@ namespace KK_Plugins
 
             return pushUpSlider;
         }
+
+        private static void RegisterStudioControls()
+        {
+            if (!StudioAPI.InsideStudio) return;
+
+            var pushupBraToggle = new CurrentStateCategorySwitch("Pushup Bra", ocichar => ocichar.charInfo.GetComponent<PushupController>().CurrentBraData.EnablePushUp);
+            StudioAPI.GetOrCreateCurrentStateCategory("Pushup").AddControl(pushupBraToggle);
+            pushupBraToggle.Value.Subscribe(value =>
+            {
+                var controller = GetSelectedController();
+                if (controller == null) return;
+                if (controller.CurrentBraData.EnablePushUp != value)
+                {
+                    controller.CurrentBraData.EnablePushUp = value;
+                    controller.RecalculateBody();
+                }
+            });
+
+            var pushupTopToggle = new CurrentStateCategorySwitch("Pushup Top", ocichar => ocichar.charInfo.GetComponent<PushupController>().CurrentTopData.EnablePushUp);
+            StudioAPI.GetOrCreateCurrentStateCategory("Pushup").AddControl(pushupTopToggle);
+            pushupTopToggle.Value.Subscribe(value =>
+            {
+                var controller = GetSelectedController();
+                if (controller == null) return;
+                if (controller.CurrentTopData.EnablePushUp != value)
+                {
+                    controller.CurrentTopData.EnablePushUp = value;
+                    controller.RecalculateBody();
+                }
+            });
+
+        }
+
+        private static PushupController GetSelectedController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<PushupController>();
     }
+
 
     public class PushUpSlider
     {

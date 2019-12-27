@@ -43,6 +43,7 @@ namespace KK_Plugins
             MakerAPI.ReloadCustomInterface += (sender, args) => ReLoadPushUp();
             MakerAPI.MakerExiting += MakerExiting;
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
+            RegisterStudioControls();
 
             HarmonyWrapper.PatchAll(typeof(Hooks));
         }
