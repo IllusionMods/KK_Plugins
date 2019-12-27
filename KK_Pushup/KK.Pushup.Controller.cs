@@ -4,6 +4,7 @@ using KKAPI.Chara;
 using KKAPI.Maker;
 using MessagePack;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 
@@ -30,12 +31,12 @@ namespace KK_Plugins
                 MapBodyInfoToChaFile(BaseData);
 
                 var data = new PluginData();
-                data.data.Add($"Pushup_{nameof(PushupDataDictionary)}", MessagePackSerializer.Serialize(PushupDataDictionary));
-                data.data.Add($"Pushup_{nameof(BraDataDictionary)}", MessagePackSerializer.Serialize(BraDataDictionary));
-                data.data.Add($"Pushup_{nameof(TopDataDictionary)}", MessagePackSerializer.Serialize(TopDataDictionary));
+                data.data.Add("Pushup_PushupData", MessagePackSerializer.Serialize(PushupDataDictionary));
+                data.data.Add("Pushup_BraData", MessagePackSerializer.Serialize(BraDataDictionary));
+                data.data.Add("Pushup_TopData", MessagePackSerializer.Serialize(TopDataDictionary));
                 SetExtendedData(data);
 
-                RecalculateBody();
+                StartCoroutine(RecalculateBodyCoroutine());
             }
 
             protected override void OnReload(GameMode currentGameMode)
@@ -49,13 +50,13 @@ namespace KK_Plugins
                 TopDataDictionary = new Dictionary<int, ClothData>();
 
                 var data = GetExtendedData();
-                if (data != null && data.data.TryGetValue($"Pushup_{nameof(PushupDataDictionary)}", out var loadedPushupData) && loadedPushupData != null)
+                if (data != null && data.data.TryGetValue("Pushup_PushupData", out var loadedPushupData) && loadedPushupData != null)
                     PushupDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, BodyData>>((byte[])loadedPushupData);
 
-                if (data != null && data.data.TryGetValue($"Pushup_{nameof(BraDataDictionary)}", out var loadedBraData) && loadedBraData != null)
+                if (data != null && data.data.TryGetValue("Pushup_BraData", out var loadedBraData) && loadedBraData != null)
                     BraDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedBraData);
 
-                if (data != null && data.data.TryGetValue($"Pushup_{nameof(TopDataDictionary)}", out var loadedTopData) && loadedTopData != null)
+                if (data != null && data.data.TryGetValue("Pushup_TopData", out var loadedTopData) && loadedTopData != null)
                     TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
 
                 RecalculateBody();
@@ -64,9 +65,9 @@ namespace KK_Plugins
             protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
             {
                 var data = new PluginData();
-                data.data.Add($"PushupCoordinate_{nameof(PushupDataDictionary)}", MessagePackSerializer.Serialize(PushupDataDictionary));
-                data.data.Add($"PushupCoordinate_{nameof(BraDataDictionary)}", MessagePackSerializer.Serialize(BraDataDictionary));
-                data.data.Add($"PushupCoordinate_{nameof(TopDataDictionary)}", MessagePackSerializer.Serialize(TopDataDictionary));
+                data.data.Add("PushupCoordinate_PushupData", MessagePackSerializer.Serialize(CurrentPushupData));
+                data.data.Add("PushupCoordinate_BraData", MessagePackSerializer.Serialize(CurrentBraData));
+                data.data.Add("PushupCoordinate_TopData", MessagePackSerializer.Serialize(CurrentTopData));
                 SetCoordinateExtendedData(coordinate, data);
             }
 
@@ -75,19 +76,20 @@ namespace KK_Plugins
                 RecalculateBody();
                 if (MakerAPI.GetCoordinateLoadFlags()?.Clothes == false) return;
 
-                PushupDataDictionary = new Dictionary<int, BodyData>();
-                BraDataDictionary = new Dictionary<int, ClothData>();
-                TopDataDictionary = new Dictionary<int, ClothData>();
+                CurrentPushupData = null;
+                CurrentBraData = null;
+                CurrentTopData = null;
 
                 var data = GetCoordinateExtendedData(coordinate);
-                if (data != null && data.data.TryGetValue($"PushupCoordinate_{nameof(PushupDataDictionary)}", out var loadedPushupData) && loadedPushupData != null)
-                    PushupDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, BodyData>>((byte[])loadedPushupData);
+                if (data != null && data.data.TryGetValue("PushupCoordinate_BraData", out var loadedBraData) && loadedBraData != null)
+                    CurrentBraData = MessagePackSerializer.Deserialize<ClothData>((byte[])loadedBraData);
 
-                if (data != null && data.data.TryGetValue($"PushupCoordinate_{nameof(BraDataDictionary)}", out var loadedBraData) && loadedBraData != null)
-                    BraDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedBraData);
+                if (data != null && data.data.TryGetValue("PushupCoordinate_TopData", out var loadedTopData) && loadedTopData != null)
+                    CurrentTopData = MessagePackSerializer.Deserialize<ClothData>((byte[])loadedTopData);
 
-                if (data != null && data.data.TryGetValue($"PushupCoordinate_{nameof(TopDataDictionary)}", out var loadedTopData) && loadedTopData != null)
-                    TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
+                //Advanced mode data is too character specific and is not loaded from coordinates
+                CurrentBraData.UseAdvanced = false;
+                CurrentTopData.UseAdvanced = false;
             }
 
             private void OnCoordinateChanged()
@@ -110,7 +112,17 @@ namespace KK_Plugins
                 }
             }
 
-            internal void ClothesStateChangeEvent() => RecalculateBody();
+            private IEnumerator RecalculateBodyCoroutine()
+            {
+                yield return null;
+                RecalculateBody();
+            }
+
+            internal void ClothesStateChangeEvent()
+            {
+                if (!Started) return;
+                RecalculateBody();
+            }
 
             /// <summary>
             /// Sets the body values to the values stored in the BodyData.
