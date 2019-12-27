@@ -132,7 +132,7 @@ namespace KK_Plugins
             slider.onUpdate = f =>
             {
                 action(f);
-                _pushUpController.RecalculateBody();
+                _pushUpController.RecalculateBody(true);
             };
 
             var pushObserver = Observer.Create<float>(f => slider.Update(f));
@@ -196,15 +196,15 @@ namespace KK_Plugins
             ev.AddSubCategory(category);
         }
 
-        private void CopyBodyToSliders() => copyToSliders(_pushUpController.BaseData);
+        private void CopyBodyToSliders() => CopyToSliders(_pushUpController.BaseData);
 
         private void CopyBasicToSliders()
         {
             _pushUpController.CalculatePushFromClothes(_activeClothData, false);
-            copyToSliders(_pushUpController.CurrentPushupData);
+            CopyToSliders(_pushUpController.CurrentPushupData);
         }
 
-        private void copyToSliders(BodyData infoBase)
+        private void CopyToSliders(BodyData infoBase)
         {
             PushSoftnessSlider.MakerSlider.SetValue(infoBase.Softness);
             PushWeightSlider.MakerSlider.SetValue(infoBase.Weight);

@@ -36,7 +36,7 @@ namespace KK_Plugins
                 data.data.Add("Pushup_TopData", MessagePackSerializer.Serialize(TopDataDictionary));
                 SetExtendedData(data);
 
-                StartCoroutine(RecalculateBodyCoroutine());
+                RecalculateBody(true);
             }
 
             protected override void OnReload(GameMode currentGameMode)
@@ -97,8 +97,14 @@ namespace KK_Plugins
                     ReLoadPushUp();
             }
 
-            public void RecalculateBody()
+            public void RecalculateBody(bool coroutine = false)
             {
+                if (coroutine)
+                {
+                    StartCoroutine(RecalculateBodyCoroutine());
+                    return;
+                }
+
                 Wearing nowWearing = CurrentlyWearing;
                 if (nowWearing != Wearing.None)
                 {
@@ -114,7 +120,7 @@ namespace KK_Plugins
             private IEnumerator RecalculateBodyCoroutine()
             {
                 yield return null;
-                RecalculateBody();
+                RecalculateBody(false);
             }
 
             internal void ClothesStateChangeEvent()
