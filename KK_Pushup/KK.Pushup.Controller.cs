@@ -43,7 +43,6 @@ namespace KK_Plugins
             protected override void OnReload(GameMode currentGameMode)
             {
                 base.OnReload(currentGameMode);
-                SliderManager.SlidersActive = false;
 
                 BaseData = new BodyData(ChaControl.fileBody);
 
@@ -96,10 +95,7 @@ namespace KK_Plugins
             private void OnCoordinateChanged(ChaFileDefine.CoordinateType coordinateType)
             {
                 if (MakerAPI.InsideAndLoaded)
-                {
-                    SliderManager.SlidersActive = false;
                     ReLoadPushUp();
-                }
             }
 
             protected override void Update()
@@ -129,9 +125,6 @@ namespace KK_Plugins
             /// </summary>
             internal void MapBodyInfoToChaFile(BodyData bodyData)
             {
-                if (MakerAPI.InsideAndLoaded && bodyData == BaseData)
-                    SliderManager.SlidersActive = true;
-
                 void setShapeValue(int idx, float val)
                 {
                     ChaControl.fileBody.shapeValueBody[idx] = val;

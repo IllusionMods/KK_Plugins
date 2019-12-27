@@ -49,12 +49,17 @@ namespace KK_Plugins
         {
             ReLoadPushUp();
 
-            GameObject tglBreast = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/01_BodyTop/tglBreast");
+            GameObject tglBreast = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/01_BodyTop/tglBreast/BreastTop");
             var tglBreastTrigger = tglBreast.GetOrAddComponent<EventTrigger>();
-            var tglBreastEntry = new EventTrigger.Entry();
-            tglBreastEntry.eventID = EventTriggerType.PointerEnter;
-            tglBreastEntry.callback.AddListener(x => SliderManager.SlidersActive = true);
-            tglBreastTrigger.triggers.Add(tglBreastEntry);
+            var tglBreastPointerEnter = new EventTrigger.Entry();
+            tglBreastPointerEnter.eventID = EventTriggerType.PointerEnter;
+            tglBreastPointerEnter.callback.AddListener(x => SliderManager.SlidersActive = true);
+            tglBreastTrigger.triggers.Add(tglBreastPointerEnter);
+
+            var tglBreastPointerExit = new EventTrigger.Entry();
+            tglBreastPointerExit.eventID = EventTriggerType.PointerExit;
+            tglBreastPointerExit.callback.AddListener(x => SliderManager.SlidersActive = false);
+            tglBreastTrigger.triggers.Add(tglBreastPointerExit);
 
             GameObject tglPushup = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglPushup");
             var tglPushupTrigger = tglPushup.GetOrAddComponent<EventTrigger>();
