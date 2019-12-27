@@ -20,8 +20,8 @@ namespace KK_Plugins
             [Key("CenterNipples")]
             public float CenterNipples { get; set; } = ConfigNippleCenteringDefault.Value;
 
-            [Key("EnablePushUp")]
-            public bool EnablePushUp { get; set; } = ConfigEnablePushup.Value;
+            [Key("EnablePushup")]
+            public bool EnablePushup { get; set; } = ConfigEnablePushup.Value;
             [Key("FlattenNipples")]
             public bool FlattenNipples { get; set; } = ConfigFlattenNipplesDefault.Value;
 

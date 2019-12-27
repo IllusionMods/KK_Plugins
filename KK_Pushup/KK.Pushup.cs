@@ -44,7 +44,7 @@ namespace KK_Plugins
 
             CharacterApi.RegisterExtraBehaviour<PushupController>(GUID);
             MakerAPI.RegisterCustomSubCategories += RegisterCustomSubCategories;
-            MakerAPI.ReloadCustomInterface += (sender, args) => ReLoadPushUp();
+            MakerAPI.ReloadCustomInterface += (sender, args) => ReloadPushup();
             MakerAPI.MakerExiting += MakerExiting;
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
             RegisterStudioControls();

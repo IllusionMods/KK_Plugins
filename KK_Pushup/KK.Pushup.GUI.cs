@@ -14,32 +14,32 @@ namespace KK_Plugins
     public partial class Pushup
     {
         //Sliders and toggles
-        internal static MakerToggle EnablePushUpToggle;
+        internal static MakerToggle EnablePushupToggle;
 
-        internal static PushUpSlider FirmnessSlider;
-        internal static PushUpSlider LiftSlider;
-        internal static PushUpSlider PushTogetherSlider;
-        internal static PushUpSlider SqueezeSlider;
-        internal static PushUpSlider CenterSlider;
+        internal static PushupSlider FirmnessSlider;
+        internal static PushupSlider LiftSlider;
+        internal static PushupSlider PushTogetherSlider;
+        internal static PushupSlider SqueezeSlider;
+        internal static PushupSlider CenterSlider;
 
         internal static MakerToggle FlattenNippleToggle;
 
         internal static MakerToggle AdvancedModeToggle;
 
-        internal static PushUpSlider PushSizeSlider;
-        internal static PushUpSlider PushVerticalPositionSlider;
-        internal static PushUpSlider PushHorizontalAngleSlider;
-        internal static PushUpSlider PushHorizontalPositionSlider;
-        internal static PushUpSlider PushVerticalAngleSlider;
-        internal static PushUpSlider PushDepthSlider;
-        internal static PushUpSlider PushRoundnessSlider;
+        internal static PushupSlider PushSizeSlider;
+        internal static PushupSlider PushVerticalPositionSlider;
+        internal static PushupSlider PushHorizontalAngleSlider;
+        internal static PushupSlider PushHorizontalPositionSlider;
+        internal static PushupSlider PushVerticalAngleSlider;
+        internal static PushupSlider PushDepthSlider;
+        internal static PushupSlider PushRoundnessSlider;
 
-        internal static PushUpSlider PushSoftnessSlider;
-        internal static PushUpSlider PushWeightSlider;
+        internal static PushupSlider PushSoftnessSlider;
+        internal static PushupSlider PushWeightSlider;
 
-        internal static PushUpSlider PushAreolaDepthSlider;
-        internal static PushUpSlider PushNippleWidthSlider;
-        internal static PushUpSlider PushNippleDepthSlider;
+        internal static PushupSlider PushAreolaDepthSlider;
+        internal static PushupSlider PushNippleWidthSlider;
+        internal static PushupSlider PushNippleDepthSlider;
 
         internal static MakerRadioButtons SelectButtons;
 
@@ -50,7 +50,7 @@ namespace KK_Plugins
 
         private void MakerFinishedLoading(object sender, EventArgs e)
         {
-            ReLoadPushUp();
+            ReloadPushup();
 
             GameObject tglBreast = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/01_BodyTop/tglBreast/BreastTop");
             var tglBreastTrigger = tglBreast.GetOrAddComponent<EventTrigger>();
@@ -78,7 +78,7 @@ namespace KK_Plugins
             _sliderManager = null;
         }
 
-        private static void ReLoadPushUp()
+        private static void ReloadPushup()
         {
             _sliderManager = new SliderManager();
 
@@ -87,7 +87,7 @@ namespace KK_Plugins
 
             _sliderManager.InitSliders(_pushUpController);
 
-            UpdateToggleSubscription(EnablePushUpToggle, _activeClothData.EnablePushUp, b => { _activeClothData.EnablePushUp = b; });
+            UpdateToggleSubscription(EnablePushupToggle, _activeClothData.EnablePushup, b => { _activeClothData.EnablePushup = b; });
 
             UpdateSliderSubscription(PushSizeSlider, _activeClothData.Size, f => { _activeClothData.Size = f; });
             UpdateSliderSubscription(PushVerticalPositionSlider, _activeClothData.VerticalPosition, f => { _activeClothData.VerticalPosition = f; });
@@ -127,7 +127,7 @@ namespace KK_Plugins
             toggle.SetValue(value);
         }
 
-        private static void UpdateSliderSubscription(PushUpSlider slider, float value, Action<float> action)
+        private static void UpdateSliderSubscription(PushupSlider slider, float value, Action<float> action)
         {
             slider.onUpdate = f =>
             {
@@ -149,11 +149,11 @@ namespace KK_Plugins
 
             //Bra or top
             SelectButtons = ev.AddControl(new MakerRadioButtons(category, this, "Type", "Bra", "Top"));
-            SelectButtons.ValueChanged.Subscribe(i => ReLoadPushUp());
+            SelectButtons.ValueChanged.Subscribe(i => ReloadPushup());
 
             //Basic mode
-            EnablePushUpToggle = new MakerToggle(category, "Enabled", true, this);
-            ev.AddControl(EnablePushUpToggle);
+            EnablePushupToggle = new MakerToggle(category, "Enabled", true, this);
+            ev.AddControl(EnablePushupToggle);
 
             FirmnessSlider = MakeSlider(category, "Firmness", ev, ConfigFirmnessDefault.Value);
             LiftSlider = MakeSlider(category, "Lift", ev, ConfigLiftDefault.Value);
@@ -221,7 +221,7 @@ namespace KK_Plugins
             PushNippleDepthSlider.MakerSlider.SetValue(infoBase.NippleDepth);
         }
 
-        private PushUpSlider MakeSlider(MakerCategory category, string sliderName, RegisterSubCategoriesEvent e, float defaultValue, bool useConfigMinMax = false)
+        private PushupSlider MakeSlider(MakerCategory category, string sliderName, RegisterSubCategoriesEvent e, float defaultValue, bool useConfigMinMax = false)
         {
             float min = 0f;
             float max = 1f;
@@ -233,7 +233,7 @@ namespace KK_Plugins
 
             var slider = new MakerSlider(category, sliderName, min, max, defaultValue, this);
             e.AddControl(slider);
-            var pushUpSlider = new PushUpSlider();
+            var pushUpSlider = new PushupSlider();
             pushUpSlider.MakerSlider = slider;
 
             return pushUpSlider;
@@ -243,43 +243,33 @@ namespace KK_Plugins
         {
             if (!StudioAPI.InsideStudio) return;
 
-            var pushupBraToggle = new CurrentStateCategorySwitch("Pushup Bra", ocichar => ocichar.charInfo.GetComponent<PushupController>().CurrentBraData.EnablePushUp);
+            var pushupBraToggle = new CurrentStateCategorySwitch("Pushup Bra", ocichar => ocichar.charInfo.GetComponent<PushupController>().CurrentBraData.EnablePushup);
             StudioAPI.GetOrCreateCurrentStateCategory("Pushup").AddControl(pushupBraToggle);
             pushupBraToggle.Value.Subscribe(value =>
             {
                 var controller = GetSelectedController();
                 if (controller == null) return;
-                if (controller.CurrentBraData.EnablePushUp != value)
+                if (controller.CurrentBraData.EnablePushup != value)
                 {
-                    controller.CurrentBraData.EnablePushUp = value;
+                    controller.CurrentBraData.EnablePushup = value;
                     controller.RecalculateBody();
                 }
             });
 
-            var pushupTopToggle = new CurrentStateCategorySwitch("Pushup Top", ocichar => ocichar.charInfo.GetComponent<PushupController>().CurrentTopData.EnablePushUp);
+            var pushupTopToggle = new CurrentStateCategorySwitch("Pushup Top", ocichar => ocichar.charInfo.GetComponent<PushupController>().CurrentTopData.EnablePushup);
             StudioAPI.GetOrCreateCurrentStateCategory("Pushup").AddControl(pushupTopToggle);
             pushupTopToggle.Value.Subscribe(value =>
             {
                 var controller = GetSelectedController();
                 if (controller == null) return;
-                if (controller.CurrentTopData.EnablePushUp != value)
+                if (controller.CurrentTopData.EnablePushup != value)
                 {
-                    controller.CurrentTopData.EnablePushUp = value;
+                    controller.CurrentTopData.EnablePushup = value;
                     controller.RecalculateBody();
                 }
             });
-
         }
 
         private static PushupController GetSelectedController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<PushupController>();
-    }
-
-
-    public class PushUpSlider
-    {
-        public MakerSlider MakerSlider;
-        public Action<float> onUpdate;
-
-        public void Update(float f) => onUpdate(f);
     }
 }

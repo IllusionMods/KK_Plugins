@@ -94,7 +94,7 @@ namespace KK_Plugins
             private void OnCoordinateChanged()
             {
                 if (MakerAPI.InsideAndLoaded)
-                    ReLoadPushUp();
+                    ReloadPushup();
             }
 
             public void RecalculateBody(bool coroutine = false)
@@ -187,7 +187,7 @@ namespace KK_Plugins
                 combo.PushTogether = Math.Max(CurrentBraData.PushTogether, CurrentTopData.PushTogether);
                 combo.CenterNipples = Math.Max(CurrentBraData.CenterNipples, CurrentTopData.CenterNipples);
                 combo.FlattenNipples = CurrentBraData.FlattenNipples || CurrentTopData.FlattenNipples;
-                combo.EnablePushUp = true;
+                combo.EnablePushup = true;
 
                 CalculatePushFromClothes(combo, false);
             }
@@ -352,11 +352,11 @@ namespace KK_Plugins
 
             private bool BraIsOnAndEnabled => ChaControl.IsClothesStateKind((int)ChaFileDefine.ClothesKind.bra) &&
                                               ChaControl.fileStatus.clothesState[(int)ChaFileDefine.ClothesKind.bra] == 0 &&
-                                              CurrentBraData.EnablePushUp;
+                                              CurrentBraData.EnablePushup;
 
             private bool TopIsOnAndEnabled => ChaControl.IsClothesStateKind((int)ChaFileDefine.ClothesKind.top) &&
                                               ChaControl.fileStatus.clothesState[(int)ChaFileDefine.ClothesKind.top] == 0 &&
-                                              CurrentTopData.EnablePushUp;
+                                              CurrentTopData.EnablePushup;
 
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
 
