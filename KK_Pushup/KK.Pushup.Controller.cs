@@ -41,8 +41,6 @@ namespace KK_Plugins
 
             protected override void OnReload(GameMode currentGameMode)
             {
-                base.OnReload(currentGameMode);
-
                 BaseData = new BodyData(ChaControl.fileBody);
 
                 PushupDataDictionary = new Dictionary<int, BodyData>();
@@ -60,6 +58,7 @@ namespace KK_Plugins
                     TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
 
                 RecalculateBody();
+                base.OnReload(currentGameMode);
             }
 
             protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
@@ -121,6 +120,8 @@ namespace KK_Plugins
             internal void ClothesStateChangeEvent()
             {
                 if (!Started) return;
+                if (CharacterLoading) return;
+
                 RecalculateBody();
             }
 
@@ -352,6 +353,22 @@ namespace KK_Plugins
                                               CurrentTopData.EnablePushUp;
 
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
+
+            private bool characterLoading = false;
+            public bool CharacterLoading
+            {
+                get => characterLoading;
+                set
+                {
+                    characterLoading = value;
+                    ChaControl.StartCoroutine(Reset());
+                    IEnumerator Reset()
+                    {
+                        yield return null;
+                        characterLoading = false;
+                    }
+                }
+            }
         }
     }
 }
