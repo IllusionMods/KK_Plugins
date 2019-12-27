@@ -19,11 +19,9 @@ namespace KK_Plugins
             private Dictionary<int, ClothData> BraDataDictionary = new Dictionary<int, ClothData>();
             private Dictionary<int, ClothData> TopDataDictionary = new Dictionary<int, ClothData>();
 
-            private bool _forceBodyRecalc;
-
             protected override void Start()
             {
-                CurrentCoordinate.Subscribe(value => { OnCoordinateChanged(value); });
+                CurrentCoordinate.Subscribe(value => { OnCoordinateChanged(); });
                 base.Start();
             }
 
@@ -37,7 +35,7 @@ namespace KK_Plugins
                 data.data.Add($"Pushup_{nameof(TopDataDictionary)}", MessagePackSerializer.Serialize(TopDataDictionary));
                 SetExtendedData(data);
 
-                _forceBodyRecalc = true;
+                RecalculateBody();
             }
 
             protected override void OnReload(GameMode currentGameMode)
@@ -60,7 +58,7 @@ namespace KK_Plugins
                 if (data != null && data.data.TryGetValue($"Pushup_{nameof(TopDataDictionary)}", out var loadedTopData) && loadedTopData != null)
                     TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
 
-                _forceBodyRecalc = true;
+                RecalculateBody();
             }
 
             protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
@@ -74,7 +72,7 @@ namespace KK_Plugins
 
             protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate)
             {
-                _forceBodyRecalc = true;
+                RecalculateBody();
                 if (MakerAPI.GetCoordinateLoadFlags()?.Clothes == false) return;
 
                 PushupDataDictionary = new Dictionary<int, BodyData>();
@@ -92,33 +90,27 @@ namespace KK_Plugins
                     TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
             }
 
-            private void OnCoordinateChanged(ChaFileDefine.CoordinateType coordinateType)
+            private void OnCoordinateChanged()
             {
                 if (MakerAPI.InsideAndLoaded)
                     ReLoadPushUp();
             }
 
-            protected override void Update()
+            public void RecalculateBody()
             {
-                if (_forceBodyRecalc)
+                Wearing nowWearing = CurrentlyWearing;
+                if (nowWearing != Wearing.None)
                 {
-                    Wearing nowWearing = CurrentlyWearing;
-                    if (nowWearing != Wearing.None)
-                    {
-                        CalculatePush(nowWearing);
-                        MapBodyInfoToChaFile(CurrentPushupData);
-                    }
-                    else
-                    {
-                        MapBodyInfoToChaFile(BaseData);
-                    }
-                    _forceBodyRecalc = false;
+                    CalculatePush(nowWearing);
+                    MapBodyInfoToChaFile(CurrentPushupData);
                 }
-
-                base.Update();
+                else
+                {
+                    MapBodyInfoToChaFile(BaseData);
+                }
             }
 
-            internal void ClothesStateChangeEvent() => _forceBodyRecalc = true;
+            internal void ClothesStateChangeEvent() => RecalculateBody();
 
             /// <summary>
             /// Sets the body values to the values stored in the BodyData.
@@ -348,8 +340,6 @@ namespace KK_Plugins
                                               CurrentTopData.EnablePushUp;
 
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
-
-            public void RecalculateBody() => _forceBodyRecalc = true;
         }
     }
 }
