@@ -23,7 +23,7 @@ namespace KK_Plugins
             [Key("EnablePushUp")]
             public bool EnablePushUp { get; set; } = ConfigEnablePushup.Value;
             [Key("FlattenNipples")]
-            public bool FlattenNipples { get; set; } = ConfigEnablePushup.Value;
+            public bool FlattenNipples { get; set; } = ConfigFlattenNipplesDefault.Value;
 
             [Key("UseAdvanced")]
             public bool UseAdvanced { get; set; } = false;
