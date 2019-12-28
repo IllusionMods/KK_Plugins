@@ -177,11 +177,11 @@ namespace KK_Plugins
             AdvancedModeToggle = new MakerToggle(category, "Advanced Mode", false, this);
             ev.AddControl(AdvancedModeToggle);
 
-            var copyBodyButton = new MakerButton("Copy Body to Advanced", category, this);
+            var copyBodyButton = new MakerButton("Copy Body To Advanced", category, this);
             ev.AddControl(copyBodyButton);
             copyBodyButton.OnClick.AddListener(CopyBodyToSliders);
 
-            var copyBasicButton = new MakerButton("Copy Basic to Advanced", category, this);
+            var copyBasicButton = new MakerButton("Copy Basic To Advanced", category, this);
             ev.AddControl(copyBasicButton);
             copyBasicButton.OnClick.AddListener(CopyBasicToSliders);
 
@@ -199,6 +199,23 @@ namespace KK_Plugins
             PushAreolaDepthSlider = MakeSlider(category, "Areola Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexAreolaDepth], true);
             PushNippleWidthSlider = MakeSlider(category, "Nipple Width", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleWidth], true);
             PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleDepth], true);
+
+            ev.AddControl(new MakerSeparator(category, this));
+            var copyDropdown = new MakerDropdown("Copy To Coordinate", Enum.GetNames(typeof(ChaFileDefine.CoordinateType)), category, 0, this);
+            ev.AddControl(copyDropdown);
+
+            string[] DataTypes = new string[] { "Basic and Advanced", "Basic", "Advanced" };
+            var copyDataDropdown = new MakerDropdown("Data To Copy", DataTypes, category, 0, this);
+            ev.AddControl(copyDataDropdown);
+
+            var copyButton = new MakerButton("Copy", category, this);
+            ev.AddControl(copyButton);
+            copyButton.OnClick.AddListener(delegate
+            {
+                bool copyBasic = copyDataDropdown.Value == 0 || copyDataDropdown.Value == 1;
+                bool copyAdvanced = copyDataDropdown.Value == 0 || copyDataDropdown.Value == 2;
+                CopySlidersToCoordinate(copyDropdown.Value, copyBasic, copyAdvanced);
+            });
 
             ev.AddSubCategory(category);
         }
@@ -226,6 +243,16 @@ namespace KK_Plugins
             PushAreolaDepthSlider.MakerSlider.SetValue(infoBase.AreolaDepth);
             PushNippleWidthSlider.MakerSlider.SetValue(infoBase.NippleWidth);
             PushNippleDepthSlider.MakerSlider.SetValue(infoBase.NippleDepth);
+        }
+
+        private void CopySlidersToCoordinate(int coordinateIndex, bool copyBasic, bool copyAdvanced)
+        {
+            if (_pushUpController.CurrentCoordinateIndex == coordinateIndex) return;
+
+            if (SelectButtons.Value == 0)
+                _pushUpController.CopyBraData(_pushUpController.CurrentCoordinateIndex, coordinateIndex, copyBasic, copyAdvanced);
+            else
+                _pushUpController.CopyTopData(_pushUpController.CurrentCoordinateIndex, coordinateIndex, copyBasic, copyAdvanced);
         }
 
         private PushupSlider MakeSlider(MakerCategory category, string sliderName, RegisterSubCategoriesEvent e, float defaultValue, bool useConfigMinMax = false)

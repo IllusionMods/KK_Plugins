@@ -46,20 +46,16 @@ namespace KK_Plugins
                 NippleDepth = bodyData.NippleDepth;
             }
 
-            public void CopyTo(BodyData data)
+            public void CopyTo(ClothData data)
             {
-                data.Size = Size;
-                data.VerticalPosition = VerticalPosition;
-                data.HorizontalAngle = HorizontalAngle;
-                data.HorizontalPosition = HorizontalPosition;
-                data.VerticalAngle = VerticalAngle;
-                data.Depth = Depth;
-                data.Roundness = Roundness;
-                data.Softness = Softness;
-                data.Weight = Weight;
-                data.AreolaDepth = AreolaDepth;
-                data.NippleWidth = NippleWidth;
-                data.NippleDepth = NippleDepth;
+                data.Firmness = Firmness;
+                data.Lift = Lift;
+                data.PushTogether = PushTogether;
+                data.Squeeze = Squeeze;
+                data.CenterNipples = CenterNipples;
+                data.EnablePushup = EnablePushup;
+                data.FlattenNipples = FlattenNipples;
+                data.UseAdvanced = UseAdvanced;
             }
         }
     }

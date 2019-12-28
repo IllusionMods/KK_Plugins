@@ -311,6 +311,30 @@ namespace KK_Plugins
                 set => SetTopData(CurrentCoordinateIndex, value);
             }
 
+            public void CopyBraData(int coordinateSource, int coordinateDestination, bool copyClothData, bool copyBodyData)
+            {
+                if (coordinateSource == coordinateDestination) return;
+
+                var src = GetBraData(coordinateSource);
+                var dst = GetBraData(coordinateDestination);
+                if (copyClothData)
+                    src.CopyTo(dst);
+                if (copyBodyData)
+                    src.CopyTo((BodyData)dst);
+            }
+
+            public void CopyTopData(int coordinateSource, int coordinateDestination, bool copyClothData, bool copyBodyData)
+            {
+                if (coordinateSource == coordinateDestination) return;
+
+                var src = GetTopData(coordinateSource);
+                var dst = GetTopData(coordinateDestination);
+                if (copyClothData)
+                    src.CopyTo(dst);
+                if (copyBodyData)
+                    src.CopyTo((BodyData)dst);
+            }
+
             private Wearing CurrentlyWearing
             {
                 get

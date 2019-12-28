@@ -52,6 +52,22 @@ namespace KK_Plugins
                 NippleWidth = baseBody.shapeValueBody[PushupConstants.IndexNippleWidth];
                 NippleDepth = baseBody.shapeValueBody[PushupConstants.IndexNippleDepth];
             }
+
+            public void CopyTo(BodyData data)
+            {
+                data.Size = Size;
+                data.VerticalPosition = VerticalPosition;
+                data.HorizontalAngle = HorizontalAngle;
+                data.HorizontalPosition = HorizontalPosition;
+                data.VerticalAngle = VerticalAngle;
+                data.Depth = Depth;
+                data.Roundness = Roundness;
+                data.Softness = Softness;
+                data.Weight = Weight;
+                data.AreolaDepth = AreolaDepth;
+                data.NippleWidth = NippleWidth;
+                data.NippleDepth = NippleDepth;
+            }
         }
     }
 }
