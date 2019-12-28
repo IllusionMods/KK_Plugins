@@ -51,6 +51,7 @@ namespace KK_Plugins
         private void MakerFinishedLoading(object sender, EventArgs e)
         {
             ReloadPushup();
+            _pushUpController.RecalculateBody();
 
             GameObject tglBreast = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/01_BodyTop/tglBreast/BreastTop");
             var tglBreastTrigger = tglBreast.GetOrAddComponent<EventTrigger>();
@@ -76,6 +77,12 @@ namespace KK_Plugins
         {
             _pushUpController = null;
             _sliderManager = null;
+        }
+
+        private void ReloadCustomInterface(object sender, EventArgs e)
+        {
+            ReloadPushup();
+            _pushUpController.RecalculateBody();
         }
 
         private static void ReloadPushup()
@@ -120,7 +127,7 @@ namespace KK_Plugins
             var pushObserver = Observer.Create<bool>(b =>
             {
                 action(b);
-                _pushUpController.RecalculateBody();
+                _pushUpController.RecalculateBody(false);
             });
 
             toggle.ValueChanged.Subscribe(pushObserver);
@@ -132,7 +139,7 @@ namespace KK_Plugins
             slider.onUpdate = f =>
             {
                 action(f);
-                _pushUpController.RecalculateBody(true);
+                _pushUpController.RecalculateBody(false);
             };
 
             var pushObserver = Observer.Create<float>(f => slider.Update(f));

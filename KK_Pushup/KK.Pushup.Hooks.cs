@@ -7,10 +7,14 @@ namespace KK_Plugins
         internal partial class Hooks
         {
             /// <summary>
-            /// Trigger the ClothesStateChangeEvent
+            /// Trigger the ClothesStateChangeEvent for tops and bras
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
-            internal static void SetClothesStatePostfix(ChaControl __instance) => GetCharaController(__instance)?.ClothesStateChangeEvent();
+            internal static void SetClothesStatePostfix(ChaControl __instance, int clothesKind)
+            {
+                if (clothesKind == 0 || clothesKind == 2) //tops and bras
+                    GetCharaController(__instance)?.ClothesStateChangeEvent();
+            }
 
             /// <summary>
             /// Set the CharacterLoading flag
