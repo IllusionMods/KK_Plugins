@@ -220,12 +220,19 @@ namespace KK_Plugins
             ev.AddSubCategory(category);
         }
 
-        private void CopyBodyToSliders() => CopyToSliders(_pushUpController.BaseData);
+        private void CopyBodyToSliders()
+        {
+            _pushUpController.CharacterLoading = true;
+            CopyToSliders(_pushUpController.BaseData);
+            _pushUpController.RecalculateBody();
+        }
 
         private void CopyBasicToSliders()
         {
+            _pushUpController.CharacterLoading = true;
             _pushUpController.CalculatePushFromClothes(_activeClothData, false);
             CopyToSliders(_pushUpController.CurrentPushupData);
+            _pushUpController.RecalculateBody();
         }
 
         private void CopyToSliders(BodyData infoBase)
