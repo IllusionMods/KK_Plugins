@@ -207,6 +207,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_CharacterExport", "EC_Ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_Pushup", "KK_Pushup\KK_Pushup.csproj", "{770F33BC-7C92-4059-A4AF-9A958CEE6BDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_StudioSceneSettings", "KK_StudioSceneSettings\KK_StudioSceneSettings.csproj", "{808EEDEC-4707-45A1-929C-9E5506180204}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Core_AnimationController\Core_AnimationController.projitems*{0a702757-ce40-48fe-bed1-00be3b717417}*SharedItemsImports = 13
@@ -271,6 +273,7 @@ Global
 		Core_StudioSceneLoadedSound\Core_StudioSceneLoadedSound.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{7b514b4e-a0bc-4da9-b2a8-0b72515e8033}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{7e21e1cc-356e-41bb-abdd-bd0f99710361}*SharedItemsImports = 4
+		CommonCode\CommonCode.projitems*{808eedec-4707-45a1-929c-9e5506180204}*SharedItemsImports = 4
 		Core_FKIK\Core_FKIK.projitems*{81d88c3e-4094-436c-8eed-ba18a81a96a4}*SharedItemsImports = 13
 		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{81de7d3b-a8a0-43c2-ac9d-f65ac528b997}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
@@ -589,6 +592,10 @@ Global
 		{770F33BC-7C92-4059-A4AF-9A958CEE6BDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{770F33BC-7C92-4059-A4AF-9A958CEE6BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{770F33BC-7C92-4059-A4AF-9A958CEE6BDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{808EEDEC-4707-45A1-929C-9E5506180204}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{808EEDEC-4707-45A1-929C-9E5506180204}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{808EEDEC-4707-45A1-929C-9E5506180204}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{808EEDEC-4707-45A1-929C-9E5506180204}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
