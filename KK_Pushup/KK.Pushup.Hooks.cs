@@ -26,6 +26,11 @@ namespace KK_Plugins
                 if (controller != null)
                     controller.CharacterLoading = true;
             }
+
+            /// <summary>
+            /// Cancel the original slider onValueChanged event
+            /// </summary>
+            internal static bool SliderHook() => false;
         }
     }
 }

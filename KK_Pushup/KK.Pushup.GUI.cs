@@ -87,12 +87,12 @@ namespace KK_Plugins
 
         private static void ReloadPushup()
         {
-            _sliderManager = new SliderManager();
-
             _pushUpController = GetMakerController();
+            if (_sliderManager == null)
+                _sliderManager = new SliderManager(_pushUpController);
             _activeClothData = SelectButtons.Value == 0 ? _pushUpController.CurrentBraData : _pushUpController.CurrentTopData;
 
-            _sliderManager.InitSliders(_pushUpController);
+            _sliderManager.ReinitSliders(_pushUpController);
 
             UpdateToggleSubscription(EnablePushupToggle, _activeClothData.EnablePushup, b => { _activeClothData.EnablePushup = b; });
 

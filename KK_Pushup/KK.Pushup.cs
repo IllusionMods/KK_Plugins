@@ -2,9 +2,11 @@
 using BepInEx.Configuration;
 using BepInEx.Harmony;
 using BepInEx.Logging;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
+using System.Linq;
 
 namespace KK_Plugins
 {
@@ -49,7 +51,18 @@ namespace KK_Plugins
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
             RegisterStudioControls();
 
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+
+            //Patch all the slider onValueChanged events to return false and cancel original code
+            //Pushup adds its own onValueChanged event that manages this stuff
+            foreach (var anonType in typeof(ChaCustom.CvsBreast).GetNestedTypes(AccessTools.all).Where(x => x.Name.Contains("<Start>")))
+                foreach (var anonTypeMethod in anonType.GetMethods(AccessTools.all).Where(x => x.Name.Contains("<>m")))
+                    if (anonTypeMethod.GetParameters().Any(x => x.ParameterType == typeof(float)))
+                        harmony.Patch(anonTypeMethod, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
+
+            var sliders = typeof(ChaCustom.CvsBreast).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>") && x.GetParameters().Any(y => y.ParameterType == typeof(float))).OrderBy(x => x.Name).ToList();
+            for (int i = 0; i < sliders.Count - 1; i++) //Count -1 because the last slider is areola width which is not managed by this plugin and we don't want to patch it
+                harmony.Patch(sliders[i], new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
         }
 
         public static PushupController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<PushupController>();
