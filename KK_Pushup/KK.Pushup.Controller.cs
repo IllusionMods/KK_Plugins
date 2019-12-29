@@ -99,6 +99,10 @@ namespace KK_Plugins
                 if (MakerAPI.InsideMaker && !MakerAPI.InsideAndLoaded) return;
                 if (CharacterLoading && !recalculateIfCharacterLoading) return;
 
+                //Body will sometimes be null in main game, wait for it to not be null
+                if (ChaControl.objBody == null)
+                    coroutine = true;
+
                 if (coroutine)
                 {
                     StartCoroutine(RecalculateBodyCoroutine());
