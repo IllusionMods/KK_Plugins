@@ -11,7 +11,13 @@ namespace KK_Plugins
     {
         public class SliderManager
         {
-            public static bool SlidersActive;
+            /// <summary>
+            /// Controls whether the sliders are allowed to be changed. Should be set to true at all times except when the game is trying to set them to the current body values.
+            /// RecalculateBody will disable them before recalculating with bras and tops worn and enable them after.
+            /// UpdateCvsBreastPrefix hook will disable them because when the breast tab becomes active it tries to fill in the sliders with current body values.
+            /// Moving the mouse on or off the breast tab will enable them once more afterwards.
+            /// </summary>
+            public static bool SlidersActive = true;
             private bool DoEvents = true;
 
             internal SliderManager(PushupController pushUpController) => InitSliders(pushUpController);

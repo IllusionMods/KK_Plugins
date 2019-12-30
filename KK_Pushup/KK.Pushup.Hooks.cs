@@ -28,6 +28,12 @@ namespace KK_Plugins
             }
 
             /// <summary>
+            /// When the Breast tab of the character maker is set active. disable the sliders because the game will try to set them to the current body values.
+            /// </summary>
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CustomBase), nameof(ChaCustom.CustomBase.updateCvsBreast), MethodType.Setter)]
+            internal static void UpdateCvsBreastPrefix() => SliderManager.SlidersActive = false;
+
+            /// <summary>
             /// Cancel the original slider onValueChanged event
             /// </summary>
             internal static bool SliderHook() => false;

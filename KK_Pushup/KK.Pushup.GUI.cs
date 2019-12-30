@@ -53,24 +53,17 @@ namespace KK_Plugins
             ReloadPushup();
             _pushUpController.RecalculateBody();
 
-            GameObject tglBreast = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/01_BodyTop/tglBreast/BreastTop");
-            var tglBreastTrigger = tglBreast.GetOrAddComponent<EventTrigger>();
-            var tglBreastPointerEnter = new EventTrigger.Entry();
-            tglBreastPointerEnter.eventID = EventTriggerType.PointerEnter;
-            tglBreastPointerEnter.callback.AddListener(x => SliderManager.SlidersActive = true);
-            tglBreastTrigger.triggers.Add(tglBreastPointerEnter);
+            GameObject bodyTopButton = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/01_BodyTop");
+            var bodyTopButtonTrigger = bodyTopButton.GetOrAddComponent<EventTrigger>();
+            var bodyTopButtonPointerEnter = new EventTrigger.Entry();
+            bodyTopButtonPointerEnter.eventID = EventTriggerType.PointerEnter;
+            bodyTopButtonPointerEnter.callback.AddListener(x => SliderManager.SlidersActive = true);
+            bodyTopButtonTrigger.triggers.Add(bodyTopButtonPointerEnter);
 
-            var tglBreastPointerExit = new EventTrigger.Entry();
-            tglBreastPointerExit.eventID = EventTriggerType.PointerExit;
-            tglBreastPointerExit.callback.AddListener(x => SliderManager.SlidersActive = false);
-            tglBreastTrigger.triggers.Add(tglBreastPointerExit);
-
-            GameObject tglPushup = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglPushup");
-            var tglPushupTrigger = tglPushup.GetOrAddComponent<EventTrigger>();
-            var tglPushupEntry = new EventTrigger.Entry();
-            tglPushupEntry.eventID = EventTriggerType.PointerEnter;
-            tglPushupEntry.callback.AddListener(x => SliderManager.SlidersActive = false);
-            tglPushupTrigger.triggers.Add(tglPushupEntry);
+            var bodyTopButtonPointerExit = new EventTrigger.Entry();
+            bodyTopButtonPointerExit.eventID = EventTriggerType.PointerExit;
+            bodyTopButtonPointerExit.callback.AddListener(x => SliderManager.SlidersActive = true);
+            bodyTopButtonTrigger.triggers.Add(bodyTopButtonPointerExit);
         }
 
         private void MakerExiting(object sender, EventArgs e)

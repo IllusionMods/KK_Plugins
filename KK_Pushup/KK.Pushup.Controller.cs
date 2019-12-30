@@ -109,16 +109,18 @@ namespace KK_Plugins
                     return;
                 }
 
+                //Set all the sliders to the base body values
+                SliderManager.SlidersActive = true;
+                MapBodyInfoToChaFile(BaseData);
+
                 Wearing nowWearing = CurrentlyWearing;
                 if (nowWearing != Wearing.None)
                 {
+                    SliderManager.SlidersActive = false;
                     CalculatePush(nowWearing);
                     MapBodyInfoToChaFile(CurrentPushupData);
                 }
-                else
-                {
-                    MapBodyInfoToChaFile(BaseData);
-                }
+                SliderManager.SlidersActive = true;
             }
 
             private IEnumerator RecalculateBodyCoroutine()
