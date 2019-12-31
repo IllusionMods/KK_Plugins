@@ -69,20 +69,38 @@ namespace KK_Plugins
             {
                 if (MakerAPI.GetCoordinateLoadFlags()?.Clothes == false) return;
 
-                CurrentPushupData = new BodyData(ChaControl.fileBody);
-                CurrentBraData = null;
-                CurrentTopData = null;
+                ClothData newBraData = new ClothData(CurrentBraData);
+                ClothData newTopData = new ClothData(CurrentTopData);
 
                 var data = GetCoordinateExtendedData(coordinate);
                 if (data != null && data.data.TryGetValue("PushupCoordinate_BraData", out var loadedBraData) && loadedBraData != null)
-                    CurrentBraData = MessagePackSerializer.Deserialize<ClothData>((byte[])loadedBraData);
+                {
+                    try
+                    {
+                        newBraData = MessagePackSerializer.Deserialize<ClothData>((byte[])loadedBraData);
+                    }
+                    catch { }
+                }
 
                 if (data != null && data.data.TryGetValue("PushupCoordinate_TopData", out var loadedTopData) && loadedTopData != null)
-                    CurrentTopData = MessagePackSerializer.Deserialize<ClothData>((byte[])loadedTopData);
+                {
+                    try
+                    {
+                        newTopData = MessagePackSerializer.Deserialize<ClothData>((byte[])loadedTopData);
+                    }
+                    catch { }
+                }
+                else
+                    CurrentTopData = null;
+
+                //Copy the cloth data but not body data
+                newBraData.CopyTo(CurrentBraData);
+                newTopData.CopyTo(CurrentTopData);
 
                 //Advanced mode data is too character specific and is not loaded from coordinates
                 CurrentBraData.UseAdvanced = false;
                 CurrentTopData.UseAdvanced = false;
+
                 RecalculateBody();
             }
 
