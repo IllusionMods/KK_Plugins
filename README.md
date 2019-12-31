@@ -340,6 +340,10 @@ Near Clip Plane<br/>
 Far Clip Plane<br/>
 </details>
 
+#### Pushup
+**v1.0 - [Download](https://www.patreon.com/posts/32668488)** - For Koikatsu<br/>
+Provides sliders and setting to shape the breasts of characters when bras or tops are worn. The basic set of sliders will modify the shape of the breasts if the breast sliders if they are below the specified threshhold. Advanced mode lets you fully customize the shape of the breasts.<br/>
+
 #### KK_CutsceneLockupFix
 #### KK_HeadFix
 #### KK_MiscFixes
