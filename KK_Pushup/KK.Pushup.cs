@@ -17,7 +17,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.pushup";
         public const string PluginName = "Pushup";
         public const string PluginNameInternal = "KK_Pushup";
-        public const string Version = "0.1";
+        public const string Version = "0.2";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<bool> ConfigEnablePushup { get; private set; }
@@ -61,7 +61,9 @@ namespace KK_Plugins
                         harmony.Patch(anonTypeMethod, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
 
             var sliders = typeof(ChaCustom.CvsBreast).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>") && x.GetParameters().Any(y => y.ParameterType == typeof(float))).OrderBy(x => x.Name).ToList();
-            for (int i = 0; i < sliders.Count - 1; i++) //Count -1 because the last slider is areola width which is not managed by this plugin and we don't want to patch it
+            //i = 1 because the first slider is nipple gloss which is not managed by this plugin and we don't want to patch it
+            //Count -1 because the last slider is areola width which is not managed etc.
+            for (int i = 1; i < sliders.Count - 1; i++)
                 harmony.Patch(sliders[i], new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
         }
 
