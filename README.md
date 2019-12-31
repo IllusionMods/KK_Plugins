@@ -330,6 +330,16 @@ v1.0.1 Made the hotkeys configurable<br/>
 v2.0 Added a guide object instead of hotkeys for positioning<br/>
 </details>
 
+#### StudioSceneSettings
+**v1.0.1 - [Download](https://www.patreon.com/posts/32713423)** - For Koikatsu<br/>
+Allows you to adjust a few more settings for scenes. Changes save and load with the scene data.<br/>
+
+<details><summary>Settings</summary>
+Map Masking<br/>
+Near Clip Plane<br/>
+Far Clip Plane<br/>
+</details>
+
 #### KK_CutsceneLockupFix
 #### KK_HeadFix
 #### KK_MiscFixes
