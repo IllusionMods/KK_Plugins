@@ -5,6 +5,7 @@ using KKAPI.Studio;
 using KKAPI.Studio.UI;
 using Studio;
 using System;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -193,8 +194,11 @@ namespace KK_Plugins
             PushNippleWidthSlider = MakeSlider(category, "Nipple Width", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleWidth], true);
             PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleDepth], true);
 
+
+            var coordinateList = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).ToList();
+            coordinateList.Add("All");
             ev.AddControl(new MakerSeparator(category, this));
-            var copyDropdown = new MakerDropdown("Copy To Coordinate", Enum.GetNames(typeof(ChaFileDefine.CoordinateType)), category, 0, this);
+            var copyDropdown = new MakerDropdown("Copy To Coordinate", coordinateList.ToArray(), category, 0, this);
             ev.AddControl(copyDropdown);
 
             string[] DataTypes = new string[] { "Basic and Advanced", "Basic", "Advanced" };
@@ -207,7 +211,12 @@ namespace KK_Plugins
             {
                 bool copyBasic = copyDataDropdown.Value == 0 || copyDataDropdown.Value == 1;
                 bool copyAdvanced = copyDataDropdown.Value == 0 || copyDataDropdown.Value == 2;
-                CopySlidersToCoordinate(copyDropdown.Value, copyBasic, copyAdvanced);
+
+                if (copyDropdown.Value == coordinateList.Count - 1) //Copy all
+                    for (int i = 0; i < coordinateList.Count - 1; i++)
+                        CopySlidersToCoordinate(i, copyBasic, copyAdvanced);
+                else
+                    CopySlidersToCoordinate(copyDropdown.Value, copyBasic, copyAdvanced);
             });
 
             ev.AddSubCategory(category);
