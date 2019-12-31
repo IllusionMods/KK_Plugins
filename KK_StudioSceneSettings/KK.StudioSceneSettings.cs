@@ -15,7 +15,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.studioscenesettings";
         public const string PluginName = "StudioSceneSettings";
         public const string PluginNameInternal = "KK_StudioSceneSettings";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
         internal static new ManualLogSource Logger;
 
         internal const int CameraMapMaskingLayer = 26;

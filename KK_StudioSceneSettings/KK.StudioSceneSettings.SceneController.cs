@@ -44,8 +44,13 @@ namespace KK_Plugins
 
                         if (data.data.TryGetValue("FarClipPlane", out var farClipPlane) && farClipPlane != null)
                             FarClipPlane.Value = (float)farClipPlane;
+                        else
+                            FarClipPlane.Reset();
+
                         if (data.data.TryGetValue("MapMasking", out var mapMasking) && mapMasking != null)
                             MapMasking.Value = (bool)mapMasking;
+                        else
+                            MapMasking.Reset();
                     }
                 }
                 else if (operation == SceneOperationKind.Clear)
