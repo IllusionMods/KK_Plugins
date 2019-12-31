@@ -31,7 +31,8 @@ namespace KK_Plugins
 
             private void InitSliders(PushupController pushUpController)
             {
-                var cvsBreast = FindObjectOfType(typeof(CvsBreast));
+                var cvsBreast = CustomBase.Instance.gameObject.GetComponentInChildren<CvsBreast>(true);
+
                 SetupSlider(pushUpController.BaseData.Size, f => pushUpController.BaseData.Size = f, f => pushUpController.ChaControl.fileBody.shapeValueBody[PushupConstants.IndexSize] = f, "BustSize", pushUpController, cvsBreast);
                 SetupSlider(pushUpController.BaseData.VerticalPosition, f => pushUpController.BaseData.VerticalPosition = f, f => pushUpController.ChaControl.fileBody.shapeValueBody[PushupConstants.IndexVerticalPosition] = f, "BustY", pushUpController, cvsBreast);
                 SetupSlider(pushUpController.BaseData.HorizontalAngle, f => pushUpController.BaseData.HorizontalAngle = f, f => pushUpController.ChaControl.fileBody.shapeValueBody[PushupConstants.IndexHorizontalAngle] = f, "BustRotX", pushUpController, cvsBreast);
