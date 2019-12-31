@@ -31,8 +31,8 @@ namespace KK_Plugins
                 MapBodyInfoToChaFile(BaseData);
 
                 var data = new PluginData();
-                data.data.Add("Pushup_BraData", MessagePackSerializer.Serialize(BraDataDictionary));
-                data.data.Add("Pushup_TopData", MessagePackSerializer.Serialize(TopDataDictionary));
+                data.data.Add(PushupConstants.Pushup_BraData, MessagePackSerializer.Serialize(BraDataDictionary));
+                data.data.Add(PushupConstants.Pushup_TopData, MessagePackSerializer.Serialize(TopDataDictionary));
                 SetExtendedData(data);
 
                 RecalculateBody(true, true);
@@ -47,10 +47,10 @@ namespace KK_Plugins
                 TopDataDictionary = new Dictionary<int, ClothData>();
 
                 var data = GetExtendedData();
-                if (data != null && data.data.TryGetValue("Pushup_BraData", out var loadedBraData) && loadedBraData != null)
+                if (data != null && data.data.TryGetValue(PushupConstants.Pushup_BraData, out var loadedBraData) && loadedBraData != null)
                     BraDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedBraData);
 
-                if (data != null && data.data.TryGetValue("Pushup_TopData", out var loadedTopData) && loadedTopData != null)
+                if (data != null && data.data.TryGetValue(PushupConstants.Pushup_TopData, out var loadedTopData) && loadedTopData != null)
                     TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
 
                 RecalculateBody();
@@ -60,8 +60,8 @@ namespace KK_Plugins
             protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
             {
                 var data = new PluginData();
-                data.data.Add("PushupCoordinate_BraData", MessagePackSerializer.Serialize(CurrentBraData));
-                data.data.Add("PushupCoordinate_TopData", MessagePackSerializer.Serialize(CurrentTopData));
+                data.data.Add(PushupConstants.PushupCoordinate_BraData, MessagePackSerializer.Serialize(CurrentBraData));
+                data.data.Add(PushupConstants.PushupCoordinate_TopData, MessagePackSerializer.Serialize(CurrentTopData));
                 SetCoordinateExtendedData(coordinate, data);
             }
 
@@ -73,7 +73,7 @@ namespace KK_Plugins
                 ClothData newTopData = new ClothData(CurrentTopData);
 
                 var data = GetCoordinateExtendedData(coordinate);
-                if (data != null && data.data.TryGetValue("PushupCoordinate_BraData", out var loadedBraData) && loadedBraData != null)
+                if (data != null && data.data.TryGetValue(PushupConstants.PushupCoordinate_BraData, out var loadedBraData) && loadedBraData != null)
                 {
                     try
                     {
@@ -82,7 +82,7 @@ namespace KK_Plugins
                     catch { }
                 }
 
-                if (data != null && data.data.TryGetValue("PushupCoordinate_TopData", out var loadedTopData) && loadedTopData != null)
+                if (data != null && data.data.TryGetValue(PushupConstants.PushupCoordinate_TopData, out var loadedTopData) && loadedTopData != null)
                 {
                     try
                     {
