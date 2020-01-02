@@ -660,8 +660,8 @@ namespace KK_Plugins
                     OffsetOriginal = offsetOriginal;
                     Scale = scale;
                     ScaleOriginal = scaleOriginal;
-                    if (texID != null)
-                        Data = TextureDictionary[(int)texID];
+                    if (texID != null && TextureDictionary.TryGetValue((int)texID, out var tex))
+                        Data = tex;
                 }
 
                 public void Dispose()
