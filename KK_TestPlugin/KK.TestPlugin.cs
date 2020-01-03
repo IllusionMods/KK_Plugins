@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using ChaCustom;
 using KKAPI.Maker;
 using System;
@@ -18,9 +19,12 @@ namespace KK_Plugins
         public const string PluginName = "Test Plugin";
         public const string PluginNameInternal = "KK_TestPlugin";
         public const string Version = "1.0";
+        internal static new ManualLogSource Logger;
 
         internal void Main()
         {
+            Logger = base.Logger;
+
             SceneManager.sceneLoaded += (s, lsm) => Logger.LogInfo($"Scene loaded: {s.name}");
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
         }
