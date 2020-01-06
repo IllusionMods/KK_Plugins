@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>3ae01cd8-4b89-4c17-8840-3153a4fa8ef7</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Core_StudioSceneSettings</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.SceneController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.ScreenEffectMenu.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.SliderSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.ToggleSet.cs" />
+  </ItemGroup>
+</Project>

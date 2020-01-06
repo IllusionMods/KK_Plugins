@@ -7,9 +7,9 @@ namespace KK_Plugins.StudioSceneSettings
     [BepInProcess(Constants.StudioProcessName)]
     [BepInDependency(KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
-    public class StudioSceneSettingsPlugin : StudioSceneSettingsCore
+    public partial class StudioSceneSettingsPlugin : StudioSceneSettingsCore
     {
-        public const string PluginNameInternal = "KK_StudioSceneSettings";
+        public const string PluginNameInternal = "AI_StudioSceneSettings";
 
         internal void Start() => StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(GUID);
     }
