@@ -810,6 +810,14 @@ namespace KK_Plugins
                 MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName);
             public void RemoveMaterialShaderName(ObjectType objectType, int coordinateIndex, int slot, string materialName)
             {
+#if EC
+                //For EC don't remove shaders when reset, this helps users with fixing KK mods
+                var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName);
+                if (materialProperty == null)
+                    return;
+                else
+                    materialProperty.ShaderName = materialProperty.ShaderNameOriginal;
+#else
                 foreach (var materialProperty in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName))
                 {
                     materialProperty.ShaderName = null;
@@ -817,6 +825,7 @@ namespace KK_Plugins
                 }
 
                 MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName && x.NullCheck());
+#endif
             }
             public void RemoveMaterialShaderRenderQueue(ObjectType objectType, int coordinateIndex, int slot, string materialName)
             {
