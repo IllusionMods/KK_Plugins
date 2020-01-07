@@ -1,4 +1,5 @@
-﻿using ExtensibleSaveFormat;
+﻿using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using Studio;
@@ -12,6 +13,7 @@ namespace KK_Plugins.StudioSceneSettings
         public static ToggleSet MapMasking;
         public static SliderSet NearClipPlane;
         public static SliderSet FarClipPlane;
+        private static readonly ManualLogSource Logger = StudioSceneSettingsCore.Logger;
 
         internal void Start() => SceneManager.sceneLoaded += InitStudioUI;
 
@@ -52,12 +54,12 @@ namespace KK_Plugins.StudioSceneSettings
                         MapMasking.Reset();
 #endif
 
-                    if (data.data.TryGetValue("NearClipPlane", out var nearClipPlane) && nearClipPlane != null)
+                    if (data.data.TryGetValue("NearClipPlane", out var nearClipPlane) && nearClipPlane != null && (float)nearClipPlane != 0f)
                         NearClipPlane.Value = (float)nearClipPlane;
                     else
                         NearClipPlane.Reset();
 
-                    if (data.data.TryGetValue("FarClipPlane", out var farClipPlane) && farClipPlane != null)
+                    if (data.data.TryGetValue("FarClipPlane", out var farClipPlane) && farClipPlane != null && (float)farClipPlane != 0f)
                         FarClipPlane.Value = (float)farClipPlane;
                     else
                         FarClipPlane.Reset();
