@@ -13,7 +13,7 @@ namespace KK_Plugins.StudioSceneSettings
         public static SliderSet NearClipPlane;
         public static SliderSet FarClipPlane;
 
-        internal void Start() => SceneManager.sceneLoaded += (s, lsm) => { if (s.name == "Studio") InitStudioUI(); };
+        internal void Start() => SceneManager.sceneLoaded += InitStudioUI;
 
         protected override void OnSceneSave()
         {
@@ -79,8 +79,11 @@ namespace KK_Plugins.StudioSceneSettings
             FarClipPlane.Reset();
         }
 
-        internal void InitStudioUI()
+        private void InitStudioUI(Scene s, LoadSceneMode lsm)
         {
+            if (s.name != "Studio") return;
+            SceneManager.sceneLoaded -= InitStudioUI;
+
             var CameraLayerDefault = Camera.main.gameObject.layer;
 
             var menu = new ScreenEffectMenu(StudioSceneSettingsPlugin.PluginNameInternal);
