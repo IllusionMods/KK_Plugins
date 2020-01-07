@@ -6,7 +6,7 @@ namespace KK_Plugins.StudioSceneSettings
     {
         internal override float NearClipDefault => Camera.main.nearClipPlane;
         internal override void NearClipSetter(float value) => Camera.main.nearClipPlane = value;
-        internal override float FarClipDefault() => Camera.main.farClipPlane;
+        internal override float FarClipDefault => Camera.main.farClipPlane;
         internal override void FarClipSetter(float value) => Camera.main.farClipPlane = value;
     }
 }

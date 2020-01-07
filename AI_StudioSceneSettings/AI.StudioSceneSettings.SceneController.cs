@@ -17,7 +17,7 @@ namespace KK_Plugins.StudioSceneSettings
             cameraCtrl.fieldOfView = cameraCtrl.fieldOfView;
         }
 
-        internal override float FarClipDefault() => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Field("lensSettings").GetValue<LensSettings>().FarClipPlane;
+        internal override float FarClipDefault => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Field("lensSettings").GetValue<LensSettings>().FarClipPlane;
 
         internal override void FarClipSetter(float value)
         {

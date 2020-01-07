@@ -91,16 +91,15 @@ namespace KK_Plugins.StudioSceneSettings
             MapMasking = menu.AddToggleSet("Map Masking", value => Camera.main.gameObject.layer = value ? StudioSceneSettingsCore.CameraMapMaskingLayer : CameraLayerDefault, false);
 #endif
             NearClipPlane = menu.AddSliderSet("Near Clip Plane", value => NearClipSetter(value), NearClipDefault, 0.01f, 10f);
-            FarClipPlane = menu.AddSliderSet("Far Clip Plane", value => FarClipSetter(value), FarClipDefault(), 1f, 10000f);
+            FarClipPlane = menu.AddSliderSet("Far Clip Plane", value => FarClipSetter(value), FarClipDefault, 1f, 10000f);
 
             NearClipPlane.EnforceSliderMaximum = false;
             FarClipPlane.EnforceSliderMaximum = false;
         }
 
         internal abstract float NearClipDefault { get; }
-
         internal abstract void NearClipSetter(float value);
-        internal abstract float FarClipDefault();
+        internal abstract float FarClipDefault { get; }
         internal abstract void FarClipSetter(float value);
     }
 }

@@ -7,7 +7,7 @@ namespace KK_Plugins.StudioSceneSettings
     public class SliderSet
     {
         private float CurrentValue = 0f;
-        private bool EventsEnabled = true;
+        private bool EventsEnabled = false;
 
         #region Backing Fields
         private string _text;
@@ -101,6 +101,8 @@ namespace KK_Plugins.StudioSceneSettings
             });
 
             Button.onClick.AddListener(Reset);
+            SetValue(InitialValue, false);
+            EventsEnabled = true;
         }
 
         public float GetValue() => CurrentValue;
