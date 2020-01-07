@@ -54,22 +54,47 @@ namespace KK_Plugins
 
                     Dictionary<string, string> Translations = new Dictionary<string, string>();
 
-                    foreach (var param in Asset.list)
+                    if (AssetName.StartsWith("optiondisplayitems"))
                     {
-                        if (15 <= param.list.Count && !param.list[15].IsNullOrEmpty() && param.list[15] != "テキスト")
+                        foreach (var param in Asset.list)
                         {
-                            AllJPText.Add(param.list[15]);
-                            Translations[param.list[15]] = "";
-                            try
+                            if (param.list[0] == "no") continue;
+                            for (int i = 1; i < 4; i++)
                             {
-                                Translations[param.list[15]] = param.list[20];
+                                if (param.list.Count <= i) continue;
+                                if (param.list[i].IsNullOrWhiteSpace()) continue;
+                                if (param.list[i] == "・・・") continue;
+                                AllJPText.Add(param.list[i]);
+                                Translations[param.list[i]] = "";
+                                try
+                                {
+                                    Translations[param.list[i]] = param.list[i + 3];
+                                }
+                                catch { }
                             }
-                            catch { }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var param in Asset.list)
+                        {
+                            if (15 <= param.list.Count && !param.list[15].IsNullOrEmpty() && param.list[15] != "テキスト")
+                            {
+                                AllJPText.Add(param.list[15]);
+                                Translations[param.list[15]] = "";
+                                try
+                                {
+                                    Translations[param.list[15]] = param.list[20];
+                                }
+                                catch { }
+                            }
                         }
                     }
 
                     if (Translations.Count > 0)
                     {
+                        Logger.LogInfo($"Writing Translations:{AssetName}");
+
                         string FolderPath = Path.Combine(Paths.GameRootPath, "TextDump");
                         FolderPath = Path.Combine(FolderPath, AssetBundleName.Replace(".unity3d", ""));
                         FolderPath = Path.Combine(FolderPath, AssetName.Replace(".asset", ""));
@@ -100,6 +125,8 @@ namespace KK_Plugins
 
                         File.WriteAllLines(FilePath, Lines.ToArray());
                     }
+                    else
+                        Logger.LogInfo($"No Translations:{AssetName}");
                 }
             }
             Logger.LogInfo($"[TextDump] Total Communication unique lines:{AllJPText.Count}");
