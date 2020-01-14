@@ -40,18 +40,48 @@ namespace KK_Plugins
 
             protected override void OnReload(GameMode currentGameMode)
             {
-                BaseData = new BodyData(ChaControl.fileBody);
-                CurrentPushupData = new BodyData(ChaControl.fileBody);
+                var flags = MakerAPI.GetCharacterLoadFlags();
+                bool clothesFlag = false;
+                if (flags == null || (flags != null && flags.Clothes))
+                    clothesFlag = true;
+                bool bodyFlag = false;
+                if (flags == null || (flags != null && flags.Body))
+                    bodyFlag = true;
 
-                BraDataDictionary = new Dictionary<int, ClothData>();
-                TopDataDictionary = new Dictionary<int, ClothData>();
+                if (bodyFlag)
+                {
+                    BaseData = new BodyData(ChaControl.fileBody);
+                    CurrentPushupData = new BodyData(ChaControl.fileBody);
+                }
 
-                var data = GetExtendedData();
-                if (data != null && data.data.TryGetValue(PushupConstants.Pushup_BraData, out var loadedBraData) && loadedBraData != null)
-                    BraDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedBraData);
+                if (clothesFlag)
+                {
+                    //Load the data only if clothes is checked to be loaded
+                    BraDataDictionary = new Dictionary<int, ClothData>();
+                    TopDataDictionary = new Dictionary<int, ClothData>();
 
-                if (data != null && data.data.TryGetValue(PushupConstants.Pushup_TopData, out var loadedTopData) && loadedTopData != null)
-                    TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
+                    var data = GetExtendedData();
+                    if (data != null && data.data.TryGetValue(PushupConstants.Pushup_BraData, out var loadedBraData) && loadedBraData != null)
+                        BraDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedBraData);
+
+                    if (data != null && data.data.TryGetValue(PushupConstants.Pushup_TopData, out var loadedTopData) && loadedTopData != null)
+                        TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
+
+                    //Reset advanced mode stuff and disable it when not loading the body in character maker
+                    if (!bodyFlag)
+                    {
+                        foreach (var clothData in BraDataDictionary.Values)
+                        {
+                            BaseData.CopyTo(clothData);
+                            clothData.UseAdvanced = false;
+                        }
+                        foreach (var clothData in TopDataDictionary.Values)
+                        {
+                            BaseData.CopyTo(clothData);
+                            clothData.UseAdvanced = false;
+                        }
+                    }
+                }
 
                 RecalculateBody();
                 base.OnReload(currentGameMode);
