@@ -354,6 +354,35 @@
     <Property Name="SpecularPower" Type="Float" Range="0,1" />
     <Property Name="SpecularPowerNail" Type="Float" Range="0,1" />
   </Shader>
+  <Shader Name="Shader Forge/main_opaque2" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_opaque2">
+    <Property Name="AlphaMask" Type="Texture" />
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="liquidmask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="Texture2" Type="Texture" />
+    <Property Name="Texture3" Type="Texture" />
+    <Property Name="LiquidTiling" Type="Color" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="AlphaMaskuv" Type="Float" Range="0,1"/>
+    <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
+    <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+    <Property Name="liquidbbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidbtop" Type="Float" Range="0,2"/>
+    <Property Name="liquidface" Type="Float" Range="0,2"/>
+    <Property Name="liquidfbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidftop" Type="Float" Range="0,2"/>
+    <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtendAnother" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+    <Property Name="SpecularPower" Type="Float" Range="0,1" />
+    <Property Name="SpecularPowerNail" Type="Float" Range="0,1" />
+  </Shader>
   <Shader Name="Shader Forge/main_StandardMDK_studio" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_StandardMDK_studio">
     <Property Name="BumpMap" Type="Texture" />
     <Property Name="EmissionMap" Type="Texture" />
