@@ -7,6 +7,7 @@ using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using System.Linq;
+using UnityEngine;
 
 namespace KK_Plugins
 {
@@ -60,11 +61,25 @@ namespace KK_Plugins
                     if (anonTypeMethod.GetParameters().Any(x => x.ParameterType == typeof(float)))
                         harmony.Patch(anonTypeMethod, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
 
-            var sliders = typeof(ChaCustom.CvsBreast).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>") && x.GetParameters().Any(y => y.ParameterType == typeof(float))).OrderBy(x => x.Name).ToList();
-            //i = 1 because the first slider is nipple gloss which is not managed by this plugin and we don't want to patch it
-            //Count -1 because the last slider is areola width which is not managed etc.
-            for (int i = 1; i < sliders.Count - 1; i++)
-                harmony.Patch(sliders[i], new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
+            var sliders = typeof(ChaCustom.CvsBreast).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>") && x.GetParameters().Any(y => y.ParameterType == typeof(float))).ToList();
+            //Don't patch areola size or nipple gloss since they are not managed by this plugin
+            foreach (var slider in sliders)
+            {
+                if (Application.productName == Constants.MainGameProcessName)
+                {
+                    if (slider.Name == "<Start>m__E") { }//areola size
+                    else if (slider.Name == "<Start>m__14") { }//nipple gloss
+                    else
+                        harmony.Patch(slider, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
+                }
+                else if (Application.productName == Constants.MainGameProcessNameSteam)
+                {
+                    if (slider.Name == "<Start>m__10") { }//areola size
+                    else if (slider.Name == "<Start>m__17") { }//nipple gloss
+                    else
+                        harmony.Patch(slider, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
+                }
+            }
         }
 
         public static PushupController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<PushupController>();
