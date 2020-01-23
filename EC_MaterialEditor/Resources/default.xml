@@ -44,12 +44,12 @@
     <Property Name="overcolor3" Type="Color" />
     <Property Name="OverColor3" Type="Color" />
     <Property Name="Shadow" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="Spec" Type="Color" />
     <Property Name="Specular" Type="Color" />
     <Property Name="SpecularColor" Type="Color" />
     <Property Name="paint1" Type="Color" />
     <Property Name="refcolor" Type="Color" />
-    <Property Name="shadowcolor" Type="Color" />
 
     <Property Name="alpha" Type="Float" Range="0,1"/>
     <Property Name="alpha_a" Type="Float" Range="0,1"/>
@@ -138,6 +138,7 @@
     <Property Name="Texture2" Type="Texture" />
     <Property Name="Texture3" Type="Texture" />
     <Property Name="LiquidTiling" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="SpecularColor" Type="Color" />
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineGA" Type="Float" Range="0,1"/>
@@ -197,6 +198,7 @@
     <Property Name="Color" Type="Color" />
     <Property Name="Color2" Type="Color" />
     <Property Name="Color3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
     <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
@@ -220,6 +222,7 @@
     <Property Name="Color" Type="Color" />
     <Property Name="Color2" Type="Color" />
     <Property Name="Color3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
     <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
@@ -301,6 +304,7 @@
     <Property Name="Patternuv1" Type="Color" />
     <Property Name="Patternuv2" Type="Color" />
     <Property Name="Patternuv3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
     <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
@@ -332,6 +336,7 @@
     <Property Name="Texture2" Type="Texture" />
     <Property Name="Texture3" Type="Texture" />
     <Property Name="LiquidTiling" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="SpecularColor" Type="Color" />
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
     <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
