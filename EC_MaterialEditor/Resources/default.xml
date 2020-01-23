@@ -262,7 +262,7 @@
     <Property Name="SpecularColor" Type="Color" />
     <Property Name="paint1" Type="Color" />
     <Property Name="refcolor" Type="Color" />
-    <Property Name="shadowcolor" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="ambientshadowOFF" Type="Float" Range="0,1"/>
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
@@ -373,19 +373,25 @@
     <Property Name="RimPower" Type="Float" Range="1,9"/>
     <Property Name="rimV" Type="Float" Range="0,1" />
   </Shader>
-  <Shader Name="Shader Forge/main_skin" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_skin">
+  <Shader Name="Shader Forge/main_skin" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_skin">
     <Property Name="AnimationMask" Type="Texture" />
     <Property Name="DetailMask" Type="Texture" />
     <Property Name="LineMask" Type="Texture" />
     <Property Name="liquidmask" Type="Texture" />
     <Property Name="MainTex" Type="Texture" />
     <Property Name="NormalMap" Type="Texture" />
+    <Property Name="NormalMapDetail" Type="Texture" />
+    <Property Name="NormalMask" Type="Texture" />
     <Property Name="Texture2" Type="Texture" />
     <Property Name="Texture3" Type="Texture" />
+    <Property Name="overtex1" Type="Texture" />
+    <Property Name="overtex2" Type="Texture" />
+    <Property Name="overtex3" Type="Texture" />
     <Property Name="LiquidTiling" Type="Color" />
     <Property Name="overcolor1" Type="Color" />
     <Property Name="overcolor2" Type="Color" />
     <Property Name="overcolor3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="SpecularColor" Type="Color" />
     <Property Name="alpha_a" Type="Float" Range="0,1"/>
     <Property Name="alpha_b" Type="Float" Range="0,1"/>
@@ -400,7 +406,6 @@
     <Property Name="nipsize" Type="Float" Range="0,1"/>
     <Property Name="nip_specular" Type="Float" Range="0,1"/>
     <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
-    <Property Name="RimPower" Type="Float" Range="0,1"/>
     <Property Name="rimpower" Type="Float" Range="0,1" />
     <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="ShadowExtend" Type="Float" Range="0,1" />

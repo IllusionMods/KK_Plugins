@@ -260,7 +260,7 @@
     <Property Name="SpecularColor" Type="Color" />
     <Property Name="paint1" Type="Color" />
     <Property Name="refcolor" Type="Color" />
-    <Property Name="shadowcolor" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="ambientshadowOFF" Type="Float" Range="0,1"/>
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
@@ -423,12 +423,18 @@
     <Property Name="liquidmask" Type="Texture" />
     <Property Name="MainTex" Type="Texture" />
     <Property Name="NormalMap" Type="Texture" />
+    <Property Name="NormalMapDetail" Type="Texture" />
+    <Property Name="NormalMask" Type="Texture" />
     <Property Name="Texture2" Type="Texture" />
     <Property Name="Texture3" Type="Texture" />
+    <Property Name="overtex1" Type="Texture" />
+    <Property Name="overtex2" Type="Texture" />
+    <Property Name="overtex3" Type="Texture" />
     <Property Name="LiquidTiling" Type="Color" />
     <Property Name="overcolor1" Type="Color" />
     <Property Name="overcolor2" Type="Color" />
     <Property Name="overcolor3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
     <Property Name="SpecularColor" Type="Color" />
     <Property Name="alpha_a" Type="Float" Range="0,1"/>
     <Property Name="alpha_b" Type="Float" Range="0,1"/>
