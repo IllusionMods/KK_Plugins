@@ -226,6 +226,7 @@
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
     <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+    <Property Name="EmissionPower" Type="Float" Range="0,1"/>
     <Property Name="LineWidthS" Type="Float" Range="0,1"/>
     <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
     <Property Name="rimpower" Type="Float" Range="0,1" />
@@ -270,6 +271,7 @@
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
     <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+    <Property Name="EmissionPower" Type="Float" Range="0,1"/>
     <Property Name="LineWidthS" Type="Float" Range="0,1"/>
     <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
     <Property Name="patternclamp1" Type="Float" Range="0,1"/>
