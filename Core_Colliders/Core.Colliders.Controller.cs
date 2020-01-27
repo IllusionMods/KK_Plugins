@@ -120,8 +120,11 @@ namespace KK_Plugins
                         foreach (DynamicBone dynamicBone in GetComponentsInChildren<DynamicBone>())
                         {
                             if (applyFloorCollider)
-                                UpdateFloorColliderDB(dynamicBone);
-
+                            {
+                                // Prevent affecting charas parented to this chara
+                                if (!StudioAPI.InsideStudio || dynamicBone.GetComponentInParent<ChaControl>() == ChaControl)
+                                    UpdateFloorColliderDB(dynamicBone);
+                            }
 #if KK
                             UpdateArmCollidersSkirtDB(dynamicBone);
                             if (applySkirtColliders)
@@ -137,7 +140,10 @@ namespace KK_Plugins
                     {
                         foreach (DynamicBone_Ver02 dynamicBone in GetComponentsInChildren<DynamicBone_Ver02>(true))
                         {
-                            UpdateFloorColliderBreastDB(dynamicBone);
+                            // Prevent affecting charas parented to this chara
+                            if (!StudioAPI.InsideStudio || dynamicBone.GetComponentInParent<ChaControl>() == ChaControl)
+                                UpdateFloorColliderBreastDB(dynamicBone);
+
                             if (applyBreastColliders)
                             {
                                 UpdateArmCollidersBreastDB(dynamicBone);
