@@ -250,7 +250,8 @@ v1.1.1 Create card folders if missing to prevent errors<br/>
 Adds floor, breast, hand, and skirt colliders. Ported from Patchwork.<br/>
 
 #### MaterialEditor
-**v1.9.2 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, and AI Girl<br/>
+**v1.9.3 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, and AI Girl<br/>
+
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
 Features:
@@ -278,6 +279,7 @@ v1.8 AI Studio support<br/>
 v1.9 Fixed data lost on changing clothing color and copying accessories, add texture offset and scale, add indicator mark for changed properties, add support for MainTex replacement<br/>
 v1.9.1 Fixed mipmaps not being generated, fixed error on object copy in Studio, added ability to resize the UI<br/>
 v1.9.2 Fixed an error on importing scenes<br/>
+v1.9.3 Added several missing properties<br/>
 </details>
 
 #### MaleJuice
