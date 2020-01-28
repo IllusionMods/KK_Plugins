@@ -380,7 +380,7 @@
     <Property Name="RimPower" Type="Float" Range="1,9"/>
     <Property Name="rimV" Type="Float" Range="0,1" />
   </Shader>
-  <Shader Name="Shader Forge/main_skin" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_skin">
+  <Shader Name="Shader Forge/main_skin" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_skin">
     <Property Name="AnimationMask" Type="Texture" />
     <Property Name="DetailMask" Type="Texture" />
     <Property Name="LineMask" Type="Texture" />
