@@ -280,6 +280,8 @@ v1.9 Fixed data lost on changing clothing color and copying accessories, add tex
 v1.9.1 Fixed mipmaps not being generated, fixed error on object copy in Studio, added ability to resize the UI<br/>
 v1.9.2 Fixed an error on importing scenes<br/>
 v1.9.3 Added several missing properties<br/>
+v1.9.4 Added more shaders<br/>
+v1.9.4.1 Fixed a missing shader<br/>
 </details>
 
 #### MaleJuice
