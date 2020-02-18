@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BepInEx.Logging;
 
 namespace KK_Plugins
 {
@@ -9,6 +10,8 @@ namespace KK_Plugins
             CalcKeys = new HashSet<string>();
             FormatKeys = new HashSet<string>();
             TextKeysBlacklist = new HashSet<string>();
+
+            SupportedCommands[ADV.Command.Choice] = true;
         }
     }
 }

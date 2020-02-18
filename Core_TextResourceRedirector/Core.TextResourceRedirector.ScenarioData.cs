@@ -1,5 +1,6 @@
 ﻿#if !HS
 using ADV;
+using BepInEx.Logging;
 using System;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace KK_Plugins
     public class ScenarioDataResourceRedirector : AssetLoadedHandlerBaseV2<ScenarioData>
     {
         private readonly TextResourceHelper textResourceHelper;
+        private static ManualLogSource Logger => TextResourceRedirector.Logger;
 
         public ScenarioDataResourceRedirector(TextResourceHelper helper)
         {

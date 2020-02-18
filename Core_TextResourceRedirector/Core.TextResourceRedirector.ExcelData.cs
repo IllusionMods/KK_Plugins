@@ -1,14 +1,20 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using XUnity.AutoTranslator.Plugin.Core;
 using XUnity.AutoTranslator.Plugin.Core.AssetRedirection;
 using XUnity.AutoTranslator.Plugin.Core.Utilities;
 using XUnity.ResourceRedirector;
+using BepInEx.Logging;
+
+
 
 namespace KK_Plugins
 {
     public class ExcelDataResourceRedirector : AssetLoadedHandlerBaseV2<ExcelData>
     {
+        private static ManualLogSource Logger => TextResourceRedirector.Logger;
+
         public ExcelDataResourceRedirector() => CheckDirectory = true;
 
         protected override string CalculateModificationFilePath(ExcelData asset, IAssetOrResourceLoadedContext context) =>
