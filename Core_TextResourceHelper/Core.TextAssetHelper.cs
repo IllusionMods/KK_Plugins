@@ -38,7 +38,6 @@ namespace KK_Plugins
             InvalidColStrings = tmpList.ToArray();
 
             Enabled = ColSplitStrings.Any() && RowSplitStrings.Any();
-
         }
 
         public bool IsTable(TextAsset textAsset)
@@ -86,7 +85,6 @@ namespace KK_Plugins
 
         public IEnumerable<string> SplitRowToCells(string row)
         {
-
 #if DEBUG
             if (!IsTableRow(row))
             {
@@ -192,7 +190,6 @@ namespace KK_Plugins
             }
 
             public bool Updated { get => RowsUpdated > 0; }
-
         }
     }
 }

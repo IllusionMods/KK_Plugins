@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ADV;
 using BepInEx.Logging;
 
 namespace KK_Plugins
@@ -13,5 +14,7 @@ namespace KK_Plugins
 
             SupportedCommands[ADV.Command.Choice] = true;
         }
+
+        override public bool IsReplacement(ScenarioData.Param param) => (int)param.Command == 223; // only Party has ADV.Command.ReplaceLanguage
     }
 }
