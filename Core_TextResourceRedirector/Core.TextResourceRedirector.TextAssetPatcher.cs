@@ -20,6 +20,9 @@ namespace KK_Plugins
 
         private static ManualLogSource Logger => TextResourceRedirector.Logger;
 
+        // encoding used to convert between TextAsset.bytes and TextAsset.strings
+        private static Encoding TextAssetEncoding = Encoding.UTF8;
+
         public static void PatchTextAsset()
         {
             if (!patched)
@@ -84,7 +87,7 @@ namespace KK_Plugins
         {
             if (patched && TextAssetResourceRedirector.TryLoadReplacement(obj.TextGetterOrig(), out string replacement))
             {
-                return Encoding.ASCII.GetBytes(replacement);
+                return TextAssetEncoding.GetBytes(replacement);
             }
             return obj.BytesGetterOrig();
         }

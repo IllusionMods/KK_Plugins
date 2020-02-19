@@ -85,12 +85,7 @@ namespace KK_Plugins
 
         public IEnumerable<string> SplitRowToCells(string row)
         {
-#if DEBUG
-            if (!IsTableRow(row))
-            {
-                throw new ArgumentException("row does not contain a table row)");
-            }
-#endif
+            Debug.Assert(IsTableRow(row), "row does not contain a table row");
             return row.Split(ColSplitStrings.ToArray(), StringSplitOptions.None);
         }
 
