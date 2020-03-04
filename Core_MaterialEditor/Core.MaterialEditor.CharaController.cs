@@ -17,6 +17,7 @@ using AIChara;
 
 namespace KK_Plugins
 {
+
     public partial class MaterialEditor
     {
         public class MaterialEditorCharaController : CharaCustomFunctionController
@@ -27,7 +28,7 @@ namespace KK_Plugins
             private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
             private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
 
-            private Dictionary<int, byte[]> TextureDictionary = new Dictionary<int, byte[]>();
+            private Dictionary<int, TextureHolder> TextureDictionary = new Dictionary<int, TextureHolder>();
 
 #if KK
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
@@ -52,10 +53,13 @@ namespace KK_Plugins
                         IDsToPurge.Add(texID);
 
                 foreach (int texID in IDsToPurge)
+                {
+                    if (TextureDictionary.TryGetValue(texID, out var val)) val.Dispose();
                     TextureDictionary.Remove(texID);
+                }
 
                 if (TextureDictionary.Count > 0)
-                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary));
+                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
                 else
                     data.data.Add(nameof(TextureDictionary), null);
 
@@ -96,6 +100,8 @@ namespace KK_Plugins
                     MaterialColorPropertyList.Clear();
                     MaterialTexturePropertyList.Clear();
                     MaterialShaderList.Clear();
+
+                    foreach (var textureHolder in TextureDictionary.Values) textureHolder.Dispose();
                     TextureDictionary.Clear();
 
                     var data = GetExtendedData();
@@ -105,7 +111,7 @@ namespace KK_Plugins
                     CharacterLoading = true;
 
                     if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
+                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureHolder(pair.Value));
 
                     //int counter = 0;
                     //foreach (var tex in TextureDictionary.Values)
@@ -187,7 +193,7 @@ namespace KK_Plugins
 
                 foreach (var tex in TextureDictionary)
                     if (coordinateMaterialTexturePropertyList.Any(x => x.TexID == tex.Key))
-                        coordinateTextureDictionary.Add(tex.Key, tex.Value);
+                        coordinateTextureDictionary.Add(tex.Key, tex.Value.Data);
 
                 if (coordinateTextureDictionary.Count > 0)
                     data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(coordinateTextureDictionary));
@@ -337,28 +343,28 @@ namespace KK_Plugins
                         if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                         {
                             if (property.TexID != null)
-                                SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]), property.ObjectType);
+                                SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture, property.ObjectType);
                             SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset, property.ObjectType);
                             SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale, property.ObjectType);
                         }
                         else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
                         {
                             if (property.TexID != null)
-                                SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]), property.ObjectType);
+                                SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture, property.ObjectType);
                             SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset, property.ObjectType);
                             SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale, property.ObjectType);
                         }
                         else if (property.ObjectType == ObjectType.Hair && hair)
                         {
                             if (property.TexID != null)
-                                SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]), property.ObjectType);
+                                SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture, property.ObjectType);
                             SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset, property.ObjectType);
                             SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale, property.ObjectType);
                         }
                         else if (property.ObjectType == ObjectType.Character)
                         {
                             if (property.TexID != null)
-                                SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]));
+                                SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
                             SetTextureProperty(ChaControl, property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset);
                             SetTextureProperty(ChaControl, property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale);
                         }
@@ -372,13 +378,13 @@ namespace KK_Plugins
             {
                 int highestID = 0;
                 foreach (var tex in TextureDictionary)
-                    if (tex.Value.SequenceEqual(textureBytes))
+                    if (tex.Value.Data.SequenceEqual(textureBytes))
                         return tex.Key;
                     else if (tex.Key > highestID)
                         highestID = tex.Key;
 
                 highestID++;
-                TextureDictionary.Add(highestID, textureBytes);
+                TextureDictionary.Add(highestID, new TextureHolder(textureBytes));
                 return highestID;
             }
 
@@ -574,7 +580,7 @@ namespace KK_Plugins
 
                     if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
                         if (property.TexID != null)
-                            SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]), property.ObjectType);
+                            SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture, property.ObjectType);
                 }
             }
             /// <summary>
@@ -592,7 +598,7 @@ namespace KK_Plugins
 
                     if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")
                         if (property.TexID != null)
-                            SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]));
+                            SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
                 }
             }
 
@@ -1121,6 +1127,48 @@ namespace KK_Plugins
                     RenderQueueOriginal = renderQueueOriginal;
                 }
                 public bool NullCheck() => ShaderName.IsNullOrEmpty() && RenderQueue == null;
+            }
+            public sealed class TextureHolder : IDisposable
+            {
+                private byte[] _data;
+                private Texture2D _texture;
+
+                public TextureHolder(byte[] data)
+                {
+                    Data = data ?? throw new ArgumentNullException(nameof(data));
+                }
+
+                public byte[] Data
+                {
+                    get => _data;
+                    set
+                    {
+                        Dispose();
+                        _data = value;
+                    }
+                }
+
+                public Texture2D Texture
+                {
+                    get
+                    {
+                        if (_texture == null)
+                        {
+                            if (_data != null)
+                                _texture = TextureFromBytes(_data, TextureFormat.ARGB32);
+                        }
+                        return _texture;
+                    }
+                }
+
+                public void Dispose()
+                {
+                    if (_texture != null)
+                    {
+                        GameObject.Destroy(_texture);
+                        _texture = null;
+                    }
+                }
             }
         }
     }
