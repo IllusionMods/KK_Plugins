@@ -10,5 +10,6 @@ namespace KK_Plugins
         public const string PluginNameInternal = "AI_TextResourceRedirector";
 
         private TextResourceHelper GetTextResourceHelper() => new AI_TextResourceHelper();
+        private TextAssetHelper GetTextAssetHelper() => null;
     }
 }

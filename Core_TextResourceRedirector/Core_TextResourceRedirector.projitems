@@ -13,5 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.ExcelData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.ScenarioData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.TextAssetResourceRedirector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.TextResourceRedirector.TextAssetPatcher.cs" />
   </ItemGroup>
 </Project>

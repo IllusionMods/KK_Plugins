@@ -133,15 +133,40 @@ namespace KK_Plugins
             return AllJPText.Count;
         }
 
+        private string BuildReplacementKey(string assetBundleName, string key)
+        {
+            return string.Join("|", new string[] { Path.GetDirectoryName(assetBundleName), key });
+        }
+
+        private Dictionary<string, string> BuildReplacementDictionary()
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            List<string> assetBundleNames = CommonLib.GetAssetBundleNameListFromPath("adv/scenario", true);
+            assetBundleNames.Sort();
+
+            foreach (var AssetBundleName in assetBundleNames)
+            {
+                List<string> AssetNameList = new List<string>(AssetBundleCheck.GetAllAssetName(AssetBundleName));
+                AssetNameList.Sort();
+                foreach (var AssetName in AssetNameList)
+                {
+                    var Asset = ManualLoadAsset<ADV.ScenarioData>(AssetBundleName, AssetName, "abdata");
+                    textResourceHelper.BuildReplacements(Asset.list).ToList().ForEach(x => result[BuildReplacementKey(AssetBundleName, x.Key)] = x.Value);
+                }
+            }
+            return result;
+        }
+
         private int DumpScenarioText()
         {
             HashSet<string> AllJPText = new HashSet<string>();
+
+            Dictionary<string, string> choiceDictionary = BuildReplacementDictionary();
 
             foreach (var AssetBundleName in CommonLib.GetAssetBundleNameListFromPath("adv/scenario", true))
             {
                 foreach (var AssetName in AssetBundleCheck.GetAllAssetName(AssetBundleName)) //.Where(x => x.StartsWith("personality_voice_"))
                 {
-
                     var Asset = ManualLoadAsset<ADV.ScenarioData>(AssetBundleName, AssetName, "abdata");
 
                     Dictionary<string, string> Translations = new Dictionary<string, string>();
@@ -184,9 +209,13 @@ namespace KK_Plugins
                         {
                             for (int i = 0; i < param.Args.Length; i++)
                             {
-                                var key = textResourceHelper.GetSpecializedKey(param, i, out string value);
+                                var key = textResourceHelper.GetSpecializedKey(param, i, out string fallbackValue);
                                 if (!key.IsNullOrEmpty())
                                 {
+                                    if (!choiceDictionary.TryGetValue(BuildReplacementKey(AssetBundleName, fallbackValue), out string value))
+                                    {
+                                        value = fallbackValue;
+                                    }
                                     AllJPText.Add(key);
                                     Translations[key] = value;
                                 }
@@ -277,7 +306,6 @@ namespace KK_Plugins
                 {
                     if (AssetName.EndsWith(".txt"))
                     {
-
                         var Asset = ManualLoadAsset<TextAsset>(AssetBundleName, AssetName, "abdata");
 
                         HashSet<string> JPText = new HashSet<string>();

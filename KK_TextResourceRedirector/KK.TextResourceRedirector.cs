@@ -10,5 +10,6 @@ namespace KK_Plugins
         public const string PluginNameInternal = "KK_TextResourceRedirector";
 
         private TextResourceHelper GetTextResourceHelper() => new KK_TextResourceHelper();
+        private TextAssetHelper GetTextAssetHelper() => new TextAssetHelper(new string[] { "\r\n", "\r", "\n" }, new string[] { "\t" });
     }
 }

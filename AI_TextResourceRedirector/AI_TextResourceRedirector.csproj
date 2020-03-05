@@ -40,6 +40,14 @@
       <HintPath>..\packages\IllusionLibs.BepInEx.5.0.0\lib\net46\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="MonoMod.RuntimeDetour, Version=19.11.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.BepInEx.MonoMod.19.11.5.1\lib\net46\MonoMod.RuntimeDetour.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MonoMod.Utils, Version=19.11.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.BepInEx.MonoMod.19.11.5.1\lib\net46\MonoMod.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

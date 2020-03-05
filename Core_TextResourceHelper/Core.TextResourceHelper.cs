@@ -54,6 +54,10 @@ namespace KK_Plugins
                     return string.Empty;
                 }
                 toTranslate = key.Split(ChoiceDelimiter.ToCharArray())[0];
+                if (!ContainsNonAscii(toTranslate))
+                {
+                    return string.Empty;
+                }
             }
             else
             {
@@ -85,6 +89,24 @@ namespace KK_Plugins
 
             return translation;
         }
+
+        virtual public bool IsReplacement(ScenarioData.Param param) => false;
+
+        virtual public  Dictionary<string, string> BuildReplacements(IEnumerable<ScenarioData.Param> assetList)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+
+            foreach (ScenarioData.Param param in assetList)
+            {
+                if (IsReplacement(param) && param.Args.Length > 2 && param.Args[0].StartsWith("sel"))
+                {
+                    result.Add(param.Args[1], param.Args[2]);
+                }
+            }
+            return result;
+
+        }
 #endif
+
     }
 }
