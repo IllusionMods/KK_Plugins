@@ -17,6 +17,7 @@ using AIChara;
 
 namespace KK_Plugins
 {
+
     public partial class MaterialEditor
     {
         public class MaterialEditorCharaController : CharaCustomFunctionController
@@ -27,7 +28,7 @@ namespace KK_Plugins
             private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
             private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
 
-            private Dictionary<int, byte[]> TextureDictionary = new Dictionary<int, byte[]>();
+            private Dictionary<int, TextureHolder> TextureDictionary = new Dictionary<int, TextureHolder>();
 
 #if KK
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
@@ -52,10 +53,13 @@ namespace KK_Plugins
                         IDsToPurge.Add(texID);
 
                 foreach (int texID in IDsToPurge)
+                {
+                    if (TextureDictionary.TryGetValue(texID, out var val)) val.Dispose();
                     TextureDictionary.Remove(texID);
+                }
 
                 if (TextureDictionary.Count > 0)
-                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary));
+                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
                 else
                     data.data.Add(nameof(TextureDictionary), null);
 
@@ -89,50 +93,55 @@ namespace KK_Plugins
 
             protected override void OnReload(GameMode currentGameMode, bool maintainState)
             {
-                RendererPropertyList.Clear();
-                MaterialFloatPropertyList.Clear();
-                MaterialColorPropertyList.Clear();
-                MaterialTexturePropertyList.Clear();
-                MaterialShaderList.Clear();
-                TextureDictionary.Clear();
+                if (!maintainState)
+                {
+                    RendererPropertyList.Clear();
+                    MaterialFloatPropertyList.Clear();
+                    MaterialColorPropertyList.Clear();
+                    MaterialTexturePropertyList.Clear();
+                    MaterialShaderList.Clear();
 
-                var data = GetExtendedData();
+                    foreach (var textureHolder in TextureDictionary.Values) textureHolder.Dispose();
+                    TextureDictionary.Clear();
 
-                if (data == null) return;
+                    var data = GetExtendedData();
 
-                CharacterLoading = true;
+                    if (data == null) return;
 
-                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                    TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
+                    CharacterLoading = true;
 
-                //int counter = 0;
-                //foreach (var tex in TextureDictionary.Values)
-                //{
-                //    string filename = Path.Combine(ExportPath, $"_Export_{ChaControl.chaFile.parameter.fullname.Trim()}_{counter}.png");
-                //    SaveTex(TextureFromBytes(tex), filename);
-                //    Logger.LogInfo($"Exported {filename}");
-                //    counter++;
-                //}
+                    if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
+                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureHolder(pair.Value));
 
-                if (data.data.TryGetValue(nameof(MaterialShaderList), out var shaderProperties) && shaderProperties != null)
-                    foreach (var loadedShaderProperty in MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])shaderProperties))
-                        MaterialShaderList.Add(new MaterialShader(loadedShaderProperty.ObjectType, loadedShaderProperty.CoordinateIndex, loadedShaderProperty.Slot, loadedShaderProperty.MaterialName, loadedShaderProperty.ShaderName, loadedShaderProperty.ShaderNameOriginal, loadedShaderProperty.RenderQueue, loadedShaderProperty.RenderQueueOriginal));
+                    //int counter = 0;
+                    //foreach (var tex in TextureDictionary.Values)
+                    //{
+                    //    string filename = Path.Combine(ExportPath, $"_Export_{ChaControl.chaFile.parameter.fullname.Trim()}_{counter}.png");
+                    //    SaveTex(TextureFromBytes(tex), filename);
+                    //    Logger.LogInfo($"Exported {filename}");
+                    //    counter++;
+                    //}
 
-                if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
-                    foreach (var loadedRendererProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
-                        RendererPropertyList.Add(new RendererProperty(loadedRendererProperty.ObjectType, loadedRendererProperty.CoordinateIndex, loadedRendererProperty.Slot, loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
+                    if (data.data.TryGetValue(nameof(MaterialShaderList), out var shaderProperties) && shaderProperties != null)
+                        foreach (var loadedShaderProperty in MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])shaderProperties))
+                            MaterialShaderList.Add(new MaterialShader(loadedShaderProperty.ObjectType, loadedShaderProperty.CoordinateIndex, loadedShaderProperty.Slot, loadedShaderProperty.MaterialName, loadedShaderProperty.ShaderName, loadedShaderProperty.ShaderNameOriginal, loadedShaderProperty.RenderQueue, loadedShaderProperty.RenderQueueOriginal));
 
-                if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
-                    foreach (var loadedMaterialFloatProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
-                        MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedMaterialFloatProperty.ObjectType, loadedMaterialFloatProperty.CoordinateIndex, loadedMaterialFloatProperty.Slot, loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, loadedMaterialFloatProperty.ValueOriginal));
+                    if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
+                        foreach (var loadedRendererProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
+                            RendererPropertyList.Add(new RendererProperty(loadedRendererProperty.ObjectType, loadedRendererProperty.CoordinateIndex, loadedRendererProperty.Slot, loadedRendererProperty.RendererName, loadedRendererProperty.Property, loadedRendererProperty.Value, loadedRendererProperty.ValueOriginal));
 
-                if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
-                    foreach (var loadedMaterialColorProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
-                        MaterialColorPropertyList.Add(new MaterialColorProperty(loadedMaterialColorProperty.ObjectType, loadedMaterialColorProperty.CoordinateIndex, loadedMaterialColorProperty.Slot, loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, loadedMaterialColorProperty.ValueOriginal));
+                    if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
+                        foreach (var loadedMaterialFloatProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
+                            MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedMaterialFloatProperty.ObjectType, loadedMaterialFloatProperty.CoordinateIndex, loadedMaterialFloatProperty.Slot, loadedMaterialFloatProperty.MaterialName, loadedMaterialFloatProperty.Property, loadedMaterialFloatProperty.Value, loadedMaterialFloatProperty.ValueOriginal));
 
-                if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
-                    foreach (var loadedMaterialTextureProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
-                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(loadedMaterialTextureProperty.ObjectType, loadedMaterialTextureProperty.CoordinateIndex, loadedMaterialTextureProperty.Slot, loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, loadedMaterialTextureProperty.TexID, loadedMaterialTextureProperty.Offset, loadedMaterialTextureProperty.OffsetOriginal, loadedMaterialTextureProperty.Scale, loadedMaterialTextureProperty.ScaleOriginal));
+                    if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
+                        foreach (var loadedMaterialColorProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
+                            MaterialColorPropertyList.Add(new MaterialColorProperty(loadedMaterialColorProperty.ObjectType, loadedMaterialColorProperty.CoordinateIndex, loadedMaterialColorProperty.Slot, loadedMaterialColorProperty.MaterialName, loadedMaterialColorProperty.Property, loadedMaterialColorProperty.Value, loadedMaterialColorProperty.ValueOriginal));
+
+                    if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
+                        foreach (var loadedMaterialTextureProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
+                            MaterialTexturePropertyList.Add(new MaterialTextureProperty(loadedMaterialTextureProperty.ObjectType, loadedMaterialTextureProperty.CoordinateIndex, loadedMaterialTextureProperty.Slot, loadedMaterialTextureProperty.MaterialName, loadedMaterialTextureProperty.Property, loadedMaterialTextureProperty.TexID, loadedMaterialTextureProperty.Offset, loadedMaterialTextureProperty.OffsetOriginal, loadedMaterialTextureProperty.Scale, loadedMaterialTextureProperty.ScaleOriginal));
+                }
 
                 ChaControl.StartCoroutine(LoadData(true, true, true));
             }
@@ -184,7 +193,7 @@ namespace KK_Plugins
 
                 foreach (var tex in TextureDictionary)
                     if (coordinateMaterialTexturePropertyList.Any(x => x.TexID == tex.Key))
-                        coordinateTextureDictionary.Add(tex.Key, tex.Value);
+                        coordinateTextureDictionary.Add(tex.Key, tex.Value.Data);
 
                 if (coordinateTextureDictionary.Count > 0)
                     data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(coordinateTextureDictionary));
@@ -334,28 +343,28 @@ namespace KK_Plugins
                         if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                         {
                             if (property.TexID != null)
-                                SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]), property.ObjectType);
+                                SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture, property.ObjectType);
                             SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset, property.ObjectType);
                             SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale, property.ObjectType);
                         }
                         else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
                         {
                             if (property.TexID != null)
-                                SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]), property.ObjectType);
+                                SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture, property.ObjectType);
                             SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset, property.ObjectType);
                             SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale, property.ObjectType);
                         }
                         else if (property.ObjectType == ObjectType.Hair && hair)
                         {
                             if (property.TexID != null)
-                                SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]), property.ObjectType);
+                                SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture, property.ObjectType);
                             SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset, property.ObjectType);
                             SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale, property.ObjectType);
                         }
                         else if (property.ObjectType == ObjectType.Character)
                         {
                             if (property.TexID != null)
-                                SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]));
+                                SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
                             SetTextureProperty(ChaControl, property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset);
                             SetTextureProperty(ChaControl, property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale);
                         }
@@ -369,13 +378,13 @@ namespace KK_Plugins
             {
                 int highestID = 0;
                 foreach (var tex in TextureDictionary)
-                    if (tex.Value.SequenceEqual(textureBytes))
+                    if (tex.Value.Data.SequenceEqual(textureBytes))
                         return tex.Key;
                     else if (tex.Key > highestID)
                         highestID = tex.Key;
 
                 highestID++;
-                TextureDictionary.Add(highestID, textureBytes);
+                TextureDictionary.Add(highestID, new TextureHolder(textureBytes));
                 return highestID;
             }
 
@@ -571,7 +580,7 @@ namespace KK_Plugins
 
                     if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
                         if (property.TexID != null)
-                            SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]), property.ObjectType);
+                            SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture, property.ObjectType);
                 }
             }
             /// <summary>
@@ -589,7 +598,7 @@ namespace KK_Plugins
 
                     if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")
                         if (property.TexID != null)
-                            SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureFromBytes(TextureDictionary[(int)property.TexID]));
+                            SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
                 }
             }
 
@@ -1118,6 +1127,48 @@ namespace KK_Plugins
                     RenderQueueOriginal = renderQueueOriginal;
                 }
                 public bool NullCheck() => ShaderName.IsNullOrEmpty() && RenderQueue == null;
+            }
+            public sealed class TextureHolder : IDisposable
+            {
+                private byte[] _data;
+                private Texture2D _texture;
+
+                public TextureHolder(byte[] data)
+                {
+                    Data = data ?? throw new ArgumentNullException(nameof(data));
+                }
+
+                public byte[] Data
+                {
+                    get => _data;
+                    set
+                    {
+                        Dispose();
+                        _data = value;
+                    }
+                }
+
+                public Texture2D Texture
+                {
+                    get
+                    {
+                        if (_texture == null)
+                        {
+                            if (_data != null)
+                                _texture = TextureFromBytes(_data, TextureFormat.ARGB32);
+                        }
+                        return _texture;
+                    }
+                }
+
+                public void Dispose()
+                {
+                    if (_texture != null)
+                    {
+                        GameObject.Destroy(_texture);
+                        _texture = null;
+                    }
+                }
             }
         }
     }
