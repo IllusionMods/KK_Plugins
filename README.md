@@ -193,13 +193,6 @@ Create new folders in userdata/studio/pose and place the pose data inside them. 
 
 Ported from Essu's NEOpose List Folders plugin for Honey Select.<br/>
 
-#### TranslationSync
-**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v61/KK_TranslationSync.v1.2.zip)** - For Koikatsu<br/>
-
-A plugin for correctly formatting translation files. Corrects formatting and copies translations from one file to another for the same personality in case of duplicate entries. Used by translators working on the [Koikatsu Translation](https://github.com/DeathWeasel1337/Koikatsu-Translations) project. No need to download unless you're working on translations.<br/>
-
-To use, open the plugin settings and set a personality, press the hotkey (default 0) to sync translations. Read your bepinex console or output_log.txt to see the changes made or any warnings and errors. Press alt+hotkey to force sync translation files in case of differing translations (warning: make backups first. It may not be obvious which translations are treated as the primary source). Press ctrl+hotkey to sync translations for all personalities (warning: very slow).<br/>
-
 #### ListOverride
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip)** - For Koikatsu<br/>
 
@@ -316,11 +309,6 @@ Type in to the animation speed box in Studio for gimmicks and character animatio
 v1.1 AI Girl port, capped animation speed at 1000 to prevent animations breaking<br/>
 </details>
 
-#### TextResourceRedirector
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/tag/v129)** - For Koikatsu, HoneySelect, and AI Girl<br/>
-
-Allows translations to override individual assets. Required for some translations to function correctly. Requires [Unity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator).
-
 #### CharacterExport
 **v1.0 - [Download](https://www.patreon.com/posts/32434052)** - For Koikatsu, EmotionCreators, and AI Girl<br/>
 
@@ -354,6 +342,10 @@ v1.0.1 Fixed an incompatibility with a MakerOptimizations plugin setting<br/>
 v1.1 Fixed nipple gloss not working in KK Party, fixed maker load flags<br/>
 </details>
 
+#### TranslationSync
+#### TextResourceRedirector
+#### TextDump
+Moved to the [TranslationTools](https://github.com/IllusionMods/TranslationTools) repo.<br/>
 
 #### KK_CutsceneLockupFix
 #### KK_HeadFix
