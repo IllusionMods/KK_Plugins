@@ -1,4 +1,5 @@
 ﻿using ExtensibleSaveFormat;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -181,6 +182,19 @@ namespace KK_Plugins
             {
                 if (!Started) return;
                 RecalculateBody(false);
+                UpdateABMX();
+            }
+
+            /// <summary>
+            /// Refreshes ABMX modifications
+            /// </summary>
+            private void UpdateABMX()
+            {
+                var abmxType = Type.GetType("KKABMX.Core.BoneController, KKABMX");
+                if (abmxType == null) return;
+                var abmxComponent = ChaControl.gameObject.GetComponent(abmxType);
+                if (abmxComponent == null) return;
+                Traverse.Create(abmxComponent).Property("NeedsBaselineUpdate")?.SetValue(true);
             }
 
             /// <summary>
