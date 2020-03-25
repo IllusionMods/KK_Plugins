@@ -2,7 +2,9 @@
 using BepInEx.Logging;
 using KKAPI.Chara;
 using KKAPI.Studio;
+using KKAPI.Studio.SaveLoad;
 using KKAPI.Studio.UI;
+using KKAPI.Utilities;
 using Studio;
 using UniRx;
 #if AI
@@ -27,6 +29,7 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
             CharacterApi.RegisterExtraBehaviour<ColliderController>(GUID);
+            StudioSaveLoadApi.RegisterExtraBehaviour<ColliderSceneController>(GUID);
 
             ConfigBreastColliders = Config.Bind("Config", "Breast Colliders", true, new ConfigDescription("Whether breast colliders are enabled. Makes breasts interact and collide with arms, hands, etc.", null, new ConfigurationManagerAttributes { Order = 10 }));
             ConfigFloorCollider = Config.Bind("Config", "Floor Collider", true, new ConfigDescription("Adds a floor collider so hair doesn't clip through the floor when laying down.", null, new ConfigurationManagerAttributes { Order = 1 }));
@@ -123,5 +126,15 @@ namespace KK_Plugins
 
         public static ColliderController GetController(ChaControl chaControl) => chaControl.GetComponent<ColliderController>();
         private static ColliderController GetSelectedController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<ColliderController>();
+
+        public class ColliderSceneController : SceneCustomFunctionController
+        {
+            protected override void OnSceneSave() { }
+            protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
+            {
+                foreach (var controller in FindObjectsOfType<ColliderController>())
+                    controller.ApplyColliders();
+            }
+        }
     }
 }
