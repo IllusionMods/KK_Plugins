@@ -115,6 +115,7 @@ namespace KK_Plugins
             {
                 if (applyColliders)
                 {
+#if KK
                     if (applyFloorCollider || applySkirtColliders)
                     {
                         foreach (DynamicBone dynamicBone in GetComponentsInChildren<DynamicBone>())
@@ -125,16 +126,15 @@ namespace KK_Plugins
                                 if (!StudioAPI.InsideStudio || dynamicBone.GetComponentInParent<ChaControl>() == ChaControl)
                                     UpdateFloorColliderDB(dynamicBone);
                             }
-#if KK
                             UpdateArmCollidersSkirtDB(dynamicBone);
                             if (applySkirtColliders)
                             {
                                 UpdateLegCollidersSkirtDB(dynamicBone);
                                 UpdateSkirtDB(dynamicBone);
                             }
-#endif
                         }
                     }
+#endif
 
                     if (applyBreastColliders || applyFloorCollider)
                     {
