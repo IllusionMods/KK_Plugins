@@ -238,9 +238,13 @@ v1.1.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 #### Colliders
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v37/KK_Colliders.v1.0.zip)** - For Koikatsu<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/35243498)** - For Koikatsu<br/>
 
-Adds floor, breast, hand, and skirt colliders. Ported from Patchwork.<br/>
+Adds floor, breast, hand, and skirt colliders. Colliders can be toggled on and off in Studio and their state saves with the scene.<br/>
+
+<details><summary>Change Log</summary>
+v1.1 Major rewrite, many new features<br/>
+</details>
 
 #### MaterialEditor
 **v1.9.5.1 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, and AI Girl<br/>
@@ -336,18 +340,21 @@ Far Clip Plane<br/>
 </details>
 
 #### Pushup
-**v1.1.1 - [Download](https://www.patreon.com/posts/32668488)** - For Koikatsu<br/>
+**v1.1.2 - [Download](https://www.patreon.com/posts/32668488)** - For Koikatsu<br/>
 Provides sliders and setting to shape the breasts of characters when bras or tops are worn. The basic set of sliders will modify the shape of the breasts if the breast sliders if they are below the specified threshhold. Advanced mode lets you fully customize the shape of the breasts.<br/>
 
 <details><summary>Change Log</summary>
 v1.0.1 Fixed an incompatibility with a MakerOptimizations plugin setting<br/>
 v1.1 Fixed nipple gloss not working in KK Party, fixed maker load flags<br/>
 v1.1.1 Force ABMX update on clothing state change<br/>
+v1.1.2 Unlock sliders when chest tab is clicked after a delay to prevent sliders being locked<br/>
 </details>
 
 #### Perky
-**v0.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v145/KK_Perky.v0.1.zip)** - For Koikatsu<br/>
-Makes tiddies more perky by modifying breast bone rotation. Experimental proof of concept, use at your own risk. Features will probably be merged in to ABMX and/or Pushup at some point. Press G to toggle Perky on and off for debug purposes.<br/>
+~~**v0.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v145/KK_Perky.v0.1.zip)** - For Koikatsu<br/>~~
+~~Makes tiddies more perky by modifying breast bone rotation. Experimental proof of concept, use at your own risk. Features will probably be merged in to ABMX and/or Pushup at some point. Press G to toggle Perky on and off for debug purposes.<br/>~~
+
+[ABMX 4.0](https://www.patreon.com/posts/35475094) now does bone rotation, use that instead to customize characters. Relevant bones for breast rotation are cf_d_bust01_L, cf_d_bust02_L, and cf_d_bust03_L. Add these bones to ABMX advanced window, enable symetry, and apply rotation to replicate the effect of this plugin.
 
 #### TranslationSync
 #### TextResourceRedirector
