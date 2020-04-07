@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Collections;
 
 namespace KK_Plugins
 {
@@ -31,7 +32,20 @@ namespace KK_Plugins
             /// When the Breast tab of the character maker is set active. disable the sliders because the game will try to set them to the current body values.
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CustomBase), nameof(ChaCustom.CustomBase.updateCvsBreast), MethodType.Setter)]
-            internal static void UpdateCvsBreastPrefix() => SliderManager.SlidersActive = false;
+            internal static void UpdateCvsBreastPrefix()
+            {
+                SliderManager.SlidersActive = false;
+
+                //Set the sliders active again after a delay, just in case they aren't set active by the user mouse entering the slider area (for example on slow computers where switching tabs locks the game)
+                ChaCustom.CustomBase.Instance.StartCoroutine(SetSlidersActive());
+                IEnumerator SetSlidersActive()
+                {
+                    yield return null;
+                    yield return null;
+                    yield return null;
+                    SliderManager.SlidersActive = true;
+                }
+            }
 
             /// <summary>
             /// Cancel the original slider onValueChanged event
