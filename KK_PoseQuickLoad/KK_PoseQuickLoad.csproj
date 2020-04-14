@@ -72,6 +72,6 @@
   <Import Project="..\Core_PoseQuickLoad\Core_PoseQuickLoad.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) KK</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KK</PostBuildEvent>
   </PropertyGroup>
 </Project>

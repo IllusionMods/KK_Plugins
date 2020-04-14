@@ -102,6 +102,6 @@
   <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) EC</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" EC</PostBuildEvent>
   </PropertyGroup>
 </Project>

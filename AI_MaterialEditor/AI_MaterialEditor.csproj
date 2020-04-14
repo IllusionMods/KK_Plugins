@@ -132,6 +132,6 @@
   <Import Project="..\Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) AI</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" AI</PostBuildEvent>
   </PropertyGroup>
 </Project>
