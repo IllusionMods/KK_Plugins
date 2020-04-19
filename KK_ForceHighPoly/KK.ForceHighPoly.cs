@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Harmony;
-using System.Collections;
 
 namespace KK_Plugins
 {
@@ -15,7 +14,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.forcehighpoly";
         public const string PluginName = "Force High Poly";
         public const string PluginNameInternal = "KK_ForceHighPoly";
-        public const string Version = "1.2";
+        public const string Version = "1.2.1";
 
         public static ConfigEntry<bool> Enabled { get; private set; }
 
@@ -25,16 +24,6 @@ namespace KK_Plugins
             Enabled = Config.Bind("Config", "High poly mode", hasEnoughRam, "Whether or not to load high poly assets. Improves quality of characters in roaming mode and fixes some modded items not appearing.\nMay require exiting to main menu to take effect. This option has high memory requirements, at least 8GB of RAM is recommended (with ~10 characters).");
 
             HarmonyWrapper.PatchAll(typeof(Hooks));
-        }
-
-        private static IEnumerator ChangeHairAsyncPostfix(ChaControl instance, int kind)
-        {
-            var hairObject = instance.objHair[kind];
-            if (hairObject != null)
-                foreach (var dynamicBone in hairObject.GetComponentsInChildren<DynamicBone>(true))
-                    dynamicBone.enabled = true;
-
-            yield break;
         }
     }
 }
