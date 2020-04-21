@@ -25,7 +25,7 @@ v1.1 Config options, AI version (thanks GeBo!)<br/>
 </details>
 
 #### ForceHighPoly
-**v1.2.1 - [Download](https://www.patreon.com/posts/36173160)** - For Koikatsu<br/>
+**v1.2.2 - [Download](https://www.patreon.com/posts/36173160)** - For Koikatsu<br/>
 
 Forces all characters to load in high poly mode, even in the school exploration mode.<br/>
 
@@ -33,6 +33,7 @@ Forces all characters to load in high poly mode, even in the school exploration 
 v1.1 Fixed locking up the game after special H scenes. Added config option to disable high poly mode.<br/>
 v1.2 Fixed hair physics not working (Thanks Rau/Marco/Essu)<br/>
 v1.2.1 Removed the hair physics fix due to being obsolete, changed default enabled state to depend on RAM<br/>
+v1.2.2 Fixed a patch not working<br/>
 </details>
 
 #### ReloadCharaListOnChange
