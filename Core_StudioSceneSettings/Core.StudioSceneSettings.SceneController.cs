@@ -17,6 +17,9 @@ namespace KK_Plugins.StudioSceneSettings
 
         internal void Start() => SceneManager.sceneLoaded += InitStudioUI;
 
+        /// <summary>
+        /// Save the modified values to the scene extended data
+        /// </summary>
         protected override void OnSceneSave()
         {
 
@@ -38,6 +41,9 @@ namespace KK_Plugins.StudioSceneSettings
             SetExtendedData(data);
         }
 
+        /// <summary>
+        /// Read the extended save data and set the values of SliderSet or ToggleSet which will set the UI elements and trigger the setter method
+        /// </summary>
         protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
         {
             if (operation == SceneOperationKind.Load)
@@ -81,6 +87,9 @@ namespace KK_Plugins.StudioSceneSettings
             FarClipPlane.Reset();
         }
 
+        /// <summary>
+        /// Initialize the SliderSets and ToggleSets which create and manage the UI
+        /// </summary>
         private void InitStudioUI(Scene s, LoadSceneMode lsm)
         {
             if (s.name != "Studio") return;

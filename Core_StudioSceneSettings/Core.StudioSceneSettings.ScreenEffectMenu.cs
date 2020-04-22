@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace KK_Plugins.StudioSceneSettings
 {
+    /// <summary>
+    /// Class that adds a new subcategory to the Screen Effects (Scene Effects) menu. Create a new instance and then add SliderSets and ToggleSets.
+    /// </summary>
     internal class ScreenEffectMenu
     {
         private const float OffsetMultiplier = -25f;
@@ -30,6 +33,10 @@ namespace KK_Plugins.StudioSceneSettings
         public List<ToggleSet> Toggles = new List<ToggleSet>();
         public List<SliderSet> Sliders = new List<SliderSet>();
 
+        /// <summary>
+        /// Create a new Screen Effects subcategory
+        /// </summary>
+        /// <param name="labelText"></param>
         public ScreenEffectMenu(string labelText)
         {
             var headerSource = GameObject.Find(HeaderSourcePath);
@@ -56,6 +63,13 @@ namespace KK_Plugins.StudioSceneSettings
                 Object.Destroy(child.gameObject);
         }
 
+        /// <summary>
+        /// Add a toggle to this Screen Effects subcategory
+        /// </summary>
+        /// <param name="text">Label text</param>
+        /// <param name="setter">Method to be called when the toggle changes value</param>
+        /// <param name="initialValue">Initial state of the toggle</param>
+        /// <returns></returns>
         public ToggleSet AddToggleSet(string text, System.Action<bool> setter, bool initialValue)
         {
             var labelSource = GameObject.Find(LabelSourcePath);
@@ -82,6 +96,15 @@ namespace KK_Plugins.StudioSceneSettings
             return toggleSet;
         }
 
+        /// <summary>
+        /// Add a slider with text box to this Screen Effects subcategory
+        /// </summary>
+        /// <param name="text">Label text</param>
+        /// <param name="setter">Method to be called when the slider or text box changes value</param>
+        /// <param name="initialValue">Initial value of the slider and text box</param>
+        /// <param name="sliderMinimum">Minimum value the slider can slide. Can be overriden by the user typing in to the text box if EnforceSliderMinimum is set to false.</param>
+        /// <param name="sliderMaximum">Maximum value the slider can slide. Can be overriden by the user typing in to the text box if EnforceSliderMaximum is set to false.</param>
+        /// <returns></returns>
         public SliderSet AddSliderSet(string text, System.Action<float> setter, float initialValue, float sliderMinimum, float sliderMaximum)
         {
             var labelSource = GameObject.Find(LabelSourcePath);
