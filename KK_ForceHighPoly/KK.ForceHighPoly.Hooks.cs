@@ -14,7 +14,7 @@ namespace KK_Plugins
                     assetName = assetName.Substring(0, assetName.Length - 4);
             }
 
-            [HarmonyPatch(typeof(AssetBundleManager), nameof(AssetBundleManager.LoadAssetAsync), typeof(string), typeof(string), typeof(Type), typeof(string))]
+            [HarmonyPrefix, HarmonyPatch(typeof(AssetBundleManager), nameof(AssetBundleManager.LoadAssetAsync), typeof(string), typeof(string), typeof(Type), typeof(string))]
             internal static void LoadAssetAsyncPrefix(ref string assetName)
             {
                 if (Enabled.Value && assetName.EndsWith("_low"))
