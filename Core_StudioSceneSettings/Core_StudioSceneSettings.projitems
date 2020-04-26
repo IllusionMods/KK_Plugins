@@ -12,8 +12,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.SceneController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.ScreenEffectMenu.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.SliderSet.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioSceneSettings.ToggleSet.cs" />
   </ItemGroup>
 </Project>

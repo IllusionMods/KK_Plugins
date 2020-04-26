@@ -1,6 +1,7 @@
 ﻿using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using KKAPI.Studio.SaveLoad;
+using KKAPI.Studio.UI;
 using KKAPI.Utilities;
 using Studio;
 using UnityEngine;
@@ -10,9 +11,9 @@ namespace KK_Plugins.StudioSceneSettings
 {
     public abstract class SceneControllerCore : SceneCustomFunctionController
     {
-        public static ToggleSet MapMasking;
-        public static SliderSet NearClipPlane;
-        public static SliderSet FarClipPlane;
+        public static SceneEffectsToggleSet MapMasking;
+        public static SceneEffectsSliderSet NearClipPlane;
+        public static SceneEffectsSliderSet FarClipPlane;
         private static readonly ManualLogSource Logger = StudioSceneSettingsCore.Logger;
 
         internal void Start() => SceneManager.sceneLoaded += InitStudioUI;
@@ -97,7 +98,7 @@ namespace KK_Plugins.StudioSceneSettings
 
             var CameraLayerDefault = Camera.main.gameObject.layer;
 
-            var menu = new ScreenEffectMenu(StudioSceneSettingsPlugin.PluginNameInternal);
+            var menu = new SceneEffectsCategory(StudioSceneSettingsPlugin.PluginNameInternal);
 #if KK
             MapMasking = menu.AddToggleSet("Map Masking", value => Camera.main.gameObject.layer = value ? StudioSceneSettingsCore.CameraMapMaskingLayer : CameraLayerDefault, false);
 #endif
