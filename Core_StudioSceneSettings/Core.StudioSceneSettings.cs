@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using BepInEx.Bootstrap;
 using BepInEx.Logging;
 
 namespace KK_Plugins.StudioSceneSettings
@@ -14,11 +13,5 @@ namespace KK_Plugins.StudioSceneSettings
         internal const int CameraMapMaskingLayer = 26;
 
         internal void Main() => Logger = base.Logger;
-
-        /// <summary>
-        /// Returns the instance of the scene controller
-        /// </summary>
-        /// <returns></returns>
-        public static SceneControllerCore GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<SceneControllerCore>();
     }
 }

@@ -1,5 +1,4 @@
-﻿using BepInEx.Logging;
-using ExtensibleSaveFormat;
+﻿using ExtensibleSaveFormat;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Studio.UI;
 using KKAPI.Utilities;
@@ -14,7 +13,6 @@ namespace KK_Plugins.StudioSceneSettings
         public static SceneEffectsToggleSet MapMasking;
         public static SceneEffectsSliderSet NearClipPlane;
         public static SceneEffectsSliderSet FarClipPlane;
-        private static readonly ManualLogSource Logger = StudioSceneSettingsCore.Logger;
 
         internal void Start() => SceneManager.sceneLoaded += InitStudioUI;
 
