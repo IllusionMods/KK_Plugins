@@ -302,6 +302,9 @@ namespace KK_Plugins
                 mat = chaControl.customMatFace;
             if (mat != null)
             {
+                var wrapMode = mat.GetTexture($"_{property}")?.wrapMode;
+                if (wrapMode != null)
+                    value.wrapMode = (TextureWrapMode)wrapMode;
                 mat.SetTexture($"_{property}", value);
                 didSet = true;
             }
@@ -315,6 +318,9 @@ namespace KK_Plugins
                 foreach (var mat in rend.materials)
                     if (mat.NameFormatted() == materialName)
                     {
+                        var wrapMode = mat.GetTexture($"_{property}")?.wrapMode;
+                        if (wrapMode != null)
+                            value.wrapMode = (TextureWrapMode)wrapMode;
                         mat.SetTexture($"_{property}", value);
                         didSet = true;
                     }
