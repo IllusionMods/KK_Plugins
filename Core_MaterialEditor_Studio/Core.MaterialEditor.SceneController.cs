@@ -644,7 +644,7 @@ namespace KK_Plugins
                         if (_texture == null)
                         {
                             if (_data != null)
-                                _texture = TextureFromBytes(_data, TextureFormat.ARGB32);
+                                _texture = TextureFromBytes(_data);
                         }
                         return _texture;
                     }

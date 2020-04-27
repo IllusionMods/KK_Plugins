@@ -462,7 +462,7 @@ namespace KK_Plugins
             return didSet;
         }
 
-        public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
+        public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.BC7, bool mipmaps = true)
         {
             if (texBytes == null || texBytes.Length == 0) return null;
 
