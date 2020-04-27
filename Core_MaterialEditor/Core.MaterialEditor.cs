@@ -599,8 +599,8 @@ namespace KK_Plugins
             public ShaderPropertyType Type;
             public string DefaultValue = null;
             public string DefaultValueAssetBundle = null;
-            public int? MinValue = null;
-            public int? MaxValue = null;
+            public float? MinValue = null;
+            public float? MaxValue = null;
 
             public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string minValue = null, string maxValue = null)
             {
@@ -610,7 +610,7 @@ namespace KK_Plugins
                 DefaultValueAssetBundle = defaultValueAB.IsNullOrEmpty() ? null : defaultValueAB;
                 if (!minValue.IsNullOrWhiteSpace() && !maxValue.IsNullOrWhiteSpace())
                 {
-                    if (int.TryParse(minValue, out int min) && int.TryParse(maxValue, out int max))
+                    if (float.TryParse(minValue, out float min) && float.TryParse(maxValue, out float max))
                     {
                         MinValue = min;
                         MaxValue = max;
