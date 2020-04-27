@@ -338,7 +338,7 @@
     <Property Name="EmissionPower" Type="Float" Range="0,1" />
     <Property Name="Glossiness" Type="Float" Range="0,1" />
     <Property Name="LightCancel" Type="Float" Range="0,1" />
-    <Property Name="Parallax" Type="Float" Range="0,1" />
+    <Property Name="Parallax" Type="Float" Range="0,0.08" />
     <Property Name="Specular" Type="Float" Range="0,1" />
   </Shader>
   <Shader Name="Shader Forge/main_texture" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_texture">
