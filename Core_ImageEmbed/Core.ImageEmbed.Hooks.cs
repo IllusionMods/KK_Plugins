@@ -19,7 +19,7 @@ namespace KK_Plugins
 
                 if (SavePattern.Value && !file.IsNullOrEmpty())
                 {
-                    //Save the pattern if it is one that comes from the userdata/pattern folder
+                    //Save the pattern if it is one that comes from the userdata/pattern folder via MaterialEditor
                     string filePath = UserData.Path + "pattern/" + file;
 
                     Logger.LogDebug($"Saving pattern to scene data.");
@@ -47,7 +47,7 @@ namespace KK_Plugins
 
                 if (SaveBG.Value && !file.IsNullOrEmpty() && !DefaultBGs.Contains(file.ToLower()))
                 {
-                    //Save the BG to the scene data
+                    //Save the BG to the scene data via MaterialEditor
                     string filePath = UserData.Path + BackgroundList.dirName + "/" + file;
 
                     Logger.LogDebug($"Saving background image to scene data.");
@@ -60,6 +60,23 @@ namespace KK_Plugins
                     //Remove any MaterialEditor MainTex texture edits
                     foreach (var rend in __instance.panelComponent.renderer)
                         MaterialEditor.GetSceneController().RemoveMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", false);
+                }
+            }
+
+            [HarmonyPostfix, HarmonyPatch(typeof(FrameCtrl), nameof(FrameCtrl.Load))]
+            internal static void FrameCtrlLoadHook(string _file)
+            {
+                if (SaveFrame.Value && !_file.IsNullOrEmpty() && !DefaultFrames.Contains(_file.ToLower()))
+                {
+                    //Save the frame to the scene data
+                    string filePath = UserData.Path + "frame/" + _file;
+
+                    Logger.LogDebug($"Saving frame image to scene data.");
+                    GetSceneController().SetFrameTex(filePath);
+                }
+                else
+                {
+                    GetSceneController().ClearFrameTex();
                 }
             }
         }
