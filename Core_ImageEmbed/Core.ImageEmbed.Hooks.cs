@@ -13,15 +13,22 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.SetPatternTex), typeof(int), typeof(int))]
             internal static void SetPatternTexHook(OCIItem __instance, int _idx)
             {
-                if (!SavePattern.Value) return;
                 if (__instance?.itemComponent == null) return;
-                if (__instance.GetPatternPath(_idx).IsNullOrEmpty()) return;
 
-                Logger.LogDebug($"Saving pattern to scene data.");
-
-                foreach (var rend in __instance.itemComponent.GetRenderers())
-                    MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", __instance.objectItem, UserData.Path + "pattern/" + __instance.GetPatternPath(_idx));
-                __instance.SetPatternPath(_idx, "");
+                if (SavePattern.Value && !__instance.GetPatternPath(_idx).IsNullOrEmpty())
+                {
+                    Logger.LogDebug($"Saving pattern to scene data.");
+                    //Save the pattern if it is one that comes from the userdata/pattern folder
+                    foreach (var rend in __instance.itemComponent.GetRenderers())
+                        MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", __instance.objectItem, UserData.Path + "pattern/" + __instance.GetPatternPath(_idx));
+                    __instance.SetPatternPath(_idx, "");
+                }
+                else
+                {
+                    //Remove any MaterialEditor pattern texture edits when changing patterns
+                    foreach (var rend in __instance.itemComponent.GetRenderers())
+                        MaterialEditor.GetSceneController().RemoveMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", MaterialEditor.TexturePropertyType.Texture, false);
+                }
             }
 
             /// <summary>
