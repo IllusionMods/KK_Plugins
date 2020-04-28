@@ -15,12 +15,16 @@ namespace KK_Plugins
             {
                 if (__instance?.itemComponent == null) return;
 
-                if (SavePattern.Value && !__instance.GetPatternPath(_idx).IsNullOrEmpty())
+                string file = __instance.GetPatternPath(_idx);
+
+                if (SavePattern.Value && !file.IsNullOrEmpty())
                 {
                     //Save the pattern if it is one that comes from the userdata/pattern folder
+                    string filePath = UserData.Path + "pattern/" + file;
+
                     Logger.LogDebug($"Saving pattern to scene data.");
                     foreach (var rend in __instance.itemComponent.GetRenderers())
-                        MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", __instance.objectItem, UserData.Path + "pattern/" + __instance.GetPatternPath(_idx));
+                        MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", __instance.objectItem, filePath);
                     __instance.SetPatternPath(_idx, "");
                 }
                 else
@@ -35,16 +39,20 @@ namespace KK_Plugins
             /// Save the BG image to the scene data
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.SetMainTex), typeof(string))]
-            internal static void SetMainTexHook(OCIItem __instance, string _file)
+            internal static void SetMainTexHook(OCIItem __instance)
             {
                 if (__instance?.panelComponent == null) return;
 
-                if (SaveBG.Value && !__instance.itemInfo.panel.filePath.IsNullOrEmpty())
+                string file = __instance.itemInfo.panel.filePath;
+
+                if (SaveBG.Value && !file.IsNullOrEmpty() && !DefaultBGs.Contains(file.ToLower()))
                 {
                     //Save the BG to the scene data
-                    Logger.LogDebug($"Saving background image to scene data. {_file}");
+                    string filePath = UserData.Path + BackgroundList.dirName + "/" + file;
+
+                    Logger.LogDebug($"Saving background image to scene data.");
                     foreach (var rend in __instance.panelComponent.renderer)
-                        MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", __instance.objectItem, UserData.Path + BackgroundList.dirName + "/" + _file);
+                        MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", __instance.objectItem, filePath);
                     __instance.itemInfo.panel.filePath = "";
                 }
                 else
