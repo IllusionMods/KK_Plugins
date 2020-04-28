@@ -17,8 +17,8 @@ namespace KK_Plugins
 
                 if (SavePattern.Value && !__instance.GetPatternPath(_idx).IsNullOrEmpty())
                 {
-                    Logger.LogDebug($"Saving pattern to scene data.");
                     //Save the pattern if it is one that comes from the userdata/pattern folder
+                    Logger.LogDebug($"Saving pattern to scene data.");
                     foreach (var rend in __instance.itemComponent.GetRenderers())
                         MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", __instance.objectItem, UserData.Path + "pattern/" + __instance.GetPatternPath(_idx));
                     __instance.SetPatternPath(_idx, "");
@@ -37,16 +37,22 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.SetMainTex), typeof(string))]
             internal static void SetMainTexHook(OCIItem __instance, string _file)
             {
-                if (!SaveBG.Value) return;
                 if (__instance?.panelComponent == null) return;
-                if (__instance.itemInfo.panel.filePath == "") return;
 
-                Logger.LogDebug($"Saving background image to scene data. {_file}");
-
-                foreach (var rend in __instance.panelComponent.renderer)
-                    MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", __instance.objectItem, UserData.Path + BackgroundList.dirName + "/" + _file);
-
-                __instance.itemInfo.panel.filePath = "";
+                if (SaveBG.Value && !__instance.itemInfo.panel.filePath.IsNullOrEmpty())
+                {
+                    //Save the BG to the scene data
+                    Logger.LogDebug($"Saving background image to scene data. {_file}");
+                    foreach (var rend in __instance.panelComponent.renderer)
+                        MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", __instance.objectItem, UserData.Path + BackgroundList.dirName + "/" + _file);
+                    __instance.itemInfo.panel.filePath = "";
+                }
+                else
+                {
+                    //Remove any MaterialEditor MainTex texture edits
+                    foreach (var rend in __instance.panelComponent.renderer)
+                        MaterialEditor.GetSceneController().RemoveMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", false);
+                }
             }
         }
     }
