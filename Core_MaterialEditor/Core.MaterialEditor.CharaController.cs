@@ -17,7 +17,6 @@ using AIChara;
 
 namespace KK_Plugins
 {
-
     public partial class MaterialEditor
     {
         public class MaterialEditorCharaController : CharaCustomFunctionController
@@ -679,14 +678,20 @@ namespace KK_Plugins
                     if (strings == null || strings.Length == 0) return;
                     if (strings[0].IsNullOrEmpty()) return;
 
-                    TexBytes = File.ReadAllBytes(strings[0]);
-                    PropertyToSet = property;
-                    MatToSet = materialName;
-                    GameObjectToSet = go;
-                    ObjectTypeToSet = objectType;
-                    CoordinateIndexToSet = coordinateIndex;
-                    SlotToSet = slot;
+                    AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, property, go, strings[0]);
                 }
+            }
+            public void AddMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, GameObject go, string filePath)
+            {
+                if (!File.Exists(filePath)) return;
+
+                TexBytes = File.ReadAllBytes(filePath);
+                PropertyToSet = property;
+                MatToSet = materialName;
+                GameObjectToSet = go;
+                ObjectTypeToSet = objectType;
+                CoordinateIndexToSet = coordinateIndex;
+                SlotToSet = slot;
             }
             public void AddMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal)
             {
@@ -754,14 +759,15 @@ namespace KK_Plugins
                     return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
                 return null;
             }
-            public void RemoveMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType)
+            public void RemoveMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType, bool displayMessage = true)
             {
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
                 if (textureProperty != null)
                 {
                     if (propertyType == TexturePropertyType.Texture)
                     {
-                        Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
+                        if (displayMessage)
+                            Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
                         textureProperty.TexID = null;
                         if (textureProperty.NullCheck())
                             MaterialTexturePropertyList.Remove(textureProperty);

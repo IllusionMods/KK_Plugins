@@ -431,14 +431,15 @@ namespace KK_Plugins
                     return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
                 return null;
             }
-            public void RemoveMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType)
+            public void RemoveMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType, bool displayMessage = true)
             {
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
                 if (textureProperty != null)
                 {
                     if (propertyType == TexturePropertyType.Texture)
                     {
-                        Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
+                        if (displayMessage)
+                            Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
                         textureProperty.TexID = null;
                         if (textureProperty.NullCheck())
                             MaterialTexturePropertyList.Remove(textureProperty);
@@ -459,9 +460,10 @@ namespace KK_Plugins
                     }
                 }
             }
-            public void RemoveMaterialTextureProperty(int id, string materialName, string property)
+            public void RemoveMaterialTextureProperty(int id, string materialName, string property, bool displayMessage = true)
             {
-                Logger.LogMessage("Save and reload scene to refresh textures.");
+                if (displayMessage)
+                    Logger.LogMessage("Save and reload scene to refresh textures.");
                 MaterialTexturePropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
             }
 
