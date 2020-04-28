@@ -41,15 +41,24 @@ namespace KK_Plugins
         public static ConfigEntry<float> UIScale { get; private set; }
         public static ConfigEntry<float> UIWidth { get; private set; }
         public static ConfigEntry<float> UIHeight { get; private set; }
+#if Studio
+        public static ConfigEntry<bool> SavePattern { get; private set; }
+        public static ConfigEntry<bool> SaveBG { get; private set; }
+#endif
 
         internal void Main()
         {
             Logger = base.Logger;
             Directory.CreateDirectory(ExportPath);
 
-            UIScale = Config.Bind("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 3 }));
-            UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 2, ShowRangeAsPercent = false }));
-            UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 1, ShowRangeAsPercent = false }));
+            UIScale = Config.Bind("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 13 }));
+            UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 12, ShowRangeAsPercent = false }));
+            UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 11, ShowRangeAsPercent = false }));
+
+#if Studio
+            SavePattern = Config.Bind("Config", "Save pattern images to scene data", true, new ConfigDescription("Whether images from the userdata/pattern folder will be saved to scene data. False is vanilla behavior and such images can only be loaded if the same image exists on disk.", null, new ConfigurationManagerAttributes { Order = 2 }));
+            SaveBG = Config.Bind("Config", "Save BG images to scene data", true, new ConfigDescription("Whether images from the userdata/bg folder folder will be saved to scene data. False is vanilla behavior and such images can only be loaded if the same image exists on disk.", null, new ConfigurationManagerAttributes { Order = 1 }));
+#endif
 
             UIScale.SettingChanged += UISettingChanged;
             UIWidth.SettingChanged += UISettingChanged;
@@ -63,7 +72,7 @@ namespace KK_Plugins
 
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
 
-#if KK || AI
+#if Studio
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
             StudioSaveLoadApi.RegisterExtraBehaviour<MaterialEditorSceneController>(GUID);
 #endif

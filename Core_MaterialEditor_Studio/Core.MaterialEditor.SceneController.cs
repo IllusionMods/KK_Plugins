@@ -392,19 +392,23 @@ namespace KK_Plugins
 
                 void OnFileAccept(string[] strings)
                 {
-                    if (strings == null || strings.Length == 0)
-                        return;
+                    if (strings == null || strings.Length == 0) return;
+                    if (strings[0].IsNullOrEmpty()) return;
 
-                    if (strings[0].IsNullOrEmpty())
-                        return;
-
-                    TexBytes = File.ReadAllBytes(strings[0]);
-                    PropertyToSet = property;
-                    MatToSet = materialName;
-                    GameObjectToSet = go;
-                    IDToSet = id;
+                    AddMaterialTextureProperty(id, materialName, property, go, strings[0]);
                 }
             }
+            public void AddMaterialTextureProperty(int id, string materialName, string property, GameObject go, string filePath)
+            {
+                if (!File.Exists(filePath)) return;
+
+                TexBytes = File.ReadAllBytes(filePath);
+                PropertyToSet = property;
+                MatToSet = materialName;
+                GameObjectToSet = go;
+                IDToSet = id;
+            }
+
             public Vector2? GetMaterialTexturePropertyValue(int id, string materialName, string property, TexturePropertyType propertyType)
             {
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);

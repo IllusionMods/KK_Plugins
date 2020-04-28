@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -43,6 +44,46 @@ namespace KK_Plugins
             }
             return Color.white;
         }
+    }
+
+    internal static class StudioExtensions
+    {
+#if !EC
+        public static string GetPatternPath(this Studio.OCIItem ociItem, int index)
+        {
+#if KK
+            return ociItem.itemInfo.pattern[index].filePath;
+#elif AI
+            return ociItem.itemInfo.colors[index].pattern.filePath;
+#else
+            throw new System.NotImplementedException("StudioExtensions.GetPatternPath");
+#endif
+        }
+
+        public static void SetPatternPath(this Studio.OCIItem ociItem, int index, string filePath)
+        {
+#if KK
+            ociItem.itemInfo.pattern[index].filePath = filePath;
+#elif AI
+            ociItem.itemInfo.colors[index].pattern.filePath = filePath;
+#else
+            throw new System.NotImplementedException("StudioExtensions.SetPatternPath");
+#endif
+        }
+
+#if !HS
+        public static IEnumerable<Renderer> GetRenderers(this Studio.ItemComponent itemComponent)
+        {
+#if KK
+            return itemComponent.rendNormal;
+#elif AI
+            return itemComponent.rendererInfos.Select(x => x.renderer);
+#else
+            throw new System.NotImplementedException("StudioExtensions.GetRenderers");
+#endif
+        }
+#endif
+#endif
     }
 
     internal static class MeshExtensions
