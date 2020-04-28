@@ -22,7 +22,7 @@ namespace KK_Plugins
             private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
             private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
 
-            private static Dictionary<int, byte[]> TextureDictionary = new Dictionary<int, byte[]>();
+            private static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
 
             private static byte[] TexBytes = null;
             private static string PropertyToSet = "";
@@ -98,7 +98,7 @@ namespace KK_Plugins
 
                 if (operation == SceneOperationKind.Load)
                     if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic);
+                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureContainer(pair.Value));
 
                 if (operation == SceneOperationKind.Import)
                     if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
@@ -264,13 +264,13 @@ namespace KK_Plugins
             {
                 int highestID = 0;
                 foreach (var tex in TextureDictionary)
-                    if (tex.Value.SequenceEqual(textureBytes))
+                    if (tex.Value.Data.SequenceEqual(textureBytes))
                         return tex.Key;
                     else if (tex.Key > highestID)
                         highestID = tex.Key;
 
                 highestID++;
-                TextureDictionary.Add(highestID, textureBytes);
+                TextureDictionary.Add(highestID, new TextureContainer(textureBytes));
                 return highestID;
             }
 
@@ -667,7 +667,7 @@ namespace KK_Plugins
                     Scale = scale;
                     ScaleOriginal = scaleOriginal;
                     if (texID != null && TextureDictionary.TryGetValue((int)texID, out var tex))
-                        Data = tex;
+                        Data = tex.Data;
                 }
 
                 public void Dispose()

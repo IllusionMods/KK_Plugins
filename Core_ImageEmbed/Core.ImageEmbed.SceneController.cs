@@ -14,7 +14,7 @@ namespace KK_Plugins
     {
         public class ImageEmbedSceneController : SceneCustomFunctionController
         {
-            TextureHolder FrameTex;
+            TextureContainer FrameTex;
 
             protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
             {
@@ -26,7 +26,7 @@ namespace KK_Plugins
                     var data = GetExtendedData();
                     if (data?.data != null)
                         if (data.data.TryGetValue("FrameData", out var frameObj) && frameObj != null)
-                            FrameTex = new TextureHolder((byte[])frameObj);
+                            FrameTex = new TextureContainer((byte[])frameObj);
 
                     if (FrameTex != null)
                     {
@@ -69,7 +69,7 @@ namespace KK_Plugins
                 if (!File.Exists(filePath)) return;
 
                 FrameTex?.Dispose();
-                FrameTex = new TextureHolder(filePath);
+                FrameTex = new TextureContainer(filePath);
             }
 
             /// <summary>
@@ -81,22 +81,36 @@ namespace KK_Plugins
                 FrameTex = null;
             }
 
-            public sealed class TextureHolder : IDisposable
+            /// <summary>
+            /// A class for containing texture data, stored as a byte array. Access the texture with the Texture property and use Dispose to safely destroy it and prevent memory leaks.
+            /// </summary>
+            public sealed class TextureContainer : IDisposable
             {
                 private byte[] _data;
                 private Texture2D _texture;
 
-                public TextureHolder(byte[] data)
+                /// <summary>
+                /// Load a byte array containing texture data.
+                /// </summary>
+                /// <param name="data"></param>
+                public TextureContainer(byte[] data)
                 {
                     Data = data ?? throw new ArgumentNullException(nameof(data));
                 }
 
-                public TextureHolder(string filePath)
+                /// <summary>
+                /// Load the texture at the specified file path.
+                /// </summary>
+                /// <param name="filePath">Path of the file to load</param>
+                public TextureContainer(string filePath)
                 {
                     var data = LoadTextureBytes(filePath);
                     Data = data ?? throw new ArgumentNullException(nameof(data));
                 }
 
+                /// <summary>
+                /// Byte array containing the texture data.
+                /// </summary>
                 public byte[] Data
                 {
                     get => _data;
@@ -107,19 +121,24 @@ namespace KK_Plugins
                     }
                 }
 
+                /// <summary>
+                /// Texture data. Created from the Data byte array when accessed.
+                /// </summary>
                 public Texture2D Texture
                 {
                     get
                     {
                         if (_texture == null)
-                        {
                             if (_data != null)
                                 _texture = TextureFromBytes(_data);
-                        }
+
                         return _texture;
                     }
                 }
 
+                /// <summary>
+                /// Dispose of the texture data. Does not dispose of the byte array. Texture data will be recreated when accessing the Texture property, if needed.
+                /// </summary>
                 public void Dispose()
                 {
                     if (_texture != null)
@@ -129,18 +148,18 @@ namespace KK_Plugins
                     }
                 }
 
-                private static Texture2D LoadTexture(string filePath, TextureFormat format = TextureFormat.BC7, bool mipmaps = true)
-                {
-                    return TextureFromBytes(LoadTextureBytes(filePath), format, mipmaps);
-                }
-
+                /// <summary>
+                /// Read the specified file and return a byte array.
+                /// </summary>
+                /// <param name="filePath">Path of the file to load</param>
+                /// <returns>Byte array with texture data</returns>
                 private static byte[] LoadTextureBytes(string filePath)
                 {
                     return File.ReadAllBytes(filePath);
                 }
 
                 /// <summary>
-                /// Convert a byte array to Texture2D
+                /// Convert a byte array to Texture2D.
                 /// </summary>
                 /// <param name="texBytes">Byte array containing the image</param>
                 /// <param name="format">TextureFormat</param>
@@ -150,9 +169,9 @@ namespace KK_Plugins
                 {
                     if (texBytes == null || texBytes.Length == 0) return null;
 
+                    //LoadImage automatically resizes the texture
                     var tex = new Texture2D(2, 2, format, mipmaps);
 
-                    //LoadImage automatically resizes the texture
                     tex.LoadImage(texBytes);
                     return tex;
                 }

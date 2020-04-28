@@ -201,6 +201,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_ImageEmbed", "Core_Ima
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_ImageEmbed", "AI_ImageEmbed\AI_ImageEmbed.csproj", "{4B2A5873-42E3-446F-B986-6B57693928C7}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.TextureContainer", "Shared.TextureContainer\Shared.TextureContainer.shproj", "{BEB828AE-5723-4086-940F-B6EB2465060C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		CommonCode\CommonCode.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -218,12 +220,14 @@ Global
 		Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.projitems*{25352133-33b7-41e0-867a-d07c613ac3e9}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		Shared.TextureContainer\Shared.TextureContainer.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
 		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		Shared.TextureContainer\Shared.TextureContainer.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		Core_StudioSceneSettings\Core_StudioSceneSettings.projitems*{3ae01cd8-4b89-4c17-8840-3153a4fa8ef7}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
@@ -236,6 +240,7 @@ Global
 		Core_PoseQuickLoad\Core_PoseQuickLoad.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
 		Core_ImageEmbed\Core_ImageEmbed.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
+		Shared.TextureContainer\Shared.TextureContainer.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
 		Core_PoseFolders\Core_PoseFolders.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
@@ -289,12 +294,14 @@ Global
 		Core_Subtitles\Core_Subtitles.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
 		Core_ImageEmbed\Core_ImageEmbed.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
+		Shared.TextureContainer\Shared.TextureContainer.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
 		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		Core_MaterialEditor\Core_MaterialEditor.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		Shared.TextureContainer\Shared.TextureContainer.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
 		Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
@@ -302,6 +309,7 @@ Global
 		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{bc2d1e37-d3c2-4225-8ce4-2e116e84e365}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{bcf83f6e-cbe1-438e-96ca-a832b42519e6}*SharedItemsImports = 4
 		Core_AnimationController\Core_AnimationController.projitems*{bcf83f6e-cbe1-438e-96ca-a832b42519e6}*SharedItemsImports = 4
+		Shared.TextureContainer\Shared.TextureContainer.projitems*{beb828ae-5723-4086-940f-b6eb2465060c}*SharedItemsImports = 13
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{c15b8820-0e24-452b-b076-1a052dd7c0fb}*SharedItemsImports = 13
 		CommonCode\CommonCode.projitems*{c2c68ac3-cb8f-4ba7-91ea-9a242851294d}*SharedItemsImports = 4
 		Core_Colliders\Core_Colliders.projitems*{c6216940-6935-4af3-b542-760d01b086cd}*SharedItemsImports = 13

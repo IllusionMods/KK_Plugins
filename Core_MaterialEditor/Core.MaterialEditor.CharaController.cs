@@ -27,7 +27,7 @@ namespace KK_Plugins
             private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
             private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
 
-            private Dictionary<int, TextureHolder> TextureDictionary = new Dictionary<int, TextureHolder>();
+            private Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
 
 #if KK
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
@@ -110,7 +110,7 @@ namespace KK_Plugins
                     CharacterLoading = true;
 
                     if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureHolder(pair.Value));
+                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureContainer(pair.Value));
 
                     //int counter = 0;
                     //foreach (var tex in TextureDictionary.Values)
@@ -383,7 +383,7 @@ namespace KK_Plugins
                         highestID = tex.Key;
 
                 highestID++;
-                TextureDictionary.Add(highestID, new TextureHolder(textureBytes));
+                TextureDictionary.Add(highestID, new TextureContainer(textureBytes));
                 return highestID;
             }
 
@@ -1133,48 +1133,6 @@ namespace KK_Plugins
                     RenderQueueOriginal = renderQueueOriginal;
                 }
                 public bool NullCheck() => ShaderName.IsNullOrEmpty() && RenderQueue == null;
-            }
-            public sealed class TextureHolder : IDisposable
-            {
-                private byte[] _data;
-                private Texture2D _texture;
-
-                public TextureHolder(byte[] data)
-                {
-                    Data = data ?? throw new ArgumentNullException(nameof(data));
-                }
-
-                public byte[] Data
-                {
-                    get => _data;
-                    set
-                    {
-                        Dispose();
-                        _data = value;
-                    }
-                }
-
-                public Texture2D Texture
-                {
-                    get
-                    {
-                        if (_texture == null)
-                        {
-                            if (_data != null)
-                                _texture = TextureFromBytes(_data);
-                        }
-                        return _texture;
-                    }
-                }
-
-                public void Dispose()
-                {
-                    if (_texture != null)
-                    {
-                        GameObject.Destroy(_texture);
-                        _texture = null;
-                    }
-                }
             }
         }
     }
