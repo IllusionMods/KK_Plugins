@@ -2,8 +2,9 @@
 
 namespace KK_Plugins
 {
+    [BepInDependency(MaterialEditor.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
-    public class ImageEmbed : ImageEmbedCore
+    public partial class ImageEmbed : BaseUnityPlugin
     {
         public const string PluginNameInternal = "AI_ImageEmbed";
     }

@@ -1,7 +1,6 @@
 ﻿using KK_Plugins;
 using System.Reflection;
 using static KK_Plugins.ImageEmbed;
-using static KK_Plugins.ImageEmbedCore;
 
 [assembly: AssemblyTitle(PluginNameInternal)]
 [assembly: AssemblyProduct(PluginNameInternal)]

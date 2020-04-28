@@ -11,5 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.ImageEmbed.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.ImageEmbed.Hooks.cs" />
   </ItemGroup>
 </Project>

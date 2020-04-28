@@ -3,9 +3,9 @@ using Studio;
 
 namespace KK_Plugins
 {
-    public partial class MaterialEditor
+    public partial class ImageEmbed
     {
-        internal partial class Hooks
+        internal static class Hooks
         {
             /// <summary>
             /// Save the pattern image to the scene data
@@ -20,7 +20,7 @@ namespace KK_Plugins
                 Logger.LogDebug($"Saving pattern to scene data.");
 
                 foreach (var rend in __instance.itemComponent.GetRenderers())
-                    GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", __instance.objectItem, UserData.Path + "pattern/" + __instance.GetPatternPath(_idx));
+                    MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", __instance.objectItem, UserData.Path + "pattern/" + __instance.GetPatternPath(_idx));
                 __instance.SetPatternPath(_idx, "");
             }
 
@@ -37,7 +37,7 @@ namespace KK_Plugins
                 Logger.LogDebug($"Saving background image to scene data. {_file}");
 
                 foreach (var rend in __instance.panelComponent.renderer)
-                    GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", __instance.objectItem, UserData.Path + BackgroundList.dirName + "/" + _file);
+                    MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", __instance.objectItem, UserData.Path + BackgroundList.dirName + "/" + _file);
 
                 __instance.itemInfo.panel.filePath = "";
             }
