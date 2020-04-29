@@ -26,7 +26,7 @@ namespace KK_Plugins
             public void RemoveMaterialColorProperty(int id, string materialName, string property) { }
 
             public void AddMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal) { }
-            public void AddMaterialTextureProperty(int id, string materialName, string property, GameObject go) { }
+            public void AddMaterialTexturePropertyFromFileDialog(int id, string materialName, string property, GameObject go) { }
             public Vector2? GetMaterialTexturePropertyValue(int id, string materialName, string property, TexturePropertyType propertyType) => null;
             public Vector2? GetMaterialTexturePropertyValueOriginal(int id, string materialName, string property, TexturePropertyType propertyType) => null;
             public void RemoveMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType) { }

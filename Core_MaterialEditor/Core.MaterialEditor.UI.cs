@@ -1022,7 +1022,7 @@ namespace KK_Plugins
                             {
                                 if (objectType == ObjectType.Other) { }
                                 else if (objectType == ObjectType.StudioItem)
-                                    GetSceneController().AddMaterialTextureProperty(id, materialName, propertyName, go);
+                                    GetSceneController().AddMaterialTexturePropertyFromFileDialog(id, materialName, propertyName, go);
                                 else
                                     GetCharaController(chaControl).AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, go);
                                 label.text = LabelText(false);

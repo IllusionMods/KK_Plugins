@@ -3,6 +3,8 @@ using BepInEx.Configuration;
 using BepInEx.Harmony;
 using BepInEx.Logging;
 using KKAPI.Studio.SaveLoad;
+using Studio;
+using System.IO;
 
 namespace KK_Plugins
 {
@@ -29,7 +31,34 @@ namespace KK_Plugins
             HarmonyWrapper.PatchAll(typeof(Hooks));
         }
 
-        public static ImageEmbedSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<ImageEmbedSceneController>();
+        private static void SavePatternTex(OCIItem item, int patternIndex, string filePath)
+        {
+            if (item?.itemComponent == null) return;
+            if (filePath.IsNullOrEmpty()) return;
+            if (!File.Exists(filePath)) return;
+            Logger.LogInfo($"SavePatternTex filePath:{filePath}");
 
+            Logger.LogDebug($"Saving pattern to scene data.");
+            foreach (var rend in item.itemComponent.GetRenderers())
+                MaterialEditor.GetSceneController().AddMaterialTexturePropertyFromFile(item.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{patternIndex + 1}", item.objectItem, filePath);
+            item.SetPatternPath(patternIndex, "");
+        }
+
+        private static void SaveBGTex(OCIItem item, string filePath)
+        {
+            if (item?.panelComponent == null) return;
+            if (filePath.IsNullOrEmpty()) return;
+            if (!File.Exists(filePath)) return;
+
+            string file = Path.GetFileName(filePath);
+            if (DefaultBGs.Contains(file.ToLower())) return;
+
+            Logger.LogDebug($"Saving background image to scene data.");
+            foreach (var rend in item.panelComponent.renderer)
+                MaterialEditor.GetSceneController().AddMaterialTexturePropertyFromFile(item.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", item.objectItem, filePath);
+            item.itemInfo.panel.filePath = "";
+        }
+
+        public static ImageEmbedSceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<ImageEmbedSceneController>();
     }
 }

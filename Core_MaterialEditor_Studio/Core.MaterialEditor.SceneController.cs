@@ -24,8 +24,8 @@ namespace KK_Plugins
 
             private static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
 
-            private static byte[] TexBytes = null;
-            private static string PropertyToSet = "";
+            private static string FileToSet;
+            private static string PropertyToSet;
             private static string MatToSet;
             private static int IDToSet = 0;
             private static GameObject GameObjectToSet;
@@ -45,7 +45,7 @@ namespace KK_Plugins
                     TextureDictionary.Remove(texID);
 
                 if (TextureDictionary.Count > 0)
-                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary));
+                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
                 else
                     data.data.Add(nameof(TextureDictionary), null);
 
@@ -223,18 +223,8 @@ namespace KK_Plugins
             {
                 try
                 {
-                    if (TexBytes != null)
-                    {
-                        Texture2D tex = TextureFromBytes(TexBytes);
-
-                        SetTextureProperty(GameObjectToSet, MatToSet, PropertyToSet, tex, ObjectType.StudioItem);
-
-                        var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == IDToSet && x.Property == PropertyToSet && x.MaterialName == MatToSet);
-                        if (textureProperty == null)
-                            MaterialTexturePropertyList.Add(new MaterialTextureProperty(IDToSet, MatToSet, PropertyToSet, SetAndGetTextureID(TexBytes)));
-                        else
-                            textureProperty.Data = TexBytes;
-                    }
+                    if (!FileToSet.IsNullOrEmpty())
+                        AddMaterialTexturePropertyFromFile(IDToSet, MatToSet, PropertyToSet, GameObjectToSet, FileToSet);
                 }
                 catch
                 {
@@ -242,8 +232,8 @@ namespace KK_Plugins
                 }
                 finally
                 {
-                    TexBytes = null;
-                    PropertyToSet = "";
+                    FileToSet = null;
+                    PropertyToSet = null;
                     MatToSet = null;
                     GameObjectToSet = null;
                 }
@@ -386,7 +376,37 @@ namespace KK_Plugins
                     }
                 }
             }
+
             public void AddMaterialTextureProperty(int id, string materialName, string property, GameObject go)
+            {
+                byte[] texBytes = null;
+                foreach (var rend in GetRendererList(go, ObjectType.StudioItem))
+                {
+                    foreach (var mat in rend.materials)
+                    {
+                        if (mat.NameFormatted() == materialName)
+                        {
+                            var tex = (Texture2D)mat.GetTexture($"_{property}");
+                            if (tex == null) continue;
+                            texBytes = tex.EncodeToPNG();
+                            goto ExitLoop;
+                        }
+                    }
+                }
+            ExitLoop:
+                if (texBytes == null) return;
+
+                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+                if (textureProperty == null)
+                {
+                    textureProperty = new MaterialTextureProperty(id, materialName, property, SetAndGetTextureID(texBytes));
+                    MaterialTexturePropertyList.Add(textureProperty);
+                }
+                else
+                    textureProperty.Data = texBytes;
+            }
+
+            public void AddMaterialTexturePropertyFromFileDialog(int id, string materialName, string property, GameObject go)
             {
                 OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, FileFilter, FileExt);
 
@@ -395,18 +415,30 @@ namespace KK_Plugins
                     if (strings == null || strings.Length == 0) return;
                     if (strings[0].IsNullOrEmpty()) return;
 
-                    AddMaterialTextureProperty(id, materialName, property, go, strings[0]);
+                    FileToSet = strings[0];
+                    PropertyToSet = property;
+                    MatToSet = materialName;
+                    GameObjectToSet = go;
+                    IDToSet = id;
                 }
             }
-            public void AddMaterialTextureProperty(int id, string materialName, string property, GameObject go, string filePath)
+
+            public void AddMaterialTexturePropertyFromFile(int id, string materialName, string property, GameObject go, string filePath)
             {
                 if (!File.Exists(filePath)) return;
 
-                TexBytes = File.ReadAllBytes(filePath);
-                PropertyToSet = property;
-                MatToSet = materialName;
-                GameObjectToSet = go;
-                IDToSet = id;
+                var texBytes = File.ReadAllBytes(filePath);
+
+                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+                if (textureProperty == null)
+                {
+                    textureProperty = new MaterialTextureProperty(id, materialName, property, SetAndGetTextureID(texBytes));
+                    MaterialTexturePropertyList.Add(textureProperty);
+                }
+                else
+                    textureProperty.Data = texBytes;
+
+                SetTextureProperty(go, materialName, property, textureProperty.Texture, ObjectType.StudioItem);
             }
 
             public Vector2? GetMaterialTexturePropertyValue(int id, string materialName, string property, TexturePropertyType propertyType)

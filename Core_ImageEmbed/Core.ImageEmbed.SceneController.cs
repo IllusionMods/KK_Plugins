@@ -18,6 +18,39 @@ namespace KK_Plugins
 
             protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
             {
+                //Dispose of any Frame texture when resetting the scene
+                if (operation == SceneOperationKind.Clear)
+                {
+                    FrameTex?.Dispose();
+                    FrameTex = null;
+                    return;
+                }
+
+                //On loading or importing a scene, check if the item has any patterns that exist in the pattern folder and use MaterialEditor to handle these textures instead
+                foreach (var loadedItem in loadedItems.Values)
+                {
+                    if (loadedItem is OCIItem item)
+                    {
+                        if (item?.itemComponent != null)
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                string filePath = item.GetPatternPath(i);
+                                SavePatternTex(item, i, filePath);
+                            }
+                        }
+
+                        if (item?.panelComponent != null)
+                        {
+                            if (!item.itemInfo.panel.filePath.IsNullOrEmpty())
+                                Logger.LogInfo($"bg:{item.itemInfo.panel.filePath}");
+                            SaveBGTex(item, item.itemInfo.panel.filePath);
+                        }
+                    }
+                }
+
+                //On loading a scene load the saved frame texture, if any
+                //Frames are not imported, only loaded
                 if (operation == SceneOperationKind.Load)
                 {
                     FrameTex?.Dispose();
@@ -38,15 +71,11 @@ namespace KK_Plugins
                         cameraUI.enabled = true;
                     }
                 }
-                else if (operation == SceneOperationKind.Clear)
-                {
-                    FrameTex?.Dispose();
-                    FrameTex = null;
-                }
-                else //Do not import saved data
-                    return;
             }
 
+            /// <summary>
+            /// Save the frame texture to the scene data
+            /// </summary>
             protected override void OnSceneSave()
             {
                 var data = new PluginData();

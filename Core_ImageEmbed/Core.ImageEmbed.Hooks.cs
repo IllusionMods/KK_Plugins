@@ -21,11 +21,7 @@ namespace KK_Plugins
                 {
                     //Save the pattern if it is one that comes from the userdata/pattern folder via MaterialEditor
                     string filePath = UserData.Path + "pattern/" + file;
-
-                    Logger.LogDebug($"Saving pattern to scene data.");
-                    foreach (var rend in __instance.itemComponent.GetRenderers())
-                        MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", __instance.objectItem, filePath);
-                    __instance.SetPatternPath(_idx, "");
+                    SavePatternTex(__instance, _idx, filePath);
                 }
                 else
                 {
@@ -45,15 +41,11 @@ namespace KK_Plugins
 
                 string file = __instance.itemInfo.panel.filePath;
 
-                if (SaveBG.Value && !file.IsNullOrEmpty() && !DefaultBGs.Contains(file.ToLower()))
+                if (SaveBG.Value && !file.IsNullOrEmpty())
                 {
                     //Save the BG to the scene data via MaterialEditor
                     string filePath = UserData.Path + BackgroundList.dirName + "/" + file;
-
-                    Logger.LogDebug($"Saving background image to scene data.");
-                    foreach (var rend in __instance.panelComponent.renderer)
-                        MaterialEditor.GetSceneController().AddMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", __instance.objectItem, filePath);
-                    __instance.itemInfo.panel.filePath = "";
+                    SaveBGTex(__instance, filePath);
                 }
                 else
                 {
