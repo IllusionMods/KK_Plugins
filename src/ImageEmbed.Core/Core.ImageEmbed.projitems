@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>a18c34c6-1220-487a-8448-fc1a8251fc57</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Core.ImageEmbed</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.ImageEmbed.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.ImageEmbed.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.ImageEmbed.SceneController.cs" />
+  </ItemGroup>
+</Project>

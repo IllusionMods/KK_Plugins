@@ -3,347 +3,367 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_CharaMakerLoadedSound", "KK_CharaMakerLoadedSound\KK_CharaMakerLoadedSound.csproj", "{6463C4B8-12CE-496B-8578-48D424F61400}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.CharaMakerLoadedSound", "src\CharaMakerLoadedSound.KK\KK.CharaMakerLoadedSound.csproj", "{6463C4B8-12CE-496B-8578-48D424F61400}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_StudioSceneLoadedSound", "KK_StudioSceneLoadedSound\KK_StudioSceneLoadedSound.csproj", "{78D47E8D-B2F7-4D7C-8BE8-213E4394A1FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioSceneLoadedSound", "src\StudioSceneLoadedSound.KK\KK.StudioSceneLoadedSound.csproj", "{78D47E8D-B2F7-4D7C-8BE8-213E4394A1FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ForceHighPoly", "KK_ForceHighPoly\KK_ForceHighPoly.csproj", "{650F4B0A-BE99-495B-84B0-0999AFEC670D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ForceHighPoly", "src\ForceHighPoly.KK\KK.ForceHighPoly.csproj", "{650F4B0A-BE99-495B-84B0-0999AFEC670D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_TestPlugin", "KK_TestPlugin\KK_TestPlugin.csproj", "{F9805D18-DD1B-4817-BBB0-5107873975F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.TestPlugin", "src\TestPlugin.KK\KK.TestPlugin.csproj", "{F9805D18-DD1B-4817-BBB0-5107873975F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ReloadCharaListOnChange", "KK_ReloadCharaListOnChange\KK_ReloadCharaListOnChange.csproj", "{C2C68AC3-CB8F-4BA7-91EA-9A242851294D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ReloadCharaListOnChange", "src\ReloadCharaListOnChange.KK\KK.ReloadCharaListOnChange.csproj", "{C2C68AC3-CB8F-4BA7-91EA-9A242851294D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_InvisibleBody", "KK_InvisibleBody\KK_InvisibleBody.csproj", "{17B56A36-764F-4670-941A-B0CB76558F37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.InvisibleBody", "src\InvisibleBody.KK\KK.InvisibleBody.csproj", "{17B56A36-764F-4670-941A-B0CB76558F37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_InputHotkeyBlock", "KK_InputHotkeyBlock\KK_InputHotkeyBlock.csproj", "{3557D31C-F7F1-4FC6-BB2F-4360CD50152A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.InputHotkeyBlock", "src\InputHotkeyBlock.KK\KK.InputHotkeyBlock.csproj", "{3557D31C-F7F1-4FC6-BB2F-4360CD50152A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_UncensorSelector", "KK_UncensorSelector\KK_UncensorSelector.csproj", "{190FE08F-1D2E-4615-8555-F036D5E48587}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.UncensorSelector", "src\UncensorSelector.KK\KK.UncensorSelector.csproj", "{190FE08F-1D2E-4615-8555-F036D5E48587}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_Subtitles", "KK_Subtitles\KK_Subtitles.csproj", "{AECDBBFB-B520-4589-AB30-EDB96F5354F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.Subtitles", "src\Subtitles.KK\KK.Subtitles.csproj", "{AECDBBFB-B520-4589-AB30-EDB96F5354F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_AnimationController", "KK_AnimationController\KK_AnimationController.csproj", "{6BAA3E18-20B2-41D3-BCFC-FE13E9D5C2C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.AnimationController", "src\AnimationController.KK\KK.AnimationController.csproj", "{6BAA3E18-20B2-41D3-BCFC-FE13E9D5C2C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ClothingUnlocker", "KK_ClothingUnlocker\KK_ClothingUnlocker.csproj", "{F0772D38-CABB-4E99-9C5A-336F5DA499CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ClothingUnlocker", "src\ClothingUnlocker.KK\KK.ClothingUnlocker.csproj", "{F0772D38-CABB-4E99-9C5A-336F5DA499CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_HairAccessoryCustomizer", "KK_HairAccessoryCustomizer\KK_HairAccessoryCustomizer.csproj", "{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.HairAccessoryCustomizer", "src\HairAccessoryCustomizer.KK\KK.HairAccessoryCustomizer.csproj", "{D9C3E165-10AB-4561-9D23-35DE4E91ADDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_Colliders", "KK_Colliders\KK_Colliders.csproj", "{3D3A1302-C529-4D07-97A4-02C23560A547}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.Colliders", "src\Colliders.KK\KK.Colliders.csproj", "{3D3A1302-C529-4D07-97A4-02C23560A547}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_FreeHRandom", "KK_FreeHRandom\KK_FreeHRandom.csproj", "{A59CF955-A07B-4EF1-A9B5-169E0CE750DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.FreeHRandom", "src\FreeHRandom.KK\KK.FreeHRandom.csproj", "{A59CF955-A07B-4EF1-A9B5-169E0CE750DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_EyeShaking", "KK_EyeShaking\KK_EyeShaking.csproj", "{7B514B4E-A0BC-4DA9-B2A8-0B72515E8033}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.EyeShaking", "src\EyeShaking.KK\KK.EyeShaking.csproj", "{7B514B4E-A0BC-4DA9-B2A8-0B72515E8033}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_AnimationOverdrive", "KK_ANIMATIONOVERDRIVE\KK_AnimationOverdrive.csproj", "{D7FABE27-7568-49B1-A81A-CDCE5708970F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.AnimationOverdrive", "src\ANIMATIONOVERDRIVE.KK\KK.AnimationOverdrive.csproj", "{D7FABE27-7568-49B1-A81A-CDCE5708970F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_HCharaAdjustment", "KK_HCharaAdjustment\KK_HCharaAdjustment.csproj", "{42F4CCEE-063C-482F-AEE7-5E8D34433C95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.HCharaAdjustment", "src\HCharaAdjustment.KK\KK.HCharaAdjustment.csproj", "{42F4CCEE-063C-482F-AEE7-5E8D34433C95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_RandomCharacterGenerator", "KK_RandomCharacterGenerator\KK_RandomCharacterGenerator.csproj", "{7E21E1CC-356E-41BB-ABDD-BD0F99710361}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.RandomCharacterGenerator", "src\RandomCharacterGenerator.KK\KK.RandomCharacterGenerator.csproj", "{7E21E1CC-356E-41BB-ABDD-BD0F99710361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_PoseFolders", "KK_PoseFolders\KK_PoseFolders.csproj", "{4F27E216-A311-469C-891A-8E57F330A68F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.PoseFolders", "src\PoseFolders.KK\KK.PoseFolders.csproj", "{4F27E216-A311-469C-891A-8E57F330A68F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ListOverride", "KK_ListOverride\KK_ListOverride.csproj", "{F609A9F5-E889-4729-9982-5E08FEBBF53E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ListOverride", "src\ListOverride.KK\KK.ListOverride.csproj", "{F609A9F5-E889-4729-9982-5E08FEBBF53E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_HairAccessoryCustomizer", "EC_HairAccessoryCustomizer\EC_HairAccessoryCustomizer.csproj", "{89FE73CD-0973-4E53-A29A-634C5926D7A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.HairAccessoryCustomizer", "src\HairAccessoryCustomizer.EC\EC.HairAccessoryCustomizer.csproj", "{89FE73CD-0973-4E53-A29A-634C5926D7A1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HairAccessoryCustomizer", "HairAccessoryCustomizer", "{6249F14A-AEBF-4683-AC7E-64458FC9F6D5}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_HairAccessoryCustomizer", "Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.shproj", "{C71A1776-100B-49C9-A944-ED54C4312591}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.HairAccessoryCustomizer", "src\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.shproj", "{C71A1776-100B-49C9-A944-ED54C4312591}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_Demosaic", "EC_Demosaic\EC_Demosaic.csproj", "{46FCD429-D43B-4E0C-879D-46760202C288}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.Demosaic", "src\Demosaic.EC\EC.Demosaic.csproj", "{46FCD429-D43B-4E0C-879D-46760202C288}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InvisibleBody", "InvisibleBody", "{CE8EA04B-6351-40C4-97AB-24CAE7020DCB}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_InvisibleBody", "Core_InvisibleBody\Core_InvisibleBody.shproj", "{C15B8820-0E24-452B-B076-1A052DD7C0FB}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.InvisibleBody", "src\InvisibleBody.Core\Core.InvisibleBody.shproj", "{C15B8820-0E24-452B-B076-1A052DD7C0FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_InvisibleBody", "EC_InvisibleBody\EC_InvisibleBody.csproj", "{6B1C1B2B-C74E-4C53-B019-5DFBA3BA3F75}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.InvisibleBody", "src\InvisibleBody.EC\EC.InvisibleBody.csproj", "{6B1C1B2B-C74E-4C53-B019-5DFBA3BA3F75}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UncensorSelector", "UncensorSelector", "{74A0EB97-BF27-453D-B01D-DC0CDC60BC19}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_UncensorSelector", "Core_UncensorSelector\Core_UncensorSelector.shproj", "{EA82BB52-404C-416A-9BF8-A36A90F6DA93}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.UncensorSelector", "src\UncensorSelector.Core\Core.UncensorSelector.shproj", "{EA82BB52-404C-416A-9BF8-A36A90F6DA93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_UncensorSelector", "EC_UncensorSelector\EC_UncensorSelector.csproj", "{587A82DD-6BC1-481A-B979-5CA6D247CF69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.UncensorSelector", "src\UncensorSelector.EC\EC.UncensorSelector.csproj", "{587A82DD-6BC1-481A-B979-5CA6D247CF69}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_ClothingUnlocker", "Core_ClothingUnlocker\Core_ClothingUnlocker.shproj", "{0F7181C7-8D52-4576-9BFF-D4B7D08F42A2}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.ClothingUnlocker", "src\ClothingUnlocker.Core\Core.ClothingUnlocker.shproj", "{0F7181C7-8D52-4576-9BFF-D4B7D08F42A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_ClothingUnlocker", "EC_ClothingUnlocker\EC_ClothingUnlocker.csproj", "{AAE2BDC4-4CAB-4677-8F02-3290B6061097}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.ClothingUnlocker", "src\ClothingUnlocker.EC\EC.ClothingUnlocker.csproj", "{AAE2BDC4-4CAB-4677-8F02-3290B6061097}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClothingUnlocker", "ClothingUnlocker", "{DC6F7D25-B687-42EF-93E7-0A241E3FD905}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UIUtility", "UIUtility\UIUtility.shproj", "{E6EF7A17-9328-4821-AF19-BC2C175BF4DD}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UIUtility", "src\UIUtility\UIUtility.shproj", "{E6EF7A17-9328-4821-AF19-BC2C175BF4DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_MaterialEditor", "KK_MaterialEditor\KK_MaterialEditor.csproj", "{B743E048-5913-4DEC-9067-8AFD1293A211}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.MaterialEditor", "src\MaterialEditor.KK\KK.MaterialEditor.csproj", "{B743E048-5913-4DEC-9067-8AFD1293A211}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "CommonCode\Shared.shproj", "{841FFFF7-1940-4B7B-B21F-83E2F16333D4}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "src\Shared\Shared.shproj", "{841FFFF7-1940-4B7B-B21F-83E2F16333D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_MaleJuice", "KK_MaleJuice\KK_MaleJuice.csproj", "{8A811717-0CD1-4541-BD67-A0210586E4D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.MaleJuice", "src\MaleJuice.KK\KK.MaleJuice.csproj", "{8A811717-0CD1-4541-BD67-A0210586E4D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_FKIK", "KK_FKIK\KK_FKIK.csproj", "{90D733A9-3148-428D-AD87-E633A2A3A28B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.FKIK", "src\FKIK.KK\KK.FKIK.csproj", "{90D733A9-3148-428D-AD87-E633A2A3A28B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_StudioObjectMoveHotkeys", "KK_StudioObjectMoveHotkeys\KK_StudioObjectMoveHotkeys.csproj", "{BAA2D7C3-88F1-440D-A620-E0E4BC3ACCEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioObjectMoveHotkeys", "src\StudioObjectMoveHotkeys.KK\KK.StudioObjectMoveHotkeys.csproj", "{BAA2D7C3-88F1-440D-A620-E0E4BC3ACCEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS_Subtitles", "HS_Subtitles\HS_Subtitles.csproj", "{F28FC29B-5CD1-4AEA-9E93-03BC9BE51360}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS.Subtitles", "src\Subtitles.HS\HS.Subtitles.csproj", "{F28FC29B-5CD1-4AEA-9E93-03BC9BE51360}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Subtitles", "Subtitles", "{A17C16DF-D157-4751-94E7-686FD22E1DAC}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_Subtitles", "Core_Subtitles\Core_Subtitles.shproj", "{9B492E05-5822-4BB0-BE28-A468D1F318AB}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.Subtitles", "src\Subtitles.Core\Core.Subtitles.shproj", "{9B492E05-5822-4BB0-BE28-A468D1F318AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MaterialEditor", "MaterialEditor", "{2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_MaterialEditor", "Core_MaterialEditor\Core_MaterialEditor.shproj", "{5A8FDB27-FFCA-4A77-AB0F-AFDEF9A034ED}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MaterialEditor", "src\MaterialEditor.Core\Core.MaterialEditor.shproj", "{5A8FDB27-FFCA-4A77-AB0F-AFDEF9A034ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_MaterialEditor", "EC_MaterialEditor\EC_MaterialEditor.csproj", "{25E45F23-4D1D-4CD0-B0BC-653C8AE1C561}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.MaterialEditor", "src\MaterialEditor.EC\EC.MaterialEditor.csproj", "{25E45F23-4D1D-4CD0-B0BC-653C8AE1C561}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_Subtitles", "AI_Subtitles\AI_Subtitles.csproj", "{CAD079E9-566D-4933-8390-10476A337347}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.Subtitles", "src\Subtitles.AI\AI.Subtitles.csproj", "{CAD079E9-566D-4933-8390-10476A337347}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_Demosaic", "AI_Demosaic\AI_Demosaic.csproj", "{93A50359-A48F-4A3F-BDB8-86D2A320A99E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.Demosaic", "src\Demosaic.AI\AI.Demosaic.csproj", "{93A50359-A48F-4A3F-BDB8-86D2A320A99E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demosaic", "Demosaic", "{2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_Demosaic", "Core_Demosaic\Core_Demosaic.shproj", "{CB53DB90-AC91-4DBC-95A5-2729F177D3F7}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.Demosaic", "src\Demosaic.Core\Core.Demosaic.shproj", "{CB53DB90-AC91-4DBC-95A5-2729F177D3F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_Demosaic", "KK_Demosaic\KK_Demosaic.csproj", "{DFF56DBE-9617-48E7-9DAB-213890DBEE6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.Demosaic", "src\Demosaic.KK\KK.Demosaic.csproj", "{DFF56DBE-9617-48E7-9DAB-213890DBEE6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_MaterialEditor", "AI_MaterialEditor\AI_MaterialEditor.csproj", "{36247DAB-4F43-4007-9856-03971A475D8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.MaterialEditor", "src\MaterialEditor.AI\AI.MaterialEditor.csproj", "{36247DAB-4F43-4007-9856-03971A475D8F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InputHotkeyBlock", "InputHotkeyBlock", "{06544F1F-7504-40FB-B614-B8B50B6D790D}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_InputHotkeyBlock", "Core_InputHotkeyBlock\Core_InputHotkeyBlock.shproj", "{8E430F6C-8222-4F1B-950F-4D5595DDF7F7}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.InputHotkeyBlock", "src\InputHotkeyBlock.Core\Core.InputHotkeyBlock.shproj", "{8E430F6C-8222-4F1B-950F-4D5595DDF7F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_InputHotkeyBlock", "AI_InputHotkeyBlock\AI_InputHotkeyBlock.csproj", "{BC2D1E37-D3C2-4225-8CE4-2E116E84E365}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.InputHotkeyBlock", "src\InputHotkeyBlock.AI\AI.InputHotkeyBlock.csproj", "{BC2D1E37-D3C2-4225-8CE4-2E116E84E365}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_InputHotkeyBlock", "EC_InputHotkeyBlock\EC_InputHotkeyBlock.csproj", "{6BC022E8-B0BF-4A6A-8A0D-D3CE0A9D8E5A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.InputHotkeyBlock", "src\InputHotkeyBlock.EC\EC.InputHotkeyBlock.csproj", "{6BC022E8-B0BF-4A6A-8A0D-D3CE0A9D8E5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_UncensorSelector", "AI_UncensorSelector\AI_UncensorSelector.csproj", "{F89251CB-3FB1-439E-84D4-3CF9310FECAC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.UncensorSelector", "src\UncensorSelector.AI\AI.UncensorSelector.csproj", "{F89251CB-3FB1-439E-84D4-3CF9310FECAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_InvisibleBody", "AI_InvisibleBody\AI_InvisibleBody.csproj", "{B43D16F2-1542-423F-BA3C-C6ABC82C4281}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.InvisibleBody", "src\InvisibleBody.AI\AI.InvisibleBody.csproj", "{B43D16F2-1542-423F-BA3C-C6ABC82C4281}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_InvisibleBody_Studio", "Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.shproj", "{81DE7D3B-A8A0-43C2-AC9D-F65AC528B997}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.InvisibleBody.Studio", "src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.shproj", "{81DE7D3B-A8A0-43C2-AC9D-F65AC528B997}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PoseFolders", "PoseFolders", "{6F0DF0B5-3EC0-40D1-8874-6960D8377E6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_PoseFolders", "AI_PoseFolders\AI_PoseFolders.csproj", "{7162D8CC-6EFC-411A-87B3-656BADA98468}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.PoseFolders", "src\PoseFolders.AI\AI.PoseFolders.csproj", "{7162D8CC-6EFC-411A-87B3-656BADA98468}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_PoseFolders", "Core_PoseFolders\Core_PoseFolders.shproj", "{FDA2A8D5-C989-4A94-9A61-E6B60746D4B8}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.PoseFolders", "src\PoseFolders.Core\Core.PoseFolders.shproj", "{FDA2A8D5-C989-4A94-9A61-E6B60746D4B8}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_MaterialEditor_Studio", "Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.shproj", "{CAB936A6-622D-4498-BB82-A6CAB53541E4}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MaterialEditor.Studio", "src\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.shproj", "{CAB936A6-622D-4498-BB82-A6CAB53541E4}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_UncensorSelector_Studio", "Core_UncensorSelector_Studio\Core_UncensorSelector_Studio.shproj", "{A5E0B487-CF0F-41D1-BBC8-A4B72CA62564}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.UncensorSelector.Studio", "src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.shproj", "{A5E0B487-CF0F-41D1-BBC8-A4B72CA62564}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioObjectMoveHotkeys", "StudioObjectMoveHotkeys", "{5890839F-EACD-4DE3-89CB-A75CFC94BA85}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_StudioObjectMoveHotkeys", "Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.shproj", "{25352133-33B7-41E0-867A-D07C613AC3E9}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioObjectMoveHotkeys", "src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.shproj", "{25352133-33B7-41E0-867A-D07C613AC3E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_StudioObjectMoveHotkeys", "AI_StudioObjectMoveHotkeys\AI_StudioObjectMoveHotkeys.csproj", "{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.StudioObjectMoveHotkeys", "src\StudioObjectMoveHotkeys.AI\AI.StudioObjectMoveHotkeys.csproj", "{F1103E35-DBB1-4431-A8F6-8208CC0C65BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FKIK", "FKIK", "{781E2AFE-9DB0-4403-83A5-F0F327EDB9FB}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_FKIK", "Core_FKIK\Core_FKIK.shproj", "{81D88C3E-4094-436C-8EED-BA18A81A96A4}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.FKIK", "src\FKIK.Core\Core.FKIK.shproj", "{81D88C3E-4094-436C-8EED-BA18A81A96A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_FKIK", "AI_FKIK\AI_FKIK.csproj", "{144F9206-641B-40C1-8464-BC035B255DD4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.FKIK", "src\FKIK.AI\AI.FKIK.csproj", "{144F9206-641B-40C1-8464-BC035B255DD4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Colliders", "Colliders", "{39BE0BD8-0A15-4BDC-AF84-34206D210891}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_Colliders", "Core_Colliders\Core_Colliders.shproj", "{C6216940-6935-4AF3-B542-760D01B086CD}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.Colliders", "src\Colliders.Core\Core.Colliders.shproj", "{C6216940-6935-4AF3-B542-760D01B086CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_Colliders", "AI_Colliders\AI_Colliders.csproj", "{83D27765-5C0A-4909-B4DC-FB6B20ECE642}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.Colliders", "src\Colliders.AI\AI.Colliders.csproj", "{83D27765-5C0A-4909-B4DC-FB6B20ECE642}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AnimationController", "AnimationController", "{877CDF4C-3018-40BD-BDBB-4B6039FB42CB}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_AnimationController", "Core_AnimationController\Core_AnimationController.shproj", "{0A702757-CE40-48FE-BED1-00BE3B717417}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_AnimationController", "AI_AnimationController\AI_AnimationController.csproj", "{BCF83F6E-CBE1-438E-96CA-A832B42519E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.AnimationController", "src\AnimationController.AI\AI.AnimationController.csproj", "{BCF83F6E-CBE1-438E-96CA-A832B42519E6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AnimationOverdrive", "AnimationOverdrive", "{E209182D-50F5-4081-89DF-1CF337A5AD64}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_AnimationOverdrive", "Core_AnimationOverdrive\Core_AnimationOverdrive.shproj", "{93BDA08C-F6D2-44BB-B872-BA0F0A16D46B}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.AnimationOverdrive", "src\AnimationOverdrive.Core\Core.AnimationOverdrive.shproj", "{93BDA08C-F6D2-44BB-B872-BA0F0A16D46B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_AnimationOverdrive", "AI_AnimationOverdrive\AI_AnimationOverdrive.csproj", "{F32BA203-579F-413B-8F31-13AD03F5E6D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.AnimationOverdrive", "src\AnimationOverdrive.AI\AI.AnimationOverdrive.csproj", "{F32BA203-579F-413B-8F31-13AD03F5E6D5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioSceneLoadedSound", "StudioSceneLoadedSound", "{92DF1BEE-7CB1-449B-873A-21988E061EFB}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_StudioSceneLoadedSound", "Core_StudioSceneLoadedSound\Core_StudioSceneLoadedSound.shproj", "{46C0C1ED-0307-4D93-97D5-D71A8D682EEA}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioSceneLoadedSound", "src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.shproj", "{46C0C1ED-0307-4D93-97D5-D71A8D682EEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_StudioSceneLoadedSound", "AI_StudioSceneLoadedSound\AI_StudioSceneLoadedSound.csproj", "{CEE04077-20C2-4AAE-9E45-930695AB03E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.StudioSceneLoadedSound", "src\StudioSceneLoadedSound.AI\AI.StudioSceneLoadedSound.csproj", "{CEE04077-20C2-4AAE-9E45-930695AB03E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CharacterExport", "CharacterExport", "{6D137D85-8775-4AAD-AE6D-7EDC762D7075}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_CharacterExport", "KK_CharacterExport\KK_CharacterExport.csproj", "{8BDAD525-960E-4E93-9333-F782985C4F99}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.CharacterExport", "src\CharacterExport.KK\KK.CharacterExport.csproj", "{8BDAD525-960E-4E93-9333-F782985C4F99}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_CharacterExport", "Core_CharacterExport\Core_CharacterExport.shproj", "{C88FBFE5-655F-4746-987C-E2826759F883}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.CharacterExport", "src\CharacterExport.Core\Core.CharacterExport.shproj", "{C88FBFE5-655F-4746-987C-E2826759F883}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_CharacterExport", "AI_CharacterExport\AI_CharacterExport.csproj", "{5FEA4668-1430-413B-B744-8951A4C07745}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.CharacterExport", "src\CharacterExport.AI\AI.CharacterExport.csproj", "{5FEA4668-1430-413B-B744-8951A4C07745}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_CharacterExport", "EC_CharacterExport\EC_CharacterExport.csproj", "{74C4A9B4-93DB-49DE-ADA1-84C9586D62D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.CharacterExport", "src\CharacterExport.EC\EC.CharacterExport.csproj", "{74C4A9B4-93DB-49DE-ADA1-84C9586D62D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_Pushup", "KK_Pushup\KK_Pushup.csproj", "{770F33BC-7C92-4059-A4AF-9A958CEE6BDE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.Pushup", "src\Pushup.KK\KK.Pushup.csproj", "{770F33BC-7C92-4059-A4AF-9A958CEE6BDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_StudioSceneSettings", "KK_StudioSceneSettings\KK_StudioSceneSettings.csproj", "{808EEDEC-4707-45A1-929C-9E5506180204}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioSceneSettings", "src\StudioSceneSettings.KK\KK.StudioSceneSettings.csproj", "{808EEDEC-4707-45A1-929C-9E5506180204}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioSceneSettings", "StudioSceneSettings", "{F5ECA275-79C3-473E-8383-1607F2B52992}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_StudioSceneSettings", "Core_StudioSceneSettings\Core_StudioSceneSettings.shproj", "{3AE01CD8-4B89-4C17-8840-3153A4FA8EF7}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioSceneSettings", "src\StudioSceneSettings.Core\Core.StudioSceneSettings.shproj", "{3AE01CD8-4B89-4C17-8840-3153A4FA8EF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_StudioSceneSettings", "AI_StudioSceneSettings\AI_StudioSceneSettings.csproj", "{002AA641-4DC8-4FEF-83DD-A7FAB3AF6DAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.StudioSceneSettings", "src\StudioSceneSettings.AI\AI.StudioSceneSettings.csproj", "{002AA641-4DC8-4FEF-83DD-A7FAB3AF6DAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_PoseQuickLoad", "KK_PoseQuickLoad\KK_PoseQuickLoad.csproj", "{472A10CF-2CA5-4846-8CC1-18D72A2D87F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.PoseQuickLoad", "src\PoseQuickLoad.KK\KK.PoseQuickLoad.csproj", "{472A10CF-2CA5-4846-8CC1-18D72A2D87F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PoseQuickLoad", "PoseQuickLoad", "{6B49D5D9-B6B1-4636-BE4F-561369C67722}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_PoseQuickLoad", "Core_PoseQuickLoad\Core_PoseQuickLoad.shproj", "{E011FB17-92B1-4302-BA02-F5DD9A9D9DE0}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.PoseQuickLoad", "src\PoseQuickLoad.Core\Core.PoseQuickLoad.shproj", "{E011FB17-92B1-4302-BA02-F5DD9A9D9DE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_PoseQuickLoad", "AI_PoseQuickLoad\AI_PoseQuickLoad.csproj", "{EADDF585-D0D5-4764-8F74-630137582436}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.PoseQuickLoad", "src\PoseQuickLoad.AI\AI.PoseQuickLoad.csproj", "{EADDF585-D0D5-4764-8F74-630137582436}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageEmbed", "ImageEmbed", "{DC55FD1E-6198-4D37-B99B-5F1AB44B0470}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_ImageEmbed", "KK_ImageEmbed\KK_ImageEmbed.csproj", "{B341B2C7-F24F-46FE-8C34-CD4AE6CE7646}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ImageEmbed", "src\ImageEmbed.KK\KK.ImageEmbed.csproj", "{B341B2C7-F24F-46FE-8C34-CD4AE6CE7646}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core_ImageEmbed", "Core_ImageEmbed\Core_ImageEmbed.shproj", "{A18C34C6-1220-487A-8448-FC1A8251FC57}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.ImageEmbed", "src\ImageEmbed.Core\Core.ImageEmbed.shproj", "{A18C34C6-1220-487A-8448-FC1A8251FC57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_ImageEmbed", "AI_ImageEmbed\AI_ImageEmbed.csproj", "{4B2A5873-42E3-446F-B986-6B57693928C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.ImageEmbed", "src\ImageEmbed.AI\AI.ImageEmbed.csproj", "{4B2A5873-42E3-446F-B986-6B57693928C7}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.TextureContainer", "Shared.TextureContainer\Shared.TextureContainer.shproj", "{BEB828AE-5723-4086-940F-B6EB2465060C}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.TextureContainer", "src\Shared.TextureContainer\Shared.TextureContainer.shproj", "{BEB828AE-5723-4086-940F-B6EB2465060C}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.AnimationController", "src\AnimationController.Core\Core.AnimationController.shproj", "{4E6812C6-5D1D-425B-9F58-629EF35004FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CharaMakerLoadedSound", "CharaMakerLoadedSound", "{28131092-2FE4-4763-A925-F0A315905AA8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EyeShaking", "EyeShaking", "{5D7E0E8E-6D1E-4142-9234-DE2761E68BB4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ForceHighPoly", "ForceHighPoly", "{9992C08D-7742-4D65-8253-3FA9C76D0510}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FreeHRandom", "FreeHRandom", "{6A2D13AE-71DD-4DAB-9A22-66CF8A4F2AB8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HCharaAdjustment", "HCharaAdjustment", "{9E76D215-1746-499F-A231-3058CE315737}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ListOverride", "ListOverride", "{92D6BBE9-6621-4054-8A1E-B7FAD0B28EEC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MaleJuice", "MaleJuice", "{0D9A7DD7-BF28-4205-8620-4D554009E96F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pushup", "Pushup", "{521B03C0-E174-4217-8832-4CA34D0BAFE0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RandomCharacterGenerator", "RandomCharacterGenerator", "{DF8AC77E-F7A3-4A32-9B2E-EF73D3F68D12}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReloadCharaListOnChange", "ReloadCharaListOnChange", "{74D9C2ED-06F3-41D4-88EA-EB7A664157B3}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		CommonCode\CommonCode.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
-		Core_StudioSceneSettings\Core_StudioSceneSettings.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
-		Core_AnimationController\Core_AnimationController.projitems*{0a702757-ce40-48fe-bed1-00be3b717417}*SharedItemsImports = 13
-		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{144f9206-641b-40c1-8464-bc035b255dd4}*SharedItemsImports = 4
-		Core_FKIK\Core_FKIK.projitems*{144f9206-641b-40c1-8464-bc035b255dd4}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
-		Core_InvisibleBody\Core_InvisibleBody.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
-		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
-		Core_UncensorSelector\Core_UncensorSelector.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
-		Core_UncensorSelector_Studio\Core_UncensorSelector_Studio.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
-		Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.projitems*{25352133-33b7-41e0-867a-d07c613ac3e9}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
-		Core_MaterialEditor\Core_MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
-		Shared.TextureContainer\Shared.TextureContainer.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
-		UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
-		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
-		Core_MaterialEditor\Core_MaterialEditor.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
-		Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
-		Shared.TextureContainer\Shared.TextureContainer.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
-		UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
-		Core_StudioSceneSettings\Core_StudioSceneSettings.projitems*{3ae01cd8-4b89-4c17-8840-3153a4fa8ef7}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
-		Core_Colliders\Core_Colliders.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{42f4ccee-063c-482f-aee7-5e8d34433c95}*SharedItemsImports = 4
-		Core_StudioSceneLoadedSound\Core_StudioSceneLoadedSound.projitems*{46c0c1ed-0307-4d93-97d5-d71a8d682eea}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
-		Core_Demosaic\Core_Demosaic.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
-		Core_PoseQuickLoad\Core_PoseQuickLoad.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
-		Core_ImageEmbed\Core_ImageEmbed.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
-		Core_PoseFolders\Core_PoseFolders.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
-		Core_UncensorSelector\Core_UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
-		Core_MaterialEditor\Core_MaterialEditor.projitems*{5a8fdb27-ffca-4a77-ab0f-afdef9a034ed}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{5fea4668-1430-413b-b744-8951a4c07745}*SharedItemsImports = 4
-		Core_CharacterExport\Core_CharacterExport.projitems*{5fea4668-1430-413b-b744-8951a4c07745}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{6463c4b8-12ce-496b-8578-48d424f61400}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{650f4b0a-be99-495b-84b0-0999afec670d}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
-		Core_InvisibleBody\Core_InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 4
-		Core_AnimationController\Core_AnimationController.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{6bc022e8-b0bf-4a6a-8a0d-d3ce0a9d8e5a}*SharedItemsImports = 4
-		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{6bc022e8-b0bf-4a6a-8a0d-d3ce0a9d8e5a}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
-		Core_PoseFolders\Core_PoseFolders.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{74c4a9b4-93db-49de-ada1-84c9586d62d1}*SharedItemsImports = 4
-		Core_CharacterExport\Core_CharacterExport.projitems*{74c4a9b4-93db-49de-ada1-84c9586d62d1}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{770f33bc-7c92-4059-a4af-9a958cee6bde}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 4
-		Core_StudioSceneLoadedSound\Core_StudioSceneLoadedSound.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{7b514b4e-a0bc-4da9-b2a8-0b72515e8033}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{7e21e1cc-356e-41bb-abdd-bd0f99710361}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{808eedec-4707-45a1-929c-9e5506180204}*SharedItemsImports = 4
-		Core_StudioSceneSettings\Core_StudioSceneSettings.projitems*{808eedec-4707-45a1-929c-9e5506180204}*SharedItemsImports = 4
-		Core_FKIK\Core_FKIK.projitems*{81d88c3e-4094-436c-8eed-ba18a81a96a4}*SharedItemsImports = 13
-		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{81de7d3b-a8a0-43c2-ac9d-f65ac528b997}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
-		Core_Colliders\Core_Colliders.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
-		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{8a811717-0cd1-4541-bd67-a0210586e4d0}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{8bdad525-960e-4e93-9333-f782985c4f99}*SharedItemsImports = 4
-		Core_CharacterExport\Core_CharacterExport.projitems*{8bdad525-960e-4e93-9333-f782985c4f99}*SharedItemsImports = 4
-		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{8e430f6c-8222-4f1b-950f-4d5595ddf7f7}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
-		Core_FKIK\Core_FKIK.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
-		Core_Demosaic\Core_Demosaic.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
-		Core_AnimationOverdrive\Core_AnimationOverdrive.projitems*{93bda08c-f6d2-44bb-b872-ba0f0a16d46b}*SharedItemsImports = 13
-		Core_Subtitles\Core_Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
-		Core_ImageEmbed\Core_ImageEmbed.projitems*{a18c34c6-1220-487a-8448-fc1a8251fc57}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
-		UIUtility\UIUtility.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
-		Core_UncensorSelector_Studio\Core_UncensorSelector_Studio.projitems*{a5e0b487-cf0f-41d1-bbc8-a4b72ca62564}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
-		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
-		Core_Subtitles\Core_Subtitles.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
-		Core_ImageEmbed\Core_ImageEmbed.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
-		Core_InvisibleBody\Core_InvisibleBody.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
-		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
-		Core_MaterialEditor\Core_MaterialEditor.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
-		Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
-		Shared.TextureContainer\Shared.TextureContainer.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
-		UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
-		Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{bc2d1e37-d3c2-4225-8ce4-2e116e84e365}*SharedItemsImports = 4
-		Core_InputHotkeyBlock\Core_InputHotkeyBlock.projitems*{bc2d1e37-d3c2-4225-8ce4-2e116e84e365}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{bcf83f6e-cbe1-438e-96ca-a832b42519e6}*SharedItemsImports = 4
-		Core_AnimationController\Core_AnimationController.projitems*{bcf83f6e-cbe1-438e-96ca-a832b42519e6}*SharedItemsImports = 4
-		Shared.TextureContainer\Shared.TextureContainer.projitems*{beb828ae-5723-4086-940f-b6eb2465060c}*SharedItemsImports = 13
-		Core_InvisibleBody\Core_InvisibleBody.projitems*{c15b8820-0e24-452b-b076-1a052dd7c0fb}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{c2c68ac3-cb8f-4ba7-91ea-9a242851294d}*SharedItemsImports = 4
-		Core_Colliders\Core_Colliders.projitems*{c6216940-6935-4af3-b542-760d01b086cd}*SharedItemsImports = 13
-		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{c71a1776-100b-49c9-a944-ed54c4312591}*SharedItemsImports = 13
-		Core_CharacterExport\Core_CharacterExport.projitems*{c88fbfe5-655f-4746-987c-e2826759f883}*SharedItemsImports = 13
-		Core_MaterialEditor_Studio\Core_MaterialEditor_Studio.projitems*{cab936a6-622d-4498-bb82-a6cab53541e4}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{cad079e9-566d-4933-8390-10476a337347}*SharedItemsImports = 4
-		Core_Subtitles\Core_Subtitles.projitems*{cad079e9-566d-4933-8390-10476a337347}*SharedItemsImports = 4
-		Core_Demosaic\Core_Demosaic.projitems*{cb53db90-ac91-4dbc-95a5-2729f177d3f7}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{cee04077-20c2-4aae-9e45-930695ab03e8}*SharedItemsImports = 4
-		Core_StudioSceneLoadedSound\Core_StudioSceneLoadedSound.projitems*{cee04077-20c2-4aae-9e45-930695ab03e8}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
-		Core_AnimationOverdrive\Core_AnimationOverdrive.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
-		Core_HairAccessoryCustomizer\Core_HairAccessoryCustomizer.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{dff56dbe-9617-48e7-9dab-213890dbee6a}*SharedItemsImports = 4
-		Core_Demosaic\Core_Demosaic.projitems*{dff56dbe-9617-48e7-9dab-213890dbee6a}*SharedItemsImports = 4
-		Core_PoseQuickLoad\Core_PoseQuickLoad.projitems*{e011fb17-92b1-4302-ba02-f5dd9a9d9de0}*SharedItemsImports = 13
-		UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
-		Core_UncensorSelector\Core_UncensorSelector.projitems*{ea82bb52-404c-416a-9bf8-a36a90f6da93}*SharedItemsImports = 13
-		CommonCode\CommonCode.projitems*{eaddf585-d0d5-4764-8f74-630137582436}*SharedItemsImports = 4
-		Core_PoseQuickLoad\Core_PoseQuickLoad.projitems*{eaddf585-d0d5-4764-8f74-630137582436}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{f0772d38-cabb-4e99-9c5a-336f5da499cb}*SharedItemsImports = 4
-		Core_ClothingUnlocker\Core_ClothingUnlocker.projitems*{f0772d38-cabb-4e99-9c5a-336f5da499cb}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{f1103e35-dbb1-4431-a8f6-8208cc0c65bd}*SharedItemsImports = 4
-		Core_StudioObjectMoveHotkeys\Core_StudioObjectMoveHotkeys.projitems*{f1103e35-dbb1-4431-a8f6-8208cc0c65bd}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{f28fc29b-5cd1-4aea-9e93-03bc9be51360}*SharedItemsImports = 4
-		Core_Subtitles\Core_Subtitles.projitems*{f28fc29b-5cd1-4aea-9e93-03bc9be51360}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{f32ba203-579f-413b-8f31-13ad03f5e6d5}*SharedItemsImports = 4
-		Core_AnimationOverdrive\Core_AnimationOverdrive.projitems*{f32ba203-579f-413b-8f31-13ad03f5e6d5}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{f609a9f5-e889-4729-9982-5e08febbf53e}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
-		Core_UncensorSelector\Core_UncensorSelector.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
-		Core_UncensorSelector_Studio\Core_UncensorSelector_Studio.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
-		CommonCode\CommonCode.projitems*{f9805d18-dd1b-4817-bbb0-5107873975f2}*SharedItemsImports = 4
-		Core_PoseFolders\Core_PoseFolders.projitems*{fda2a8d5-c989-4a94-9a61-e6b60746d4b8}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
+		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
+		src\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
+		src\FKIK.Core\Core.FKIK.projitems*{144f9206-641b-40c1-8464-bc035b255dd4}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{144f9206-641b-40c1-8464-bc035b255dd4}*SharedItemsImports = 4
+		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
+		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{17b56a36-764f-4670-941a-b0cb76558f37}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
+		src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
+		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
+		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{25352133-33b7-41e0-867a-d07c613ac3e9}*SharedItemsImports = 13
+		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\InputHotkeyBlock.Core\Core.InputHotkeyBlock.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
+		src\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{3ae01cd8-4b89-4c17-8840-3153a4fa8ef7}*SharedItemsImports = 13
+		src\Colliders.Core\Core.Colliders.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{42f4ccee-063c-482f-aee7-5e8d34433c95}*SharedItemsImports = 4
+		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{46c0c1ed-0307-4d93-97d5-d71a8d682eea}*SharedItemsImports = 13
+		src\Demosaic.Core\Core.Demosaic.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
+		src\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
+		src\ImageEmbed.Core\Core.ImageEmbed.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
+		src\AnimationController.Core\Core.AnimationController.projitems*{4e6812c6-5d1d-425b-9f58-629ef35004fd}*SharedItemsImports = 13
+		src\PoseFolders.Core\Core.PoseFolders.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
+		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
+		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{5a8fdb27-ffca-4a77-ab0f-afdef9a034ed}*SharedItemsImports = 13
+		src\CharacterExport.Core\Core.CharacterExport.projitems*{5fea4668-1430-413b-b744-8951a4c07745}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{5fea4668-1430-413b-b744-8951a4c07745}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{6463c4b8-12ce-496b-8578-48d424f61400}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{650f4b0a-be99-495b-84b0-0999afec670d}*SharedItemsImports = 4
+		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
+		src\AnimationController.Core\Core.AnimationController.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 4
+		src\InputHotkeyBlock.Core\Core.InputHotkeyBlock.projitems*{6bc022e8-b0bf-4a6a-8a0d-d3ce0a9d8e5a}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{6bc022e8-b0bf-4a6a-8a0d-d3ce0a9d8e5a}*SharedItemsImports = 4
+		src\PoseFolders.Core\Core.PoseFolders.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
+		src\CharacterExport.Core\Core.CharacterExport.projitems*{74c4a9b4-93db-49de-ada1-84c9586d62d1}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{74c4a9b4-93db-49de-ada1-84c9586d62d1}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{770f33bc-7c92-4059-a4af-9a958cee6bde}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 4
+		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{7b514b4e-a0bc-4da9-b2a8-0b72515e8033}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{7e21e1cc-356e-41bb-abdd-bd0f99710361}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{808eedec-4707-45a1-929c-9e5506180204}*SharedItemsImports = 4
+		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{808eedec-4707-45a1-929c-9e5506180204}*SharedItemsImports = 4
+		src\FKIK.Core\Core.FKIK.projitems*{81d88c3e-4094-436c-8eed-ba18a81a96a4}*SharedItemsImports = 13
+		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{81de7d3b-a8a0-43c2-ac9d-f65ac528b997}*SharedItemsImports = 13
+		src\Colliders.Core\Core.Colliders.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
+		src\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{8a811717-0cd1-4541-bd67-a0210586e4d0}*SharedItemsImports = 4
+		src\CharacterExport.Core\Core.CharacterExport.projitems*{8bdad525-960e-4e93-9333-f782985c4f99}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{8bdad525-960e-4e93-9333-f782985c4f99}*SharedItemsImports = 4
+		src\InputHotkeyBlock.Core\Core.InputHotkeyBlock.projitems*{8e430f6c-8222-4f1b-950f-4d5595ddf7f7}*SharedItemsImports = 13
+		src\FKIK.Core\Core.FKIK.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
+		src\Demosaic.Core\Core.Demosaic.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
+		src\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems*{93bda08c-f6d2-44bb-b872-ba0f0a16d46b}*SharedItemsImports = 13
+		src\Subtitles.Core\Core.Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
+		src\ImageEmbed.Core\Core.ImageEmbed.projitems*{a18c34c6-1220-487a-8448-fc1a8251fc57}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
+		src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems*{a5e0b487-cf0f-41d1-bbc8-a4b72ca62564}*SharedItemsImports = 13
+		src\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
+		src\Subtitles.Core\Core.Subtitles.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
+		src\ImageEmbed.Core\Core.ImageEmbed.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
+		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
+		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
+		src\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
+		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
+		src\InputHotkeyBlock.Core\Core.InputHotkeyBlock.projitems*{bc2d1e37-d3c2-4225-8ce4-2e116e84e365}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{bc2d1e37-d3c2-4225-8ce4-2e116e84e365}*SharedItemsImports = 4
+		src\AnimationController.Core\Core.AnimationController.projitems*{bcf83f6e-cbe1-438e-96ca-a832b42519e6}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{bcf83f6e-cbe1-438e-96ca-a832b42519e6}*SharedItemsImports = 4
+		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{beb828ae-5723-4086-940f-b6eb2465060c}*SharedItemsImports = 13
+		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{c15b8820-0e24-452b-b076-1a052dd7c0fb}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{c2c68ac3-cb8f-4ba7-91ea-9a242851294d}*SharedItemsImports = 4
+		src\Colliders.Core\Core.Colliders.projitems*{c6216940-6935-4af3-b542-760d01b086cd}*SharedItemsImports = 13
+		src\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.projitems*{c71a1776-100b-49c9-a944-ed54c4312591}*SharedItemsImports = 13
+		src\CharacterExport.Core\Core.CharacterExport.projitems*{c88fbfe5-655f-4746-987c-e2826759f883}*SharedItemsImports = 13
+		src\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems*{cab936a6-622d-4498-bb82-a6cab53541e4}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{cad079e9-566d-4933-8390-10476a337347}*SharedItemsImports = 4
+		src\Subtitles.Core\Core.Subtitles.projitems*{cad079e9-566d-4933-8390-10476a337347}*SharedItemsImports = 4
+		src\Demosaic.Core\Core.Demosaic.projitems*{cb53db90-ac91-4dbc-95a5-2729f177d3f7}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{cee04077-20c2-4aae-9e45-930695ab03e8}*SharedItemsImports = 4
+		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{cee04077-20c2-4aae-9e45-930695ab03e8}*SharedItemsImports = 4
+		src\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
+		src\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
+		src\Demosaic.Core\Core.Demosaic.projitems*{dff56dbe-9617-48e7-9dab-213890dbee6a}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{dff56dbe-9617-48e7-9dab-213890dbee6a}*SharedItemsImports = 4
+		src\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems*{e011fb17-92b1-4302-ba02-f5dd9a9d9de0}*SharedItemsImports = 13
+		src\UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
+		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{ea82bb52-404c-416a-9bf8-a36a90f6da93}*SharedItemsImports = 13
+		src\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems*{eaddf585-d0d5-4764-8f74-630137582436}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{eaddf585-d0d5-4764-8f74-630137582436}*SharedItemsImports = 4
+		src\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems*{f0772d38-cabb-4e99-9c5a-336f5da499cb}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f0772d38-cabb-4e99-9c5a-336f5da499cb}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f1103e35-dbb1-4431-a8f6-8208cc0c65bd}*SharedItemsImports = 4
+		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{f1103e35-dbb1-4431-a8f6-8208cc0c65bd}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f28fc29b-5cd1-4aea-9e93-03bc9be51360}*SharedItemsImports = 4
+		src\Subtitles.Core\Core.Subtitles.projitems*{f28fc29b-5cd1-4aea-9e93-03bc9be51360}*SharedItemsImports = 4
+		src\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems*{f32ba203-579f-413b-8f31-13ad03f5e6d5}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f32ba203-579f-413b-8f31-13ad03f5e6d5}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f609a9f5-e889-4729-9982-5e08febbf53e}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
+		src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
+		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f9805d18-dd1b-4817-bbb0-5107873975f2}*SharedItemsImports = 4
+		src\PoseFolders.Core\Core.PoseFolders.projitems*{fda2a8d5-c989-4a94-9a61-e6b60746d4b8}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -579,7 +599,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{6463C4B8-12CE-496B-8578-48D424F61400} = {28131092-2FE4-4763-A925-F0A315905AA8}
 		{78D47E8D-B2F7-4D7C-8BE8-213E4394A1FA} = {92DF1BEE-7CB1-449B-873A-21988E061EFB}
+		{650F4B0A-BE99-495B-84B0-0999AFEC670D} = {9992C08D-7742-4D65-8253-3FA9C76D0510}
+		{C2C68AC3-CB8F-4BA7-91EA-9A242851294D} = {74D9C2ED-06F3-41D4-88EA-EB7A664157B3}
 		{17B56A36-764F-4670-941A-B0CB76558F37} = {CE8EA04B-6351-40C4-97AB-24CAE7020DCB}
 		{3557D31C-F7F1-4FC6-BB2F-4360CD50152A} = {06544F1F-7504-40FB-B614-B8B50B6D790D}
 		{190FE08F-1D2E-4615-8555-F036D5E48587} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
@@ -588,8 +611,13 @@ Global
 		{F0772D38-CABB-4E99-9C5A-336F5DA499CB} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{D9C3E165-10AB-4561-9D23-35DE4E91ADDB} = {6249F14A-AEBF-4683-AC7E-64458FC9F6D5}
 		{3D3A1302-C529-4D07-97A4-02C23560A547} = {39BE0BD8-0A15-4BDC-AF84-34206D210891}
+		{A59CF955-A07B-4EF1-A9B5-169E0CE750DA} = {6A2D13AE-71DD-4DAB-9A22-66CF8A4F2AB8}
+		{7B514B4E-A0BC-4DA9-B2A8-0B72515E8033} = {5D7E0E8E-6D1E-4142-9234-DE2761E68BB4}
 		{D7FABE27-7568-49B1-A81A-CDCE5708970F} = {E209182D-50F5-4081-89DF-1CF337A5AD64}
+		{42F4CCEE-063C-482F-AEE7-5E8D34433C95} = {9E76D215-1746-499F-A231-3058CE315737}
+		{7E21E1CC-356E-41BB-ABDD-BD0F99710361} = {DF8AC77E-F7A3-4A32-9B2E-EF73D3F68D12}
 		{4F27E216-A311-469C-891A-8E57F330A68F} = {6F0DF0B5-3EC0-40D1-8874-6960D8377E6D}
+		{F609A9F5-E889-4729-9982-5E08FEBBF53E} = {92D6BBE9-6621-4054-8A1E-B7FAD0B28EEC}
 		{89FE73CD-0973-4E53-A29A-634C5926D7A1} = {6249F14A-AEBF-4683-AC7E-64458FC9F6D5}
 		{C71A1776-100B-49C9-A944-ED54C4312591} = {6249F14A-AEBF-4683-AC7E-64458FC9F6D5}
 		{46FCD429-D43B-4E0C-879D-46760202C288} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
@@ -600,6 +628,7 @@ Global
 		{0F7181C7-8D52-4576-9BFF-D4B7D08F42A2} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{AAE2BDC4-4CAB-4677-8F02-3290B6061097} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{B743E048-5913-4DEC-9067-8AFD1293A211} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
+		{8A811717-0CD1-4541-BD67-A0210586E4D0} = {0D9A7DD7-BF28-4205-8620-4D554009E96F}
 		{90D733A9-3148-428D-AD87-E633A2A3A28B} = {781E2AFE-9DB0-4403-83A5-F0F327EDB9FB}
 		{BAA2D7C3-88F1-440D-A620-E0E4BC3ACCEC} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
 		{F28FC29B-5CD1-4AEA-9E93-03BC9BE51360} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
@@ -627,7 +656,6 @@ Global
 		{144F9206-641B-40C1-8464-BC035B255DD4} = {781E2AFE-9DB0-4403-83A5-F0F327EDB9FB}
 		{C6216940-6935-4AF3-B542-760D01B086CD} = {39BE0BD8-0A15-4BDC-AF84-34206D210891}
 		{83D27765-5C0A-4909-B4DC-FB6B20ECE642} = {39BE0BD8-0A15-4BDC-AF84-34206D210891}
-		{0A702757-CE40-48FE-BED1-00BE3B717417} = {877CDF4C-3018-40BD-BDBB-4B6039FB42CB}
 		{BCF83F6E-CBE1-438E-96CA-A832B42519E6} = {877CDF4C-3018-40BD-BDBB-4B6039FB42CB}
 		{93BDA08C-F6D2-44BB-B872-BA0F0A16D46B} = {E209182D-50F5-4081-89DF-1CF337A5AD64}
 		{F32BA203-579F-413B-8F31-13AD03F5E6D5} = {E209182D-50F5-4081-89DF-1CF337A5AD64}
@@ -637,6 +665,7 @@ Global
 		{C88FBFE5-655F-4746-987C-E2826759F883} = {6D137D85-8775-4AAD-AE6D-7EDC762D7075}
 		{5FEA4668-1430-413B-B744-8951A4C07745} = {6D137D85-8775-4AAD-AE6D-7EDC762D7075}
 		{74C4A9B4-93DB-49DE-ADA1-84C9586D62D1} = {6D137D85-8775-4AAD-AE6D-7EDC762D7075}
+		{770F33BC-7C92-4059-A4AF-9A958CEE6BDE} = {521B03C0-E174-4217-8832-4CA34D0BAFE0}
 		{808EEDEC-4707-45A1-929C-9E5506180204} = {F5ECA275-79C3-473E-8383-1607F2B52992}
 		{3AE01CD8-4B89-4C17-8840-3153A4FA8EF7} = {F5ECA275-79C3-473E-8383-1607F2B52992}
 		{002AA641-4DC8-4FEF-83DD-A7FAB3AF6DAF} = {F5ECA275-79C3-473E-8383-1607F2B52992}
@@ -646,6 +675,7 @@ Global
 		{B341B2C7-F24F-46FE-8C34-CD4AE6CE7646} = {DC55FD1E-6198-4D37-B99B-5F1AB44B0470}
 		{A18C34C6-1220-487A-8448-FC1A8251FC57} = {DC55FD1E-6198-4D37-B99B-5F1AB44B0470}
 		{4B2A5873-42E3-446F-B986-6B57693928C7} = {DC55FD1E-6198-4D37-B99B-5F1AB44B0470}
+		{4E6812C6-5D1D-425B-9F58-629EF35004FD} = {877CDF4C-3018-40BD-BDBB-4B6039FB42CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
