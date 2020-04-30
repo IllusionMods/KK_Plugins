@@ -88,7 +88,7 @@ namespace KK_Plugins
         /// <param name="format">TextureFormat</param>
         /// <param name="mipmaps">Whether to generate mipmaps</param>
         /// <returns></returns>
-        private static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.BC7, bool mipmaps = true)
+        private static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
         {
             if (texBytes == null || texBytes.Length == 0) return null;
 
