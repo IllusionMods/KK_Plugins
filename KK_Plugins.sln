@@ -240,7 +240,6 @@ Global
 		Core_PoseQuickLoad\Core_PoseQuickLoad.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
 		Core_ImageEmbed\Core_ImageEmbed.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
-		Shared.TextureContainer\Shared.TextureContainer.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
 		Core_PoseFolders\Core_PoseFolders.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
@@ -294,7 +293,6 @@ Global
 		Core_Subtitles\Core_Subtitles.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
 		Core_ImageEmbed\Core_ImageEmbed.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
-		Shared.TextureContainer\Shared.TextureContainer.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
 		CommonCode\CommonCode.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
 		Core_InvisibleBody\Core_InvisibleBody.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
 		Core_InvisibleBody_Studio\Core_InvisibleBody_Studio.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4

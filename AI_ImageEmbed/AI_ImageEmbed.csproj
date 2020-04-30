@@ -97,7 +97,6 @@
   </ItemGroup>
   <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
   <Import Project="..\Core_ImageEmbed\Core_ImageEmbed.projitems" Label="Shared" />
-  <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" AI</PostBuildEvent>
