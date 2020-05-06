@@ -82,6 +82,8 @@
   <ItemGroup>
     <Compile Include="KK.MaterialEditor.cs" />
     <Compile Include="KK.MaterialEditor.Hooks.cs" />
+    <Compile Include="KK.MaterialEditor.Maker.cs" />
+    <Compile Include="KK.MaterialEditor.Studio.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />
@@ -103,6 +105,8 @@
   <Import Project="..\MaterialEditor.Core\Core.MaterialEditor.projitems" Label="Shared" />
   <Import Project="..\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems" Label="Shared" />
   <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />
+  <Import Project="..\Core.MaterialEditor.UI\Core.MaterialEditor.UI.projitems" Label="Shared" />
+  <Import Project="..\Core.MaterialEditor.Maker\Core.MaterialEditor.Maker.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KK</PostBuildEvent>

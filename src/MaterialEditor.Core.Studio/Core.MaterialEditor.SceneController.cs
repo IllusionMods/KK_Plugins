@@ -9,756 +9,833 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using static KK_Plugins.MaterialEditor.MaterialAPI;
 
-namespace KK_Plugins
+namespace KK_Plugins.MaterialEditor
 {
-    public partial class MaterialEditor
+    public class SceneController : SceneCustomFunctionController
     {
-        public class MaterialEditorSceneController : SceneCustomFunctionController
+        private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
+        private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
+        private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
+        private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
+        private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
+
+        private static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
+
+        private static string FileToSet;
+        private static string PropertyToSet;
+        private static string MatToSet;
+        private static int IDToSet = 0;
+        private static GameObject GameObjectToSet;
+
+        protected override void OnSceneSave()
         {
-            private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
-            private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
-            private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
-            private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
-            private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
+            var data = new PluginData();
 
-            private static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
+            List<int> IDsToPurge = new List<int>();
+            foreach (int texID in TextureDictionary.Keys)
+                if (!MaterialTexturePropertyList.Any(x => x.TexID == texID))
+                    IDsToPurge.Add(texID);
 
-            private static string FileToSet;
-            private static string PropertyToSet;
-            private static string MatToSet;
-            private static int IDToSet = 0;
-            private static GameObject GameObjectToSet;
+            foreach (int texID in IDsToPurge)
+                TextureDictionary.Remove(texID);
 
-            protected override void OnSceneSave()
+            if (TextureDictionary.Count > 0)
+                data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+            else
+                data.data.Add(nameof(TextureDictionary), null);
+
+            if (RendererPropertyList.Count > 0)
+                data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
+            else
+                data.data.Add(nameof(RendererPropertyList), null);
+
+            if (MaterialFloatPropertyList.Count > 0)
+                data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(MaterialFloatPropertyList));
+            else
+                data.data.Add(nameof(MaterialFloatPropertyList), null);
+
+            if (MaterialColorPropertyList.Count > 0)
+                data.data.Add(nameof(MaterialColorPropertyList), MessagePackSerializer.Serialize(MaterialColorPropertyList));
+            else
+                data.data.Add(nameof(MaterialColorPropertyList), null);
+
+            if (MaterialTexturePropertyList.Count > 0)
+                data.data.Add(nameof(MaterialTexturePropertyList), MessagePackSerializer.Serialize(MaterialTexturePropertyList));
+            else
+                data.data.Add(nameof(MaterialTexturePropertyList), null);
+
+            if (MaterialShaderList.Count > 0)
+                data.data.Add(nameof(MaterialShaderList), MessagePackSerializer.Serialize(MaterialShaderList));
+            else
+                data.data.Add(nameof(MaterialShaderList), null);
+
+            SetExtendedData(data);
+        }
+
+        protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
+        {
+            var data = GetExtendedData();
+
+            if (operation == SceneOperationKind.Clear || operation == SceneOperationKind.Load)
             {
-                var data = new PluginData();
-                if (data == null)
-                    return;
-
-                List<int> IDsToPurge = new List<int>();
-                foreach (int texID in TextureDictionary.Keys)
-                    if (!MaterialTexturePropertyList.Any(x => x.TexID == texID))
-                        IDsToPurge.Add(texID);
-
-                foreach (int texID in IDsToPurge)
-                    TextureDictionary.Remove(texID);
-
-                if (TextureDictionary.Count > 0)
-                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
-                else
-                    data.data.Add(nameof(TextureDictionary), null);
-
-                if (RendererPropertyList.Count > 0)
-                    data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
-                else
-                    data.data.Add(nameof(RendererPropertyList), null);
-
-                if (MaterialFloatPropertyList.Count > 0)
-                    data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(MaterialFloatPropertyList));
-                else
-                    data.data.Add(nameof(MaterialFloatPropertyList), null);
-
-                if (MaterialColorPropertyList.Count > 0)
-                    data.data.Add(nameof(MaterialColorPropertyList), MessagePackSerializer.Serialize(MaterialColorPropertyList));
-                else
-                    data.data.Add(nameof(MaterialColorPropertyList), null);
-
-                if (MaterialTexturePropertyList.Count > 0)
-                    data.data.Add(nameof(MaterialTexturePropertyList), MessagePackSerializer.Serialize(MaterialTexturePropertyList));
-                else
-                    data.data.Add(nameof(MaterialTexturePropertyList), null);
-
-                if (MaterialShaderList.Count > 0)
-                    data.data.Add(nameof(MaterialShaderList), MessagePackSerializer.Serialize(MaterialShaderList));
-                else
-                    data.data.Add(nameof(MaterialShaderList), null);
-
-                SetExtendedData(data);
+                RendererPropertyList.Clear();
+                MaterialFloatPropertyList.Clear();
+                MaterialColorPropertyList.Clear();
+                MaterialTexturePropertyList.Clear();
+                MaterialShaderList.Clear();
+                TextureDictionary.Clear();
             }
 
-            protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
-            {
-                var data = GetExtendedData();
+            if (data == null) return;
+            if (operation == SceneOperationKind.Clear) return;
 
-                if (operation == SceneOperationKind.Clear || operation == SceneOperationKind.Load)
-                {
-                    RendererPropertyList.Clear();
-                    MaterialFloatPropertyList.Clear();
-                    MaterialColorPropertyList.Clear();
-                    MaterialTexturePropertyList.Clear();
-                    MaterialShaderList.Clear();
-                    TextureDictionary.Clear();
-                }
+            var importDictionary = new Dictionary<int, int>();
 
-                if (data == null)
-                    return;
+            if (operation == SceneOperationKind.Load)
+                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
+                    TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureContainer(pair.Value));
 
-                var importDictionary = new Dictionary<int, int>();
+            if (operation == SceneOperationKind.Import)
+                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
+                    foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
+                        importDictionary[x.Key] = SetAndGetTextureID(x.Value);
 
-                if (operation == SceneOperationKind.Load)
-                    if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureContainer(pair.Value));
-
-                if (operation == SceneOperationKind.Import)
-                    if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                        foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
-                            importDictionary[x.Key] = SetAndGetTextureID(x.Value);
-
-                if (operation == SceneOperationKind.Clear)
-                    return;
-
-                if (data.data.TryGetValue(nameof(MaterialShaderList), out var shaderProperties) && shaderProperties != null)
-                    foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])shaderProperties))
-                        if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        {
-                            bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName, ObjectType.StudioItem);
-                            bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue, ObjectType.StudioItem);
-                            if (setShader || setRenderQueue)
-                                MaterialShaderList.Add(new MaterialShader(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
-                        }
-
-                if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
-                    foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
-                        if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                            if (SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, int.Parse(loadedProperty.Value), ObjectType.StudioItem))
-                                RendererPropertyList.Add(new RendererProperty(GetObjectID(objectCtrlInfo), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
-
-                if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
-                    foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
-                        if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                            if (SetFloatProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
-                                MaterialFloatPropertyList.Add(new MaterialFloatProperty(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
-
-                if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
-                    foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
-                        if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                            if (SetColorProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
-                                MaterialColorPropertyList.Add(new MaterialColorProperty(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
-
-                if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
-                    foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
-                        if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        {
-                            int? texID = null;
-                            if (operation == SceneOperationKind.Import)
-                            {
-                                if (loadedProperty.TexID != null)
-                                    texID = importDictionary[(int)loadedProperty.TexID];
-                            }
-                            else
-                                texID = loadedProperty.TexID;
-
-                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
-
-                            bool setTex = false;
-                            if (newTextureProperty.TexID != null)
-                                setTex = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem);
-
-                            bool setOffset = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Offset, newTextureProperty.Offset, ObjectType.StudioItem);
-                            bool setScale = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Scale, newTextureProperty.Scale, ObjectType.StudioItem);
-
-                            if (setTex || setOffset || setScale)
-                                MaterialTexturePropertyList.Add(newTextureProperty);
-                        }
-            }
-
-            protected override void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems)
-            {
-                List<RendererProperty> rendererPropertyListNew = new List<RendererProperty>();
-                List<MaterialFloatProperty> materialFloatPropertyListNew = new List<MaterialFloatProperty>();
-                List<MaterialColorProperty> materialColorPropertyListNew = new List<MaterialColorProperty>();
-                List<MaterialTextureProperty> materialTexturePropertyListNew = new List<MaterialTextureProperty>();
-                List<MaterialShader> materialShaderListNew = new List<MaterialShader>();
-
-                foreach (var copiedItem in copiedItems)
-                {
-                    if (copiedItem.Value is OCIItem ociItem)
+            if (data.data.TryGetValue(nameof(MaterialShaderList), out var shaderProperties) && shaderProperties != null)
+                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])shaderProperties))
+                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                     {
-                        foreach (var loadedProperty in MaterialShaderList.Where(x => x.ID == copiedItem.Key))
+                        bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName);
+                        bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue);
+                        if (setShader || setRenderQueue)
+                            MaterialShaderList.Add(new MaterialShader(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                    }
+
+            if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
+                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
+                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                        if (SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, int.Parse(loadedProperty.Value)))
+                            RendererPropertyList.Add(new RendererProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+
+            if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
+                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
+                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                        if (SetFloatProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                            MaterialFloatPropertyList.Add(new MaterialFloatProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+
+            if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
+                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
+                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                        if (SetColorProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                            MaterialColorPropertyList.Add(new MaterialColorProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+
+            if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
+                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
+                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                    {
+                        int? texID = null;
+                        if (operation == SceneOperationKind.Import)
                         {
-                            bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName, ObjectType.StudioItem);
-                            bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue, ObjectType.StudioItem);
-                            if (setShader || setRenderQueue)
-                                materialShaderListNew.Add(new MaterialShader(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
-                        }
-
-                        foreach (var loadedProperty in RendererPropertyList.Where(x => x.ID == copiedItem.Key))
-                            if (SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
-                                rendererPropertyListNew.Add(new RendererProperty(copiedItem.Value.GetSceneId(), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
-
-                        foreach (var loadedProperty in MaterialFloatPropertyList.Where(x => x.ID == copiedItem.Key))
-                            if (SetFloatProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
-                                materialFloatPropertyListNew.Add(new MaterialFloatProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
-
-                        foreach (var loadedProperty in MaterialColorPropertyList.Where(x => x.ID == copiedItem.Key))
-                            if (SetColorProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, ObjectType.StudioItem))
-                                materialColorPropertyListNew.Add(new MaterialColorProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
-
-                        foreach (var loadedProperty in MaterialTexturePropertyList.Where(x => x.ID == copiedItem.Key))
-                        {
-                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
-
-                            bool setTex = false;
                             if (loadedProperty.TexID != null)
-                                setTex = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture, ObjectType.StudioItem);
-
-                            bool setOffset = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Offset, newTextureProperty.Offset, ObjectType.StudioItem);
-                            bool setScale = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Scale, newTextureProperty.Scale, ObjectType.StudioItem);
-
-                            if (setTex || setOffset || setScale)
-                                materialTexturePropertyListNew.Add(newTextureProperty);
-                        }
-                    }
-                }
-
-                RendererPropertyList.AddRange(rendererPropertyListNew);
-                MaterialFloatPropertyList.AddRange(materialFloatPropertyListNew);
-                MaterialColorPropertyList.AddRange(materialColorPropertyListNew);
-                MaterialTexturePropertyList.AddRange(materialTexturePropertyListNew);
-                MaterialShaderList.AddRange(materialShaderListNew);
-            }
-
-            internal void Update()
-            {
-                try
-                {
-                    if (!FileToSet.IsNullOrEmpty())
-                        AddMaterialTexturePropertyFromFile(IDToSet, MatToSet, PropertyToSet, GameObjectToSet, FileToSet);
-                }
-                catch
-                {
-                    Logger.Log(BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message, "Failed to load texture.");
-                }
-                finally
-                {
-                    FileToSet = null;
-                    PropertyToSet = null;
-                    MatToSet = null;
-                    GameObjectToSet = null;
-                }
-            }
-
-            internal void ItemDeleteEvent(int ID)
-            {
-                RendererPropertyList.RemoveAll(x => x.ID == ID);
-                MaterialFloatPropertyList.RemoveAll(x => x.ID == ID);
-                MaterialColorPropertyList.RemoveAll(x => x.ID == ID);
-                MaterialTexturePropertyList.RemoveAll(x => x.ID == ID);
-                MaterialShaderList.RemoveAll(x => x.ID == ID);
-            }
-            /// <summary>
-            /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
-            /// </summary>
-            private static int SetAndGetTextureID(byte[] textureBytes)
-            {
-                int highestID = 0;
-                foreach (var tex in TextureDictionary)
-                    if (tex.Value.Data.SequenceEqual(textureBytes))
-                        return tex.Key;
-                    else if (tex.Key > highestID)
-                        highestID = tex.Key;
-
-                highestID++;
-                TextureDictionary.Add(highestID, new TextureContainer(textureBytes));
-                return highestID;
-            }
-
-            public void AddRendererProperty(int id, string rendererName, RendererProperties property, string value, string valueOriginal)
-            {
-                var rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == rendererName);
-                if (rendererProperty == null)
-                    RendererPropertyList.Add(new RendererProperty(id, rendererName, property, value, valueOriginal));
-                else
-                {
-                    if (value == rendererProperty.ValueOriginal)
-                        RendererPropertyList.Remove(rendererProperty);
-                    else
-                        rendererProperty.Value = value;
-                }
-            }
-            public string GetRendererPropertyValue(int id, string rendererName, RendererProperties property) =>
-                RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == rendererName)?.Value;
-            public string GetRendererPropertyValueOriginal(int id, string rendererName, RendererProperties property) =>
-                RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == rendererName)?.ValueOriginal;
-            public void RemoveRendererProperty(int id, string rendererName, RendererProperties property) =>
-                RendererPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.RendererName == rendererName);
-
-            public void AddMaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
-            {
-                var materialProperty = MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
-                if (materialProperty == null)
-                    MaterialFloatPropertyList.Add(new MaterialFloatProperty(id, materialName, property, value, valueOriginal));
-                else
-                {
-                    if (value == materialProperty.ValueOriginal)
-                        MaterialFloatPropertyList.Remove(materialProperty);
-                    else
-                        materialProperty.Value = value;
-                }
-            }
-            public string GetMaterialFloatPropertyValue(int id, string materialName, string property) =>
-                MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName)?.Value;
-            public string GetMaterialFloatPropertyValueOriginal(int id, string materialName, string property) =>
-                MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName)?.ValueOriginal;
-            public void RemoveMaterialFloatProperty(int id, string materialName, string property) =>
-                MaterialFloatPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
-
-            public void AddMaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal)
-            {
-                var colorProperty = MaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
-                if (colorProperty == null)
-                    MaterialColorPropertyList.Add(new MaterialColorProperty(id, materialName, property, value, valueOriginal));
-                else
-                {
-                    if (value == colorProperty.ValueOriginal)
-                        MaterialColorPropertyList.Remove(colorProperty);
-                    else
-                        colorProperty.Value = value;
-                }
-            }
-            public Color GetMaterialColorPropertyValue(int id, string materialName, string property)
-            {
-                if (MaterialColorPropertyList.Where(x => x.ID == id && x.Property == property && x.MaterialName == materialName).Count() == 0)
-                    return new Color(-1, -1, -1, -1);
-                return MaterialColorPropertyList.First(x => x.ID == id && x.Property == property && x.MaterialName == materialName).Value;
-            }
-            public Color GetMaterialColorPropertyValueOriginal(int id, string materialName, string property)
-            {
-                if (MaterialColorPropertyList.Where(x => x.ID == id && x.Property == property && x.MaterialName == materialName).Count() == 0)
-                    return new Color(-1, -1, -1, -1);
-                return MaterialColorPropertyList.First(x => x.ID == id && x.Property == property && x.MaterialName == materialName).ValueOriginal;
-            }
-            public void RemoveMaterialColorProperty(int id, string materialName, string property) =>
-                MaterialColorPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
-
-            public void AddMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal)
-            {
-                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
-                if (textureProperty == null)
-                {
-                    if (propertyType == TexturePropertyType.Offset)
-                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(id, materialName, property, offset: value, offsetOriginal: valueOriginal));
-                    else if (propertyType == TexturePropertyType.Scale)
-                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(id, materialName, property, scale: value, scaleOriginal: valueOriginal));
-                }
-                else
-                {
-                    if (propertyType == TexturePropertyType.Offset)
-                    {
-                        if (value == textureProperty.OffsetOriginal)
-                        {
-                            textureProperty.Offset = null;
-                            textureProperty.OffsetOriginal = null;
-                            if (textureProperty.NullCheck())
-                                MaterialTexturePropertyList.Remove(textureProperty);
+                                texID = importDictionary[(int)loadedProperty.TexID];
                         }
                         else
-                        {
-                            textureProperty.Offset = value;
-                            textureProperty.OffsetOriginal = valueOriginal;
-                        }
+                            texID = loadedProperty.TexID;
+
+                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+
+                        bool setTex = false;
+                        if (newTextureProperty.TexID != null)
+                            setTex = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture);
+
+                        bool setOffset = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Offset, newTextureProperty.Offset);
+                        bool setScale = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Scale, newTextureProperty.Scale);
+
+                        if (setTex || setOffset || setScale)
+                            MaterialTexturePropertyList.Add(newTextureProperty);
                     }
-                    else if (propertyType == TexturePropertyType.Scale)
+        }
+
+        protected override void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems)
+        {
+            List<RendererProperty> rendererPropertyListNew = new List<RendererProperty>();
+            List<MaterialFloatProperty> materialFloatPropertyListNew = new List<MaterialFloatProperty>();
+            List<MaterialColorProperty> materialColorPropertyListNew = new List<MaterialColorProperty>();
+            List<MaterialTextureProperty> materialTexturePropertyListNew = new List<MaterialTextureProperty>();
+            List<MaterialShader> materialShaderListNew = new List<MaterialShader>();
+
+            foreach (var copiedItem in copiedItems)
+            {
+                if (copiedItem.Value is OCIItem ociItem)
+                {
+                    foreach (var loadedProperty in MaterialShaderList.Where(x => x.ID == copiedItem.Key))
                     {
-                        if (value == textureProperty.ScaleOriginal)
-                        {
-                            textureProperty.Scale = null;
-                            textureProperty.ScaleOriginal = null;
-                            if (textureProperty.NullCheck())
-                                MaterialTexturePropertyList.Remove(textureProperty);
-                        }
-                        else
-                        {
-                            textureProperty.Scale = value;
-                            textureProperty.ScaleOriginal = valueOriginal;
-                        }
+                        bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName);
+                        bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue);
+                        if (setShader || setRenderQueue)
+                            materialShaderListNew.Add(new MaterialShader(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                    }
+
+                    foreach (var loadedProperty in RendererPropertyList.Where(x => x.ID == copiedItem.Key))
+                        if (SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value))
+                            rendererPropertyListNew.Add(new RendererProperty(copiedItem.Value.GetSceneId(), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+
+                    foreach (var loadedProperty in MaterialFloatPropertyList.Where(x => x.ID == copiedItem.Key))
+                        if (SetFloatProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                            materialFloatPropertyListNew.Add(new MaterialFloatProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+
+                    foreach (var loadedProperty in MaterialColorPropertyList.Where(x => x.ID == copiedItem.Key))
+                        if (SetColorProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                            materialColorPropertyListNew.Add(new MaterialColorProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+
+                    foreach (var loadedProperty in MaterialTexturePropertyList.Where(x => x.ID == copiedItem.Key))
+                    {
+                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+
+                        bool setTex = false;
+                        if (loadedProperty.TexID != null)
+                            setTex = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture);
+
+                        bool setOffset = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Offset, newTextureProperty.Offset);
+                        bool setScale = SetTextureProperty(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TexturePropertyType.Scale, newTextureProperty.Scale);
+
+                        if (setTex || setOffset || setScale)
+                            materialTexturePropertyListNew.Add(newTextureProperty);
                     }
                 }
             }
 
-            public void AddMaterialTextureProperty(int id, string materialName, string property, GameObject go)
-            {
-                byte[] texBytes = null;
-                foreach (var rend in GetRendererList(go, ObjectType.StudioItem))
-                {
-                    foreach (var mat in rend.materials)
-                    {
-                        if (mat.NameFormatted() == materialName)
-                        {
-                            var tex = (Texture2D)mat.GetTexture($"_{property}");
-                            if (tex == null) continue;
-                            texBytes = tex.EncodeToPNG();
-                            goto ExitLoop;
-                        }
-                    }
-                }
-            ExitLoop:
-                if (texBytes == null) return;
+            RendererPropertyList.AddRange(rendererPropertyListNew);
+            MaterialFloatPropertyList.AddRange(materialFloatPropertyListNew);
+            MaterialColorPropertyList.AddRange(materialColorPropertyListNew);
+            MaterialTexturePropertyList.AddRange(materialTexturePropertyListNew);
+            MaterialShaderList.AddRange(materialShaderListNew);
+        }
 
-                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
-                if (textureProperty == null)
-                {
-                    textureProperty = new MaterialTextureProperty(id, materialName, property, SetAndGetTextureID(texBytes));
-                    MaterialTexturePropertyList.Add(textureProperty);
-                }
+        internal void Update()
+        {
+            try
+            {
+                if (!FileToSet.IsNullOrEmpty())
+                    AddMaterialTexturePropertyFromFile(IDToSet, MatToSet, PropertyToSet, GameObjectToSet, FileToSet);
+            }
+            catch
+            {
+                UI.Logger.Log(BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message, "Failed to load texture.");
+            }
+            finally
+            {
+                FileToSet = null;
+                PropertyToSet = null;
+                MatToSet = null;
+                GameObjectToSet = null;
+            }
+        }
+
+        internal void ItemDeleteEvent(int ID)
+        {
+            RendererPropertyList.RemoveAll(x => x.ID == ID);
+            MaterialFloatPropertyList.RemoveAll(x => x.ID == ID);
+            MaterialColorPropertyList.RemoveAll(x => x.ID == ID);
+            MaterialTexturePropertyList.RemoveAll(x => x.ID == ID);
+            MaterialShaderList.RemoveAll(x => x.ID == ID);
+        }
+        /// <summary>
+        /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
+        /// </summary>
+        private static int SetAndGetTextureID(byte[] textureBytes)
+        {
+            int highestID = 0;
+            foreach (var tex in TextureDictionary)
+                if (tex.Value.Data.SequenceEqual(textureBytes))
+                    return tex.Key;
+                else if (tex.Key > highestID)
+                    highestID = tex.Key;
+
+            highestID++;
+            TextureDictionary.Add(highestID, new TextureContainer(textureBytes));
+            return highestID;
+        }
+
+        public void AddRendererProperty(int id, string rendererName, RendererProperties property, string value, string valueOriginal)
+        {
+            var rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == rendererName);
+            if (rendererProperty == null)
+                RendererPropertyList.Add(new RendererProperty(id, rendererName, property, value, valueOriginal));
+            else
+            {
+                if (value == rendererProperty.ValueOriginal)
+                    RendererPropertyList.Remove(rendererProperty);
                 else
-                    textureProperty.Data = texBytes;
+                    rendererProperty.Value = value;
             }
-
-            public void AddMaterialTexturePropertyFromFileDialog(int id, string materialName, string property, GameObject go)
+        }
+        public void AddRendererProperty(int id, string rendererName, RendererProperties property, string value, string valueOriginal, GameObject gameObject, bool setProperty = true)
+        {
+            AddRendererProperty(id, rendererName, property, value, valueOriginal);
+            if (setProperty)
+                SetRendererProperty(gameObject, rendererName, property, value);
+        }
+        public string GetRendererPropertyValue(int id, string rendererName, RendererProperties property) =>
+            RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == rendererName)?.Value;
+        public string GetRendererPropertyValueOriginal(int id, string rendererName, RendererProperties property) =>
+            RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == rendererName)?.ValueOriginal;
+        public void RemoveRendererProperty(int id, string rendererName, RendererProperties property) =>
+            RendererPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.RendererName == rendererName);
+        public void RemoveRendererProperty(int id, string rendererName, RendererProperties property, GameObject gameObject, bool setProperty = true)
+        {
+            if (setProperty)
             {
-                OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, FileFilter, FileExt);
-
-                void OnFileAccept(string[] strings)
-                {
-                    if (strings == null || strings.Length == 0) return;
-                    if (strings[0].IsNullOrEmpty()) return;
-
-                    FileToSet = strings[0];
-                    PropertyToSet = property;
-                    MatToSet = materialName;
-                    GameObjectToSet = go;
-                    IDToSet = id;
-                }
+                var original = GetRendererPropertyValueOriginal(id, rendererName, property);
+                if (!original.IsNullOrEmpty())
+                    SetRendererProperty(gameObject, rendererName, RendererProperties.Enabled, original);
             }
-
-            public void AddMaterialTexturePropertyFromFile(int id, string materialName, string property, GameObject go, string filePath)
+            RemoveRendererProperty(id, rendererName, property);
+        }
+        public void AddMaterialFloatProperty(int id, string materialName, string property, float value, float valueOriginal) =>
+            AddMaterialFloatProperty(id, materialName, property, value.ToString(), valueOriginal.ToString());
+        public void AddMaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
+        {
+            var materialProperty = MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+            if (materialProperty == null)
+                MaterialFloatPropertyList.Add(new MaterialFloatProperty(id, materialName, property, value, valueOriginal));
+            else
             {
-                if (!File.Exists(filePath)) return;
-
-                var texBytes = File.ReadAllBytes(filePath);
-
-                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
-                if (textureProperty == null)
-                {
-                    textureProperty = new MaterialTextureProperty(id, materialName, property, SetAndGetTextureID(texBytes));
-                    MaterialTexturePropertyList.Add(textureProperty);
-                }
+                if (value == materialProperty.ValueOriginal)
+                    MaterialFloatPropertyList.Remove(materialProperty);
                 else
-                    textureProperty.Data = texBytes;
+                    materialProperty.Value = value;
+            }
+        }
+        public void AddMaterialFloatProperty(int id, string materialName, string property, float value, float valueOriginal, GameObject gameObject, bool setProperty = true) =>
+            AddMaterialFloatProperty(id, materialName, property, value.ToString(), valueOriginal.ToString(), gameObject, setProperty);
+        public void AddMaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal, GameObject gameObject, bool setProperty = true)
+        {
+            AddMaterialFloatProperty(id, materialName, property, value, valueOriginal);
+            if (setProperty)
+                SetFloatProperty(gameObject, materialName, property, value);
+        }
+        public string GetMaterialFloatPropertyValue(int id, string materialName, string property) =>
+            MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName)?.Value;
+        public string GetMaterialFloatPropertyValueOriginal(int id, string materialName, string property) =>
+            MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName)?.ValueOriginal;
+        public void RemoveMaterialFloatProperty(int id, string materialName, string property) =>
+            MaterialFloatPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+        public void RemoveMaterialFloatProperty(int id, string materialName, string property, GameObject gameObject, bool setProperty = true)
+        {
+            if (setProperty)
+            {
+                var original = GetMaterialFloatPropertyValueOriginal(id, materialName, property);
+                if (!original.IsNullOrEmpty())
+                    SetFloatProperty(gameObject, materialName, property, original);
+            }
+            RemoveMaterialFloatProperty(id, materialName, property);
+        }
+        public void AddMaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal)
+        {
+            var colorProperty = MaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+            if (colorProperty == null)
+                MaterialColorPropertyList.Add(new MaterialColorProperty(id, materialName, property, value, valueOriginal));
+            else
+            {
+                if (value == colorProperty.ValueOriginal)
+                    MaterialColorPropertyList.Remove(colorProperty);
+                else
+                    colorProperty.Value = value;
+            }
+        }
+        public void AddMaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal, GameObject gameObject, bool setProperty = true)
+        {
+            AddMaterialColorProperty(id, materialName, property, value, valueOriginal);
+            if (setProperty)
+                SetColorProperty(gameObject, materialName, property, value);
+        }
+        public Color? GetMaterialColorPropertyValue(int id, string materialName, string property) =>
+            MaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName)?.Value;
+        public Color? GetMaterialColorPropertyValueOriginal(int id, string materialName, string property) =>
+            MaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName)?.ValueOriginal;
+        public void RemoveMaterialColorProperty(int id, string materialName, string property) =>
+            MaterialColorPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+        public void RemoveMaterialColorProperty(int id, string materialName, string property, GameObject gameObject, bool setProperty = true)
+        {
+            if (setProperty)
+            {
+                var original = GetMaterialColorPropertyValueOriginal(id, materialName, property);
+                if (original != null)
+                    SetColorProperty(gameObject, materialName, property, (Color)original);
+            }
+            RemoveMaterialColorProperty(id, materialName, property);
+        }
 
-                SetTextureProperty(go, materialName, property, textureProperty.Texture, ObjectType.StudioItem);
-            }
-
-            public Vector2? GetMaterialTexturePropertyValue(int id, string materialName, string property, TexturePropertyType propertyType)
+        public void AddMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
+            if (textureProperty == null)
             {
-                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
                 if (propertyType == TexturePropertyType.Offset)
-                    return textureProperty?.Offset;
-                if (propertyType == TexturePropertyType.Scale)
-                    return textureProperty?.Scale;
-                if (propertyType == TexturePropertyType.Texture)
-                    return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
-                return null;
+                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(id, materialName, property, offset: value, offsetOriginal: valueOriginal));
+                else if (propertyType == TexturePropertyType.Scale)
+                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(id, materialName, property, scale: value, scaleOriginal: valueOriginal));
             }
-            public Vector2? GetMaterialTexturePropertyValueOriginal(int id, string materialName, string property, TexturePropertyType propertyType)
+            else
             {
-                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
                 if (propertyType == TexturePropertyType.Offset)
-                    return textureProperty?.OffsetOriginal;
-                if (propertyType == TexturePropertyType.Scale)
-                    return textureProperty?.ScaleOriginal;
-                if (propertyType == TexturePropertyType.Texture)
-                    return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
-                return null;
-            }
-            public void RemoveMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType, bool displayMessage = true)
-            {
-                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
-                if (textureProperty != null)
                 {
-                    if (propertyType == TexturePropertyType.Texture)
-                    {
-                        if (displayMessage)
-                            Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
-                        textureProperty.TexID = null;
-                        if (textureProperty.NullCheck())
-                            MaterialTexturePropertyList.Remove(textureProperty);
-                    }
-                    else if (propertyType == TexturePropertyType.Offset)
+                    if (value == textureProperty.OffsetOriginal)
                     {
                         textureProperty.Offset = null;
                         textureProperty.OffsetOriginal = null;
                         if (textureProperty.NullCheck())
                             MaterialTexturePropertyList.Remove(textureProperty);
                     }
-                    else if (propertyType == TexturePropertyType.Scale)
+                    else
+                    {
+                        textureProperty.Offset = value;
+                        textureProperty.OffsetOriginal = valueOriginal;
+                    }
+                }
+                else if (propertyType == TexturePropertyType.Scale)
+                {
+                    if (value == textureProperty.ScaleOriginal)
                     {
                         textureProperty.Scale = null;
                         textureProperty.ScaleOriginal = null;
                         if (textureProperty.NullCheck())
                             MaterialTexturePropertyList.Remove(textureProperty);
                     }
+                    else
+                    {
+                        textureProperty.Scale = value;
+                        textureProperty.ScaleOriginal = valueOriginal;
+                    }
                 }
             }
-            public void RemoveMaterialTextureProperty(int id, string materialName, string property, bool displayMessage = true)
-            {
-                if (displayMessage)
-                    Logger.LogMessage("Save and reload scene to refresh textures.");
-                MaterialTexturePropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
-            }
+        }
+        public void AddMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal, GameObject gameObject, bool setProperty = true)
+        {
+            AddMaterialTextureProperty(id, materialName, property, propertyType, value, valueOriginal);
+            if (setProperty)
+                SetTextureProperty(gameObject, materialName, property, propertyType, value);
+        }
 
-            public void AddMaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal)
+        public void AddMaterialTextureProperty(int id, string materialName, string property, GameObject go)
+        {
+            byte[] texBytes = null;
+            foreach (var rend in GetRendererList(go))
             {
-                var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName);
-                if (materialProperty == null)
-                    MaterialShaderList.Add(new MaterialShader(id, materialName, shaderName, shaderNameOriginal));
-                else
+                foreach (var mat in rend.sharedMaterials)
                 {
-                    if (shaderName == materialProperty.ShaderNameOriginal)
+                    if (mat.NameFormatted() == materialName)
                     {
-                        materialProperty.ShaderName = null;
-                        materialProperty.ShaderNameOriginal = null;
-                        if (materialProperty.NullCheck())
-                            MaterialShaderList.Remove(materialProperty);
-                    }
-                    else
-                    {
-                        materialProperty.ShaderName = shaderName;
-                        materialProperty.ShaderNameOriginal = shaderNameOriginal;
+                        var tex = (Texture2D)mat.GetTexture($"_{property}");
+                        if (tex == null) continue;
+                        texBytes = tex.EncodeToPNG();
+                        goto ExitLoop;
                     }
                 }
             }
-            public void AddMaterialShader(int id, string materialName, int renderQueue, int renderQueueOriginal)
+        ExitLoop:
+            if (texBytes == null) return;
+
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+            if (textureProperty == null)
             {
-                var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName);
-                if (materialProperty == null)
-                    MaterialShaderList.Add(new MaterialShader(id, materialName, renderQueue, renderQueueOriginal));
-                else
+                textureProperty = new MaterialTextureProperty(id, materialName, property, SetAndGetTextureID(texBytes));
+                MaterialTexturePropertyList.Add(textureProperty);
+            }
+            else
+                textureProperty.Data = texBytes;
+        }
+
+        public void AddMaterialTexturePropertyFromFileDialog(int id, string materialName, string property, GameObject go)
+        {
+            OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, MaterialEditorPlugin.FileFilter, MaterialEditorPlugin.FileExt);
+
+            void OnFileAccept(string[] strings)
+            {
+                if (strings == null || strings.Length == 0) return;
+                if (strings[0].IsNullOrEmpty()) return;
+
+                FileToSet = strings[0];
+                PropertyToSet = property;
+                MatToSet = materialName;
+                GameObjectToSet = go;
+                IDToSet = id;
+            }
+        }
+
+        public void AddMaterialTexturePropertyFromFile(int id, string materialName, string property, GameObject go, string filePath)
+        {
+            if (!File.Exists(filePath)) return;
+
+            var texBytes = File.ReadAllBytes(filePath);
+
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+            if (textureProperty == null)
+            {
+                textureProperty = new MaterialTextureProperty(id, materialName, property, SetAndGetTextureID(texBytes));
+                MaterialTexturePropertyList.Add(textureProperty);
+            }
+            else
+                textureProperty.Data = texBytes;
+
+            SetTextureProperty(go, materialName, property, textureProperty.Texture);
+        }
+
+        public Vector2? GetMaterialTexturePropertyValue(int id, string materialName, string property, TexturePropertyType propertyType)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
+            if (propertyType == TexturePropertyType.Offset)
+                return textureProperty?.Offset;
+            if (propertyType == TexturePropertyType.Scale)
+                return textureProperty?.Scale;
+            if (propertyType == TexturePropertyType.Texture)
+                return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
+            return null;
+        }
+        public Vector2? GetMaterialTexturePropertyValueOriginal(int id, string materialName, string property, TexturePropertyType propertyType)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
+            if (propertyType == TexturePropertyType.Offset)
+                return textureProperty?.OffsetOriginal;
+            if (propertyType == TexturePropertyType.Scale)
+                return textureProperty?.ScaleOriginal;
+            if (propertyType == TexturePropertyType.Texture)
+                return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
+            return null;
+        }
+        public void RemoveMaterialTextureProperty(int id, string materialName, string property, TexturePropertyType propertyType, bool displayMessage = true)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName && x.Property == property);
+            if (textureProperty != null)
+            {
+                if (propertyType == TexturePropertyType.Texture)
                 {
-                    if (renderQueue == materialProperty.RenderQueueOriginal)
-                    {
-                        materialProperty.RenderQueue = null;
-                        materialProperty.RenderQueueOriginal = null;
-                        if (materialProperty.NullCheck())
-                            MaterialShaderList.Remove(materialProperty);
-                    }
-                    else
-                    {
-                        materialProperty.RenderQueue = renderQueue;
-                        materialProperty.RenderQueueOriginal = renderQueueOriginal;
-                    }
+                    if (displayMessage)
+                        UI.Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
+                    textureProperty.TexID = null;
+                    if (textureProperty.NullCheck())
+                        MaterialTexturePropertyList.Remove(textureProperty);
+                }
+                else if (propertyType == TexturePropertyType.Offset)
+                {
+                    textureProperty.Offset = null;
+                    textureProperty.OffsetOriginal = null;
+                    if (textureProperty.NullCheck())
+                        MaterialTexturePropertyList.Remove(textureProperty);
+                }
+                else if (propertyType == TexturePropertyType.Scale)
+                {
+                    textureProperty.Scale = null;
+                    textureProperty.ScaleOriginal = null;
+                    if (textureProperty.NullCheck())
+                        MaterialTexturePropertyList.Remove(textureProperty);
                 }
             }
-            public MaterialShader GetMaterialShaderValue(int id, string materialName) =>
-                MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName);
-            public void RemoveMaterialShaderName(int id, string materialName)
+        }
+        public void RemoveMaterialTextureProperty(int id, string materialName, string property, bool displayMessage = true)
+        {
+            if (displayMessage)
+                UI.Logger.LogMessage("Save and reload scene to refresh textures.");
+            MaterialTexturePropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+        }
+
+        public void AddMaterialShaderName(int id, string materialName, string shaderName, string shaderNameOriginal)
+        {
+            var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName);
+            if (materialProperty == null)
+                MaterialShaderList.Add(new MaterialShader(id, materialName, shaderName, shaderNameOriginal));
+            else
             {
-                foreach (var materialProperty in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == materialName))
+                if (shaderName == materialProperty.ShaderNameOriginal)
                 {
                     materialProperty.ShaderName = null;
                     materialProperty.ShaderNameOriginal = null;
+                    if (materialProperty.NullCheck())
+                        MaterialShaderList.Remove(materialProperty);
                 }
-
-                MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == materialName && x.NullCheck());
+                else
+                {
+                    materialProperty.ShaderName = shaderName;
+                    materialProperty.ShaderNameOriginal = shaderNameOriginal;
+                }
             }
-            public void RemoveMaterialShaderRenderQueue(int id, string materialName)
+        }
+        public void AddMaterialShaderName(int id, string materialName, string shaderName, string shaderNameOriginal, GameObject gameObject, bool setProperty = true)
+        {
+            AddMaterialShaderName(id, materialName, shaderName, shaderNameOriginal);
+            if (setProperty)
             {
-                foreach (var materialProperty in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == materialName))
+                RemoveMaterialShaderRenderQueue(id, materialName);
+                SetShader(gameObject, materialName, shaderName);
+            }
+        }
+
+        public void AddMaterialShaderRenderQueue(int id, string materialName, int renderQueue, int renderQueueOriginal)
+        {
+            var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName);
+            if (materialProperty == null)
+                MaterialShaderList.Add(new MaterialShader(id, materialName, renderQueue, renderQueueOriginal));
+            else
+            {
+                if (renderQueue == materialProperty.RenderQueueOriginal)
                 {
                     materialProperty.RenderQueue = null;
                     materialProperty.RenderQueueOriginal = null;
+                    if (materialProperty.NullCheck())
+                        MaterialShaderList.Remove(materialProperty);
                 }
-
-                MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == materialName && x.NullCheck());
-            }
-
-            [Serializable]
-            [MessagePackObject]
-            public class RendererProperty
-            {
-                [Key("ID")]
-                public int ID;
-                [Key("RendererName")]
-                public string RendererName;
-                [Key("Property")]
-                public RendererProperties Property;
-                [Key("Value")]
-                public string Value;
-                [Key("ValueOriginal")]
-                public string ValueOriginal;
-
-                public RendererProperty(int id, string rendererName, RendererProperties property, string value, string valueOriginal)
+                else
                 {
-                    ID = id;
-                    RendererName = rendererName.Replace("(Instance)", "").Trim();
-                    Property = property;
-                    Value = value;
-                    ValueOriginal = valueOriginal;
+                    materialProperty.RenderQueue = renderQueue;
+                    materialProperty.RenderQueueOriginal = renderQueueOriginal;
                 }
             }
-
-            [Serializable]
-            [MessagePackObject]
-            public class MaterialFloatProperty
+        }
+        public void AddMaterialShaderRenderQueue(int id, string materialName, int renderQueue, int renderQueueOriginal, GameObject gameObject, bool setProperty = true)
+        {
+            AddMaterialShaderRenderQueue(id, materialName, renderQueue, renderQueueOriginal);
+            if (setProperty)
+                SetRenderQueue(gameObject, materialName, renderQueue);
+        }
+        public MaterialShader GetMaterialShaderValue(int id, string materialName) =>
+            MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == materialName);
+        public void RemoveMaterialShaderName(int id, string materialName)
+        {
+            foreach (var materialProperty in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == materialName))
             {
-                [Key("ID")]
-                public int ID;
-                [Key("MaterialName")]
-                public string MaterialName;
-                [Key("Property")]
-                public string Property;
-                [Key("Value")]
-                public string Value;
-                [Key("ValueOriginal")]
-                public string ValueOriginal;
-
-                public MaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
-                {
-                    ID = id;
-                    MaterialName = materialName.Replace("(Instance)", "").Trim();
-                    Property = property;
-                    Value = value;
-                    ValueOriginal = valueOriginal;
-                }
+                materialProperty.ShaderName = null;
+                materialProperty.ShaderNameOriginal = null;
             }
 
-            [Serializable]
-            [MessagePackObject]
-            public class MaterialColorProperty
+            MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == materialName && x.NullCheck());
+        }
+        public void RemoveMaterialShaderName(int id, string materialName, GameObject gameObject, bool setProperty = true)
+        {
+            if (setProperty)
             {
-                [Key("ID")]
-                public int ID;
-                [Key("MaterialName")]
-                public string MaterialName;
-                [Key("Property")]
-                public string Property;
-                [Key("Value")]
-                public Color Value;
-                [Key("ValueOriginal")]
-                public Color ValueOriginal;
+                var original = GetMaterialShaderValue(id, materialName);
+                if (original != null && !original.ShaderNameOriginal.IsNullOrEmpty())
+                    SetShader(gameObject, materialName, original.ShaderNameOriginal);
+            }
+            RemoveMaterialShaderName(id, materialName);
+        }
+        public void RemoveMaterialShaderRenderQueue(int id, string materialName)
+        {
+            foreach (var materialProperty in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == materialName))
+            {
+                materialProperty.RenderQueue = null;
+                materialProperty.RenderQueueOriginal = null;
+            }
 
-                public MaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal)
+            MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == materialName && x.NullCheck());
+        }
+        public void RemoveMaterialShaderRenderQueue(int id, string materialName, GameObject gameObject, bool setProperty = true)
+        {
+            if (setProperty)
+            {
+                var original = GetMaterialShaderValue(id, materialName);
+                if (original?.RenderQueueOriginal != null)
+                    SetRenderQueue(gameObject, materialName, original.RenderQueueOriginal);
+            }
+            RemoveMaterialShaderRenderQueue(id, materialName);
+        }
+
+        [Serializable]
+        [MessagePackObject]
+        public class RendererProperty
+        {
+            [Key("ID")]
+            public int ID;
+            [Key("RendererName")]
+            public string RendererName;
+            [Key("Property")]
+            public RendererProperties Property;
+            [Key("Value")]
+            public string Value;
+            [Key("ValueOriginal")]
+            public string ValueOriginal;
+
+            public RendererProperty(int id, string rendererName, RendererProperties property, string value, string valueOriginal)
+            {
+                ID = id;
+                RendererName = rendererName.Replace("(Instance)", "").Trim();
+                Property = property;
+                Value = value;
+                ValueOriginal = valueOriginal;
+            }
+        }
+
+        [Serializable]
+        [MessagePackObject]
+        public class MaterialFloatProperty
+        {
+            [Key("ID")]
+            public int ID;
+            [Key("MaterialName")]
+            public string MaterialName;
+            [Key("Property")]
+            public string Property;
+            [Key("Value")]
+            public string Value;
+            [Key("ValueOriginal")]
+            public string ValueOriginal;
+
+            public MaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
+            {
+                ID = id;
+                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                Property = property;
+                Value = value;
+                ValueOriginal = valueOriginal;
+            }
+        }
+
+        [Serializable]
+        [MessagePackObject]
+        public class MaterialColorProperty
+        {
+            [Key("ID")]
+            public int ID;
+            [Key("MaterialName")]
+            public string MaterialName;
+            [Key("Property")]
+            public string Property;
+            [Key("Value")]
+            public Color Value;
+            [Key("ValueOriginal")]
+            public Color ValueOriginal;
+
+            public MaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal)
+            {
+                ID = id;
+                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                Property = property;
+                Value = value;
+                ValueOriginal = valueOriginal;
+            }
+        }
+        [Serializable]
+        [MessagePackObject]
+        public class MaterialTextureProperty
+        {
+            [Key("ID")]
+            public int ID;
+            [Key("MaterialName")]
+            public string MaterialName;
+            [Key("Property")]
+            public string Property;
+            [Key("TexID")]
+            public int? TexID;
+            [Key("Offset")]
+            public Vector2? Offset;
+            [Key("OffsetOriginal")]
+            public Vector2? OffsetOriginal;
+            [Key("Scale")]
+            public Vector2? Scale;
+            [Key("ScaleOriginal")]
+            public Vector2? ScaleOriginal;
+
+            [IgnoreMember]
+            private byte[] _data;
+            [IgnoreMember]
+            public byte[] Data
+            {
+                get => _data;
+                set
                 {
-                    ID = id;
-                    MaterialName = materialName.Replace("(Instance)", "").Trim();
-                    Property = property;
-                    Value = value;
-                    ValueOriginal = valueOriginal;
+                    Dispose();
+                    _data = value;
+                    TexID = SetAndGetTextureID(value);
                 }
             }
-            [Serializable]
-            [MessagePackObject]
-            public class MaterialTextureProperty
+            [IgnoreMember]
+            private Texture2D _texture;
+            [IgnoreMember]
+            public Texture2D Texture
             {
-                [Key("ID")]
-                public int ID;
-                [Key("MaterialName")]
-                public string MaterialName;
-                [Key("Property")]
-                public string Property;
-                [Key("TexID")]
-                public int? TexID;
-                [Key("Offset")]
-                public Vector2? Offset;
-                [Key("OffsetOriginal")]
-                public Vector2? OffsetOriginal;
-                [Key("Scale")]
-                public Vector2? Scale;
-                [Key("ScaleOriginal")]
-                public Vector2? ScaleOriginal;
-
-                [IgnoreMember]
-                private byte[] _data;
-                [IgnoreMember]
-                public byte[] Data
+                get
                 {
-                    get => _data;
-                    set
+                    if (_texture == null)
                     {
-                        Dispose();
-                        _data = value;
-                        TexID = SetAndGetTextureID(value);
+                        if (_data != null)
+                            _texture = MaterialEditorPlugin.TextureFromBytes(_data);
                     }
+                    return _texture;
                 }
-                [IgnoreMember]
-                private Texture2D _texture;
-                [IgnoreMember]
-                public Texture2D Texture
-                {
-                    get
-                    {
-                        if (_texture == null)
-                        {
-                            if (_data != null)
-                                _texture = TextureFromBytes(_data);
-                        }
-                        return _texture;
-                    }
-                }
-
-                public MaterialTextureProperty(int id, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null)
-                {
-                    ID = id;
-                    MaterialName = materialName.Replace("(Instance)", "").Trim();
-                    Property = property;
-                    TexID = texID;
-                    Offset = offset;
-                    OffsetOriginal = offsetOriginal;
-                    Scale = scale;
-                    ScaleOriginal = scaleOriginal;
-                    if (texID != null && TextureDictionary.TryGetValue((int)texID, out var tex))
-                        Data = tex.Data;
-                }
-
-                public void Dispose()
-                {
-                    if (_texture != null)
-                    {
-                        UnityEngine.Object.Destroy(_texture);
-                        _texture = null;
-                    }
-                }
-
-                public bool IsEmpty() => Data == null;
-                public bool NullCheck() => TexID == null && Offset == null && Scale == null;
-
             }
 
-            [Serializable]
-            [MessagePackObject]
-            public class MaterialShader
+            public MaterialTextureProperty(int id, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null)
             {
-                [Key("ID")]
-                public int ID;
-                [Key("MaterialName")]
-                public string MaterialName;
-                [Key("ShaderName")]
-                public string ShaderName;
-                [Key("ShaderNameOriginal")]
-                public string ShaderNameOriginal;
-                [Key("RenderQueue")]
-                public int? RenderQueue;
-                [Key("RenderQueueOriginal")]
-                public int? RenderQueueOriginal;
-
-                public MaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal, int? renderQueue, int? renderQueueOriginal)
-                {
-                    ID = id;
-                    MaterialName = materialName.Replace("(Instance)", "").Trim();
-                    ShaderName = shaderName;
-                    ShaderNameOriginal = shaderNameOriginal;
-                    RenderQueue = renderQueue;
-                    RenderQueueOriginal = renderQueueOriginal;
-                }
-                public MaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal)
-                {
-                    ID = id;
-                    MaterialName = materialName.Replace("(Instance)", "").Trim();
-                    ShaderName = shaderName;
-                    ShaderNameOriginal = shaderNameOriginal;
-                }
-                public MaterialShader(int id, string materialName, int renderQueue, int renderQueueOriginal)
-                {
-                    ID = id;
-                    MaterialName = materialName.Replace("(Instance)", "").Trim();
-                    RenderQueue = renderQueue;
-                    RenderQueueOriginal = renderQueueOriginal;
-                }
-
-                public bool NullCheck() => ShaderName.IsNullOrEmpty() && RenderQueue == null;
+                ID = id;
+                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                Property = property;
+                TexID = texID;
+                Offset = offset;
+                OffsetOriginal = offsetOriginal;
+                Scale = scale;
+                ScaleOriginal = scaleOriginal;
+                if (texID != null && TextureDictionary.TryGetValue((int)texID, out var tex))
+                    Data = tex.Data;
             }
+
+            public void Dispose()
+            {
+                if (_texture != null)
+                {
+                    Destroy(_texture);
+                    _texture = null;
+                }
+            }
+
+            public bool IsEmpty() => Data == null;
+            public bool NullCheck() => TexID == null && Offset == null && Scale == null;
+
+        }
+
+        [Serializable]
+        [MessagePackObject]
+        public class MaterialShader
+        {
+            [Key("ID")]
+            public int ID;
+            [Key("MaterialName")]
+            public string MaterialName;
+            [Key("ShaderName")]
+            public string ShaderName;
+            [Key("ShaderNameOriginal")]
+            public string ShaderNameOriginal;
+            [Key("RenderQueue")]
+            public int? RenderQueue;
+            [Key("RenderQueueOriginal")]
+            public int? RenderQueueOriginal;
+
+            public MaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal, int? renderQueue, int? renderQueueOriginal)
+            {
+                ID = id;
+                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                ShaderName = shaderName;
+                ShaderNameOriginal = shaderNameOriginal;
+                RenderQueue = renderQueue;
+                RenderQueueOriginal = renderQueueOriginal;
+            }
+            public MaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal)
+            {
+                ID = id;
+                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                ShaderName = shaderName;
+                ShaderNameOriginal = shaderNameOriginal;
+            }
+            public MaterialShader(int id, string materialName, int renderQueue, int renderQueueOriginal)
+            {
+                ID = id;
+                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                RenderQueue = renderQueue;
+                RenderQueueOriginal = renderQueueOriginal;
+            }
+
+            public bool NullCheck() => ShaderName.IsNullOrEmpty() && RenderQueue == null;
         }
     }
 }

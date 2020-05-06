@@ -110,7 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EC.MaterialEditor.cs" />
-    <Compile Include="EC.MaterialEditor.SceneController.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />

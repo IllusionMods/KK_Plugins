@@ -1,17 +1,10 @@
 ﻿using HarmonyLib;
-using Studio;
 
-namespace KK_Plugins
+namespace KK_Plugins.MaterialEditor
 {
-    public partial class MaterialEditor
+    internal partial class Hooks
     {
-        internal partial class Hooks
-        {
-            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
-            internal static void ChangeCoordinateTypePrefix(ChaControl __instance) => GetCharaController(__instance)?.CoordinateChangeEvent();
-
-            [HarmonyPrefix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.OnDelete))]
-            internal static void OCIItemOnDelete(OCIItem __instance) => GetSceneController()?.ItemDeleteEvent(__instance.objectInfo.dicKey);
-        }
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
+        internal static void ChangeCoordinateTypePrefix(ChaControl __instance) => MaterialEditorPlugin.GetCharaController(__instance)?.CoordinateChangeEvent();
     }
 }

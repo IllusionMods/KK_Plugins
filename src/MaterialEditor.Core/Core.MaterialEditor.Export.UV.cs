@@ -1,82 +1,79 @@
 ﻿using System.IO;
 using UnityEngine;
 
-namespace KK_Plugins
+namespace KK_Plugins.MaterialEditor
 {
-    public partial class MaterialEditor
+    public static partial class Export
     {
-        public static partial class Export
+        /// <summary>
+        /// Exports the UV map(s) of the SkinnedMeshRenderer or MeshRenderer
+        /// </summary>
+        public static void ExportUVMaps(Renderer rend)
         {
-            /// <summary>
-            /// Exports the UV map(s) of the SkinnedMeshRenderer or MeshRenderer
-            /// </summary>
-            public static void ExportUVMaps(Renderer rend)
+            bool openedFile = false;
+            Shader shader = Shader.Find("Hidden/Internal-Colored");
+            var lineMaterial = new Material(shader);
+            lineMaterial.hideFlags = HideFlags.HideAndDontSave;
+            lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+            lineMaterial.SetInt("_ZWrite", 0);
+
+            Mesh mr;
+            if (rend is MeshRenderer meshRenderer)
+                mr = meshRenderer.GetComponent<MeshFilter>().mesh;
+            else if (rend is SkinnedMeshRenderer skinnedMeshRenderer)
+                mr = skinnedMeshRenderer.sharedMesh;
+            else return;
+
+            for (int x = 0; x < mr.subMeshCount; x++)
             {
-                bool openedFile = false;
-                Shader shader = Shader.Find("Hidden/Internal-Colored");
-                var lineMaterial = new Material(shader);
-                lineMaterial.hideFlags = HideFlags.HideAndDontSave;
-                lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
-                lineMaterial.SetInt("_ZWrite", 0);
+                var tris = mr.GetTriangles(x);
+                var uvs = mr.uv;
 
-                Mesh mr;
-                if (rend is MeshRenderer meshRenderer)
-                    mr = meshRenderer.GetComponent<MeshFilter>().mesh;
-                else if (rend is SkinnedMeshRenderer skinnedMeshRenderer)
-                    mr = skinnedMeshRenderer.sharedMesh;
-                else return;
+                const int size = 4096;
+                var _renderTexture = RenderTexture.GetTemporary(size, size);
+                var lineColor = Color.black;
+                Graphics.SetRenderTarget(_renderTexture);
+                GL.PushMatrix();
+                GL.LoadOrtho();
+                //GL.LoadPixelMatrix(); // * 2 - 1, maps differently.
+                GL.Clear(false, true, Color.clear);
 
-                for (int x = 0; x < mr.subMeshCount; x++)
+                lineMaterial.SetPass(0);
+                GL.Begin(GL.LINES);
+                GL.Color(lineColor);
+
+                for (var i = 0; i < tris.Length; i += 3)
                 {
-                    var tris = mr.GetTriangles(x);
-                    var uvs = mr.uv;
+                    var v = uvs[tris[i]];
+                    var n1 = uvs[tris[i + 1]];
+                    var n2 = uvs[tris[i + 2]];
 
-                    const int size = 4096;
-                    var _renderTexture = RenderTexture.GetTemporary(size, size);
-                    var lineColor = Color.black;
-                    Graphics.SetRenderTarget(_renderTexture);
-                    GL.PushMatrix();
-                    GL.LoadOrtho();
-                    //GL.LoadPixelMatrix(); // * 2 - 1, maps differently.
-                    GL.Clear(false, true, Color.clear);
+                    GL.Vertex(v);
+                    GL.Vertex(n1);
 
-                    lineMaterial.SetPass(0);
-                    GL.Begin(GL.LINES);
-                    GL.Color(lineColor);
+                    GL.Vertex(v);
+                    GL.Vertex(n2);
 
-                    for (var i = 0; i < tris.Length; i += 3)
-                    {
-                        var v = uvs[tris[i]];
-                        var n1 = uvs[tris[i + 1]];
-                        var n2 = uvs[tris[i + 2]];
-
-                        GL.Vertex(v);
-                        GL.Vertex(n1);
-
-                        GL.Vertex(v);
-                        GL.Vertex(n2);
-
-                        GL.Vertex(n1);
-                        GL.Vertex(n2);
-                    }
-                    GL.End();
-
-                    GL.PopMatrix();
-                    Graphics.SetRenderTarget(null);
-
-                    var png = GetT2D(_renderTexture);
-                    RenderTexture.ReleaseTemporary(_renderTexture);
-
-                    string filename = Path.Combine(ExportPath, $"{rend.NameFormatted()}_{x}.png");
-                    File.WriteAllBytes(filename, png.EncodeToPNG());
-                    DestroyImmediate(png);
-                    Logger.LogInfo($"Exported {filename}");
-                    if (!openedFile)
-                        CC.OpenFileInExplorer(filename);
-                    openedFile = true;
+                    GL.Vertex(n1);
+                    GL.Vertex(n2);
                 }
+                GL.End();
+
+                GL.PopMatrix();
+                Graphics.SetRenderTarget(null);
+
+                var png = MaterialEditorPlugin.GetT2D(_renderTexture);
+                RenderTexture.ReleaseTemporary(_renderTexture);
+
+                string filename = Path.Combine(MaterialEditorPlugin.ExportPath, $"{rend.NameFormatted()}_{x}.png");
+                File.WriteAllBytes(filename, png.EncodeToPNG());
+                Object.DestroyImmediate(png);
+                MaterialEditorPlugin.Logger.LogInfo($"Exported {filename}");
+                if (!openedFile)
+                    CC.OpenFileInExplorer(filename);
+                openedFile = true;
             }
         }
     }
