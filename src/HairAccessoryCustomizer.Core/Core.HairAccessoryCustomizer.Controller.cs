@@ -403,12 +403,12 @@ namespace KK_Plugins
                         {
                             if (renderer == null) continue;
 
-                            if (renderer.material.HasProperty(ChaShader._Color))
-                                renderer.material.SetColor(ChaShader._Color, ChaControl.chaFile.custom.hair.parts[0].baseColor);
-                            if (renderer.material.HasProperty(ChaShader._Color2))
-                                renderer.material.SetColor(ChaShader._Color2, ChaControl.chaFile.custom.hair.parts[0].startColor);
-                            if (renderer.material.HasProperty(ChaShader._Color3))
-                                renderer.material.SetColor(ChaShader._Color3, ChaControl.chaFile.custom.hair.parts[0].endColor);
+                            if (renderer.sharedMaterial.HasProperty(ChaShader._Color))
+                                renderer.sharedMaterial.SetColor(ChaShader._Color, ChaControl.chaFile.custom.hair.parts[0].baseColor);
+                            if (renderer.sharedMaterial.HasProperty(ChaShader._Color2))
+                                renderer.sharedMaterial.SetColor(ChaShader._Color2, ChaControl.chaFile.custom.hair.parts[0].startColor);
+                            if (renderer.sharedMaterial.HasProperty(ChaShader._Color3))
+                                renderer.sharedMaterial.SetColor(ChaShader._Color3, ChaControl.chaFile.custom.hair.parts[0].endColor);
                         }
                     }
                 }
@@ -419,33 +419,31 @@ namespace KK_Plugins
                 {
                     if (renderer == null) continue;
 
-                    if (renderer.material.HasProperty(ChaShader._HairGloss))
+                    if (renderer.sharedMaterial.HasProperty(ChaShader._HairGloss))
                     {
-                        var mt = renderer.material.GetTexture(ChaShader._MainTex);
                         if (hairAccessoryInfo.HairGloss)
-                            renderer.material.SetTexture(ChaShader._HairGloss, texHairGloss);
+                            renderer.sharedMaterial.SetTexture(ChaShader._HairGloss, texHairGloss);
                         else
-                            renderer.material.SetTexture(ChaShader._HairGloss, null);
-                        Destroy(mt);
+                            renderer.sharedMaterial.SetTexture(ChaShader._HairGloss, null);
                     }
 
-                    if (renderer.material.HasProperty(ChaShader._LineColor))
+                    if (renderer.sharedMaterial.HasProperty(ChaShader._LineColor))
                         if (hairAccessoryInfo.ColorMatch)
-                            renderer.material.SetColor(ChaShader._LineColor, ChaControl.chaFile.custom.hair.parts[0].outlineColor);
+                            renderer.sharedMaterial.SetColor(ChaShader._LineColor, ChaControl.chaFile.custom.hair.parts[0].outlineColor);
                         else
-                            renderer.material.SetColor(ChaShader._LineColor, hairAccessoryInfo.OutlineColor);
+                            renderer.sharedMaterial.SetColor(ChaShader._LineColor, hairAccessoryInfo.OutlineColor);
                 }
 
                 foreach (Renderer renderer in chaCustomHairComponent.rendAccessory)
                 {
                     if (renderer == null) continue;
 
-                    if (renderer.material.HasProperty(ChaShader._Color))
-                        renderer.material.SetColor(ChaShader._Color, hairAccessoryInfo.AccessoryColor);
-                    if (renderer.material.HasProperty(ChaShader._Color2))
-                        renderer.material.SetColor(ChaShader._Color2, hairAccessoryInfo.AccessoryColor);
-                    if (renderer.material.HasProperty(ChaShader._Color3))
-                        renderer.material.SetColor(ChaShader._Color3, hairAccessoryInfo.AccessoryColor);
+                    if (renderer.sharedMaterial.HasProperty(ChaShader._Color))
+                        renderer.sharedMaterial.SetColor(ChaShader._Color, hairAccessoryInfo.AccessoryColor);
+                    if (renderer.sharedMaterial.HasProperty(ChaShader._Color2))
+                        renderer.sharedMaterial.SetColor(ChaShader._Color2, hairAccessoryInfo.AccessoryColor);
+                    if (renderer.sharedMaterial.HasProperty(ChaShader._Color3))
+                        renderer.sharedMaterial.SetColor(ChaShader._Color3, hairAccessoryInfo.AccessoryColor);
                 }
 
                 chaCustomHairComponent.lengthRate = hairAccessoryInfo.HairLength;
