@@ -24,7 +24,7 @@ namespace KK_Plugins.MaterialEditor
     {
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
         public const string PluginName = "Material Editor";
-        public const string Version = "1.10";
+        public const string Version = "1.10.1";
         internal static new ManualLogSource Logger;
 
         public const string FileExt = ".png";
