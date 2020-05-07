@@ -925,7 +925,7 @@ namespace KK_Plugins.MaterialEditor
                                 float scaleY = mat.GetTextureScale($"_{propertyName}").y;
                                 textureScale = new Vector2(scaleX, scaleY);
 
-                                AddMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName, textureOffset, textureOffsetInitial, gameObject);
+                                AddMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName, textureScale, textureScaleInitial, gameObject);
 
                                 label2.text = labelOffsetScaleText();
                             });
