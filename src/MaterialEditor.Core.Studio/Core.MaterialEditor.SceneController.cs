@@ -218,7 +218,7 @@ namespace KK_Plugins.MaterialEditor
             try
             {
                 if (!FileToSet.IsNullOrEmpty())
-                    AddMaterialTexturePropertyFromFile(IDToSet, MatToSet, PropertyToSet, GameObjectToSet, FileToSet);
+                    AddMaterialTextureFromFile(IDToSet, MatToSet, PropertyToSet, FileToSet, GameObjectToSet);
             }
             catch
             {
@@ -448,39 +448,33 @@ namespace KK_Plugins.MaterialEditor
                 textureProperty.Data = texBytes;
         }
 
-        public void AddMaterialTexturePropertyFromFileDialog(int id, string materialName, string property, GameObject go)
-        {
-            OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, MaterialEditorPlugin.FileFilter, MaterialEditorPlugin.FileExt);
-
-            void OnFileAccept(string[] strings)
-            {
-                if (strings == null || strings.Length == 0) return;
-                if (strings[0].IsNullOrEmpty()) return;
-
-                FileToSet = strings[0];
-                PropertyToSet = property;
-                MatToSet = materialName;
-                GameObjectToSet = go;
-                IDToSet = id;
-            }
-        }
-
-        public void AddMaterialTexturePropertyFromFile(int id, string materialName, string property, GameObject go, string filePath)
+        public void AddMaterialTextureFromFile(int id, string materialName, string property, string filePath, GameObject gameObject, bool setTexInUpdate = false)
         {
             if (!File.Exists(filePath)) return;
 
-            var texBytes = File.ReadAllBytes(filePath);
-
-            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
-            if (textureProperty == null)
+            if (setTexInUpdate)
             {
-                textureProperty = new MaterialTextureProperty(id, materialName, property, SetAndGetTextureID(texBytes));
-                MaterialTexturePropertyList.Add(textureProperty);
+                FileToSet = filePath;
+                PropertyToSet = property;
+                MatToSet = materialName;
+                GameObjectToSet = gameObject;
+                IDToSet = id;
             }
             else
-                textureProperty.Data = texBytes;
+            {
+                var texBytes = File.ReadAllBytes(filePath);
 
-            SetTextureProperty(go, materialName, property, textureProperty.Texture);
+                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.MaterialName == materialName);
+                if (textureProperty == null)
+                {
+                    textureProperty = new MaterialTextureProperty(id, materialName, property, SetAndGetTextureID(texBytes));
+                    MaterialTexturePropertyList.Add(textureProperty);
+                }
+                else
+                    textureProperty.Data = texBytes;
+
+                SetTextureProperty(gameObject, materialName, property, textureProperty.Texture);
+            }
         }
 
         public Vector2? GetMaterialTexturePropertyValue(int id, string materialName, string property, TexturePropertyType propertyType)

@@ -134,8 +134,8 @@ namespace KK_Plugins.MaterialEditor
 
         internal override bool GetMaterialTextureValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTexturePropertyValue(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Texture) == null;
-        internal override void AddMaterialTextureFromFileDialog(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject) =>
-             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
+        internal override void AddMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, string filePath, GameObject gameObject) =>
+             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialTextureFromFile(objectType, coordinateIndex, slot, materialName, propertyName, filePath, gameObject, true);
         internal override void RemoveMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, TexturePropertyType.Texture);
 

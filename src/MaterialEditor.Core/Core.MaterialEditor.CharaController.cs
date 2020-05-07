@@ -2,7 +2,6 @@
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
-using KKAPI.Utilities;
 using MessagePack;
 using System;
 using System.Collections;
@@ -33,7 +32,7 @@ namespace KK_Plugins.MaterialEditor
 #else
             public int CurrentCoordinateIndex => 0;
 #endif
-        private byte[] TexBytes = null;
+        private string FileToSet = null;
         private ObjectType ObjectTypeToSet;
         private string PropertyToSet;
         private string MatToSet;
@@ -148,20 +147,9 @@ namespace KK_Plugins.MaterialEditor
         {
             try
             {
-                if (TexBytes != null)
+                if (FileToSet != null)
                 {
-                    Texture2D tex = MaterialEditorPlugin.TextureFromBytes(TexBytes);
-
-                    if (ObjectTypeToSet == ObjectType.Character)
-                        SetTextureProperty(ChaControl, MatToSet, PropertyToSet, tex);
-                    else
-                        SetTextureProperty(GameObjectToSet, MatToSet, PropertyToSet, tex);
-
-                    var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == ObjectTypeToSet && x.CoordinateIndex == CoordinateIndexToSet && x.Slot == SlotToSet && x.Property == PropertyToSet && x.MaterialName == MatToSet);
-                    if (textureProperty == null)
-                        MaterialTexturePropertyList.Add(new MaterialTextureProperty(ObjectTypeToSet, CoordinateIndexToSet, SlotToSet, MatToSet, PropertyToSet, SetAndGetTextureID(TexBytes)));
-                    else
-                        textureProperty.TexID = SetAndGetTextureID(TexBytes);
+                    AddMaterialTextureFromFile(ObjectTypeToSet, CoordinateIndexToSet, SlotToSet, MatToSet, PropertyToSet, FileToSet, GameObjectToSet);
                 }
             }
             catch
@@ -170,8 +158,8 @@ namespace KK_Plugins.MaterialEditor
             }
             finally
             {
-                TexBytes = null;
-                PropertyToSet = "";
+                FileToSet = null;
+                PropertyToSet = null;
                 MatToSet = null;
                 GameObjectToSet = null;
             }
@@ -693,29 +681,37 @@ namespace KK_Plugins.MaterialEditor
             RemoveMaterialColorProperty(objectType, coordinateIndex, slot, materialName, property);
         }
 
-        public void AddMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, GameObject go)
-        {
-            OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, MaterialEditorPlugin.FileFilter, MaterialEditorPlugin.FileExt);
-
-            void OnFileAccept(string[] strings)
-            {
-                if (strings == null || strings.Length == 0) return;
-                if (strings[0].IsNullOrEmpty()) return;
-
-                AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, property, go, strings[0]);
-            }
-        }
-        public void AddMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, GameObject go, string filePath)
+        public void AddMaterialTextureFromFile(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, string filePath, GameObject gameObject, bool setTexInUpdate = false)
         {
             if (!File.Exists(filePath)) return;
 
-            TexBytes = File.ReadAllBytes(filePath);
-            PropertyToSet = property;
-            MatToSet = materialName;
-            GameObjectToSet = go;
-            ObjectTypeToSet = objectType;
-            CoordinateIndexToSet = coordinateIndex;
-            SlotToSet = slot;
+            if (setTexInUpdate)
+            {
+                FileToSet = filePath;
+                PropertyToSet = property;
+                MatToSet = materialName;
+                GameObjectToSet = gameObject;
+                ObjectTypeToSet = objectType;
+                CoordinateIndexToSet = coordinateIndex;
+                SlotToSet = slot;
+            }
+            else
+            {
+                var texBytes = File.ReadAllBytes(filePath);
+                Texture2D tex = MaterialEditorPlugin.TextureFromBytes(texBytes);
+
+                if (objectType == ObjectType.Character)
+                    SetTextureProperty(ChaControl, materialName, property, tex);
+                else
+                    SetTextureProperty(GameObjectToSet, materialName, property, tex);
+
+                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
+                if (textureProperty == null)
+                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, coordinateIndex, slot, materialName, property, SetAndGetTextureID(texBytes)));
+                else
+                    textureProperty.TexID = SetAndGetTextureID(texBytes);
+
+            }
         }
         public void AddMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal)
         {

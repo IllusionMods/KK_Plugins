@@ -89,8 +89,8 @@ namespace KK_Plugins.MaterialEditor
 
         internal override bool GetMaterialTextureValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
             GetSceneController().GetMaterialTexturePropertyValue(slot, materialName, propertyName, TexturePropertyType.Texture) == null;
-        internal override void AddMaterialTextureFromFileDialog(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject) =>
-             GetSceneController().AddMaterialTexturePropertyFromFileDialog(slot, materialName, propertyName, gameObject);
+        internal override void AddMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, string filePath, GameObject gameObject) =>
+             GetSceneController().AddMaterialTextureFromFile(slot, materialName, propertyName, filePath, gameObject, true);
         internal override void RemoveMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
             GetSceneController().RemoveMaterialTextureProperty(slot, materialName, propertyName, TexturePropertyType.Texture);
 

@@ -2,12 +2,14 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using KKAPI.Maker;
+using KKAPI.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using UILib;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
@@ -23,6 +25,8 @@ namespace KK_Plugins.MaterialEditor
         private static Image MaterialEditorMainPanel;
         private static ScrollRect MaterialEditorScrollableUI;
         internal static new ManualLogSource Logger;
+
+        private static FileSystemWatcher TexChangeWatcher;
 
         private const float marginSize = 5f;
         private const float headerSize = 20f;
@@ -44,6 +48,7 @@ namespace KK_Plugins.MaterialEditor
         public static ConfigEntry<float> UIScale { get; private set; }
         public static ConfigEntry<float> UIWidth { get; private set; }
         public static ConfigEntry<float> UIHeight { get; private set; }
+        public static ConfigEntry<bool> WatchTexChanges { get; private set; }
 
         internal void Main()
         {
@@ -52,6 +57,7 @@ namespace KK_Plugins.MaterialEditor
             UIScale = Config.Bind("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 13 }));
             UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 12, ShowRangeAsPercent = false }));
             UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 11, ShowRangeAsPercent = false }));
+            WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI."));
 
             UIScale.SettingChanged += UISettingChanged;
             UIWidth.SettingChanged += UISettingChanged;
@@ -64,7 +70,7 @@ namespace KK_Plugins.MaterialEditor
 
             MaterialEditorWindow = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
-            MaterialEditorWindow.gameObject.SetActive(false);
+            HideUI();
             MaterialEditorWindow.gameObject.transform.SetParent(transform);
             MaterialEditorWindow.sortingOrder = 1000;
 
@@ -83,9 +89,19 @@ namespace KK_Plugins.MaterialEditor
             nametext.transform.SetRect(0f, 0f, 1f, 1f, 0f, 0f, 0f);
             nametext.alignment = TextAnchor.MiddleCenter;
 
+            var fileWatcher = UIUtility.CreateToggle("Filewatcher", drag.transform, "");
+            fileWatcher.transform.SetRect(0f, 0f, 0f, 1f);
+            fileWatcher.isOn = WatchTexChanges.Value;
+            fileWatcher.onValueChanged.AddListener((value) =>
+            {
+                WatchTexChanges.Value = value;
+                if (!value)
+                    TexChangeWatcher?.Dispose();
+            });
+
             var close = UIUtility.CreateButton("CloseButton", drag.transform, "");
             close.transform.SetRect(1f, 0f, 1f, 1f, -20f);
-            close.onClick.AddListener(() => MaterialEditorWindow.gameObject.SetActive(false));
+            close.onClick.AddListener(() => HideUI());
 
             //X button
             var x1 = UIUtility.CreatePanel("x1", close.transform);
@@ -107,7 +123,11 @@ namespace KK_Plugins.MaterialEditor
             MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
         }
 
-        public static void HideUI() => MaterialEditorWindow?.gameObject?.SetActive(false);
+        public static void HideUI()
+        {
+            MaterialEditorWindow?.gameObject?.SetActive(false);
+            TexChangeWatcher?.Dispose();
+        }
 
         private void UISettingChanged(object sender, EventArgs e)
         {
@@ -755,7 +775,35 @@ namespace KK_Plugins.MaterialEditor
                             var importButton = UIUtility.CreateButton($"ImportTexture{propertyName}", contentList.transform, $"Import Texture");
                             importButton.onClick.AddListener(() =>
                             {
-                                AddMaterialTextureFromFileDialog(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
+                                OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, MaterialEditorPlugin.FileFilter, MaterialEditorPlugin.FileExt);
+
+                                void OnFileAccept(string[] strings)
+                                {
+                                    if (strings == null || strings.Length == 0) return;
+                                    if (strings[0].IsNullOrEmpty()) return;
+                                    string filePath = strings[0];
+
+                                    AddMaterialTexture(objectType, coordinateIndex, slot, materialName, propertyName, filePath, gameObject);
+
+                                    TexChangeWatcher?.Dispose();
+                                    if (WatchTexChanges.Value)
+                                    {
+                                        var directory = Path.GetDirectoryName(filePath);
+                                        if (directory != null)
+                                        {
+                                            TexChangeWatcher = new FileSystemWatcher(directory, Path.GetFileName(filePath));
+                                            TexChangeWatcher.Changed += (sender, args) =>
+                                            {
+                                                if (WatchTexChanges.Value && File.Exists(filePath))
+                                                    AddMaterialTexture(objectType, coordinateIndex, slot, materialName, propertyName, filePath, gameObject);
+                                            };
+                                            TexChangeWatcher.Deleted += (sender, args) => TexChangeWatcher?.Dispose();
+                                            TexChangeWatcher.Error += (sender, args) => TexChangeWatcher?.Dispose();
+                                            TexChangeWatcher.EnableRaisingEvents = true;
+                                        }
+                                    }
+                                }
+
                                 label.text = LabelText(false);
                             });
                             var importButtonLE = importButton.gameObject.AddComponent<LayoutElement>();
@@ -1065,7 +1113,7 @@ namespace KK_Plugins.MaterialEditor
         internal abstract void RemoveMaterialShaderRenderQueue(ObjectType objectType, int coordinateIndex, int slot, string materialName, GameObject gameObject);
 
         internal abstract bool GetMaterialTextureValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName);
-        internal abstract void AddMaterialTextureFromFileDialog(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject);
+        internal abstract void AddMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, string filePath, GameObject gameObject);
         internal abstract void RemoveMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName);
 
         internal abstract Vector2? GetMaterialTextureOffsetOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName);
