@@ -4,12 +4,12 @@ using BepInEx.Logging;
 using KKAPI.Maker;
 using KKAPI.Utilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using UILib;
-using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
@@ -21,29 +21,17 @@ namespace KK_Plugins.MaterialEditor
 {
     public abstract class UI : BaseUnityPlugin
     {
-        private static Canvas MaterialEditorWindow;
+        internal static Canvas MaterialEditorWindow;
         private static Image MaterialEditorMainPanel;
         private static ScrollRect MaterialEditorScrollableUI;
         internal static new ManualLogSource Logger;
 
         private static FileSystemWatcher TexChangeWatcher;
+        VirtualList virtualList;
 
         private const float marginSize = 5f;
         private const float headerSize = 20f;
         private const float scrollOffsetX = -15f;
-        private const float labelWidth = 50f;
-        private const float buttonWidth = 100f;
-        private const float dropdownWidth = 100f;
-        private const float textBoxWidth = 75f;
-        private const float colorLabelWidth = 10f;
-        private const float resetButtonWidth = 50f;
-        private const float sliderWidth = 150f;
-        private const float labelXWidth = 60f;
-        private const float labelYWidth = 10f;
-        private const float textBoxXYWidth = 50f;
-        private static readonly Color evenRowColor = new Color(1f, 1f, 1f, 1f);
-        private static readonly Color oddRowColor = new Color(0.95f, 0.95f, 0.95f, 1f);
-        private static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
 
         public static ConfigEntry<float> UIScale { get; private set; }
         public static ConfigEntry<float> UIWidth { get; private set; }
@@ -121,6 +109,13 @@ namespace KK_Plugins.MaterialEditor
             MaterialEditorScrollableUI.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(scrollOffsetX, 0f);
             MaterialEditorScrollableUI.viewport.offsetMax = new Vector2(scrollOffsetX, 0f);
             MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
+
+            var template = ItemTemplate.CreateTemplate(MaterialEditorScrollableUI.content.transform);
+
+            virtualList = MaterialEditorScrollableUI.gameObject.AddComponent<VirtualList>();
+            virtualList.ScrollRect = MaterialEditorScrollableUI;
+            virtualList.EntryTemplate = template;
+            virtualList.Initialize();
         }
 
         public static void HideUI()
@@ -159,17 +154,12 @@ namespace KK_Plugins.MaterialEditor
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
             MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
 
-            foreach (Transform child in MaterialEditorScrollableUI.content)
-                Destroy(child.gameObject);
-
             if (gameObject == null) return;
             if (objectType == ObjectType.Hair || objectType == ObjectType.Character)
                 coordinateIndex = 0;
 
             List<Renderer> rendList = new List<Renderer>();
             List<string> mats = new List<string>();
-            int rowCounter = 0;
-            Color RowColor() => rowCounter % 2 == 0 ? evenRowColor : oddRowColor;
 
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
 
@@ -194,203 +184,52 @@ namespace KK_Plugins.MaterialEditor
                 else
                     rendList = GetRendererList(gameObject);
             }
+            List<ItemInfo> items = new List<ItemInfo>();
 
             foreach (var rend in rendList)
             {
                 foreach (var mat in rend.sharedMaterials)
                     matList[mat.NameFormatted()] = mat;
 
-                var contentListHeader = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
-                contentListHeader.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                contentListHeader.gameObject.AddComponent<Mask>();
-                contentListHeader.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                contentListHeader.color = RowColor();
-                rowCounter++;
+                var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer");
+                rendererItem.RendererName = rend.NameFormatted();
+                items.Add(rendererItem);
 
-                var labelRenderer = UIUtility.CreateText(rend.NameFormatted(), contentListHeader.transform, "Renderer:");
-                labelRenderer.alignment = TextAnchor.MiddleLeft;
-                labelRenderer.color = Color.black;
-                var labelRendererLE = labelRenderer.gameObject.AddComponent<LayoutElement>();
-                labelRendererLE.preferredWidth = labelWidth;
-                labelRendererLE.flexibleWidth = labelWidth;
-
-                var labelRenderer2 = UIUtility.CreateText(rend.NameFormatted(), contentListHeader.transform, rend.NameFormatted());
-                labelRenderer2.alignment = TextAnchor.MiddleRight;
-                labelRenderer2.color = Color.black;
-                var labelRenderer2LE = labelRenderer2.gameObject.AddComponent<LayoutElement>();
-                labelRenderer2LE.preferredWidth = 200;
-                labelRenderer2LE.flexibleWidth = 0;
-
-                var exportUVButton = UIUtility.CreateButton("ExportUVButton", contentListHeader.transform, "Export UV Map");
-                exportUVButton.onClick.AddListener(() => { Export.ExportUVMaps(rend); });
-                var exportUVButtonLE = exportUVButton.gameObject.AddComponent<LayoutElement>();
-                exportUVButtonLE.preferredWidth = 110;
-                exportUVButtonLE.flexibleWidth = 0;
-
-                var exportMeshButton = UIUtility.CreateButton("ExportUVButton", contentListHeader.transform, "Export .obj");
-                exportMeshButton.onClick.AddListener(() => { Export.ExportObj(rend); });
-                var exportMeshButtonLE = exportMeshButton.gameObject.AddComponent<LayoutElement>();
-                exportMeshButtonLE.preferredWidth = 85;
-                exportMeshButtonLE.flexibleWidth = 0;
-
-                var contentItem1 = UIUtility.CreatePanel("ContentItem1", MaterialEditorScrollableUI.content.transform);
-                contentItem1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                contentItem1.gameObject.AddComponent<Mask>();
-                contentItem1.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                contentItem1.color = RowColor();
-                rowCounter++;
-
-                bool valueEnabled = rend.enabled;
-                bool valueEnabledInitial = rend.enabled;
+                //Renderer Enabled
+                bool valueEnabledOriginal = rend.enabled;
                 var temp = GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled);
                 if (!temp.IsNullOrEmpty())
-                    valueEnabledInitial = temp == "1";
-                string EnabledLabelText() => valueEnabled == valueEnabledInitial ? "Enabled:" : "Enabled:*";
+                    valueEnabledOriginal = temp == "1";
+                var rendererEnabledItem = new ItemInfo(ItemInfo.RowItemType.RendererEnabled, "Enabled");
+                rendererEnabledItem.RendererEnabled = rend.enabled ? 1 : 0;
+                rendererEnabledItem.RendererEnabledOriginal = valueEnabledOriginal ? 1 : 0;
+                rendererEnabledItem.RendererEnabledOnChange = delegate (int value) { AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), valueEnabledOriginal ? "1" : "0", gameObject); };
+                rendererEnabledItem.RendererEnabledOnReset = delegate { RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, gameObject); };
+                items.Add(rendererEnabledItem);
 
-                var labelEnabled = UIUtility.CreateText("Enabled", contentItem1.transform, EnabledLabelText());
-                labelEnabled.alignment = TextAnchor.MiddleLeft;
-                labelEnabled.color = Color.black;
-                var labelEnabledLE = labelEnabled.gameObject.AddComponent<LayoutElement>();
-                labelEnabledLE.preferredWidth = labelWidth;
-                labelEnabledLE.flexibleWidth = labelWidth;
-
-                var dropdownEnabled = UIUtility.CreateDropdown("Enabled", contentItem1.transform);
-                dropdownEnabled.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownEnabled.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
-                dropdownEnabled.captionText.alignment = TextAnchor.MiddleLeft;
-                dropdownEnabled.options.Clear();
-                dropdownEnabled.options.Add(new Dropdown.OptionData("Off"));
-                dropdownEnabled.options.Add(new Dropdown.OptionData("On"));
-                dropdownEnabled.value = valueEnabled ? 1 : 0;
-                dropdownEnabled.captionText.text = valueEnabled ? "On" : "Off";
-                dropdownEnabled.onValueChanged.AddListener((value) =>
-                {
-                    valueEnabled = value == 1;
-
-                    AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, value.ToString(), valueEnabledInitial ? "1" : "0", gameObject);
-                    labelEnabled.text = EnabledLabelText();
-                });
-                var dropdownEnabledLE = dropdownEnabled.gameObject.AddComponent<LayoutElement>();
-                dropdownEnabledLE.preferredWidth = dropdownWidth;
-                dropdownEnabledLE.flexibleWidth = 0;
-
-                var resetEnabled = UIUtility.CreateButton("ResetEnabled", contentItem1.transform, "Reset");
-                resetEnabled.onClick.AddListener(() =>
-                {
-                    RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.Enabled, gameObject);
-                    valueEnabled = valueEnabledInitial;
-                    dropdownEnabled.value = valueEnabledInitial ? 1 : 0;
-                    labelEnabled.text = EnabledLabelText();
-                });
-                var resetEnabledLE = resetEnabled.gameObject.AddComponent<LayoutElement>();
-                resetEnabledLE.preferredWidth = resetButtonWidth;
-                resetEnabledLE.flexibleWidth = 0;
-
-                var contentItem2 = UIUtility.CreatePanel("ContentItem2", MaterialEditorScrollableUI.content.transform);
-                contentItem2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                contentItem2.gameObject.AddComponent<Mask>();
-                contentItem2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                contentItem2.color = RowColor();
-                rowCounter++;
-
-                var valueShadowCastingMode = rend.shadowCastingMode;
-                var valueShadowCastingModeInitial = rend.shadowCastingMode;
+                //Renderer ShadowCastingMode
+                var valueShadowCastingModeOriginal = rend.shadowCastingMode;
                 temp = GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode);
                 if (!temp.IsNullOrEmpty())
-                    valueShadowCastingModeInitial = (UnityEngine.Rendering.ShadowCastingMode)int.Parse(temp);
-                string ShadowCastingModeLabelText() => valueShadowCastingMode == valueShadowCastingModeInitial ? "ShadowCastingMode:" : "ShadowCastingMode:*";
+                    valueShadowCastingModeOriginal = (UnityEngine.Rendering.ShadowCastingMode)int.Parse(temp);
+                var rendererShadowCastingModeItem = new ItemInfo(ItemInfo.RowItemType.RendererShadowCastingMode, "Shadow Casting Mode");
+                rendererShadowCastingModeItem.RendererShadowCastingMode = (int)rend.shadowCastingMode;
+                rendererShadowCastingModeItem.RendererShadowCastingModeOriginal = (int)valueShadowCastingModeOriginal;
+                rendererShadowCastingModeItem.RendererShadowCastingModeOnChange = delegate (int value) { AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)valueShadowCastingModeOriginal).ToString(), gameObject); };
+                rendererShadowCastingModeItem.RendererShadowCastingModeOnReset = delegate { RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, gameObject); };
+                items.Add(rendererShadowCastingModeItem);
 
-                var labelShadowCastingMode = UIUtility.CreateText("ShadowCastingMode", contentItem2.transform, ShadowCastingModeLabelText());
-                labelShadowCastingMode.alignment = TextAnchor.MiddleLeft;
-                labelShadowCastingMode.color = Color.black;
-                var labelShadowCastingModeLE = labelShadowCastingMode.gameObject.AddComponent<LayoutElement>();
-                labelShadowCastingModeLE.preferredWidth = labelWidth;
-                labelShadowCastingModeLE.flexibleWidth = labelWidth;
-
-                var dropdownShadowCastingMode = UIUtility.CreateDropdown("ShadowCastingMode", contentItem2.transform);
-                dropdownShadowCastingMode.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownShadowCastingMode.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
-                dropdownShadowCastingMode.captionText.alignment = TextAnchor.MiddleLeft;
-                dropdownShadowCastingMode.options.Clear();
-                dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("Off"));
-                dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("On"));
-                dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("TwoSided"));
-                dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("ShadowsOnly"));
-                dropdownShadowCastingMode.value = (int)valueShadowCastingMode;
-                dropdownShadowCastingMode.captionText.text = valueShadowCastingMode.ToString();
-                dropdownShadowCastingMode.onValueChanged.AddListener((value) =>
-                {
-                    valueShadowCastingMode = (UnityEngine.Rendering.ShadowCastingMode)value;
-                    AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, value.ToString(), ((int)valueShadowCastingModeInitial).ToString(), gameObject);
-                    labelShadowCastingMode.text = ShadowCastingModeLabelText();
-                });
-                var dropdownShadowCastingModeLE = dropdownShadowCastingMode.gameObject.AddComponent<LayoutElement>();
-                dropdownShadowCastingModeLE.preferredWidth = dropdownWidth;
-                dropdownShadowCastingModeLE.flexibleWidth = 0;
-
-                var resetShadowCastingMode = UIUtility.CreateButton("ResetShadowCastingMode", contentItem2.transform, "Reset");
-                resetShadowCastingMode.onClick.AddListener(() =>
-                {
-                    RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode, gameObject);
-                    valueShadowCastingMode = valueShadowCastingModeInitial;
-                    dropdownShadowCastingMode.value = (int)valueShadowCastingModeInitial;
-                    labelShadowCastingMode.text = ShadowCastingModeLabelText();
-                });
-                var resetShadowCastingModeLE = resetShadowCastingMode.gameObject.AddComponent<LayoutElement>();
-                resetShadowCastingModeLE.preferredWidth = resetButtonWidth;
-                resetShadowCastingModeLE.flexibleWidth = 0;
-
-                var contentItem3 = UIUtility.CreatePanel("ContentItem3", MaterialEditorScrollableUI.content.transform);
-                contentItem3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                contentItem3.gameObject.AddComponent<Mask>();
-                contentItem3.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                contentItem3.color = RowColor();
-                rowCounter++;
-
-                bool valueReceiveShadows = rend.receiveShadows;
-                bool valueReceiveShadowsInitial = rend.receiveShadows;
+                //Renderer ReceiveShadows
+                bool valueReceiveShadowsOriginal = rend.receiveShadows;
                 temp = GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ShadowCastingMode);
                 if (!temp.IsNullOrEmpty())
-                    valueReceiveShadowsInitial = temp == "1";
-                string ReceiveShadowsLabelText() => valueReceiveShadows == valueReceiveShadowsInitial ? "ReceiveShadows:" : "ReceiveShadows:*";
-
-                var labelReceiveShadows = UIUtility.CreateText("ReceiveShadows", contentItem3.transform, ReceiveShadowsLabelText());
-                labelReceiveShadows.alignment = TextAnchor.MiddleLeft;
-                labelReceiveShadows.color = Color.black;
-                var labelReceiveShadowsLE = labelReceiveShadows.gameObject.AddComponent<LayoutElement>();
-                labelReceiveShadowsLE.preferredWidth = labelWidth;
-                labelReceiveShadowsLE.flexibleWidth = labelWidth;
-
-                var dropdownReceiveShadows = UIUtility.CreateDropdown("ReceiveShadows", contentItem3.transform);
-                dropdownReceiveShadows.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownReceiveShadows.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
-                dropdownReceiveShadows.captionText.alignment = TextAnchor.MiddleLeft;
-                dropdownReceiveShadows.options.Clear();
-                dropdownReceiveShadows.options.Add(new Dropdown.OptionData("Off"));
-                dropdownReceiveShadows.options.Add(new Dropdown.OptionData("On"));
-                dropdownReceiveShadows.value = valueReceiveShadows ? 1 : 0;
-                dropdownReceiveShadows.captionText.text = valueReceiveShadows ? "On" : "Off";
-                dropdownReceiveShadows.onValueChanged.AddListener((value) =>
-                {
-                    valueReceiveShadows = value == 1;
-                    AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), valueReceiveShadowsInitial ? "1" : "0", gameObject);
-                    labelReceiveShadows.text = ReceiveShadowsLabelText();
-                });
-                var dropdownReceiveShadowsLE = dropdownReceiveShadows.gameObject.AddComponent<LayoutElement>();
-                dropdownReceiveShadowsLE.preferredWidth = dropdownWidth;
-                dropdownReceiveShadowsLE.flexibleWidth = 0;
-
-                var resetReceiveShadows = UIUtility.CreateButton("ResetReceiveShadows", contentItem3.transform, "Reset");
-                resetReceiveShadows.onClick.AddListener(() =>
-                {
-                    RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, gameObject);
-                    valueReceiveShadows = valueReceiveShadowsInitial;
-                    dropdownReceiveShadows.value = valueReceiveShadowsInitial ? 1 : 0;
-                    labelReceiveShadows.text = ReceiveShadowsLabelText();
-                });
-                var resetReceiveShadowsLE = resetReceiveShadows.gameObject.AddComponent<LayoutElement>();
-                resetReceiveShadowsLE.preferredWidth = resetButtonWidth;
-                resetReceiveShadowsLE.flexibleWidth = 0;
+                    valueReceiveShadowsOriginal = temp == "1";
+                var rendererReceiveShadowsItem = new ItemInfo(ItemInfo.RowItemType.RendererReceiveShadows, "Receive Shadows");
+                rendererReceiveShadowsItem.RendererReceiveShadows = rend.receiveShadows ? 1 : 0;
+                rendererReceiveShadowsItem.RendererReceiveShadowsOriginal = valueReceiveShadowsOriginal ? 1 : 0;
+                rendererReceiveShadowsItem.RendererReceiveShadowsOnChange = delegate (int value) { AddRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, value.ToString(), valueReceiveShadowsOriginal ? "1" : "0", gameObject); };
+                rendererReceiveShadowsItem.RendererReceiveShadowsOnReset = delegate { RemoveRendererProperty(objectType, coordinateIndex, slot, rend.NameFormatted(), RendererProperties.ReceiveShadows, gameObject); };
+                items.Add(rendererReceiveShadowsItem);
             }
 
             foreach (var mat in matList.Values)
@@ -398,389 +237,66 @@ namespace KK_Plugins.MaterialEditor
                 string materialName = mat.NameFormatted();
                 string shaderName = mat.shader.NameFormatted();
 
-                var contentListHeader1 = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
-                contentListHeader1.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                contentListHeader1.gameObject.AddComponent<Mask>();
-                contentListHeader1.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                contentListHeader1.color = RowColor();
-                rowCounter++;
+                var materialItem = new ItemInfo(ItemInfo.RowItemType.Material, "Material");
+                materialItem.MaterialName = materialName;
+                items.Add(materialItem);
 
-                var labelMat = UIUtility.CreateText(materialName, contentListHeader1.transform, "Material:");
-                labelMat.alignment = TextAnchor.MiddleLeft;
-                labelMat.color = Color.black;
-                var labelMat2 = UIUtility.CreateText(materialName, contentListHeader1.transform, materialName);
-                labelMat2.alignment = TextAnchor.MiddleRight;
-                labelMat2.color = Color.black;
-
-                var contentListHeader2 = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
-                contentListHeader2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                contentListHeader2.gameObject.AddComponent<Mask>();
-                contentListHeader2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                contentListHeader2.color = RowColor();
-                rowCounter++;
-
-                var labelShader = UIUtility.CreateText(mat.shader.NameFormatted(), contentListHeader2.transform, "Shader:");
-                labelShader.alignment = TextAnchor.MiddleLeft;
-                labelShader.color = Color.black;
-                var labelShaderLE = labelShader.gameObject.AddComponent<LayoutElement>();
-                labelShaderLE.preferredWidth = labelWidth;
-                labelShaderLE.flexibleWidth = labelWidth;
-
-                if (MaterialEditorPlugin.XMLShaderProperties.Count == 0)
+                //Shader
+                string shaderNameOriginal = shaderName;
+                var temp = GetMaterialShaderNameOriginal(objectType, coordinateIndex, slot, materialName);
+                if (!temp.IsNullOrEmpty())
+                    shaderNameOriginal = temp;
+                var shaderItem = new ItemInfo(ItemInfo.RowItemType.Shader, "Shader");
+                shaderItem.ShaderName = shaderName;
+                shaderItem.ShaderNameOriginal = shaderNameOriginal;
+                shaderItem.ShaderNameOnChange = delegate (string value)
                 {
-                    var labelShader2 = UIUtility.CreateText(mat.shader.NameFormatted(), contentListHeader2.transform, shaderName);
-                    labelShader2.alignment = TextAnchor.MiddleRight;
-                    labelShader2.color = Color.black;
-                }
-                else
+                    AddMaterialShaderName(objectType, coordinateIndex, slot, materialName, value, shaderNameOriginal, gameObject);
+                    StartCoroutine(PopulateListCoroutine(gameObject, objectType, coordinateIndex, slot, filterType: filterType));
+                };
+                shaderItem.ShaderNameOnReset = delegate
                 {
-                    string shaderNameInitial = shaderName;
-                    var temp = GetMaterialShaderNameOriginal(objectType, coordinateIndex, slot, materialName);
-                    if (!temp.IsNullOrEmpty())
-                        shaderNameInitial = temp;
-                    string ShaderLabelText() => shaderName == shaderNameInitial ? "Shader:" : "Shader:*";
+                    RemoveMaterialShaderName(objectType, coordinateIndex, slot, materialName, gameObject);
+                    StartCoroutine(PopulateListCoroutine(gameObject, objectType, coordinateIndex, slot, filterType: filterType));
+                };
+                items.Add(shaderItem);
 
-                    labelShader.text = ShaderLabelText();
-
-                    var dropdownShader = UIUtility.CreateDropdown("Shader", contentListHeader2.transform);
-                    dropdownShader.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                    dropdownShader.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
-                    dropdownShader.captionText.alignment = TextAnchor.MiddleLeft;
-                    dropdownShader.options.Clear();
-                    dropdownShader.options.Add(new Dropdown.OptionData(shaderNameInitial));
-                    foreach (var shader in MaterialEditorPlugin.XMLShaderProperties.Where(x => x.Key != "default" && x.Key != shaderNameInitial))
-                        dropdownShader.options.Add(new Dropdown.OptionData(shader.Key));
-                    dropdownShader.value = ShaderSelectedIndex();
-                    dropdownShader.captionText.text = shaderName;
-                    dropdownShader.onValueChanged.AddListener((value) =>
-                    {
-                        if (value == 0)
-                        {
-                            shaderName = shaderNameInitial;
-                            RemoveMaterialShaderName(objectType, coordinateIndex, slot, materialName, gameObject);
-
-                            if (MaterialEditorPlugin.XMLShaderProperties.ContainsKey(shaderNameInitial))
-                                PopulateList(gameObject, objectType, coordinateIndex, slot, filterType: filterType);
-                            else
-                                Logger.LogMessage("Save and reload to refresh shader.");
-                        }
-                        else
-                        {
-                            int counter = 0;
-                            foreach (var shader in MaterialEditorPlugin.XMLShaderProperties.Where(x => x.Key != "default" && x.Key != shaderNameInitial))
-                            {
-                                counter++;
-                                if (counter == value)
-                                {
-                                    shaderName = shader.Key;
-                                    AddMaterialShaderName(objectType, coordinateIndex, slot, materialName, shader.Key, shaderNameInitial, gameObject);
-                                    PopulateList(gameObject, objectType, coordinateIndex, slot, filterType: filterType);
-
-                                    break;
-                                }
-                            }
-                        }
-
-                        labelShader.text = ShaderLabelText();
-                    });
-                    var dropdownShaderLE = dropdownShader.gameObject.AddComponent<LayoutElement>();
-                    dropdownShaderLE.preferredWidth = dropdownWidth * 3;
-                    dropdownShaderLE.flexibleWidth = 0;
-
-                    int ShaderSelectedIndex()
-                    {
-                        string currentShaderName = mat.shader.NameFormatted();
-                        if (currentShaderName == shaderNameInitial)
-                            return 0;
-
-                        int counter = 0;
-                        foreach (var shader in MaterialEditorPlugin.XMLShaderProperties.Where(x => x.Key != "default" && x.Key != shaderNameInitial))
-                        {
-                            counter++;
-                            if (currentShaderName == shader.Key)
-                                return counter;
-                        }
-                        return 0;
-                    }
-
-                    var resetShader = UIUtility.CreateButton("ResetShader", contentListHeader2.transform, "Reset");
-                    resetShader.onClick.AddListener(() =>
-                    {
-                        shaderName = shaderNameInitial;
-                        labelShader.text = ShaderLabelText();
-
-                        RemoveMaterialShaderName(objectType, coordinateIndex, slot, materialName, gameObject);
-                        PopulateList(gameObject, objectType, coordinateIndex, slot, filterType: filterType);
-                    });
-                    var resetShaderLE = resetShader.gameObject.AddComponent<LayoutElement>();
-                    resetShaderLE.preferredWidth = resetButtonWidth;
-                    resetShaderLE.flexibleWidth = 0;
-
-                    var contentListHeader3 = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
-                    contentListHeader3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                    contentListHeader3.gameObject.AddComponent<Mask>();
-                    contentListHeader3.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                    contentListHeader3.color = RowColor();
-                    rowCounter++;
-
-                    int renderQueue = mat.renderQueue;
-                    int renderQueueOriginal = mat.renderQueue;
-                    int? renderQueueOriginalTemp = GetMaterialShaderRenderQueueOriginal(objectType, coordinateIndex, slot, materialName);
-                    renderQueueOriginal = renderQueueOriginalTemp == null ? renderQueue : (int)renderQueueOriginalTemp;
-
-                    string RenderQueueLabelText() => renderQueue == renderQueueOriginal ? "RenderQueue:" : "RenderQueue:*";
-
-                    var labelShaderRenderQueue = UIUtility.CreateText("ShaderRenderQueue", contentListHeader3.transform, RenderQueueLabelText());
-                    labelShaderRenderQueue.alignment = TextAnchor.MiddleLeft;
-                    labelShaderRenderQueue.color = Color.black;
-                    var labelShaderRenderQueueLE = labelShaderRenderQueue.gameObject.AddComponent<LayoutElement>();
-                    labelShaderRenderQueueLE.preferredWidth = labelWidth;
-                    labelShaderRenderQueueLE.flexibleWidth = labelWidth;
-
-                    var textBoxShaderRenderQueue = UIUtility.CreateInputField("ShaderRenderQueue", contentListHeader3.transform);
-                    textBoxShaderRenderQueue.text = renderQueue.ToString();
-                    textBoxShaderRenderQueue.onEndEdit.AddListener((value) =>
-                    {
-                        if (!int.TryParse(value, out int intValue))
-                        {
-                            textBoxShaderRenderQueue.text = renderQueue.ToString();
-                            return;
-                        }
-                        renderQueue = intValue;
-                        textBoxShaderRenderQueue.text = renderQueue.ToString();
-
-                        AddMaterialShaderRenderQueue(objectType, coordinateIndex, slot, materialName, renderQueue, renderQueueOriginal, gameObject);
-
-                        labelShaderRenderQueue.text = RenderQueueLabelText();
-                    });
-                    var textBoxShaderRenderQueueLE = textBoxShaderRenderQueue.gameObject.AddComponent<LayoutElement>();
-                    textBoxShaderRenderQueueLE.preferredWidth = textBoxWidth;
-                    textBoxShaderRenderQueueLE.flexibleWidth = 0;
-
-                    var resetShaderRenderQueue = UIUtility.CreateButton($"ResetRenderQueue", contentListHeader3.transform, "Reset");
-                    resetShaderRenderQueue.onClick.AddListener(() =>
-                    {
-                        RemoveMaterialShaderRenderQueue(objectType, coordinateIndex, slot, materialName, gameObject);
-                        renderQueue = renderQueueOriginal;
-                        textBoxShaderRenderQueue.text = renderQueueOriginal.ToString();
-                        labelShaderRenderQueue.text = RenderQueueLabelText();
-                    });
-                    var resetShaderRenderQueueLE = resetShaderRenderQueue.gameObject.AddComponent<LayoutElement>();
-                    resetShaderRenderQueueLE.preferredWidth = resetButtonWidth;
-                    resetShaderRenderQueueLE.flexibleWidth = 0;
-                }
+                //Shader RenderQueue
+                int renderQueueOriginal = mat.renderQueue;
+                int? renderQueueOriginalTemp = GetMaterialShaderRenderQueueOriginal(objectType, coordinateIndex, slot, materialName);
+                renderQueueOriginal = renderQueueOriginalTemp == null ? mat.renderQueue : (int)renderQueueOriginalTemp;
+                var shaderRenderQueueItem = new ItemInfo(ItemInfo.RowItemType.ShaderRenderQueue, "Render Queue");
+                shaderRenderQueueItem.ShaderRenderQueue = mat.renderQueue;
+                shaderRenderQueueItem.ShaderRenderQueueOriginal = renderQueueOriginal;
+                shaderRenderQueueItem.ShaderRenderQueueOnChange = delegate (int value) { AddMaterialShaderRenderQueue(objectType, coordinateIndex, slot, materialName, mat.renderQueue, renderQueueOriginal, gameObject); };
+                shaderRenderQueueItem.ShaderRenderQueueOnReset = delegate { RemoveMaterialShaderRenderQueue(objectType, coordinateIndex, slot, materialName, gameObject); };
+                items.Add(shaderRenderQueueItem);
 
                 foreach (var property in MaterialEditorPlugin.XMLShaderProperties[MaterialEditorPlugin.XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
                 {
                     string propertyName = property.Key;
                     if (MaterialEditorPlugin.CheckBlacklist(objectType, propertyName)) continue;
-                    string LabelText(bool defaultValue) => defaultValue ? propertyName + ":" : propertyName + ":*";
 
-                    if (property.Value.Type == ShaderPropertyType.Color)
-                    {
-                        if (mat.HasProperty($"_{propertyName}"))
-                        {
-                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
-                            contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                            contentList.gameObject.AddComponent<Mask>();
-                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                            contentList.color = RowColor();
-                            rowCounter++;
-
-                            Color valueColor = mat.GetColor($"_{propertyName}");
-                            Color valueColorInitial = valueColor;
-                            Color? c = GetMaterialColorPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
-                            if (c != null)
-                                valueColorInitial = (Color)c;
-
-                            bool ColorDefault() => valueColor == valueColorInitial;
-
-                            var label = UIUtility.CreateText(propertyName, contentList.transform, LabelText(ColorDefault()));
-                            label.alignment = TextAnchor.MiddleLeft;
-                            label.color = Color.black;
-                            var labelLE = label.gameObject.AddComponent<LayoutElement>();
-                            labelLE.preferredWidth = labelWidth;
-                            labelLE.flexibleWidth = labelWidth;
-
-                            var labelR = UIUtility.CreateText("R", contentList.transform, "R");
-                            labelR.alignment = TextAnchor.MiddleLeft;
-                            labelR.color = Color.black;
-                            var labelRLE = labelR.gameObject.AddComponent<LayoutElement>();
-                            labelRLE.preferredWidth = colorLabelWidth;
-                            labelRLE.flexibleWidth = 0;
-
-                            var textBoxR = UIUtility.CreateInputField(propertyName, contentList.transform);
-                            textBoxR.text = valueColor.r.ToString();
-                            textBoxR.onEndEdit.AddListener((value) =>
-                            {
-                                if (!float.TryParse(value, out float valueNew))
-                                {
-                                    textBoxR.text = valueColor.r.ToString();
-                                    return;
-                                }
-
-                                Color colorOrig = mat.GetColor($"_{propertyName}");
-                                valueColor = new Color(valueNew, colorOrig.g, colorOrig.b, colorOrig.a);
-
-                                AddMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, valueColor, valueColorInitial, gameObject);
-
-                                label.text = LabelText(ColorDefault());
-                            });
-                            var textBoxRLE = textBoxR.gameObject.AddComponent<LayoutElement>();
-                            textBoxRLE.preferredWidth = textBoxWidth;
-                            textBoxRLE.flexibleWidth = 0;
-
-                            var labelG = UIUtility.CreateText("G", contentList.transform, "G");
-                            labelG.alignment = TextAnchor.MiddleLeft;
-                            labelG.color = Color.black;
-                            var labelGLE = labelG.gameObject.AddComponent<LayoutElement>();
-                            labelGLE.preferredWidth = colorLabelWidth;
-                            labelGLE.flexibleWidth = 0;
-
-                            var textBoxG = UIUtility.CreateInputField(propertyName, contentList.transform);
-                            textBoxG.text = valueColor.g.ToString();
-                            textBoxG.onEndEdit.AddListener((value) =>
-                            {
-                                if (!float.TryParse(value, out float valueNew))
-                                {
-                                    textBoxG.text = valueColor.g.ToString();
-                                    return;
-                                }
-
-                                Color colorOrig = mat.GetColor($"_{propertyName}");
-                                valueColor = new Color(colorOrig.r, valueNew, colorOrig.b, colorOrig.a);
-
-                                AddMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, valueColor, valueColorInitial, gameObject);
-
-                                label.text = LabelText(ColorDefault());
-                            });
-                            var textBoxGLE = textBoxG.gameObject.AddComponent<LayoutElement>();
-                            textBoxGLE.preferredWidth = textBoxWidth;
-                            textBoxGLE.flexibleWidth = 0;
-
-                            var labelB = UIUtility.CreateText("B", contentList.transform, "B");
-                            labelB.alignment = TextAnchor.MiddleLeft;
-                            labelB.color = Color.black;
-                            var labelBLE = labelB.gameObject.AddComponent<LayoutElement>();
-                            labelBLE.preferredWidth = colorLabelWidth;
-                            labelBLE.flexibleWidth = 0;
-
-                            var textBoxB = UIUtility.CreateInputField(propertyName, contentList.transform);
-                            textBoxB.text = valueColor.b.ToString();
-                            textBoxB.onEndEdit.AddListener((value) =>
-                            {
-                                if (!float.TryParse(value, out float valueNew))
-                                {
-                                    textBoxB.text = valueColor.b.ToString();
-                                    return;
-                                }
-
-                                Color colorOrig = mat.GetColor($"_{propertyName}");
-                                valueColor = new Color(colorOrig.r, colorOrig.g, valueNew, colorOrig.a);
-
-                                AddMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, valueColor, valueColorInitial, gameObject);
-
-                                label.text = LabelText(ColorDefault());
-                            });
-
-                            var textBoxBLE = textBoxB.gameObject.AddComponent<LayoutElement>();
-                            textBoxBLE.preferredWidth = textBoxWidth;
-                            textBoxBLE.flexibleWidth = 0;
-
-                            var labelA = UIUtility.CreateText("A", contentList.transform, "A");
-                            labelA.alignment = TextAnchor.MiddleLeft;
-                            labelA.color = Color.black;
-                            var labelALE = labelA.gameObject.AddComponent<LayoutElement>();
-                            labelALE.preferredWidth = colorLabelWidth;
-                            labelALE.flexibleWidth = 0;
-
-                            var textBoxA = UIUtility.CreateInputField(propertyName, contentList.transform);
-                            textBoxA.text = valueColor.a.ToString();
-                            textBoxA.onEndEdit.AddListener((value) =>
-                            {
-                                if (!float.TryParse(value, out float valueNew))
-                                {
-                                    textBoxA.text = valueColor.a.ToString();
-                                    return;
-                                }
-
-                                Color colorOrig = mat.GetColor($"_{propertyName}");
-                                valueColor = new Color(colorOrig.r, colorOrig.g, colorOrig.b, valueNew);
-
-                                AddMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, valueColor, valueColorInitial, gameObject);
-
-                                label.text = LabelText(ColorDefault());
-                            });
-
-                            var textBoxALE = textBoxA.gameObject.AddComponent<LayoutElement>();
-                            textBoxALE.preferredWidth = textBoxWidth;
-                            textBoxALE.flexibleWidth = 0;
-
-                            var resetColor = UIUtility.CreateButton($"Reset{propertyName}", contentList.transform, "Reset");
-                            resetColor.onClick.AddListener(() =>
-                            {
-                                RemoveMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
-
-                                textBoxR.text = valueColorInitial.r.ToString();
-                                textBoxG.text = valueColorInitial.g.ToString();
-                                textBoxB.text = valueColorInitial.b.ToString();
-                                textBoxA.text = valueColorInitial.a.ToString();
-                                label.text = LabelText(true);
-                            });
-                            var resetColorLE = resetColor.gameObject.AddComponent<LayoutElement>();
-                            resetColorLE.preferredWidth = resetButtonWidth;
-                            resetColorLE.flexibleWidth = 0;
-                        }
-                    }
                     if (property.Value.Type == ShaderPropertyType.Texture)
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
-                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
-                            contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                            contentList.gameObject.AddComponent<Mask>();
-                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                            contentList.color = RowColor();
-                            rowCounter++;
-
-                            bool defaultValue = GetMaterialTextureValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
-
-                            var label = UIUtility.CreateText(propertyName, contentList.transform, LabelText(defaultValue));
-                            label.alignment = TextAnchor.MiddleLeft;
-                            label.color = Color.black;
-                            var labelLE = label.gameObject.AddComponent<LayoutElement>();
-                            labelLE.preferredWidth = labelWidth;
-                            labelLE.flexibleWidth = labelWidth;
-
-                            var texture = mat.GetTexture($"_{propertyName}");
-
-                            if (texture == null)
-                            {
-                                var labelNoTexture = UIUtility.CreateText($"NoTexture{propertyName}", contentList.transform, "No Texture");
-                                labelNoTexture.alignment = TextAnchor.MiddleCenter;
-                                labelNoTexture.color = Color.black;
-                                var labelNoTextureLE = labelNoTexture.gameObject.AddComponent<LayoutElement>();
-                                labelNoTextureLE.preferredWidth = buttonWidth;
-                                labelNoTextureLE.flexibleWidth = 0;
-                            }
-                            else
-                            {
-                                var exportButton = UIUtility.CreateButton($"ExportTexture{propertyName}", contentList.transform, $"Export Texture");
-                                exportButton.onClick.AddListener(() => ExportTexture(mat, propertyName));
-                                var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
-                                exportButtonLE.preferredWidth = buttonWidth;
-                                exportButtonLE.flexibleWidth = 0;
-                            }
-
-                            var importButton = UIUtility.CreateButton($"ImportTexture{propertyName}", contentList.transform, $"Import Texture");
-                            importButton.onClick.AddListener(() =>
+                            var textureItem = new ItemInfo(ItemInfo.RowItemType.TextureProperty, propertyName);
+                            textureItem.TextureChanged = !GetMaterialTextureValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+                            textureItem.TextureExists = mat.GetTexture($"_{propertyName}") != null;
+                            textureItem.TextureOnExport = delegate { ExportTexture(mat, propertyName); };
+                            textureItem.TextureOnImport = delegate
                             {
                                 OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, MaterialEditorPlugin.FileFilter, MaterialEditorPlugin.FileExt);
 
                                 void OnFileAccept(string[] strings)
                                 {
-                                    if (strings == null || strings.Length == 0) return;
-                                    if (strings[0].IsNullOrEmpty()) return;
+                                    if (strings == null || strings.Length == 0 || strings[0].IsNullOrEmpty())
+                                    {
+                                        textureItem.TextureChanged = !GetMaterialTextureValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+                                        textureItem.TextureExists = mat.GetTexture($"_{propertyName}") != null;
+                                        return;
+                                    }
                                     string filePath = strings[0];
 
                                     AddMaterialTexture(objectType, coordinateIndex, slot, materialName, propertyName, filePath, gameObject);
@@ -803,285 +319,99 @@ namespace KK_Plugins.MaterialEditor
                                         }
                                     }
                                 }
-
-                                label.text = LabelText(false);
-                            });
-                            var importButtonLE = importButton.gameObject.AddComponent<LayoutElement>();
-                            importButtonLE.preferredWidth = buttonWidth;
-                            importButtonLE.flexibleWidth = 0;
-
-                            var resetTexture = UIUtility.CreateButton($"Reset{propertyName}", contentList.transform, "Reset");
-                            resetTexture.onClick.AddListener(() =>
-                            {
-                                RemoveMaterialTexture(objectType, coordinateIndex, slot, materialName, propertyName);
-
-                                label.text = LabelText(true);
-                            });
-                            var resetTextureLE = resetTexture.gameObject.AddComponent<LayoutElement>();
-                            resetTextureLE.preferredWidth = resetButtonWidth;
-                            resetTextureLE.flexibleWidth = 0;
-
-                            //Offset & Scale
-                            var contentList2 = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
-                            contentList2.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                            contentList2.gameObject.AddComponent<Mask>();
-                            contentList2.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                            contentList2.color = RowColor();
-                            rowCounter++;
+                            };
+                            items.Add(textureItem);
 
                             Vector2 textureOffset = mat.GetTextureOffset($"_{propertyName}");
-                            Vector2 textureOffsetInitial = textureOffset;
-                            Vector2? textureOffsetInitialTemp = GetMaterialTextureOffsetOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
-                            if (textureOffsetInitialTemp != null)
-                                textureOffsetInitial = (Vector2)textureOffsetInitialTemp;
+                            Vector2 textureOffsetOriginal = textureOffset;
+                            Vector2? textureOffsetOriginalTemp = GetMaterialTextureOffsetOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+                            if (textureOffsetOriginalTemp != null)
+                                textureOffsetOriginal = (Vector2)textureOffsetOriginalTemp;
 
                             Vector2 textureScale = mat.GetTextureScale($"_{propertyName}");
-                            Vector2 textureScaleInitial = textureScale;
-                            Vector2? textureScaleInitialTemp = GetMaterialTextureScaleOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
-                            if (textureScaleInitialTemp != null)
-                                textureScaleInitial = (Vector2)textureScaleInitialTemp;
+                            Vector2 textureScaleOriginal = textureScale;
+                            Vector2? textureScaleOriginalTemp = GetMaterialTextureScaleOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+                            if (textureScaleOriginalTemp != null)
+                                textureScaleOriginal = (Vector2)textureScaleOriginalTemp;
 
-                            string labelOffsetScaleText() => (textureOffset == textureOffsetInitial && textureScale == textureScaleInitial) ? "" : "*";
-
-                            var label2 = UIUtility.CreateText(propertyName, contentList2.transform, labelOffsetScaleText());
-                            label2.alignment = TextAnchor.MiddleLeft;
-                            label2.color = Color.black;
-                            var label2LE = label2.gameObject.AddComponent<LayoutElement>();
-                            label2LE.preferredWidth = labelWidth;
-                            label2LE.flexibleWidth = labelWidth;
-
-                            //Offset
-                            var labelOffsetX = UIUtility.CreateText("OffsetX", contentList2.transform, "Offset X");
-                            labelOffsetX.alignment = TextAnchor.MiddleLeft;
-                            labelOffsetX.color = Color.black;
-                            var labelOffsetXLE = labelOffsetX.gameObject.AddComponent<LayoutElement>();
-                            labelOffsetXLE.preferredWidth = labelXWidth;
-                            labelOffsetXLE.flexibleWidth = 0;
-
-                            var textBoxOffsetX = UIUtility.CreateInputField("OffsetX", contentList2.transform);
-                            textBoxOffsetX.text = textureOffset.x.ToString();
-                            textBoxOffsetX.onEndEdit.AddListener((value) =>
-                            {
-                                if (!float.TryParse(value, out float offsetX))
-                                {
-                                    textBoxOffsetX.text = textureOffset.x.ToString();
-                                    return;
-                                }
-                                float offsetY = mat.GetTextureOffset($"_{propertyName}").y;
-                                textureOffset = new Vector2(offsetX, offsetY);
-
-                                AddMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName, textureOffset, textureOffsetInitial, gameObject);
-
-                                label2.text = labelOffsetScaleText();
-                            });
-                            var textBoxOffsetXLE = textBoxOffsetX.gameObject.AddComponent<LayoutElement>();
-                            textBoxOffsetXLE.preferredWidth = textBoxXYWidth;
-                            textBoxOffsetXLE.flexibleWidth = 0;
-
-                            var labelOffsetY = UIUtility.CreateText("OffsetY", contentList2.transform, "Y");
-                            labelOffsetY.alignment = TextAnchor.MiddleLeft;
-                            labelOffsetY.color = Color.black;
-                            var labelOffsetYLE = labelOffsetY.gameObject.AddComponent<LayoutElement>();
-                            labelOffsetYLE.preferredWidth = labelYWidth;
-                            labelOffsetYLE.flexibleWidth = 0;
-
-                            var textBoxOffsetY = UIUtility.CreateInputField("OffsetY", contentList2.transform);
-                            textBoxOffsetY.text = textureOffset.y.ToString();
-                            textBoxOffsetY.onEndEdit.AddListener((value) =>
-                            {
-                                if (!float.TryParse(value, out float offsetY))
-                                {
-                                    textBoxOffsetY.text = textureOffset.y.ToString();
-                                    return;
-                                }
-                                float offsetX = mat.GetTextureOffset($"_{propertyName}").x;
-                                textureOffset = new Vector2(offsetX, offsetY);
-
-                                AddMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName, textureOffset, textureOffsetInitial, gameObject);
-
-                                label2.text = labelOffsetScaleText();
-                            });
-                            var textBoxOffsetYLE = textBoxOffsetY.gameObject.AddComponent<LayoutElement>();
-                            textBoxOffsetYLE.preferredWidth = textBoxXYWidth;
-                            textBoxOffsetYLE.flexibleWidth = 0;
-
-                            //Scale
-                            var labelScaleX = UIUtility.CreateText("ScaleX", contentList2.transform, "Scale X");
-                            labelScaleX.alignment = TextAnchor.MiddleLeft;
-                            labelScaleX.color = Color.black;
-                            var labelScaleXLE = labelScaleX.gameObject.AddComponent<LayoutElement>();
-                            labelScaleXLE.preferredWidth = labelXWidth;
-                            labelScaleXLE.flexibleWidth = 0;
-
-                            var textBoxScaleX = UIUtility.CreateInputField("ScaleX", contentList2.transform);
-                            textBoxScaleX.text = textureScale.x.ToString();
-                            textBoxScaleX.onEndEdit.AddListener((value) =>
-                            {
-                                if (!float.TryParse(value, out float scaleX))
-                                {
-                                    textBoxScaleX.text = textureScale.x.ToString();
-                                    return;
-                                }
-                                float scaleY = mat.GetTextureScale($"_{propertyName}").y;
-                                textureScale = new Vector2(scaleX, scaleY);
-
-                                AddMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName, textureScale, textureScaleInitial, gameObject);
-
-                                label2.text = labelOffsetScaleText();
-                            });
-                            var textBoxScaleXLE = textBoxScaleX.gameObject.AddComponent<LayoutElement>();
-                            textBoxScaleXLE.preferredWidth = textBoxXYWidth;
-                            textBoxScaleXLE.flexibleWidth = 0;
-
-                            var labelScaleY = UIUtility.CreateText("ScaleY", contentList2.transform, "Y");
-                            labelScaleY.alignment = TextAnchor.MiddleLeft;
-                            labelScaleY.color = Color.black;
-                            var labelScaleYLE = labelScaleY.gameObject.AddComponent<LayoutElement>();
-                            labelScaleYLE.preferredWidth = labelYWidth;
-                            labelScaleYLE.flexibleWidth = 0;
-
-                            var textBoxScaleY = UIUtility.CreateInputField("ScaleY", contentList2.transform);
-                            textBoxScaleY.text = textureScale.y.ToString();
-                            textBoxScaleY.onEndEdit.AddListener((value) =>
-                            {
-                                if (!float.TryParse(value, out float scaleY))
-                                {
-                                    textBoxScaleY.text = textureScale.y.ToString();
-                                    return;
-                                }
-                                float scaleX = mat.GetTextureScale($"_{propertyName}").x;
-                                textureScale = new Vector2(scaleX, scaleY);
-
-                                AddMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName, textureOffset, textureOffsetInitial, gameObject);
-
-                                label2.text = labelOffsetScaleText();
-                            });
-                            var textBoxScaleYLE = textBoxScaleY.gameObject.AddComponent<LayoutElement>();
-                            textBoxScaleYLE.preferredWidth = textBoxXYWidth;
-                            textBoxScaleYLE.flexibleWidth = 0;
-
-                            var resetTextureOffsetScale = UIUtility.CreateButton($"Reset{propertyName}", contentList2.transform, "Reset");
-                            resetTextureOffsetScale.onClick.AddListener(() =>
-                            {
-                                RemoveMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
-                                RemoveMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
-
-                                SetTextureProperty(gameObject, materialName, propertyName, TexturePropertyType.Offset, textureOffsetInitial);
-                                SetTextureProperty(gameObject, materialName, propertyName, TexturePropertyType.Scale, textureScaleInitial);
-
-                                textureOffset = textureOffsetInitial;
-                                textureScale = textureScaleInitial;
-                                textBoxOffsetX.text = textureOffsetInitial.x.ToString();
-                                textBoxOffsetY.text = textureOffsetInitial.y.ToString();
-                                textBoxScaleX.text = textureScaleInitial.x.ToString();
-                                textBoxScaleY.text = textureScaleInitial.y.ToString();
-                                label2.text = labelOffsetScaleText();
-                            });
-                            var resetTextureOffsetScaleLE = resetTextureOffsetScale.gameObject.AddComponent<LayoutElement>();
-                            resetTextureOffsetScaleLE.preferredWidth = resetButtonWidth;
-                            resetTextureOffsetScaleLE.flexibleWidth = 0;
+                            var textureItemOffsetScale = new ItemInfo(ItemInfo.RowItemType.TextureOffsetScale);
+                            textureItemOffsetScale.Offset = textureOffset;
+                            textureItemOffsetScale.OffsetOriginal = textureOffsetOriginal;
+                            textureItemOffsetScale.OffsetOnChange = delegate (Vector2 value) { AddMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName, value, textureOffsetOriginal, gameObject); };
+                            textureItemOffsetScale.OffsetOnReset = delegate { RemoveMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName, gameObject); };
+                            textureItemOffsetScale.Scale = textureScale;
+                            textureItemOffsetScale.ScaleOriginal = textureScaleOriginal;
+                            textureItemOffsetScale.ScaleOnChange = delegate (Vector2 value) { AddMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName, value, textureScaleOriginal, gameObject); };
+                            textureItemOffsetScale.ScaleOnReset = delegate { RemoveMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName, gameObject); };
+                            items.Add(textureItemOffsetScale);
                         }
+
                     }
-                    if (property.Value.Type == ShaderPropertyType.Float)
+                    else if (property.Value.Type == ShaderPropertyType.Color)
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
-                            var contentList = UIUtility.CreatePanel("ContentList", MaterialEditorScrollableUI.content.transform);
-                            contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
-                            contentList.gameObject.AddComponent<Mask>();
-                            contentList.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                            contentList.color = RowColor();
-                            rowCounter++;
-
+                            Color valueColor = mat.GetColor($"_{propertyName}");
+                            Color valueColorOriginal = valueColor;
+                            Color? c = GetMaterialColorPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+                            if (c != null)
+                                valueColorOriginal = (Color)c;
+                            var contentItem = new ItemInfo(ItemInfo.RowItemType.ColorProperty, propertyName);
+                            contentItem.ColorValue = valueColor;
+                            contentItem.ColorValueOriginal = valueColorOriginal;
+                            contentItem.ColorValueOnChange = delegate (Color value) { AddMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, value, valueColorOriginal, gameObject); };
+                            contentItem.ColorValueOnReset = delegate { RemoveMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, gameObject); };
+                            items.Add(contentItem);
+                        }
+                    }
+                    else if (property.Value.Type == ShaderPropertyType.Float)
+                    {
+                        if (mat.HasProperty($"_{propertyName}"))
+                        {
                             float valueFloat = mat.GetFloat($"_{propertyName}");
-                            float valueFloatInitial = valueFloat;
-                            string valueFloatInitialTemp = GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
-                            if (!valueFloatInitialTemp.IsNullOrEmpty() && float.TryParse(valueFloatInitialTemp, out float valueFloatInitialTempF))
-                                valueFloatInitial = valueFloatInitialTempF;
-                            bool doSlider = property.Value.MinValue != null && property.Value.MaxValue != null;
-                            bool FloatDefault() => valueFloat == valueFloatInitial;
-
-                            var label = UIUtility.CreateText(propertyName, contentList.transform, LabelText(FloatDefault()));
-                            label.alignment = TextAnchor.MiddleLeft;
-                            label.color = Color.black;
-                            var labelLE = label.gameObject.AddComponent<LayoutElement>();
-                            labelLE.preferredWidth = labelWidth;
-                            labelLE.flexibleWidth = labelWidth;
-
-                            Slider sliderFloat = null;
-                            if (doSlider)
-                            {
-                                sliderFloat = UIUtility.CreateSlider("Slider" + propertyName, contentList.transform);
-                                var sliderFloatLE = sliderFloat.gameObject.AddComponent<LayoutElement>();
-                                sliderFloatLE.preferredWidth = sliderWidth;
-                                sliderFloatLE.flexibleWidth = 0;
-                            }
-                            else
-                            {
-                                var placeholderPanel = UIUtility.CreatePanel(propertyName, contentList.transform);
-                                placeholderPanel.enabled = false;
-                                var placeholderPanelLE = placeholderPanel.gameObject.AddComponent<LayoutElement>();
-                                placeholderPanelLE.preferredWidth = sliderWidth;
-                                placeholderPanelLE.flexibleWidth = 0;
-                            }
-
-                            var textBoxFloat = UIUtility.CreateInputField(propertyName, contentList.transform);
-                            textBoxFloat.text = valueFloat.ToString();
-                            textBoxFloat.onEndEdit.AddListener((value) =>
-                            {
-                                if (!float.TryParse(value, out float valueFloatNew))
-                                {
-                                    textBoxFloat.text = valueFloat.ToString();
-                                    return;
-                                }
-                                valueFloat = valueFloatNew;
-
-                                AddMaterialFloatProperty(objectType, coordinateIndex, slot, materialName, propertyName, valueFloat, valueFloatInitial, gameObject);
-
-                                if (doSlider && valueFloat <= sliderFloat.maxValue && valueFloat >= sliderFloat.minValue)
-                                    sliderFloat.value = valueFloat;
-                                label.text = LabelText(FloatDefault());
-                            });
-                            var textBoxFloatLE = textBoxFloat.gameObject.AddComponent<LayoutElement>();
-                            textBoxFloatLE.preferredWidth = textBoxWidth;
-                            textBoxFloatLE.flexibleWidth = 0;
-
-                            if (doSlider)
-                            {
-                                sliderFloat.minValue = (float)property.Value.MinValue;
-                                sliderFloat.maxValue = (float)property.Value.MaxValue;
-                                sliderFloat.value = valueFloat;
-                                sliderFloat.onValueChanged.AddListener((value) =>
-                                {
-                                    textBoxFloat.text = value.ToString();
-                                    textBoxFloat.onEndEdit.Invoke(value.ToString());
-                                });
-                            }
-
-                            var resetFloat = UIUtility.CreateButton($"Reset{propertyName}", contentList.transform, "Reset");
-                            resetFloat.onClick.AddListener(() =>
-                            {
-                                RemoveMaterialFloatProperty(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
-                                SetFloatProperty(gameObject, materialName, propertyName, valueFloatInitial.ToString());
-
-                                valueFloat = valueFloatInitial;
-                                textBoxFloat.text = valueFloatInitial.ToString();
-                                label.text = LabelText(FloatDefault());
-                                if (doSlider)
-                                    sliderFloat.value = valueFloatInitial;
-                            });
-                            var resetEnabledLE = resetFloat.gameObject.AddComponent<LayoutElement>();
-                            resetEnabledLE.preferredWidth = resetButtonWidth;
-                            resetEnabledLE.flexibleWidth = 0;
+                            float valueFloatOriginal = valueFloat;
+                            string valueFloatOriginalTemp = GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+                            if (!valueFloatOriginalTemp.IsNullOrEmpty() && float.TryParse(valueFloatOriginalTemp, out float valueFloatOriginalTempF))
+                                valueFloatOriginal = valueFloatOriginalTempF;
+                            var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName);
+                            contentItem.FloatValue = valueFloat;
+                            contentItem.FloatValueOriginal = valueFloatOriginal;
+                            if (property.Value.MinValue != null)
+                                contentItem.FloatValueSliderMin = (float)property.Value.MinValue;
+                            if (property.Value.MaxValue != null)
+                                contentItem.FloatValueSliderMax = (float)property.Value.MaxValue;
+                            contentItem.FloatValueOnChange = delegate (float value) { AddMaterialFloatProperty(objectType, coordinateIndex, slot, materialName, propertyName, value, valueFloatOriginal, gameObject); };
+                            contentItem.FloatValueOnReset = delegate { RemoveMaterialFloatProperty(objectType, coordinateIndex, slot, materialName, propertyName, gameObject); };
+                            items.Add(contentItem);
                         }
                     }
                 }
             }
+
+            virtualList.SetList(items);
+        }
+        /// <summary>
+        /// Hacky workaround to wait for the dropdown fade to complete before refreshing
+        /// </summary>
+        protected IEnumerator PopulateListCoroutine(GameObject gameObject, ObjectType objectType, int coordinateIndex = 0, int slot = 0, FilterType filterType = FilterType.All)
+        {
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            PopulateList(gameObject, objectType, coordinateIndex, slot, filterType);
         }
 
         private static void ExportTexture(Material mat, string property)
         {
             var tex = mat.GetTexture($"_{property}");
+            if (tex == null) return;
             string filename = Path.Combine(MaterialEditorPlugin.ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{mat.NameFormatted()}_{property}.png");
             MaterialEditorPlugin.SaveTex(tex, filename);
             Logger.LogInfo($"Exported {filename}");

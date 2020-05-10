@@ -10,5 +10,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.UI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.UI.ItemInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.UI.ItemTemplate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.UI.ListEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.UI.VirtualList.cs" />
   </ItemGroup>
 </Project>
