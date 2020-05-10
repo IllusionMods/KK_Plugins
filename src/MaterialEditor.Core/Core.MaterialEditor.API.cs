@@ -60,7 +60,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material being set</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the material was found and the value set</returns>
-        public static bool SetFloatProperty(ChaControl chaControl, string materialName, string propertyName, string value) => SetFloatProperty(chaControl.gameObject, materialName, propertyName, value);
+        public static bool SetFloat(ChaControl chaControl, string materialName, string propertyName, string value) => SetFloat(chaControl.gameObject, materialName, propertyName, value);
         /// <summary>
         /// Set the value of the specified material property
         /// </summary>
@@ -69,7 +69,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material being set</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the material was found and the value set</returns>
-        public static bool SetFloatProperty(GameObject gameObject, string materialName, string propertyName, string value)
+        public static bool SetFloat(GameObject gameObject, string materialName, string propertyName, string value)
         {
             float floatValue = float.Parse(value);
             bool didSet = false;
@@ -92,10 +92,10 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material being set</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the material was found and the value set</returns>
-        public static bool SetColorProperty(ChaControl chaControl, string materialName, string propertyName, string value) => SetColorProperty(chaControl.gameObject, materialName, propertyName, value.ToColor());
-        public static bool SetColorProperty(ChaControl chaControl, string materialName, string propertyName, Color value) => SetColorProperty(chaControl.gameObject, materialName, propertyName, value);
-        public static bool SetColorProperty(GameObject gameObject, string materialName, string propertyName, string value) => SetColorProperty(gameObject, materialName, propertyName, value.ToColor());
-        public static bool SetColorProperty(GameObject gameObject, string materialName, string propertyName, Color value)
+        public static bool SetColor(ChaControl chaControl, string materialName, string propertyName, string value) => SetColor(chaControl.gameObject, materialName, propertyName, value.ToColor());
+        public static bool SetColor(ChaControl chaControl, string materialName, string propertyName, Color value) => SetColor(chaControl.gameObject, materialName, propertyName, value);
+        public static bool SetColor(GameObject gameObject, string materialName, string propertyName, string value) => SetColor(gameObject, materialName, propertyName, value.ToColor());
+        public static bool SetColor(GameObject gameObject, string materialName, string propertyName, Color value)
         {
             bool didSet = false;
 
@@ -206,10 +206,10 @@ namespace KK_Plugins.MaterialEditor
                                         switch (shaderPropertyData.Type)
                                         {
                                             case ShaderPropertyType.Float:
-                                                SetFloatProperty(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                                SetFloat(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
                                                 break;
                                             case ShaderPropertyType.Color:
-                                                SetColorProperty(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                                SetColor(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
                                                 break;
                                             case ShaderPropertyType.Texture:
                                                 if (shaderPropertyData.DefaultValue.IsNullOrEmpty()) continue;

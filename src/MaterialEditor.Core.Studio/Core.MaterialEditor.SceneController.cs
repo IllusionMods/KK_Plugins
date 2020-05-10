@@ -121,13 +121,13 @@ namespace KK_Plugins.MaterialEditor
             if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
                 foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
                     if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        if (SetFloatProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                        if (SetFloat(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
                             MaterialFloatPropertyList.Add(new MaterialFloatProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
             if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
                 foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
                     if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        if (SetColorProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                        if (SetColor(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
                             MaterialColorPropertyList.Add(new MaterialColorProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
             if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
@@ -182,11 +182,11 @@ namespace KK_Plugins.MaterialEditor
                             rendererPropertyListNew.Add(new RendererProperty(copiedItem.Value.GetSceneId(), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
                     foreach (var loadedProperty in MaterialFloatPropertyList.Where(x => x.ID == copiedItem.Key))
-                        if (SetFloatProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                        if (SetFloat(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
                             materialFloatPropertyListNew.Add(new MaterialFloatProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
                     foreach (var loadedProperty in MaterialColorPropertyList.Where(x => x.ID == copiedItem.Key))
-                        if (SetColorProperty(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                        if (SetColor(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
                             materialColorPropertyListNew.Add(new MaterialColorProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
                     foreach (var loadedProperty in MaterialTexturePropertyList.Where(x => x.ID == copiedItem.Key))
@@ -314,7 +314,7 @@ namespace KK_Plugins.MaterialEditor
         {
             AddMaterialFloatProperty(id, materialName, propertyName, value, valueOriginal);
             if (setProperty)
-                SetFloatProperty(gameObject, materialName, propertyName, value);
+                SetFloat(gameObject, materialName, propertyName, value);
         }
         public string GetMaterialFloatPropertyValue(int id, string materialName, string propertyName) =>
             MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == materialName)?.Value;
@@ -328,7 +328,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var original = GetMaterialFloatPropertyValueOriginal(id, materialName, propertyName);
                 if (!original.IsNullOrEmpty())
-                    SetFloatProperty(gameObject, materialName, propertyName, original);
+                    SetFloat(gameObject, materialName, propertyName, original);
             }
             RemoveMaterialFloatProperty(id, materialName, propertyName);
         }
@@ -349,7 +349,7 @@ namespace KK_Plugins.MaterialEditor
         {
             AddMaterialColorProperty(id, materialName, propertyName, value, valueOriginal);
             if (setProperty)
-                SetColorProperty(gameObject, materialName, propertyName, value);
+                SetColor(gameObject, materialName, propertyName, value);
         }
         public Color? GetMaterialColorPropertyValue(int id, string materialName, string propertyName) =>
             MaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == materialName)?.Value;
@@ -363,7 +363,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var original = GetMaterialColorPropertyValueOriginal(id, materialName, propertyName);
                 if (original != null)
-                    SetColorProperty(gameObject, materialName, propertyName, (Color)original);
+                    SetColor(gameObject, materialName, propertyName, (Color)original);
             }
             RemoveMaterialColorProperty(id, materialName, propertyName);
         }

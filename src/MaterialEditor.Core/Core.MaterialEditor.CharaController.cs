@@ -302,25 +302,25 @@ namespace KK_Plugins.MaterialEditor
             {
                 if (MaterialEditorPlugin.CheckBlacklist(property.ObjectType, property.Property)) continue;
                 if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
-                    SetFloatProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Value);
+                    SetFloat(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Value);
                 else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
-                    SetFloatProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, property.Value);
+                    SetFloat(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, property.Value);
                 else if (property.ObjectType == ObjectType.Hair && hair)
-                    SetFloatProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Value);
+                    SetFloat(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Value);
                 else if (property.ObjectType == ObjectType.Character)
-                    SetFloatProperty(ChaControl, property.MaterialName, property.Property, property.Value);
+                    SetFloat(ChaControl, property.MaterialName, property.Property, property.Value);
             }
             foreach (var property in MaterialColorPropertyList)
             {
                 if (MaterialEditorPlugin.CheckBlacklist(property.ObjectType, property.Property)) continue;
                 if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
-                    SetColorProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Value);
+                    SetColor(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Value);
                 else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
-                    SetColorProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, property.Value);
+                    SetColor(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, property.Value);
                 else if (property.ObjectType == ObjectType.Hair && hair)
-                    SetColorProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Value);
+                    SetColor(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Value);
                 else if (property.ObjectType == ObjectType.Character)
-                    SetColorProperty(ChaControl, property.MaterialName, property.Property, property.Value);
+                    SetColor(ChaControl, property.MaterialName, property.Property, property.Value);
             }
             foreach (var property in MaterialTexturePropertyList)
             {
@@ -625,7 +625,7 @@ namespace KK_Plugins.MaterialEditor
         {
             AddMaterialFloatProperty(objectType, coordinateIndex, slot, materialName, propertyName, value, valueOriginal);
             if (setProperty)
-                SetFloatProperty(gameObject, materialName, propertyName, value);
+                SetFloat(gameObject, materialName, propertyName, value);
         }
 
         public string GetMaterialFloatPropertyValue(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
@@ -640,7 +640,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var original = GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
                 if (!original.IsNullOrEmpty())
-                    SetFloatProperty(gameObject, materialName, propertyName, original);
+                    SetFloat(gameObject, materialName, propertyName, original);
             }
             RemoveMaterialFloatProperty(objectType, coordinateIndex, slot, materialName, propertyName);
         }
@@ -662,7 +662,7 @@ namespace KK_Plugins.MaterialEditor
         {
             AddMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, value, valueOriginal);
             if (setProperty)
-                SetColorProperty(gameObject, materialName, propertyName, value);
+                SetColor(gameObject, materialName, propertyName, value);
         }
         public Color? GetMaterialColorPropertyValue(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
             MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.Value;
@@ -676,7 +676,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var original = GetMaterialColorPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
                 if (original != null)
-                    SetColorProperty(gameObject, materialName, propertyName, (Color)original);
+                    SetColor(gameObject, materialName, propertyName, (Color)original);
             }
             RemoveMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName);
         }
