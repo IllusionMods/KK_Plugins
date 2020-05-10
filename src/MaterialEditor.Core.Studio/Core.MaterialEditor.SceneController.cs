@@ -222,7 +222,7 @@ namespace KK_Plugins.MaterialEditor
             }
             catch
             {
-                UI.Logger.Log(BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message, "Failed to load texture.");
+                MaterialEditorPlugin.Logger.Log(BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message, "Failed to load texture.");
             }
             finally
             {
@@ -407,7 +407,7 @@ namespace KK_Plugins.MaterialEditor
             if (textureProperty != null)
             {
                 if (displayMessage)
-                    UI.Logger.LogMessage("Save and reload scene to refresh textures.");
+                    MaterialEditorPlugin.Logger.LogMessage("Save and reload scene to refresh textures.");
                 textureProperty.TexID = null;
                 if (textureProperty.NullCheck())
                     MaterialTexturePropertyList.Remove(textureProperty);

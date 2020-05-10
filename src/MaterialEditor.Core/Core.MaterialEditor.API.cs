@@ -187,48 +187,51 @@ namespace KK_Plugins.MaterialEditor
         {
             bool didSet = false;
             if (shaderName.IsNullOrEmpty()) return false;
+            MaterialEditorPlugin.LoadedShaders.TryGetValue(shaderName, out var shaderData);
+
+            if (shaderData.Shader == null)
+            {
+                MaterialEditorPlugin.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{MaterialEditorPlugin.PluginNameInternal}] Could not load shader:{shaderName}");
+                return false;
+            }
+            if (!MaterialEditorPlugin.XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
+                shaderPropertyDataList = new Dictionary<string, MaterialEditorPlugin.ShaderPropertyData>();
 
             foreach (var rend in GetRendererList(gameObject))
                 foreach (var mat in rend.sharedMaterials)
                     if (mat.NameFormatted() == materialName)
                     {
-                        if (MaterialEditorPlugin.LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null)
-                        {
-                            mat.shader = shaderData.Shader;
+                        mat.shader = shaderData.Shader;
 
-                            if (shaderData.RenderQueue != null)
-                                mat.renderQueue = (int)shaderData.RenderQueue;
+                        if (shaderData.RenderQueue != null)
+                            mat.renderQueue = (int)shaderData.RenderQueue;
 
-                            if (MaterialEditorPlugin.XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
-                                foreach (var shaderPropertyData in shaderPropertyDataList.Values)
-                                    if (!shaderPropertyData.DefaultValue.IsNullOrEmpty())
-                                    {
-                                        switch (shaderPropertyData.Type)
+                        foreach (var shaderPropertyData in shaderPropertyDataList.Values)
+                            if (!shaderPropertyData.DefaultValue.IsNullOrEmpty())
+                            {
+                                switch (shaderPropertyData.Type)
+                                {
+                                    case ShaderPropertyType.Float:
+                                        SetFloat(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                        break;
+                                    case ShaderPropertyType.Color:
+                                        SetColor(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                        break;
+                                    case ShaderPropertyType.Texture:
+                                        if (shaderPropertyData.DefaultValue.IsNullOrEmpty()) continue;
+                                        try
                                         {
-                                            case ShaderPropertyType.Float:
-                                                SetFloat(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
-                                                break;
-                                            case ShaderPropertyType.Color:
-                                                SetColor(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
-                                                break;
-                                            case ShaderPropertyType.Texture:
-                                                if (shaderPropertyData.DefaultValue.IsNullOrEmpty()) continue;
-                                                try
-                                                {
-                                                    var tex = CommonLib.LoadAsset<Texture2D>(shaderPropertyData.DefaultValueAssetBundle, shaderPropertyData.DefaultValue);
-                                                    SetTexture(gameObject, materialName, shaderPropertyData.Name, tex);
-                                                }
-                                                catch
-                                                {
-                                                    MaterialEditorPlugin.Logger.LogWarning($"[{MaterialEditorPlugin.PluginNameInternal}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
-                                                }
-                                                break;
+                                            var tex = CommonLib.LoadAsset<Texture2D>(shaderPropertyData.DefaultValueAssetBundle, shaderPropertyData.DefaultValue);
+                                            SetTexture(gameObject, materialName, shaderPropertyData.Name, tex);
                                         }
-                                    }
-                            didSet = true;
-                        }
-                        else
-                            MaterialEditorPlugin.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{MaterialEditorPlugin.PluginNameInternal}] Could not load shader:{shaderName}");
+                                        catch
+                                        {
+                                            MaterialEditorPlugin.Logger.LogWarning($"[{MaterialEditorPlugin.PluginNameInternal}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
+                                        }
+                                        break;
+                                }
+                            }
+                        didSet = true;
                     }
 
             return didSet;

@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Harmony;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -34,6 +35,11 @@ namespace KK_Plugins.MaterialEditor
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
+        public static ConfigEntry<float> UIScale { get; private set; }
+        public static ConfigEntry<float> UIWidth { get; private set; }
+        public static ConfigEntry<float> UIHeight { get; private set; }
+        public static ConfigEntry<bool> WatchTexChanges { get; private set; }
+
         internal void Main()
         {
             Logger = base.Logger;
@@ -46,6 +52,11 @@ namespace KK_Plugins.MaterialEditor
 #if KK
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
+
+            UIScale = Config.Bind("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 13 }));
+            UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 12, ShowRangeAsPercent = false }));
+            UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 11, ShowRangeAsPercent = false }));
+            WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI."));
 
             LoadXML();
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));

@@ -1,6 +1,4 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
-using BepInEx.Logging;
 using KKAPI.Maker;
 using KKAPI.Utilities;
 using System;
@@ -13,6 +11,7 @@ using UILib;
 using UnityEngine;
 using UnityEngine.UI;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
+using static KK_Plugins.MaterialEditor.MaterialEditorPlugin;
 #if AI
 using AIChara;
 #endif
@@ -24,7 +23,6 @@ namespace KK_Plugins.MaterialEditor
         internal static Canvas MaterialEditorWindow;
         private static Image MaterialEditorMainPanel;
         private static ScrollRect MaterialEditorScrollableUI;
-        internal static new ManualLogSource Logger;
 
         private static FileSystemWatcher TexChangeWatcher;
         VirtualList virtualList;
@@ -33,20 +31,9 @@ namespace KK_Plugins.MaterialEditor
         private const float headerSize = 20f;
         private const float scrollOffsetX = -15f;
 
-        public static ConfigEntry<float> UIScale { get; private set; }
-        public static ConfigEntry<float> UIWidth { get; private set; }
-        public static ConfigEntry<float> UIHeight { get; private set; }
-        public static ConfigEntry<bool> WatchTexChanges { get; private set; }
 
         internal void Main()
         {
-            Logger = base.Logger;
-
-            UIScale = Config.Bind("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 13 }));
-            UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 12, ShowRangeAsPercent = false }));
-            UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 11, ShowRangeAsPercent = false }));
-            WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI."));
-
             UIScale.SettingChanged += UISettingChanged;
             UIWidth.SettingChanged += UISettingChanged;
             UIHeight.SettingChanged += UISettingChanged;
@@ -272,10 +259,10 @@ namespace KK_Plugins.MaterialEditor
                 shaderRenderQueueItem.ShaderRenderQueueOnReset = delegate { RemoveMaterialShaderRenderQueue(objectType, coordinateIndex, slot, materialName, gameObject); };
                 items.Add(shaderRenderQueueItem);
 
-                foreach (var property in MaterialEditorPlugin.XMLShaderProperties[MaterialEditorPlugin.XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
+                foreach (var property in XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
                 {
                     string propertyName = property.Key;
-                    if (MaterialEditorPlugin.CheckBlacklist(objectType, propertyName)) continue;
+                    if (CheckBlacklist(objectType, propertyName)) continue;
 
                     if (property.Value.Type == ShaderPropertyType.Texture)
                     {
@@ -287,7 +274,7 @@ namespace KK_Plugins.MaterialEditor
                             textureItem.TextureOnExport = delegate { ExportTexture(mat, propertyName); };
                             textureItem.TextureOnImport = delegate
                             {
-                                OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, MaterialEditorPlugin.FileFilter, MaterialEditorPlugin.FileExt);
+                                OpenFileDialog.Show(strings => OnFileAccept(strings), "Open image", Application.dataPath, FileFilter, FileExt);
 
                                 void OnFileAccept(string[] strings)
                                 {
@@ -413,9 +400,9 @@ namespace KK_Plugins.MaterialEditor
         {
             var tex = mat.GetTexture($"_{property}");
             if (tex == null) return;
-            string filename = Path.Combine(MaterialEditorPlugin.ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{mat.NameFormatted()}_{property}.png");
-            MaterialEditorPlugin.SaveTex(tex, filename);
-            Logger.LogInfo($"Exported {filename}");
+            string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{mat.NameFormatted()}_{property}.png");
+            SaveTex(tex, filename);
+            MaterialEditorPlugin.Logger.LogInfo($"Exported {filename}");
             CC.OpenFileInExplorer(filename);
         }
 
