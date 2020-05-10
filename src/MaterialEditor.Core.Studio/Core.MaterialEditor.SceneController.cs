@@ -289,7 +289,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var original = GetRendererPropertyValueOriginal(id, rendererName, property);
                 if (!original.IsNullOrEmpty())
-                    SetRendererProperty(gameObject, rendererName, RendererProperties.Enabled, original);
+                    SetRendererProperty(gameObject, rendererName, property, original);
             }
             RemoveRendererProperty(id, rendererName, property);
         }
