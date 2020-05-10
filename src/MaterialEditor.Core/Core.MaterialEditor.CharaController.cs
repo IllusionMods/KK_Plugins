@@ -781,7 +781,7 @@ namespace KK_Plugins.MaterialEditor
         {
             if (setProperty)
             {
-                var original = GetMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName);
+                var original = GetMaterialTextureOffsetOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
                 if (original != null)
                     SetTextureOffset(gameObject, materialName, propertyName, (Vector2)original);
             }
@@ -835,7 +835,7 @@ namespace KK_Plugins.MaterialEditor
         {
             if (setProperty)
             {
-                var original = GetMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName);
+                var original = GetMaterialTextureScaleOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
                 if (original != null)
                     SetTextureScale(gameObject, materialName, propertyName, (Vector2)original);
             }
