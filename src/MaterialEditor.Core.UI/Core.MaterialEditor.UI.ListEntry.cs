@@ -6,23 +6,49 @@ namespace KK_Plugins.MaterialEditor
 {
     internal class ListEntry : MonoBehaviour
     {
-        public Text LabelText;
-
+        public CanvasGroup RendererPanel;
+        public Text RendererLabel;
         public Text RendererText;
         public Button ExportUVButton;
         public Button ExportObjButton;
 
+        public CanvasGroup RendererEnabledPanel;
+        public Text RendererEnabledLabel;
         public Dropdown RendererEnabledDropdown;
+        public Button RendererEnabledResetButton;
+
+        public CanvasGroup RendererShadowCastingModePanel;
+        public Text RendererShadowCastingModeLabel;
         public Dropdown RendererShadowCastingModeDropdown;
+        public Button RendererShadowCastingModeResetButton;
+
+        public CanvasGroup RendererReceiveShadowsPanel;
+        public Text RendererReceiveShadowsLabel;
         public Dropdown RendererReceiveShadowsDropdown;
+        public Button RendererReceiveShadowsResetButton;
 
+        public CanvasGroup MaterialPanel;
+        public Text MaterialLabel;
         public Text MaterialText;
-        public Dropdown ShaderDropdown;
-        public InputField ShaderRenderQueueInput;
 
+        public CanvasGroup ShaderPanel;
+        public Text ShaderLabel;
+        public Dropdown ShaderDropdown;
+        public Button ShaderResetButton;
+
+        public CanvasGroup ShaderRenderQueuePanel;
+        public Text ShaderRenderQueueLabel;
+        public InputField ShaderRenderQueueInput;
+        public Button ShaderRenderQueueResetButton;
+
+        public CanvasGroup TexturePanel;
+        public Text TextureLabel;
         public Button ExportTextureButton;
         public Button ImportTextureButton;
+        public Button TextureResetButton;
 
+        public CanvasGroup OffsetScalePanel;
+        public Text OffsetScaleLabel;
         public Text OffsetXText;
         public InputField OffsetXInput;
         public Text OffsetYText;
@@ -31,7 +57,10 @@ namespace KK_Plugins.MaterialEditor
         public InputField ScaleXInput;
         public Text ScaleYText;
         public InputField ScaleYInput;
+        public Button OffsetScaleResetButton;
 
+        public CanvasGroup ColorPanel;
+        public Text ColorLabel;
         public Text ColorRText;
         public Text ColorGText;
         public Text ColorBText;
@@ -40,11 +69,13 @@ namespace KK_Plugins.MaterialEditor
         public InputField ColorGInput;
         public InputField ColorBInput;
         public InputField ColorAInput;
+        public Button ColorResetButton;
 
+        public CanvasGroup FloatPanel;
+        public Text FloatLabel;
         public Slider FloatSlider;
         public InputField FloatInputField;
-
-        public Button ResetButton;
+        public Button FloatResetButton;
 
         private ItemInfo _currentItem;
 
@@ -63,25 +94,6 @@ namespace KK_Plugins.MaterialEditor
             HideAll();
             if (item != null)
             {
-                void SetLabelText(bool valueChanged = false)
-                {
-                    if (item.LabelText.IsNullOrEmpty())
-                    {
-                        if (valueChanged)
-                            LabelText.text = "*";
-                        else
-                            LabelText.text = "";
-                    }
-                    else
-                    {
-                        if (valueChanged)
-                            LabelText.text = item.LabelText + ":*";
-                        else
-                            LabelText.text = item.LabelText + ":";
-                    }
-                }
-                ResetButton.onClick.RemoveAllListeners();
-
                 switch (item.ItemType)
                 {
                     case ItemInfo.RowItemType.Renderer:
@@ -90,7 +102,7 @@ namespace KK_Plugins.MaterialEditor
                         break;
                     case ItemInfo.RowItemType.RendererEnabled:
                         ShowRendererEnabled();
-                        SetLabelText(item.RendererEnabled != item.RendererEnabledOriginal);
+                        SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal);
                         RendererEnabledDropdown.onValueChanged.RemoveAllListeners();
                         RendererEnabledDropdown.value = item.RendererEnabled;
                         RendererEnabledDropdown.onValueChanged.AddListener(delegate (int value)
@@ -100,15 +112,16 @@ namespace KK_Plugins.MaterialEditor
                                 item.RendererEnabledOnChange(value);
                             else
                                 item.RendererEnabledOnReset();
-                            SetLabelText(item.RendererEnabled != item.RendererEnabledOriginal);
+                            SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal);
                         });
 
-                        ResetButton.onClick.AddListener(delegate { RendererEnabledDropdown.value = item.RendererEnabledOriginal; });
+                        RendererEnabledResetButton.onClick.RemoveAllListeners();
+                        RendererEnabledResetButton.onClick.AddListener(delegate { RendererEnabledDropdown.value = item.RendererEnabledOriginal; });
 
                         break;
                     case ItemInfo.RowItemType.RendererShadowCastingMode:
                         ShowRendererShadowCastingMode();
-                        SetLabelText(item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal);
+                        SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal);
                         RendererShadowCastingModeDropdown.onValueChanged.RemoveAllListeners();
                         RendererShadowCastingModeDropdown.value = item.RendererShadowCastingMode;
                         RendererShadowCastingModeDropdown.onValueChanged.AddListener(delegate (int value)
@@ -118,15 +131,16 @@ namespace KK_Plugins.MaterialEditor
                                 item.RendererShadowCastingModeOnChange(value);
                             else
                                 item.RendererShadowCastingModeOnReset();
-                            SetLabelText(item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal);
+                            SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal);
                         });
 
-                        ResetButton.onClick.AddListener(delegate { RendererShadowCastingModeDropdown.value = item.RendererShadowCastingModeOriginal; });
+                        RendererShadowCastingModeResetButton.onClick.RemoveAllListeners();
+                        RendererShadowCastingModeResetButton.onClick.AddListener(delegate { RendererShadowCastingModeDropdown.value = item.RendererShadowCastingModeOriginal; });
 
                         break;
                     case ItemInfo.RowItemType.RendererReceiveShadows:
                         ShowRendererReceiveShadows();
-                        SetLabelText(item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal);
+                        SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal);
                         RendererReceiveShadowsDropdown.onValueChanged.RemoveAllListeners();
                         RendererReceiveShadowsDropdown.value = item.RendererReceiveShadows;
                         RendererReceiveShadowsDropdown.onValueChanged.AddListener(delegate (int value)
@@ -136,20 +150,21 @@ namespace KK_Plugins.MaterialEditor
                                 item.RendererReceiveShadowsOnChange(value);
                             else
                                 item.RendererReceiveShadowsOnReset();
-                            SetLabelText(item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal);
+                            SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal);
                         });
 
-                        ResetButton.onClick.AddListener(delegate { RendererReceiveShadowsDropdown.value = item.RendererReceiveShadowsOriginal; });
+                        RendererReceiveShadowsResetButton.onClick.RemoveAllListeners();
+                        RendererReceiveShadowsResetButton.onClick.AddListener(delegate { RendererReceiveShadowsDropdown.value = item.RendererReceiveShadowsOriginal; });
 
                         break;
                     case ItemInfo.RowItemType.Material:
                         ShowMaterial();
-                        SetLabelText();
+                        SetLabelText(MaterialLabel, item.LabelText);
                         MaterialText.text = item.MaterialName;
                         break;
                     case ItemInfo.RowItemType.Shader:
                         ShowShader();
-                        SetLabelText(item.ShaderName != item.ShaderNameOriginal);
+                        SetLabelText(ShaderLabel, item.LabelText, item.ShaderName != item.ShaderNameOriginal);
                         ShaderDropdown.onValueChanged.RemoveAllListeners();
                         ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderName);
                         ShaderDropdown.captionText.text = item.ShaderName;
@@ -164,15 +179,16 @@ namespace KK_Plugins.MaterialEditor
                                 item.ShaderNameOnChange(item.ShaderName);
                             else
                                 item.ShaderNameOnReset();
-                            SetLabelText(item.ShaderName != item.ShaderNameOriginal);
+                            SetLabelText(ShaderLabel, item.LabelText, item.ShaderName != item.ShaderNameOriginal);
                         });
 
-                        ResetButton.onClick.AddListener(delegate { ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderNameOriginal); });
+                        ShaderResetButton.onClick.RemoveAllListeners();
+                        ShaderResetButton.onClick.AddListener(delegate { ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderNameOriginal); });
 
                         break;
                     case ItemInfo.RowItemType.ShaderRenderQueue:
                         ShowShaderRenderQueue();
-                        SetLabelText(item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
+                        SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
                         ShaderRenderQueueInput.text = item.ShaderRenderQueue.ToString();
                         ShaderRenderQueueInput.onEndEdit.AddListener(delegate (string value)
                         {
@@ -189,21 +205,22 @@ namespace KK_Plugins.MaterialEditor
                                 item.ShaderRenderQueueOnChange(item.ShaderRenderQueue);
                             else
                                 item.ShaderRenderQueueOnReset();
-                            SetLabelText(item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
+                            SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
                         });
 
-                        ResetButton.onClick.AddListener(delegate
+                        ShaderRenderQueueResetButton.onClick.RemoveAllListeners();
+                        ShaderRenderQueueResetButton.onClick.AddListener(delegate
                         {
                             ShaderRenderQueueInput.text = item.ShaderRenderQueueOriginal.ToString();
                             item.ShaderRenderQueue = item.ShaderRenderQueueOriginal;
                             item.ShaderRenderQueueOnReset();
-                            SetLabelText(item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
+                            SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
                         });
 
                         break;
                     case ItemInfo.RowItemType.TextureProperty:
                         ShowTexture();
-                        SetLabelText(item.TextureChanged);
+                        SetLabelText(TextureLabel, item.LabelText, item.TextureChanged);
 
                         ConfigureExportButton();
                         void ConfigureExportButton()
@@ -233,19 +250,20 @@ namespace KK_Plugins.MaterialEditor
                             item.TextureExists = true;
                             item.TextureOnImport();
                             ConfigureExportButton();
-                            SetLabelText(item.TextureChanged);
+                            SetLabelText(TextureLabel, item.LabelText, item.TextureChanged);
                         });
 
-                        ResetButton.onClick.AddListener(delegate
+                        TextureResetButton.onClick.RemoveAllListeners();
+                        TextureResetButton.onClick.AddListener(delegate
                         {
                             item.TextureChanged = false;
                             item.TextureOnReset();
-                            SetLabelText(item.TextureChanged);
+                            SetLabelText(TextureLabel, item.LabelText, item.TextureChanged);
                         });
                         break;
                     case ItemInfo.RowItemType.TextureOffsetScale:
-                        ShowTextureOffsetScale();
-                        SetLabelText(item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                        ShowOffsetScale();
+                        SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
 
                         OffsetXInput.onEndEdit.RemoveAllListeners();
                         OffsetYInput.onEndEdit.RemoveAllListeners();
@@ -273,7 +291,7 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 item.OffsetOnChange(item.Offset);
 
-                            SetLabelText(item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
                         });
 
                         OffsetYInput.onEndEdit.AddListener(delegate (string value)
@@ -292,7 +310,7 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 item.OffsetOnChange(item.Offset);
 
-                            SetLabelText(item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
                         });
 
                         ScaleXInput.onEndEdit.AddListener(delegate (string value)
@@ -311,7 +329,7 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 item.ScaleOnChange(item.Scale);
 
-                            SetLabelText(item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
                         });
 
                         ScaleYInput.onEndEdit.AddListener(delegate (string value)
@@ -330,10 +348,11 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 item.ScaleOnChange(item.Scale);
 
-                            SetLabelText(item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
                         });
 
-                        ResetButton.onClick.AddListener(delegate
+                        OffsetScaleResetButton.onClick.RemoveAllListeners();
+                        OffsetScaleResetButton.onClick.AddListener(delegate
                         {
                             item.Offset = item.OffsetOriginal;
                             item.Scale = item.ScaleOriginal;
@@ -345,14 +364,13 @@ namespace KK_Plugins.MaterialEditor
 
                             item.OffsetOnReset();
                             item.ScaleOnReset();
-                            SetLabelText(item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
                         });
-
 
                         break;
                     case ItemInfo.RowItemType.ColorProperty:
                         ShowColor();
-                        SetLabelText(item.ColorValue != item.ColorValueOriginal);
+                        SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
 
                         ColorRInput.onEndEdit.RemoveAllListeners();
                         ColorGInput.onEndEdit.RemoveAllListeners();
@@ -380,7 +398,7 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
-                            SetLabelText(item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
 
                         ColorGInput.onEndEdit.AddListener(delegate (string value)
@@ -399,7 +417,7 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
-                            SetLabelText(item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
 
                         ColorBInput.onEndEdit.AddListener(delegate (string value)
@@ -418,7 +436,7 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
-                            SetLabelText(item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
 
                         ColorAInput.onEndEdit.AddListener(delegate (string value)
@@ -437,10 +455,11 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
-                            SetLabelText(item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
 
-                        ResetButton.onClick.AddListener(delegate
+                        ColorResetButton.onClick.RemoveAllListeners();
+                        ColorResetButton.onClick.AddListener(delegate
                         {
                             item.ColorValue = item.ColorValueOriginal;
 
@@ -450,12 +469,12 @@ namespace KK_Plugins.MaterialEditor
                             ColorAInput.text = item.ColorValue.a.ToString();
 
                             item.ColorValueOnReset();
-                            SetLabelText(item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
                         break;
                     case ItemInfo.RowItemType.FloatProperty:
                         ShowFloat();
-                        SetLabelText(item.FloatValue != item.FloatValueOriginal);
+                        SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal);
                         FloatSlider.onValueChanged.RemoveAllListeners();
                         FloatInputField.onEndEdit.RemoveAllListeners();
 
@@ -477,17 +496,18 @@ namespace KK_Plugins.MaterialEditor
                             }
                             item.FloatValue = input;
 
-                                FloatSlider.Set(item.FloatValue);
+                            FloatSlider.Set(item.FloatValue);
 
                             if (item.FloatValue == item.FloatValueOriginal)
                                 item.FloatValueOnReset();
                             else
                                 item.FloatValueOnChange(item.FloatValue);
 
-                            SetLabelText(item.FloatValue != item.FloatValueOriginal);
+                            SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal);
                         });
 
-                        ResetButton.onClick.AddListener(delegate
+                        FloatResetButton.onClick.RemoveAllListeners();
+                        FloatResetButton.onClick.AddListener(delegate
                         {
                             item.FloatValue = item.FloatValueOriginal;
 
@@ -495,14 +515,10 @@ namespace KK_Plugins.MaterialEditor
                             FloatInputField.text = item.FloatValue.ToString();
 
                             item.FloatValueOnReset();
-                            SetLabelText(item.FloatValue != item.FloatValueOriginal);
+                            SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal);
                         });
                         break;
                 }
-            }
-            else
-            {
-                LabelText.text = string.Empty;
             }
         }
 
@@ -512,122 +528,97 @@ namespace KK_Plugins.MaterialEditor
                 gameObject.SetActive(visible);
         }
 
+        private void SetLabelText(Text label, string text, bool valueChanged = false)
+        {
+            if (text.IsNullOrEmpty())
+            {
+                if (valueChanged)
+                    label.text = "*";
+                else
+                    label.text = "";
+            }
+            else
+            {
+                if (valueChanged)
+                    label.text = text + ":*";
+                else
+                    label.text = text + ":";
+            }
+        }
         private void HideAll()
         {
-            RendererText.gameObject.SetActive(false);
-            ExportUVButton.gameObject.SetActive(false);
-            ExportObjButton.gameObject.SetActive(false);
-
-            RendererEnabledDropdown.gameObject.SetActive(false);
-            RendererShadowCastingModeDropdown.gameObject.SetActive(false);
-            RendererReceiveShadowsDropdown.gameObject.SetActive(false);
-
-            MaterialText.gameObject.SetActive(false);
-            ShaderDropdown.gameObject.SetActive(false);
-            ShaderRenderQueueInput.gameObject.SetActive(false);
-
-            ExportTextureButton.gameObject.SetActive(false);
-            ImportTextureButton.gameObject.SetActive(false);
-
-            OffsetXText.gameObject.SetActive(false);
-            OffsetXInput.gameObject.SetActive(false);
-            OffsetYText.gameObject.SetActive(false);
-            OffsetYInput.gameObject.SetActive(false);
-            ScaleXText.gameObject.SetActive(false);
-            ScaleXInput.gameObject.SetActive(false);
-            ScaleYText.gameObject.SetActive(false);
-            ScaleYInput.gameObject.SetActive(false);
-
-            ColorRText.gameObject.SetActive(false);
-            ColorGText.gameObject.SetActive(false);
-            ColorBText.gameObject.SetActive(false);
-            ColorAText.gameObject.SetActive(false);
-            ColorRInput.gameObject.SetActive(false);
-            ColorGInput.gameObject.SetActive(false);
-            ColorBInput.gameObject.SetActive(false);
-            ColorAInput.gameObject.SetActive(false);
-
-            FloatSlider.gameObject.SetActive(false);
-            FloatInputField.gameObject.SetActive(false);
-
-            ResetButton.gameObject.SetActive(false);
+            ShowRenderer(false);
+            ShowRendererEnabled(false);
+            ShowRendererShadowCastingMode(false);
+            ShowRendererReceiveShadows(false);
+            ShowMaterial(false);
+            ShowShader(false);
+            ShowShaderRenderQueue(false);
+            ShowTexture(false);
+            ShowOffsetScale(false);
+            ShowColor(false);
+            ShowFloat(false);
         }
 
-        private void ShowRenderer()
+        private void ShowRenderer(bool visible = true)
         {
-            RendererText.gameObject.SetActive(true);
-            ExportUVButton.gameObject.SetActive(true);
-            ExportObjButton.gameObject.SetActive(true);
+            RendererPanel.alpha = visible ? 1 : 0;
+            RendererPanel.blocksRaycasts = visible;
         }
 
-        private void ShowRendererEnabled()
+        private void ShowRendererEnabled(bool visible = true)
         {
-            RendererEnabledDropdown.gameObject.SetActive(true);
-            ResetButton.gameObject.SetActive(true);
+            RendererEnabledPanel.alpha = visible ? 1 : 0;
+            RendererEnabledPanel.blocksRaycasts = visible;
         }
-        private void ShowRendererShadowCastingMode()
+        private void ShowRendererShadowCastingMode(bool visible = true)
         {
-            RendererShadowCastingModeDropdown.gameObject.SetActive(true);
-            ResetButton.gameObject.SetActive(true);
+            RendererShadowCastingModePanel.alpha = visible ? 1 : 0;
+            RendererShadowCastingModePanel.blocksRaycasts = visible;
         }
-        private void ShowRendererReceiveShadows()
+        private void ShowRendererReceiveShadows(bool visible = true)
         {
-            RendererReceiveShadowsDropdown.gameObject.SetActive(true);
-            ResetButton.gameObject.SetActive(true);
+            RendererReceiveShadowsPanel.alpha = visible ? 1 : 0;
+            RendererReceiveShadowsPanel.blocksRaycasts = visible;
         }
-        private void ShowMaterial()
+        private void ShowMaterial(bool visible = true)
         {
-            MaterialText.gameObject.SetActive(true);
+            MaterialPanel.alpha = visible ? 1 : 0;
+            MaterialPanel.blocksRaycasts = visible;
         }
-        private void ShowShader()
+        private void ShowShader(bool visible = true)
         {
-            ShaderDropdown.gameObject.SetActive(true);
-            ResetButton.gameObject.SetActive(true);
+            ShaderPanel.alpha = visible ? 1 : 0;
+            ShaderPanel.blocksRaycasts = visible;
         }
-        private void ShowShaderRenderQueue()
+        private void ShowShaderRenderQueue(bool visible = true)
         {
-            ShaderRenderQueueInput.gameObject.SetActive(true);
-            ResetButton.gameObject.SetActive(true);
-        }
-
-        private void ShowTexture()
-        {
-            ExportTextureButton.gameObject.SetActive(true);
-            ImportTextureButton.gameObject.SetActive(true);
-            ResetButton.gameObject.SetActive(true);
+            ShaderRenderQueuePanel.alpha = visible ? 1 : 0;
+            ShaderRenderQueuePanel.blocksRaycasts = visible;
         }
 
-        private void ShowTextureOffsetScale()
+        private void ShowTexture(bool visible = true)
         {
-            OffsetXText.gameObject.SetActive(true);
-            OffsetXInput.gameObject.SetActive(true);
-            OffsetYText.gameObject.SetActive(true);
-            OffsetYInput.gameObject.SetActive(true);
-            ScaleXText.gameObject.SetActive(true);
-            ScaleXInput.gameObject.SetActive(true);
-            ScaleYText.gameObject.SetActive(true);
-            ScaleYInput.gameObject.SetActive(true);
-            ResetButton.gameObject.SetActive(true);
+            TexturePanel.alpha = visible ? 1 : 0;
+            TexturePanel.blocksRaycasts = visible;
         }
 
-        private void ShowColor()
+        private void ShowOffsetScale(bool visible = true)
         {
-            ColorRText.gameObject.SetActive(true);
-            ColorGText.gameObject.SetActive(true);
-            ColorBText.gameObject.SetActive(true);
-            ColorAText.gameObject.SetActive(true);
-            ColorRInput.gameObject.SetActive(true);
-            ColorGInput.gameObject.SetActive(true);
-            ColorBInput.gameObject.SetActive(true);
-            ColorAInput.gameObject.SetActive(true);
-            ResetButton.gameObject.SetActive(true);
+            OffsetScalePanel.alpha = visible ? 1 : 0;
+            OffsetScalePanel.blocksRaycasts = visible;
         }
 
-        private void ShowFloat()
+        private void ShowColor(bool visible = true)
         {
-            FloatSlider.gameObject.SetActive(true);
-            FloatInputField.gameObject.SetActive(true);
-            ResetButton.gameObject.SetActive(true);
+            ColorPanel.alpha = visible ? 1 : 0;
+            ColorPanel.blocksRaycasts = visible;
+        }
+
+        private void ShowFloat(bool visible = true)
+        {
+            FloatPanel.alpha = visible ? 1 : 0;
+            FloatPanel.blocksRaycasts = visible;
         }
     }
 }
