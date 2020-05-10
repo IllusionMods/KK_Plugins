@@ -52,6 +52,25 @@ namespace KK_Plugins.MaterialEditor
                 _GetRendererList(gameObject.transform.GetChild(i).gameObject, rendList);
         }
 
+        private static List<Material> GetMaterials(GameObject gameObject, string materialName)
+        {
+            List<Material> materials = new List<Material>();
+            foreach (var renderer in GetRendererList(gameObject))
+            {
+                //Must use sharedMaterials for ChaControl and materials for other items or bad things happen
+                Material[] materialsToSearch;
+                if (gameObject.GetComponent<ChaControl>() == null)
+                    materialsToSearch = renderer.materials;
+                else
+                    materialsToSearch = renderer.sharedMaterials;
+
+                foreach (var material in materialsToSearch)
+                    if (material.NameFormatted() == materialName)
+                        materials.Add(material);
+            }
+            return materials;
+        }
+
         /// <summary>
         /// Set the value of the specified material property
         /// </summary>
@@ -74,13 +93,12 @@ namespace KK_Plugins.MaterialEditor
             float floatValue = float.Parse(value);
             bool didSet = false;
 
-            foreach (var obj in GetRendererList(gameObject))
-                foreach (var objMat in obj.sharedMaterials)
-                    if (objMat.NameFormatted() == materialName)
-                    {
-                        objMat.SetFloat($"_{propertyName}", floatValue);
-                        didSet = true;
-                    }
+            foreach (var material in GetMaterials(gameObject, materialName))
+                if (material.HasProperty($"_{propertyName}"))
+                {
+                    material.SetFloat($"_{propertyName}", floatValue);
+                    didSet = true;
+                }
             return didSet;
         }
 
@@ -99,13 +117,12 @@ namespace KK_Plugins.MaterialEditor
         {
             bool didSet = false;
 
-            foreach (var obj in GetRendererList(gameObject))
-                foreach (var objMat in obj.sharedMaterials)
-                    if (objMat.NameFormatted() == materialName)
-                    {
-                        objMat.SetColor($"_{propertyName}", value);
-                        didSet = true;
-                    }
+            foreach (var material in GetMaterials(gameObject, materialName))
+                if (material.HasProperty($"_{propertyName}"))
+                {
+                    material.SetColor($"_{propertyName}", value);
+                    didSet = true;
+                }
             return didSet;
         }
 
@@ -114,20 +131,51 @@ namespace KK_Plugins.MaterialEditor
         public static bool SetRendererProperty(GameObject gameObject, string rendererName, RendererProperties propertyName, string value) => SetRendererProperty(gameObject, rendererName, propertyName, int.Parse(value));
         public static bool SetRendererProperty(GameObject gameObject, string rendererName, RendererProperties propertyName, int value)
         {
+            if (propertyName == RendererProperties.Enabled)
+                return SetRendererEnabled(gameObject, rendererName, value == 1);
+            if (propertyName == RendererProperties.ShadowCastingMode)
+                return SetRendererShadowCastingMode(gameObject, rendererName, (UnityEngine.Rendering.ShadowCastingMode)value);
+            if (propertyName == RendererProperties.ReceiveShadows)
+                return SetRendererReceiveShadows(gameObject, rendererName, value == 1);
+            return false;
+        }
+
+        public static bool SetRendererEnabled(ChaControl chaControl, string rendererName, bool value) => SetRendererEnabled(chaControl.gameObject, rendererName, value);
+        public static bool SetRendererEnabled(GameObject gameObject, string rendererName, bool value)
+        {
             bool didSet = false;
             foreach (var rend in GetRendererList(gameObject))
-            {
                 if (rend.NameFormatted() == rendererName)
                 {
-                    if (propertyName == RendererProperties.ShadowCastingMode)
-                        rend.shadowCastingMode = (UnityEngine.Rendering.ShadowCastingMode)value;
-                    else if (propertyName == RendererProperties.ReceiveShadows)
-                        rend.receiveShadows = value == 1;
-                    else if (propertyName == RendererProperties.Enabled)
-                        rend.enabled = value == 1;
+                    rend.enabled = value;
                     didSet = true;
                 }
-            }
+            return didSet;
+        }
+
+        public static bool SetRendererShadowCastingMode(ChaControl chaControl, string rendererName, UnityEngine.Rendering.ShadowCastingMode value) => SetRendererShadowCastingMode(chaControl.gameObject, rendererName, value);
+        public static bool SetRendererShadowCastingMode(GameObject gameObject, string rendererName, UnityEngine.Rendering.ShadowCastingMode value)
+        {
+            bool didSet = false;
+            foreach (var rend in GetRendererList(gameObject))
+                if (rend.NameFormatted() == rendererName)
+                {
+                    rend.shadowCastingMode = value;
+                    didSet = true;
+                }
+            return didSet;
+        }
+
+        public static bool SetRendererReceiveShadows(ChaControl chaControl, string rendererName, bool value) => SetRendererReceiveShadows(chaControl.gameObject, rendererName, value);
+        public static bool SetRendererReceiveShadows(GameObject gameObject, string rendererName, bool value)
+        {
+            bool didSet = false;
+            foreach (var rend in GetRendererList(gameObject))
+                if (rend.NameFormatted() == rendererName)
+                {
+                    rend.receiveShadows = value;
+                    didSet = true;
+                }
             return didSet;
         }
 
@@ -135,50 +183,45 @@ namespace KK_Plugins.MaterialEditor
         public static bool SetTexture(GameObject gameObject, string materialName, string propertyName, Texture2D value)
         {
             bool didSet = false;
-            foreach (var rend in GetRendererList(gameObject))
-                foreach (var mat in rend.sharedMaterials)
-                    if (mat.NameFormatted() == materialName)
-                    {
-                        var wrapMode = mat.GetTexture($"_{propertyName}")?.wrapMode;
-                        if (wrapMode != null)
-                            value.wrapMode = (TextureWrapMode)wrapMode;
-                        mat.SetTexture($"_{propertyName}", value);
-                        didSet = true;
-                    }
+            foreach (var material in GetMaterials(gameObject, materialName))
+                if (material.HasProperty($"_{propertyName}"))
+                {
+                    var wrapMode = material.GetTexture($"_{propertyName}")?.wrapMode;
+                    if (wrapMode != null)
+                        value.wrapMode = (TextureWrapMode)wrapMode;
+                    material.SetTexture($"_{propertyName}", value);
+                    didSet = true;
+                }
             return didSet;
         }
 
         public static bool SetTextureOffset(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureOffset(chaControl.gameObject, materialName, propertyName, (Vector2)value);
-        public static bool SetTextureOffset(ChaControl chaControl, string materialName, string propertyName, Vector2 value) => SetTextureOffset(chaControl.gameObject, materialName, propertyName, value);
-        public static bool SetTextureOffset(GameObject gameObject, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureOffset(gameObject, materialName, propertyName, (Vector2)value);
-        public static bool SetTextureOffset(GameObject gameObject, string materialName, string propertyName, Vector2 value)
+        public static bool SetTextureOffset(GameObject gameObject, string materialName, string propertyName, Vector2? value)
         {
+            if (value == null) return false;
             bool didSet = false;
 
-            foreach (var obj in GetRendererList(gameObject))
-                foreach (var objMat in obj.sharedMaterials)
-                    if (objMat.NameFormatted() == materialName)
-                    {
-                        objMat.SetTextureOffset($"_{propertyName}", value);
-                        didSet = true;
-                    }
+            foreach (var material in GetMaterials(gameObject, materialName))
+                if (material.HasProperty($"_{propertyName}"))
+                {
+                    material.SetTextureOffset($"_{propertyName}", (Vector2)value);
+                    didSet = true;
+                }
             return didSet;
         }
 
         public static bool SetTextureScale(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureScale(chaControl.gameObject, materialName, propertyName, (Vector2)value);
-        public static bool SetTextureScale(ChaControl chaControl, string materialName, string propertyName, Vector2 value) => SetTextureScale(chaControl.gameObject, materialName, propertyName, value);
-        public static bool SetTextureScale(GameObject gameObject, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureScale(gameObject, materialName, propertyName, (Vector2)value);
-        public static bool SetTextureScale(GameObject gameObject, string materialName, string propertyName, Vector2 value)
+        public static bool SetTextureScale(GameObject gameObject, string materialName, string propertyName, Vector2? value)
         {
+            if (value == null) return false;
             bool didSet = false;
 
-            foreach (var obj in GetRendererList(gameObject))
-                foreach (var objMat in obj.sharedMaterials)
-                    if (objMat.NameFormatted() == materialName)
-                    {
-                        objMat.SetTextureScale($"_{propertyName}", value);
-                        didSet = true;
-                    }
+            foreach (var material in GetMaterials(gameObject, materialName))
+                if (material.HasProperty($"_{propertyName}"))
+                {
+                    material.SetTextureScale($"_{propertyName}", (Vector2)value);
+                    didSet = true;
+                }
             return didSet;
         }
 
@@ -197,42 +240,40 @@ namespace KK_Plugins.MaterialEditor
             if (!MaterialEditorPlugin.XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
                 shaderPropertyDataList = new Dictionary<string, MaterialEditorPlugin.ShaderPropertyData>();
 
-            foreach (var rend in GetRendererList(gameObject))
-                foreach (var mat in rend.sharedMaterials)
-                    if (mat.NameFormatted() == materialName)
+            foreach (var material in GetMaterials(gameObject, materialName))
+            {
+                material.shader = shaderData.Shader;
+
+                if (shaderData.RenderQueue != null)
+                    material.renderQueue = (int)shaderData.RenderQueue;
+
+                foreach (var shaderPropertyData in shaderPropertyDataList.Values)
+                    if (!shaderPropertyData.DefaultValue.IsNullOrEmpty())
                     {
-                        mat.shader = shaderData.Shader;
-
-                        if (shaderData.RenderQueue != null)
-                            mat.renderQueue = (int)shaderData.RenderQueue;
-
-                        foreach (var shaderPropertyData in shaderPropertyDataList.Values)
-                            if (!shaderPropertyData.DefaultValue.IsNullOrEmpty())
-                            {
-                                switch (shaderPropertyData.Type)
+                        switch (shaderPropertyData.Type)
+                        {
+                            case ShaderPropertyType.Float:
+                                SetFloat(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                break;
+                            case ShaderPropertyType.Color:
+                                SetColor(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                break;
+                            case ShaderPropertyType.Texture:
+                                if (shaderPropertyData.DefaultValue.IsNullOrEmpty()) continue;
+                                try
                                 {
-                                    case ShaderPropertyType.Float:
-                                        SetFloat(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
-                                        break;
-                                    case ShaderPropertyType.Color:
-                                        SetColor(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
-                                        break;
-                                    case ShaderPropertyType.Texture:
-                                        if (shaderPropertyData.DefaultValue.IsNullOrEmpty()) continue;
-                                        try
-                                        {
-                                            var tex = CommonLib.LoadAsset<Texture2D>(shaderPropertyData.DefaultValueAssetBundle, shaderPropertyData.DefaultValue);
-                                            SetTexture(gameObject, materialName, shaderPropertyData.Name, tex);
-                                        }
-                                        catch
-                                        {
-                                            MaterialEditorPlugin.Logger.LogWarning($"[{MaterialEditorPlugin.PluginNameInternal}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
-                                        }
-                                        break;
+                                    var tex = CommonLib.LoadAsset<Texture2D>(shaderPropertyData.DefaultValueAssetBundle, shaderPropertyData.DefaultValue);
+                                    SetTexture(gameObject, materialName, shaderPropertyData.Name, tex);
                                 }
-                            }
-                        didSet = true;
+                                catch
+                                {
+                                    MaterialEditorPlugin.Logger.LogWarning($"[{MaterialEditorPlugin.PluginNameInternal}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
+                                }
+                                break;
+                        }
                     }
+                didSet = true;
+            }
 
             return didSet;
         }
@@ -243,13 +284,11 @@ namespace KK_Plugins.MaterialEditor
             bool didSet = false;
             if (value == null) return false;
 
-            foreach (var obj in GetRendererList(gameObject))
-                foreach (var objMat in obj.sharedMaterials)
-                    if (objMat.NameFormatted() == materialName)
-                    {
-                        objMat.renderQueue = (int)value;
-                        didSet = true;
-                    }
+            foreach (var material in GetMaterials(gameObject, materialName))
+            {
+                material.renderQueue = (int)value;
+                didSet = true;
+            }
             return didSet;
         }
 
