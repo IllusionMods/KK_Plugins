@@ -235,6 +235,13 @@ namespace KK_Plugins.MaterialEditor
                             ConfigureExportButton();
                             SetLabelText(item.TextureChanged);
                         });
+
+                        ResetButton.onClick.AddListener(delegate
+                        {
+                            item.TextureChanged = false;
+                            item.TextureOnReset();
+                            SetLabelText(item.TextureChanged);
+                        });
                         break;
                     case ItemInfo.RowItemType.TextureOffsetScale:
                         ShowTextureOffsetScale();

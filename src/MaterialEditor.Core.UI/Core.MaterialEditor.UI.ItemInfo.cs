@@ -40,6 +40,7 @@ namespace KK_Plugins.MaterialEditor
         public bool TextureExists { get; set; }
         public Action TextureOnExport { get; set; }
         public Action TextureOnImport { get; set; }
+        public Action TextureOnReset { get; set; }
 
         public Vector2 Offset { get; set; }
         public Vector2 OffsetOriginal { get; set; }

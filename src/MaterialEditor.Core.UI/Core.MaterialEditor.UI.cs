@@ -320,6 +320,7 @@ namespace KK_Plugins.MaterialEditor
                                     }
                                 }
                             };
+                            textureItem.TextureOnReset = delegate { RemoveMaterialTexture(objectType, coordinateIndex, slot, materialName, propertyName); };
                             items.Add(textureItem);
 
                             Vector2 textureOffset = mat.GetTextureOffset($"_{propertyName}");
