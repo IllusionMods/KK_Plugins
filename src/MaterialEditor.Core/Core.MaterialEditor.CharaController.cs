@@ -329,30 +329,30 @@ namespace KK_Plugins.MaterialEditor
                     if (property.ObjectType == ObjectType.Clothing && clothes && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
                         if (property.TexID != null)
-                            SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
-                        SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset);
-                        SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale);
+                            SetTexture(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                        SetTextureOffset(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Offset);
+                        SetTextureScale(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, property.Scale);
                     }
                     else if (property.ObjectType == ObjectType.Accessory && accessories && property.CoordinateIndex == CurrentCoordinateIndex)
                     {
                         if (property.TexID != null)
-                            SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
-                        SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset);
-                        SetTextureProperty(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale);
+                            SetTexture(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                        SetTextureOffset(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, property.Offset);
+                        SetTextureScale(AccessoriesApi.GetAccessory(ChaControl, property.Slot)?.gameObject, property.MaterialName, property.Property, property.Scale);
                     }
                     else if (property.ObjectType == ObjectType.Hair && hair)
                     {
                         if (property.TexID != null)
-                            SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
-                        SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset);
-                        SetTextureProperty(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale);
+                            SetTexture(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                        SetTextureOffset(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Offset);
+                        SetTextureScale(ChaControl.objHair[property.Slot]?.gameObject, property.MaterialName, property.Property, property.Scale);
                     }
                     else if (property.ObjectType == ObjectType.Character)
                     {
                         if (property.TexID != null)
-                            SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
-                        SetTextureProperty(ChaControl, property.MaterialName, property.Property, TexturePropertyType.Offset, property.Offset);
-                        SetTextureProperty(ChaControl, property.MaterialName, property.Property, TexturePropertyType.Scale, property.Scale);
+                            SetTexture(ChaControl, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                        SetTextureOffset(ChaControl, property.MaterialName, property.Property, property.Offset);
+                        SetTextureScale(ChaControl, property.MaterialName, property.Property, property.Scale);
                     }
                 }
             }
@@ -545,7 +545,7 @@ namespace KK_Plugins.MaterialEditor
 
                 if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
                     if (property.TexID != null)
-                        SetTextureProperty(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                        SetTexture(ChaControl.objClothes[property.Slot], property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
             }
         }
         /// <summary>
@@ -563,7 +563,7 @@ namespace KK_Plugins.MaterialEditor
 
                 if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")
                     if (property.TexID != null)
-                        SetTextureProperty(ChaControl, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                        SetTexture(ChaControl, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
             }
         }
 
@@ -701,9 +701,9 @@ namespace KK_Plugins.MaterialEditor
                 Texture2D tex = MaterialEditorPlugin.TextureFromBytes(texBytes);
 
                 if (objectType == ObjectType.Character)
-                    SetTextureProperty(ChaControl, materialName, property, tex);
+                    SetTexture(ChaControl, materialName, property, tex);
                 else
-                    SetTextureProperty(GameObjectToSet, materialName, property, tex);
+                    SetTexture(GameObjectToSet, materialName, property, tex);
 
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
                 if (textureProperty == null)
@@ -713,106 +713,133 @@ namespace KK_Plugins.MaterialEditor
 
             }
         }
-        public void AddMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal)
+        public Texture2D GetMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property)
         {
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
-            if (textureProperty == null)
-            {
-                if (propertyType == TexturePropertyType.Offset)
-                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, coordinateIndex, slot, materialName, property, offset: value, offsetOriginal: valueOriginal));
-                else if (propertyType == TexturePropertyType.Scale)
-                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, coordinateIndex, slot, materialName, property, scale: value, scaleOriginal: valueOriginal));
-            }
-            else
-            {
-                if (propertyType == TexturePropertyType.Offset)
-                {
-                    if (value == textureProperty.OffsetOriginal)
-                    {
-                        textureProperty.Offset = null;
-                        textureProperty.OffsetOriginal = null;
-                        if (textureProperty.NullCheck())
-                            MaterialTexturePropertyList.Remove(textureProperty);
-                    }
-                    else
-                    {
-                        textureProperty.Offset = value;
-                        textureProperty.OffsetOriginal = valueOriginal;
-                    }
-                }
-                else if (propertyType == TexturePropertyType.Scale)
-                {
-                    if (value == textureProperty.ScaleOriginal)
-                    {
-                        textureProperty.Scale = null;
-                        textureProperty.ScaleOriginal = null;
-                        if (textureProperty.NullCheck())
-                            MaterialTexturePropertyList.Remove(textureProperty);
-                    }
-                    else
-                    {
-                        textureProperty.Scale = value;
-                        textureProperty.ScaleOriginal = valueOriginal;
-                    }
-                }
-            }
-        }
-        public void AddMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType, Vector2 value, Vector2 valueOriginal, GameObject gameObject, bool setProperty = true)
-        {
-            AddMaterialTextureProperty(objectType, coordinateIndex, slot, materialName, property, propertyType, value, valueOriginal);
-            if (setProperty)
-                SetTextureProperty(gameObject, materialName, property, propertyType, value);
-        }
-        public Vector2? GetMaterialTexturePropertyValue(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType)
-        {
-            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
-            if (propertyType == TexturePropertyType.Offset)
-                return textureProperty?.Offset;
-            if (propertyType == TexturePropertyType.Scale)
-                return textureProperty?.Scale;
-            if (propertyType == TexturePropertyType.Texture)
-                return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
+            if (textureProperty?.TexID != null)
+                return TextureDictionary[(int)textureProperty.TexID].Texture;
             return null;
         }
-        public Vector2? GetMaterialTexturePropertyValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType)
-        {
-            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
-            if (propertyType == TexturePropertyType.Offset)
-                return textureProperty?.OffsetOriginal;
-            if (propertyType == TexturePropertyType.Scale)
-                return textureProperty?.ScaleOriginal;
-            if (propertyType == TexturePropertyType.Texture)
-                return textureProperty?.TexID == null ? null : (Vector2?)new Vector2(-1, -1);
-            return null;
-        }
-        public void RemoveMaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, TexturePropertyType propertyType, bool displayMessage = true)
+        public bool GetMaterialTextureOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property) =>
+            MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName)?.TexID == null ? true : false;
+        public void RemoveMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, bool displayMessage = true)
         {
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
             if (textureProperty != null)
             {
-                if (propertyType == TexturePropertyType.Texture)
-                {
-                    if (displayMessage)
-                        MaterialEditorPlugin.Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
-                    textureProperty.TexID = null;
-                    if (textureProperty.NullCheck())
-                        MaterialTexturePropertyList.Remove(textureProperty);
-                }
-                else if (propertyType == TexturePropertyType.Offset)
+                if (displayMessage)
+                    MaterialEditorPlugin.Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
+                textureProperty.TexID = null;
+                if (textureProperty.NullCheck())
+                    MaterialTexturePropertyList.Remove(textureProperty);
+            }
+        }
+
+        public void AddMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, Vector2 value, Vector2 valueOriginal)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
+            if (textureProperty == null)
+                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, coordinateIndex, slot, materialName, property, offset: value, offsetOriginal: valueOriginal));
+            else
+            {
+                if (value == textureProperty.OffsetOriginal)
                 {
                     textureProperty.Offset = null;
                     textureProperty.OffsetOriginal = null;
                     if (textureProperty.NullCheck())
                         MaterialTexturePropertyList.Remove(textureProperty);
                 }
-                else if (propertyType == TexturePropertyType.Scale)
+                else
+                {
+                    textureProperty.Offset = value;
+                    textureProperty.OffsetOriginal = valueOriginal;
+                }
+            }
+        }
+        public void AddMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, Vector2 value, Vector2 valueOriginal, GameObject gameObject, bool setProperty = true)
+        {
+            AddMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, property, value, valueOriginal);
+            if (setProperty)
+                SetTextureOffset(gameObject, materialName, property, value);
+        }
+        public Vector2? GetMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property) =>
+            MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName)?.Offset;
+        public Vector2? GetMaterialTextureOffsetOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property) =>
+            MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName)?.OffsetOriginal;
+        public void RemoveMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
+            if (textureProperty != null)
+            {
+                textureProperty.Offset = null;
+                textureProperty.OffsetOriginal = null;
+                if (textureProperty.NullCheck())
+                    MaterialTexturePropertyList.Remove(textureProperty);
+            }
+        }
+        public void RemoveMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, GameObject gameObject, bool setProperty = true)
+        {
+            if (setProperty)
+            {
+                var original = GetMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, property);
+                if (original != null)
+                    SetTextureOffset(gameObject, materialName, property, (Vector2)original);
+            }
+            RemoveMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, property);
+        }
+
+        public void AddMaterialTextureScale(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, Vector2 value, Vector2 valueOriginal)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
+            if (textureProperty == null)
+                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, coordinateIndex, slot, materialName, property, scale: value, scaleOriginal: valueOriginal));
+            else
+            {
+                if (value == textureProperty.ScaleOriginal)
                 {
                     textureProperty.Scale = null;
                     textureProperty.ScaleOriginal = null;
                     if (textureProperty.NullCheck())
                         MaterialTexturePropertyList.Remove(textureProperty);
                 }
+                else
+                {
+                    textureProperty.Scale = value;
+                    textureProperty.ScaleOriginal = valueOriginal;
+                }
             }
+        }
+        public void AddMaterialTextureScale(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, Vector2 value, Vector2 valueOriginal, GameObject gameObject, bool setProperty = true)
+        {
+            AddMaterialTextureScale(objectType, coordinateIndex, slot, materialName, property, value, valueOriginal);
+            if (setProperty)
+                SetTextureScale(gameObject, materialName, property, value);
+        }
+        public Vector2? GetMaterialTextureScale(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property) =>
+            MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName)?.Scale;
+        public Vector2? GetMaterialTextureScaleOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property) =>
+            MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName)?.ScaleOriginal;
+
+        public void RemoveMaterialTextureScale(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.MaterialName == materialName);
+            if (textureProperty != null)
+            {
+                textureProperty.Scale = null;
+                textureProperty.ScaleOriginal = null;
+                if (textureProperty.NullCheck())
+                    MaterialTexturePropertyList.Remove(textureProperty);
+            }
+        }
+        public void RemoveMaterialTextureScale(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, GameObject gameObject, bool setProperty = true)
+        {
+            if (setProperty)
+            {
+                var original = GetMaterialTextureScale(objectType, coordinateIndex, slot, materialName, property);
+                if (original != null)
+                    SetTextureScale(gameObject, materialName, property, (Vector2)original);
+            }
+            RemoveMaterialTextureScale(objectType, coordinateIndex, slot, materialName, property);
         }
 
         public void AddMaterialShader(ObjectType objectType, int coordinateIndex, int slot, string materialName, string shaderName, string shaderNameOriginal)

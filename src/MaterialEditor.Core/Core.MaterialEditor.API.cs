@@ -131,28 +131,8 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
-        public static bool SetTextureProperty(ChaControl chaControl, string materialName, string propertyName, TexturePropertyType propertyType, Vector2? value) => value == null ? false : SetTextureProperty(chaControl.gameObject, materialName, propertyName, propertyType, (Vector2)value);
-        public static bool SetTextureProperty(ChaControl chaControl, string materialName, string propertyName, TexturePropertyType propertyType, Vector2 value) => SetTextureProperty(chaControl.gameObject, materialName, propertyName, propertyType, value);
-        public static bool SetTextureProperty(GameObject gameObject, string materialName, string propertyName, TexturePropertyType propertyType, Vector2? value) => value == null ? false : SetTextureProperty(gameObject, materialName, propertyName, propertyType, (Vector2)value);
-        public static bool SetTextureProperty(GameObject gameObject, string materialName, string propertyName, TexturePropertyType propertyType, Vector2 value)
-        {
-            bool didSet = false;
-
-            foreach (var obj in GetRendererList(gameObject))
-                foreach (var objMat in obj.sharedMaterials)
-                    if (objMat.NameFormatted() == materialName)
-                    {
-                        if (propertyType == TexturePropertyType.Offset)
-                            objMat.SetTextureOffset($"_{propertyName}", value);
-                        else
-                            objMat.SetTextureScale($"_{propertyName}", value);
-                        didSet = true;
-                    }
-            return didSet;
-        }
-
-        public static bool SetTextureProperty(ChaControl chaControl, string materialName, string propertyName, Texture2D value) => SetTextureProperty(chaControl.gameObject, materialName, propertyName, value);
-        public static bool SetTextureProperty(GameObject gameObject, string materialName, string propertyName, Texture2D value)
+        public static bool SetTexture(ChaControl chaControl, string materialName, string propertyName, Texture2D value) => SetTexture(chaControl.gameObject, materialName, propertyName, value);
+        public static bool SetTexture(GameObject gameObject, string materialName, string propertyName, Texture2D value)
         {
             bool didSet = false;
             foreach (var rend in GetRendererList(gameObject))
@@ -163,6 +143,40 @@ namespace KK_Plugins.MaterialEditor
                         if (wrapMode != null)
                             value.wrapMode = (TextureWrapMode)wrapMode;
                         mat.SetTexture($"_{propertyName}", value);
+                        didSet = true;
+                    }
+            return didSet;
+        }
+
+        public static bool SetTextureOffset(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureOffset(chaControl.gameObject, materialName, propertyName, (Vector2)value);
+        public static bool SetTextureOffset(ChaControl chaControl, string materialName, string propertyName, Vector2 value) => SetTextureOffset(chaControl.gameObject, materialName, propertyName, value);
+        public static bool SetTextureOffset(GameObject gameObject, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureOffset(gameObject, materialName, propertyName, (Vector2)value);
+        public static bool SetTextureOffset(GameObject gameObject, string materialName, string propertyName, Vector2 value)
+        {
+            bool didSet = false;
+
+            foreach (var obj in GetRendererList(gameObject))
+                foreach (var objMat in obj.sharedMaterials)
+                    if (objMat.NameFormatted() == materialName)
+                    {
+                        objMat.SetTextureOffset($"_{propertyName}", value);
+                        didSet = true;
+                    }
+            return didSet;
+        }
+
+        public static bool SetTextureScale(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureScale(chaControl.gameObject, materialName, propertyName, (Vector2)value);
+        public static bool SetTextureScale(ChaControl chaControl, string materialName, string propertyName, Vector2 value) => SetTextureScale(chaControl.gameObject, materialName, propertyName, value);
+        public static bool SetTextureScale(GameObject gameObject, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureScale(gameObject, materialName, propertyName, (Vector2)value);
+        public static bool SetTextureScale(GameObject gameObject, string materialName, string propertyName, Vector2 value)
+        {
+            bool didSet = false;
+
+            foreach (var obj in GetRendererList(gameObject))
+                foreach (var objMat in obj.sharedMaterials)
+                    if (objMat.NameFormatted() == materialName)
+                    {
+                        objMat.SetTextureScale($"_{propertyName}", value);
                         didSet = true;
                     }
             return didSet;
@@ -202,7 +216,7 @@ namespace KK_Plugins.MaterialEditor
                                                 try
                                                 {
                                                     var tex = CommonLib.LoadAsset<Texture2D>(shaderPropertyData.DefaultValueAssetBundle, shaderPropertyData.DefaultValue);
-                                                    SetTextureProperty(gameObject, materialName, shaderPropertyData.Name, tex);
+                                                    SetTexture(gameObject, materialName, shaderPropertyData.Name, tex);
                                                 }
                                                 catch
                                                 {
@@ -238,7 +252,6 @@ namespace KK_Plugins.MaterialEditor
 
         public enum ObjectType { StudioItem, Clothing, Accessory, Hair, Character };
         public enum ShaderPropertyType { Texture, Color, Float }
-        public enum TexturePropertyType { Texture, Offset, Scale }
         public enum RendererProperties { Enabled, ShadowCastingMode, ReceiveShadows }
     }
 }

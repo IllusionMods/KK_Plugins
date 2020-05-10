@@ -88,25 +88,25 @@ namespace KK_Plugins.MaterialEditor
             GetSceneController().RemoveMaterialShaderRenderQueue(slot, materialName, gameObject);
 
         internal override bool GetMaterialTextureValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
-            GetSceneController().GetMaterialTexturePropertyValue(slot, materialName, propertyName, TexturePropertyType.Texture) == null;
+            GetSceneController().GetMaterialTextureOriginal(slot, materialName, propertyName);
         internal override void AddMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, string filePath, GameObject gameObject) =>
              GetSceneController().AddMaterialTextureFromFile(slot, materialName, propertyName, filePath, gameObject, true);
         internal override void RemoveMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
-            GetSceneController().RemoveMaterialTextureProperty(slot, materialName, propertyName, TexturePropertyType.Texture);
+            GetSceneController().RemoveMaterialTexture(slot, materialName, propertyName);
 
         internal override Vector2? GetMaterialTextureOffsetOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
-            GetSceneController().GetMaterialTexturePropertyValue(slot, materialName, propertyName, TexturePropertyType.Offset);
+            GetSceneController().GetMaterialTextureOffsetOriginal(slot, materialName, propertyName);
         internal override void AddMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject) =>
-           GetSceneController().AddMaterialTextureProperty(slot, materialName, propertyName, TexturePropertyType.Offset, value, valueOriginal, gameObject);
+           GetSceneController().AddMaterialTextureOffset(slot, materialName, propertyName, value, valueOriginal, gameObject);
         internal override void RemoveMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject) =>
-            GetSceneController().RemoveMaterialTextureProperty(slot, materialName, propertyName, TexturePropertyType.Offset, gameObject);
+            GetSceneController().RemoveMaterialTextureOffset(slot, materialName, propertyName, gameObject);
 
         internal override Vector2? GetMaterialTextureScaleOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
-            GetSceneController().GetMaterialTexturePropertyValue(slot, materialName, propertyName, TexturePropertyType.Scale);
+            GetSceneController().GetMaterialTextureScaleOriginal(slot, materialName, propertyName);
         internal override void AddMaterialTextureScale(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject) =>
-           GetSceneController().AddMaterialTextureProperty(slot, materialName, propertyName, TexturePropertyType.Scale, value, valueOriginal, gameObject);
+           GetSceneController().AddMaterialTextureScale(slot, materialName, propertyName, value, valueOriginal, gameObject);
         internal override void RemoveMaterialTextureScale(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject) =>
-            GetSceneController().RemoveMaterialTextureProperty(slot, materialName, propertyName, TexturePropertyType.Scale, gameObject);
+            GetSceneController().RemoveMaterialTextureScale(slot, materialName, propertyName, gameObject);
 
         internal override Color? GetMaterialColorPropertyValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName) =>
             GetSceneController().GetMaterialColorPropertyValueOriginal(slot, materialName, propertyName);
