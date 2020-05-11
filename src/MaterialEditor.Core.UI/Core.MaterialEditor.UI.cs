@@ -27,10 +27,22 @@ namespace KK_Plugins.MaterialEditor
         private static FileSystemWatcher TexChangeWatcher;
         VirtualList virtualList;
 
-        private const float marginSize = 5f;
-        private const float headerSize = 20f;
-        private const float scrollOffsetX = -15f;
-
+        internal const float marginSize = 5f;
+        internal const float headerSize = 20f;
+        internal const float scrollOffsetX = -15f;
+        internal const float panelHeight = 20f;
+        internal const float labelWidth = 50f;
+        internal const float buttonWidth = 100f;
+        internal const float dropdownWidth = 100f;
+        internal const float textBoxWidth = 75f;
+        internal const float colorLabelWidth = 10f;
+        internal const float resetButtonWidth = 50f;
+        internal const float sliderWidth = 150f;
+        internal const float labelXWidth = 60f;
+        internal const float labelYWidth = 10f;
+        internal const float textBoxXYWidth = 50f;
+        internal static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
+        internal static readonly Color rowColor = new Color(1f, 1f, 1f, 1f);
 
         internal void Main()
         {

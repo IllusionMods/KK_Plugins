@@ -98,6 +98,7 @@ namespace KK_Plugins.MaterialEditor
                 {
                     case ItemInfo.RowItemType.Renderer:
                         ShowRenderer();
+                        SetLabelText(RendererLabel, item.LabelText);
                         RendererText.text = item.RendererName;
                         break;
                     case ItemInfo.RowItemType.RendererEnabled:

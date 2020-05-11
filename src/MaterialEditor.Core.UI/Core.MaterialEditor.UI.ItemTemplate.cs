@@ -2,25 +2,12 @@
 using UILib;
 using UnityEngine;
 using UnityEngine.UI;
+using static KK_Plugins.MaterialEditor.UI;
 
 namespace KK_Plugins.MaterialEditor
 {
     internal static class ItemTemplate
     {
-        private const float panelHeight = 20f;
-        private const float labelWidth = 50f;
-        private const float buttonWidth = 100f;
-        private const float dropdownWidth = 100f;
-        private const float textBoxWidth = 75f;
-        private const float colorLabelWidth = 10f;
-        private const float resetButtonWidth = 50f;
-        private const float sliderWidth = 150f;
-        private const float labelXWidth = 60f;
-        private const float labelYWidth = 10f;
-        private const float textBoxXYWidth = 50f;
-        private static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
-        private static readonly Color rowColor = new Color(1f, 1f, 1f, 1f);
-
         internal static GameObject CreateTemplate(Transform parent)
         {
             var contentList = UIUtility.CreatePanel("ListEntry", parent);

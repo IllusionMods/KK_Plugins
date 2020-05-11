@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static KK_Plugins.MaterialEditor.UI;
 
 namespace KK_Plugins.MaterialEditor
 {
@@ -21,7 +22,6 @@ namespace KK_Plugins.MaterialEditor
 
         private int _paddingBot;
         private int _paddingTop;
-        private float _singleItemHeight;
 
         private VerticalLayoutGroup _verticalLayoutGroup;
 
@@ -124,16 +124,12 @@ namespace KK_Plugins.MaterialEditor
             listEntry.FloatResetButton = listEntry.transform.FindLoop("FloatResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find FloatResetButton");
 
             listEntry.SetItem(null, true);
-
-            //var templateRectTransform = EntryTemplate.GetComponent<RectTransform>();
-            //_singleItemHeight = templateRectTransform.rect.height + _verticalLayoutGroup.spacing;
-            _singleItemHeight = 20f;
         }
 
         private void PopulateEntryCache()
         {
             var viewportHeight = ScrollRect.GetComponent<RectTransform>().rect.height;
-            var visibleEntryCount = Mathf.CeilToInt(viewportHeight / _singleItemHeight) + 1;
+            var visibleEntryCount = Mathf.CeilToInt(viewportHeight / panelHeight);
 
             for (var i = 0; i < visibleEntryCount; i++)
             {
@@ -164,7 +160,7 @@ namespace KK_Plugins.MaterialEditor
             // How many items are not visible in current view
             var offscreenItemCount = Mathf.Max(0, _items.Count - _cachedEntries.Count);
             // How many items are above current view rect and not visible
-            var itemsAboveViewRect = Mathf.FloorToInt(Mathf.Clamp(scrollPosition / _singleItemHeight, 0, offscreenItemCount));
+            var itemsAboveViewRect = Mathf.FloorToInt(Mathf.Clamp(scrollPosition / panelHeight, 0, offscreenItemCount));
 
             if (_lastItemsAboveViewRect == itemsAboveViewRect && !_dirty)
                 return;
@@ -208,11 +204,11 @@ namespace KK_Plugins.MaterialEditor
 
         private void RecalculateOffsets(int itemsAboveViewRect)
         {
-            var topOffset = Mathf.RoundToInt(itemsAboveViewRect * _singleItemHeight);
+            var topOffset = Mathf.RoundToInt(itemsAboveViewRect * panelHeight);
             _verticalLayoutGroup.padding.top = _paddingTop + topOffset;
 
-            var totalHeight = _items.Count * _singleItemHeight;
-            var cacheEntriesHeight = _cachedEntries.Count * _singleItemHeight;
+            var totalHeight = _items.Count * panelHeight;
+            var cacheEntriesHeight = _cachedEntries.Count * panelHeight;
             var trailingHeight = totalHeight - cacheEntriesHeight - topOffset;
             _verticalLayoutGroup.padding.bottom = Mathf.FloorToInt(Mathf.Max(0, trailingHeight) + _paddingBot);
         }
