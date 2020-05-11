@@ -15,7 +15,7 @@ namespace KK_Plugins
 {
     public partial class Colliders
     {
-        public const string GUID = "com.deathweasel.bepinex.studiocolliders";
+        public const string GUID = "com.deathweasel.bepinex.colliders";
         public const string PluginName = "Colliders";
         public const string Version = "1.1";
         internal static new ManualLogSource Logger;
