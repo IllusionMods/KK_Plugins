@@ -165,17 +165,13 @@ v2.2 AI version, window position adjustment<br/>
 </details>
 
 #### ClothingUnlocker
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v62/KK_ClothingUnlocker.v1.1.zip)** - For Koikatsu<br/>
-**v1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v77/EC_ClothingUnlocker.v1.1.zip)** - For EmotionCreators<br/>
+**v2.0 - [Download](https://www.patreon.com/posts/37053602)** - For Koikatsu and EmotionCreators<br/>
 
-Allows gender restricted clothing to be used on all characters.<br/>
-
-<details><summary>Advanced mode</summary>
-KK_ClothingUnlocker can unlock bras/skirts with any top. Go to plugin settings and enable advanced mode to see the options for them. These settings are not recommended because they will require updating many characters for compatibility.<br/>
-</details>
+Allows gender restricted clothing to be used on all characters. Also allows you to unlock bras or skirts with any top on a per-character, per-ourfit basis. This setting saves and loads with the character card or coordinate card to ensure compatibility.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Added clothing unlocking for bras/skirts with any top<br/>
+v2.0 Unlocking bra/skirt per character<br/>
 </details>
 
 #### EyeShaking
