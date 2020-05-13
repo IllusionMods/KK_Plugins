@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.ClothingUnlocker.Controller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.ClothingUnlocker.cs">
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Core.ClothingUnlocker.Hooks.cs" />

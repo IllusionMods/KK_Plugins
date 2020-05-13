@@ -7,16 +7,52 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
+            private static ChaControl chaControl;
+
             [HarmonyPostfix, HarmonyPatch(typeof(ListInfoBase), nameof(ListInfoBase.GetInfoInt))]
             internal static void GetInfoIntPostfix(ChaListDefine.KeyType keyType, ref int __result)
             {
                 if (keyType == ChaListDefine.KeyType.Sex && EnableCrossdressing.Value)
                     __result = 1;
-                if (keyType == ChaListDefine.KeyType.NotBra && EnableBras.Value)
-                    __result = 0;
-                if (keyType == ChaListDefine.KeyType.Coordinate && EnableSkirts.Value)
-                    __result = 0;
+                else
+                {
+                    var value = CheckOverride(keyType);
+                    if (value != null)
+                        __result = int.Parse(value);
+                }
             }
+            [HarmonyPostfix, HarmonyPatch(typeof(ListInfoBase), nameof(ListInfoBase.GetInfo))]
+            internal static void GetInfoPostfix(ChaListDefine.KeyType keyType, ref string __result)
+            {
+                var value = CheckOverride(keyType);
+                if (value != null)
+                    __result = value;
+            }
+
+            /// <summary>
+            /// Return 0 to override, null if not
+            /// </summary>
+            private static string CheckOverride(ChaListDefine.KeyType keyType)
+            {
+                if (keyType == ChaListDefine.KeyType.NotBra || keyType == ChaListDefine.KeyType.Coordinate || keyType == ChaListDefine.KeyType.HideShorts)
+                {
+                    if (chaControl == null) return null;
+                    var controller = GetController(chaControl);
+                    if (controller == null) return null;
+                    if (controller.GetClothingUnlocked())
+                        return "0";
+                }
+                return null;
+            }
+
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTop))]
+            internal static void ChangeClothesTop(ChaControl __instance) => chaControl = __instance;
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesBot))]
+            internal static void ChangeClothesBot(ChaControl __instance) => chaControl = __instance;
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesBra))]
+            internal static void ChangeClothesBra(ChaControl __instance) => chaControl = __instance;
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesShorts))]
+            internal static void ChangeClothesShorts(ChaControl __instance) => chaControl = __instance;
         }
     }
 }
