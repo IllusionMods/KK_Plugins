@@ -18,6 +18,7 @@
             //Strings used in ExtensibleSaveFormat data
             internal const string Pushup_BraData = "Pushup_BraData";
             internal const string Pushup_TopData = "Pushup_TopData";
+            internal const string Pushup_BodyData = "Pushup_BodyData";
             internal const string PushupCoordinate_BraData = "PushupCoordinate_BraData";
             internal const string PushupCoordinate_TopData = "PushupCoordinate_TopData";
         }

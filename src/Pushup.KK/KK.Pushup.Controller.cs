@@ -16,6 +16,7 @@ namespace KK_Plugins
         public class PushupController : CharaCustomFunctionController
         {
             public BodyData BaseData;
+            public BodyData LoadedBaseData;
             public BodyData CurrentPushupData;
 
             private Dictionary<int, ClothData> BraDataDictionary = new Dictionary<int, ClothData>();
@@ -34,6 +35,7 @@ namespace KK_Plugins
                 var data = new PluginData();
                 data.data.Add(PushupConstants.Pushup_BraData, MessagePackSerializer.Serialize(BraDataDictionary));
                 data.data.Add(PushupConstants.Pushup_TopData, MessagePackSerializer.Serialize(TopDataDictionary));
+                data.data.Add(PushupConstants.Pushup_BodyData, MessagePackSerializer.Serialize(BaseData));
                 SetExtendedData(data);
 
                 RecalculateBody(true, true);
@@ -41,17 +43,20 @@ namespace KK_Plugins
 
             protected override void OnReload(GameMode currentGameMode)
             {
+                bool hasSavedBaseData = false;
                 var flags = MakerAPI.GetCharacterLoadFlags();
                 bool clothesFlag = false;
-                if (flags == null || (flags != null && flags.Clothes))
+                if (flags == null || flags.Clothes)
                     clothesFlag = true;
                 bool bodyFlag = false;
-                if (flags == null || (flags != null && flags.Body))
+                if (flags == null || flags.Body)
                     bodyFlag = true;
 
                 if (bodyFlag)
                 {
                     BaseData = new BodyData(ChaControl.fileBody);
+                    LoadedBaseData = new BodyData(ChaControl.fileBody);
+                    BaseData.CopyTo(LoadedBaseData);
                     CurrentPushupData = new BodyData(ChaControl.fileBody);
                 }
 
@@ -68,6 +73,12 @@ namespace KK_Plugins
                     if (data != null && data.data.TryGetValue(PushupConstants.Pushup_TopData, out var loadedTopData) && loadedTopData != null)
                         TopDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
 
+                    if (data != null && data.data.TryGetValue(PushupConstants.Pushup_BodyData, out var loadedBodyData) && loadedBodyData != null)
+                    {
+                        hasSavedBaseData = true;
+                        LoadedBaseData = MessagePackSerializer.Deserialize<BodyData>((byte[])loadedBodyData);
+                    }
+
                     //Reset advanced mode stuff and disable it when not loading the body in character maker
                     if (!bodyFlag)
                     {
@@ -82,7 +93,19 @@ namespace KK_Plugins
                             clothData.UseAdvanced = false;
                         }
                     }
+                    if (!hasSavedBaseData)
+                    {
+                        if (data?.data != null)
+                        {
+                            data.data.Add(PushupConstants.Pushup_BodyData, MessagePackSerializer.Serialize(BaseData));
+                            SetExtendedData(data);
+                        }
+                    }
                 }
+
+                //Apply the saved data to the base body data since it sometimes gets overwritten in the main game
+                if (KoikatuAPI.GetCurrentGameMode() == GameMode.MainGame)
+                    LoadedBaseData.CopyTo(BaseData);
 
                 RecalculateBody();
                 base.OnReload(currentGameMode);
