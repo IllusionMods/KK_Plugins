@@ -344,13 +344,8 @@ v1.0.1 Fixed an incompatibility with a MakerOptimizations plugin setting<br/>
 v1.1 Fixed nipple gloss not working in KK Party, fixed maker load flags<br/>
 v1.1.1 Force ABMX update on clothing state change<br/>
 v1.1.2 Unlock sliders when chest tab is clicked after a delay to prevent sliders being locked<br/>
+v1.1.3.1 Fix Pushup not working properly in main game mode, fix Pushup not being applied on character maker load<br/>
 </details>
-
-#### Perky
-~~**v0.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v145/KK_Perky.v0.1.zip)** - For Koikatsu<br/>~~
-~~Makes tiddies more perky by modifying breast bone rotation. Experimental proof of concept, use at your own risk. Features will probably be merged in to ABMX and/or Pushup at some point. Press G to toggle Perky on and off for debug purposes.<br/>~~
-
-[ABMX 4.0](https://www.patreon.com/posts/35475094) now does bone rotation, use that instead to customize characters. Relevant bones for breast rotation are cf_d_bust01_L, cf_d_bust02_L, and cf_d_bust03_L. Add these bones to ABMX advanced window, enable symetry, and apply rotation to replicate the effect of this plugin.
 
 #### TranslationSync
 #### TextResourceRedirector
