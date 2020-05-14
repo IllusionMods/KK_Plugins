@@ -52,7 +52,7 @@ namespace KK_Plugins
         private void MakerFinishedLoading(object sender, EventArgs e)
         {
             ReloadPushup();
-            _pushUpController.RecalculateBody();
+            _pushUpController.RecalculateBody(coroutine: true);
 
             GameObject bodyTopButton = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/01_BodyTop");
             var bodyTopButtonTrigger = bodyTopButton.GetOrAddComponent<EventTrigger>();

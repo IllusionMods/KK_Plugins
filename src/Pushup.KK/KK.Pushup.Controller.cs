@@ -164,11 +164,17 @@ namespace KK_Plugins
                     ReloadPushup();
             }
 
+            /// <summary>
+            /// Recalculate the body based on the clothing state and Pushup settings.
+            /// </summary>
             public void RecalculateBody() => RecalculateBody(true, false);
-            public void RecalculateBody(bool recalculateIfReloading) => RecalculateBody(recalculateIfReloading, false);
-            public void RecalculateBody(bool recalculateIfCharacterLoading, bool coroutine)
+            /// <summary>
+            /// Recalculate the body based on the clothing state and Pushup settings.
+            /// </summary>
+            /// <param name="recalculateIfCharacterLoading">Whether to perform recalculation when the character is in the process of loading. Set this to false if it would cause problems.</param>
+            /// <param name="coroutine">If true, wait one frame before recalculating.</param>
+            public void RecalculateBody(bool recalculateIfCharacterLoading = true, bool coroutine = false)
             {
-                if (MakerAPI.InsideMaker && !MakerAPI.InsideAndLoaded) return;
                 if (CharacterLoading && !recalculateIfCharacterLoading) return;
 
                 //Body will sometimes be null in main game, wait for it to not be null
@@ -180,6 +186,8 @@ namespace KK_Plugins
                     StartCoroutine(RecalculateBodyCoroutine());
                     return;
                 }
+
+                if (MakerAPI.InsideMaker && !MakerAPI.InsideAndLoaded) return;
 
                 //Set all the sliders to the base body values
                 SliderManager.SlidersActive = true;
