@@ -20,7 +20,7 @@ namespace KK_Plugins.MaterialEditor
         internal void Start()
         {
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
-            StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(GUID);
+            StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(MaterialEditorPlugin.GUID);
         }
 
         private void InitStudioUI(string sceneName)
