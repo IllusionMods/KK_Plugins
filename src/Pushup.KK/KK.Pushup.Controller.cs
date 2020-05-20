@@ -24,7 +24,10 @@ namespace KK_Plugins
 
             protected override void Start()
             {
+#if KK
+                // Ignore coordinate in EC
                 CurrentCoordinate.Subscribe(value => { OnCoordinateChanged(); });
+#endif
                 base.Start();
             }
 
@@ -456,7 +459,13 @@ namespace KK_Plugins
                                               ChaControl.fileStatus.clothesState[(int)ChaFileDefine.ClothesKind.top] == 0 &&
                                               CurrentTopData.EnablePushup;
 
+#if KK
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
+
+#elif EC
+            // CurrentCoordinateIndex is always zero in EC.
+            public int CurrentCoordinateIndex => 0;
+#endif
 
             private bool characterLoading = false;
             public bool CharacterLoading

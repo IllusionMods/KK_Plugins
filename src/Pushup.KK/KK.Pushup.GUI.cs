@@ -1,9 +1,11 @@
 ﻿using ChaCustom;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
+#if KK
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
 using Studio;
+#endif
 using System;
 using System.Linq;
 using UniRx;
@@ -194,6 +196,8 @@ namespace KK_Plugins
             PushNippleWidthSlider = MakeSlider(category, "Nipple Width", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleWidth], true);
             PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleDepth], true);
 
+#if KK
+            // No coorinateList for EC
 
             var coordinateList = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).ToList();
             coordinateList.Add("All");
@@ -218,7 +222,7 @@ namespace KK_Plugins
                 else
                     CopySlidersToCoordinate(copyDropdown.Value, copyBasic, copyAdvanced);
             });
-
+#endif
             ev.AddSubCategory(category);
         }
 
@@ -282,6 +286,9 @@ namespace KK_Plugins
             return pushUpSlider;
         }
 
+#if KK
+        // No studio for EC
+
         private static void RegisterStudioControls()
         {
             if (!StudioAPI.InsideStudio) return;
@@ -314,5 +321,6 @@ namespace KK_Plugins
         }
 
         private static PushupController GetSelectedController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<PushupController>();
+#endif
     }
 }

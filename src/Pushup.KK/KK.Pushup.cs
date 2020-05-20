@@ -17,7 +17,11 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.pushup";
         public const string PluginName = "Pushup";
+#if KK
         public const string PluginNameInternal = "KK_Pushup";
+#elif EC
+        public const string PluginNameInternal = "EC_Pushup";
+#endif
         public const string Version = "1.1.3.1";
         internal static new ManualLogSource Logger;
 
@@ -50,8 +54,10 @@ namespace KK_Plugins
             MakerAPI.ReloadCustomInterface += ReloadCustomInterface;
             MakerAPI.MakerExiting += MakerExiting;
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
+#if KK
+            // No studio for EC
             RegisterStudioControls();
-
+#endif
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
 
             //Patch all the slider onValueChanged events to return false and cancel original code
@@ -72,6 +78,8 @@ namespace KK_Plugins
                     else
                         harmony.Patch(slider, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
                 }
+#if KK
+                // No steam version for EC
                 else if (Application.productName == Constants.MainGameProcessNameSteam)
                 {
                     if (slider.Name == "<Start>m__10") { }//areola size
@@ -79,6 +87,7 @@ namespace KK_Plugins
                     else
                         harmony.Patch(slider, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
                 }
+#endif
             }
         }
 
