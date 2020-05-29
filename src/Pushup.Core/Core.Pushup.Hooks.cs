@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using KKAPI.Maker;
 using System.Collections;
 
 namespace KK_Plugins
@@ -45,6 +46,14 @@ namespace KK_Plugins
                     yield return null;
                     SliderManager.SlidersActive = true;
                 }
+            }
+
+            [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]
+            internal static void ChangeCustomClothes(ChaControl __instance, int kind)
+            {
+                if (MakerAPI.InsideAndLoaded)
+                    if (kind == 0 || kind == 2) //Tops and bras
+                        GetCharaController(__instance)?.ClothesChangeEvent();
             }
 
             /// <summary>

@@ -1,16 +1,16 @@
 ﻿using ChaCustom;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
-#if KK
-using KKAPI.Studio;
-using KKAPI.Studio.UI;
-using Studio;
-#endif
 using System;
 using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
+#if KK
+using KKAPI.Studio;
+using KKAPI.Studio.UI;
+using Studio;
+#endif
 
 namespace KK_Plugins
 {
@@ -197,8 +197,7 @@ namespace KK_Plugins
             PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleDepth], true);
 
 #if KK
-            // No coorinateList for EC
-
+            //Only one outfit in EC
             var coordinateList = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).ToList();
             coordinateList.Add("All");
             ev.AddControl(new MakerSeparator(category, this));
@@ -287,8 +286,7 @@ namespace KK_Plugins
         }
 
 #if KK
-        // No studio for EC
-
+        //No studio for EC
         private static void RegisterStudioControls()
         {
             if (!StudioAPI.InsideStudio) return;

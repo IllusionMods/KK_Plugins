@@ -22,15 +22,14 @@ namespace KK_Plugins
             private Dictionary<int, ClothData> BraDataDictionary = new Dictionary<int, ClothData>();
             private Dictionary<int, ClothData> TopDataDictionary = new Dictionary<int, ClothData>();
 
+#if KK
+            //EC only has one outfit slot, no need to watch changes
             protected override void Start()
             {
-#if KK
-                // Ignore coordinate in EC
                 CurrentCoordinate.Subscribe(value => { OnCoordinateChanged(); });
-#endif
                 base.Start();
             }
-
+#endif
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
                 MapBodyInfoToChaFile(BaseData);
@@ -212,12 +211,20 @@ namespace KK_Plugins
                 RecalculateBody(false, false);
             }
 
+            /// <summary>
+            /// Triggered when clothing state is changed, i.e. pulled aside or taken off.
+            /// </summary>
             internal void ClothesStateChangeEvent()
             {
                 if (!Started) return;
                 RecalculateBody(false);
                 UpdateABMX();
             }
+
+            /// <summary>
+            /// Triggered when clothing is changed in the character maker
+            /// </summary>
+            internal void ClothesChangeEvent() => RecalculateBody();
 
             /// <summary>
             /// Refreshes ABMX modifications
@@ -461,9 +468,8 @@ namespace KK_Plugins
 
 #if KK
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
-
 #elif EC
-            // CurrentCoordinateIndex is always zero in EC.
+            //CurrentCoordinateIndex is always zero in EC
             public int CurrentCoordinateIndex => 0;
 #endif
 

@@ -230,10 +230,15 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MaterialEditor.UI", "s
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MaterialEditor.Maker", "src\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.shproj", "{A7C1CBF5-F2AC-44AC-9D2E-6954DAFC6BD8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.Pushup", "src\Pushup.EC\EC.Pushup.csproj", "{79BC0E60-BB08-4A5B-928F-8475A2977AA2}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.Pushup", "src\Pushup.Core\Core.Pushup.shproj", "{0C61CAA2-3C5D-47EA-85E5-6EA281FEF859}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
 		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
+		src\Pushup.Core\Pushup.Core.projitems*{0c61caa2-3c5d-47ea-85e5-6ea281fef859}*SharedItemsImports = 13
 		src\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
 		src\FKIK.Core\Core.FKIK.projitems*{144f9206-641b-40c1-8464-bc035b255dd4}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{144f9206-641b-40c1-8464-bc035b255dd4}*SharedItemsImports = 4
@@ -290,9 +295,12 @@ Global
 		src\Shared\Shared.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
 		src\CharacterExport.Core\Core.CharacterExport.projitems*{74c4a9b4-93db-49de-ada1-84c9586d62d1}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{74c4a9b4-93db-49de-ada1-84c9586d62d1}*SharedItemsImports = 4
+		src\Pushup.Core\Pushup.Core.projitems*{770f33bc-7c92-4059-a4af-9a958cee6bde}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{770f33bc-7c92-4059-a4af-9a958cee6bde}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 4
 		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 4
+		src\Pushup.Core\Pushup.Core.projitems*{79bc0e60-bb08-4a5b-928f-8475a2977aa2}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{79bc0e60-bb08-4a5b-928f-8475a2977aa2}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{7b514b4e-a0bc-4da9-b2a8-0b72515e8033}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{7e21e1cc-356e-41bb-abdd-bd0f99710361}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{808eedec-4707-45a1-929c-9e5506180204}*SharedItemsImports = 4
@@ -609,6 +617,10 @@ Global
 		{4B2A5873-42E3-446F-B986-6B57693928C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B2A5873-42E3-446F-B986-6B57693928C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B2A5873-42E3-446F-B986-6B57693928C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79BC0E60-BB08-4A5B-928F-8475A2977AA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79BC0E60-BB08-4A5B-928F-8475A2977AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79BC0E60-BB08-4A5B-928F-8475A2977AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79BC0E60-BB08-4A5B-928F-8475A2977AA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -693,6 +705,8 @@ Global
 		{4E6812C6-5D1D-425B-9F58-629EF35004FD} = {877CDF4C-3018-40BD-BDBB-4B6039FB42CB}
 		{BD5E6EB1-54D9-4CD2-9CC6-878021F99424} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
 		{A7C1CBF5-F2AC-44AC-9D2E-6954DAFC6BD8} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
+		{79BC0E60-BB08-4A5B-928F-8475A2977AA2} = {521B03C0-E174-4217-8832-4CA34D0BAFE0}
+		{0C61CAA2-3C5D-47EA-85E5-6EA281FEF859} = {521B03C0-E174-4217-8832-4CA34D0BAFE0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
