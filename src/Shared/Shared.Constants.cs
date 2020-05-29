@@ -14,6 +14,10 @@
         internal const string StudioProcessName = "StudioNEO_64";
         internal const string MainGameProcessName = "HoneySelect_64";
         internal const string BattleArenaProcessName = "BattleArena_64";
+#elif HS2
+        internal const string GameName = "Honey Select 2";
+        internal const string StudioProcessName = "StudioNEOV2";
+        internal const string MainGameProcessName = "HoneySelect2";
 #elif KK
         internal const string GameName = "Koikatsu";
         internal const string StudioProcessName = "CharaStudio";

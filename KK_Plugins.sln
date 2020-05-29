@@ -234,6 +234,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.Pushup", "src\Pushup.EC\
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.Pushup", "src\Pushup.Core\Core.Pushup.shproj", "{0C61CAA2-3C5D-47EA-85E5-6EA281FEF859}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.Demosaic", "src\Demosaic.HS2\HS2.Demosaic.csproj", "{46156D49-510C-4070-9A4C-F271910D8A75}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -268,6 +270,8 @@ Global
 		src\Colliders.Core\Core.Colliders.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{42f4ccee-063c-482f-aee7-5e8d34433c95}*SharedItemsImports = 4
+		src\Demosaic.Core\Core.Demosaic.projitems*{46156d49-510c-4070-9a4c-f271910d8a75}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{46156d49-510c-4070-9a4c-f271910d8a75}*SharedItemsImports = 4
 		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{46c0c1ed-0307-4d93-97d5-d71a8d682eea}*SharedItemsImports = 13
 		src\Demosaic.Core\Core.Demosaic.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
@@ -621,6 +625,10 @@ Global
 		{79BC0E60-BB08-4A5B-928F-8475A2977AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79BC0E60-BB08-4A5B-928F-8475A2977AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79BC0E60-BB08-4A5B-928F-8475A2977AA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46156D49-510C-4070-9A4C-F271910D8A75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46156D49-510C-4070-9A4C-F271910D8A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46156D49-510C-4070-9A4C-F271910D8A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46156D49-510C-4070-9A4C-F271910D8A75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -707,6 +715,7 @@ Global
 		{A7C1CBF5-F2AC-44AC-9D2E-6954DAFC6BD8} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
 		{79BC0E60-BB08-4A5B-928F-8475A2977AA2} = {521B03C0-E174-4217-8832-4CA34D0BAFE0}
 		{0C61CAA2-3C5D-47EA-85E5-6EA281FEF859} = {521B03C0-E174-4217-8832-4CA34D0BAFE0}
+		{46156D49-510C-4070-9A4C-F271910D8A75} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
