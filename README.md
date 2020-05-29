@@ -337,7 +337,7 @@ Far Clip Plane<br/>
 </details>
 
 #### Pushup
-**v1.1.2 - [Download](https://www.patreon.com/posts/32668488)** - For Koikatsu<br/>
+**v1.2 - [Download](https://www.patreon.com/posts/32668488)** - For Koikatsu and EmotionCreators<br/>
 Provides sliders and setting to shape the breasts of characters when bras or tops are worn. The basic set of sliders will modify the shape of the breasts if the breast sliders if they are below the specified threshhold. Advanced mode lets you fully customize the shape of the breasts.<br/>
 
 <details><summary>Change Log</summary>
@@ -346,6 +346,7 @@ v1.1 Fixed nipple gloss not working in KK Party, fixed maker load flags<br/>
 v1.1.1 Force ABMX update on clothing state change<br/>
 v1.1.2 Unlock sliders when chest tab is clicked after a delay to prevent sliders being locked<br/>
 v1.1.3.1 Fix Pushup not working properly in main game mode, fix Pushup not being applied on character maker load<br/>
+v1.2 EmotionCreators version<br/>
 </details>
 
 #### TranslationSync
