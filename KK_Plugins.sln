@@ -88,6 +88,9 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.Subtitles", "src\Subtitles.Core\Core.Subtitles.shproj", "{9B492E05-5822-4BB0-BE28-A468D1F318AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MaterialEditor", "MaterialEditor", "{2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}"
+	ProjectSection(SolutionItems) = preProject
+		src\MaterialEditor.KK\KK.MaterialEditor.Maker.cs = src\MaterialEditor.KK\KK.MaterialEditor.Maker.cs
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MaterialEditor", "src\MaterialEditor.Core\Core.MaterialEditor.shproj", "{5A8FDB27-FFCA-4A77-AB0F-AFDEF9A034ED}"
 EndProject
@@ -241,8 +244,21 @@ Global
 		src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
 		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{25352133-33b7-41e0-867a-d07c613ac3e9}*SharedItemsImports = 13
+		src\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\MaterialEditor.Core.UI\Core.MaterialEditor.UI.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		src\InputHotkeyBlock.Core\Core.InputHotkeyBlock.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
+		src\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\MaterialEditor.Core.UI\Core.MaterialEditor.UI.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{3ae01cd8-4b89-4c17-8840-3153a4fa8ef7}*SharedItemsImports = 13
 		src\Colliders.Core\Core.Colliders.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4

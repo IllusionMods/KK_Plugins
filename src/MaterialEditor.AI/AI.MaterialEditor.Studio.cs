@@ -2,10 +2,9 @@
 
 namespace KK_Plugins.MaterialEditor
 {
+    [BepInProcess(Constants.StudioProcessName)]
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(MaterialEditorPlugin.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
-    public partial class MaterialEditorPlugin : BaseUnityPlugin
-    {
-        public const string PluginNameInternal = "AI_MaterialEditor";
-    }
+    public partial class MEStudio { }
 }

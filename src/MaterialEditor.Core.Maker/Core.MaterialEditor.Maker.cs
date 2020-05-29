@@ -22,7 +22,9 @@ namespace KK_Plugins.MaterialEditor
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
+#if KK
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
+#endif
 
             HarmonyWrapper.PatchAll(typeof(MakerHooks));
         }
@@ -30,7 +32,9 @@ namespace KK_Plugins.MaterialEditor
         private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => HideUI();
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => HideUI();
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => HideUI();
+#if KK
         private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => HideUI();
+#endif
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {

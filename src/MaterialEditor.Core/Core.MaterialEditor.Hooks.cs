@@ -24,15 +24,15 @@ namespace KK_Plugins.MaterialEditor
         internal static void CreateBodyTextureHook(ChaControl __instance) => MaterialEditorPlugin.GetCharaController(__instance).RefreshBodyMainTex();
 
 #if AI
-            internal static void ClothesColorChangeHook()
-            {
-                var controller = GetCharaController(MakerAPI.GetCharacterControl());
-                controller.CustomClothesOverride = true;
-                controller.RefreshClothesMainTex();
-            }
+        internal static void ClothesColorChangeHook()
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
+            controller.CustomClothesOverride = true;
+            controller.RefreshClothesMainTex();
+        }
 
-            [HarmonyPrefix, HarmonyPatch(typeof(CharaCustom.CvsA_Copy), "CopyAccessory")]
-            internal static void CopyAccessoryOverride() => GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+        [HarmonyPrefix, HarmonyPatch(typeof(CharaCustom.CvsA_Copy), "CopyAccessory")]
+        internal static void CopyAccessoryOverride() => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 #else
         internal static void AccessoryTransferHook() => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 

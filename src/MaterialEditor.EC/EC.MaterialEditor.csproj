@@ -109,6 +109,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EC.MaterialEditor.Maker.cs" />
     <Compile Include="EC.MaterialEditor.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +128,8 @@
   <Import Project="..\MaterialEditor.Core\Core.MaterialEditor.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />
+  <Import Project="..\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems" Label="Shared" />
+  <Import Project="..\MaterialEditor.Core.UI\Core.MaterialEditor.UI.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" EC</PostBuildEvent>

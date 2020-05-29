@@ -1,16 +1,13 @@
 ﻿using HarmonyLib;
 using KKAPI.Maker;
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins.MaterialEditor
 {
-    internal static class MakerHooks
+    internal static partial class MakerHooks
     {
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
-        internal static void ChangeCoordinateTypePrefix()
-        {
-            if (MakerAPI.InsideAndLoaded)
-                UI.HideUI();
-        }
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessory), typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool))]
         internal static void ChangeAccessory()
         {

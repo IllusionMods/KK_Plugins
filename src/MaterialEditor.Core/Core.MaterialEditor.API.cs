@@ -2,6 +2,9 @@
 using System.Linq;
 using UniRx;
 using UnityEngine;
+#if AI
+using AIChara;
+#endif
 
 namespace KK_Plugins.MaterialEditor
 {

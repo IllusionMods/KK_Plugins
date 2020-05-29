@@ -172,13 +172,13 @@ namespace KK_Plugins.MaterialEditor
             {
                 if (filterType == FilterType.Body)
                 {
-                    matList[chaControl.customMatBody.NameFormatted()] = chaControl.customMatBody;
-                    rendList.Add(chaControl.rendBody);
+                    matList[chaControl.customMatBody.NameFormatted()] = chaControl.customMatBody;                    
+                    rendList.Add(chaControl.objBody.GetComponentInChildren<Renderer>());
                 }
                 else if (filterType == FilterType.Face)
                 {
                     matList[chaControl.customMatFace.NameFormatted()] = chaControl.customMatFace;
-                    rendList.Add(chaControl.rendFace);
+                    rendList.Add(chaControl.objHead.GetComponentInChildren<Renderer>());
                 }
                 else
                     rendList = GetRendererList(gameObject);
