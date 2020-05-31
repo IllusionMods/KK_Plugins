@@ -85,10 +85,6 @@ v1.2 Prevents clicks inside mod GUI elements from advancing the story in Koikats
 #### UncensorSelector
 **v3.9 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
 
-Download uncensors:<br/>
-For Koikatsu click [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!S0IzlILZ)<br/>
-For EmotionCreators click [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!u4pUmKzb)<br/>
-
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
 
 Requirements:
@@ -96,7 +92,7 @@ Requirements:
 * Marco's [Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods/releases)
 * [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat and Sideloader.
 
-UncensorSelector compatible uncensors can be found [here.](https://mega.nz/#F!upYGBTAZ!S1lMalC33LYEditk7GwzgQ!n54h1KZS) For makers of uncensors, see the [template](https://github.com/DeathWeasel1337/KK_Plugins/blob/master/Core_UncensorSelector/Template.xml) for how to configure your uncensor for UncensorSelector compatibility.<br/>
+For makers of uncensors, see the [template](https://github.com/DeathWeasel1337/KK_Plugins/blob/master/src/UncensorSelector.Core/Template.xml) for how to configure your uncensor for UncensorSelector compatibility.<br/>
 
 Make sure to remove any sideloader uncensors and replace your oo_base with a clean, unmodified one to prevent incompatibilities!<br/>
 
