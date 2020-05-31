@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{74C4A9B4-93DB-49DE-ADA1-84C9586D62D1}</ProjectGuid>
+    <ProjectGuid>{1606DE1B-EF26-4FFC-8CC9-E93C3F222796}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KK_Plugins</RootNamespace>
-    <AssemblyName>EC_CharacterExport</AssemblyName>
+    <AssemblyName>HS2_CharacterExport</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -18,7 +18,7 @@
     <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;EC</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;HS2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -26,10 +26,9 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\</OutputPath>
-    <DefineConstants>TRACE;EC</DefineConstants>
+    <DefineConstants>TRACE;HS2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -37,7 +36,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6\lib\net46\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp.2020.5.29\lib\net46\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx, Version=5.0.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -46,6 +45,10 @@
     </Reference>
     <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.0.0-beta2\lib\net35\BepInEx.Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="IL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29\lib\net46\IL.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -57,16 +60,16 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.1\lib\net46\UnityEngine.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11\lib\net46\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.1\lib\net46\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11\lib\net46\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EC.CharacterExport.cs" />
+    <Compile Include="HS2.CharacterExport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -74,10 +77,10 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\CharacterExport.Core\Core.CharacterExport.projitems" Label="Shared" />
+  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" EC</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" HS2</PostBuildEvent>
   </PropertyGroup>
 </Project>

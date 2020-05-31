@@ -5,6 +5,6 @@ namespace KK_Plugins
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class CharacterExport : BaseUnityPlugin
     {
-        public const string PluginNameInternal = "AI_CharacterExport";
+        public const string PluginNameInternal = "HS2_CharacterExport";
     }
 }

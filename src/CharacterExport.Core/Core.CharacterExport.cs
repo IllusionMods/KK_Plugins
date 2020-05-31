@@ -5,7 +5,7 @@ using HarmonyLib;
 using System;
 using System.IO;
 using UnityEngine;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
@@ -50,7 +50,7 @@ namespace KK_Plugins
             {
                 string sex = charas[counter].chaFile.parameter.sex == 0 ? "Male" : "Female";
                 string filename = $"{filenamePrefix}_{counter:00}_{sex}.png";
-#if AI || EC
+#if AI || EC || HS2
                 Traverse.Create(charas[counter].chaFile).Method("SaveFile", filename, 0).GetValue();
 #elif KK
                 Traverse.Create(charas[counter].chaFile).Method("SaveFile", filename).GetValue();
