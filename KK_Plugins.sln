@@ -248,6 +248,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.PoseQuickLoad", "src\Po
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.AnimationController", "src\AnimationController.HS2\HS2.AnimationController.csproj", "{54BC2804-B04C-4741-9C00-37AD75F8F437}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.StudioObjectMoveHotkeys", "src\StudioObjectMoveHotkeys.HS2\HS2.StudioObjectMoveHotkeys.csproj", "{69421A19-A4AC-43BF-8729-6C955F39CE89}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -311,6 +313,8 @@ Global
 		src\Shared\Shared.projitems*{5fea4668-1430-413b-b744-8951a4c07745}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{6463c4b8-12ce-496b-8578-48d424f61400}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{650f4b0a-be99-495b-84b0-0999afec670d}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{69421a19-a4ac-43bf-8729-6c955f39ce89}*SharedItemsImports = 4
+		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{69421a19-a4ac-43bf-8729-6c955f39ce89}*SharedItemsImports = 4
 		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		src\AnimationController.Core\Core.AnimationController.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 4
@@ -677,6 +681,10 @@ Global
 		{54BC2804-B04C-4741-9C00-37AD75F8F437}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54BC2804-B04C-4741-9C00-37AD75F8F437}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54BC2804-B04C-4741-9C00-37AD75F8F437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69421A19-A4AC-43BF-8729-6C955F39CE89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69421A19-A4AC-43BF-8729-6C955F39CE89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69421A19-A4AC-43BF-8729-6C955F39CE89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69421A19-A4AC-43BF-8729-6C955F39CE89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -770,6 +778,7 @@ Global
 		{9C19B785-E8E3-4FF0-9E3F-8254355B1CE7} = {6F0DF0B5-3EC0-40D1-8874-6960D8377E6D}
 		{129F09E0-0A3D-4D12-B724-2B3A64F81DAF} = {6B49D5D9-B6B1-4636-BE4F-561369C67722}
 		{54BC2804-B04C-4741-9C00-37AD75F8F437} = {877CDF4C-3018-40BD-BDBB-4B6039FB42CB}
+		{69421A19-A4AC-43BF-8729-6C955F39CE89} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
