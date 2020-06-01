@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
