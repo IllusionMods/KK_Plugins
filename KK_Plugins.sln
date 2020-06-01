@@ -254,6 +254,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.StudioSceneLoadedSound"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.StudioSceneSettings", "src\StudioSceneSettings.HS2\HS2.StudioSceneSettings.csproj", "{8169B73C-BE43-4CA0-87D8-DB580D367D87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.FKIK", "src\FKIK.HS2\HS2.FKIK.csproj", "{4F666B41-9D22-4CDD-B02C-47E407AAB0C2}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -310,6 +312,8 @@ Global
 		src\AnimationController.Core\Core.AnimationController.projitems*{4e6812c6-5d1d-425b-9f58-629ef35004fd}*SharedItemsImports = 13
 		src\PoseFolders.Core\Core.PoseFolders.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
+		src\FKIK.Core\Core.FKIK.projitems*{4f666b41-9d22-4cdd-b02c-47e407aab0c2}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{4f666b41-9d22-4cdd-b02c-47e407aab0c2}*SharedItemsImports = 4
 		src\AnimationController.Core\Core.AnimationController.projitems*{54bc2804-b04c-4741-9c00-37ad75f8f437}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{54bc2804-b04c-4741-9c00-37ad75f8f437}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
@@ -701,6 +705,10 @@ Global
 		{8169B73C-BE43-4CA0-87D8-DB580D367D87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8169B73C-BE43-4CA0-87D8-DB580D367D87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8169B73C-BE43-4CA0-87D8-DB580D367D87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F666B41-9D22-4CDD-B02C-47E407AAB0C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F666B41-9D22-4CDD-B02C-47E407AAB0C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F666B41-9D22-4CDD-B02C-47E407AAB0C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F666B41-9D22-4CDD-B02C-47E407AAB0C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -797,6 +805,7 @@ Global
 		{69421A19-A4AC-43BF-8729-6C955F39CE89} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
 		{2566ACD4-B07D-4FEB-AA9C-4CD1751E97FC} = {92DF1BEE-7CB1-449B-873A-21988E061EFB}
 		{8169B73C-BE43-4CA0-87D8-DB580D367D87} = {F5ECA275-79C3-473E-8383-1607F2B52992}
+		{4F666B41-9D22-4CDD-B02C-47E407AAB0C2} = {781E2AFE-9DB0-4403-83A5-F0F327EDB9FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Studio;
 using System.Collections;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 

@@ -4,7 +4,7 @@ using HarmonyLib;
 using KKAPI.Studio;
 using Studio;
 using static Studio.OIBoneInfo;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
