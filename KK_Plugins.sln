@@ -250,6 +250,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.AnimationController", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.StudioObjectMoveHotkeys", "src\StudioObjectMoveHotkeys.HS2\HS2.StudioObjectMoveHotkeys.csproj", "{69421A19-A4AC-43BF-8729-6C955F39CE89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.StudioSceneLoadedSound", "src\StudioSceneLoadedSound.HS2\HS2.StudioSceneLoadedSound.csproj", "{2566ACD4-B07D-4FEB-AA9C-4CD1751E97FC}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -269,6 +271,8 @@ Global
 		src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
 		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{25352133-33b7-41e0-867a-d07c613ac3e9}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{2566acd4-b07d-4feb-aa9c-4cd1751e97fc}*SharedItemsImports = 4
+		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{2566acd4-b07d-4feb-aa9c-4cd1751e97fc}*SharedItemsImports = 4
 		src\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		src\MaterialEditor.Core.UI\Core.MaterialEditor.UI.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
@@ -685,6 +689,10 @@ Global
 		{69421A19-A4AC-43BF-8729-6C955F39CE89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69421A19-A4AC-43BF-8729-6C955F39CE89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69421A19-A4AC-43BF-8729-6C955F39CE89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2566ACD4-B07D-4FEB-AA9C-4CD1751E97FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2566ACD4-B07D-4FEB-AA9C-4CD1751E97FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2566ACD4-B07D-4FEB-AA9C-4CD1751E97FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2566ACD4-B07D-4FEB-AA9C-4CD1751E97FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -779,6 +787,7 @@ Global
 		{129F09E0-0A3D-4D12-B724-2B3A64F81DAF} = {6B49D5D9-B6B1-4636-BE4F-561369C67722}
 		{54BC2804-B04C-4741-9C00-37AD75F8F437} = {877CDF4C-3018-40BD-BDBB-4B6039FB42CB}
 		{69421A19-A4AC-43BF-8729-6C955F39CE89} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
+		{2566ACD4-B07D-4FEB-AA9C-4CD1751E97FC} = {92DF1BEE-7CB1-449B-873A-21988E061EFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
