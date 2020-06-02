@@ -7,7 +7,7 @@ using KKAPI.Studio.UI;
 using KKAPI.Utilities;
 using Studio;
 using UniRx;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 

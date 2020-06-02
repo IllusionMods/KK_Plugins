@@ -6,7 +6,7 @@ using KKAPI.Studio;
 using IllusionUtility.GetUtility;
 using UnityEngine;
 using ExtensibleSaveFormat;
-#if AI
+#if AI || HS2
 using AIChara;
 using static AIChara.ChaFileDefine;
 #else
@@ -29,7 +29,6 @@ namespace KK_Plugins
             private bool didSetStates = false;
 
             private float BreastSize => ChaControl.chaFile.custom.body.shapeValueBody[(int)BodyShapeIdx.BustSize];
-            private float BreastCollisionRadiusMultiplier => BreastSize * 1.2f;
             public bool BreastCollidersEnabled { get; set; }
             public bool SkirtCollidersEnabled { get; set; }
             public bool FloorColliderEnabled { get; set; }
@@ -256,13 +255,11 @@ namespace KK_Plugins
                 foreach (var pat in dynamicBone.Patterns)
                 {
 #if KK
-                    pat.Params[0].CollisionRadius = BreastCollidersEnabled ? 0.08f * BreastCollisionRadiusMultiplier : 0;
-                    pat.Params[1].CollisionRadius = BreastCollidersEnabled ? 0.06f * BreastCollisionRadiusMultiplier : 0;
-#elif AI
-                    pat.Params[2].CollisionRadius = BreastCollidersEnabled ? 0.8f * BreastCollisionRadiusMultiplier : 0;
-                    pat.Params[3].CollisionRadius = BreastCollidersEnabled ? 0.6f * BreastCollisionRadiusMultiplier : 0;
-#else
-                throw new System.NotImplementedException();
+                    pat.Params[0].CollisionRadius = BreastCollidersEnabled ? 0.10f * BreastSize : 0;
+                    pat.Params[1].CollisionRadius = BreastCollidersEnabled ? 0.08f * BreastSize : 0;
+#elif AI || HS2
+                    pat.Params[2].CollisionRadius = BreastCollidersEnabled ? 1.0f * BreastSize : 0;
+                    pat.Params[3].CollisionRadius = BreastCollidersEnabled ? 0.8f * BreastSize : 0;
 #endif
                 }
 
