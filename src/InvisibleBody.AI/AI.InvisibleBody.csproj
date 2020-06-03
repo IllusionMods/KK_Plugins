@@ -7,7 +7,7 @@
     <ProjectGuid>{B43D16F2-1542-423F-BA3C-C6ABC82C4281}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AI_InvisibleBody</RootNamespace>
+    <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>AI_InvisibleBody</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

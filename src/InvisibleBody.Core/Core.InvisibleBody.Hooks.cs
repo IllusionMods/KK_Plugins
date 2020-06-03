@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 

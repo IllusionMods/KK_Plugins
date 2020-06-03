@@ -258,6 +258,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.FKIK", "src\FKIK.HS2\HS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.Colliders", "src\Colliders.HS2\HS2.Colliders.csproj", "{E528BD96-46A2-4671-BA1F-315A036BC2B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.InvisibleBody", "src\InvisibleBody.HS2\HS2.InvisibleBody.csproj", "{B97E2FC3-C1C6-4D07-80C7-2E3E2CFE3749}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -389,6 +391,9 @@ Global
 		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{b743e048-5913-4dec-9067-8afd1293a211}*SharedItemsImports = 4
+		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{b97e2fc3-c1c6-4d07-80c7-2e3e2cfe3749}*SharedItemsImports = 4
+		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{b97e2fc3-c1c6-4d07-80c7-2e3e2cfe3749}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{b97e2fc3-c1c6-4d07-80c7-2e3e2cfe3749}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
 		src\InputHotkeyBlock.Core\Core.InputHotkeyBlock.projitems*{bc2d1e37-d3c2-4225-8ce4-2e116e84e365}*SharedItemsImports = 4
@@ -717,6 +722,10 @@ Global
 		{E528BD96-46A2-4671-BA1F-315A036BC2B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E528BD96-46A2-4671-BA1F-315A036BC2B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E528BD96-46A2-4671-BA1F-315A036BC2B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B97E2FC3-C1C6-4D07-80C7-2E3E2CFE3749}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B97E2FC3-C1C6-4D07-80C7-2E3E2CFE3749}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B97E2FC3-C1C6-4D07-80C7-2E3E2CFE3749}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B97E2FC3-C1C6-4D07-80C7-2E3E2CFE3749}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -815,6 +824,7 @@ Global
 		{8169B73C-BE43-4CA0-87D8-DB580D367D87} = {F5ECA275-79C3-473E-8383-1607F2B52992}
 		{4F666B41-9D22-4CDD-B02C-47E407AAB0C2} = {781E2AFE-9DB0-4403-83A5-F0F327EDB9FB}
 		{E528BD96-46A2-4671-BA1F-315A036BC2B0} = {39BE0BD8-0A15-4BDC-AF84-34206D210891}
+		{B97E2FC3-C1C6-4D07-80C7-2E3E2CFE3749} = {CE8EA04B-6351-40C4-97AB-24CAE7020DCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
