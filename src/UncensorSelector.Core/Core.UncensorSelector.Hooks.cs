@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using UniRx;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
@@ -11,7 +11,7 @@ namespace KK_Plugins
 {
     internal partial class Hooks
     {
-#if AI
+#if AI || HS2
         /// <summary>
         /// Do color matching whenever the body texture is changed
         /// </summary>

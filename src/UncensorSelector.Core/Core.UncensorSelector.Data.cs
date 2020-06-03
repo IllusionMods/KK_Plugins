@@ -227,7 +227,7 @@ namespace KK_Plugins
                 ColorMask = colorMask.IsNullOrWhiteSpace() ? null : colorMask;
             }
 
-#if AI
+#if AI || HS2
             public bool Verify() => Object != null;
 #else
             public bool Verify() => Object != null && Material != null && MaterialCreate != null && MainTex != null && ColorMask != null;

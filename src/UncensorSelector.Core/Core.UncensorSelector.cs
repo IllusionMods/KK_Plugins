@@ -13,7 +13,7 @@ using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
@@ -175,7 +175,7 @@ namespace KK_Plugins
 #if KK
                 controller.PenisGUID = ID == 0 || ID == 1 ? null : PenisList[ID];
                 controller.DisplayPenis = ID == 1 ? false : true;
-#elif AI
+#elif AI || HS2
                 controller.PenisGUID = ID == 0 ? null : PenisList[ID];
 #else
                 controller.PenisGUID = ID == 0 ? null : PenisList[ID];
@@ -220,12 +220,11 @@ namespace KK_Plugins
             }
 #endif
 
-#if AI
+#if AI || HS2
             if (characterSex == 0)
                 BodyDropdown.Visible.OnNext(false);
             else
                 TogglePenisBallsUI(false);
-
 #endif
 
             DoDropdownEvents = true;
@@ -256,7 +255,7 @@ namespace KK_Plugins
                 else if (controller.BallsGUID == null)
                     BallsDropdown?.SetValue(controller.DisplayBalls ? 0 : 1, false);
 
-#if AI
+#if AI || HS2
                 if (controller.ChaControl.sex == 1)
                 {
                     GameObject goFutanari = GameObject.Find("CharaCustom/CustomControl/CanvasMain/SubMenu/SubMenuBody/Scroll View/Viewport/Content/Category/CategoryTop/Futanari/tglFutanari");
@@ -270,7 +269,7 @@ namespace KK_Plugins
 #endif
             }
         }
-#if AI
+#if AI || HS2
         private static void TogglePenisBallsUI(bool visible)
         {
             PenisDropdown.Visible.OnNext(visible);
@@ -292,7 +291,7 @@ namespace KK_Plugins
             //Add the default body options
             BodyConfigListFull["Random"] = "Random";
 
-#if !AI
+#if KK || EC
             BodyData DefaultMale = new BodyData(0, DefaultBodyMaleGUID, "Default Body M");
             BodyDictionary[DefaultMale.BodyGUID] = DefaultMale;
             BodyConfigListFull[$"[{(DefaultMale.Sex == 0 ? "Male" : "Female")}] {DefaultMale.DisplayName}"] = DefaultMale.BodyGUID;

@@ -10,10 +10,10 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using KoiSkinOverlayX;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
-#if KK || AI
+#if KK || AI || HS2
 using KKAPI.Studio;
 #endif
 
@@ -32,7 +32,7 @@ namespace KK_Plugins
             /// <summary> BallsGUID saved to the character. Use BallsData.BallsGUID to get the current BallsGUID.</summary>
             internal string BallsGUID { get; set; }
             /// <summary> Visibility of the penis as saved to the character.</summary>
-#if AI
+#if AI || HS2
             internal bool DisplayPenis => ChaControl.sex == 0 ? true : IsFuta;
 #else
             internal bool DisplayPenis { get; set; }
@@ -63,7 +63,7 @@ namespace KK_Plugins
                 BodyGUID = null;
                 PenisGUID = null;
                 BallsGUID = null;
-#if !AI
+#if KK || EC
                 DisplayPenis = ChaControl.sex == 0;
 #endif
                 DisplayBalls = ChaControl.sex == 0 ? true : DefaultFemaleDisplayBalls.Value;
@@ -85,7 +85,7 @@ namespace KK_Plugins
                                 BodyGUID = migrationData.BodyGUID;
                                 PenisGUID = migrationData.PenisGUID;
                                 BallsGUID = migrationData.BallsGUID;
-#if !AI
+#if KK || EC
                                 if (PenisGUID != null)
                                     DisplayPenis = true;
 #endif
@@ -102,7 +102,7 @@ namespace KK_Plugins
 
                         if (data.data.TryGetValue("BallsGUID", out var loadedBallsGUID) && loadedBallsGUID != null)
                             BallsGUID = loadedBallsGUID.ToString();
-#if !AI
+#if KK || EC
                         if (data.data.TryGetValue("DisplayPenis", out var loadedDisplayPenis))
                             DisplayPenis = (bool)loadedDisplayPenis;
 #endif
@@ -175,7 +175,7 @@ namespace KK_Plugins
                         BallsGUID = BallsDropdown?.Value == 0 || BallsDropdown?.Value == 1 ? null : BallsList[BallsDropdown.Value];
                         DisplayBalls = BallsDropdown?.Value == 1 ? false : true;
                     }
-#if AI
+#if AI || HS2
                     TogglePenisBallsUI(DisplayPenis);
 #endif
                 }
@@ -211,7 +211,8 @@ namespace KK_Plugins
 #else
             private static int ExType(ChaControl _) => 0;
 #endif
-#if AI
+
+#if AI || HS2
             public bool IsFuta => ChaControl.chaFile.parameter.futanari && ChaControl.sex == 1;
 #endif
             /// <summary>
@@ -413,7 +414,7 @@ namespace KK_Plugins
                     Destroy(dick);
                 }
 
-#if KK || AI
+#if KK || AI || HS2
                 ChaControl.fileStatus.visibleSonAlways = StudioAPI.InsideStudio ? temp : DisplayPenis;
 #endif
             }
@@ -683,7 +684,7 @@ namespace KK_Plugins
 
             private void SetSkinColor(ColorMatchPart colorMatchPart, string file)
             {
-#if AI
+#if AI || HS2
                 if (ChaControl.objBody == null)
                     return;
 
