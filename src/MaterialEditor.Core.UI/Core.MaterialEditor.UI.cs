@@ -23,8 +23,9 @@ namespace KK_Plugins.MaterialEditor
         internal static Canvas MaterialEditorWindow;
         private static Image MaterialEditorMainPanel;
         private static ScrollRect MaterialEditorScrollableUI;
+        private static InputField FilterInputField;
 
-        private static FileSystemWatcher TexChangeWatcher;
+        internal static FileSystemWatcher TexChangeWatcher;
         VirtualList virtualList;
 
         internal const float marginSize = 5f;
@@ -43,6 +44,12 @@ namespace KK_Plugins.MaterialEditor
         internal const float textBoxXYWidth = 50f;
         internal static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
         internal static readonly Color rowColor = new Color(1f, 1f, 1f, 1f);
+
+        private GameObject CurrentGameObject;
+        private ObjectType CurrentObjectType;
+        private int CurrentCoordinateIndex = 0;
+        private int CurrentSlot = 0;
+        private string CurrentFilter = "";
 
         internal void Main()
         {
@@ -76,15 +83,9 @@ namespace KK_Plugins.MaterialEditor
             nametext.transform.SetRect(0f, 0f, 1f, 1f, 0f, 0f, 0f);
             nametext.alignment = TextAnchor.MiddleCenter;
 
-            var fileWatcher = UIUtility.CreateToggle("Filewatcher", drag.transform, "");
-            fileWatcher.transform.SetRect(0f, 0f, 0f, 1f);
-            fileWatcher.isOn = WatchTexChanges.Value;
-            fileWatcher.onValueChanged.AddListener((value) =>
-            {
-                WatchTexChanges.Value = value;
-                if (!value)
-                    TexChangeWatcher?.Dispose();
-            });
+            FilterInputField = UIUtility.CreateInputField("Filter", drag.transform, "Filter");
+            FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
+            FilterInputField.onValueChanged.AddListener((string text) => RefreshUI(text));
 
             var close = UIUtility.CreateButton("CloseButton", drag.transform, "");
             close.transform.SetRect(1f, 0f, 1f, 1f, -20f);
@@ -117,6 +118,15 @@ namespace KK_Plugins.MaterialEditor
             virtualList.Initialize();
         }
 
+        /// <summary>
+        /// Refresh the MaterialEditor UI
+        /// </summary>
+        public void RefreshUI() => RefreshUI(CurrentFilter);
+        /// <summary>
+        /// Refresh the MaterialEditor UI using the specified filter text
+        /// </summary>
+        public void RefreshUI(string filterText) => PopulateList(CurrentGameObject, CurrentObjectType, CurrentCoordinateIndex, CurrentSlot, filterText);
+
         public static void HideUI()
         {
             MaterialEditorWindow?.gameObject?.SetActive(false);
@@ -131,14 +141,22 @@ namespace KK_Plugins.MaterialEditor
 
         internal void PopulateListBody()
         {
+            string filter = "body";
+
             var chaControl = MakerAPI.GetCharacterControl();
-            PopulateList(chaControl.gameObject, ObjectType.Character, filterType: FilterType.Body);
+            PopulateList(chaControl.gameObject, ObjectType.Character, filter: filter);
         }
 
         internal void PopulateListFace()
         {
+#if KK || EC
+            string filter = "face";
+#elif AI || HS2
+            string filter = "head";
+#endif
+
             var chaControl = MakerAPI.GetCharacterControl();
-            PopulateList(chaControl.gameObject, ObjectType.Character, filterType: FilterType.Face);
+            PopulateList(chaControl.gameObject, ObjectType.Character, filter: filter);
         }
 
         internal void PopulateListCharacter()
@@ -147,42 +165,47 @@ namespace KK_Plugins.MaterialEditor
             PopulateList(chaControl.gameObject, ObjectType.Character);
         }
 
-        protected void PopulateList(GameObject gameObject, ObjectType objectType, int coordinateIndex = 0, int slot = 0, FilterType filterType = FilterType.All)
+        protected void PopulateList(GameObject gameObject, ObjectType objectType, int coordinateIndex = 0, int slot = 0, string filter = "")
         {
             MaterialEditorWindow.gameObject.SetActive(true);
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
             MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+            FilterInputField.Set(filter);
+
+            CurrentGameObject = gameObject;
+            CurrentObjectType = objectType;
+            CurrentCoordinateIndex = coordinateIndex;
+            CurrentSlot = slot;
+            CurrentFilter = filter;
 
             if (gameObject == null) return;
             if (objectType == ObjectType.Hair || objectType == ObjectType.Character)
                 coordinateIndex = 0;
 
             List<Renderer> rendList = new List<Renderer>();
+            List<Renderer> rendListFull = GetRendererList(gameObject);
             List<string> mats = new List<string>();
 
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
 
-            var chaControl = gameObject.GetComponent<ChaControl>();
-            if (chaControl == null)
-            {
-                rendList = GetRendererList(gameObject);
-                filterType = FilterType.All;
-            }
+            List<string> filterList = new List<string>();
+            if (!filter.IsNullOrEmpty())
+                filterList = filter.Split(',').ToList();
+
+            //Get all renderers matching the filter and all renderers that contain a material matching the filter
+            if (filterList.Count == 0)
+                rendList = rendListFull;
             else
-            {
-                if (filterType == FilterType.Body)
-                {
-                    matList[chaControl.customMatBody.NameFormatted()] = chaControl.customMatBody;                    
-                    rendList.Add(chaControl.objBody.GetComponentInChildren<Renderer>());
-                }
-                else if (filterType == FilterType.Face)
-                {
-                    matList[chaControl.customMatFace.NameFormatted()] = chaControl.customMatFace;
-                    rendList.Add(chaControl.objHead.GetComponentInChildren<Renderer>());
-                }
-                else
-                    rendList = GetRendererList(gameObject);
-            }
+                foreach (var rend in rendListFull)
+                    foreach (var filterWord in filterList)
+                        if (rend.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()) && !rendList.Contains(rend))
+                            rendList.Add(rend);
+                        else
+                            foreach (var mat in rend.sharedMaterials)
+                                if (mat.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()) && !rendList.Contains(rend))
+                                    rendList.Add(rend);
+
+
             List<ItemInfo> items = new List<ItemInfo>();
 
             foreach (var rend in rendList)
@@ -251,12 +274,12 @@ namespace KK_Plugins.MaterialEditor
                 shaderItem.ShaderNameOnChange = delegate (string value)
                 {
                     AddMaterialShaderName(objectType, coordinateIndex, slot, materialName, value, shaderNameOriginal, gameObject);
-                    StartCoroutine(PopulateListCoroutine(gameObject, objectType, coordinateIndex, slot, filterType: filterType));
+                    StartCoroutine(PopulateListCoroutine(gameObject, objectType, coordinateIndex, slot, filter: filter));
                 };
                 shaderItem.ShaderNameOnReset = delegate
                 {
                     RemoveMaterialShaderName(objectType, coordinateIndex, slot, materialName, gameObject);
-                    StartCoroutine(PopulateListCoroutine(gameObject, objectType, coordinateIndex, slot, filterType: filterType));
+                    StartCoroutine(PopulateListCoroutine(gameObject, objectType, coordinateIndex, slot, filter: filter));
                 };
                 items.Add(shaderItem);
 
@@ -393,7 +416,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Hacky workaround to wait for the dropdown fade to complete before refreshing
         /// </summary>
-        protected IEnumerator PopulateListCoroutine(GameObject gameObject, ObjectType objectType, int coordinateIndex = 0, int slot = 0, FilterType filterType = FilterType.All)
+        protected IEnumerator PopulateListCoroutine(GameObject gameObject, ObjectType objectType, int coordinateIndex = 0, int slot = 0, string filter = "")
         {
             yield return null;
             yield return null;
@@ -405,7 +428,7 @@ namespace KK_Plugins.MaterialEditor
             yield return null;
             yield return null;
             yield return null;
-            PopulateList(gameObject, objectType, coordinateIndex, slot, filterType);
+            PopulateList(gameObject, objectType, coordinateIndex, slot, filter);
         }
 
         private static void ExportTexture(Material mat, string property)
@@ -427,8 +450,6 @@ namespace KK_Plugins.MaterialEditor
                 return bytesInStream;
             }
         }
-
-        protected enum FilterType { All, Body, Face }
 
         internal abstract string GetRendererPropertyValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject);
         internal abstract void AddRendererProperty(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property, string value, string valueOriginal, GameObject gameObject);

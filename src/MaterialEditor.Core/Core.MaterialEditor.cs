@@ -57,6 +57,7 @@ namespace KK_Plugins.MaterialEditor
             UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 12, ShowRangeAsPercent = false }));
             UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 11, ShowRangeAsPercent = false }));
             WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI."));
+            WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
 
             LoadXML();
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
@@ -76,6 +77,11 @@ namespace KK_Plugins.MaterialEditor
 #endif
         }
 
+        private void WatchTexChanges_SettingChanged(object sender, EventArgs e)
+        {
+            if (!WatchTexChanges.Value)
+                UI.TexChangeWatcher?.Dispose();
+        }
         private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
         private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
