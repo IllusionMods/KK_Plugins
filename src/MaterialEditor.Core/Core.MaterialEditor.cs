@@ -60,7 +60,6 @@ namespace KK_Plugins.MaterialEditor
             WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI."));
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
 
-            LoadXML();
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
 
 #if KK || EC
@@ -76,6 +75,7 @@ namespace KK_Plugins.MaterialEditor
             foreach (var method in typeof(CharaCustom.CustomClothesColorSet).GetMethods(AccessTools.all).Where(x => x.Name.StartsWith("<Initialize>")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));
 #endif
+            StartCoroutine(LoadXML());
             StartCoroutine(GetUncensorSelectorParts());
         }
 
@@ -108,8 +108,14 @@ namespace KK_Plugins.MaterialEditor
         private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
 #endif
 
-        private void LoadXML()
+        private IEnumerator LoadXML()
         {
+            //Needed for HS2
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+
             var loadedManifests = Sideloader.Sideloader.Manifests;
             XMLShaderProperties["default"] = new Dictionary<string, ShaderPropertyData>();
 
@@ -118,7 +124,10 @@ namespace KK_Plugins.MaterialEditor
                 LoadXML(XDocument.Load(reader).Element(PluginNameInternal));
 
             foreach (var manifest in loadedManifests.Values)
+            {
                 LoadXML(manifest.manifestDocument?.Root?.Element(PluginNameInternal));
+                LoadXML(manifest.manifestDocument?.Root?.Element("MaterialEditor"));
+            }
         }
 
         private void LoadXML(XElement materialEditorElement)
