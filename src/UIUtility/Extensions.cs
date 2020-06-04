@@ -3,6 +3,7 @@ using System.Collections;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
+using HarmonyLib;
 
 namespace UILib
 {
@@ -104,6 +105,21 @@ namespace UILib
 #else
             instance.RefreshShownValue(); // Unity 5.3 >= only
 #endif
+        }
+
+        /// <summary>
+        /// Set the value of an InputField
+        /// </summary>
+        /// <param name="sendCallback">Whether to trigger events</param>
+        public static void Set(this InputField instance, string value, bool sendCallback = false)
+        {
+            if (sendCallback)
+                instance.text = value;
+            else
+            {
+                Traverse.Create(instance).Field("m_Text").SetValue(value);
+                Traverse.Create(instance).Method("UpdateLabel").GetValue();
+            }
         }
 
         private static MethodInfo FindSetMethod(Type objectType)
