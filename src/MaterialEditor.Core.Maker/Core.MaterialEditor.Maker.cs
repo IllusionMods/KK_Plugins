@@ -3,7 +3,7 @@ using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
@@ -39,7 +39,7 @@ namespace KK_Plugins.MaterialEditor
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
             InitUI();
-#if AI
+#if AI || HS2
             var ButtonAllLocation = MakerConstants.Body.All;
 #else
             var ButtonAllLocation = MakerConstants.Face.All;
@@ -50,7 +50,7 @@ namespace KK_Plugins.MaterialEditor
             e.AddControl(new MakerButton("Open Material Editor (Face)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListFace(); });
             e.AddControl(new MakerButton("Open Material Editor (All)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListCharacter(); });
 
-#if !AI
+#if KK || EC
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Top, this)).OnClick.AddListener(delegate { PopulateListClothes(0); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Bottom, this)).OnClick.AddListener(delegate { PopulateListClothes(1); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Bra, this)).OnClick.AddListener(delegate { PopulateListClothes(2); });
@@ -73,7 +73,7 @@ namespace KK_Plugins.MaterialEditor
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
         {
-#if AI
+#if AI || HS2
             MakerCategory hairCategory = new MakerCategory(MakerConstants.Hair.CategoryName, "ME", 0, "Material Editor");
             e.AddControl(new MakerButton("Open Material Editor (Back)", hairCategory, this)).OnClick.AddListener(delegate { PopulateListHair(0); });
             e.AddControl(new MakerButton("Open Material Editor (Front)", hairCategory, this)).OnClick.AddListener(delegate { PopulateListHair(1); });

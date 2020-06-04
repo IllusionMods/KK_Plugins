@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
 using static KK_Plugins.MaterialEditor.MaterialEditorPlugin;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 

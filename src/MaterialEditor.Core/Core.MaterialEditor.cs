@@ -15,7 +15,7 @@ using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
@@ -65,7 +65,7 @@ namespace KK_Plugins.MaterialEditor
             //Hooks for transfering accessories (MoreAccessories compatibility)
             foreach (var method in typeof(ChaCustom.CvsAccessoryChange).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>m__4")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.AccessoryTransferHook), AccessTools.all)));
-#elif AI
+#elif AI || HS2
             //Hooks for changing clothing pattern
             foreach (var method in typeof(CharaCustom.CustomClothesPatternSelect).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<ChangeLink>")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));

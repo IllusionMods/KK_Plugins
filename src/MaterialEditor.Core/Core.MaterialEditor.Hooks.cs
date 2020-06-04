@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using KKAPI.Maker;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
@@ -23,7 +23,7 @@ namespace KK_Plugins.MaterialEditor
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
         internal static void CreateBodyTextureHook(ChaControl __instance) => MaterialEditorPlugin.GetCharaController(__instance).RefreshBodyMainTex();
 
-#if AI
+#if AI || HS2
         internal static void ClothesColorChangeHook()
         {
             var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());

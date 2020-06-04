@@ -11,7 +11,7 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
@@ -562,7 +562,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal void ChangeAccessoryEvent(int slot, int type)
         {
-#if AI
+#if AI || HS2
             if (type != 350) return; //type 350 = no category, accessory being removed
 #else
             if (type != 120) return; //type 120 = no category, accessory being removed
