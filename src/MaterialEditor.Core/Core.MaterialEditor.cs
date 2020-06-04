@@ -6,6 +6,7 @@ using HarmonyLib;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -75,6 +76,24 @@ namespace KK_Plugins.MaterialEditor
             foreach (var method in typeof(CharaCustom.CustomClothesColorSet).GetMethods(AccessTools.all).Where(x => x.Name.StartsWith("<Initialize>")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));
 #endif
+            StartCoroutine(GetUncensorSelectorParts());
+        }
+
+        /// <summary>
+        /// Get the list of additional body parts from UncensorSelector and add them to the body parts list
+        /// </summary>
+        private static IEnumerator GetUncensorSelectorParts()
+        {
+            yield return null;
+
+            var uncensorSelectorType = Type.GetType($"KK_Plugins.UncensorSelector, {Constants.Prefix}_UncensorSelector");
+            if (uncensorSelectorType == null) yield break;
+            var uncensorSelectorObject = FindObjectOfType(uncensorSelectorType);
+            if (uncensorSelectorObject == null) yield break;
+
+            var AllAdditionalParts = Traverse.Create(uncensorSelectorObject).Field("AllAdditionalParts").GetValue<HashSet<string>>();
+            foreach (var parts in AllAdditionalParts)
+                BodyParts.Add(parts);
         }
 
         private void WatchTexChanges_SettingChanged(object sender, EventArgs e)
