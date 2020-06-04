@@ -110,11 +110,12 @@ namespace KK_Plugins.MaterialEditor
 
         private IEnumerator LoadXML()
         {
-            //Needed for HS2
+            yield return null;
+#if HS2
             yield return null;
             yield return null;
             yield return null;
-            yield return null;
+#endif
 
             var loadedManifests = Sideloader.Sideloader.Manifests;
             XMLShaderProperties["default"] = new Dictionary<string, ShaderPropertyData>();
