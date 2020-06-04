@@ -46,8 +46,8 @@ namespace KK_Plugins.MaterialEditor
 #endif
 
             MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(delegate { PopulateListAccessory(); });
-            e.AddControl(new MakerButton("Open Material Editor (Body)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListBody(); });
-            e.AddControl(new MakerButton("Open Material Editor (Face)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListFace(); });
+            e.AddControl(new MakerButton("Open Material Editor (Body)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListCharacter("body"); });
+            e.AddControl(new MakerButton("Open Material Editor (Face)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListCharacter("face,head"); });
             e.AddControl(new MakerButton("Open Material Editor (All)", ButtonAllLocation, this)).OnClick.AddListener(delegate { PopulateListCharacter(); });
 
 #if KK || EC
@@ -68,6 +68,11 @@ namespace KK_Plugins.MaterialEditor
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Front, this)).OnClick.AddListener(delegate { PopulateListHair(1); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Side, this)).OnClick.AddListener(delegate { PopulateListHair(2); });
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Extension, this)).OnClick.AddListener(delegate { PopulateListHair(3); });
+
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eyebrow, this)).OnClick.AddListener(delegate { PopulateListCharacter("mayuge"); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eye, this)).OnClick.AddListener(delegate { PopulateListCharacter("eyeline,hitomi"); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Nose, this)).OnClick.AddListener(delegate { PopulateListCharacter("nose"); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Mouth, this)).OnClick.AddListener(delegate { PopulateListCharacter("tang,tooth"); });
 #endif
         }
 
@@ -91,7 +96,17 @@ namespace KK_Plugins.MaterialEditor
             e.AddControl(new MakerButton("Open Material Editor (Socks)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(6); });
             e.AddControl(new MakerButton("Open Material Editor (Shoes)", clothesCategory, this)).OnClick.AddListener(delegate { PopulateListClothes(7); });
             e.AddSubCategory(clothesCategory);
+
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Mouth, this)).OnClick.AddListener(delegate { PopulateListCharacter("tang,tooth"); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eyes, this)).OnClick.AddListener(delegate { PopulateListCharacter("eyebase,eyeshadow"); });
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eyelashes, this)).OnClick.AddListener(delegate { PopulateListCharacter("eyelashes"); });
 #endif
+        }
+
+        internal void PopulateListCharacter(string filter = "")
+        {
+            var chaControl = MakerAPI.GetCharacterControl();
+            PopulateList(chaControl.gameObject, ObjectType.Character, filter: filter);
         }
 
         private void PopulateListClothes(int index)
@@ -146,7 +161,7 @@ namespace KK_Plugins.MaterialEditor
         internal override Vector2? GetMaterialTextureOffsetOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureOffsetOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
         internal override void AddMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject) =>
-           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName,  value, valueOriginal, gameObject);
+           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
         internal override void RemoveMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
 

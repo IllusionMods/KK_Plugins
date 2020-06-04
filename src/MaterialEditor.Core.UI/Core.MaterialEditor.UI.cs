@@ -139,32 +139,6 @@ namespace KK_Plugins.MaterialEditor
             MaterialEditorMainPanel?.transform?.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
         }
 
-        internal void PopulateListBody()
-        {
-            string filter = "body";
-
-            var chaControl = MakerAPI.GetCharacterControl();
-            PopulateList(chaControl.gameObject, ObjectType.Character, filter: filter);
-        }
-
-        internal void PopulateListFace()
-        {
-#if KK || EC
-            string filter = "face";
-#elif AI || HS2
-            string filter = "head";
-#endif
-
-            var chaControl = MakerAPI.GetCharacterControl();
-            PopulateList(chaControl.gameObject, ObjectType.Character, filter: filter);
-        }
-
-        internal void PopulateListCharacter()
-        {
-            var chaControl = MakerAPI.GetCharacterControl();
-            PopulateList(chaControl.gameObject, ObjectType.Character);
-        }
-
         protected void PopulateList(GameObject gameObject, ObjectType objectType, int coordinateIndex = 0, int slot = 0, string filter = "")
         {
             MaterialEditorWindow.gameObject.SetActive(true);
