@@ -190,6 +190,7 @@ namespace KK_Plugins.MaterialEditor
                     case ItemInfo.RowItemType.ShaderRenderQueue:
                         ShowShaderRenderQueue();
                         SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
+                        ShaderRenderQueueInput.onEndEdit.RemoveAllListeners();
                         ShaderRenderQueueInput.text = item.ShaderRenderQueue.ToString();
                         ShaderRenderQueueInput.onEndEdit.AddListener(delegate (string value)
                         {
