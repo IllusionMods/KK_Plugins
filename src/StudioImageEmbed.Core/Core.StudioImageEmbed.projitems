@@ -6,12 +6,12 @@
     <SharedGUID>a18c34c6-1220-487a-8448-fc1a8251fc57</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Core.ImageEmbed</Import_RootNamespace>
+    <Import_RootNamespace>Core.StudioImageEmbed</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.ImageEmbed.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.ImageEmbed.Hooks.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.ImageEmbed.SceneController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioImageEmbed.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioImageEmbed.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioImageEmbed.SceneController.cs" />
   </ItemGroup>
 </Project>

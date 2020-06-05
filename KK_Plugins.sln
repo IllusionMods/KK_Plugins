@@ -194,13 +194,13 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.PoseQuickLoad", "src\P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.PoseQuickLoad", "src\PoseQuickLoad.AI\AI.PoseQuickLoad.csproj", "{EADDF585-D0D5-4764-8F74-630137582436}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageEmbed", "ImageEmbed", "{DC55FD1E-6198-4D37-B99B-5F1AB44B0470}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioImageEmbed", "StudioImageEmbed", "{DC55FD1E-6198-4D37-B99B-5F1AB44B0470}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ImageEmbed", "src\ImageEmbed.KK\KK.ImageEmbed.csproj", "{B341B2C7-F24F-46FE-8C34-CD4AE6CE7646}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioImageEmbed", "src\StudioImageEmbed.KK\KK.StudioImageEmbed.csproj", "{B341B2C7-F24F-46FE-8C34-CD4AE6CE7646}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.ImageEmbed", "src\ImageEmbed.Core\Core.ImageEmbed.shproj", "{A18C34C6-1220-487A-8448-FC1A8251FC57}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioImageEmbed", "src\StudioImageEmbed.Core\Core.StudioImageEmbed.shproj", "{A18C34C6-1220-487A-8448-FC1A8251FC57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.ImageEmbed", "src\ImageEmbed.AI\AI.ImageEmbed.csproj", "{4B2A5873-42E3-446F-B986-6B57693928C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.StudioImageEmbed", "src\StudioImageEmbed.AI\AI.StudioImageEmbed.csproj", "{4B2A5873-42E3-446F-B986-6B57693928C7}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.TextureContainer", "src\Shared.TextureContainer\Shared.TextureContainer.shproj", "{BEB828AE-5723-4086-940F-B6EB2465060C}"
 EndProject
@@ -315,7 +315,7 @@ Global
 		src\Shared\Shared.projitems*{46fcd429-d43b-4e0c-879d-46760202c288}*SharedItemsImports = 4
 		src\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
-		src\ImageEmbed.Core\Core.ImageEmbed.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
+		src\StudioImageEmbed.Core\Core.StudioImageEmbed.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
 		src\AnimationController.Core\Core.AnimationController.projitems*{4e6812c6-5d1d-425b-9f58-629ef35004fd}*SharedItemsImports = 13
 		src\PoseFolders.Core\Core.PoseFolders.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
@@ -377,7 +377,7 @@ Global
 		src\Subtitles.Core\Core.Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
 		src\PoseFolders.Core\Core.PoseFolders.projitems*{9c19b785-e8e3-4ff0-9e3f-8254355b1ce7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{9c19b785-e8e3-4ff0-9e3f-8254355b1ce7}*SharedItemsImports = 4
-		src\ImageEmbed.Core\Core.ImageEmbed.projitems*{a18c34c6-1220-487a-8448-fc1a8251fc57}*SharedItemsImports = 13
+		src\StudioImageEmbed.Core\Core.StudioImageEmbed.projitems*{a18c34c6-1220-487a-8448-fc1a8251fc57}*SharedItemsImports = 13
 		src\Shared\Shared.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{a59cf955-a07b-4ef1-a9b5-169e0ce750da}*SharedItemsImports = 4
 		src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems*{a5e0b487-cf0f-41d1-bbc8-a4b72ca62564}*SharedItemsImports = 13
@@ -386,7 +386,7 @@ Global
 		src\Shared\Shared.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
 		src\Subtitles.Core\Core.Subtitles.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
-		src\ImageEmbed.Core\Core.ImageEmbed.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
+		src\StudioImageEmbed.Core\Core.StudioImageEmbed.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
 		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
 		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
