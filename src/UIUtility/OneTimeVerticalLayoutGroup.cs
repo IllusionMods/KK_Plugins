@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace UILib
 {
-    public class OneTimeVerticalLayoutGroup : VerticalLayoutGroup
+    internal class OneTimeVerticalLayoutGroup : VerticalLayoutGroup
     {
         protected override void OnEnable()
         {

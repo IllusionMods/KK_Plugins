@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace UILib
 {
-    public static class UIUtility
+    internal static class UIUtility
     {
         #region Public Types
         public enum Binary
@@ -335,7 +335,7 @@ namespace UILib
         }
     }
 
-    public static class UIExtensions
+    internal static class UIExtensions
     {
         public static void SetRect(this RectTransform self, Vector2 anchorMin) => SetRect(self, anchorMin, Vector2.one, Vector2.zero, Vector2.zero);
         public static void SetRect(this RectTransform self, Vector2 anchorMin, Vector2 anchorMax) => SetRect(self, anchorMin, anchorMax, Vector2.zero, Vector2.zero);

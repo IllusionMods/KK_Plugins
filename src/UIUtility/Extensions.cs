@@ -1,9 +1,9 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
-using HarmonyLib;
 
 namespace UILib
 {
@@ -69,6 +69,8 @@ namespace UILib
         /// <summary>
         /// Set the value of a Toggle
         /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="value"></param>
         /// <param name="sendCallback">Whether to trigger events</param>
         public static void Set(this Toggle instance, bool value, bool sendCallback = false)
         {
@@ -78,6 +80,8 @@ namespace UILib
         /// <summary>
         /// Set the value of a Slider
         /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="value"></param>
         /// <param name="sendCallback">Whether to trigger events</param>
         public static void Set(this Slider instance, float value, bool sendCallback = false)
         {
@@ -87,6 +91,8 @@ namespace UILib
         /// <summary>
         /// Set the value of a Scrollbar
         /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="value"></param>
         /// <param name="sendCallback">Whether to trigger events</param>
         public static void Set(this Scrollbar instance, float value, bool sendCallback = false)
         {
@@ -96,7 +102,8 @@ namespace UILib
         /// <summary>
         /// Set the value of a Dropdown
         /// </summary>
-        /// <param name="sendCallback">Whether to trigger events</param>
+        /// <param name="instance"></param>
+        /// <param name="value"></param>
         public static void Set(this Dropdown instance, int value)
         {
             dropdownValueField.SetValue(instance, value);
@@ -110,6 +117,8 @@ namespace UILib
         /// <summary>
         /// Set the value of an InputField
         /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="value"></param>
         /// <param name="sendCallback">Whether to trigger events</param>
         public static void Set(this InputField instance, string value, bool sendCallback = false)
         {

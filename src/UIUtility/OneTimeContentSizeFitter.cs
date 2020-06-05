@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace UILib
 {
-    public class OneTimeContentSizeFitter : ContentSizeFitter
+    internal class OneTimeContentSizeFitter : ContentSizeFitter
     {
         protected override void OnEnable()
         {

@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace UILib
 {
-    public class MovableWindow : UIBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+    internal class MovableWindow : UIBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
         private Vector2 _cachedDragPosition;
         private Vector2 _cachedMousePosition;
