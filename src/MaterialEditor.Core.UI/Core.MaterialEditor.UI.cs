@@ -165,6 +165,7 @@ namespace KK_Plugins.MaterialEditor
             List<string> filterList = new List<string>();
             if (!filter.IsNullOrEmpty())
                 filterList = filter.Split(',').ToList();
+            filterList.RemoveAll(x => x.IsNullOrWhiteSpace());
 
             //Get all renderers matching the filter and all renderers that contain a material matching the filter
             if (filterList.Count == 0)
