@@ -746,10 +746,13 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="gameObject">GameObject the material belongs to</param>
         /// <returns>Saved material property value or null if none is saved</returns>
-        public string GetMaterialFloatPropertyValue(int slot, Material material, string propertyName, GameObject gameObject)
+        public float? GetMaterialFloatPropertyValue(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
+            var value = MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
+            if (value.IsNullOrEmpty())
+                return null;
+            return float.Parse(value);
         }
         /// <summary>
         /// Get the saved material property's original value or null if none is saved
@@ -759,10 +762,13 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="gameObject">GameObject the material belongs to</param>
         /// <returns>Saved material property's original value or null if none is saved</returns>
-        public string GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject)
+        public float? GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
+            var valueOriginal = MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
+            if (valueOriginal.IsNullOrEmpty())
+                return null;
+            return float.Parse(valueOriginal);
         }
         /// <summary>
         /// Remove the saved material property value if one is saved and optionally also update the materials
@@ -778,8 +784,8 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
             {
                 var original = GetMaterialFloatPropertyValueOriginal(slot, material, propertyName, gameObject);
-                if (!original.IsNullOrEmpty())
-                    SetFloat(gameObject, material.NameFormatted(), propertyName, float.Parse(original));
+                if (original != null)
+                    SetFloat(gameObject, material.NameFormatted(), propertyName, (float)original);
             }
             MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
         }

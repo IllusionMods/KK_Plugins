@@ -361,9 +361,9 @@ namespace KK_Plugins.MaterialEditor
                         {
                             float valueFloat = mat.GetFloat($"_{propertyName}");
                             float valueFloatOriginal = valueFloat;
-                            string valueFloatOriginalTemp = GetMaterialFloatPropertyValueOriginal(slot, mat, propertyName, gameObject);
-                            if (!valueFloatOriginalTemp.IsNullOrEmpty() && float.TryParse(valueFloatOriginalTemp, out float valueFloatOriginalTempF))
-                                valueFloatOriginal = valueFloatOriginalTempF;
+                            float? valueFloatOriginalTemp = GetMaterialFloatPropertyValueOriginal(slot, mat, propertyName, gameObject);
+                            if (valueFloatOriginalTemp != null)
+                                valueFloatOriginal = (float)valueFloatOriginalTemp;
                             var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName);
                             contentItem.FloatValue = valueFloat;
                             contentItem.FloatValueOriginal = valueFloatOriginal;
@@ -447,7 +447,7 @@ namespace KK_Plugins.MaterialEditor
         internal abstract void SetMaterialColorProperty(int slot, Material material, string propertyName, Color value, GameObject gameObject);
         internal abstract void RemoveMaterialColorProperty(int slot, Material material, string propertyName, GameObject gameObject);
 
-        internal abstract string GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject);
+        internal abstract float? GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject);
         internal abstract void SetMaterialFloatProperty(int slot, Material material, string propertyName, float value, GameObject gameObject);
         internal abstract void RemoveMaterialFloatProperty(int slot, Material material, string propertyName, GameObject gameObject);
     }

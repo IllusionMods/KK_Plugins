@@ -244,7 +244,7 @@ namespace KK_Plugins.MaterialEditor
                 GetSceneController().RemoveMaterialColorProperty(slot, material, propertyName);
         }
 
-        internal override string GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject)
+        internal override float? GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject)
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)

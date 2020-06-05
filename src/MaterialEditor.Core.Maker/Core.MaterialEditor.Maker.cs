@@ -180,7 +180,7 @@ namespace KK_Plugins.MaterialEditor
         internal override void RemoveMaterialColorProperty(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialColorProperty(slot, material, propertyName, gameObject);
 
-        internal override string GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject) =>
+        internal override float? GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialFloatPropertyValueOriginal(slot, material, propertyName, gameObject);
         internal override void SetMaterialFloatProperty(int slot, Material material, string propertyName, float value, GameObject gameObject) =>
            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialFloatProperty(slot, material, propertyName, value, gameObject);

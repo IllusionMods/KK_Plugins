@@ -320,18 +320,28 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetFloat(gameObject, material.NameFormatted(), propertyName, value);
         }
-        public string GetMaterialFloatPropertyValue(int id, Material material, string propertyName) =>
-            MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
-        public string GetMaterialFloatPropertyValueOriginal(int id, Material material, string propertyName) =>
-            MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
+        public float? GetMaterialFloatPropertyValue(int id, Material material, string propertyName)
+        {
+            var value = MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
+            if (value.IsNullOrEmpty())
+                return null;
+            return float.Parse(value);
+        }
+        public float? GetMaterialFloatPropertyValueOriginal(int id, Material material, string propertyName)
+        {
+            var valueOriginal = MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
+            if (valueOriginal.IsNullOrEmpty())
+                return null;
+            return float.Parse(valueOriginal);
+        }
         public void RemoveMaterialFloatProperty(int id, Material material, string propertyName, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
             if (setProperty)
             {
                 var original = GetMaterialFloatPropertyValueOriginal(id, material, propertyName);
-                if (!original.IsNullOrEmpty())
-                    SetFloat(gameObject, material.NameFormatted(), propertyName, float.Parse(original));
+                if (original != null)
+                    SetFloat(gameObject, material.NameFormatted(), propertyName, (float)original);
             }
 
             MaterialFloatPropertyList.RemoveAll(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
@@ -407,7 +417,7 @@ namespace KK_Plugins.MaterialEditor
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName);
             if (textureProperty?.TexID != null)
                 return TextureDictionary[(int)textureProperty.TexID].Texture;
-            return null;            
+            return null;
         }
         public bool GetMaterialTextureOriginal(int id, Material material, string propertyName) =>
             MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.TexID == null ? true : false;
