@@ -133,57 +133,57 @@ namespace KK_Plugins.MaterialEditor
 
         internal override string GetRendererPropertyValueOriginal(int slot, Renderer renderer, RendererProperties property, GameObject gameObject) =>
            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetRendererPropertyValueOriginal(slot, renderer, property, gameObject);
-        internal override void AddRendererProperty(int slot, Renderer renderer, RendererProperties property, string value, GameObject gameObject) =>
-           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddRendererProperty(slot, renderer, property, value, gameObject);
+        internal override void SetRendererProperty(int slot, Renderer renderer, RendererProperties property, string value, GameObject gameObject) =>
+           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetRendererProperty(slot, renderer, property, value, gameObject);
         internal override void RemoveRendererProperty(int slot, Renderer renderer, RendererProperties property, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveRendererProperty(slot, renderer, property, gameObject);
 
         internal override string GetMaterialShaderNameOriginal(int slot, Material material, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialShaderOriginal(slot, material, gameObject);
-        internal override void AddMaterialShaderName(int slot, Material material, string value, GameObject gameObject) =>
-           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialShader(slot, material, value, gameObject);
+        internal override void SetMaterialShaderName(int slot, Material material, string value, GameObject gameObject) =>
+           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialShader(slot, material, value, gameObject);
         internal override void RemoveMaterialShaderName(int slot, Material material, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialShader(slot, material, gameObject);
 
         internal override int? GetMaterialShaderRenderQueueOriginal(int slot, Material material, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialShaderRenderQueueOriginal(slot, material, gameObject);
-        internal override void AddMaterialShaderRenderQueue(int slot, Material material, int value, GameObject gameObject) =>
-           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialShaderRenderQueue(slot, material, value, gameObject);
+        internal override void SetMaterialShaderRenderQueue(int slot, Material material, int value, GameObject gameObject) =>
+           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialShaderRenderQueue(slot, material, value, gameObject);
         internal override void RemoveMaterialShaderRenderQueue(int slot, Material material, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialShaderRenderQueue(slot, material, gameObject);
 
         internal override bool GetMaterialTextureValueOriginal(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureOriginal(slot, material, propertyName, gameObject);
-        internal override void AddMaterialTexture(int slot, Material material, string propertyName, string filePath, GameObject gameObject) =>
-             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialTextureFromFile(slot, material, propertyName, filePath, gameObject, true);
+        internal override void SetMaterialTexture(int slot, Material material, string propertyName, string filePath, GameObject gameObject) =>
+             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureFromFile(slot, material, propertyName, filePath, gameObject, true);
         internal override void RemoveMaterialTexture(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTexture(slot, material, propertyName, gameObject);
 
         internal override Vector2? GetMaterialTextureOffsetOriginal(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureOffsetOriginal(slot, material, propertyName, gameObject);
-        internal override void AddMaterialTextureOffset(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject) =>
-           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialTextureOffset(slot, material, propertyName, value, gameObject);
+        internal override void SetMaterialTextureOffset(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject) =>
+           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureOffset(slot, material, propertyName, value, gameObject);
         internal override void RemoveMaterialTextureOffset(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureOffset(slot, material, propertyName, gameObject);
 
         internal override Vector2? GetMaterialTextureScaleOriginal(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureScaleOriginal(slot, material, propertyName, gameObject);
-        internal override void AddMaterialTextureScale(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject) =>
-           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialTextureScale(slot, material, propertyName, value, gameObject);
+        internal override void SetMaterialTextureScale(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject) =>
+           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureScale(slot, material, propertyName, value, gameObject);
         internal override void RemoveMaterialTextureScale(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureScale(slot, material, propertyName, gameObject);
 
         internal override Color? GetMaterialColorPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialColorPropertyValueOriginal(slot, material, propertyName, gameObject);
-        internal override void AddMaterialColorProperty(int slot, Material material, string propertyName, Color value, GameObject gameObject) =>
-           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialColorProperty(slot, material, propertyName, value, gameObject);
+        internal override void SetMaterialColorProperty(int slot, Material material, string propertyName, Color value, GameObject gameObject) =>
+           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialColorProperty(slot, material, propertyName, value, gameObject);
         internal override void RemoveMaterialColorProperty(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialColorProperty(slot, material, propertyName, gameObject);
 
         internal override string GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialFloatPropertyValueOriginal(slot, material, propertyName, gameObject);
-        internal override void AddMaterialFloatProperty(int slot, Material material, string propertyName, float value, GameObject gameObject) =>
-           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).AddMaterialFloatProperty(slot, material, propertyName, value, gameObject);
+        internal override void SetMaterialFloatProperty(int slot, Material material, string propertyName, float value, GameObject gameObject) =>
+           MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialFloatProperty(slot, material, propertyName, value, gameObject);
         internal override void RemoveMaterialFloatProperty(int slot, Material material, string propertyName, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialFloatProperty(slot, material, propertyName, gameObject);
     }

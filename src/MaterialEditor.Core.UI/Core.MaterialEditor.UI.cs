@@ -193,7 +193,7 @@ namespace KK_Plugins.MaterialEditor
                 var rendererEnabledItem = new ItemInfo(ItemInfo.RowItemType.RendererEnabled, "Enabled");
                 rendererEnabledItem.RendererEnabled = rend.enabled ? 1 : 0;
                 rendererEnabledItem.RendererEnabledOriginal = valueEnabledOriginal ? 1 : 0;
-                rendererEnabledItem.RendererEnabledOnChange = delegate (int value) { AddRendererProperty(slot, rend, RendererProperties.Enabled, value.ToString(), gameObject); };
+                rendererEnabledItem.RendererEnabledOnChange = delegate (int value) { SetRendererProperty(slot, rend, RendererProperties.Enabled, value.ToString(), gameObject); };
                 rendererEnabledItem.RendererEnabledOnReset = delegate { RemoveRendererProperty(slot, rend, RendererProperties.Enabled, gameObject); };
                 items.Add(rendererEnabledItem);
 
@@ -205,7 +205,7 @@ namespace KK_Plugins.MaterialEditor
                 var rendererShadowCastingModeItem = new ItemInfo(ItemInfo.RowItemType.RendererShadowCastingMode, "Shadow Casting Mode");
                 rendererShadowCastingModeItem.RendererShadowCastingMode = (int)rend.shadowCastingMode;
                 rendererShadowCastingModeItem.RendererShadowCastingModeOriginal = (int)valueShadowCastingModeOriginal;
-                rendererShadowCastingModeItem.RendererShadowCastingModeOnChange = delegate (int value) { AddRendererProperty(slot, rend, RendererProperties.ShadowCastingMode, value.ToString(), gameObject); };
+                rendererShadowCastingModeItem.RendererShadowCastingModeOnChange = delegate (int value) { SetRendererProperty(slot, rend, RendererProperties.ShadowCastingMode, value.ToString(), gameObject); };
                 rendererShadowCastingModeItem.RendererShadowCastingModeOnReset = delegate { RemoveRendererProperty(slot, rend, RendererProperties.ShadowCastingMode, gameObject); };
                 items.Add(rendererShadowCastingModeItem);
 
@@ -217,7 +217,7 @@ namespace KK_Plugins.MaterialEditor
                 var rendererReceiveShadowsItem = new ItemInfo(ItemInfo.RowItemType.RendererReceiveShadows, "Receive Shadows");
                 rendererReceiveShadowsItem.RendererReceiveShadows = rend.receiveShadows ? 1 : 0;
                 rendererReceiveShadowsItem.RendererReceiveShadowsOriginal = valueReceiveShadowsOriginal ? 1 : 0;
-                rendererReceiveShadowsItem.RendererReceiveShadowsOnChange = delegate (int value) { AddRendererProperty(slot, rend, RendererProperties.ReceiveShadows, value.ToString(), gameObject); };
+                rendererReceiveShadowsItem.RendererReceiveShadowsOnChange = delegate (int value) { SetRendererProperty(slot, rend, RendererProperties.ReceiveShadows, value.ToString(), gameObject); };
                 rendererReceiveShadowsItem.RendererReceiveShadowsOnReset = delegate { RemoveRendererProperty(slot, rend, RendererProperties.ReceiveShadows, gameObject); };
                 items.Add(rendererReceiveShadowsItem);
             }
@@ -241,7 +241,7 @@ namespace KK_Plugins.MaterialEditor
                 shaderItem.ShaderNameOriginal = shaderNameOriginal;
                 shaderItem.ShaderNameOnChange = delegate (string value)
                 {
-                    AddMaterialShaderName(slot, mat, value, gameObject);
+                    SetMaterialShaderName(slot, mat, value, gameObject);
                     StartCoroutine(PopulateListCoroutine(gameObject, slot, filter: filter));
                 };
                 shaderItem.ShaderNameOnReset = delegate
@@ -258,7 +258,7 @@ namespace KK_Plugins.MaterialEditor
                 var shaderRenderQueueItem = new ItemInfo(ItemInfo.RowItemType.ShaderRenderQueue, "Render Queue");
                 shaderRenderQueueItem.ShaderRenderQueue = mat.renderQueue;
                 shaderRenderQueueItem.ShaderRenderQueueOriginal = renderQueueOriginal;
-                shaderRenderQueueItem.ShaderRenderQueueOnChange = delegate (int value) { AddMaterialShaderRenderQueue(slot, mat, value, gameObject); };
+                shaderRenderQueueItem.ShaderRenderQueueOnChange = delegate (int value) { SetMaterialShaderRenderQueue(slot, mat, value, gameObject); };
                 shaderRenderQueueItem.ShaderRenderQueueOnReset = delegate { RemoveMaterialShaderRenderQueue(slot, mat, gameObject); };
                 items.Add(shaderRenderQueueItem);
 
@@ -289,7 +289,7 @@ namespace KK_Plugins.MaterialEditor
                                     }
                                     string filePath = strings[0];
 
-                                    AddMaterialTexture(slot, mat, propertyName, filePath, gameObject);
+                                    SetMaterialTexture(slot, mat, propertyName, filePath, gameObject);
 
                                     TexChangeWatcher?.Dispose();
                                     if (WatchTexChanges.Value)
@@ -301,7 +301,7 @@ namespace KK_Plugins.MaterialEditor
                                             TexChangeWatcher.Changed += (sender, args) =>
                                             {
                                                 if (WatchTexChanges.Value && File.Exists(filePath))
-                                                    AddMaterialTexture(slot, mat, propertyName, filePath, gameObject);
+                                                    SetMaterialTexture(slot, mat, propertyName, filePath, gameObject);
                                             };
                                             TexChangeWatcher.Deleted += (sender, args) => TexChangeWatcher?.Dispose();
                                             TexChangeWatcher.Error += (sender, args) => TexChangeWatcher?.Dispose();
@@ -328,11 +328,11 @@ namespace KK_Plugins.MaterialEditor
                             var textureItemOffsetScale = new ItemInfo(ItemInfo.RowItemType.TextureOffsetScale);
                             textureItemOffsetScale.Offset = textureOffset;
                             textureItemOffsetScale.OffsetOriginal = textureOffsetOriginal;
-                            textureItemOffsetScale.OffsetOnChange = delegate (Vector2 value) { AddMaterialTextureOffset(slot, mat, propertyName, value, gameObject); };
+                            textureItemOffsetScale.OffsetOnChange = delegate (Vector2 value) { SetMaterialTextureOffset(slot, mat, propertyName, value, gameObject); };
                             textureItemOffsetScale.OffsetOnReset = delegate { RemoveMaterialTextureOffset(slot, mat, propertyName, gameObject); };
                             textureItemOffsetScale.Scale = textureScale;
                             textureItemOffsetScale.ScaleOriginal = textureScaleOriginal;
-                            textureItemOffsetScale.ScaleOnChange = delegate (Vector2 value) { AddMaterialTextureScale(slot, mat, propertyName, value, gameObject); };
+                            textureItemOffsetScale.ScaleOnChange = delegate (Vector2 value) { SetMaterialTextureScale(slot, mat, propertyName, value, gameObject); };
                             textureItemOffsetScale.ScaleOnReset = delegate { RemoveMaterialTextureScale(slot, mat, propertyName, gameObject); };
                             items.Add(textureItemOffsetScale);
                         }
@@ -350,7 +350,7 @@ namespace KK_Plugins.MaterialEditor
                             var contentItem = new ItemInfo(ItemInfo.RowItemType.ColorProperty, propertyName);
                             contentItem.ColorValue = valueColor;
                             contentItem.ColorValueOriginal = valueColorOriginal;
-                            contentItem.ColorValueOnChange = delegate (Color value) { AddMaterialColorProperty(slot, mat, propertyName, value, gameObject); };
+                            contentItem.ColorValueOnChange = delegate (Color value) { SetMaterialColorProperty(slot, mat, propertyName, value, gameObject); };
                             contentItem.ColorValueOnReset = delegate { RemoveMaterialColorProperty(slot, mat, propertyName, gameObject); };
                             items.Add(contentItem);
                         }
@@ -371,7 +371,7 @@ namespace KK_Plugins.MaterialEditor
                                 contentItem.FloatValueSliderMin = (float)property.Value.MinValue;
                             if (property.Value.MaxValue != null)
                                 contentItem.FloatValueSliderMax = (float)property.Value.MaxValue;
-                            contentItem.FloatValueOnChange = delegate (float value) { AddMaterialFloatProperty(slot, mat, propertyName, value, gameObject); };
+                            contentItem.FloatValueOnChange = delegate (float value) { SetMaterialFloatProperty(slot, mat, propertyName, value, gameObject); };
                             contentItem.FloatValueOnReset = delegate { RemoveMaterialFloatProperty(slot, mat, propertyName, gameObject); };
                             items.Add(contentItem);
                         }
@@ -420,35 +420,35 @@ namespace KK_Plugins.MaterialEditor
         }
 
         internal abstract string GetRendererPropertyValueOriginal(int slot, Renderer renderer, RendererProperties property, GameObject gameObject);
-        internal abstract void AddRendererProperty(int slot, Renderer renderer, RendererProperties property, string value, GameObject gameObject);
+        internal abstract void SetRendererProperty(int slot, Renderer renderer, RendererProperties property, string value, GameObject gameObject);
         internal abstract void RemoveRendererProperty(int slot, Renderer renderer, RendererProperties property, GameObject gameObject);
 
         internal abstract string GetMaterialShaderNameOriginal(int slot, Material material, GameObject gameObject);
-        internal abstract void AddMaterialShaderName(int slot, Material material, string value, GameObject gameObject);
+        internal abstract void SetMaterialShaderName(int slot, Material material, string value, GameObject gameObject);
         internal abstract void RemoveMaterialShaderName(int slot, Material material, GameObject gameObject);
 
         internal abstract int? GetMaterialShaderRenderQueueOriginal(int slot, Material material, GameObject gameObject);
-        internal abstract void AddMaterialShaderRenderQueue(int slot, Material material, int value, GameObject gameObject);
+        internal abstract void SetMaterialShaderRenderQueue(int slot, Material material, int value, GameObject gameObject);
         internal abstract void RemoveMaterialShaderRenderQueue(int slot, Material material, GameObject gameObject);
 
         internal abstract bool GetMaterialTextureValueOriginal(int slot, Material material, string propertyName, GameObject gameObject);
-        internal abstract void AddMaterialTexture(int slot, Material material, string propertyName, string filePath, GameObject gameObject);
+        internal abstract void SetMaterialTexture(int slot, Material material, string propertyName, string filePath, GameObject gameObject);
         internal abstract void RemoveMaterialTexture(int slot, Material material, string propertyName, GameObject gameObject);
 
         internal abstract Vector2? GetMaterialTextureOffsetOriginal(int slot, Material material, string propertyName, GameObject gameObject);
-        internal abstract void AddMaterialTextureOffset(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject);
+        internal abstract void SetMaterialTextureOffset(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject);
         internal abstract void RemoveMaterialTextureOffset(int slot, Material material, string propertyName, GameObject gameObject);
 
         internal abstract Vector2? GetMaterialTextureScaleOriginal(int slot, Material material, string propertyName, GameObject gameObject);
-        internal abstract void AddMaterialTextureScale(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject);
+        internal abstract void SetMaterialTextureScale(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject);
         internal abstract void RemoveMaterialTextureScale(int slot, Material material, string propertyName, GameObject gameObject);
 
         internal abstract Color? GetMaterialColorPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject);
-        internal abstract void AddMaterialColorProperty(int slot, Material material, string propertyName, Color value, GameObject gameObject);
+        internal abstract void SetMaterialColorProperty(int slot, Material material, string propertyName, Color value, GameObject gameObject);
         internal abstract void RemoveMaterialColorProperty(int slot, Material material, string propertyName, GameObject gameObject);
 
         internal abstract string GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject);
-        internal abstract void AddMaterialFloatProperty(int slot, Material material, string propertyName, float value, GameObject gameObject);
+        internal abstract void SetMaterialFloatProperty(int slot, Material material, string propertyName, float value, GameObject gameObject);
         internal abstract void RemoveMaterialFloatProperty(int slot, Material material, string propertyName, GameObject gameObject);
     }
 }
