@@ -73,7 +73,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetRendererPropertyValueOriginal(coordinateIndex, slot, rendererName, property);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetRendererPropertyValueOriginal(coordinateIndex, slot, rendererName, property, gameObject);
             else
                 return GetSceneController().GetRendererPropertyValueOriginal(slot, rendererName, property);
         }
@@ -98,7 +98,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderOriginal(coordinateIndex, slot, materialName);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderOriginal(coordinateIndex, slot, materialName, gameObject);
             else
                 return GetSceneController().GetMaterialShaderOriginal(slot, materialName);
         }
@@ -123,7 +123,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderRenderQueueOriginal(coordinateIndex, slot, materialName);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderRenderQueueOriginal(coordinateIndex, slot, materialName, gameObject);
             else
                 return GetSceneController().GetMaterialShaderRenderQueueOriginal(slot, materialName);
         }
@@ -148,7 +148,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOriginal(coordinateIndex, slot, materialName, propertyName);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOriginal(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 return GetSceneController().GetMaterialTextureOriginal(slot, materialName, propertyName);
         }
@@ -164,7 +164,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTexture(coordinateIndex, slot, materialName, propertyName);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTexture(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 GetSceneController().RemoveMaterialTexture(slot, materialName, propertyName);
         }
@@ -173,7 +173,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOffsetOriginal(coordinateIndex, slot, materialName, propertyName);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOffsetOriginal(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 return GetSceneController().GetMaterialTextureOffsetOriginal(slot, materialName, propertyName);
         }
@@ -198,7 +198,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureScaleOriginal(coordinateIndex, slot, materialName, propertyName);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureScaleOriginal(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 return GetSceneController().GetMaterialTextureScaleOriginal(slot, materialName, propertyName);
         }
@@ -223,7 +223,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialColorPropertyValueOriginal(coordinateIndex, slot, materialName, propertyName);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialColorPropertyValueOriginal(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 return GetSceneController().GetMaterialColorPropertyValueOriginal(slot, materialName, propertyName);
         }
@@ -248,7 +248,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(coordinateIndex, slot, materialName, propertyName);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 return GetSceneController().GetMaterialFloatPropertyValueOriginal(slot, materialName, propertyName);
         }
