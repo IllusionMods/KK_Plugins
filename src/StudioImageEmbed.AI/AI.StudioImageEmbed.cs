@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace KK_Plugins
 {
+    [BepInProcess(Constants.StudioProcessName)]
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInDependency(MaterialEditor.MaterialEditorPlugin.GUID, "1.10")]
     [BepInPlugin(GUID, PluginName, Version)]
