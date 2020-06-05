@@ -3,7 +3,6 @@ using HarmonyLib;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using Studio;
-using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,11 +40,7 @@ namespace KK_Plugins
                         }
 
                         if (item?.panelComponent != null)
-                        {
-                            if (!item.itemInfo.panel.filePath.IsNullOrEmpty())
-                                Logger.LogInfo($"bg:{item.itemInfo.panel.filePath}");
                             SaveBGTex(item, item.itemInfo.panel.filePath);
-                        }
                     }
                 }
 

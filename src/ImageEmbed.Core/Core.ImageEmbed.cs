@@ -36,11 +36,9 @@ namespace KK_Plugins
             if (item?.itemComponent == null) return;
             if (filePath.IsNullOrEmpty()) return;
             if (!File.Exists(filePath)) return;
-            Logger.LogInfo($"SavePatternTex filePath:{filePath}");
 
-            Logger.LogDebug($"Saving pattern to scene data.");
             foreach (var rend in item.itemComponent.GetRenderers())
-                MaterialEditor.GetSceneController().AddMaterialTexturePropertyFromFile(item.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{patternIndex + 1}", item.objectItem, filePath);
+                MaterialEditor.MEStudio.GetSceneController().SetMaterialTextureFromFile(item.objectInfo.dicKey, rend.material, $"PatternMask{patternIndex + 1}", filePath);
             item.SetPatternPath(patternIndex, "");
         }
 
@@ -53,9 +51,8 @@ namespace KK_Plugins
             string file = Path.GetFileName(filePath);
             if (DefaultBGs.Contains(file.ToLower())) return;
 
-            Logger.LogDebug($"Saving background image to scene data.");
             foreach (var rend in item.panelComponent.renderer)
-                MaterialEditor.GetSceneController().AddMaterialTexturePropertyFromFile(item.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", item.objectItem, filePath);
+                MaterialEditor.MEStudio.GetSceneController().SetMaterialTextureFromFile(item.objectInfo.dicKey, rend.material, "MainTex", filePath);
             item.itemInfo.panel.filePath = "";
         }
 

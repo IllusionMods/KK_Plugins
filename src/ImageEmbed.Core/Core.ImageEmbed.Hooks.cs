@@ -27,7 +27,7 @@ namespace KK_Plugins
                 {
                     //Remove any MaterialEditor pattern texture edits when changing patterns
                     foreach (var rend in __instance.itemComponent.GetRenderers())
-                        MaterialEditor.GetSceneController().RemoveMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), $"PatternMask{_idx + 1}", MaterialEditor.TexturePropertyType.Texture, false);
+                        MaterialEditor.MEStudio.GetSceneController().RemoveMaterialTexture(__instance.objectInfo.dicKey, rend.material, $"PatternMask{_idx + 1}", false);
                 }
             }
 
@@ -51,7 +51,7 @@ namespace KK_Plugins
                 {
                     //Remove any MaterialEditor MainTex texture edits
                     foreach (var rend in __instance.panelComponent.renderer)
-                        MaterialEditor.GetSceneController().RemoveMaterialTextureProperty(__instance.objectInfo.dicKey, rend.material.NameFormatted(), "MainTex", false);
+                        MaterialEditor.MEStudio.GetSceneController().RemoveMaterialTexture(__instance.objectInfo.dicKey, rend.material, "MainTex", false);
                 }
             }
 
@@ -63,7 +63,6 @@ namespace KK_Plugins
                     //Save the frame to the scene data
                     string filePath = UserData.Path + "frame/" + _file;
 
-                    Logger.LogDebug($"Saving frame image to scene data.");
                     GetSceneController().SetFrameTex(filePath);
                 }
                 else

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace KK_Plugins
 {
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInDependency(MaterialEditor.GUID, "1.10")]
+    [BepInDependency(MaterialEditor.MEStudio.GUID, "1.10")]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class ImageEmbed : BaseUnityPlugin
     {
