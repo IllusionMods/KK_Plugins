@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace KK_Plugins.MaterialEditor
 {
+    /// <summary>
+    /// Contains methods for exporting the renderer data in various formats
+    /// </summary>
     public static partial class Export
     {
         /// <summary>

@@ -17,6 +17,9 @@ using AIChara;
 
 namespace KK_Plugins.MaterialEditor
 {
+    /// <summary>
+    /// KKAPI character controller that handles saving and loading character data as well as provides methods to get or set the saved data
+    /// </summary>
     public class MaterialEditorCharaController : CharaCustomFunctionController
     {
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
@@ -27,6 +30,9 @@ namespace KK_Plugins.MaterialEditor
 
         private readonly Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
 
+        /// <summary>
+        /// Index of the currently worn coordinate. Always 0 except for in Koikatsu
+        /// </summary>
 #if KK
         public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
 #else
@@ -40,6 +46,10 @@ namespace KK_Plugins.MaterialEditor
         private int SlotToSet;
         private GameObject GameObjectToSet;
 
+        /// <summary>
+        /// Handles saving data to character cards
+        /// </summary>
+        /// <param name="currentGameMode"></param>
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
             var data = new PluginData();
@@ -88,6 +98,11 @@ namespace KK_Plugins.MaterialEditor
             SetExtendedData(data);
         }
 
+        /// <summary>
+        /// Handles loading data from character cards
+        /// </summary>
+        /// <param name="currentGameMode"></param>
+        /// <param name="maintainState"></param>
         protected override void OnReload(GameMode currentGameMode, bool maintainState)
         {
             if (!maintainState)
@@ -239,6 +254,10 @@ namespace KK_Plugins.MaterialEditor
             base.Update();
         }
 
+        /// <summary>
+        /// Handles saving data to coordinate cards
+        /// </summary>
+        /// <param name="coordinate"></param>
         protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
         {
             var data = new PluginData();
@@ -289,6 +308,11 @@ namespace KK_Plugins.MaterialEditor
             base.OnCoordinateBeingSaved(coordinate);
         }
 
+        /// <summary>
+        /// Handles loading data from coordinate cards
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <param name="maintainState"></param>
         protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate, bool maintainState)
         {
             var data = GetCoordinateExtendedData(coordinate);
@@ -647,6 +671,16 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Add a renderer property to be saved and loaded with the card. If value=valueOriginal, data will be removed if present.
+        /// </summary>
+        /// <param name="objectType">Type of object</param>
+        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="rendererName">Name of the renderer</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <param name="value">Value</param>
+        /// <param name="valueOriginal">Original value</param>
         public void AddRendererProperty(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property, string value, string valueOriginal)
         {
             RendererProperty rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName);
@@ -660,18 +694,66 @@ namespace KK_Plugins.MaterialEditor
                     rendererProperty.Value = value;
             }
         }
+        /// <summary>
+        /// Add a renderer property to be saved and loaded with the card and optionally also update the renderer. If value=valueOriginal, data will be removed if present.
+        /// </summary>
+        /// <param name="objectType">Type of object</param>
+        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="rendererName">Name of the renderer</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <param name="value">Value</param>
+        /// <param name="valueOriginal">Original value</param>
+        /// <param name="gameObject">GameObject the renderer belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the renderer</param>
         public void AddRendererProperty(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property, string value, string valueOriginal, GameObject gameObject, bool setProperty = true)
         {
             AddRendererProperty(objectType, coordinateIndex, slot, rendererName, property, value, valueOriginal);
             if (setProperty)
                 SetRendererProperty(gameObject, rendererName, property, value);
         }
+        /// <summary>
+        /// Get the saved renderer property value or null if none is saved
+        /// </summary>
+        /// <param name="objectType">Type of object</param>
+        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="rendererName">Name of the renderer</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <returns>Saved renderer property value</returns>
         public string GetRendererPropertyValue(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property) =>
             RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName)?.Value;
+        /// <summary>
+        /// Get the original value of the saved renderer property value or null if none is saved
+        /// </summary>
+        /// <param name="objectType">Type of object</param>
+        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="rendererName">Name of the renderer</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <returns>Saved renderer property value</returns>
         public string GetRendererPropertyValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property) =>
             RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName)?.ValueOriginal;
+        /// <summary>
+        /// Remove the saved renderer property value if one is saved
+        /// </summary>
+        /// <param name="objectType">Type of object</param>
+        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="rendererName">Name of the renderer</param>
+        /// <param name="property">Property of the renderer</param>
         public void RemoveRendererProperty(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property) =>
             RendererPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName);
+        /// <summary>
+        /// Remove the saved renderer property value if one is saved and optionally also update the renderer
+        /// </summary>
+        /// <param name="objectType">Type of object</param>
+        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="rendererName">Name of the renderer</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <param name="gameObject">GameObject the renderer belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the renderer</param>
         public void RemoveRendererProperty(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject, bool setProperty = true)
         {
             if (setProperty)
@@ -1023,6 +1105,9 @@ namespace KK_Plugins.MaterialEditor
         }
 
         private bool coordinateChanging = false;
+        /// <summary>
+        /// Whether the coordinate is being changed this Update. Used by methods that happen later in the update. If set, reverts to false on next Update.
+        /// </summary>
         public bool CoordinateChanging
         {
             get => coordinateChanging;
@@ -1039,6 +1124,9 @@ namespace KK_Plugins.MaterialEditor
         }
 
         private bool accessorySelectedSlotChanging = false;
+        /// <summary>
+        /// Whether the selected accessory slot is being changed this Update. Used by methods that happen later in the update. If set, reverts to false on next Update.
+        /// </summary>
         public bool AccessorySelectedSlotChanging
         {
             get => accessorySelectedSlotChanging;
@@ -1055,6 +1143,9 @@ namespace KK_Plugins.MaterialEditor
         }
 
         private bool clothesChanging = false;
+        /// <summary>
+        /// Whether the clothes are being changed this Update. Used by methods that happen later in the update. If set, reverts to false on next Update.
+        /// </summary>
         public bool ClothesChanging
         {
             get => clothesChanging;
@@ -1071,6 +1162,9 @@ namespace KK_Plugins.MaterialEditor
         }
 
         private bool characterLoading = false;
+        /// <summary>
+        /// Whether the character is being changed this Update. Used by methods that happen later in the update. If set, reverts to false on next Update.
+        /// </summary>
         public bool CharacterLoading
         {
             get => characterLoading;
@@ -1087,6 +1181,9 @@ namespace KK_Plugins.MaterialEditor
         }
 
         private bool refreshingTextures = false;
+        /// <summary>
+        /// Whether the overlay plugin is refreshing textures this Update. Used by methods that happen later in the update. If set, reverts to false on next Update.
+        /// </summary>
         public bool RefreshingTextures
         {
             get => refreshingTextures;
@@ -1103,6 +1200,10 @@ namespace KK_Plugins.MaterialEditor
         }
 
         private bool customClothesOverride = false;
+        /// <summary>
+        /// Override flag set to distinguish between clothes being changed via character maker and clothes changed by changing outfit slots, loading the character, or other methods.
+        /// Used by methods that happen later in the update. If set, reverts to false on next Update.
+        /// </summary>
         public bool CustomClothesOverride
         {
             get => customClothesOverride;

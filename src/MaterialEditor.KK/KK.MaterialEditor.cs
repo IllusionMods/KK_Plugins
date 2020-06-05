@@ -6,6 +6,6 @@ namespace KK_Plugins.MaterialEditor
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class MaterialEditorPlugin : BaseUnityPlugin
     {
-        public const string PluginNameInternal = "KK_MaterialEditor";
+        internal const string PluginNameInternal = "KK_MaterialEditor";
     }
 }

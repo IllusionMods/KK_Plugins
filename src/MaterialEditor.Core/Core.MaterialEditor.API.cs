@@ -8,6 +8,9 @@ using AIChara;
 
 namespace KK_Plugins.MaterialEditor
 {
+    /// <summary>
+    /// API for safely setting the properties of materials
+    /// </summary>
     public static class MaterialAPI
     {
         /// <summary>
@@ -114,8 +117,32 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="value">Value to be set</param>
         /// <returns>True if the material was found and the value set</returns>
         public static bool SetColor(ChaControl chaControl, string materialName, string propertyName, string value) => SetColor(chaControl.gameObject, materialName, propertyName, value.ToColor());
+        /// <summary>
+        /// Set the value of the specified material property
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the material. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="materialName">Name of the material being set</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the material was found and the value set</returns>
         public static bool SetColor(ChaControl chaControl, string materialName, string propertyName, Color value) => SetColor(chaControl.gameObject, materialName, propertyName, value);
+        /// <summary>
+        /// Set the value of the specified material property
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the material</param>
+        /// <param name="materialName">Name of the material being set</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the material was found and the value set</returns>
         public static bool SetColor(GameObject gameObject, string materialName, string propertyName, string value) => SetColor(gameObject, materialName, propertyName, value.ToColor());
+        /// <summary>
+        /// Set the value of the specified material property
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the material</param>
+        /// <param name="materialName">Name of the material being set</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the material was found and the value set</returns>
         public static bool SetColor(GameObject gameObject, string materialName, string propertyName, Color value)
         {
             bool didSet = false;
@@ -129,9 +156,41 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
+        /// <summary>
+        /// Set the value of the specified renderer property
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the renderer. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="propertyName">Property of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererProperty(ChaControl chaControl, string rendererName, RendererProperties propertyName, string value) => SetRendererProperty(chaControl.gameObject, rendererName, propertyName, int.Parse(value));
+        /// <summary>
+        /// Set the value of the specified renderer property
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the renderer. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="propertyName">Property of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererProperty(ChaControl chaControl, string rendererName, RendererProperties propertyName, int value) => SetRendererProperty(chaControl.gameObject, rendererName, propertyName, value);
+        /// <summary>
+        /// Set the value of the specified renderer property
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="propertyName">Property of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererProperty(GameObject gameObject, string rendererName, RendererProperties propertyName, string value) => SetRendererProperty(gameObject, rendererName, propertyName, int.Parse(value));
+        /// <summary>
+        /// Set the value of the specified renderer property
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="propertyName">Property of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererProperty(GameObject gameObject, string rendererName, RendererProperties propertyName, int value)
         {
             if (propertyName == RendererProperties.Enabled)
@@ -143,7 +202,21 @@ namespace KK_Plugins.MaterialEditor
             return false;
         }
 
+        /// <summary>
+        /// Set a renderer enabled or disabled
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the renderer. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererEnabled(ChaControl chaControl, string rendererName, bool value) => SetRendererEnabled(chaControl.gameObject, rendererName, value);
+        /// <summary>
+        /// Set a renderer enabled or disabled
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererEnabled(GameObject gameObject, string rendererName, bool value)
         {
             bool didSet = false;
@@ -156,7 +229,21 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
+        /// <summary>
+        /// Set the ShadowCastingMode of a renderer
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the renderer. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererShadowCastingMode(ChaControl chaControl, string rendererName, UnityEngine.Rendering.ShadowCastingMode value) => SetRendererShadowCastingMode(chaControl.gameObject, rendererName, value);
+        /// <summary>
+        /// Set the ShadowCastingMode of a renderer
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererShadowCastingMode(GameObject gameObject, string rendererName, UnityEngine.Rendering.ShadowCastingMode value)
         {
             bool didSet = false;
@@ -169,7 +256,21 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
+        /// <summary>
+        /// Set the ReceiveShadows property of a renderer
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the renderer. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererReceiveShadows(ChaControl chaControl, string rendererName, bool value) => SetRendererReceiveShadows(chaControl.gameObject, rendererName, value);
+        /// <summary>
+        /// Set the ReceiveShadows property of a renderer
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererReceiveShadows(GameObject gameObject, string rendererName, bool value)
         {
             bool didSet = false;
@@ -182,7 +283,23 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
+        /// <summary>
+        /// Set the texture property of a material
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the material. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTexture(ChaControl chaControl, string materialName, string propertyName, Texture2D value) => SetTexture(chaControl.gameObject, materialName, propertyName, value);
+        /// <summary>
+        /// Set the texture property of a material
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTexture(GameObject gameObject, string materialName, string propertyName, Texture2D value)
         {
             bool didSet = false;
@@ -198,7 +315,23 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
+        /// <summary>
+        /// Set the texture offset property of a material
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the material. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTextureOffset(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureOffset(chaControl.gameObject, materialName, propertyName, (Vector2)value);
+        /// <summary>
+        /// Set the texture offset property of a material
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTextureOffset(GameObject gameObject, string materialName, string propertyName, Vector2? value)
         {
             if (value == null) return false;
@@ -213,7 +346,23 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
+        /// <summary>
+        /// Set the texture scale property of a material
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the material. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTextureScale(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureScale(chaControl.gameObject, materialName, propertyName, (Vector2)value);
+        /// <summary>
+        /// Set the texture scale property of a material
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTextureScale(GameObject gameObject, string materialName, string propertyName, Vector2? value)
         {
             if (value == null) return false;
@@ -228,7 +377,21 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
+        /// <summary>
+        /// Set the shader of a material. Can only be set to a shader that has been loaded by MaterialEditor
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the material. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="shaderName">Name of the shader to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetShader(ChaControl chaControl, string materialName, string shaderName) => SetShader(chaControl.gameObject, materialName, shaderName);
+        /// <summary>
+        /// Set the shader of a material. Can only be set to a shader that has been loaded by MaterialEditor
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="shaderName">Name of the shader to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetShader(GameObject gameObject, string materialName, string shaderName)
         {
             bool didSet = false;
@@ -281,7 +444,21 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
+        /// <summary>
+        /// Set the render queue of a material
+        /// </summary>
+        /// <param name="chaControl">ChaControl to search for the material. Only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRenderQueue(ChaControl chaControl, string materialName, int? value) => SetRenderQueue(chaControl.gameObject, materialName, value);
+        /// <summary>
+        /// Set the render queue of a material
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="materialName">Name of the material being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRenderQueue(GameObject gameObject, string materialName, int? value)
         {
             bool didSet = false;
@@ -295,8 +472,67 @@ namespace KK_Plugins.MaterialEditor
             return didSet;
         }
 
-        public enum ObjectType { StudioItem, Clothing, Accessory, Hair, Character };
-        public enum ShaderPropertyType { Texture, Color, Float }
-        public enum RendererProperties { Enabled, ShadowCastingMode, ReceiveShadows }
+        /// <summary>
+        /// Type of object, used for saving MaterialEditor data.
+        /// </summary>
+        public enum ObjectType
+        {
+            /// <summary>
+            /// Studio item
+            /// </summary>
+            StudioItem,
+            /// <summary>
+            /// Clothing item assigned to a character
+            /// </summary>
+            Clothing,
+            /// <summary>
+            /// Accessory assigned to a character
+            /// </summary>
+            Accessory,
+            /// <summary>
+            /// Hair assigned to a character
+            /// </summary>
+            Hair,
+            /// <summary>
+            /// Character or any of the character's body parts (eyes, eyebrows, etc.)
+            /// </summary>
+            Character
+        };
+        /// <summary>
+        /// Type of the shader property
+        /// </summary>
+        public enum ShaderPropertyType
+        {
+            /// <summary>
+            /// Texture
+            /// </summary>
+            Texture,
+            /// <summary>
+            /// Color, Vector4, Vector3, Vector2
+            /// </summary>
+            Color,
+            /// <summary>
+            /// Float, Int, Bool
+            /// </summary>
+            Float
+        }
+        /// <summary>
+        /// Properties of a renderer that can be set
+        /// </summary>
+        public enum RendererProperties
+        {
+            /// <summary>
+            /// Whether the renderer is enabled
+            /// </summary>
+            Enabled,
+            /// <summary>
+            /// ShadowCastingMode of the renderer
+            /// </summary>
+            ShadowCastingMode,
+            /// <summary>
+            /// Whether the renderer will recieve shadows cast by other objects
+            /// </summary>
+            ReceiveShadows
+        }
     }
 }

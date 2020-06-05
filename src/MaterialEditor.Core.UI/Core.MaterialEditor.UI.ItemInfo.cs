@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace KK_Plugins.MaterialEditor
 {
-    public sealed class ItemInfo
+    internal sealed class ItemInfo
     {
         public RowItemType ItemType;
         public string LabelText { get; set; }
