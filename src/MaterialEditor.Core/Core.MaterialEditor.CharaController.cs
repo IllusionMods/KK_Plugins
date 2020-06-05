@@ -710,6 +710,15 @@ namespace KK_Plugins.MaterialEditor
             RendererPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == renderer.NameFormatted());
         }
 
+        /// <summary>
+        /// Add a float property to be saved and loaded with the card and optionally also update the materials.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="value">Value</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialFloatProperty(int slot, Material material, string propertyName, float value, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -729,17 +738,40 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetFloat(gameObject, material.NameFormatted(), propertyName, value);
         }
-
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public string GetMaterialFloatPropertyValue(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
         }
+        /// <summary>
+        /// Get the saved material property's original value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
         public string GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
         }
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialFloatProperty(int slot, Material material, string propertyName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -752,6 +784,15 @@ namespace KK_Plugins.MaterialEditor
             MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
         }
 
+        /// <summary>
+        /// Add a color property to be saved and loaded with the card and optionally also update the materials.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="value">Value</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialColorProperty(int slot, Material material, string propertyName, Color value, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -771,16 +812,40 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetColor(gameObject, material.NameFormatted(), propertyName, value);
         }
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public Color? GetMaterialColorPropertyValue(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
         }
+        /// <summary>
+        /// Get the saved material property's original value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
         public Color? GetMaterialColorPropertyValueOriginal(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
         }
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialColorProperty(int slot, Material material, string propertyName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -793,6 +858,15 @@ namespace KK_Plugins.MaterialEditor
             MaterialColorPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
         }
 
+        /// <summary>
+        /// Add a texture property to be saved and loaded with the card.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="filePath">Path to the .png file on disk</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setTexInUpdate">Whether to wait for the next </param>
         public void SetMaterialTextureFromFile(int slot, Material material, string propertyName, string filePath, GameObject gameObject, bool setTexInUpdate = false)
         {
             if (!File.Exists(filePath)) return;
@@ -820,6 +894,14 @@ namespace KK_Plugins.MaterialEditor
                     textureProperty.TexID = SetAndGetTextureID(texBytes);
             }
         }
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public Texture2D GetMaterialTexture(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -828,11 +910,27 @@ namespace KK_Plugins.MaterialEditor
                 return TextureDictionary[(int)textureProperty.TexID].Texture;
             return null;
         }
+        /// <summary>
+        /// Get whether the texture has been changed
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>True if the texture has been modified, false if not</returns>
         public bool GetMaterialTextureOriginal(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.TexID == null ? true : false;
         }
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="displayMessage">Whether to display a message on screen telling the user to save and reload to refresh textures</param>
         public void RemoveMaterialTexture(int slot, Material material, string propertyName, GameObject gameObject, bool displayMessage = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -847,6 +945,15 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Add a texture offset property to be saved and loaded with the card and optionally also update the materials.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="value">Value</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialTextureOffset(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -875,16 +982,40 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetTextureOffset(gameObject, material.NameFormatted(), propertyName, value);
         }
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public Vector2? GetMaterialTextureOffset(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Offset;
         }
+        /// <summary>
+        /// Get the saved material property's original value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
         public Vector2? GetMaterialTextureOffsetOriginal(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.OffsetOriginal;
         }
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialTextureOffset(int slot, Material material, string propertyName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -905,6 +1036,15 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Add a texture scale property to be saved and loaded with the card and optionally also update the materials.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="value">Value</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialTextureScale(int slot, Material material, string propertyName, Vector2 value, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -934,16 +1074,40 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetTextureScale(gameObject, material.NameFormatted(), propertyName, value);
         }
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public Vector2? GetMaterialTextureScale(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Scale;
         }
+        /// <summary>
+        /// Get the saved material property's original value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
         public Vector2? GetMaterialTextureScaleOriginal(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ScaleOriginal;
         }
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialTextureScale(int slot, Material material, string propertyName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -964,6 +1128,14 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Add a shader to be saved and loaded with the card and optionally also update the materials.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="shaderName">Name of the shader to be saved, must be a shader that has been loaded by MaterialEditor</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialShader(int slot, Material material, string shaderName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -987,17 +1159,38 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Get the saved shader name or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved shader name or null if none is saved</returns>
         public string GetMaterialShader(int slot, Material material, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == material.NameFormatted())?.ShaderName;
         }
+        /// <summary>
+        /// Get the saved shader name's original value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved shader name's original value or null if none is saved</returns>
         public string GetMaterialShaderOriginal(int slot, Material material, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == material.NameFormatted())?.ShaderNameOriginal;
         }
 
+        /// <summary>
+        /// Remove the saved shader if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialShader(int slot, Material material, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -1026,6 +1219,14 @@ namespace KK_Plugins.MaterialEditor
 #endif
         }
 
+        /// <summary>
+        /// Add a shader render queue to be saved and loaded with the card and optionally also update the materials.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="renderQueue">Value</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialShaderRenderQueue(int slot, Material material, int renderQueue, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
@@ -1055,16 +1256,37 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetRenderQueue(gameObject, material.NameFormatted(), renderQueue);
         }
+        /// <summary>
+        /// Get the saved render queue or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved render queue or null if none is saved</returns>
         public int? GetMaterialShaderRenderQueue(int slot, Material material, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == material.NameFormatted())?.RenderQueue;
         }
+        /// <summary>
+        /// Get the saved render queue's original value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <returns>Saved render queue's original value or null if none is saved</returns>
         public int? GetMaterialShaderRenderQueueOriginal(int slot, Material material, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == material.NameFormatted())?.RenderQueueOriginal;
         }
+        /// <summary>
+        /// Remove the saved render queue if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialShaderRenderQueue(int slot, Material material, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
