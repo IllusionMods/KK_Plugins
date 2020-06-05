@@ -98,9 +98,9 @@ namespace KK_Plugins.MaterialEditor
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderValue(coordinateIndex, slot, materialName)?.ShaderNameOriginal;
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderOriginal(coordinateIndex, slot, materialName);
             else
-                return GetSceneController().GetMaterialShaderValue(slot, materialName)?.ShaderNameOriginal;
+                return GetSceneController().GetMaterialShaderOriginal(slot, materialName);
         }
         internal override void AddMaterialShaderName(int coordinateIndex, int slot, string materialName, string value, string valueOriginal, GameObject gameObject)
         {
@@ -108,24 +108,24 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialShader(coordinateIndex, slot, materialName, value, valueOriginal, gameObject);
             else
-                GetSceneController().AddMaterialShaderName(slot, materialName, value, valueOriginal, gameObject);
+                GetSceneController().AddMaterialShader(slot, materialName, value, valueOriginal, gameObject);
         }
         internal override void RemoveMaterialShaderName(int coordinateIndex, int slot, string materialName, GameObject gameObject)
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShaderName(coordinateIndex, slot, materialName, gameObject);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShader(coordinateIndex, slot, materialName, gameObject);
             else
-                GetSceneController().RemoveMaterialShaderName(slot, materialName, gameObject);
+                GetSceneController().RemoveMaterialShader(slot, materialName, gameObject);
         }
 
         internal override int? GetMaterialShaderRenderQueueOriginal(int coordinateIndex, int slot, string materialName, GameObject gameObject)
         {
             var chaControl = gameObject.GetComponent<ChaControl>();
             if (chaControl != null)
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderValue(coordinateIndex, slot, materialName)?.RenderQueueOriginal;
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderRenderQueueOriginal(coordinateIndex, slot, materialName);
             else
-                return GetSceneController().GetMaterialShaderValue(slot, materialName)?.RenderQueueOriginal;
+                return GetSceneController().GetMaterialShaderRenderQueueOriginal(slot, materialName);
         }
         internal override void AddMaterialShaderRenderQueue(int coordinateIndex, int slot, string materialName, int value, int valueOriginal, GameObject gameObject)
         {
