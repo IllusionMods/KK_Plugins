@@ -60,187 +60,211 @@ namespace KK_Plugins.MaterialEditor
             for (int i = 0; i < selectNodes.Length; i++)
                 if (Studio.Studio.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
                     if (objectCtrlInfo is OCIItem ociItem)
-                        PopulateList(ociItem.objectItem, ObjectType.StudioItem, slot: GetObjectID(objectCtrlInfo));
+                        PopulateList(ociItem.objectItem, slot: GetObjectID(objectCtrlInfo));
                     else if (objectCtrlInfo is OCIChar ociChar)
-                        PopulateList(ociChar.charInfo.gameObject, ObjectType.Character, slot: GetObjectID(objectCtrlInfo));
+                        PopulateList(ociChar.charInfo.gameObject, slot: GetObjectID(objectCtrlInfo));
         }
 
         public static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
 
         public static SceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<SceneController>();
 
-        internal override string GetRendererPropertyValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject)
+        internal override string GetRendererPropertyValueOriginal(int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                return MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).GetRendererPropertyValueOriginal(objectType, coordinateIndex, slot, rendererName, property);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetRendererPropertyValueOriginal(coordinateIndex, slot, rendererName, property);
             else
                 return GetSceneController().GetRendererPropertyValueOriginal(slot, rendererName, property);
         }
-        internal override void AddRendererProperty(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property, string value, string valueOriginal, GameObject gameObject)
+        internal override void AddRendererProperty(int coordinateIndex, int slot, string rendererName, RendererProperties property, string value, string valueOriginal, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).AddRendererProperty(objectType, coordinateIndex, slot, rendererName, property, value, valueOriginal, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).AddRendererProperty(coordinateIndex, slot, rendererName, property, value, valueOriginal, gameObject);
             else
                 GetSceneController().AddRendererProperty(slot, rendererName, property, value, valueOriginal, gameObject);
         }
-        internal override void RemoveRendererProperty(ObjectType objectType, int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject)
+        internal override void RemoveRendererProperty(int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).RemoveRendererProperty(objectType, coordinateIndex, slot, rendererName, property, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveRendererProperty(coordinateIndex, slot, rendererName, property, gameObject);
             else
                 GetSceneController().RemoveRendererProperty(slot, rendererName, property, gameObject);
         }
 
-        internal override string GetMaterialShaderNameOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, GameObject gameObject)
+        internal override string GetMaterialShaderNameOriginal(int coordinateIndex, int slot, string materialName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                return MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).GetMaterialShaderValue(objectType, coordinateIndex, slot, materialName)?.ShaderNameOriginal;
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderValue(coordinateIndex, slot, materialName)?.ShaderNameOriginal;
             else
                 return GetSceneController().GetMaterialShaderValue(slot, materialName)?.ShaderNameOriginal;
         }
-        internal override void AddMaterialShaderName(ObjectType objectType, int coordinateIndex, int slot, string materialName, string value, string valueOriginal, GameObject gameObject)
+        internal override void AddMaterialShaderName(int coordinateIndex, int slot, string materialName, string value, string valueOriginal, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).AddMaterialShader(objectType, coordinateIndex, slot, materialName, value, valueOriginal, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialShader(coordinateIndex, slot, materialName, value, valueOriginal, gameObject);
             else
                 GetSceneController().AddMaterialShaderName(slot, materialName, value, valueOriginal, gameObject);
         }
-        internal override void RemoveMaterialShaderName(ObjectType objectType, int coordinateIndex, int slot, string materialName, GameObject gameObject)
+        internal override void RemoveMaterialShaderName(int coordinateIndex, int slot, string materialName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).RemoveMaterialShaderName(objectType, coordinateIndex, slot, materialName, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShaderName(coordinateIndex, slot, materialName, gameObject);
             else
                 GetSceneController().RemoveMaterialShaderName(slot, materialName, gameObject);
         }
 
-        internal override int? GetMaterialShaderRenderQueueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, GameObject gameObject)
+        internal override int? GetMaterialShaderRenderQueueOriginal(int coordinateIndex, int slot, string materialName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                return MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).GetMaterialShaderValue(objectType, coordinateIndex, slot, materialName)?.RenderQueueOriginal;
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderValue(coordinateIndex, slot, materialName)?.RenderQueueOriginal;
             else
                 return GetSceneController().GetMaterialShaderValue(slot, materialName)?.RenderQueueOriginal;
         }
-        internal override void AddMaterialShaderRenderQueue(ObjectType objectType, int coordinateIndex, int slot, string materialName, int value, int valueOriginal, GameObject gameObject)
+        internal override void AddMaterialShaderRenderQueue(int coordinateIndex, int slot, string materialName, int value, int valueOriginal, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).AddMaterialShaderRenderQueue(objectType, coordinateIndex, slot, materialName, value, valueOriginal, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialShaderRenderQueue(coordinateIndex, slot, materialName, value, valueOriginal, gameObject);
             else
                 GetSceneController().AddMaterialShaderRenderQueue(slot, materialName, value, valueOriginal, gameObject);
         }
-        internal override void RemoveMaterialShaderRenderQueue(ObjectType objectType, int coordinateIndex, int slot, string materialName, GameObject gameObject)
+        internal override void RemoveMaterialShaderRenderQueue(int coordinateIndex, int slot, string materialName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).RemoveMaterialShaderRenderQueue(objectType, coordinateIndex, slot, materialName, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShaderRenderQueue(coordinateIndex, slot, materialName, gameObject);
             else
                 GetSceneController().RemoveMaterialShaderRenderQueue(slot, materialName, gameObject);
         }
 
-        internal override bool GetMaterialTextureValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override bool GetMaterialTextureValueOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                return MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).GetMaterialTextureOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOriginal(coordinateIndex, slot, materialName, propertyName);
             else
                 return GetSceneController().GetMaterialTextureOriginal(slot, materialName, propertyName);
         }
-        internal override void AddMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, string filePath, GameObject gameObject)
+        internal override void AddMaterialTexture(int coordinateIndex, int slot, string materialName, string propertyName, string filePath, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).AddMaterialTextureFromFile(objectType, coordinateIndex, slot, materialName, propertyName, filePath, gameObject, true);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialTextureFromFile(coordinateIndex, slot, materialName, propertyName, filePath, gameObject, true);
             else
                 GetSceneController().AddMaterialTextureFromFile(slot, materialName, propertyName, filePath, gameObject, true);
         }
-        internal override void RemoveMaterialTexture(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override void RemoveMaterialTexture(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).RemoveMaterialTexture(objectType, coordinateIndex, slot, materialName, propertyName);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTexture(coordinateIndex, slot, materialName, propertyName);
             else
                 GetSceneController().RemoveMaterialTexture(slot, materialName, propertyName);
         }
 
-        internal override Vector2? GetMaterialTextureOffsetOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override Vector2? GetMaterialTextureOffsetOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                return MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).GetMaterialTextureOffsetOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOffsetOriginal(coordinateIndex, slot, materialName, propertyName);
             else
                 return GetSceneController().GetMaterialTextureOffsetOriginal(slot, materialName, propertyName);
         }
-        internal override void AddMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject)
+        internal override void AddMaterialTextureOffset(int coordinateIndex, int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).AddMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialTextureOffset(coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
             else
                 GetSceneController().AddMaterialTextureOffset(slot, materialName, propertyName, value, valueOriginal, gameObject);
         }
-        internal override void RemoveMaterialTextureOffset(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override void RemoveMaterialTextureOffset(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).RemoveMaterialTextureOffset(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureOffset(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 GetSceneController().RemoveMaterialTextureOffset(slot, materialName, propertyName, gameObject);
         }
 
-        internal override Vector2? GetMaterialTextureScaleOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override Vector2? GetMaterialTextureScaleOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                return MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).GetMaterialTextureScaleOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureScaleOriginal(coordinateIndex, slot, materialName, propertyName);
             else
                 return GetSceneController().GetMaterialTextureScaleOriginal(slot, materialName, propertyName);
         }
-        internal override void AddMaterialTextureScale(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject)
+        internal override void AddMaterialTextureScale(int coordinateIndex, int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).AddMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialTextureScale(coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
             else
                 GetSceneController().AddMaterialTextureScale(slot, materialName, propertyName, value, valueOriginal, gameObject);
         }
-        internal override void RemoveMaterialTextureScale(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override void RemoveMaterialTextureScale(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).RemoveMaterialTextureScale(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureScale(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 GetSceneController().RemoveMaterialTextureScale(slot, materialName, propertyName, gameObject);
         }
 
-        internal override Color? GetMaterialColorPropertyValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override Color? GetMaterialColorPropertyValueOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                return MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).GetMaterialColorPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialColorPropertyValueOriginal(coordinateIndex, slot, materialName, propertyName);
             else
                 return GetSceneController().GetMaterialColorPropertyValueOriginal(slot, materialName, propertyName);
         }
-        internal override void AddMaterialColorProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, Color value, Color valueOriginal, GameObject gameObject)
+        internal override void AddMaterialColorProperty(int coordinateIndex, int slot, string materialName, string propertyName, Color value, Color valueOriginal, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).AddMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialColorProperty(coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
             else
                 GetSceneController().AddMaterialColorProperty(slot, materialName, propertyName, value, valueOriginal, gameObject);
         }
-        internal override void RemoveMaterialColorProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override void RemoveMaterialColorProperty(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).RemoveMaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialColorProperty(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 GetSceneController().RemoveMaterialColorProperty(slot, materialName, propertyName, gameObject);
         }
 
-        internal override string GetMaterialFloatPropertyValueOriginal(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override string GetMaterialFloatPropertyValueOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                return MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).GetMaterialFloatPropertyValueOriginal(objectType, coordinateIndex, slot, materialName, propertyName);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(coordinateIndex, slot, materialName, propertyName);
             else
                 return GetSceneController().GetMaterialFloatPropertyValueOriginal(slot, materialName, propertyName);
         }
-        internal override void AddMaterialFloatProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, float value, float valueOriginal, GameObject gameObject)
+        internal override void AddMaterialFloatProperty(int coordinateIndex, int slot, string materialName, string propertyName, float value, float valueOriginal, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).AddMaterialFloatProperty(objectType, coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialFloatProperty(coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
             else
                 GetSceneController().AddMaterialFloatProperty(slot, materialName, propertyName, value, valueOriginal, gameObject);
         }
-        internal override void RemoveMaterialFloatProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        internal override void RemoveMaterialFloatProperty(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
-            if (objectType == ObjectType.Character)
-                MaterialEditorPlugin.GetCharaController(gameObject.GetComponent<ChaControl>()).RemoveMaterialFloatProperty(objectType, coordinateIndex, slot, materialName, propertyName, gameObject);
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialFloatProperty(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
                 GetSceneController().RemoveMaterialFloatProperty(slot, materialName, propertyName, gameObject);
         }

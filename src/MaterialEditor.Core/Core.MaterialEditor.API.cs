@@ -472,32 +472,6 @@ namespace KK_Plugins.MaterialEditor
         }
 
         /// <summary>
-        /// Type of object, used for saving MaterialEditor data.
-        /// </summary>
-        public enum ObjectType
-        {
-            /// <summary>
-            /// Studio item
-            /// </summary>
-            StudioItem,
-            /// <summary>
-            /// Clothing item assigned to a character
-            /// </summary>
-            Clothing,
-            /// <summary>
-            /// Accessory assigned to a character
-            /// </summary>
-            Accessory,
-            /// <summary>
-            /// Hair assigned to a character
-            /// </summary>
-            Hair,
-            /// <summary>
-            /// Character or any of the character's body parts (eyes, eyebrows, etc.)
-            /// </summary>
-            Character
-        };
-        /// <summary>
         /// Type of the shader property
         /// </summary>
         public enum ShaderPropertyType

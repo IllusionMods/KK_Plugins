@@ -178,16 +178,16 @@ namespace KK_Plugins.MaterialEditor
             return tex;
         }
 
-        public static bool CheckBlacklist(ObjectType objectType, string propertyName)
+        public static bool CheckBlacklist(string materialName, string propertyName)
         {
-            if (objectType == ObjectType.Character && CharacterBlacklist.Contains(propertyName))
-                return true;
+            if (materialName == "cf_m_body" || materialName == "cm_m_body")
+                if (propertyName == "alpha_a" || propertyName == "alpha_b")
+                    return true;
             return false;
         }
 
         public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();
 
-        public static HashSet<string> CharacterBlacklist = new HashSet<string>() { "alpha_a", "alpha_b" };
         internal static Texture2D GetT2D(RenderTexture renderTexture)
         {
             var currentActiveRT = RenderTexture.active;
