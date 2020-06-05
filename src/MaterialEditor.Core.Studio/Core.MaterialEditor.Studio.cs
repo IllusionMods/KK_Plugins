@@ -83,7 +83,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).AddRendererProperty(coordinateIndex, slot, rendererName, property, value, valueOriginal, gameObject);
             else
-                GetSceneController().AddRendererProperty(slot, rendererName, property, value, valueOriginal, gameObject);
+                GetSceneController().AddRendererProperty(slot, rendererName, property, value, valueOriginal);
         }
         internal override void RemoveRendererProperty(int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject)
         {
@@ -91,7 +91,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveRendererProperty(coordinateIndex, slot, rendererName, property, gameObject);
             else
-                GetSceneController().RemoveRendererProperty(slot, rendererName, property, gameObject);
+                GetSceneController().RemoveRendererProperty(slot, rendererName, property);
         }
 
         internal override string GetMaterialShaderNameOriginal(int coordinateIndex, int slot, string materialName, GameObject gameObject)
@@ -108,7 +108,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialShader(coordinateIndex, slot, materialName, value, valueOriginal, gameObject);
             else
-                GetSceneController().AddMaterialShader(slot, materialName, value, valueOriginal, gameObject);
+                GetSceneController().AddMaterialShader(slot, materialName, value, valueOriginal);
         }
         internal override void RemoveMaterialShaderName(int coordinateIndex, int slot, string materialName, GameObject gameObject)
         {
@@ -116,7 +116,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShader(coordinateIndex, slot, materialName, gameObject);
             else
-                GetSceneController().RemoveMaterialShader(slot, materialName, gameObject);
+                GetSceneController().RemoveMaterialShader(slot, materialName);
         }
 
         internal override int? GetMaterialShaderRenderQueueOriginal(int coordinateIndex, int slot, string materialName, GameObject gameObject)
@@ -133,7 +133,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialShaderRenderQueue(coordinateIndex, slot, materialName, value, valueOriginal, gameObject);
             else
-                GetSceneController().AddMaterialShaderRenderQueue(slot, materialName, value, valueOriginal, gameObject);
+                GetSceneController().AddMaterialShaderRenderQueue(slot, materialName, value, valueOriginal);
         }
         internal override void RemoveMaterialShaderRenderQueue(int coordinateIndex, int slot, string materialName, GameObject gameObject)
         {
@@ -141,7 +141,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShaderRenderQueue(coordinateIndex, slot, materialName, gameObject);
             else
-                GetSceneController().RemoveMaterialShaderRenderQueue(slot, materialName, gameObject);
+                GetSceneController().RemoveMaterialShaderRenderQueue(slot, materialName);
         }
 
         internal override bool GetMaterialTextureValueOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
@@ -158,7 +158,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialTextureFromFile(coordinateIndex, slot, materialName, propertyName, filePath, gameObject, true);
             else
-                GetSceneController().AddMaterialTextureFromFile(slot, materialName, propertyName, filePath, gameObject, true);
+                GetSceneController().AddMaterialTextureFromFile(slot, materialName, propertyName, filePath, true);
         }
         internal override void RemoveMaterialTexture(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
@@ -183,7 +183,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialTextureOffset(coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
             else
-                GetSceneController().AddMaterialTextureOffset(slot, materialName, propertyName, value, valueOriginal, gameObject);
+                GetSceneController().AddMaterialTextureOffset(slot, materialName, propertyName, value, valueOriginal);
         }
         internal override void RemoveMaterialTextureOffset(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
@@ -191,7 +191,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureOffset(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
-                GetSceneController().RemoveMaterialTextureOffset(slot, materialName, propertyName, gameObject);
+                GetSceneController().RemoveMaterialTextureOffset(slot, materialName, propertyName);
         }
 
         internal override Vector2? GetMaterialTextureScaleOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
@@ -208,7 +208,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialTextureScale(coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
             else
-                GetSceneController().AddMaterialTextureScale(slot, materialName, propertyName, value, valueOriginal, gameObject);
+                GetSceneController().AddMaterialTextureScale(slot, materialName, propertyName, value, valueOriginal);
         }
         internal override void RemoveMaterialTextureScale(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
@@ -216,7 +216,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureScale(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
-                GetSceneController().RemoveMaterialTextureScale(slot, materialName, propertyName, gameObject);
+                GetSceneController().RemoveMaterialTextureScale(slot, materialName, propertyName);
         }
 
         internal override Color? GetMaterialColorPropertyValueOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
@@ -233,7 +233,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialColorProperty(coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
             else
-                GetSceneController().AddMaterialColorProperty(slot, materialName, propertyName, value, valueOriginal, gameObject);
+                GetSceneController().AddMaterialColorProperty(slot, materialName, propertyName, value, valueOriginal);
         }
         internal override void RemoveMaterialColorProperty(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
@@ -241,7 +241,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialColorProperty(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
-                GetSceneController().RemoveMaterialColorProperty(slot, materialName, propertyName, gameObject);
+                GetSceneController().RemoveMaterialColorProperty(slot, materialName, propertyName);
         }
 
         internal override string GetMaterialFloatPropertyValueOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
@@ -258,7 +258,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).AddMaterialFloatProperty(coordinateIndex, slot, materialName, propertyName, value, valueOriginal, gameObject);
             else
-                GetSceneController().AddMaterialFloatProperty(slot, materialName, propertyName, value, valueOriginal, gameObject);
+                GetSceneController().AddMaterialFloatProperty(slot, materialName, propertyName, value, valueOriginal);
         }
         internal override void RemoveMaterialFloatProperty(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
         {
@@ -266,7 +266,7 @@ namespace KK_Plugins.MaterialEditor
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialFloatProperty(coordinateIndex, slot, materialName, propertyName, gameObject);
             else
-                GetSceneController().RemoveMaterialFloatProperty(slot, materialName, propertyName, gameObject);
+                GetSceneController().RemoveMaterialFloatProperty(slot, materialName, propertyName);
         }
     }
 }
