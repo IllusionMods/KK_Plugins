@@ -146,7 +146,7 @@ namespace KK_Plugins.MaterialEditor
 
                         bool setTex = false;
                         if (newTextureProperty.TexID != null)
-                            setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture);
+                            setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TextureDictionary[(int)newTextureProperty.TexID].Texture);
 
                         bool setOffset = SetTextureOffset(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
                         bool setScale = SetTextureScale(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Scale);
@@ -194,7 +194,7 @@ namespace KK_Plugins.MaterialEditor
 
                         bool setTex = false;
                         if (loadedProperty.TexID != null)
-                            setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Texture);
+                            setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TextureDictionary[(int)newTextureProperty.TexID].Texture);
 
                         bool setOffset = SetTextureOffset(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
                         bool setScale = SetTextureScale(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Scale);
@@ -388,6 +388,9 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 var texBytes = File.ReadAllBytes(filePath);
+                Texture2D tex = MaterialEditorPlugin.TextureFromBytes(texBytes);
+
+                SetTexture(gameObject, material.NameFormatted(), propertyName, tex);
 
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
                 if (textureProperty == null)
@@ -396,13 +399,16 @@ namespace KK_Plugins.MaterialEditor
                     MaterialTexturePropertyList.Add(textureProperty);
                 }
                 else
-                    textureProperty.Data = texBytes;
-
-                SetTexture(gameObject, material.NameFormatted(), propertyName, textureProperty.Texture);
+                    textureProperty.TexID = SetAndGetTextureID(texBytes);
             }
         }
-        public Texture2D GetMaterialTexture(int id, Material material, string propertyName) =>
-            MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.Texture;
+        public Texture2D GetMaterialTexture(int id, Material material, string propertyName)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName);
+            if (textureProperty?.TexID != null)
+                return TextureDictionary[(int)textureProperty.TexID].Texture;
+            return null;            
+        }
         public bool GetMaterialTextureOriginal(int id, Material material, string propertyName) =>
             MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.TexID == null ? true : false;
         public void RemoveMaterialTexture(int id, Material material, string propertyName, bool displayMessage = true)
@@ -738,35 +744,6 @@ namespace KK_Plugins.MaterialEditor
             [Key("ScaleOriginal")]
             public Vector2? ScaleOriginal;
 
-            [IgnoreMember]
-            private byte[] _data;
-            [IgnoreMember]
-            public byte[] Data
-            {
-                get => _data;
-                set
-                {
-                    Dispose();
-                    _data = value;
-                    TexID = SetAndGetTextureID(value);
-                }
-            }
-            [IgnoreMember]
-            private Texture2D _texture;
-            [IgnoreMember]
-            public Texture2D Texture
-            {
-                get
-                {
-                    if (_texture == null)
-                    {
-                        if (_data != null)
-                            _texture = MaterialEditorPlugin.TextureFromBytes(_data);
-                    }
-                    return _texture;
-                }
-            }
-
             public MaterialTextureProperty(int id, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null)
             {
                 ID = id;
@@ -777,22 +754,9 @@ namespace KK_Plugins.MaterialEditor
                 OffsetOriginal = offsetOriginal;
                 Scale = scale;
                 ScaleOriginal = scaleOriginal;
-                if (texID != null && TextureDictionary.TryGetValue((int)texID, out var tex))
-                    Data = tex.Data;
             }
 
-            public void Dispose()
-            {
-                if (_texture != null)
-                {
-                    Destroy(_texture);
-                    _texture = null;
-                }
-            }
-
-            public bool IsEmpty() => Data == null;
             public bool NullCheck() => TexID == null && Offset == null && Scale == null;
-
         }
 
         [Serializable]

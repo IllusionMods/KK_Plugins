@@ -811,17 +811,13 @@ namespace KK_Plugins.MaterialEditor
                 var texBytes = File.ReadAllBytes(filePath);
                 Texture2D tex = MaterialEditorPlugin.TextureFromBytes(texBytes);
 
-                if (objectType == ObjectType.Character)
-                    SetTexture(ChaControl, material.NameFormatted(), propertyName, tex);
-                else
-                    SetTexture(GameObjectToSet, material.NameFormatted(), propertyName, tex);
+                SetTexture(gameObject, material.NameFormatted(), propertyName, tex);
 
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
                 if (textureProperty == null)
                     MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, CurrentCoordinateIndex, slot, material.NameFormatted(), propertyName, SetAndGetTextureID(texBytes)));
                 else
                     textureProperty.TexID = SetAndGetTextureID(texBytes);
-
             }
         }
         public Texture2D GetMaterialTexture(int slot, Material material, string propertyName, GameObject gameObject)
