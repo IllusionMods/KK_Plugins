@@ -41,7 +41,6 @@ namespace KK_Plugins.MaterialEditor
         private string FileToSet = null;
         private string PropertyToSet;
         private string MatToSet;
-        private int CoordinateIndexToSet;
         private int SlotToSet;
         private GameObject GameObjectToSet;
 
@@ -236,7 +235,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 if (FileToSet != null)
                 {
-                    AddMaterialTextureFromFile(CoordinateIndexToSet, SlotToSet, MatToSet, PropertyToSet, FileToSet, GameObjectToSet);
+                    AddMaterialTextureFromFile(SlotToSet, MatToSet, PropertyToSet, FileToSet, GameObjectToSet);
                 }
             }
             catch
@@ -633,7 +632,6 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Add a renderer property to be saved and loaded with the card and optionally also update the renderer. If value=valueOriginal, data will be removed if present.
         /// </summary>
-        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
         /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
         /// <param name="rendererName">Name of the renderer</param>
         /// <param name="property">Property of the renderer</param>
@@ -641,12 +639,12 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="valueOriginal">Original value</param>
         /// <param name="gameObject">GameObject the renderer belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the renderer</param>
-        public void AddRendererProperty(int coordinateIndex, int slot, string rendererName, RendererProperties property, string value, string valueOriginal, GameObject gameObject, bool setProperty = true)
+        public void AddRendererProperty(int slot, string rendererName, RendererProperties property, string value, string valueOriginal, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            RendererProperty rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName);
+            RendererProperty rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName);
             if (rendererProperty == null)
-                RendererPropertyList.Add(new RendererProperty(objectType, coordinateIndex, slot, rendererName, property, value, valueOriginal));
+                RendererPropertyList.Add(new RendererProperty(objectType, CurrentCoordinateIndex, slot, rendererName, property, value, valueOriginal));
             else
             {
                 if (value == rendererProperty.ValueOriginal)
@@ -660,58 +658,55 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Get the saved renderer property value or null if none is saved
         /// </summary>
-        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
         /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
         /// <param name="rendererName">Name of the renderer</param>
         /// <param name="property">Property of the renderer</param>
         /// <param name="gameObject">GameObject the renderer belongs to</param>
         /// <returns>Saved renderer property value</returns>
-        public string GetRendererPropertyValue(int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject)
+        public string GetRendererPropertyValue(int slot, string rendererName, RendererProperties property, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName)?.Value;
+            return RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName)?.Value;
         }
         /// <summary>
         /// Get the original value of the saved renderer property value or null if none is saved
         /// </summary>
-        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
         /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
         /// <param name="rendererName">Name of the renderer</param>
         /// <param name="property">Property of the renderer</param>
         /// <param name="gameObject">GameObject the renderer belongs to</param>
         /// <returns>Saved renderer property value</returns>
-        public string GetRendererPropertyValueOriginal(int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject)
+        public string GetRendererPropertyValueOriginal(int slot, string rendererName, RendererProperties property, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName)?.ValueOriginal;
+            return RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName)?.ValueOriginal;
         }
         /// <summary>
         /// Remove the saved renderer property value if one is saved and optionally also update the renderer
         /// </summary>
-        /// <param name="coordinateIndex">Index of the coordinate, always 0 except in Koikatsu</param>
         /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
         /// <param name="rendererName">Name of the renderer</param>
         /// <param name="property">Property of the renderer</param>
         /// <param name="gameObject">GameObject the renderer belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the renderer</param>
-        public void RemoveRendererProperty(int coordinateIndex, int slot, string rendererName, RendererProperties property, GameObject gameObject, bool setProperty = true)
+        public void RemoveRendererProperty(int slot, string rendererName, RendererProperties property, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             if (setProperty)
             {
-                var original = GetRendererPropertyValueOriginal(coordinateIndex, slot, rendererName, property, gameObject);
+                var original = GetRendererPropertyValueOriginal(slot, rendererName, property, gameObject);
                 if (!original.IsNullOrEmpty())
                     SetRendererProperty(gameObject, rendererName, property, original);
             }
-            RendererPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName);
+            RendererPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == property && x.RendererName == rendererName);
         }
 
-        public void AddMaterialFloatProperty(int coordinateIndex, int slot, string materialName, string propertyName, float value, float valueOriginal, GameObject gameObject, bool setProperty = true)
+        public void AddMaterialFloatProperty(int slot, string materialName, string propertyName, float value, float valueOriginal, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            var materialProperty = MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            var materialProperty = MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
             if (materialProperty == null)
-                MaterialFloatPropertyList.Add(new MaterialFloatProperty(objectType, coordinateIndex, slot, materialName, propertyName, value.ToString(), valueOriginal.ToString()));
+                MaterialFloatPropertyList.Add(new MaterialFloatProperty(objectType, CurrentCoordinateIndex, slot, materialName, propertyName, value.ToString(), valueOriginal.ToString()));
             else
             {
                 if (value.ToString() == materialProperty.ValueOriginal)
@@ -723,34 +718,34 @@ namespace KK_Plugins.MaterialEditor
                 SetFloat(gameObject, materialName, propertyName, value);
         }
 
-        public string GetMaterialFloatPropertyValue(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public string GetMaterialFloatPropertyValue(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.Value;
+            return MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.Value;
         }
-        public string GetMaterialFloatPropertyValueOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public string GetMaterialFloatPropertyValueOriginal(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.ValueOriginal;
+            return MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.ValueOriginal;
         }
-        public void RemoveMaterialFloatProperty(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject, bool setProperty = true)
+        public void RemoveMaterialFloatProperty(int slot, string materialName, string propertyName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             if (setProperty)
             {
-                var original = GetMaterialFloatPropertyValueOriginal(coordinateIndex, slot, materialName, propertyName, gameObject);
+                var original = GetMaterialFloatPropertyValueOriginal(slot, materialName, propertyName, gameObject);
                 if (!original.IsNullOrEmpty())
                     SetFloat(gameObject, materialName, propertyName, float.Parse(original));
             }
-            MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
         }
 
-        public void AddMaterialColorProperty(int coordinateIndex, int slot, string materialName, string propertyName, Color value, Color valueOriginal, GameObject gameObject, bool setProperty = true)
+        public void AddMaterialColorProperty(int slot, string materialName, string propertyName, Color value, Color valueOriginal, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            var colorProperty = MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            var colorProperty = MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
             if (colorProperty == null)
-                MaterialColorPropertyList.Add(new MaterialColorProperty(objectType, coordinateIndex, slot, materialName, propertyName, value, valueOriginal));
+                MaterialColorPropertyList.Add(new MaterialColorProperty(objectType, CurrentCoordinateIndex, slot, materialName, propertyName, value, valueOriginal));
             else
             {
                 if (value == colorProperty.ValueOriginal)
@@ -761,29 +756,29 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetColor(gameObject, materialName, propertyName, value);
         }
-        public Color? GetMaterialColorPropertyValue(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public Color? GetMaterialColorPropertyValue(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.Value;
+            return MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.Value;
         }
-        public Color? GetMaterialColorPropertyValueOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public Color? GetMaterialColorPropertyValueOriginal(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.ValueOriginal;
+            return MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.ValueOriginal;
         }
-        public void RemoveMaterialColorProperty(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject, bool setProperty = true)
+        public void RemoveMaterialColorProperty(int slot, string materialName, string propertyName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             if (setProperty)
             {
-                var original = GetMaterialColorPropertyValueOriginal(coordinateIndex, slot, materialName, propertyName, gameObject);
+                var original = GetMaterialColorPropertyValueOriginal(slot, materialName, propertyName, gameObject);
                 if (original != null)
                     SetColor(gameObject, materialName, propertyName, (Color)original);
             }
-            MaterialColorPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            MaterialColorPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
         }
 
-        public void AddMaterialTextureFromFile(int coordinateIndex, int slot, string materialName, string propertyName, string filePath, GameObject gameObject, bool setTexInUpdate = false)
+        public void AddMaterialTextureFromFile(int slot, string materialName, string propertyName, string filePath, GameObject gameObject, bool setTexInUpdate = false)
         {
             if (!File.Exists(filePath)) return;
 
@@ -794,7 +789,6 @@ namespace KK_Plugins.MaterialEditor
                 PropertyToSet = propertyName;
                 MatToSet = materialName;
                 GameObjectToSet = gameObject;
-                CoordinateIndexToSet = coordinateIndex;
                 SlotToSet = slot;
             }
             else
@@ -807,31 +801,31 @@ namespace KK_Plugins.MaterialEditor
                 else
                     SetTexture(GameObjectToSet, materialName, propertyName, tex);
 
-                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
                 if (textureProperty == null)
-                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, SetAndGetTextureID(texBytes)));
+                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, CurrentCoordinateIndex, slot, materialName, propertyName, SetAndGetTextureID(texBytes)));
                 else
                     textureProperty.TexID = SetAndGetTextureID(texBytes);
 
             }
         }
-        public Texture2D GetMaterialTexture(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public Texture2D GetMaterialTexture(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
             if (textureProperty?.TexID != null)
                 return TextureDictionary[(int)textureProperty.TexID].Texture;
             return null;
         }
-        public bool GetMaterialTextureOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public bool GetMaterialTextureOriginal(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.TexID == null ? true : false;
+            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.TexID == null ? true : false;
         }
-        public void RemoveMaterialTexture(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject, bool displayMessage = true)
+        public void RemoveMaterialTexture(int slot, string materialName, string propertyName, GameObject gameObject, bool displayMessage = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
             if (textureProperty != null)
             {
                 if (displayMessage)
@@ -842,12 +836,12 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        public void AddMaterialTextureOffset(int coordinateIndex, int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject, bool setProperty = true)
+        public void AddMaterialTextureOffset(int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
             if (textureProperty == null)
-                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, offset: value, offsetOriginal: valueOriginal));
+                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, CurrentCoordinateIndex, slot, materialName, propertyName, offset: value, offsetOriginal: valueOriginal));
             else
             {
                 if (value == textureProperty.OffsetOriginal)
@@ -866,27 +860,27 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetTextureOffset(gameObject, materialName, propertyName, value);
         }
-        public Vector2? GetMaterialTextureOffset(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public Vector2? GetMaterialTextureOffset(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.Offset;
+            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.Offset;
         }
-        public Vector2? GetMaterialTextureOffsetOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public Vector2? GetMaterialTextureOffsetOriginal(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.OffsetOriginal;
+            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.OffsetOriginal;
         }
-        public void RemoveMaterialTextureOffset(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject, bool setProperty = true)
+        public void RemoveMaterialTextureOffset(int slot, string materialName, string propertyName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             if (setProperty)
             {
-                var original = GetMaterialTextureOffsetOriginal(coordinateIndex, slot, materialName, propertyName, gameObject);
+                var original = GetMaterialTextureOffsetOriginal(slot, materialName, propertyName, gameObject);
                 if (original != null)
                     SetTextureOffset(gameObject, materialName, propertyName, (Vector2)original);
             }
 
-            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
             if (textureProperty != null)
             {
                 textureProperty.Offset = null;
@@ -896,12 +890,12 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        public void AddMaterialTextureScale(int coordinateIndex, int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject, bool setProperty = true)
+        public void AddMaterialTextureScale(int slot, string materialName, string propertyName, Vector2 value, Vector2 valueOriginal, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
             if (textureProperty == null)
-                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, coordinateIndex, slot, materialName, propertyName, scale: value, scaleOriginal: valueOriginal));
+                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, CurrentCoordinateIndex, slot, materialName, propertyName, scale: value, scaleOriginal: valueOriginal));
             else
             {
                 if (value == textureProperty.ScaleOriginal)
@@ -921,27 +915,27 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetTextureScale(gameObject, materialName, propertyName, value);
         }
-        public Vector2? GetMaterialTextureScale(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public Vector2? GetMaterialTextureScale(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.Scale;
+            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.Scale;
         }
-        public Vector2? GetMaterialTextureScaleOriginal(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject)
+        public Vector2? GetMaterialTextureScaleOriginal(int slot, string materialName, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.ScaleOriginal;
+            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName)?.ScaleOriginal;
         }
-        public void RemoveMaterialTextureScale(int coordinateIndex, int slot, string materialName, string propertyName, GameObject gameObject, bool setProperty = true)
+        public void RemoveMaterialTextureScale(int slot, string materialName, string propertyName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             if (setProperty)
             {
-                var original = GetMaterialTextureScaleOriginal(coordinateIndex, slot, materialName, propertyName, gameObject);
+                var original = GetMaterialTextureScaleOriginal(slot, materialName, propertyName, gameObject);
                 if (original != null)
                     SetTextureScale(gameObject, materialName, propertyName, (Vector2)original);
             }
 
-            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.Property == propertyName && x.MaterialName == materialName);
             if (textureProperty != null)
             {
                 textureProperty.Scale = null;
@@ -951,12 +945,12 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        public void AddMaterialShader(int coordinateIndex, int slot, string materialName, string shaderName, string shaderNameOriginal, GameObject gameObject, bool setProperty = true)
+        public void AddMaterialShader(int slot, string materialName, string shaderName, string shaderNameOriginal, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName);
+            var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName);
             if (materialProperty == null)
-                MaterialShaderList.Add(new MaterialShader(objectType, coordinateIndex, slot, materialName, shaderName, shaderNameOriginal));
+                MaterialShaderList.Add(new MaterialShader(objectType, CurrentCoordinateIndex, slot, materialName, shaderName, shaderNameOriginal));
             else
             {
                 materialProperty.ShaderName = shaderName;
@@ -965,56 +959,56 @@ namespace KK_Plugins.MaterialEditor
 
             if (setProperty)
             {
-                RemoveMaterialShaderRenderQueue(coordinateIndex, slot, materialName, gameObject, false);
+                RemoveMaterialShaderRenderQueue(slot, materialName, gameObject, false);
                 SetShader(gameObject, materialName, shaderName);
             }
         }
 
-        public string GetMaterialShader(int coordinateIndex, int slot, string materialName, GameObject gameObject)
+        public string GetMaterialShader(int slot, string materialName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.ShaderName;
+            return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.ShaderName;
         }
-        public string GetMaterialShaderOriginal(int coordinateIndex, int slot, string materialName, GameObject gameObject)
+        public string GetMaterialShaderOriginal(int slot, string materialName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.ShaderNameOriginal;
+            return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.ShaderNameOriginal;
         }
 
-        public void RemoveMaterialShader(int coordinateIndex, int slot, string materialName, GameObject gameObject, bool setProperty = true)
+        public void RemoveMaterialShader(int slot, string materialName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             if (setProperty)
             {
-                var original = GetMaterialShaderOriginal(coordinateIndex, slot, materialName, gameObject);
+                var original = GetMaterialShaderOriginal(slot, materialName, gameObject);
                 if (!original.IsNullOrEmpty())
                     SetShader(gameObject, materialName, original);
             }
 
 #if EC
             //For EC don't remove shaders when reset, this helps users with fixing KK mods
-            var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName);
+            var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName);
             if (materialProperty == null)
                 return;
             else
                 materialProperty.ShaderName = materialProperty.ShaderNameOriginal;
 #else
-            foreach (var materialProperty in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName))
+            foreach (var materialProperty in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName))
             {
                 materialProperty.ShaderName = null;
                 materialProperty.ShaderNameOriginal = null;
             }
 
-            MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName && x.NullCheck());
+            MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName && x.NullCheck());
 #endif
         }
 
-        public void AddMaterialShaderRenderQueue(int coordinateIndex, int slot, string materialName, int renderQueue, int renderQueueOriginal, GameObject gameObject, bool setProperty = true)
+        public void AddMaterialShaderRenderQueue(int slot, string materialName, int renderQueue, int renderQueueOriginal, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName);
+            var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName);
             if (materialProperty == null)
-                MaterialShaderList.Add(new MaterialShader(objectType, coordinateIndex, slot, materialName, renderQueue, renderQueueOriginal));
+                MaterialShaderList.Add(new MaterialShader(objectType, CurrentCoordinateIndex, slot, materialName, renderQueue, renderQueueOriginal));
             else
             {
                 if (renderQueue == materialProperty.RenderQueueOriginal)
@@ -1034,33 +1028,33 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetRenderQueue(gameObject, materialName, renderQueue);
         }
-        public int? GetMaterialShaderRenderQueue(int coordinateIndex, int slot, string materialName, GameObject gameObject)
+        public int? GetMaterialShaderRenderQueue(int slot, string materialName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.RenderQueue;
+            return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.RenderQueue;
         }
-        public int? GetMaterialShaderRenderQueueOriginal(int coordinateIndex, int slot, string materialName, GameObject gameObject)
+        public int? GetMaterialShaderRenderQueueOriginal(int slot, string materialName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.RenderQueueOriginal;
+            return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName)?.RenderQueueOriginal;
         }
-        public void RemoveMaterialShaderRenderQueue(int coordinateIndex, int slot, string materialName, GameObject gameObject, bool setProperty = true)
+        public void RemoveMaterialShaderRenderQueue(int slot, string materialName, GameObject gameObject, bool setProperty = true)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
             if (setProperty)
             {
-                var original = GetMaterialShaderRenderQueueOriginal(coordinateIndex, slot, materialName, gameObject);
+                var original = GetMaterialShaderRenderQueueOriginal(slot, materialName, gameObject);
                 if (original != null)
                     SetRenderQueue(gameObject, materialName, original);
             }
 
-            foreach (var materialProperty in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName))
+            foreach (var materialProperty in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName))
             {
                 materialProperty.RenderQueue = null;
                 materialProperty.RenderQueueOriginal = null;
             }
 
-            MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == coordinateIndex && x.Slot == slot && x.MaterialName == materialName && x.NullCheck());
+            MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == materialName && x.NullCheck());
         }
 
         private bool coordinateChanging = false;
