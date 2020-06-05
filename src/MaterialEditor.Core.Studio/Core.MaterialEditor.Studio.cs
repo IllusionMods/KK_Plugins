@@ -14,10 +14,22 @@ using AIChara;
 
 namespace KK_Plugins.MaterialEditor
 {
+    /// <summary>
+    /// Plugin responsible for handling the Studio UI and the KKAPI Studio controller
+    /// </summary>
     public partial class MEStudio : UI
     {
+        /// <summary>
+        /// MaterialEditor Studio plugin GUID
+        /// </summary>
         public const string GUID = MaterialEditorPlugin.GUID + ".studio";
+        /// <summary>
+        /// MaterialEditor Studio plugin PluginName
+        /// </summary>
         public const string PluginName = MaterialEditorPlugin.PluginName + " Studio";
+        /// <summary>
+        /// MaterialEditor Studio plugin Version
+        /// </summary>
         public const string Version = MaterialEditorPlugin.Version;
 
         internal void Start()
@@ -65,8 +77,16 @@ namespace KK_Plugins.MaterialEditor
                         PopulateList(ociChar.charInfo.gameObject, slot: GetObjectID(objectCtrlInfo));
         }
 
+        /// <summary>
+        /// Get the ID for the specified ObjectCtrlInfo
+        /// </summary>
+        /// <param name="oci"></param>
+        /// <returns>ID for the specified ObjectCtrlInfo</returns>
         public static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
-
+        /// <summary>
+        /// Get the KKAPI scene controller for MaterialEditor. Provides access to methods for getting and setting material properties for studio objects.
+        /// </summary>
+        /// <returns></returns>
         public static SceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<SceneController>();
 
         internal override string GetRendererPropertyValueOriginal(int slot, Renderer renderer, RendererProperties property, GameObject gameObject)

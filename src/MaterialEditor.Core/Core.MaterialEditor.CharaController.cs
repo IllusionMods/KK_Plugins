@@ -872,7 +872,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="filePath">Path to the .png file on disk</param>
         /// <param name="gameObject">GameObject the material belongs to</param>
-        /// <param name="setTexInUpdate">Whether to wait for the next </param>
+        /// <param name="setTexInUpdate">Whether to wait for the next Update</param>
         public void SetMaterialTextureFromFile(int slot, Material material, string propertyName, string filePath, GameObject gameObject, bool setTexInUpdate = false)
         {
             if (!File.Exists(filePath)) return;

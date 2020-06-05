@@ -22,24 +22,39 @@ using AIChara;
 
 namespace KK_Plugins.MaterialEditor
 {
+    /// <summary>
+    /// MaterialEditor plugin base
+    /// </summary>
     public partial class MaterialEditorPlugin
     {
+        /// <summary>
+        /// MaterialEditor plugin GUID
+        /// </summary>
         public const string GUID = "com.deathweasel.bepinex.materialeditor";
+        /// <summary>
+        /// MaterialEditor plugin name
+        /// </summary>
         public const string PluginName = "Material Editor";
+        /// <summary>
+        /// MaterialEditor plugin version
+        /// </summary>
         public const string Version = "2.0";
         internal static new ManualLogSource Logger;
 
-        public const string FileExt = ".png";
-        public const string FileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
+        internal const string FileExt = ".png";
+        internal const string FileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
+        /// <summary>
+        /// Path where textures will be exported
+        /// </summary>
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
 
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
-        public static ConfigEntry<float> UIScale { get; private set; }
-        public static ConfigEntry<float> UIWidth { get; private set; }
-        public static ConfigEntry<float> UIHeight { get; private set; }
-        public static ConfigEntry<bool> WatchTexChanges { get; private set; }
+        internal static ConfigEntry<float> UIScale { get; private set; }
+        internal static ConfigEntry<float> UIWidth { get; private set; }
+        internal static ConfigEntry<float> UIHeight { get; private set; }
+        internal static ConfigEntry<bool> WatchTexChanges { get; private set; }
 
         internal void Main()
         {
@@ -169,7 +184,7 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        public static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
+        internal static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
         {
             if (texBytes == null || texBytes.Length == 0) return null;
 
@@ -178,7 +193,7 @@ namespace KK_Plugins.MaterialEditor
             return tex;
         }
 
-        public static bool CheckBlacklist(string materialName, string propertyName)
+        internal static bool CheckBlacklist(string materialName, string propertyName)
         {
             if (materialName == "cf_m_body" || materialName == "cm_m_body")
                 if (propertyName == "alpha_a" || propertyName == "alpha_b")
@@ -186,7 +201,12 @@ namespace KK_Plugins.MaterialEditor
             return false;
         }
 
-        public static MaterialEditorCharaController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<MaterialEditorCharaController>();
+        /// <summary>
+        /// Get the KKAPI character controller for MaterialEditor. Provides access to methods for getting and setting material changes.
+        /// </summary>
+        /// <param name="chaControl"></param>
+        /// <returns>KKAPI character controller</returns>
+        public static MaterialEditorCharaController GetCharaController(ChaControl chaControl) => chaControl?.gameObject?.GetComponent<MaterialEditorCharaController>();
 
         internal static Texture2D GetT2D(RenderTexture renderTexture)
         {
@@ -217,7 +237,7 @@ namespace KK_Plugins.MaterialEditor
             RenderTexture.ReleaseTemporary(tmp);
         }
 
-        public class ShaderData
+        internal class ShaderData
         {
             public string ShaderName;
             public Shader Shader;
@@ -296,7 +316,7 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        public class ShaderPropertyData
+        internal class ShaderPropertyData
         {
             public string Name;
             public ShaderPropertyType Type;

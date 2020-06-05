@@ -9,10 +9,22 @@ using AIChara;
 
 namespace KK_Plugins.MaterialEditor
 {
+    /// <summary>
+    /// Plugin responsible for handling events from the character maker
+    /// </summary>
     public partial class MEMaker : UI
     {
+        /// <summary>
+        /// MaterialEditor Maker plugin GUID
+        /// </summary>
         public const string GUID = MaterialEditorPlugin.GUID + ".maker";
+        /// <summary>
+        /// MaterialEditor Maker plugin name
+        /// </summary>
         public const string PluginName = MaterialEditorPlugin.PluginName + " Maker";
+        /// <summary>
+        /// MaterialEditor Maker plugin version
+        /// </summary>
         public const string Version = MaterialEditorPlugin.Version;
 
         internal void Start()

@@ -17,6 +17,9 @@ using AIChara;
 
 namespace KK_Plugins.MaterialEditor
 {
+    /// <summary>
+    /// Code for the MaterialEditor UI
+    /// </summary>
     public abstract class UI : BaseUnityPlugin
     {
         internal static Canvas MaterialEditorWindow;
@@ -55,6 +58,9 @@ namespace KK_Plugins.MaterialEditor
             UIHeight.SettingChanged += UISettingChanged;
         }
 
+        /// <summary>
+        /// Initialize the MaterialEditor UI
+        /// </summary>
         protected void InitUI()
         {
             UIUtility.Init(nameof(KK_Plugins));
@@ -124,6 +130,9 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public void RefreshUI(string filterText) => PopulateList(CurrentGameObject, CurrentSlot, filterText);
 
+        /// <summary>
+        /// Hide the MaterialEditor UI
+        /// </summary>
         public static void HideUI()
         {
             MaterialEditorWindow?.gameObject?.SetActive(false);
@@ -136,6 +145,12 @@ namespace KK_Plugins.MaterialEditor
             MaterialEditorMainPanel?.transform?.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
         }
 
+        /// <summary>
+        /// Populate the MaterialEditor UI
+        /// </summary>
+        /// <param name="gameObject">GameObject for which to read the renderers and materials</param>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory, or ID of the Studio item. Ignored for other object types.</param>
+        /// <param name="filter">Comma separated list of text to filter the results</param>
         protected void PopulateList(GameObject gameObject, int slot = 0, string filter = "")
         {
             MaterialEditorWindow.gameObject.SetActive(true);

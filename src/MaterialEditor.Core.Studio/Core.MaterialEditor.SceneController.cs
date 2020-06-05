@@ -13,6 +13,9 @@ using static KK_Plugins.MaterialEditor.MaterialAPI;
 
 namespace KK_Plugins.MaterialEditor
 {
+    /// <summary>
+    /// KKAPI scene controller which provides access for getting and setting properties to be saved and loaded with the scene data
+    /// </summary>
     public class SceneController : SceneCustomFunctionController
     {
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
@@ -28,6 +31,9 @@ namespace KK_Plugins.MaterialEditor
         private static Material MatToSet;
         private static int IDToSet = 0;
 
+        /// <summary>
+        /// Saves data
+        /// </summary>
         protected override void OnSceneSave()
         {
             var data = new PluginData();
@@ -73,6 +79,11 @@ namespace KK_Plugins.MaterialEditor
             SetExtendedData(data);
         }
 
+        /// <summary>
+        /// Loads saved data
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="loadedItems"></param>
         protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
         {
             var data = GetExtendedData();
@@ -156,6 +167,10 @@ namespace KK_Plugins.MaterialEditor
                     }
         }
 
+        /// <summary>
+        /// Handles copying data when objects are copied
+        /// </summary>
+        /// <param name="copiedItems"></param>
         protected override void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems)
         {
             List<RendererProperty> rendererPropertyListNew = new List<RendererProperty>();
@@ -256,6 +271,14 @@ namespace KK_Plugins.MaterialEditor
             return highestID;
         }
 
+        /// <summary>
+        /// Add a renderer property to be saved and loaded with the scene and optionally also update the renderer.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="renderer">Renderer being modified</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <param name="value">Value</param>
+        /// <param name="setProperty">Whether to also apply the value to the renderer</param>
         public void SetRendererProperty(int id, Renderer renderer, RendererProperties property, string value, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -283,10 +306,31 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 MaterialAPI.SetRendererProperty(gameObject, renderer.NameFormatted(), property, value);
         }
+        /// <summary>
+        /// Get the saved renderer property value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="renderer">Renderer being modified</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <returns>Saved renderer property value</returns>
         public string GetRendererPropertyValue(int id, Renderer renderer, RendererProperties property) =>
             RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted())?.Value;
+        /// <summary>
+        /// Get the saved renderer property's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="renderer">Renderer being modified</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <returns>Saved renderer property's original value</returns>
         public string GetRendererPropertyValueOriginal(int id, Renderer renderer, RendererProperties property) =>
             RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted())?.ValueOriginal;
+        /// <summary>
+        /// Remove the saved renderer property value if one is saved and optionally also update the renderer
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="renderer">Renderer being modified</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <param name="setProperty">Whether to also apply the value to the renderer</param>
         public void RemoveRendererProperty(int id, Renderer renderer, RendererProperties property, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -300,6 +344,14 @@ namespace KK_Plugins.MaterialEditor
             RendererPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted());
         }
 
+        /// <summary>
+        /// Add a float property to be saved and loaded with the scene and optionally also update the materials.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="value">Value</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialFloatProperty(int id, Material material, string propertyName, float value, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -320,6 +372,13 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetFloat(gameObject, material.NameFormatted(), propertyName, value);
         }
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public float? GetMaterialFloatPropertyValue(int id, Material material, string propertyName)
         {
             var value = MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
@@ -327,6 +386,13 @@ namespace KK_Plugins.MaterialEditor
                 return null;
             return float.Parse(value);
         }
+        /// <summary>
+        /// Get the saved material property's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
         public float? GetMaterialFloatPropertyValueOriginal(int id, Material material, string propertyName)
         {
             var valueOriginal = MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
@@ -334,6 +400,13 @@ namespace KK_Plugins.MaterialEditor
                 return null;
             return float.Parse(valueOriginal);
         }
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialFloatProperty(int id, Material material, string propertyName, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -346,6 +419,14 @@ namespace KK_Plugins.MaterialEditor
 
             MaterialFloatPropertyList.RemoveAll(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
         }
+        /// <summary>
+        /// Add a color property to be saved and loaded with the scene and optionally also update the materials.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="value">Value</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialColorProperty(int id, Material material, string propertyName, Color value, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -366,10 +447,31 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetColor(gameObject, material.NameFormatted(), propertyName, value);
         }
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public Color? GetMaterialColorPropertyValue(int id, Material material, string propertyName) =>
             MaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
+        /// <summary>
+        /// Get the saved material property's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
         public Color? GetMaterialColorPropertyValueOriginal(int id, Material material, string propertyName) =>
             MaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialColorProperty(int id, Material material, string propertyName, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -383,6 +485,14 @@ namespace KK_Plugins.MaterialEditor
             MaterialColorPropertyList.RemoveAll(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
         }
 
+        /// <summary>
+        /// Add a texture property to be saved and loaded with the card.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="filePath">Path to the .png file on disk</param>
+        /// <param name="setTexInUpdate">Whether to wait for the next Update</param>
         public void SetMaterialTextureFromFile(int id, Material material, string propertyName, string filePath, bool setTexInUpdate = false)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -412,6 +522,13 @@ namespace KK_Plugins.MaterialEditor
                     textureProperty.TexID = SetAndGetTextureID(texBytes);
             }
         }
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public Texture2D GetMaterialTexture(int id, Material material, string propertyName)
         {
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName);
@@ -419,8 +536,22 @@ namespace KK_Plugins.MaterialEditor
                 return TextureDictionary[(int)textureProperty.TexID].Texture;
             return null;
         }
+        /// <summary>
+        /// Get whether the texture has been changed
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
         public bool GetMaterialTextureOriginal(int id, Material material, string propertyName) =>
             MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.TexID == null ? true : false;
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="displayMessage">Whether to display a message on screen telling the user to save and reload to refresh textures</param>
         public void RemoveMaterialTexture(int id, Material material, string propertyName, bool displayMessage = true)
         {
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName);
@@ -434,6 +565,14 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Add a texture offset property to be saved and loaded with the scene and optionally also update the materials.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="value">Value</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialTextureOffset(int id, Material material, string propertyName, Vector2 value, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -463,10 +602,31 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetTextureOffset(gameObject, material.NameFormatted(), propertyName, value);
         }
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public Vector2? GetMaterialTextureOffset(int id, Material material, string propertyName) =>
             MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.Offset;
+        /// <summary>
+        /// Get the saved material property's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
         public Vector2? GetMaterialTextureOffsetOriginal(int id, Material material, string propertyName) =>
             MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.OffsetOriginal;
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialTextureOffset(int id, Material material, string propertyName, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -487,6 +647,14 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Add a texture scale property to be saved and loaded with the scene and optionally also update the materials.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="value">Value</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialTextureScale(int id, Material material, string propertyName, Vector2 value, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -517,11 +685,31 @@ namespace KK_Plugins.MaterialEditor
                 SetTextureScale(gameObject, material.NameFormatted(), propertyName, value);
         }
 
+        /// <summary>
+        /// Get the saved material property value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property value or null if none is saved</returns>
         public Vector2? GetMaterialTextureScale(int id, Material material, string propertyName) =>
             MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.Scale;
+        /// <summary>
+        /// Get the saved material property's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
         public Vector2? GetMaterialTextureScaleOriginal(int id, Material material, string propertyName) =>
             MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.ScaleOriginal;
-
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialTextureScale(int id, Material material, string propertyName, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -542,6 +730,13 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Add a shader to be saved and loaded with the scene and optionally also update the materials.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="shaderName">Property of the material without the leading underscore</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialShader(int id, Material material, string shaderName, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -574,10 +769,28 @@ namespace KK_Plugins.MaterialEditor
                 SetShader(gameObject, material.NameFormatted(), shaderName);
             }
         }
+        /// <summary>
+        /// Get the saved shader name or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <returns>Saved shader name or null if none is saved</returns>
         public string GetMaterialShader(int id, Material material) =>
             MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted())?.ShaderName;
+        /// <summary>
+        /// Get the saved shader name's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <returns>Saved shader name's original value or null if none is saved</returns>
         public string GetMaterialShaderOriginal(int id, Material material) =>
             MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted())?.ShaderNameOriginal;
+        /// <summary>
+        /// Remove the saved shader if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialShader(int id, Material material, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -597,6 +810,13 @@ namespace KK_Plugins.MaterialEditor
             MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.NullCheck());
         }
 
+        /// <summary>
+        /// Add a render queue to be saved and loaded with the scene and optionally also update the materials.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="renderQueue">Value</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialShaderRenderQueue(int id, Material material, int renderQueue, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
@@ -626,10 +846,28 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 SetRenderQueue(gameObject, material.NameFormatted(), renderQueue);
         }
+        /// <summary>
+        /// Get the saved render queue value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <returns>Saved render queue value or null if none is saved</returns>
         public int? GetMaterialShaderRenderQueue(int id, Material material) =>
             MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted())?.RenderQueue;
+        /// <summary>
+        /// Get the saved render queue's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <returns>Saved render queue value's original or null if none is saved</returns>
         public int? GetMaterialShaderRenderQueueOriginal(int id, Material material) =>
             MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted())?.RenderQueueOriginal;
+        /// <summary>
+        /// Remove the saved render queue value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialShaderRenderQueue(int id, Material material, bool setProperty = true)
         {
             GameObject gameObject = GetObjectByID(id);
