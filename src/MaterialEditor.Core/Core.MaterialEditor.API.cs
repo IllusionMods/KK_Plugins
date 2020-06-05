@@ -85,7 +85,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material being set</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the material was found and the value set</returns>
-        public static bool SetFloat(ChaControl chaControl, string materialName, string propertyName, string value) => SetFloat(chaControl.gameObject, materialName, propertyName, value);
+        public static bool SetFloat(ChaControl chaControl, string materialName, string propertyName, float value) => SetFloat(chaControl.gameObject, materialName, propertyName, value);
         /// <summary>
         /// Set the value of the specified material property
         /// </summary>
@@ -94,15 +94,14 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material being set</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the material was found and the value set</returns>
-        public static bool SetFloat(GameObject gameObject, string materialName, string propertyName, string value)
+        public static bool SetFloat(GameObject gameObject, string materialName, string propertyName, float value)
         {
-            float floatValue = float.Parse(value);
             bool didSet = false;
 
             foreach (var material in GetMaterials(gameObject, materialName))
                 if (material.HasProperty($"_{propertyName}"))
                 {
-                    material.SetFloat($"_{propertyName}", floatValue);
+                    material.SetFloat($"_{propertyName}", value);
                     didSet = true;
                 }
             return didSet;
@@ -419,7 +418,7 @@ namespace KK_Plugins.MaterialEditor
                         switch (shaderPropertyData.Type)
                         {
                             case ShaderPropertyType.Float:
-                                SetFloat(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
+                                SetFloat(gameObject, materialName, shaderPropertyData.Name, float.Parse(shaderPropertyData.DefaultValue));
                                 break;
                             case ShaderPropertyType.Color:
                                 SetColor(gameObject, materialName, shaderPropertyData.Name, shaderPropertyData.DefaultValue);
