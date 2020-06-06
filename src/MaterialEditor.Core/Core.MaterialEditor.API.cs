@@ -65,10 +65,9 @@ namespace KK_Plugins.MaterialEditor
         /// <returns>Array of materials</returns>
         public static Material[] GetMaterials(Renderer renderer)
         {
-            if (renderer.gameObject.GetComponent<ChaControl>() == null)
-                return renderer.materials;
-            else
+            if (BodyParts.Contains(renderer.NameFormatted()))
                 return renderer.sharedMaterials;
+            return renderer.materials;
         }
 
         private static List<Material> GetMaterials(GameObject gameObject, string materialName)
