@@ -58,6 +58,19 @@ namespace KK_Plugins.MaterialEditor
                 _GetRendererList(gameObject.transform.GetChild(i).gameObject, rendList);
         }
 
+        /// <summary>
+        /// Safely get a list of materials for the renderer
+        /// </summary>
+        /// <param name="renderer">Renderer containing the materials</param>
+        /// <returns>Array of materials</returns>
+        public static Material[] GetMaterials(Renderer renderer)
+        {
+            if (renderer.gameObject.GetComponent<ChaControl>() == null)
+                return renderer.materials;
+            else
+                return renderer.sharedMaterials;
+        }
+
         private static List<Material> GetMaterials(GameObject gameObject, string materialName)
         {
             List<Material> materials = new List<Material>();

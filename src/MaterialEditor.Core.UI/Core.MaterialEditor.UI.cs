@@ -184,7 +184,7 @@ namespace KK_Plugins.MaterialEditor
                         if (rend.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()) && !rendList.Contains(rend))
                             rendList.Add(rend);
                         else
-                            foreach (var mat in rend.sharedMaterials)
+                            foreach (var mat in GetMaterials(rend))
                                 if (mat.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()) && !rendList.Contains(rend))
                                     rendList.Add(rend);
 
@@ -193,7 +193,7 @@ namespace KK_Plugins.MaterialEditor
 
             foreach (var rend in rendList)
             {
-                foreach (var mat in rend.sharedMaterials)
+                foreach (var mat in GetMaterials(rend))
                     matList[mat.NameFormatted()] = mat;
 
                 var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer");
