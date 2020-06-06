@@ -253,12 +253,12 @@ namespace KK_Plugins.MaterialEditor
                 shaderItem.ShaderNameOnChange = delegate (string value)
                 {
                     SetMaterialShaderName(slot, mat, value, gameObject);
-                    StartCoroutine(PopulateListCoroutine(gameObject, slot, filter: filter));
+                    StartCoroutine(PopulateListCoroutine(gameObject, slot, filter));
                 };
                 shaderItem.ShaderNameOnReset = delegate
                 {
                     RemoveMaterialShaderName(slot, mat, gameObject);
-                    StartCoroutine(PopulateListCoroutine(gameObject, slot, filter: filter));
+                    StartCoroutine(PopulateListCoroutine(gameObject, slot, filter));
                 };
                 items.Add(shaderItem);
 
@@ -395,7 +395,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Hacky workaround to wait for the dropdown fade to complete before refreshing
         /// </summary>
-        protected IEnumerator PopulateListCoroutine(GameObject gameObject, int coordinateIndex = 0, int slot = 0, string filter = "")
+        protected IEnumerator PopulateListCoroutine(GameObject gameObject, int slot = 0, string filter = "")
         {
             yield return null;
             yield return null;
