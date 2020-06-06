@@ -166,11 +166,10 @@ namespace KK_Plugins.MaterialEditor
 
             List<Renderer> rendList = new List<Renderer>();
             List<Renderer> rendListFull = GetRendererList(gameObject);
-            List<string> mats = new List<string>();
-
+            List<string> filterList = new List<string>();
+            List<ItemInfo> items = new List<ItemInfo>();
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
 
-            List<string> filterList = new List<string>();
             if (!filter.IsNullOrEmpty())
                 filterList = filter.Split(',').ToList();
             filterList.RemoveAll(x => x.IsNullOrWhiteSpace());
@@ -187,9 +186,6 @@ namespace KK_Plugins.MaterialEditor
                             foreach (var mat in GetMaterials(rend))
                                 if (mat.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()) && !rendList.Contains(rend))
                                     rendList.Add(rend);
-
-
-            List<ItemInfo> items = new List<ItemInfo>();
 
             foreach (var rend in rendList)
             {

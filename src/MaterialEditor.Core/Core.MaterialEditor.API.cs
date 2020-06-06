@@ -63,11 +63,11 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         /// <param name="renderer">Renderer containing the materials</param>
         /// <returns>Array of materials</returns>
-        public static Material[] GetMaterials(Renderer renderer)
+        public static List<Material> GetMaterials(Renderer renderer)
         {
             if (BodyParts.Contains(renderer.NameFormatted()))
-                return renderer.sharedMaterials;
-            return renderer.materials;
+                return renderer.sharedMaterials.Where(x => x != null).ToList();
+            return renderer.materials.Where(x => x != null).ToList();
         }
 
         private static List<Material> GetMaterials(GameObject gameObject, string materialName)
