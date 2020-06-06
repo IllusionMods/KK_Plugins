@@ -1466,11 +1466,11 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Type of object, used for saving MaterialEditor data.
         /// </summary>
-        private enum ObjectType { Unknown, Clothing, Accessory, Hair, Character };
+        public enum ObjectType { Unknown, Clothing, Accessory, Hair, Character };
 
         [Serializable]
         [MessagePackObject]
-        private class RendererProperty
+        public class RendererProperty
         {
             [Key("ObjectType")]
             public ObjectType ObjectType;
@@ -1501,7 +1501,7 @@ namespace KK_Plugins.MaterialEditor
 
         [Serializable]
         [MessagePackObject]
-        private class MaterialFloatProperty
+        public class MaterialFloatProperty
         {
             [Key("ObjectType")]
             public ObjectType ObjectType;
@@ -1532,7 +1532,7 @@ namespace KK_Plugins.MaterialEditor
 
         [Serializable]
         [MessagePackObject]
-        private class MaterialColorProperty
+        public class MaterialColorProperty
         {
             [Key("ObjectType")]
             public ObjectType ObjectType;
@@ -1562,7 +1562,7 @@ namespace KK_Plugins.MaterialEditor
         }
         [Serializable]
         [MessagePackObject]
-        private class MaterialTextureProperty
+        public class MaterialTextureProperty
         {
             [Key("ObjectType")]
             public ObjectType ObjectType;
@@ -1603,7 +1603,7 @@ namespace KK_Plugins.MaterialEditor
         }
         [Serializable]
         [MessagePackObject]
-        private class MaterialShader
+        public class MaterialShader
         {
             [Key("ObjectType")]
             public ObjectType ObjectType;

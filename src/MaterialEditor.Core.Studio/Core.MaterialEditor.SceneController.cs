@@ -899,7 +899,7 @@ namespace KK_Plugins.MaterialEditor
 
         [Serializable]
         [MessagePackObject]
-        private class RendererProperty
+        public class RendererProperty
         {
             [Key("ID")]
             public int ID;
@@ -924,7 +924,7 @@ namespace KK_Plugins.MaterialEditor
 
         [Serializable]
         [MessagePackObject]
-        private class MaterialFloatProperty
+        public class MaterialFloatProperty
         {
             [Key("ID")]
             public int ID;
@@ -949,7 +949,7 @@ namespace KK_Plugins.MaterialEditor
 
         [Serializable]
         [MessagePackObject]
-        private class MaterialColorProperty
+        public class MaterialColorProperty
         {
             [Key("ID")]
             public int ID;
@@ -973,7 +973,7 @@ namespace KK_Plugins.MaterialEditor
         }
         [Serializable]
         [MessagePackObject]
-        private class MaterialTextureProperty
+        public class MaterialTextureProperty
         {
             [Key("ID")]
             public int ID;
@@ -1009,7 +1009,7 @@ namespace KK_Plugins.MaterialEditor
 
         [Serializable]
         [MessagePackObject]
-        private class MaterialShader
+        public class MaterialShader
         {
             [Key("ID")]
             public int ID;
