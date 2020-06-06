@@ -409,7 +409,7 @@ namespace KK_Plugins.MaterialEditor
             if (shaderName.IsNullOrEmpty()) return false;
             MaterialEditorPlugin.LoadedShaders.TryGetValue(shaderName, out var shaderData);
 
-            if (shaderData.Shader == null)
+            if (shaderData?.Shader == null)
             {
                 MaterialEditorPlugin.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{MaterialEditorPlugin.PluginNameInternal}] Could not load shader:{shaderName}");
                 return false;
