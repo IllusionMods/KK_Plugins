@@ -271,6 +271,7 @@ namespace KK_Plugins.MaterialEditor
             return highestID;
         }
 
+        #region Set, Get, Remove methods
         /// <summary>
         /// Add a renderer property to be saved and loaded with the scene and optionally also update the renderer.
         /// </summary>
@@ -298,7 +299,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value == rendererProperty.ValueOriginal)
-                    RendererPropertyList.Remove(rendererProperty);
+                    RemoveRendererProperty(id, renderer, property, false);
                 else
                     rendererProperty.Value = value;
             }
@@ -364,7 +365,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value.ToString() == materialProperty.ValueOriginal)
-                    MaterialFloatPropertyList.Remove(materialProperty);
+                    RemoveMaterialFloatProperty(id, material, propertyName, false);
                 else
                     materialProperty.Value = value.ToString();
             }
@@ -439,7 +440,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value == colorProperty.ValueOriginal)
-                    MaterialColorPropertyList.Remove(colorProperty);
+                    RemoveMaterialColorProperty(id, material, propertyName, false);
                 else
                     colorProperty.Value = value;
             }
@@ -585,12 +586,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value == textureProperty.OffsetOriginal)
-                {
-                    textureProperty.Offset = null;
-                    textureProperty.OffsetOriginal = null;
-                    if (textureProperty.NullCheck())
-                        MaterialTexturePropertyList.Remove(textureProperty);
-                }
+                    RemoveMaterialTextureOffset(id, material, propertyName, false);
                 else
                 {
                     textureProperty.Offset = value;
@@ -667,12 +663,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value == textureProperty.ScaleOriginal)
-                {
-                    textureProperty.Scale = null;
-                    textureProperty.ScaleOriginal = null;
-                    if (textureProperty.NullCheck())
-                        MaterialTexturePropertyList.Remove(textureProperty);
-                }
+                    RemoveMaterialFloatProperty(id, material, propertyName, false);
                 else
                 {
                     textureProperty.Scale = value;
@@ -749,12 +740,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (shaderName == materialProperty.ShaderNameOriginal)
-                {
-                    materialProperty.ShaderName = null;
-                    materialProperty.ShaderNameOriginal = null;
-                    if (materialProperty.NullCheck())
-                        MaterialShaderList.Remove(materialProperty);
-                }
+                    RemoveMaterialShader(id, material, false);
                 else
                 {
                     materialProperty.ShaderName = shaderName;
@@ -829,12 +815,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (renderQueue == materialProperty.RenderQueueOriginal)
-                {
-                    materialProperty.RenderQueue = null;
-                    materialProperty.RenderQueueOriginal = null;
-                    if (materialProperty.NullCheck())
-                        MaterialShaderList.Remove(materialProperty);
-                }
+                    RemoveMaterialShaderRenderQueue(id, material, false);
                 else
                 {
                     materialProperty.RenderQueue = renderQueue;
@@ -886,6 +867,7 @@ namespace KK_Plugins.MaterialEditor
 
             MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.NullCheck());
         }
+        #endregion
 
         private GameObject GetObjectByID(int id)
         {

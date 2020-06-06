@@ -629,6 +629,7 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        #region Set, Get, Remove methods
         /// <summary>
         /// Add a renderer property to be saved and loaded with the card and optionally also update the renderer.
         /// </summary>
@@ -657,7 +658,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value == rendererProperty.ValueOriginal)
-                    RendererPropertyList.Remove(rendererProperty);
+                    RemoveRendererProperty(slot, renderer, property, gameObject, false);
                 else
                     rendererProperty.Value = value;
             }
@@ -731,7 +732,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value.ToString() == materialProperty.ValueOriginal)
-                    MaterialFloatPropertyList.Remove(materialProperty);
+                    RemoveMaterialFloatProperty(slot, material, propertyName, gameObject, false);
                 else
                     materialProperty.Value = value.ToString();
             }
@@ -811,7 +812,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value == colorProperty.ValueOriginal)
-                    MaterialColorPropertyList.Remove(colorProperty);
+                    RemoveMaterialColorProperty(slot, material, propertyName, gameObject, false);
                 else
                     colorProperty.Value = value;
             }
@@ -972,12 +973,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value == textureProperty.OffsetOriginal)
-                {
-                    textureProperty.Offset = null;
-                    textureProperty.OffsetOriginal = null;
-                    if (textureProperty.NullCheck())
-                        MaterialTexturePropertyList.Remove(textureProperty);
-                }
+                    RemoveMaterialTextureOffset(slot, material, propertyName, gameObject, false);
                 else
                 {
                     textureProperty.Offset = value;
@@ -1063,12 +1059,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value == textureProperty.ScaleOriginal)
-                {
-                    textureProperty.Scale = null;
-                    textureProperty.ScaleOriginal = null;
-                    if (textureProperty.NullCheck())
-                        MaterialTexturePropertyList.Remove(textureProperty);
-                }
+                    RemoveMaterialTextureScale(slot, material, propertyName, gameObject, false);
                 else
                 {
                     textureProperty.Scale = value;
@@ -1153,9 +1144,14 @@ namespace KK_Plugins.MaterialEditor
             }
             else
             {
-                materialProperty.ShaderName = shaderName;
-                if (materialProperty.ShaderNameOriginal == null)
-                    materialProperty.ShaderNameOriginal = material.shader.NameFormatted();
+                if (shaderName == materialProperty.ShaderNameOriginal)
+                    RemoveMaterialShader(slot, material, gameObject, false);
+                else
+                {
+                    materialProperty.ShaderName = shaderName;
+                    if (materialProperty.ShaderNameOriginal == null)
+                        materialProperty.ShaderNameOriginal = material.shader.NameFormatted();
+                }
             }
 
             if (setProperty)
@@ -1245,12 +1241,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (renderQueue == materialProperty.RenderQueueOriginal)
-                {
-                    materialProperty.RenderQueue = null;
-                    materialProperty.RenderQueueOriginal = null;
-                    if (materialProperty.NullCheck())
-                        MaterialShaderList.Remove(materialProperty);
-                }
+                    RemoveMaterialShaderRenderQueue(slot, material, gameObject, false);
                 else
                 {
                     materialProperty.RenderQueue = renderQueue;
@@ -1311,6 +1302,7 @@ namespace KK_Plugins.MaterialEditor
 
             MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == material.NameFormatted() && x.NullCheck());
         }
+        #endregion
 
         private bool coordinateChanging = false;
         /// <summary>
