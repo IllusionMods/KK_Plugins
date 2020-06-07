@@ -229,14 +229,15 @@ namespace KK_Plugins.MaterialEditor
             ChaControl.StartCoroutine(LoadData(true, true, true));
         }
 
+        /// <summary>
+        /// Used by SetMaterialTextureFromFile if setTexInUpdate is true, needed for loading files via file dialogue
+        /// </summary>
         internal new void Update()
         {
             try
             {
                 if (FileToSet != null)
-                {
                     SetMaterialTextureFromFile(SlotToSet, MatToSet, PropertyToSet, FileToSet, GameObjectToSet);
-                }
             }
             catch
             {
@@ -313,14 +314,45 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="maintainState"></param>
         protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate, bool maintainState)
         {
+            List<ObjectType> objectTypesToLoad = new List<ObjectType>();
+
+            var loadFlags = MakerAPI.GetCoordinateLoadFlags();
+            if (loadFlags == null)
+            {
+                RendererPropertyList.Clear();
+                MaterialFloatPropertyList.Clear();
+                MaterialColorPropertyList.Clear();
+                MaterialTexturePropertyList.Clear();
+                MaterialShaderList.Clear();
+
+                objectTypesToLoad.Add(ObjectType.Accessory);
+                objectTypesToLoad.Add(ObjectType.Character);
+                objectTypesToLoad.Add(ObjectType.Clothing);
+                objectTypesToLoad.Add(ObjectType.Hair);
+            }
+            else
+            {
+                if (loadFlags.Clothes)
+                {
+                    RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex);
+                    MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex);
+                    MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex);
+                    MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex);
+                    MaterialShaderList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex);
+                    objectTypesToLoad.Add(ObjectType.Clothing);
+                }
+                if (loadFlags.Accessories)
+                {
+                    RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex);
+                    MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex);
+                    MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex);
+                    MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex);
+                    MaterialShaderList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex);
+                    objectTypesToLoad.Add(ObjectType.Accessory);
+                }
+            }
+
             var data = GetCoordinateExtendedData(coordinate);
-
-            MaterialShaderList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
-            RendererPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
-            MaterialFloatPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
-            MaterialColorPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
-            MaterialTexturePropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Accessory || x.ObjectType == ObjectType.Clothing) && x.CoordinateIndex == CurrentCoordinateIndex);
-
             if (data?.data == null) return;
 
             var importDictionary = new Dictionary<int, int>();
@@ -331,30 +363,35 @@ namespace KK_Plugins.MaterialEditor
 
             if (data.data.TryGetValue(nameof(MaterialShaderList), out var materialShaders) && materialShaders != null)
                 foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])materialShaders))
-                    MaterialShaderList.Add(new MaterialShader(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                    if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
+                        MaterialShaderList.Add(new MaterialShader(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
 
             if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
                 foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
-                    RendererPropertyList.Add(new RendererProperty(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
+                        RendererPropertyList.Add(new RendererProperty(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
             if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
                 foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
-                    MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
+                        MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
             if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
                 foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
-                    MaterialColorPropertyList.Add(new MaterialColorProperty(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
+                        MaterialColorPropertyList.Add(new MaterialColorProperty(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
 
             if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
                 foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
-                {
-                    int? texID = null;
-                    if (loadedProperty.TexID != null)
-                        texID = importDictionary[(int)loadedProperty.TexID];
+                    if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
+                    {
+                        int? texID = null;
+                        if (loadedProperty.TexID != null)
+                            texID = importDictionary[(int)loadedProperty.TexID];
 
-                    MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(loadedProperty.ObjectType, loadedProperty.CoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
-                    MaterialTexturePropertyList.Add(newTextureProperty);
-                }
+                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(loadedProperty.ObjectType, loadedProperty.CoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+                        MaterialTexturePropertyList.Add(newTextureProperty);
+                    }
 
             CoordinateChanging = true;
 
