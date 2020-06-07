@@ -62,6 +62,7 @@
     </Reference>
     <Reference Include="HS2_Sideloader">
       <HintPath>..\..\lib\HS2_Sideloader.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="IL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29\lib\net46\IL.dll</HintPath>
