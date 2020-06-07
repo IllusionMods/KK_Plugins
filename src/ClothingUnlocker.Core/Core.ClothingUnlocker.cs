@@ -14,7 +14,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.clothingunlocker";
         public const string PluginName = "Clothing Unlocker";
-        public const string Version = "2.0";
+        public const string Version = "2.0.1";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<bool> EnableCrossdressing;

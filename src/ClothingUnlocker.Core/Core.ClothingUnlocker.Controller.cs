@@ -49,15 +49,15 @@ namespace KK_Plugins
         protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
         {
             var data = new PluginData();
-            data.data.Add(nameof(ClothingUnlocked) + "Coordinate", ClothingUnlocked);
-            SetExtendedData(data);
+            data.data.Add(nameof(ClothingUnlocked) + "Coordinate", GetClothingUnlocked());
+            SetCoordinateExtendedData(coordinate, data);
         }
 
         protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate, bool maintainState)
         {
             SetClothingUnlocked(false);
 
-            var data = GetExtendedData();
+            var data = GetCoordinateExtendedData(coordinate);
             if (data != null)
                 if (data.data.TryGetValue(nameof(ClothingUnlocked) + "Coordinate", out var loadedClothingUnlocked))
                     SetClothingUnlocked((bool)loadedClothingUnlocked);
@@ -65,11 +65,13 @@ namespace KK_Plugins
             base.OnCoordinateBeingLoaded(coordinate, maintainState);
         }
 
+#if KK
         private void OnCoordinateChanged()
         {
             if (MakerAPI.InsideAndLoaded)
                 ClothingUnlocker.ClothingUnlockToggle.SetValue(GetClothingUnlocked());
         }
+#endif
 
         /// <summary>
         /// Get whether clothing is unlocked for the current outfit slot
