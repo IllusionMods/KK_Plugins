@@ -174,23 +174,28 @@ namespace KK_Plugins.MaterialEditor
                 filterList = filter.Split(',').ToList();
             filterList.RemoveAll(x => x.IsNullOrWhiteSpace());
 
-            //Get all renderers matching the filter and all renderers that contain a material matching the filter
+            //Get all renderers and materials matching the filter
             if (filterList.Count == 0)
                 rendList = rendListFull;
             else
                 foreach (var rend in rendListFull)
+                {
                     foreach (var filterWord in filterList)
                         if (rend.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()) && !rendList.Contains(rend))
                             rendList.Add(rend);
-                        else
-                            foreach (var mat in GetMaterials(rend))
-                                if (mat.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()) && !rendList.Contains(rend))
-                                    rendList.Add(rend);
+
+                    foreach (var mat in GetMaterials(rend))
+                        foreach (var filterWord in filterList)
+                            if (mat.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()))
+                                matList[mat.NameFormatted()] = mat;
+                }
 
             foreach (var rend in rendList)
             {
-                foreach (var mat in GetMaterials(rend))
-                    matList[mat.NameFormatted()] = mat;
+                //Get materials if materials list wasn't previously built by the filter    
+                if (filterList.Count == 0)
+                    foreach (var mat in GetMaterials(rend))
+                        matList[mat.NameFormatted()] = mat;
 
                 var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer");
                 rendererItem.RendererName = rend.NameFormatted();
