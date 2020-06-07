@@ -80,27 +80,31 @@ namespace KK_Plugins
                 ReloadingChara = true;
                 yield return null;
 
-                var data = GetCoordinateExtendedData(coordinate);
-                if (data != null && data.data.TryGetValue("CoordinateHairAccessories", out var loadedHairAccessories) && loadedHairAccessories != null)
+                var loadFlags = MakerAPI.GetCoordinateLoadFlags();
+                if (loadFlags == null || loadFlags.Accessories)
                 {
-                    if (HairAccessories.ContainsKey(CurrentCoordinateIndex))
-                        HairAccessories[CurrentCoordinateIndex].Clear();
-                    else
-                        HairAccessories[CurrentCoordinateIndex] = new Dictionary<int, HairAccessoryInfo>();
-
-                    HairAccessories[CurrentCoordinateIndex] = MessagePackSerializer.Deserialize<Dictionary<int, HairAccessoryInfo>>((byte[])loadedHairAccessories);
-                }
-
-                if (MakerAPI.InsideAndLoaded)
-                {
-                    if (InitHairAccessoryInfo(AccessoriesApi.SelectedMakerAccSlot))
+                    var data = GetCoordinateExtendedData(coordinate);
+                    if (data != null && data.data.TryGetValue("CoordinateHairAccessories", out var loadedHairAccessories) && loadedHairAccessories != null)
                     {
-                        //switching to a hair accessory that previously had no data. Meaning this card was made before this plugin. ColorMatch and HairGloss should be off.
-                        SetColorMatch(false);
-                        SetHairGloss(false);
+                        if (HairAccessories.ContainsKey(CurrentCoordinateIndex))
+                            HairAccessories[CurrentCoordinateIndex].Clear();
+                        else
+                            HairAccessories[CurrentCoordinateIndex] = new Dictionary<int, HairAccessoryInfo>();
+
+                        HairAccessories[CurrentCoordinateIndex] = MessagePackSerializer.Deserialize<Dictionary<int, HairAccessoryInfo>>((byte[])loadedHairAccessories);
                     }
 
-                    InitCurrentSlot(this);
+                    if (MakerAPI.InsideAndLoaded)
+                    {
+                        if (InitHairAccessoryInfo(AccessoriesApi.SelectedMakerAccSlot))
+                        {
+                            //switching to a hair accessory that previously had no data. Meaning this card was made before this plugin. ColorMatch and HairGloss should be off.
+                            SetColorMatch(false);
+                            SetHairGloss(false);
+                        }
+
+                        InitCurrentSlot(this);
+                    }
                 }
 
                 UpdateAccessories();

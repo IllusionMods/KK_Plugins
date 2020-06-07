@@ -17,7 +17,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.hairaccessorycustomizer";
         public const string PluginName = "Hair Accessory Customizer";
-        public const string Version = "1.1.4";
+        public const string Version = "1.1.5";
         internal static new ManualLogSource Logger;
 
         internal static bool ReloadingChara = false;
