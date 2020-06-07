@@ -449,6 +449,9 @@ namespace KK_Plugins.MaterialEditor
             CoordinateChanging = true;
 
             ChaControl.StartCoroutine(LoadData(true, true, false));
+
+            if (MakerAPI.InsideAndLoaded)
+                UI.Visible = false;
         }
 
         internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
@@ -462,6 +465,10 @@ namespace KK_Plugins.MaterialEditor
             MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
             MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
             MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
+
+            if (MakerAPI.InsideAndLoaded)
+                if (UI.Visible)
+                    MEMaker.Instance?.PopulateListAccessory();
         }
 
         internal void AccessorySelectedSlotChangeEvent(object sender, AccessorySlotEventArgs e)
@@ -469,6 +476,10 @@ namespace KK_Plugins.MaterialEditor
             if (!MakerAPI.InsideAndLoaded) return;
 
             AccessorySelectedSlotChanging = true;
+
+            if (MakerAPI.InsideAndLoaded)
+                if (UI.Visible)
+                    MEMaker.Instance?.PopulateListAccessory();
         }
 
         internal void AccessoryTransferredEvent(object sender, AccessoryTransferEventArgs e)
@@ -501,6 +512,9 @@ namespace KK_Plugins.MaterialEditor
             MaterialFloatPropertyList.AddRange(newAccessoryMaterialFloatPropertyList);
             MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
             MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
+
+            if (MakerAPI.InsideAndLoaded)
+                UI.Visible = false;
 
             ChaControl.StartCoroutine(LoadData(true, true, false));
         }
@@ -538,6 +552,10 @@ namespace KK_Plugins.MaterialEditor
                 MaterialFloatPropertyList.AddRange(newAccessoryMaterialFloatPropertyList);
                 MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
+
+                if (MakerAPI.InsideAndLoaded)
+                    if ((int)e.CopyDestination == CurrentCoordinateIndex)
+                        UI.Visible = false;
             }
         }
 #endif
@@ -557,6 +575,9 @@ namespace KK_Plugins.MaterialEditor
             MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
             MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
             MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
+
+            if (MakerAPI.InsideAndLoaded)
+                UI.Visible = false;
         }
 
         internal void ChangeCustomClothesEvent(int slot)
@@ -580,6 +601,9 @@ namespace KK_Plugins.MaterialEditor
             MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
             MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
             MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
+
+            if (MakerAPI.InsideAndLoaded)
+                UI.Visible = false;
         }
 
         internal void ChangeHairEvent(int slot)
@@ -592,6 +616,9 @@ namespace KK_Plugins.MaterialEditor
             MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair && x.Slot == slot);
             MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair && x.Slot == slot);
             MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair && x.Slot == slot);
+
+            if (MakerAPI.InsideAndLoaded)
+                UI.Visible = false;
         }
         /// <summary>
         /// Refresh the clothes MainTex, typically called after editing colors in the character maker

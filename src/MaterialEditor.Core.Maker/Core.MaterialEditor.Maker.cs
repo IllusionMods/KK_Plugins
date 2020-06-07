@@ -1,5 +1,4 @@
-﻿using BepInEx.Harmony;
-using KKAPI.Maker;
+﻿using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
@@ -27,26 +26,14 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public const string Version = MaterialEditorPlugin.Version;
 
+        internal static MEMaker Instance;
+
         internal void Start()
         {
+            Instance = this;
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
-            AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
-            AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
-            AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
-#if KK
-            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
-#endif
-
-            HarmonyWrapper.PatchAll(typeof(MakerHooks));
         }
-
-        private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => HideUI();
-        private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => HideUI();
-        private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => HideUI();
-#if KK
-        private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => HideUI();
-#endif
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
@@ -129,7 +116,7 @@ namespace KK_Plugins.MaterialEditor
             PopulateList(chaControl.objClothes[index], slot: index);
         }
 
-        private void PopulateListAccessory()
+        internal void PopulateListAccessory()
         {
             var chaControl = MakerAPI.GetCharacterControl();
             int coordinateIndex = MaterialEditorPlugin.GetCharaController(chaControl).CurrentCoordinateIndex;

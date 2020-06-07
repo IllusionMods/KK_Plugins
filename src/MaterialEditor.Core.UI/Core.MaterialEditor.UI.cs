@@ -67,7 +67,7 @@ namespace KK_Plugins.MaterialEditor
 
             MaterialEditorWindow = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
-            HideUI();
+            Visible = false;
             MaterialEditorWindow.gameObject.transform.SetParent(transform);
             MaterialEditorWindow.sortingOrder = 1000;
 
@@ -92,7 +92,7 @@ namespace KK_Plugins.MaterialEditor
 
             var close = UIUtility.CreateButton("CloseButton", drag.transform, "");
             close.transform.SetRect(1f, 0f, 1f, 1f, -20f);
-            close.onClick.AddListener(() => HideUI());
+            close.onClick.AddListener(() => Visible = false);
 
             //X button
             var x1 = UIUtility.CreatePanel("x1", close.transform);
@@ -131,12 +131,26 @@ namespace KK_Plugins.MaterialEditor
         public void RefreshUI(string filterText) => PopulateList(CurrentGameObject, CurrentSlot, filterText);
 
         /// <summary>
-        /// Hide the MaterialEditor UI
+        /// Get or set the MaterialEditor UI visibility
         /// </summary>
-        public static void HideUI()
+        public static bool Visible
         {
-            MaterialEditorWindow?.gameObject?.SetActive(false);
-            TexChangeWatcher?.Dispose();
+            get
+            {
+                if (MaterialEditorWindow?.gameObject != null)
+                    return MaterialEditorWindow.gameObject.activeInHierarchy;
+                return false;
+            }
+            set
+            {
+                if (value)
+                    MaterialEditorWindow?.gameObject?.SetActive(true);
+                else
+                {
+                    MaterialEditorWindow?.gameObject?.SetActive(false);
+                    TexChangeWatcher?.Dispose();
+                }
+            }
         }
 
         private void UISettingChanged(object sender, EventArgs e)
