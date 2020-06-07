@@ -492,6 +492,48 @@ namespace KK_Plugins.MaterialEditor
                 UI.Visible = false;
         }
 
+#if KK
+        internal void ClothingCopiedEvent(int copySource, int copyDestination, List<int> copySlots)
+        {
+            foreach (int slot in copySlots)
+            {
+                MaterialShaderList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
+                RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
+                MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
+                MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
+                MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
+
+                List<MaterialShader> newAccessoryMaterialShaderList = new List<MaterialShader>();
+                List<RendererProperty> newAccessoryRendererPropertyList = new List<RendererProperty>();
+                List<MaterialFloatProperty> newAccessoryMaterialFloatPropertyList = new List<MaterialFloatProperty>();
+                List<MaterialColorProperty> newAccessoryMaterialColorPropertyList = new List<MaterialColorProperty>();
+                List<MaterialTextureProperty> newAccessoryMaterialTexturePropertyList = new List<MaterialTextureProperty>();
+
+                foreach (var property in MaterialShaderList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
+                    newAccessoryMaterialShaderList.Add(new MaterialShader(property.ObjectType, copyDestination, slot, property.MaterialName, property.ShaderName, property.ShaderNameOriginal, property.RenderQueue, property.RenderQueueOriginal));
+                foreach (var property in RendererPropertyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
+                    newAccessoryRendererPropertyList.Add(new RendererProperty(property.ObjectType, copyDestination, slot, property.RendererName, property.Property, property.Value, property.ValueOriginal));
+                foreach (var property in MaterialFloatPropertyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
+                    newAccessoryMaterialFloatPropertyList.Add(new MaterialFloatProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
+                foreach (var property in MaterialColorPropertyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
+                    newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
+                foreach (var property in MaterialTexturePropertyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
+                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal));
+
+                MaterialShaderList.AddRange(newAccessoryMaterialShaderList);
+                RendererPropertyList.AddRange(newAccessoryRendererPropertyList);
+                MaterialFloatPropertyList.AddRange(newAccessoryMaterialFloatPropertyList);
+                MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
+                MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
+
+                if (copyDestination == CurrentCoordinateIndex)
+                    UI.Visible = false;
+
+                ChaControl.StartCoroutine(LoadData(true, true, false));
+            }
+        }
+#endif
+
         internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
         {
             if (AccessorySelectedSlotChanging) return;
