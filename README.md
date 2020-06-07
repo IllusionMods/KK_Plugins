@@ -16,7 +16,7 @@ Plugins for Koikatsu, EmotionCreators, and AI Girl
 Plays a sound when the Chara Maker finishes loading. Useful if you spend the load time alt-tabbed.
 
 #### StudioSceneLoadedSound
-**v1.1 - [Download](https://www.patreon.com/posts/32459105)** - For Koikatsu and AI Girl<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/32459105)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.<br/>
 
@@ -52,7 +52,7 @@ v1.5.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 #### InvisibleBody
-**v1.3.2 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
+**v1.3.2 - [Download](https://www.patreon.com/posts/28424780)** - For Koikatsu, Emotion Creators, AI Girl, and Honey Select 2<br/>
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
 
@@ -69,7 +69,7 @@ v1.3.2 Fixed Studio items turning invisible in AI version<br/>
 </details>
 
 #### InputHotkeyBlock
-**v1.2 - [Download](https://www.patreon.com/posts/29761547)** - For Koikatsu and AI Girl<br/>
+**v1.2 - [Download](https://www.patreon.com/posts/29761547)** - For Koikatsu, EmotionCreators,  AI Girl, and Honey Select 2<br/>
 
 Blocks mod hotkeys from triggering while typing in input fields and prevents clicks inside mod GUIs from advancing the story.
 
@@ -83,7 +83,7 @@ v1.2 Prevents clicks inside mod GUI elements from advancing the story in Koikats
 </details>
 
 #### UncensorSelector
-**v3.9 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, and AI Girl<br/>
+**v3.9 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, AI Girland Honey Select 2<br/>
 
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
 
@@ -143,7 +143,7 @@ v1.5.1 Fixed text wrapping, clarified config description<br/>
 </details>
 
 #### AnimationController
-**v2.2 - [Download](https://www.patreon.com/posts/31229780)** - For Koikatsu and AI Girl<br/>
+**v2.2 - [Download](https://www.patreon.com/posts/31229780)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 *Koikatsu version: Mostly obsolete. [NodeConstraints](https://www.patreon.com/posts/26357789) does what this plugin does but better.*
 
 Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.<br/>
@@ -181,7 +181,7 @@ Virgins in H scenes will appear to have slightly shaking eye highlights.<br/>
 Generates random characters in the character maker.<br/>
 
 #### PoseFolders
-**v1.0 - [Download](https://www.patreon.com/posts/31127973)** - For Koikatsu and AI Girl<br/>
+**v1.0 - [Download](https://www.patreon.com/posts/31127973)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Create new folders in userdata/studio/pose and place the pose data inside them. Folders will show up in your list of poses in Studio.<br/>
 
@@ -229,7 +229,7 @@ v1.1.1 Create card folders if missing to prevent errors<br/>
 </details>
 
 #### Colliders
-**v1.1 - [Download](https://www.patreon.com/posts/35243498)** - For Koikatsu<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/35243498)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Adds floor, breast, hand, and skirt colliders. Colliders can be toggled on and off in Studio and their state saves with the scene.<br/>
 
@@ -286,12 +286,12 @@ v1.1 Fixed compatibility issues with UncensorSelector using male body type on fe
 </details>
 
 #### StudioObjectMoveHotkeys
-**v1.0 - [Download](https://www.patreon.com/posts/28743884)** - For Koikatsu and AI Girl<br/>
+**v1.0 - [Download](https://www.patreon.com/posts/28743884)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Allows you to move objects in studio using hotkeys. Press Y/U/I to move along the X/Y/Z axes. You can also use these keys for rotating and scaling, and when scaling you can also press T to scale all axes at once. Hotkeys can be configured in plugin settings.<br/>
 
 #### FKIK
-**v1.1 - [Download](https://www.patreon.com/posts/29928651)** - For Koikatsu and AI Girl<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/29928651)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Enables FK and IK at the same time. Pose characters in IK mode while still being able to adjust skirts, hair, and hands as if they were in FK mode.<br/>
 
@@ -300,7 +300,7 @@ v1.1 Fix toggles going out of sync, FK being disabled when switching between cha
 </details>
 
 #### AnimationOverdrive
-**v1.1 - [Download](https://www.patreon.com/posts/31292617)** - For Koikatsu and AI Girl<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/31292617)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Type in to the animation speed box in Studio for gimmicks and character animations to go past the normal limit of 3.<br/>
 
@@ -309,7 +309,7 @@ v1.1 AI Girl port, capped animation speed at 1000 to prevent animations breaking
 </details>
 
 #### CharacterExport
-**v1.0 - [Download](https://www.patreon.com/posts/32434052)** - For Koikatsu, EmotionCreators, and AI Girl<br/>
+**v1.0 - [Download](https://www.patreon.com/posts/32434052)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
 
 Press Ctrl+E (configurable) to export all loaded character. Used for exporting characters from Studio scenes and such.<br/>
 
@@ -323,7 +323,7 @@ v2.0 Added a guide object instead of hotkeys for positioning<br/>
 </details>
 
 #### StudioSceneSettings
-**v1.0.1 - [Download](https://www.patreon.com/posts/32713423)** - For Koikatsu<br/>
+**v1.0.1 - [Download](https://www.patreon.com/posts/32713423)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 Allows you to adjust a few more settings for scenes. Changes save and load with the scene data.<br/>
 
 <details><summary>Settings</summary>
