@@ -480,6 +480,8 @@ namespace KK_Plugins.MaterialEditor
                         FloatSlider.onValueChanged.RemoveAllListeners();
                         FloatInputField.onEndEdit.RemoveAllListeners();
 
+                        FloatSlider.minValue = item.FloatValueSliderMin;
+                        FloatSlider.maxValue = item.FloatValueSliderMax;
                         FloatSlider.value = item.FloatValue;
                         FloatInputField.text = item.FloatValue.ToString();
 
