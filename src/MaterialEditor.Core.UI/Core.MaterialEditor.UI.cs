@@ -213,6 +213,8 @@ namespace KK_Plugins.MaterialEditor
 
                 var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer");
                 rendererItem.RendererName = rend.NameFormatted();
+                rendererItem.ExportUVOnClick = delegate { Export.ExportUVMaps(rend); };
+                rendererItem.ExportObjOnClick = delegate { Export.ExportObj(rend); };
                 items.Add(rendererItem);
 
                 //Renderer Enabled

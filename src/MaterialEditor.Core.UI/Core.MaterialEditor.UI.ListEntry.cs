@@ -99,6 +99,8 @@ namespace KK_Plugins.MaterialEditor
                     case ItemInfo.RowItemType.Renderer:
                         ShowRenderer();
                         SetLabelText(RendererLabel, item.LabelText);
+                        ExportUVButton.onClick.AddListener(delegate { item.ExportUVOnClick(); });
+                        ExportObjButton.onClick.AddListener(delegate { item.ExportObjOnClick(); });
                         RendererText.text = item.RendererName;
                         break;
                     case ItemInfo.RowItemType.RendererEnabled:

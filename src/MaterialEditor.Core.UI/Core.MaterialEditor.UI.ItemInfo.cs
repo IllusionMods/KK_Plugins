@@ -9,6 +9,9 @@ namespace KK_Plugins.MaterialEditor
         public string LabelText { get; set; }
 
         public string RendererName { get; set; }
+        public Action ExportUVOnClick { get; set; }
+        public Action ExportObjOnClick { get; set; }
+
         public int RendererEnabled { get; set; }
         public int RendererEnabledOriginal { get; set; }
         public Action<int> RendererEnabledOnChange { get; set; }
