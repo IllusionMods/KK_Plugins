@@ -24,7 +24,7 @@ namespace KK_Plugins
 
             private bool applyColliders;
             private bool applyBreastColliders;
-            private bool applySkirtColliders;
+            internal bool applySkirtColliders;
             private bool applyFloorCollider;
             private bool didSetStates = false;
 
@@ -172,6 +172,7 @@ namespace KK_Plugins
             public void ApplySkirtColliders() => applyColliders = applySkirtColliders = true;
             public void ApplyFloorCollider() => applyColliders = applyFloorCollider = true;
 
+#if KK
             /// <summary>
             /// Applies the floor collider to the dynamic bone
             /// </summary>
@@ -187,6 +188,7 @@ namespace KK_Plugins
                 else
                     dynamicBone.m_Colliders.Remove(FloorCollider);
             }
+#endif
 
             /// <summary>
             /// Applies the floor collider to the breast dynamic bone

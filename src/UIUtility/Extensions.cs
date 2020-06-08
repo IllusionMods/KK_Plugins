@@ -14,7 +14,9 @@ namespace UILib
         private static readonly MethodInfo scrollbarSetMethod;
 
         private static readonly FieldInfo dropdownValueField;
+#if KK
         private static readonly MethodInfo dropdownRefreshMethod;  // Unity 5.2 <= only
+#endif
 
         static Extensions()
         {
@@ -29,7 +31,9 @@ namespace UILib
 
             // Find the Dropdown's value field and its' Refresh method
             dropdownValueField = (typeof(Dropdown)).GetField("m_Value", BindingFlags.NonPublic | BindingFlags.Instance);
+#if KK
             dropdownRefreshMethod = (typeof(Dropdown)).GetMethod("Refresh", BindingFlags.NonPublic | BindingFlags.Instance);  // Unity 5.2 <= only
+#endif
         }
 
         internal static void ExecuteDelayed(this MonoBehaviour self, Action action, int waitCount = 1)

@@ -112,14 +112,11 @@ namespace KK_Plugins.MaterialEditor
         private void PopulateListClothes(int index)
         {
             var chaControl = MakerAPI.GetCharacterControl();
-            int coordinateIndex = MaterialEditorPlugin.GetCharaController(chaControl).CurrentCoordinateIndex;
             PopulateList(chaControl.objClothes[index], slot: index);
         }
 
         internal void PopulateListAccessory()
         {
-            var chaControl = MakerAPI.GetCharacterControl();
-            int coordinateIndex = MaterialEditorPlugin.GetCharaController(chaControl).CurrentCoordinateIndex;
             var chaAccessoryComponent = AccessoriesApi.GetAccessory(MakerAPI.GetCharacterControl(), AccessoriesApi.SelectedMakerAccSlot);
             PopulateList(chaAccessoryComponent?.gameObject, slot: AccessoriesApi.SelectedMakerAccSlot);
         }

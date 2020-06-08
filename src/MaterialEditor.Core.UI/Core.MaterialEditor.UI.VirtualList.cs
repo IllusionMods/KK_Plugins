@@ -154,7 +154,7 @@ namespace KK_Plugins.MaterialEditor
             _dirty = true;
         }
 
-        private void Update()
+        internal void Update()
         {
             var scrollPosition = ScrollRect.content.localPosition.y;
             // How many items are not visible in current view

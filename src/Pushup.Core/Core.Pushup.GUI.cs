@@ -257,6 +257,7 @@ namespace KK_Plugins
             PushNippleDepthSlider.MakerSlider.SetValue(infoBase.NippleDepth);
         }
 
+#if KK
         private void CopySlidersToCoordinate(int coordinateIndex, bool copyBasic, bool copyAdvanced)
         {
             if (_pushUpController.CurrentCoordinateIndex == coordinateIndex) return;
@@ -266,6 +267,7 @@ namespace KK_Plugins
             else
                 _pushUpController.CopyTopData(_pushUpController.CurrentCoordinateIndex, coordinateIndex, copyBasic, copyAdvanced);
         }
+#endif
 
         private PushupSlider MakeSlider(MakerCategory category, string sliderName, RegisterSubCategoriesEvent e, float defaultValue, bool useConfigMinMax = false)
         {

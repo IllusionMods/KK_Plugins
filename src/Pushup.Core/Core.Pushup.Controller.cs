@@ -160,11 +160,13 @@ namespace KK_Plugins
                 RecalculateBody();
             }
 
+#if KK
             private void OnCoordinateChanged()
             {
                 if (MakerAPI.InsideAndLoaded)
                     ReloadPushup();
             }
+#endif
 
             /// <summary>
             /// Recalculate the body based on the clothing state and Pushup settings.
