@@ -57,10 +57,14 @@ namespace KK_Plugins
         {
             SetClothingUnlocked(false);
 
-            var data = GetCoordinateExtendedData(coordinate);
-            if (data != null)
-                if (data.data.TryGetValue(nameof(ClothingUnlocked) + "Coordinate", out var loadedClothingUnlocked))
-                    SetClothingUnlocked((bool)loadedClothingUnlocked);
+            var loadFlags = MakerAPI.GetCoordinateLoadFlags();
+            if (loadFlags == null || loadFlags.Clothes)
+            {
+                var data = GetCoordinateExtendedData(coordinate);
+                if (data != null)
+                    if (data.data.TryGetValue(nameof(ClothingUnlocked) + "Coordinate", out var loadedClothingUnlocked))
+                        SetClothingUnlocked((bool)loadedClothingUnlocked);
+            }
 
             base.OnCoordinateBeingLoaded(coordinate, maintainState);
         }
