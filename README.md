@@ -161,13 +161,14 @@ v2.2 AI version, window position adjustment<br/>
 </details>
 
 #### ClothingUnlocker
-**v2.0 - [Download](https://www.patreon.com/posts/37053602)** - For Koikatsu and EmotionCreators<br/>
+**v2.0.1 - [Download](https://www.patreon.com/posts/37053602)** - For Koikatsu and EmotionCreators<br/>
 
 Allows gender restricted clothing to be used on all characters. Also allows you to unlock bras or skirts with any top on a per-character, per-ourfit basis. This setting saves and loads with the character card or coordinate card to ensure compatibility.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Added clothing unlocking for bras/skirts with any top<br/>
 v2.0 Unlocking bra/skirt per character<br/>
+v2.0.1 Fixed unlock state not saving and loading to coordinates properly<br/>
 </details>
 
 #### EyeShaking
