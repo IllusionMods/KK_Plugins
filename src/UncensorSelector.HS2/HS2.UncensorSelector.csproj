@@ -59,8 +59,9 @@
       <HintPath>..\..\packages\OverlayMods.HoneySelect2.5.2.0\lib\net46\HS2_OverlayMods.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HS2_Sideloader">
-      <HintPath>..\..\lib\HS2_Sideloader.dll</HintPath>
+    <Reference Include="HS2_Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sideloader.HoneySelect2.15.1.0\lib\net46\HS2_Sideloader.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="IL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29\lib\net46\IL.dll</HintPath>
