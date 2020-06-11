@@ -106,6 +106,12 @@ namespace KK_Plugins
                     newMats.Add(LiquidMat);
 
                     ChaControl.cmpBody.targetCustom.rendBody.materials = newMats.ToArray();
+
+                    //Needed for loading scenes in Studio
+                    ChaControl.cmpBody.targetCustom.rendBody.materials[1].SetFloat(ChaShader.siruFrontTop, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontTop) / 2);
+                    ChaControl.cmpBody.targetCustom.rendBody.materials[1].SetFloat(ChaShader.siruFrontBot, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontBot) / 2);
+                    ChaControl.cmpBody.targetCustom.rendBody.materials[1].SetFloat(ChaShader.siruBackTop, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackTop) / 2);
+                    ChaControl.cmpBody.targetCustom.rendBody.materials[1].SetFloat(ChaShader.siruBackBot, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackBot) / 2);
                 }
 #endif
             }
