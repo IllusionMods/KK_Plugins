@@ -19,7 +19,7 @@ namespace KK_Plugins.MaterialEditor
 #if AI || HS2
         public static HashSet<string> BodyParts = new HashSet<string> {
             "o_eyebase_L", "o_eyebase_R", "o_eyelashes", "o_eyeshadow", "o_head", "o_namida", "o_tang", "o_tooth", "o_body_cf", "o_mnpa", "o_mnpb", "cm_o_dan00", "o_tang",
-            "cm_o_dan00", "o_tang", "o_silhouette_cf", "o_body_cf", "o_head" };
+            "cm_o_dan00", "o_tang", "o_silhouette_cf", "o_body_cf", "o_body_cm", "o_head" };
 #else
         public static HashSet<string> BodyParts = new HashSet<string> {
             "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang", "n_tang_silhouette",  "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_mayuge", "cf_Ohitomi_L", "cf_Ohitomi_R",
