@@ -283,12 +283,13 @@ v2.0.3 Fixed UV and obj export buttons again<br/>
 </details>
 
 #### MaleJuice
-**v1.1 - [Download](https://www.patreon.com/posts/28608195)** - For Koikatsu<br/>
+**v1.2 - [Download](https://www.patreon.com/posts/28608195)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Enables juice textures for males in H scenes and Studio.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Fixed compatibility issues with UncensorSelector using male body type on female characters<br/>
+v1.2 AI and HS2 version<br/>
 </details>
 
 #### StudioObjectMoveHotkeys
@@ -350,6 +351,12 @@ v1.1.2 Unlock sliders when chest tab is clicked after a delay to prevent sliders
 v1.1.3.1 Fix Pushup not working properly in main game mode, fix Pushup not being applied on character maker load<br/>
 v1.2 EmotionCreators version<br/>
 </details>
+
+#### PoseQuickLoad
+**v1.0 - [Download](https://www.patreon.com/posts/35871646)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+A plugin that lets you load saved poses in Studio just by clicking on the pose. Vanilla behavior requires you to select the pose and then press the load button which can be pretty tedious if you have a lot of poses, especially since saved poses have no preview image.<br/>
+
+Note: You MUST enable this option in the plugin settings (press F1 and search the plugin). This plugin is disabled by default so people don't accidentally load poses when they don't intend to, overwriting all their posing work. Use with caution.<br/>
 
 #### TranslationSync
 #### TextResourceRedirector
