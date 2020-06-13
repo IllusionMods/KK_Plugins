@@ -54,10 +54,6 @@ namespace KK_Plugins
             TextColor = Config.Bind("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, new ConfigDescription("Subtitle text color.", null, new ConfigurationManagerAttributes { Order = 3 }));
             OutlineColor = Config.Bind("Config", "Outline Color", Color.black, new ConfigDescription("Subtitle text outline color.", null, new ConfigurationManagerAttributes { Order = 2 }));
 
-#if HS
-            if (Application.productName != "HoneySelect") return;
-#endif
-
             LoadSubtitles();
 
             HarmonyWrapper.PatchAll(typeof(Hooks));
