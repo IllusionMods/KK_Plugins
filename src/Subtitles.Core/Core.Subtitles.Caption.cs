@@ -40,15 +40,26 @@ namespace KK_Plugins
                 vlg.padding = new RectOffset(0, 0, 0, TextOffset.Value);
             }
 
-            public static void DisplaySubtitle(LoadAudioBase voice, string text, string speaker = "", bool init = true)
+#if HS2
+            public static void DisplaySubtitle(AudioSource voice, string assetName, string text, bool init = true)
             {
                 if (!ShowSubtitles.Value) return;
                 if (text.IsNullOrWhiteSpace()) return;
                 if (Pane == null && !init) return;
 
-                voice.StartCoroutine(_DisplaySubtitle(voice, text, speaker, init));
+                Instance.StartCoroutine(_DisplaySubtitle(voice.gameObject, assetName, text, init));
             }
-            private static IEnumerator _DisplaySubtitle(LoadAudioBase voice, string text, string speaker, bool init)
+#else
+            public static void DisplaySubtitle(LoadAudioBase voice, string text, bool init = true)
+            {
+                if (!ShowSubtitles.Value) return;
+                if (text.IsNullOrWhiteSpace()) return;
+                if (Pane == null && !init) return;
+
+                Instance.StartCoroutine(_DisplaySubtitle(voice.gameObject, voice.assetName, text, init));
+            }
+#endif
+            private static IEnumerator _DisplaySubtitle(GameObject voice, string assetName, string text, bool init)
             {
                 if (init)
                 {
@@ -60,7 +71,7 @@ namespace KK_Plugins
                 int fsize = FontSize.Value;
                 fsize = (int)(fsize < 0 ? (fsize * Screen.height / -100.0) : fsize);
 
-                GameObject subtitle = new GameObject(voice.assetName);
+                GameObject subtitle = new GameObject(assetName);
                 subtitle.transform.SetParent(Pane.transform);
 
                 var rect = subtitle.GetComponent<RectTransform>() ?? subtitle.AddComponent<RectTransform>();
@@ -80,9 +91,9 @@ namespace KK_Plugins
                 subOutline.effectColor = OutlineColor.Value;
                 subOutline.effectDistance = new Vector2(OutlineThickness.Value, OutlineThickness.Value);
 
-                subtitleText.text = speaker.IsNullOrEmpty() ? text : $"{speaker}:{text}";
+                subtitleText.text = text;
 
-                Logger.LogDebug($"[{voice.assetName}]:{text}");
+                Logger.LogDebug($"{text}");
 
                 voice.OnDestroyAsObservable().Subscribe(delegate (Unit _)
                 {

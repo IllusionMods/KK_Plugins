@@ -20,6 +20,9 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
         public const string Version = "1.6";
+        public const string PluginNameInternal = Constants.Prefix + "_Subtitles";
+
+        internal static Subtitles Instance;
         internal static new ManualLogSource Logger;
 
         internal static Dictionary<string, string> SubtitleDictionary = new Dictionary<string, string>();
@@ -40,6 +43,7 @@ namespace KK_Plugins
         internal void Awake()
         {
             Logger = base.Logger;
+            Instance = this;
 
             ShowSubtitles = Config.Bind("Config", "Show Subtitles", true, "Enable or disable showing subtitles.");
             FontName = Config.Bind("Config", "Font Name", "Arial", "Name of the font to use for subtitle text.");
