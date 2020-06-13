@@ -29,7 +29,6 @@ namespace KK_Plugins
 
         #region ConfigMgr
         public static ConfigEntry<bool> ShowSubtitles { get; private set; }
-        public static ConfigEntry<string> FontName { get; private set; }
         public static ConfigEntry<int> FontSize { get; private set; }
         public static ConfigEntry<FontStyle> FontStyle { get; private set; }
         public static ConfigEntry<TextAnchor> TextAlign { get; private set; }
@@ -46,7 +45,6 @@ namespace KK_Plugins
             Instance = this;
 
             ShowSubtitles = Config.Bind("Config", "Show Subtitles", true, "Enable or disable showing subtitles.");
-            FontName = Config.Bind("Config", "Font Name", "Arial", "Name of the font to use for subtitle text.");
             FontSize = Config.Bind("Config", "Font Size", -5, "Font size of subtitles.");
             FontStyle = Config.Bind("Config", "Font Style", UnityEngine.FontStyle.Bold, "Font style of subtitles, i.e. bold, italic, etc.");
             TextAlign = Config.Bind("Config", "Text Align", TextAnchor.LowerCenter, "Text alignment of subtitles.");

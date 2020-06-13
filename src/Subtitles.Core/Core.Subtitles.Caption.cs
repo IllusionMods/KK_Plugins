@@ -67,7 +67,7 @@ namespace KK_Plugins
                     yield return null;
                 }
 
-                Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"{FontName.Value}.ttf");
+                Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"Arial.ttf");
                 int fsize = FontSize.Value;
                 fsize = (int)(fsize < 0 ? (fsize * Screen.height / -100.0) : fsize);
 
