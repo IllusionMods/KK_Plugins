@@ -127,8 +127,7 @@ v3.9.1 Fix error in Studio resulting from having no uncensors<br/>
 </details>
 
 #### Subtitles
-**v1.4 - [Download](https://www.patreon.com/posts/27699376)** - For Koikatsu<br/>
-**v1.5.1 - [Download](https://www.patreon.com/posts/27699376)** - For AI Girl<br/>
+**v1.6 - [Download](https://www.patreon.com/posts/27699376)** - For Koikatsu, AI Girl, Honey Select, and Honey Select 2<br/>
 
 For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
 For AI Girl trial version, adds subtitles for the character maker.<br/>
@@ -140,6 +139,7 @@ v1.3 Subtitles for character maker<br/>
 v1.4 Fixed subtitles in the character maker being under the UI<br/>
 v1.5 AI Girl port<br/>
 v1.5.1 Fixed text wrapping, clarified config description<br/>
+v1.6 HS2 port, removed FontName setting<br/>
 </details>
 
 #### AnimationController
