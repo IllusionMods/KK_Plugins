@@ -19,7 +19,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.malejuice";
         public const string PluginName = "Male Juice";
-        public const string Version = "1.2";
+        public const string Version = "1.2.1";
         public const string PluginNameInternal = Constants.Prefix + "_MaleJuice";
 
 #if KK
@@ -99,19 +99,18 @@ namespace KK_Plugins
                 if (ChaControl.customMatBody.GetTexture("_liquidmask") == null)
                     ChaControl.customMatBody.SetTexture("_liquidmask", LiquidMask);
 #else
-                if (ChaControl.cmpBody.targetCustom.rendBody.materials.Length == 1)
+                if (ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials.Length == 1)
                 {
                     List<Material> newMats = new List<Material>();
-                    newMats.Add(ChaControl.cmpBody.targetCustom.rendBody.materials[0]);
-                    newMats.Add(LiquidMat);
-
-                    ChaControl.cmpBody.targetCustom.rendBody.materials = newMats.ToArray();
+                    newMats.Add(ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[0]);
+                    newMats.Add(Instantiate(LiquidMat));
+                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials = newMats.ToArray();
 
                     //Needed for loading scenes in Studio
-                    ChaControl.cmpBody.targetCustom.rendBody.materials[1].SetFloat(ChaShader.siruFrontTop, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontTop) / 2);
-                    ChaControl.cmpBody.targetCustom.rendBody.materials[1].SetFloat(ChaShader.siruFrontBot, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontBot) / 2);
-                    ChaControl.cmpBody.targetCustom.rendBody.materials[1].SetFloat(ChaShader.siruBackTop, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackTop) / 2);
-                    ChaControl.cmpBody.targetCustom.rendBody.materials[1].SetFloat(ChaShader.siruBackBot, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackBot) / 2);
+                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruFrontTop, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontTop) / 2);
+                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruFrontBot, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontBot) / 2);
+                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruBackTop, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackTop) / 2);
+                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruBackBot, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackBot) / 2);
                 }
 #endif
             }
