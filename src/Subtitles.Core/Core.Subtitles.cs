@@ -19,7 +19,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
-        public const string Version = "1.6";
+        public const string Version = "1.7";
         public const string PluginNameInternal = Constants.Prefix + "_Subtitles";
 
         internal static Subtitles Instance;
@@ -45,7 +45,7 @@ namespace KK_Plugins
             Instance = this;
 
             ShowSubtitles = Config.Bind("Config", "Show Subtitles", true, new ConfigDescription("Enable or disable showing subtitles.", null, new ConfigurationManagerAttributes { Order = 10 }));
-            SubtitleDirectory = Config.Bind("Config", "Subtitle Directory", $"Translation\\en\\{PluginNameInternal}", new ConfigDescription("Directory containing subtitle xml info, relative to the BepInEx folder.", null, new ConfigurationManagerAttributes { Order = 9 }));
+            SubtitleDirectory = Config.Bind("Config", "Subtitle Directory", $"Translation\\{PluginNameInternal}", new ConfigDescription("Directory containing subtitle xml info, relative to the BepInEx folder.", null, new ConfigurationManagerAttributes { Order = 9 }));
             FontSize = Config.Bind("Config", "Font Size", -5, new ConfigDescription("Font size of subtitles.", null, new ConfigurationManagerAttributes { Order = 8 }));
             FontStyle = Config.Bind("Config", "Font Style", UnityEngine.FontStyle.Bold, new ConfigDescription("Font style of subtitles, i.e. bold, italic, etc.", null, new ConfigurationManagerAttributes { Order = 7 }));
             TextAlign = Config.Bind("Config", "Text Align", TextAnchor.LowerCenter, new ConfigDescription("Text alignment of subtitles.", null, new ConfigurationManagerAttributes { Order = 6 }));
