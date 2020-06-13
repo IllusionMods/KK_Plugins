@@ -283,13 +283,14 @@ v2.0.3 Fixed UV and obj export buttons again<br/>
 </details>
 
 #### MaleJuice
-**v1.2 - [Download](https://www.patreon.com/posts/28608195)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+**v1.2.1 - [Download](https://www.patreon.com/posts/28608195)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Enables juice textures for males in H scenes and Studio.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Fixed compatibility issues with UncensorSelector using male body type on female characters<br/>
 v1.2 AI and HS2 version<br/>
+v1.2.1 Fixed an error due to mishandled materials<br/>
 </details>
 
 #### StudioObjectMoveHotkeys
