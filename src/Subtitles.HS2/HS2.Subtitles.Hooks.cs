@@ -18,8 +18,14 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), nameof(Manager.Voice.OncePlayChara), typeof(Manager.Voice.Loader))]
             internal static void OncePlayCharaPostfix(Manager.Voice.Loader loader, AudioSource __result)
             {
-                if (HSceneInstance?.ctrlVoice == null) return;
+                if (HSceneInstance?.ctrlVoice != null)
+                    DisplayHSubtitle(loader, __result);
+                else if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
+                    Caption.DisplaySubtitle(__result, loader.asset, text);
+            }
 
+            private static void DisplayHSubtitle(Manager.Voice.Loader loader, AudioSource audioSource)
+            {
                 Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[] dicdiclstVoiceList = (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[])Traverse.Create(HSceneInstance.ctrlVoice).Field("dicdiclstVoiceList").GetValue();
 
                 foreach (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>> a in dicdiclstVoiceList)
@@ -29,7 +35,7 @@ namespace KK_Plugins
                                 foreach (var e in d.Values)
                                     if (e.nameFile == loader.asset && e.pathAsset == loader.bundle)
                                     {
-                                        Caption.DisplaySubtitle(__result, e.nameFile, e.word);
+                                        Caption.DisplaySubtitle(audioSource, e.nameFile, e.word);
                                         return;
                                     }
             }
