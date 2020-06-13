@@ -18,6 +18,8 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), nameof(Manager.Voice.OncePlayChara), typeof(Manager.Voice.Loader))]
             internal static void OncePlayCharaPostfix(Manager.Voice.Loader loader, AudioSource __result)
             {
+                if (HSceneInstance?.ctrlVoice == null) return;
+
                 Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[] dicdiclstVoiceList = (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[])Traverse.Create(HSceneInstance.ctrlVoice).Field("dicdiclstVoiceList").GetValue();
 
                 foreach (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>> a in dicdiclstVoiceList)
