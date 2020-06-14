@@ -319,16 +319,14 @@ namespace KK_Plugins.MaterialEditor
             var loadFlags = MakerAPI.GetCoordinateLoadFlags();
             if (loadFlags == null)
             {
-                RendererPropertyList.Clear();
-                MaterialFloatPropertyList.Clear();
-                MaterialColorPropertyList.Clear();
-                MaterialTexturePropertyList.Clear();
-                MaterialShaderList.Clear();
+                RendererPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Clothing || x.ObjectType == ObjectType.Accessory) && x.CoordinateIndex == CurrentCoordinateIndex);
+                MaterialFloatPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Clothing || x.ObjectType == ObjectType.Accessory) && x.CoordinateIndex == CurrentCoordinateIndex);
+                MaterialColorPropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Clothing || x.ObjectType == ObjectType.Accessory) && x.CoordinateIndex == CurrentCoordinateIndex);
+                MaterialTexturePropertyList.RemoveAll(x => (x.ObjectType == ObjectType.Clothing || x.ObjectType == ObjectType.Accessory) && x.CoordinateIndex == CurrentCoordinateIndex);
+                MaterialShaderList.RemoveAll(x => (x.ObjectType == ObjectType.Clothing || x.ObjectType == ObjectType.Accessory) && x.CoordinateIndex == CurrentCoordinateIndex);
 
                 objectTypesToLoad.Add(ObjectType.Accessory);
-                objectTypesToLoad.Add(ObjectType.Character);
                 objectTypesToLoad.Add(ObjectType.Clothing);
-                objectTypesToLoad.Add(ObjectType.Hair);
             }
             else
             {
