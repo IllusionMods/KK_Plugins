@@ -24,13 +24,12 @@ namespace KK_Plugins
             {
                 if (GUIUtility.keyboardControl > 0)
                     return false; //UI elements from some mods
-                if (EventSystem.current?.currentSelectedGameObject != null)
-                {
-                    if (EventSystem.current.currentSelectedGameObject.GetComponent<TMPro.TMP_InputField>() != null)
-                        return false; //Size fields in chara maker, coordinate fields in Studio
-                    if (EventSystem.current.currentSelectedGameObject.GetComponent<InputField>() != null)
-                        return false; //All other InputFields
-                }
+#if !PH
+                if (EventSystem.current?.currentSelectedGameObject?.GetComponent<TMPro.TMP_InputField>() != null)
+                    return false; //Size fields in chara maker, coordinate fields in Studio
+#endif
+                if (EventSystem.current?.currentSelectedGameObject?.GetComponent<InputField>() != null)
+                    return false; //All other InputFields
                 return true;
             }
         }

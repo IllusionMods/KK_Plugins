@@ -71,7 +71,7 @@ namespace KK_Plugins
 #endif
         }
 
-#if !HS
+#if !HS && !PH
         public static IEnumerable<Renderer> GetRenderers(this Studio.ItemComponent itemComponent)
         {
 #if KK
