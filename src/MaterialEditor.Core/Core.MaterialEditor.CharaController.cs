@@ -394,6 +394,9 @@ namespace KK_Plugins.MaterialEditor
 
             CoordinateChanging = true;
 
+            if (MakerAPI.InsideAndLoaded)
+                UI.Visible = false;
+
             ChaControl.StartCoroutine(LoadData(true, true, false));
             base.OnCoordinateBeingLoaded(coordinate, maintainState);
         }
