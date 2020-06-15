@@ -240,7 +240,7 @@ v1.1 Major rewrite, many new features<br/>
 </details>
 
 #### MaterialEditor
-**v2.0.4 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
+**v2.0.5 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
 
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
@@ -281,6 +281,7 @@ v2.0.1 Fixed UV and obj export buttons, fixed missing hook for refreshing change
 v2.0.2 Support for copying clothes, coordinate load flags, fixed textures not loading for coordiantes<br/>
 v2.0.3 Fixed UV and obj export buttons again<br/>
 v2.0.4 Fixed loading coordinates in Studio<br/>
+v2.0.5 Fixed wrong coordinate index for character and hair edits<br/>
 </details>
 
 #### MaleJuice
