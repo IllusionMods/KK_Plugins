@@ -38,7 +38,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string Version = "2.0.5";
+        public const string Version = "2.0.6";
         internal static new ManualLogSource Logger;
 
         internal const string FileExt = ".png";
@@ -196,7 +196,7 @@ namespace KK_Plugins.MaterialEditor
         internal static bool CheckBlacklist(string materialName, string propertyName)
         {
             if (materialName == "cf_m_body" || materialName == "cm_m_body")
-                if (propertyName == "alpha_a" || propertyName == "alpha_b")
+                if (propertyName == "alpha_a" || propertyName == "alpha_b" || propertyName == "AlphaMask")
                     return true;
             return false;
         }

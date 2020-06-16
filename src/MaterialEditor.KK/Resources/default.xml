@@ -286,7 +286,7 @@
     <Property Name="SpecularPowerNail" Type="Float" Range="0,1" />
   </Shader>
   <Shader Name="Shader Forge/main_skin" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_skin">
-    <Property Name="AnimationMask" Type="Texture" />
+    <Property Name="AlphaMask" Type="Texture" />
     <Property Name="DetailMask" Type="Texture" />
     <Property Name="LineMask" Type="Texture" />
     <Property Name="liquidmask" Type="Texture" />
