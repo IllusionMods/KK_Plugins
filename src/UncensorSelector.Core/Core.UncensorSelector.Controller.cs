@@ -391,6 +391,7 @@ namespace KK_Plugins
                 }
 
                 UpdateSkinOverlay();
+                UpdateMonochromeBody();
             }
             /// <summary>
             /// Update the mesh of the penis and set the visibility
@@ -558,6 +559,17 @@ namespace KK_Plugins
 
                 _ksox.UpdateTexture(TexType.BodyOver);
                 _ksox.UpdateTexture(TexType.BodyUnder);
+            }
+            /// <summary>
+            /// Disable dick and balls for the monochrome body since the main body already has the parts
+            /// </summary>
+            private void UpdateMonochromeBody()
+            {
+#if AI || HS2
+                foreach (var renderer in ChaControl.objSimpleBody.GetComponentsInChildren<SkinnedMeshRenderer>())
+                    if (PenisParts.Contains(renderer.name) || BallsParts.Contains(renderer.name))
+                        renderer.enabled = false;
+#endif
             }
             /// <summary>
             /// Copy the mesh from one SkinnedMeshRenderer to another. If there is a significant mismatch in the number of bones
