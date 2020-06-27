@@ -39,12 +39,7 @@ namespace KK_Plugins
 
         private IEnumerator LoadJuice()
         {
-            yield return null;
-#if HS2
-            yield return null;
-            yield return null;
-            yield return null;
-#endif
+            yield return new WaitUntil(() => AssetBundleManager.ManifestBundlePack.Count != 0);
 
             try
             {

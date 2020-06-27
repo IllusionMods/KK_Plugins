@@ -116,21 +116,16 @@ namespace KK_Plugins.MaterialEditor
             if (!WatchTexChanges.Value)
                 UI.TexChangeWatcher?.Dispose();
         }
-        private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
-        private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
-        private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
+        private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
+        private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
+        private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
 #if KK
-        private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
+        private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
 #endif
 
         private IEnumerator LoadXML()
         {
-            yield return null;
-#if HS2
-            yield return null;
-            yield return null;
-            yield return null;
-#endif
+            yield return new WaitUntil(() => AssetBundleManager.ManifestBundlePack.Count != 0);
 
             var loadedManifests = Sideloader.Sideloader.Manifests;
             XMLShaderProperties["default"] = new Dictionary<string, ShaderPropertyData>();
