@@ -516,6 +516,7 @@ namespace KK_Plugins
 #else
                 ChaControl.AddUpdateCMBodyTexFlags(true, true, true, true);
                 ChaControl.AddUpdateCMBodyColorFlags(true, true, true, true);
+                ChaControl.AddUpdateCMBodyGlossFlags(true, true);
 #endif
                 ChaControl.AddUpdateCMBodyLayoutFlags(true, true);
                 ChaControl.SetBodyBaseMaterial();
