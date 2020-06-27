@@ -83,7 +83,7 @@ v1.2 Prevents clicks inside mod GUI elements from advancing the story in Koikats
 </details>
 
 #### UncensorSelector
-**v3.9 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, AI Girland Honey Select 2<br/>
+**v3.9.2 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, AI Girland Honey Select 2<br/>
 
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
 
@@ -124,6 +124,7 @@ v3.8.1 Fix broken config stuff (thanks Keelhauled)<br/>
 v3.8.3 Fix uncensors not working in AI Girl main game<br/>
 v3.9 Fix crash with duplicate uncensor GUIDs, implement dick/balls support for AI Girl<br/>
 v3.9.1 Fix error in Studio resulting from having no uncensors<br/>
+v3.9.2 Fix glossiness being lost on uncensor change, fix monochrome body showing mosaic censor<br/>
 </details>
 
 #### Subtitles
