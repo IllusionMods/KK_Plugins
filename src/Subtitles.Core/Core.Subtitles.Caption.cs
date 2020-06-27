@@ -21,8 +21,7 @@ namespace KK_Plugins
 
                 var cscl = Pane.GetComponent<CanvasScaler>() ?? Pane.AddComponent<CanvasScaler>();
                 cscl.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                cscl.referenceResolution = new Vector2(1920, 1080);
-                cscl.matchWidthOrHeight = 0.5f;
+                cscl.referenceResolution = new Vector2(Screen.width, Screen.height);
 
                 var canvas = Pane.GetComponent<Canvas>() ?? Pane.AddComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -30,13 +29,9 @@ namespace KK_Plugins
                 (Pane.GetComponent<CanvasGroup>() ?? Pane.AddComponent<CanvasGroup>()).blocksRaycasts = false;
 
                 var vlg = Pane.GetComponent<VerticalLayoutGroup>() ?? Pane.AddComponent<VerticalLayoutGroup>();
-#if !HS
-                vlg.childControlHeight = false;
-                vlg.childControlWidth = false;
-#endif
                 vlg.childForceExpandHeight = false;
                 vlg.childForceExpandWidth = false;
-                vlg.childAlignment = TextAnchor.LowerCenter;
+                vlg.childAlignment = TextAlign.Value;
                 vlg.padding = new RectOffset(0, 0, 0, TextOffset.Value);
             }
 

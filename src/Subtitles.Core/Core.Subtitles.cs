@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -19,7 +20,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
-        public const string Version = "1.6";
+        public const string Version = "1.6.1";
         public const string PluginNameInternal = Constants.Prefix + "_Subtitles";
 
         internal static Subtitles Instance;
@@ -27,7 +28,7 @@ namespace KK_Plugins
 
         internal static Dictionary<string, string> SubtitleDictionary = new Dictionary<string, string>();
 
-        #region ConfigMgr
+        #region Config
         public static ConfigEntry<bool> ShowSubtitles { get; private set; }
         public static ConfigEntry<int> FontSize { get; private set; }
         public static ConfigEntry<FontStyle> FontStyle { get; private set; }
@@ -54,9 +55,19 @@ namespace KK_Plugins
             TextColor = Config.Bind("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, new ConfigDescription("Subtitle text color.", null, new ConfigurationManagerAttributes { Order = 3 }));
             OutlineColor = Config.Bind("Config", "Outline Color", Color.black, new ConfigDescription("Subtitle text outline color.", null, new ConfigurationManagerAttributes { Order = 2 }));
 
+            TextAlign.SettingChanged += TextAlign_SettingChanged;
+
             LoadSubtitles();
 
             HarmonyWrapper.PatchAll(typeof(Hooks));
+        }
+
+        private void TextAlign_SettingChanged(object sender, EventArgs e)
+        {
+            if (Caption.Pane == null) return;
+            var vlg = Caption.Pane.GetComponent<VerticalLayoutGroup>();
+            if (vlg == null) return;
+            vlg.childAlignment = TextAlign.Value;
         }
 
         private void LoadSubtitles()
