@@ -24,6 +24,7 @@
     <Property Name="liquidftop" Type="Float" Range="0,2"/>
     <Property Name="outline" Type="Float" Range="0,1"/>
     <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1"/>
     <Property Name="ShadowExtend" Type="Float" Range="0,1" />
     <Property Name="SpecularPower" Type="Float" Range="0,1" />
   </Shader>
