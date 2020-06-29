@@ -404,6 +404,17 @@ namespace KK_Plugins.MaterialEditor
         private IEnumerator LoadData(bool clothes, bool accessories, bool hair)
         {
             yield return null;
+#if !EC
+            if (KKAPI.Studio.StudioAPI.InsideStudio)
+            {
+                yield return null;
+                yield return null;
+            }
+#endif
+            while (ChaControl?.objHead == null)
+                yield return null;
+
+            CorrectTongue();
 
             foreach (var property in MaterialShaderList)
             {
@@ -457,6 +468,45 @@ namespace KK_Plugins.MaterialEditor
                 SetTextureOffset(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.Property, property.Offset);
                 SetTextureScale(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.Property, property.Scale);
             }
+        }
+        /// <summary>
+        /// Corrects the tongue materials since some of them are not properly refreshed on replacing a character
+        /// </summary>
+        private void CorrectTongue()
+        {
+#if KK || EC
+#if KK
+            if (!ChaControl.hiPoly) return;
+#endif
+
+            //Get the tongue material used by the head since this one is properly refreshed with every character reload
+            Material tongueMat = null;
+            foreach (var rend in GetRendererList(ChaControl.objHead.gameObject))
+            {
+                var mat = GetMaterials(rend).FirstOrDefault(x => x.name.Contains("tang"));
+                if (mat != null)
+                    tongueMat = mat;
+            }
+
+            //Set the materials of the other tongues to the one from the head
+            if (tongueMat != null)
+            {
+                string shaderName = tongueMat.shader.NameFormatted();
+                string materialName = tongueMat.NameFormatted();
+
+                SetShader(ChaControl, materialName, shaderName);
+
+                foreach (var property in MaterialEditorPlugin.XMLShaderProperties[MaterialEditorPlugin.XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"])
+                {
+                    if (property.Value.Type == ShaderPropertyType.Color)
+                        SetColor(ChaControl, materialName, property.Key, tongueMat.GetColor("_" + property.Key));
+                    else if (property.Value.Type == ShaderPropertyType.Float)
+                        SetFloat(ChaControl, materialName, property.Key, tongueMat.GetFloat("_" + property.Key));
+                    else if (property.Value.Type == ShaderPropertyType.Texture)
+                        SetTexture(ChaControl, materialName, property.Key, (Texture2D)tongueMat.GetTexture("_" + property.Key));
+                }
+            }
+#endif
         }
         /// <summary>
         /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
