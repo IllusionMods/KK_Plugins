@@ -289,7 +289,7 @@ v2.0.7 Fixed wrong tongue materials after character replacement in KK, fixed wro
 </details>
 
 #### MaleJuice
-**v1.2.1 - [Download](https://www.patreon.com/posts/28608195)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+**v1.2.2 - [Download](https://www.patreon.com/posts/28608195)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Enables juice textures for males in H scenes and Studio.<br/>
 
@@ -297,6 +297,7 @@ Enables juice textures for males in H scenes and Studio.<br/>
 v1.1 Fixed compatibility issues with UncensorSelector using male body type on female characters<br/>
 v1.2 AI and HS2 version<br/>
 v1.2.1 Fixed an error due to mishandled materials<br/>
+v1.2.2 Fixed juice textures not loading in HS2 sometimes<br/>
 </details>
 
 #### StudioObjectMoveHotkeys
