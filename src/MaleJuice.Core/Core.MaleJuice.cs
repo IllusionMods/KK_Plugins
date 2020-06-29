@@ -19,7 +19,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.malejuice";
         public const string PluginName = "Male Juice";
-        public const string Version = "1.2.1";
+        public const string Version = "1.2.2";
         public const string PluginNameInternal = Constants.Prefix + "_MaleJuice";
 
 #if KK
