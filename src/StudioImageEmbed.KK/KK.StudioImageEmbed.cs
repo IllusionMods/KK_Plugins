@@ -5,11 +5,10 @@ namespace KK_Plugins
 {
     [BepInProcess(Constants.StudioProcessName)]
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInDependency(MaterialEditor.MEStudio.GUID, "1.10")]
+    [BepInDependency(MaterialEditor.MEStudio.GUID, "2.0")]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class ImageEmbed : BaseUnityPlugin
     {
-        public const string PluginNameInternal = "KK_ImageEmbed";
         private static readonly List<string> DefaultBGs = new List<string>()
         {
             "bg_01.png", "bg_02.png", "bg_03.png", "bg_04.png", "bg_05.png", "bg_06.png", "bg_07.png", "bg_08.png", "bg_09.png", "bg_10.png",

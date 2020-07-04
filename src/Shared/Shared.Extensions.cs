@@ -53,7 +53,7 @@ namespace KK_Plugins
         {
 #if KK
             return ociItem.itemInfo.pattern[index].filePath;
-#elif AI
+#elif AI || HS2
             return ociItem.itemInfo.colors[index].pattern.filePath;
 #else
             throw new System.NotImplementedException("StudioExtensions.GetPatternPath");
@@ -64,7 +64,7 @@ namespace KK_Plugins
         {
 #if KK
             ociItem.itemInfo.pattern[index].filePath = filePath;
-#elif AI
+#elif AI || HS2
             ociItem.itemInfo.colors[index].pattern.filePath = filePath;
 #else
             throw new System.NotImplementedException("StudioExtensions.SetPatternPath");
@@ -76,7 +76,7 @@ namespace KK_Plugins
         {
 #if KK
             return itemComponent.rendNormal;
-#elif AI
+#elif AI || HS2
             return itemComponent.rendererInfos.Select(x => x.renderer);
 #else
             throw new System.NotImplementedException("StudioExtensions.GetRenderers");

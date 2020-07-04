@@ -271,6 +271,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.Subtitles", "src\Subtit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PH.InputHotkeyBlock", "src\InputHotkeyBlock.PH\PH.InputHotkeyBlock.csproj", "{8FE669D6-2005-40B3-9FEE-A790AD147E96}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.StudioImageEmbed", "src\StudioImageEmbed.HS2\HS2.StudioImageEmbed.csproj", "{1C3FD7D8-E631-490A-BCDC-FB04E524D151}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -289,6 +291,8 @@ Global
 		src\Shared\Shared.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
 		src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
 		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{190fe08f-1d2e-4615-8555-f036d5e48587}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{1c3fd7d8-e631-490a-bcdc-fb04e524d151}*SharedItemsImports = 4
+		src\StudioImageEmbed.Core\Core.StudioImageEmbed.projitems*{1c3fd7d8-e631-490a-bcdc-fb04e524d151}*SharedItemsImports = 4
 		src\MaleJuice.Core\MaleJuice.Core.projitems*{24305054-ee76-4abb-b5a0-12b16d52c03d}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{24305054-ee76-4abb-b5a0-12b16d52c03d}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{25352133-33b7-41e0-867a-d07c613ac3e9}*SharedItemsImports = 13
@@ -781,6 +785,10 @@ Global
 		{8FE669D6-2005-40B3-9FEE-A790AD147E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FE669D6-2005-40B3-9FEE-A790AD147E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FE669D6-2005-40B3-9FEE-A790AD147E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C3FD7D8-E631-490A-BCDC-FB04E524D151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C3FD7D8-E631-490A-BCDC-FB04E524D151}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C3FD7D8-E631-490A-BCDC-FB04E524D151}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C3FD7D8-E631-490A-BCDC-FB04E524D151}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -887,6 +895,7 @@ Global
 		{24305054-EE76-4ABB-B5A0-12B16D52C03D} = {0D9A7DD7-BF28-4205-8620-4D554009E96F}
 		{94B26581-49EE-4645-AA63-46077F65B223} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 		{8FE669D6-2005-40B3-9FEE-A790AD147E96} = {06544F1F-7504-40FB-B614-B8B50B6D790D}
+		{1C3FD7D8-E631-490A-BCDC-FB04E524D151} = {DC55FD1E-6198-4D37-B99B-5F1AB44B0470}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

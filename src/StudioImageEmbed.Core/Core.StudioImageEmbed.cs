@@ -10,8 +10,9 @@ namespace KK_Plugins
 {
     public partial class ImageEmbed
     {
-        public const string GUID = "com.deathweasel.bepinex.imageembed";
+        public const string GUID = "com.deathweasel.bepinex.studioimageembed";
         public const string PluginName = "Image Embed";
+        public const string PluginNameInternal = Constants.Prefix + "_ImageEmbed";
         public const string Version = "1.0";
         internal static new ManualLogSource Logger;
 
