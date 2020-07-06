@@ -366,6 +366,10 @@ A plugin that lets you load saved poses in Studio just by clicking on the pose. 
 
 Note: You MUST enable this option in the plugin settings (press F1 and search the plugin). This plugin is disabled by default so people don't accidentally load poses when they don't intend to, overwriting all their posing work. Use with caution.<br/>
 
+#### StudioImageEmbed
+**v1.0 - [Download](https://www.patreon.com/posts/39042462)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+This plugin will save .png files from your userdata folder to the scene data so anyone else can load the scene properly without needing the same .png file.<br/>
+
 #### TranslationSync
 #### TextResourceRedirector
 #### TextDump
