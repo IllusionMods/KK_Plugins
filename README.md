@@ -370,6 +370,10 @@ Note: You MUST enable this option in the plugin settings (press F1 and search th
 **v1.0 - [Download](https://www.patreon.com/posts/39042462)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 This plugin will save .png files from your userdata folder to the scene data so anyone else can load the scene properly without needing the same .png file.<br/>
 
+#### MakerDefaults
+**v1.0 - [Download](https://www.patreon.com/posts/39323239)** - For Koikatsu, Emotion Creators, AI Girl, and Honey Select 2<br/>
+Allows you to set default settings of the character maker so you don't have to set the same values manually every time.<br/>
+
 #### TranslationSync
 #### TextResourceRedirector
 #### TextDump
