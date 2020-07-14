@@ -23,6 +23,7 @@ namespace KK_Plugins
         public static ConfigEntry<int> DefaultEyebrowPattern { get; private set; }
         public static ConfigEntry<int> DefaultEyePattern { get; private set; }
         public static ConfigEntry<int> DefaultMouthPattern { get; private set; }
+        public static ConfigEntry<bool> DefaultPause { get; private set; }
         public static ConfigEntry<ClothingState> DefaultClothingState { get; private set; }
         public static ConfigEntry<Background> DefaultBackground { get; private set; }
 
@@ -30,14 +31,15 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
-            DefaultGazeDirection = Config.Bind("Settings", "Default Gaze Direction", GazeDirection.Camera, new ConfigDescription("Default gaze direction", null, new ConfigurationManagerAttributes { Order = 20 }));
-            DefaultHeadDirection = Config.Bind("Settings", "Default Head Direction", HeadDirection.Pose, new ConfigDescription("Default head direction", null, new ConfigurationManagerAttributes { Order = 19 }));
-            DefaultPose = Config.Bind("Settings", "Default Pose", 1, new ConfigDescription("Default pose", new AcceptableValueRange<int>(0, 1000), new ConfigurationManagerAttributes { Order = 18 }));
-            DefaultEyebrowPattern = Config.Bind("Settings", "Default Eyebrow Pattern", 1, new ConfigDescription("Default eyebrow pattern", new AcceptableValueRange<int>(1, 10), new ConfigurationManagerAttributes { Order = 17 }));
-            DefaultEyePattern = Config.Bind("Settings", "Default Eye Pattern", 1, new ConfigDescription("Default eye pattern", new AcceptableValueRange<int>(1, 9), new ConfigurationManagerAttributes { Order = 16 }));
-            DefaultMouthPattern = Config.Bind("Settings", "Default Mouth Pattern", 1, new ConfigDescription("Default mouth pattern", new AcceptableValueRange<int>(1, 18), new ConfigurationManagerAttributes { Order = 15 }));
-            DefaultClothingState = Config.Bind("Settings", "Default Clothing State", ClothingState.Automatic, new ConfigDescription("Default clothing state", null, new ConfigurationManagerAttributes { Order = 14 }));
-            DefaultBackground = Config.Bind("Settings", "Default Background", Background.Color, new ConfigDescription("Default background type", null, new ConfigurationManagerAttributes { Order = 13 }));
+            DefaultGazeDirection = Config.Bind("Settings", "Default Gaze Direction", GazeDirection.Camera, new ConfigDescription("Default gaze direction", null, new ConfigurationManagerAttributes { Order = 9 }));
+            DefaultHeadDirection = Config.Bind("Settings", "Default Head Direction", HeadDirection.Pose, new ConfigDescription("Default head direction", null, new ConfigurationManagerAttributes { Order = 8 }));
+            DefaultPose = Config.Bind("Settings", "Default Pose", 1, new ConfigDescription("Default pose", new AcceptableValueRange<int>(0, 1000), new ConfigurationManagerAttributes { Order = 7 }));
+            DefaultEyebrowPattern = Config.Bind("Settings", "Default Eyebrow Pattern", 1, new ConfigDescription("Default eyebrow pattern", new AcceptableValueRange<int>(1, 10), new ConfigurationManagerAttributes { Order = 6 }));
+            DefaultEyePattern = Config.Bind("Settings", "Default Eye Pattern", 1, new ConfigDescription("Default eye pattern", new AcceptableValueRange<int>(1, 9), new ConfigurationManagerAttributes { Order = 5 }));
+            DefaultMouthPattern = Config.Bind("Settings", "Default Mouth Pattern", 1, new ConfigDescription("Default mouth pattern", new AcceptableValueRange<int>(1, 18), new ConfigurationManagerAttributes { Order = 4 }));
+            DefaultPause = Config.Bind("Settings", "Default Pause", false, new ConfigDescription("Default pause state", null, new ConfigurationManagerAttributes { Order = 3 }));
+            DefaultClothingState = Config.Bind("Settings", "Default Clothing State", ClothingState.Automatic, new ConfigDescription("Default clothing state", null, new ConfigurationManagerAttributes { Order = 2 }));
+            DefaultBackground = Config.Bind("Settings", "Default Background", Background.Color, new ConfigDescription("Default background type", null, new ConfigurationManagerAttributes { Order = 1 }));
         }
 
         private static void MakerFinishedLoading(object sender, EventArgs e)
@@ -81,6 +83,10 @@ namespace KK_Plugins
                 mouth.text = DefaultMouthPattern.Value.ToString();
                 mouth.onEndEdit.Invoke(DefaultMouthPattern.Value.ToString());
             }
+
+            //Pause
+            if (DefaultPause.Value)
+                CustomBase.Instance.transform.Find("CanvasDraw/DrawWindow/dwChara/play/tglPlay").GetComponent<UI_ToggleOnOffEx>().isOn = false;
 
             //Clothing State
             switch (DefaultClothingState.Value)
