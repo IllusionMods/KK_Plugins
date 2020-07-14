@@ -1,11 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using ChaCustom;
-using KKAPI.Maker;
-using System;
-using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -26,15 +21,6 @@ namespace KK_Plugins
             Logger = base.Logger;
 
             SceneManager.sceneLoaded += (s, lsm) => Logger.LogInfo($"Scene loaded: {s.name}");
-            MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
-        }
-
-        private void MakerFinishedLoading(object sender, EventArgs e)
-        {
-            //Disable blinking
-            CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/tglBlink/imgTglCol").GetComponent<Toggle>().isOn = true;
-            //Set mouth pattern to smile
-            CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpMouthPtn/ddMouthPtn").GetComponent<TMP_Dropdown>().value = 1;
         }
     }
 }
