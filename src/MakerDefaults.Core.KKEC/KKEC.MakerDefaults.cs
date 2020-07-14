@@ -118,7 +118,11 @@ namespace KK_Plugins
                 CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/rbBackType/imgRbCol01").GetComponent<Toggle>().isOn = true;
         }
 
+#if KK
         public enum ClothingState { Automatic, Clothed, Underwear, Naked }
+#elif EC
+        public enum ClothingState { Automatic, Clothed, Underwear, HalfOff, Naked }
+#endif
         public enum EyebrowPattern { Default, Angry, Worried, Bored, DoubtL, DoubtR, ThinkingL, ThinkingR, FuriousL, FuriousR, Serious, Anxious, Surprised, Disappointed, Smug, WinkingL, WinkingR }
         public enum EyePattern { Default, Closed, Smiling, HappyClosed, Happy, WinkingL, WinkingR, Pained, Bashful, Angry, Serious, Bored, Awkward, Hate, Thinking, Sad, Crying, Impatient, Disappointed, Worried, Smug, CircleEyes1, CircleEyes2, SpiralEyes, StarPupils, HeartPupils, FieryEyes, CartoonyWink, VerticalLine, CartoonyClosed, HorizontalLine, CartoonyCrying }
         public enum MouthPattern { Default, Smiling, HappyBroad, HappyModerate, HappySlight, ExcitedBroad, ExcitedModerate, ExcitedSlight, Angry1, Angry2, Serious1, Serious2, Hate, Lonely, Impatient, Dissatisfied, Amazed, Surprised, SurprisedModerate, Smug, Playful, Eating, HoldInMouth, Kiss, TongueOut, SmallA, BigA, SmallI, BigI, SmallU, BigU, SmallE, BigE, SmallO, BigO, SmallN, BigN, Catlike, Triangle, CartoonySmile }
