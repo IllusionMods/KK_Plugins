@@ -26,7 +26,9 @@ namespace KK_Plugins
         public static ConfigEntry<MouthPattern> DefaultMouthPattern { get; private set; }
         public static ConfigEntry<float> DefaultMouthOpenness { get; private set; }
         public static ConfigEntry<GazeDirection> DefaultGazeDirection { get; private set; }
+        public static ConfigEntry<float> DefaultGazeDirectionRate { get; private set; }
         public static ConfigEntry<HeadDirection> DefaultHeadDirection { get; private set; }
+        public static ConfigEntry<float> DefaultHeadDirectionRate { get; private set; }
         public static ConfigEntry<Background> DefaultBackground { get; private set; }
         public static ConfigEntry<int> DefaultPose { get; private set; }
 
@@ -34,17 +36,19 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
-            DefaultClothingState = Config.Bind("Settings", "Default Clothing State", ClothingState.Automatic, new ConfigDescription("Default clothing state", null, new ConfigurationManagerAttributes { Order = 20 }));
-            DefaultEyebrowPattern = Config.Bind("Settings", "Default Eyebrow Pattern", EyebrowPattern.Default, new ConfigDescription("Default eyebrow pattern", null, new ConfigurationManagerAttributes { Order = 19 }));
-            DefaultEyePattern = Config.Bind("Settings", "Default Eye Pattern", EyePattern.Default, new ConfigDescription("Default eye pattern", null, new ConfigurationManagerAttributes { Order = 18 }));
-            DefaultEyeOpenness = Config.Bind("Settings", "Default Eye Openness", 1f, new ConfigDescription("Default eye openness", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 17 }));
-            DefaultDisableBlinking = Config.Bind("Settings", "Default Disable Blinking", false, new ConfigDescription("Default disable blinking state", null, new ConfigurationManagerAttributes { Order = 16 }));
-            DefaultMouthPattern = Config.Bind("Settings", "Default Mouth Pattern", MouthPattern.Default, new ConfigDescription("Default mouth pattern", null, new ConfigurationManagerAttributes { Order = 15 }));
-            DefaultMouthOpenness = Config.Bind("Settings", "Default Mouth Openness", 0f, new ConfigDescription("Default mouth openness", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 14 }));
-            DefaultGazeDirection = Config.Bind("Settings", "Default Gaze Direction", GazeDirection.AtCamera, new ConfigDescription("Default gaze direction", null, new ConfigurationManagerAttributes { Order = 13 }));
-            DefaultHeadDirection = Config.Bind("Settings", "Default Head Direction", HeadDirection.FromAnimation, new ConfigDescription("Default head direction", null, new ConfigurationManagerAttributes { Order = 12 }));
-            DefaultPose = Config.Bind("Settings", "Default Pose", 0, new ConfigDescription("Default pose, number corresponds to the index of the pose in the dropdown list", new AcceptableValueRange<int>(0, 1000), new ConfigurationManagerAttributes { Order = 11 }));
-            DefaultBackground = Config.Bind("Settings", "Default Background", Background.Image, new ConfigDescription("Default background type", null, new ConfigurationManagerAttributes { Order = 10 }));
+            DefaultClothingState = Config.Bind("Settings", "Default Clothing State", ClothingState.Automatic, new ConfigDescription("Default clothing state", null, new ConfigurationManagerAttributes { Order = 13 }));
+            DefaultEyebrowPattern = Config.Bind("Settings", "Default Eyebrow Pattern", EyebrowPattern.Default, new ConfigDescription("Default eyebrow pattern", null, new ConfigurationManagerAttributes { Order = 12 }));
+            DefaultEyePattern = Config.Bind("Settings", "Default Eye Pattern", EyePattern.Default, new ConfigDescription("Default eye pattern", null, new ConfigurationManagerAttributes { Order = 11 }));
+            DefaultEyeOpenness = Config.Bind("Settings", "Default Eye Openness", 1f, new ConfigDescription("Default eye openness", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 10 }));
+            DefaultDisableBlinking = Config.Bind("Settings", "Default Disable Blinking", false, new ConfigDescription("Default disable blinking state", null, new ConfigurationManagerAttributes { Order = 9 }));
+            DefaultMouthPattern = Config.Bind("Settings", "Default Mouth Pattern", MouthPattern.Default, new ConfigDescription("Default mouth pattern", null, new ConfigurationManagerAttributes { Order = 8 }));
+            DefaultMouthOpenness = Config.Bind("Settings", "Default Mouth Openness", 0f, new ConfigDescription("Default mouth openness", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 7 }));
+            DefaultGazeDirection = Config.Bind("Settings", "Default Gaze Direction", GazeDirection.AtCamera, new ConfigDescription("Default gaze direction", null, new ConfigurationManagerAttributes { Order = 6 }));
+            DefaultGazeDirectionRate = Config.Bind("Settings", "Default Gaze Direction Rate", 1f, new ConfigDescription("Default gaze direction rate", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 5 }));
+            DefaultHeadDirection = Config.Bind("Settings", "Default Head Direction", HeadDirection.FromAnimation, new ConfigDescription("Default head direction", null, new ConfigurationManagerAttributes { Order = 4 }));
+            DefaultHeadDirectionRate = Config.Bind("Settings", "Default Head Direction Rate", 1f, new ConfigDescription("Default head direction", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 3 }));
+            DefaultPose = Config.Bind("Settings", "Default Pose", 0, new ConfigDescription("Default pose, number corresponds to the index of the pose in the dropdown list", new AcceptableValueRange<int>(0, 1000), new ConfigurationManagerAttributes { Order = 2 }));
+            DefaultBackground = Config.Bind("Settings", "Default Background", Background.Image, new ConfigDescription("Default background type", null, new ConfigurationManagerAttributes { Order = 1 }));
         }
 
         private static void MakerFinishedLoading(object sender, EventArgs e)
@@ -72,8 +76,6 @@ namespace KK_Plugins
                 CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpEyesPtn/ddEyesPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultEyePattern.Value;
 
             //Eye openness
-            if (DefaultEyeOpenness.Value < 0f || DefaultEyeOpenness.Value > 1f)
-                DefaultEyeOpenness.Value = 1f;
             if (DefaultEyeOpenness.Value != 1f)
                 CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/sldEyeOpen/Slider").GetComponent<Slider>().value = DefaultEyeOpenness.Value;
 
@@ -86,8 +88,6 @@ namespace KK_Plugins
                 CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpMouthPtn/ddMouthPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultMouthPattern.Value;
 
             //Mouth open
-            if (DefaultMouthOpenness.Value < 0f || DefaultMouthOpenness.Value > 1f)
-                DefaultMouthOpenness.Value = 1f;
             if (DefaultMouthOpenness.Value != 0f)
                 CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/sldMouthOpen/Slider").GetComponent<Slider>().value = DefaultMouthOpenness.Value;
 
@@ -95,9 +95,15 @@ namespace KK_Plugins
             if (DefaultGazeDirection.Value != GazeDirection.AtCamera)
                 CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpEyesLookPtn/ddEyesLookPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultGazeDirection.Value;
 
+            if (DefaultGazeDirectionRate.Value != 1f)
+                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpEyesLookRate/Slider").GetComponent<Slider>().value = DefaultGazeDirectionRate.Value;
+
             //Head Direction
             if (DefaultHeadDirection.Value != HeadDirection.FromAnimation)
                 CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpNeckLookPtn/ddNeckLookPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultHeadDirection.Value;
+
+            if (DefaultHeadDirectionRate.Value != 1f)
+                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpNeckLookRate/Slider").GetComponent<Slider>().value = DefaultHeadDirectionRate.Value;
 
             //Pose
             if (DefaultPose.Value != 0)
