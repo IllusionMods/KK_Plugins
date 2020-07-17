@@ -94,7 +94,7 @@ namespace KK_Plugins.MaterialEditor
             StartCoroutine(LoadXML());
             StartCoroutine(GetUncensorSelectorParts());
 
-            ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerLoadCall, AssetLoadedHook);
+            ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerResourceLoaded, AssetLoadedHook);
         }
 
         /// <summary>
