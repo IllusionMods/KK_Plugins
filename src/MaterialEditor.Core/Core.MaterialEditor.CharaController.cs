@@ -608,9 +608,21 @@ namespace KK_Plugins.MaterialEditor
 
             AccessorySelectedSlotChanging = true;
 
+#if KK || EC
             if (MakerAPI.InsideAndLoaded)
                 if (UI.Visible)
                     MEMaker.Instance?.PopulateListAccessory();
+#else
+            ChaControl.StartCoroutine(LoadData(false, true, false));
+            ChaControl.StartCoroutine(RefreshUI());
+            IEnumerator RefreshUI()
+            {
+                yield return null;
+                if (MakerAPI.InsideAndLoaded)
+                    if (UI.Visible)
+                        MEMaker.Instance?.PopulateListAccessory();
+            }
+#endif
         }
 
         internal void AccessoryTransferredEvent(object sender, AccessoryTransferEventArgs e)
