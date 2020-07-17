@@ -1361,14 +1361,6 @@ namespace KK_Plugins.MaterialEditor
                     SetShader(gameObject, material.NameFormatted(), original);
             }
 
-#if EC
-            //For EC don't remove shaders when reset, this helps users with fixing KK mods
-            var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted());
-            if (materialProperty == null)
-                return;
-            else
-                materialProperty.ShaderName = materialProperty.ShaderNameOriginal;
-#else
             foreach (var materialProperty in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
             {
                 materialProperty.ShaderName = null;
@@ -1376,7 +1368,6 @@ namespace KK_Plugins.MaterialEditor
             }
 
             MaterialShaderList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted() && x.NullCheck());
-#endif
         }
 
         /// <summary>
