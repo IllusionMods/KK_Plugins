@@ -318,7 +318,7 @@ namespace KK_Plugins.MaterialEditor
                 if (material.HasProperty($"_{propertyName}"))
                 {
                     var wrapMode = material.GetTexture($"_{propertyName}")?.wrapMode;
-                    if (wrapMode != null)
+                    if (wrapMode != null && value != null)
                         value.wrapMode = (TextureWrapMode)wrapMode;
                     material.SetTexture($"_{propertyName}", value);
                     didSet = true;
