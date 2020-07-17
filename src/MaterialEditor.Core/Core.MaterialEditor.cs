@@ -15,6 +15,7 @@ using System.Xml;
 using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
+using XUnity.ResourceRedirector;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
 #if AI || HS2
 using AIChara;
@@ -92,6 +93,46 @@ namespace KK_Plugins.MaterialEditor
 #endif
             StartCoroutine(LoadXML());
             StartCoroutine(GetUncensorSelectorParts());
+
+            ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerLoadCall, AssetLoadedHook);
+        }
+
+        /// <summary>
+        /// Every time an asset is loaded, swap its shader for the one loaded by MaterialEditor. This reduces the number of instances of a shader once they are cleaned up by garbage collection
+        /// which reduce RAM usage, etc. Also fixes KK mods in EC by swapping them to the equivalent EC shader.
+        /// </summary>
+        private void AssetLoadedHook(AssetLoadedContext context)
+        {
+            if (context.Asset is GameObject go)
+            {
+                foreach (var rend in go.GetComponentsInChildren<Renderer>())
+                {
+                    foreach (var mat in rend.materials)
+                    {
+                        if (LoadedShaders.TryGetValue(mat.shader.name, out var shaderData) && shaderData.Shader != null)
+                        {
+                            int renderQueue = mat.renderQueue;
+
+                            mat.shader = shaderData.Shader;
+                            mat.renderQueue = renderQueue;
+                        }
+                    }
+                }
+            }
+            else if (context.Asset is Material mat)
+            {
+                if (LoadedShaders.TryGetValue(mat.shader.name, out var shaderData) && shaderData.Shader != null)
+                {
+                    int renderQueue = mat.renderQueue;
+                    mat.shader = shaderData.Shader;
+                    mat.renderQueue = renderQueue;
+                }
+            }
+            else if (context.Asset is Shader shader)
+            {
+                if (LoadedShaders.TryGetValue(shader.name, out var shaderData) && shaderData.Shader != null)
+                    context.Asset = shaderData.Shader;
+            }
         }
 
         /// <summary>

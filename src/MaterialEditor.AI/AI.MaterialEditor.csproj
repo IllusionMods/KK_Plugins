@@ -105,6 +105,10 @@
       <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.1\lib\net46\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="XUnity.ResourceRedirector, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.XUnity.ResourceRedirector.4.11.0\lib\net46\XUnity.ResourceRedirector.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI.MaterialEditor.cs" />

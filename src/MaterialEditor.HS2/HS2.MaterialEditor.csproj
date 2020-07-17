@@ -108,6 +108,10 @@
       <HintPath>..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11\lib\net46\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="XUnity.ResourceRedirector, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.XUnity.ResourceRedirector.4.11.0\lib\net46\XUnity.ResourceRedirector.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HS2.MaterialEditor.cs" />
