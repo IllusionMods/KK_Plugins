@@ -399,10 +399,6 @@ namespace KK_Plugins
             private void ReloadCharacterPenis()
             {
                 bool temp = ChaControl.fileStatus.visibleSonAlways;
-#if KK
-                if (ChaControl.hiPoly == false)
-                    return;
-#endif
 
                 if (PenisData != null)
                 {
@@ -424,11 +420,6 @@ namespace KK_Plugins
             /// </summary>
             private void ReloadCharacterBalls()
             {
-#if KK
-                if (ChaControl.hiPoly == false)
-                    return;
-#endif
-
                 if (BallsData != null)
                 {
                     GameObject balls = CommonLib.LoadAsset<GameObject>(BallsData.File, BallsData.Asset, true);
