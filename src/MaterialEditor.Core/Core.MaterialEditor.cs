@@ -62,6 +62,7 @@ namespace KK_Plugins.MaterialEditor
             Logger = base.Logger;
             Directory.CreateDirectory(ExportPath);
 
+            MakerAPI.MakerExiting += (s, e) => UI.Visible = false;
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(GUID);
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
