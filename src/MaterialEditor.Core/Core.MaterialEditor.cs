@@ -56,6 +56,7 @@ namespace KK_Plugins.MaterialEditor
         internal static ConfigEntry<float> UIWidth { get; private set; }
         internal static ConfigEntry<float> UIHeight { get; private set; }
         internal static ConfigEntry<bool> WatchTexChanges { get; private set; }
+        internal static ConfigEntry<bool> ShaderOptimization { get; private set; }
 
         internal void Main()
         {
@@ -71,10 +72,11 @@ namespace KK_Plugins.MaterialEditor
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
 
-            UIScale = Config.Bind("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 13 }));
-            UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 12, ShowRangeAsPercent = false }));
-            UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 11, ShowRangeAsPercent = false }));
-            WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI."));
+            UIScale = Config.Bind("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 5 }));
+            UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 4, ShowRangeAsPercent = false }));
+            UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 3, ShowRangeAsPercent = false }));
+            WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI.", null, new ConfigurationManagerAttributes { Order = 2 }));
+            ShaderOptimization = Config.Bind("Config", "Shader Optimization", true, new ConfigDescription("Replaces every loaded shader with the MaterialEditor copy of the shader. Reduces the number of copies of shaders loaded which reduces RAM usage and improves performance.", null, new ConfigurationManagerAttributes { Order = 1 }));
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
 
             var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
@@ -98,12 +100,29 @@ namespace KK_Plugins.MaterialEditor
             ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerResourceLoaded, AssetLoadedHook);
         }
 
+        //internal void Update()
+        //{
+        //    if (Input.GetKeyDown(KeyCode.C))
+        //    {
+        //        Dictionary<string, int> shaders = new Dictionary<string, int>();
+        //        foreach (var shader in Resources.FindObjectsOfTypeAll<Shader>())
+        //            if (shaders.ContainsKey(shader.name))
+        //                shaders[shader.name]++;
+        //            else
+        //                shaders[shader.name] = 1;
+        //        foreach (var shader in shaders)
+        //            Logger.LogInfo($"Shader:{shader.Key} {shader.Value}");
+        //    }
+        //}
+
         /// <summary>
         /// Every time an asset is loaded, swap its shader for the one loaded by MaterialEditor. This reduces the number of instances of a shader once they are cleaned up by garbage collection
         /// which reduce RAM usage, etc. Also fixes KK mods in EC by swapping them to the equivalent EC shader.
         /// </summary>
         private void AssetLoadedHook(AssetLoadedContext context)
         {
+            if (!ShaderOptimization.Value) return;
+
             if (context.Asset is GameObject go)
             {
                 foreach (var rend in go.GetComponentsInChildren<Renderer>())
