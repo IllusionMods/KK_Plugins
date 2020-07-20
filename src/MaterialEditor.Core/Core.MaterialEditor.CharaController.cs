@@ -437,36 +437,39 @@ namespace KK_Plugins.MaterialEditor
             }
             foreach (var property in MaterialFloatPropertyList)
             {
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
                 if (property.ObjectType == ObjectType.Clothing && !clothes) continue;
                 if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+                var gameObject = FindGameObject(property.ObjectType, property.Slot);
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, gameObject)) continue;
 
-                SetFloat(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.Property, float.Parse(property.Value));
+                SetFloat(gameObject, property.MaterialName, property.Property, float.Parse(property.Value));
             }
             foreach (var property in MaterialColorPropertyList)
             {
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
                 if (property.ObjectType == ObjectType.Clothing && !clothes) continue;
                 if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+                var gameObject = FindGameObject(property.ObjectType, property.Slot);
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, gameObject)) continue;
 
-                SetColor(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.Property, property.Value);
+                SetColor(gameObject, property.MaterialName, property.Property, property.Value);
             }
             foreach (var property in MaterialTexturePropertyList)
             {
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
                 if (property.ObjectType == ObjectType.Clothing && !clothes) continue;
                 if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+                var gameObject = FindGameObject(property.ObjectType, property.Slot);
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, gameObject)) continue;
 
                 if (property.TexID != null)
-                    SetTexture(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
-                SetTextureOffset(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.Property, property.Offset);
-                SetTextureScale(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.Property, property.Scale);
+                    SetTexture(gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                SetTextureOffset(gameObject, property.MaterialName, property.Property, property.Offset);
+                SetTextureScale(gameObject, property.MaterialName, property.Property, property.Scale);
             }
         }
         /// <summary>
@@ -772,12 +775,13 @@ namespace KK_Plugins.MaterialEditor
             yield return new WaitForEndOfFrame();
             foreach (var property in MaterialTexturePropertyList)
             {
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property))
+                var gameObject = FindGameObject(ObjectType.Clothing, property.Slot);
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, gameObject))
                     continue;
 
                 if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
                     if (property.TexID != null)
-                        SetTexture(FindGameObject(ObjectType.Clothing, property.Slot), property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                        SetTexture(gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
             }
         }
         /// <summary>
@@ -790,7 +794,7 @@ namespace KK_Plugins.MaterialEditor
 
             foreach (var property in MaterialTexturePropertyList)
             {
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property))
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, ChaControl.gameObject))
                     continue;
 
                 if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")

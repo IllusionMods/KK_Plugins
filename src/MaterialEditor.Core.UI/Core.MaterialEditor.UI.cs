@@ -297,7 +297,7 @@ namespace KK_Plugins.MaterialEditor
                 foreach (var property in XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
                 {
                     string propertyName = property.Key;
-                    if (CheckBlacklist(materialName, propertyName)) continue;
+                    if (CheckBlacklist(materialName, propertyName, gameObject)) continue;
 
                     if (property.Value.Type == ShaderPropertyType.Texture)
                     {

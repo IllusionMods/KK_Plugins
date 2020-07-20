@@ -249,11 +249,12 @@ namespace KK_Plugins.MaterialEditor
             return tex;
         }
 
-        internal static bool CheckBlacklist(string materialName, string propertyName)
+        internal static bool CheckBlacklist(string materialName, string propertyName, GameObject gameObject)
         {
-            if (materialName == "cf_m_body" || materialName == "cm_m_body")
-                if (propertyName == "alpha_a" || propertyName == "alpha_b" || propertyName == "AlphaMask")
-                    return true;
+            if (gameObject.GetComponent<ChaControl>() != null)
+                if (materialName == "cf_m_body" || materialName == "cm_m_body")
+                    if (propertyName == "alpha_a" || propertyName == "alpha_b" || propertyName == "AlphaMask")
+                        return true;
             return false;
         }
 
