@@ -1,4 +1,4 @@
-<KK_MaterialEditor>
+<MaterialEditor>
   <Shader Name="Shader Forge/main_alpha" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_alpha">
     <Property Name="AlphaMask" Type="Texture" />
     <Property Name="AnotherRamp" Type="Texture" />
@@ -68,6 +68,7 @@
     <Property Name="Color" Type="Color" />
     <Property Name="Color2" Type="Color" />
     <Property Name="Color3" Type="Color" />
+    <Property Name="LineColor" Type="Color" />
     <Property Name="ShadowColor" Type="Color" />
     <Property Name="rimpower" Type="Float" Range="0,1" />
     <Property Name="rimV" Type="Float" Range="0,1" />
@@ -411,4 +412,7 @@
     <Property Name="AngleSpeed" Type="Float" Range="-1,1" />
     <Property Name="yurayura" Type="Float" Range="0,1" />
   </Shader>
-</KK_MaterialEditor>
+  <Shader Name="Shader Forge/main_color" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_color">
+    <Property Name="Color" Type="Color" />
+  </Shader>
+</MaterialEditor>

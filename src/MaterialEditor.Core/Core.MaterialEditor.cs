@@ -174,7 +174,7 @@ namespace KK_Plugins.MaterialEditor
 
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.default.xml"))
             using (XmlReader reader = XmlReader.Create(stream))
-                LoadXML(XDocument.Load(reader).Element(PluginNameInternal));
+                LoadXML(XDocument.Load(reader).Element("MaterialEditor"));
 
             foreach (var manifest in loadedManifests.Values)
             {
