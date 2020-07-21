@@ -14,6 +14,10 @@ namespace KK_Plugins.MaterialEditor
     public static class MaterialAPI
     {
         /// <summary>
+        /// Postfix added to the name of a material when copied
+        /// </summary>
+        public const string MaterialCopyPostfix = ".MECopy";
+        /// <summary>
         /// List of parts that comprise the body, used to distinguish between clothes, accessories, etc. attached to the body.
         /// </summary>
 #if AI || HS2
@@ -87,6 +91,106 @@ namespace KK_Plugins.MaterialEditor
                         materials.Add(material);
             }
             return materials;
+        }
+
+        /// <summary>
+        /// Create a copy of the materials with the specified name for the GameObject
+        /// </summary>
+        /// <param name="gameObject">GameObject for which to copy materials</param>
+        /// <param name="materialName">Name of the material</param>
+        public static void CopyMaterial(GameObject gameObject, string materialName)
+        {
+            foreach (var renderer in GetRendererList(gameObject))
+            {
+                //Must use sharedMaterials for ChaControl and materials for other items or bad things happen
+                Material[] materialsToSearch;
+                if (gameObject.GetComponent<ChaControl>() == null)
+                    materialsToSearch = renderer.materials;
+                else
+                    materialsToSearch = renderer.sharedMaterials;
+
+                if (materialsToSearch.Any(x => x.NameFormatted() == materialName))
+                {
+                    List<Material> newMats = new List<Material>();
+                    Material originalMat = null;
+                    bool copyAdded = false;
+                    int copyCount = 0;
+                    foreach (var mat in materialsToSearch)
+                    {
+                        if (mat.NameFormatted() == materialName)
+                        {
+                            originalMat = mat;
+                            newMats.Add(mat);
+                        }
+                        else if (originalMat != null && !copyAdded)
+                        {
+                            if (mat.NameFormatted().Contains(materialName + MaterialCopyPostfix))
+                            {
+                                string copyNumber = mat.NameFormatted().Replace(materialName + MaterialCopyPostfix, "");
+
+                                if (int.TryParse(copyNumber, out int copyNumberInt))
+                                    copyCount = copyNumberInt;
+                                else
+                                    copyCount++;
+                                newMats.Add(mat);
+                            }
+                            else
+                            {
+                                //Add the new copy after any other copies
+                                Material newMat = Object.Instantiate(originalMat);
+                                newMat.name = $"{materialName}{MaterialCopyPostfix}{copyCount + 1}";
+                                newMats.Add(newMat);
+                                copyAdded = true;
+                            }
+                        }
+                        else
+                        {
+                            newMats.Add(mat);
+                        }
+                    }
+
+                    if (!copyAdded)
+                    {
+                        Material newMat = Object.Instantiate(originalMat);
+                        newMat.name = $"{materialName}{MaterialCopyPostfix}{copyCount + 1}";
+                        newMats.Add(newMat);
+                    }
+
+                    if (gameObject.GetComponent<ChaControl>() == null)
+                        renderer.materials = newMats.ToArray();
+                    else
+                        renderer.sharedMaterials = newMats.ToArray();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remove any material copies added by MaterialEditor for the specified GameObject
+        /// </summary>
+        /// <param name="gameObject">GameObject for which to remove materials</param>
+        public static void RemoveMaterialCopies(GameObject gameObject)
+        {
+            foreach (var renderer in GetRendererList(gameObject))
+            {
+                Material[] materialsToSearch;
+                if (gameObject.GetComponent<ChaControl>() == null)
+                    materialsToSearch = renderer.materials;
+                else
+                    materialsToSearch = renderer.sharedMaterials;
+
+                if (materialsToSearch.Any(x => x != null && x.NameFormatted().Contains(MaterialCopyPostfix)))
+                {
+                    List<Material> newMats = new List<Material>();
+                    foreach (var mat in renderer.sharedMaterials)
+                        if (!mat.NameFormatted().Contains(MaterialCopyPostfix))
+                            newMats.Add(mat);
+
+                    if (gameObject.GetComponent<ChaControl>() == null)
+                        renderer.materials = newMats.ToArray();
+                    else
+                        renderer.sharedMaterials = newMats.ToArray();
+                }
+            }
         }
 
         /// <summary>

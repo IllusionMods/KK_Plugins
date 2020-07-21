@@ -28,6 +28,7 @@ namespace KK_Plugins.MaterialEditor
         public Action RendererReceiveShadowsOnReset { get; set; }
 
         public string MaterialName { get; set; }
+        public Action MaterialOnCopyRemove { get; set; }
 
         public string ShaderName { get; set; }
         public string ShaderNameOriginal { get; set; }

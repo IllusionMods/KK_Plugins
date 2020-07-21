@@ -105,6 +105,8 @@ namespace KK_Plugins.MaterialEditor
         {
             if (!maintainState)
             {
+                RemoveMaterialCopies(ChaControl.gameObject);
+
                 List<ObjectType> objectTypesToLoad = new List<ObjectType>();
 
                 var loadFlags = MakerAPI.GetCharacterLoadFlags();
@@ -442,7 +444,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var gameObject = FindGameObject(property.ObjectType, property.Slot);
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, gameObject)) continue;
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 SetFloat(gameObject, property.MaterialName, property.Property, float.Parse(property.Value));
             }
@@ -453,7 +455,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var gameObject = FindGameObject(property.ObjectType, property.Slot);
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, gameObject)) continue;
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 SetColor(gameObject, property.MaterialName, property.Property, property.Value);
             }
@@ -464,7 +466,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var gameObject = FindGameObject(property.ObjectType, property.Slot);
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, gameObject)) continue;
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 if (property.TexID != null)
                     SetTexture(gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
@@ -775,13 +777,12 @@ namespace KK_Plugins.MaterialEditor
             yield return new WaitForEndOfFrame();
             foreach (var property in MaterialTexturePropertyList)
             {
-                var gameObject = FindGameObject(ObjectType.Clothing, property.Slot);
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, gameObject))
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property))
                     continue;
 
                 if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
                     if (property.TexID != null)
-                        SetTexture(gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                        SetTexture(FindGameObject(ObjectType.Clothing, property.Slot), property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
             }
         }
         /// <summary>
@@ -794,7 +795,7 @@ namespace KK_Plugins.MaterialEditor
 
             foreach (var property in MaterialTexturePropertyList)
             {
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property, ChaControl.gameObject))
+                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property))
                     continue;
 
                 if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")

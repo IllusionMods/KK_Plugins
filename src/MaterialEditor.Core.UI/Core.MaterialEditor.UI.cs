@@ -261,6 +261,12 @@ namespace KK_Plugins.MaterialEditor
 
                 var materialItem = new ItemInfo(ItemInfo.RowItemType.Material, "Material");
                 materialItem.MaterialName = materialName;
+                materialItem.MaterialOnCopyRemove = delegate ()
+                {
+                    Logger.LogInfo($"MaterialOnCopyRemove");
+                    CopyMaterial(gameObject, materialName);
+                    PopulateList(gameObject, slot, filter);
+                };
                 items.Add(materialItem);
 
                 //Shader
@@ -297,7 +303,7 @@ namespace KK_Plugins.MaterialEditor
                 foreach (var property in XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
                 {
                     string propertyName = property.Key;
-                    if (CheckBlacklist(materialName, propertyName, gameObject)) continue;
+                    if (CheckBlacklist(materialName, propertyName)) continue;
 
                     if (property.Value.Type == ShaderPropertyType.Texture)
                     {

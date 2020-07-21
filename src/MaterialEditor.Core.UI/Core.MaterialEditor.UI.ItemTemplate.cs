@@ -163,6 +163,11 @@ namespace KK_Plugins.MaterialEditor
                 var materialTextLE = materialText.gameObject.AddComponent<LayoutElement>();
                 materialTextLE.preferredWidth = 200;
                 materialTextLE.flexibleWidth = 0;
+
+                var copy = UIUtility.CreateButton($"MaterialCopyRemove", itemPanel.transform, "Copy Material");
+                var copyLE = copy.gameObject.AddComponent<LayoutElement>();
+                copyLE.preferredWidth = buttonWidth;
+                copyLE.flexibleWidth = 0;
             }
 
             //Material Shader
