@@ -30,7 +30,7 @@ namespace KK_Plugins.MaterialEditor
         public CanvasGroup MaterialPanel;
         public Text MaterialLabel;
         public Text MaterialText;
-        public Button MaterialCopyRemove;
+        //public Button MaterialCopyRemove;
 
         public CanvasGroup ShaderPanel;
         public Text ShaderLabel;
@@ -167,8 +167,8 @@ namespace KK_Plugins.MaterialEditor
                         ShowMaterial();
                         SetLabelText(MaterialLabel, item.LabelText);
                         MaterialText.text = item.MaterialName;
-                        MaterialCopyRemove.onClick.RemoveAllListeners();
-                        MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
+                        //MaterialCopyRemove.onClick.RemoveAllListeners();
+                        //MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
                         break;
                     case ItemInfo.RowItemType.Shader:
                         ShowShader();

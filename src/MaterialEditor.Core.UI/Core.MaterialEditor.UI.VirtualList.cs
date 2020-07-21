@@ -76,7 +76,7 @@ namespace KK_Plugins.MaterialEditor
             listEntry.MaterialPanel = listEntry.transform.FindLoop("MaterialPanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find MaterialPanel");
             listEntry.MaterialLabel = listEntry.transform.FindLoop("MaterialLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find MaterialLabel");
             listEntry.MaterialText = listEntry.transform.FindLoop("MaterialText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find MaterialText");
-            listEntry.MaterialCopyRemove = listEntry.transform.FindLoop("MaterialCopyRemove")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find MaterialCopyRemove");
+            //listEntry.MaterialCopyRemove = listEntry.transform.FindLoop("MaterialCopyRemove")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find MaterialCopyRemove");
 
             listEntry.ShaderPanel = listEntry.transform.FindLoop("ShaderPanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find ShaderPanel");
             listEntry.ShaderLabel = listEntry.transform.FindLoop("ShaderLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ShaderLabel");

@@ -261,12 +261,11 @@ namespace KK_Plugins.MaterialEditor
 
                 var materialItem = new ItemInfo(ItemInfo.RowItemType.Material, "Material");
                 materialItem.MaterialName = materialName;
-                materialItem.MaterialOnCopyRemove = delegate ()
-                {
-                    Logger.LogInfo($"MaterialOnCopyRemove");
-                    CopyMaterial(gameObject, materialName);
-                    PopulateList(gameObject, slot, filter);
-                };
+                //materialItem.MaterialOnCopyRemove = delegate ()
+                //{
+                //    CopyMaterial(gameObject, materialName);
+                //    PopulateList(gameObject, slot, filter);
+                //};
                 items.Add(materialItem);
 
                 //Shader
