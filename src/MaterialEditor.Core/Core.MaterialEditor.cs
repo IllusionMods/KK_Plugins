@@ -52,6 +52,13 @@ namespace KK_Plugins.MaterialEditor
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
+#if EC
+        /// <summary>
+        /// Shaders which should not be replaced by shader optimization due to not working correctly because of wrong normalmaps
+        /// </summary>
+        private static readonly List<string> ShaderBlacklist = new List<string>() { "Shader Forge/main_opaque", "Shader Forge/main_opaque2", "Shader Forge/main_alpha" };
+#endif
+
         internal static ConfigEntry<float> UIScale { get; private set; }
         internal static ConfigEntry<float> UIWidth { get; private set; }
         internal static ConfigEntry<float> UIHeight { get; private set; }
@@ -129,6 +136,9 @@ namespace KK_Plugins.MaterialEditor
                 {
                     foreach (var mat in rend.materials)
                     {
+#if EC
+                        if (ShaderBlacklist.Contains(mat.shader.name)) continue;
+#endif
                         if (LoadedShaders.TryGetValue(mat.shader.name, out var shaderData) && shaderData.Shader != null)
                         {
                             int renderQueue = mat.renderQueue;
@@ -141,6 +151,10 @@ namespace KK_Plugins.MaterialEditor
             }
             else if (context.Asset is Material mat)
             {
+#if EC
+                if (ShaderBlacklist.Contains(mat.shader.name)) return;
+#endif
+
                 if (LoadedShaders.TryGetValue(mat.shader.name, out var shaderData) && shaderData.Shader != null)
                 {
                     int renderQueue = mat.renderQueue;
@@ -150,6 +164,9 @@ namespace KK_Plugins.MaterialEditor
             }
             else if (context.Asset is Shader shader)
             {
+#if EC
+                if (ShaderBlacklist.Contains(shader.name)) return;
+#endif
                 if (LoadedShaders.TryGetValue(shader.name, out var shaderData) && shaderData.Shader != null)
                     context.Asset = shaderData.Shader;
             }
@@ -251,9 +268,9 @@ namespace KK_Plugins.MaterialEditor
 
         internal static bool CheckBlacklist(string materialName, string propertyName)
         {
-                if (materialName == "cf_m_body" || materialName == "cm_m_body")
-                    if (propertyName == "alpha_a" || propertyName == "alpha_b" || propertyName == "AlphaMask")
-                        return true;
+            if (materialName == "cf_m_body" || materialName == "cm_m_body")
+                if (propertyName == "alpha_a" || propertyName == "alpha_b" || propertyName == "AlphaMask")
+                    return true;
             return false;
         }
 
