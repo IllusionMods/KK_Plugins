@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.API.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CharaController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CopyContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Export.Obj.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Export.UV.cs" />

@@ -48,6 +48,10 @@ namespace KK_Plugins.MaterialEditor
         /// Path where textures will be exported
         /// </summary>
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
+        /// <summary>
+        /// Saved material edits
+        /// </summary>
+        public static CopyContainer CopyData = new CopyContainer();
 
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();

@@ -804,6 +804,58 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Copy any edits for the specified object
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        public void MaterialCopyEdits(int slot, Material material, GameObject gameObject)
+        {
+            MaterialEditorPlugin.CopyData.ClearAll();
+            ObjectType objectType = FindGameObjectType(gameObject);
+
+            foreach (var materialShader in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
+                MaterialEditorPlugin.CopyData.MaterialShaderList.Add(new CopyContainer.MaterialShader(materialShader.ShaderName, materialShader.RenderQueue));
+            foreach (var materialFloatProperty in MaterialFloatPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
+                MaterialEditorPlugin.CopyData.MaterialFloatPropertyList.Add(new CopyContainer.MaterialFloatProperty(materialFloatProperty.Property, float.Parse(materialFloatProperty.Value)));
+            foreach (var materialColorProperty in MaterialColorPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
+                MaterialEditorPlugin.CopyData.MaterialColorPropertyList.Add(new CopyContainer.MaterialColorProperty(materialColorProperty.Property, materialColorProperty.Value));
+            foreach (var materialTextureProperty in MaterialTexturePropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
+            {
+                if (materialTextureProperty.TexID != null)
+                    MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, TextureDictionary[(int)materialTextureProperty.TexID].Data, materialTextureProperty.Offset, materialTextureProperty.Scale));
+                else
+                    MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
+            }
+        }
+        /// <summary>
+        /// Paste any edits for the specified object
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
+        public void MaterialPasteEdits(int slot, Material material, GameObject gameObject, bool setProperty = true)
+        {
+            foreach (var materialShader in MaterialEditorPlugin.CopyData.MaterialShaderList)
+            {
+                if (materialShader.ShaderName != null)
+                    SetMaterialShader(slot, material, materialShader.ShaderName, gameObject, setProperty);
+                if (materialShader.RenderQueue != null)
+                    SetMaterialShaderRenderQueue(slot, material, (int)materialShader.RenderQueue, gameObject, setProperty);
+            }
+            foreach (var materialFloatProperty in MaterialEditorPlugin.CopyData.MaterialFloatPropertyList)
+                if (material.HasProperty($"_{materialFloatProperty.Property}"))
+                    SetMaterialFloatProperty(slot, material, materialFloatProperty.Property, materialFloatProperty.Value, gameObject, setProperty);
+            foreach (var materialColorProperty in MaterialEditorPlugin.CopyData.MaterialColorPropertyList)
+                if (material.HasProperty($"_{materialColorProperty.Property}"))
+                    SetMaterialColorProperty(slot, material, materialColorProperty.Property, materialColorProperty.Value, gameObject, setProperty);
+            foreach (var materialTextureProperty in MaterialEditorPlugin.CopyData.MaterialTexturePropertyList)
+                if (material.HasProperty($"_{materialTextureProperty.Property}"))
+                    SetMaterialTexture(slot, material, materialTextureProperty.Property, materialTextureProperty.Data, gameObject);
+        }
+
         #region Set, Get, Remove methods
         /// <summary>
         /// Add a renderer property to be saved and loaded with the card and optionally also update the renderer.
@@ -1077,6 +1129,30 @@ namespace KK_Plugins.MaterialEditor
             }
         }
         /// <summary>
+        /// Add a texture property to be saved and loaded with the card.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="data">Byte array containing the texture data</param>
+        /// <param name="gameObject">GameObject the material belongs to</param>
+        public void SetMaterialTexture(int slot, Material material, string propertyName, byte[] data, GameObject gameObject)
+        {
+            if (data == null) return;
+
+            ObjectType objectType = FindGameObjectType(gameObject);
+
+            Texture2D tex = MaterialEditorPlugin.TextureFromBytes(data);
+
+            SetTexture(gameObject, material.NameFormatted(), propertyName, tex);
+
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
+            if (textureProperty == null)
+                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, SetAndGetTextureID(data)));
+            else
+                textureProperty.TexID = SetAndGetTextureID(data);
+        }
+        /// <summary>
         /// Get the saved material property value or null if none is saved
         /// </summary>
         /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
@@ -1103,7 +1179,7 @@ namespace KK_Plugins.MaterialEditor
         public bool GetMaterialTextureOriginal(int slot, Material material, string propertyName, GameObject gameObject)
         {
             ObjectType objectType = FindGameObjectType(gameObject);
-            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.TexID == null ? true : false;
+            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.TexID == null;
         }
         /// <summary>
         /// Remove the saved material property value if one is saved and optionally also update the materials

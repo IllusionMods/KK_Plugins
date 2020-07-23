@@ -134,6 +134,11 @@ namespace KK_Plugins.MaterialEditor
         internal override void RemoveRendererProperty(int slot, Renderer renderer, RendererProperties property, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveRendererProperty(slot, renderer, property, gameObject);
 
+        internal override void MaterialCopyEdits(int slot, Material material, GameObject gameObject) =>
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialCopyEdits(slot, material, gameObject);
+        internal override void MaterialPasteEdits(int slot, Material material, GameObject gameObject) =>
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialPasteEdits(slot, material, gameObject);
+
         internal override string GetMaterialShaderNameOriginal(int slot, Material material, GameObject gameObject) =>
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialShaderOriginal(slot, material, gameObject);
         internal override void SetMaterialShaderName(int slot, Material material, string value, GameObject gameObject) =>

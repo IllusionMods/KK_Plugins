@@ -261,6 +261,15 @@ namespace KK_Plugins.MaterialEditor
 
                 var materialItem = new ItemInfo(ItemInfo.RowItemType.Material, "Material");
                 materialItem.MaterialName = materialName;
+                materialItem.MaterialOnCopy = delegate ()
+                {
+                    MaterialCopyEdits(slot, mat, gameObject);
+                };
+                materialItem.MaterialOnPaste = delegate ()
+                {
+                    MaterialPasteEdits(slot, mat, gameObject);
+                    PopulateList(gameObject, slot, filter);
+                };
                 //materialItem.MaterialOnCopyRemove = delegate ()
                 //{
                 //    CopyMaterial(gameObject, materialName);
@@ -459,6 +468,8 @@ namespace KK_Plugins.MaterialEditor
         internal abstract string GetRendererPropertyValueOriginal(int slot, Renderer renderer, RendererProperties property, GameObject gameObject);
         internal abstract void SetRendererProperty(int slot, Renderer renderer, RendererProperties property, string value, GameObject gameObject);
         internal abstract void RemoveRendererProperty(int slot, Renderer renderer, RendererProperties property, GameObject gameObject);
+        internal abstract void MaterialCopyEdits(int slot, Material material, GameObject gameObject);
+        internal abstract void MaterialPasteEdits(int slot, Material material, GameObject gameObject);
 
         internal abstract string GetMaterialShaderNameOriginal(int slot, Material material, GameObject gameObject);
         internal abstract void SetMaterialShaderName(int slot, Material material, string value, GameObject gameObject);

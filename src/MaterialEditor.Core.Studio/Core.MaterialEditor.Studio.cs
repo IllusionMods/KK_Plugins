@@ -114,6 +114,23 @@ namespace KK_Plugins.MaterialEditor
                 GetSceneController().RemoveRendererProperty(slot, renderer, property);
         }
 
+        internal override void MaterialCopyEdits(int slot, Material material, GameObject gameObject)
+        {
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).MaterialCopyEdits(slot, material, gameObject);
+            else
+                GetSceneController().MaterialCopyEdits(slot, material);
+        }
+        internal override void MaterialPasteEdits(int slot, Material material, GameObject gameObject)
+        {
+            var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl != null)
+                MaterialEditorPlugin.GetCharaController(chaControl).MaterialPasteEdits(slot, material, gameObject);
+            else
+                GetSceneController().MaterialPasteEdits(slot, material);
+        }
+
         internal override string GetMaterialShaderNameOriginal(int slot, Material material, GameObject gameObject)
         {
             var chaControl = gameObject.GetComponent<ChaControl>();

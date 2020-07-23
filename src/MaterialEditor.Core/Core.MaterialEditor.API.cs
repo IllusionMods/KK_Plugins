@@ -438,7 +438,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material being set</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
-        public static bool SetTextureOffset(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureOffset(chaControl.gameObject, materialName, propertyName, (Vector2)value);
+        public static bool SetTextureOffset(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value != null && SetTextureOffset(chaControl.gameObject, materialName, propertyName, (Vector2)value);
         /// <summary>
         /// Set the texture offset property of a material
         /// </summary>
@@ -469,7 +469,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material being set</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
-        public static bool SetTextureScale(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value == null ? false : SetTextureScale(chaControl.gameObject, materialName, propertyName, (Vector2)value);
+        public static bool SetTextureScale(ChaControl chaControl, string materialName, string propertyName, Vector2? value) => value != null && SetTextureScale(chaControl.gameObject, materialName, propertyName, (Vector2)value);
         /// <summary>
         /// Set the texture scale property of a material
         /// </summary>

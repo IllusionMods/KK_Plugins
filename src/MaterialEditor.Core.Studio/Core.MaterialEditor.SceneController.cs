@@ -271,6 +271,55 @@ namespace KK_Plugins.MaterialEditor
             return highestID;
         }
 
+        /// <summary>
+        /// Copy any edits for the specified object
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        public void MaterialCopyEdits(int id, Material material)
+        {
+            MaterialEditorPlugin.CopyData.ClearAll();
+
+            foreach (var materialShader in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()))
+                MaterialEditorPlugin.CopyData.MaterialShaderList.Add(new CopyContainer.MaterialShader(materialShader.ShaderName, materialShader.RenderQueue));
+            foreach (var materialFloatProperty in MaterialFloatPropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()))
+                MaterialEditorPlugin.CopyData.MaterialFloatPropertyList.Add(new CopyContainer.MaterialFloatProperty(materialFloatProperty.Property, float.Parse(materialFloatProperty.Value)));
+            foreach (var materialColorProperty in MaterialColorPropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()))
+                MaterialEditorPlugin.CopyData.MaterialColorPropertyList.Add(new CopyContainer.MaterialColorProperty(materialColorProperty.Property, materialColorProperty.Value));
+            foreach (var materialTextureProperty in MaterialTexturePropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()))
+            {
+                if (materialTextureProperty.TexID != null)
+                    MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, TextureDictionary[(int)materialTextureProperty.TexID].Data, materialTextureProperty.Offset, materialTextureProperty.Scale));
+                else
+                    MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
+            }
+        }
+        /// <summary>
+        /// Paste any edits for the specified object
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
+        public void MaterialPasteEdits(int id, Material material, bool setProperty = true)
+        {
+            foreach (var materialShader in MaterialEditorPlugin.CopyData.MaterialShaderList)
+            {
+                if (materialShader.ShaderName != null)
+                    SetMaterialShader(id, material, materialShader.ShaderName, setProperty);
+                if (materialShader.RenderQueue != null)
+                    SetMaterialShaderRenderQueue(id, material, (int)materialShader.RenderQueue, setProperty);
+            }
+            foreach (var materialFloatProperty in MaterialEditorPlugin.CopyData.MaterialFloatPropertyList)
+                if (material.HasProperty($"_{materialFloatProperty.Property}"))
+                    SetMaterialFloatProperty(id, material, materialFloatProperty.Property, materialFloatProperty.Value, setProperty);
+            foreach (var materialColorProperty in MaterialEditorPlugin.CopyData.MaterialColorPropertyList)
+                if (material.HasProperty($"_{materialColorProperty.Property}"))
+                    SetMaterialColorProperty(id, material, materialColorProperty.Property, materialColorProperty.Value, setProperty);
+            foreach (var materialTextureProperty in MaterialEditorPlugin.CopyData.MaterialTexturePropertyList)
+                if (material.HasProperty($"_{materialTextureProperty.Property}"))
+                    SetMaterialTexture(id, material, materialTextureProperty.Property, materialTextureProperty.Data);
+        }
+
         #region Set, Get, Remove methods
         /// <summary>
         /// Add a renderer property to be saved and loaded with the scene and optionally also update the renderer.
@@ -524,6 +573,31 @@ namespace KK_Plugins.MaterialEditor
             }
         }
         /// <summary>
+        /// Add a texture property to be saved and loaded with the card.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="data">Byte array containing the texture data</param>
+        public void SetMaterialTexture(int id, Material material, string propertyName, byte[] data)
+        {
+            GameObject gameObject = GetObjectByID(id);
+            if (data == null) return;
+
+            Texture2D tex = MaterialEditorPlugin.TextureFromBytes(data);
+
+            SetTexture(gameObject, material.NameFormatted(), propertyName, tex);
+
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
+            if (textureProperty == null)
+            {
+                textureProperty = new MaterialTextureProperty(id, material.NameFormatted(), propertyName, SetAndGetTextureID(data));
+                MaterialTexturePropertyList.Add(textureProperty);
+            }
+            else
+                textureProperty.TexID = SetAndGetTextureID(data);
+        }
+        /// <summary>
         /// Get the saved material property value or null if none is saved
         /// </summary>
         /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
@@ -545,7 +619,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <returns>Saved material property's original value or null if none is saved</returns>
         public bool GetMaterialTextureOriginal(int id, Material material, string propertyName) =>
-            MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.TexID == null ? true : false;
+            MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.TexID == null;
         /// <summary>
         /// Remove the saved material property value if one is saved and optionally also update the materials
         /// </summary>
