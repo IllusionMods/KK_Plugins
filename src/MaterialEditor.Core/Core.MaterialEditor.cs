@@ -227,6 +227,11 @@ namespace KK_Plugins.MaterialEditor
             {
                 string shaderName = shaderElement.Attribute("Name").Value;
 
+                if (LoadedShaders.ContainsKey(shaderName))
+                {
+                    Destroy(LoadedShaders[shaderName].Shader);
+                    LoadedShaders.Remove(shaderName);
+                }
                 LoadedShaders[shaderName] = new ShaderData(shaderName, shaderElement.Attribute("AssetBundle")?.Value, shaderElement.Attribute("RenderQueue")?.Value, shaderElement.Attribute("Asset")?.Value);
 
                 XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
