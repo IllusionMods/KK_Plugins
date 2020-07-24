@@ -24,7 +24,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.randomcharactergenerator";
         public const string PluginName = "Random Character Generator";
-        public const string PluginNameInternal = "KK_RandomCharacterGenerator";
+        public const string PluginNameInternal = Constants.Prefix + "_RandomCharacterGenerator";
         public const string Version = "1.0";
 
         private static readonly List<CharaMakerSlider> CharaMakerSliders = new List<CharaMakerSlider>();

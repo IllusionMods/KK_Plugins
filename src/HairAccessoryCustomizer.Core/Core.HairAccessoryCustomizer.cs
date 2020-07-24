@@ -12,10 +12,13 @@ namespace KK_Plugins
     /// <summary>
     /// Individual customization of hair accessories for adding hair gloss, color matching, etc.
     /// </summary>
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public partial class HairAccessoryCustomizer : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.hairaccessorycustomizer";
         public const string PluginName = "Hair Accessory Customizer";
+        public const string PluginNameInternal = Constants.Prefix + "_HairAccessoryCustomizer";
         public const string Version = "1.1.5";
         internal static new ManualLogSource Logger;
 

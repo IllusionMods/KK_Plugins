@@ -173,7 +173,7 @@ namespace KK_Plugins
                 var controller = GetController(MakerAPI.GetCharacterControl());
 #if KK
                 controller.PenisGUID = ID == 0 || ID == 1 ? null : PenisList[ID];
-                controller.DisplayPenis = ID == 1 ? false : true;
+                controller.DisplayPenis = ID != 1;
 #elif AI || HS2
                 controller.PenisGUID = ID == 0 ? null : PenisList[ID];
 #else
@@ -207,7 +207,7 @@ namespace KK_Plugins
 
                 var controller = GetController(MakerAPI.GetCharacterControl());
                 controller.BallsGUID = ID == 0 || ID == 1 ? null : BallsList[ID];
-                controller.DisplayBalls = ID == 1 ? false : true;
+                controller.DisplayBalls = ID != 1;
                 controller.UpdateUncensor();
             }
 

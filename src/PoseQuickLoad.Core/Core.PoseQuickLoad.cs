@@ -1,15 +1,18 @@
-﻿using BepInEx.Configuration;
+﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using Studio;
 
 namespace KK_Plugins
 {
-    public partial class PoseQuickLoad
+    [BepInProcess(Constants.StudioProcessName)]
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class PoseQuickLoad : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.posequickload";
         public const string PluginName = "Pose Quick Load";
-        public const string PluginNameInternal = "PoseQuickLoad";
+        public const string PluginNameInternal = Constants.Prefix + "_PoseQuickLoad";
         public const string Version = "1.0";
         internal static new ManualLogSource Logger;
 

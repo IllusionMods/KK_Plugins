@@ -1,4 +1,5 @@
-﻿using BepInEx.Configuration;
+﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using ExtensionMethods;
@@ -24,10 +25,14 @@ namespace KK_Plugins
     /// <summary>
     /// Allows attaching IK nodes to objects to create custom animations
     /// </summary>
-    public partial class AnimationController
+    [BepInProcess(Constants.StudioProcessName)]
+    [BepInDependency(KoikatuAPI.GUID)]
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class AnimationController : BaseUnityPlugin
     {
-        public const string PluginName = "Animation Controller";
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
+        public const string PluginName = "Animation Controller";
+        public const string PluginNameInternal = Constants.Prefix + "_AnimationController";
         public const string Version = "2.2";
         internal static new ManualLogSource Logger;
 

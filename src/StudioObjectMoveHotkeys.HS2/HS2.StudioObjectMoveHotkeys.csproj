@@ -66,9 +66,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="HS2.StudioObjectMoveHotkeys.cs" />
-  </ItemGroup>
   <Import Project="..\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

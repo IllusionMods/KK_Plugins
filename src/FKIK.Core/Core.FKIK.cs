@@ -1,4 +1,5 @@
-﻿using BepInEx.Logging;
+﻿using BepInEx;
+using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI.Studio;
 using Studio;
@@ -9,10 +10,14 @@ using AIChara;
 
 namespace KK_Plugins
 {
-    public partial class FKIK
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInProcess(Constants.StudioProcessName)]
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class FKIK : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.fkik";
         public const string PluginName = "FK and IK";
+        public const string PluginNameInternal = Constants.Prefix + "_FKIK";
         public const string Version = "1.1";
         internal static new ManualLogSource Logger;
         internal static FKIK Instance;

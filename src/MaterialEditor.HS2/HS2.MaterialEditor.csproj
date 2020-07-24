@@ -114,11 +114,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HS2.MaterialEditor.cs" />
-    <Compile Include="HS2.MaterialEditor.Maker.cs" />
-    <Compile Include="HS2.MaterialEditor.Studio.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\AI_Shaders.unity3d" />
     <EmbeddedResource Include="Resources\EC_Shaders.unity3d" />

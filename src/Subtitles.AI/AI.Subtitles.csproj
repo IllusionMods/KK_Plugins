@@ -82,7 +82,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AI.Subtitles.cs" />
     <Compile Include="AI.Subtitles.Hooks.cs" />
   </ItemGroup>
   <ItemGroup>

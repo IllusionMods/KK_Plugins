@@ -7,10 +7,13 @@ using UnityEngine;
 
 namespace KK_Plugins
 {
-    public partial class StudioObjectMoveHotkeys
+    [BepInProcess(Constants.StudioProcessName)]
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class StudioObjectMoveHotkeys : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.studioobjectmovehotkeys";
         public const string PluginName = "Studio Object Move Hotkeys";
+        public const string PluginNameInternal = Constants.Prefix + "_StudioObjectMoveHotkeys";
         public const string Version = "1.0";
 
         private Key KeyMode = Key.NONE;

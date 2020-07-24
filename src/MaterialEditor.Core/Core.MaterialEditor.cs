@@ -25,7 +25,9 @@ namespace KK_Plugins.MaterialEditor
     /// <summary>
     /// MaterialEditor plugin base
     /// </summary>
-    public partial class MaterialEditorPlugin
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class MaterialEditorPlugin : BaseUnityPlugin
     {
         /// <summary>
         /// MaterialEditor plugin GUID
@@ -35,6 +37,7 @@ namespace KK_Plugins.MaterialEditor
         /// MaterialEditor plugin name
         /// </summary>
         public const string PluginName = "Material Editor";
+        internal const string PluginNameInternal = Constants.Prefix + "_MaterialEditor";
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>

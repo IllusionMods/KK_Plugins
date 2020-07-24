@@ -12,7 +12,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.charamakerloadedsound";
         public const string PluginName = "Character Maker Loaded Sound";
-        public const string PluginNameInternal = "KK_CharaMakerLoadedSound";
+        public const string PluginNameInternal = Constants.Prefix + "_CharaMakerLoadedSound";
         public const string Version = "1.0";
 
         internal void Main() => KKAPI.Maker.MakerAPI.MakerFinishedLoading += (s, e) => Utils.Sound.Play(SystemSE.result_single);

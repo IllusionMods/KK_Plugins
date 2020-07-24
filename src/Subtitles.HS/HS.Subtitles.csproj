@@ -71,7 +71,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HS.Subtitles.cs" />
     <Compile Include="HS.Subtitles.Hooks.cs" />
   </ItemGroup>
   <ItemGroup>

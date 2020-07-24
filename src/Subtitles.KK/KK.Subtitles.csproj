@@ -68,7 +68,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK.Subtitles.cs" />
     <Compile Include="KK.Subtitles.Caption.cs" />
     <Compile Include="KK.Subtitles.Hooks.cs" />
   </ItemGroup>

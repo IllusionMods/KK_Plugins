@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx;
+using HarmonyLib;
 using Studio;
 using System.Collections.Generic;
 using System.IO;
@@ -8,10 +9,13 @@ using UnityEngine.Events;
 
 namespace KK_Plugins
 {
-    public partial class PoseFolders
+    [BepInProcess(Constants.StudioProcessName)]
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class PoseFolders : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.posefolders";
         public const string PluginName = "Pose Folders";
+        public const string PluginNameInternal = Constants.Prefix + "_PoseFolders";
         public const string Version = "1.0";
 
         private const string USERDATA = "userdata";

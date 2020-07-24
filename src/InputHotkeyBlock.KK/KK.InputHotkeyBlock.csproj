@@ -67,7 +67,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK.InputHotkeyBlock.cs" />
     <Compile Include="KK.InputHotkeyBlock.Hooks.cs" />
   </ItemGroup>
   <ItemGroup>

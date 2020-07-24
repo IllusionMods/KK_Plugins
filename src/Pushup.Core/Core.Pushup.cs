@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using System.Linq;
@@ -9,10 +10,13 @@ using UnityEngine;
 
 namespace KK_Plugins
 {
+    [BepInDependency(KoikatuAPI.GUID)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public partial class Pushup : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.pushup";
         public const string PluginName = "Pushup";
+        public const string PluginNameInternal = Constants.Prefix + "_Pushup";
         public const string Version = "1.2";
         internal static new ManualLogSource Logger;
 

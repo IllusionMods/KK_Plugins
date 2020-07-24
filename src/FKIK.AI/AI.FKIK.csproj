@@ -90,9 +90,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AI.FKIK.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\Panel.png" />
   </ItemGroup>
   <ItemGroup>

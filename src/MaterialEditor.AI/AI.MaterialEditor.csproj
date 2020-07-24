@@ -111,11 +111,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AI.MaterialEditor.cs" />
-    <Compile Include="AI.MaterialEditor.Maker.cs" />
-    <Compile Include="AI.MaterialEditor.Studio.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />
   </ItemGroup>
   <ItemGroup>

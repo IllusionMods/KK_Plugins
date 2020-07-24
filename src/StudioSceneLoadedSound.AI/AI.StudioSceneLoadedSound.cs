@@ -1,14 +1,10 @@
 ﻿using AIProject;
-using BepInEx;
 using HarmonyLib;
 using System.Reflection;
 
 namespace KK_Plugins
 {
-    [BepInPlugin(GUID, PluginName, Version)]
-    [BepInProcess(Constants.StudioProcessName)]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    public partial class StudioSceneLoadedSound : BaseUnityPlugin
+    public partial class StudioSceneLoadedSound
     {
         private static MethodInfo playSEMethodInfo = null;
 

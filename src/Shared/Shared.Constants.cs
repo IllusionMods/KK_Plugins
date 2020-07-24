@@ -22,6 +22,7 @@
         internal const string GameName = "Honey Select 2";
         internal const string StudioProcessName = "StudioNEOV2";
         internal const string MainGameProcessName = "HoneySelect2";
+        internal const string VRProcessName = "HoneySelect2VR";
 #elif KK
         internal const string Prefix = "KK";
         internal const string GameName = "Koikatsu";

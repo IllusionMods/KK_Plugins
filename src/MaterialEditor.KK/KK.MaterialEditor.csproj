@@ -89,10 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK.MaterialEditor.cs" />
     <Compile Include="KK.MaterialEditor.Hooks.cs" />
-    <Compile Include="KK.MaterialEditor.Maker.cs" />
-    <Compile Include="KK.MaterialEditor.Studio.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />

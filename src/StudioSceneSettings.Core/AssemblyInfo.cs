@@ -1,7 +1,6 @@
 ﻿using KK_Plugins;
 using System.Reflection;
-using static KK_Plugins.StudioSceneSettings.StudioSceneSettingsCore;
-using static KK_Plugins.StudioSceneSettings.StudioSceneSettingsPlugin;
+using static KK_Plugins.StudioSceneSettings.StudioSceneSettings;
 
 [assembly: AssemblyTitle(PluginNameInternal)]
 [assembly: AssemblyProduct(PluginNameInternal)]

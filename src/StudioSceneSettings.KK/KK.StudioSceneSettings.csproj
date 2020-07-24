@@ -72,10 +72,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK.StudioSceneSettings.cs" />
-    <Compile Include="KK.StudioSceneSettings.SceneController.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

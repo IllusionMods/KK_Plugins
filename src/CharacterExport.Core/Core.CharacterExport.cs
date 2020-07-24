@@ -11,10 +11,12 @@ using AIChara;
 
 namespace KK_Plugins
 {
-    public partial class CharacterExport
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class CharacterExport : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.characterexport";
         public const string PluginName = "Character Export";
+        public const string PluginNameInternal = Constants.Prefix + "_CharacterExport";
         public const string Version = "1.0";
         internal static new ManualLogSource Logger;
         public static readonly string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\chara\export");

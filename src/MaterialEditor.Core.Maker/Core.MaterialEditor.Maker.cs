@@ -1,4 +1,5 @@
-﻿using KKAPI.Maker;
+﻿using BepInEx;
+using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
@@ -11,6 +12,13 @@ namespace KK_Plugins.MaterialEditor
     /// <summary>
     /// Plugin responsible for handling events from the character maker
     /// </summary>
+#if KK
+    [BepInProcess(Constants.MainGameProcessNameSteam)]
+#endif
+    [BepInProcess(Constants.MainGameProcessName)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(MaterialEditorPlugin.GUID)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public partial class MEMaker : UI
     {
         /// <summary>

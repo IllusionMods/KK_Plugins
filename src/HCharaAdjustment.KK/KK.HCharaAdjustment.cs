@@ -15,7 +15,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.hcharaadjustment";
         public const string PluginName = "H Character Adjustment";
-        public const string PluginNameInternal = "KK_HCharaAdjustment";
+        public const string PluginNameInternal = Constants.Prefix + "_HCharaAdjustment";
         public const string Version = "2.0";
         internal static new ManualLogSource Logger;
 

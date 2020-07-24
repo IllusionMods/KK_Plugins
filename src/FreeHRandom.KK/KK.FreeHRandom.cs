@@ -17,7 +17,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.freehrandom";
         public const string PluginName = "Free H Random";
-        public const string PluginNameInternal = "KK_FreeHRandom";
+        public const string PluginNameInternal = Constants.Prefix + "_FreeHRandom";
         public const string Version = "1.1.1";
 
         private enum CharacterType { Heroine, Partner, Female3P, Player }

@@ -13,7 +13,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.forcehighpoly";
         public const string PluginName = "Force High Poly";
-        public const string PluginNameInternal = "KK_ForceHighPoly";
+        public const string PluginNameInternal = Constants.Prefix + "_ForceHighPoly";
         public const string Version = "1.2.2";
 
         public static ConfigEntry<bool> Enabled { get; private set; }

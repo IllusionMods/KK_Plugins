@@ -5,10 +5,14 @@ using KKAPI.Utilities;
 using Studio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if AI || HS2
+using Cinemachine;
+using HarmonyLib;
+#endif
 
 namespace KK_Plugins.StudioSceneSettings
 {
-    public abstract class SceneControllerCore : SceneCustomFunctionController
+    public class SceneController : SceneCustomFunctionController
     {
         public static SceneEffectsToggleSet MapMasking;
         public static SceneEffectsSliderSet NearClipPlane;
@@ -96,9 +100,9 @@ namespace KK_Plugins.StudioSceneSettings
 
             var CameraLayerDefault = Camera.main.gameObject.layer;
 
-            var menu = new SceneEffectsCategory(StudioSceneSettingsPlugin.PluginNameInternal);
+            var menu = new SceneEffectsCategory(StudioSceneSettings.PluginNameInternal);
 #if KK
-            MapMasking = menu.AddToggleSet("Map Masking", value => Camera.main.gameObject.layer = value ? StudioSceneSettingsCore.CameraMapMaskingLayer : CameraLayerDefault, false);
+            MapMasking = menu.AddToggleSet("Map Masking", value => Camera.main.gameObject.layer = value ? StudioSceneSettings.CameraMapMaskingLayer : CameraLayerDefault, false);
 #endif
             NearClipPlane = menu.AddSliderSet("Near Clip Plane", value => NearClipSetter(value), NearClipDefault, 0.01f, 10f);
             FarClipPlane = menu.AddSliderSet("Far Clip Plane", value => FarClipSetter(value), FarClipDefault, 1f, 10000f);
@@ -107,9 +111,36 @@ namespace KK_Plugins.StudioSceneSettings
             FarClipPlane.EnforceSliderMaximum = false;
         }
 
-        internal abstract float NearClipDefault { get; }
-        internal abstract void NearClipSetter(float value);
-        internal abstract float FarClipDefault { get; }
-        internal abstract void FarClipSetter(float value);
+
+#if KK
+        internal float NearClipDefault => Camera.main.nearClipPlane;
+        internal void NearClipSetter(float value) => Camera.main.nearClipPlane = value;
+        internal float FarClipDefault => Camera.main.farClipPlane;
+        internal void FarClipSetter(float value) => Camera.main.farClipPlane = value;
+#else
+        internal float NearClipDefault => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Field("lensSettings").GetValue<LensSettings>().NearClipPlane;
+
+        internal void NearClipSetter(float value)
+        {
+            Studio.CameraControl cameraCtrl = Studio.Studio.Instance.cameraCtrl;
+            var field = Traverse.Create(cameraCtrl).Field("lensSettings");
+            var lensSettings = field.GetValue<LensSettings>();
+            lensSettings.NearClipPlane = value;
+            field.SetValue(lensSettings);
+            cameraCtrl.fieldOfView = cameraCtrl.fieldOfView;
+        }
+
+        internal float FarClipDefault => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Field("lensSettings").GetValue<LensSettings>().FarClipPlane;
+
+        internal void FarClipSetter(float value)
+        {
+            Studio.CameraControl cameraCtrl = Studio.Studio.Instance.cameraCtrl;
+            var field = Traverse.Create(cameraCtrl).Field("lensSettings");
+            var lensSettings = field.GetValue<LensSettings>();
+            lensSettings.FarClipPlane = value;
+            field.SetValue(lensSettings);
+            cameraCtrl.fieldOfView = cameraCtrl.fieldOfView;
+        }
+#endif
     }
 }

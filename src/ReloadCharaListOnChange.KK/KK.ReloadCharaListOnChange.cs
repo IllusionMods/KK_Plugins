@@ -24,7 +24,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.reloadcharalistonchange";
         public const string PluginName = "Reload Character List On Change";
-        public const string PluginNameInternal = "KK_ReloadCharaListOnChange";
+        public const string PluginNameInternal = Constants.Prefix + "_ReloadCharaListOnChange";
         public const string Version = "1.5.1";
         internal static new ManualLogSource Logger;
         private static FileSystemWatcher CharacterCardWatcher;

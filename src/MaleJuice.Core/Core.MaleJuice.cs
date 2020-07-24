@@ -15,12 +15,14 @@ namespace KK_Plugins
     /// <summary>
     /// Enables juice textures for male characters
     /// </summary>
+    [BepInDependency(KoikatuAPI.GUID)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public partial class MaleJuice : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.malejuice";
         public const string PluginName = "Male Juice";
-        public const string Version = "1.2.2";
         public const string PluginNameInternal = Constants.Prefix + "_MaleJuice";
+        public const string Version = "1.2.2";
 
 #if KK
         private static Texture LiquidMask = null;

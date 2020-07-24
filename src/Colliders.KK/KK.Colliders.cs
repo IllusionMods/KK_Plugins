@@ -12,7 +12,6 @@ namespace KK_Plugins
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class Colliders : BaseUnityPlugin
     {
-        public const string PluginNameInternal = "KK_Colliders";
         public static ConfigEntry<bool> ConfigSkirtColliders { get; private set; }
 
         internal static ColliderData FloorColliderData = new ColliderData("cf_j_root", 100f, 0f, new Vector3(0, -100.01f, 0f));

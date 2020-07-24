@@ -92,10 +92,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HS2.StudioSceneSettings.cs" />
-    <Compile Include="HS2.StudioSceneSettings.SceneController.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems" Label="Shared" />

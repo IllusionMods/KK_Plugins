@@ -10,10 +10,12 @@ using UniRx;
 
 namespace KK_Plugins
 {
+    [BepInPlugin(GUID, PluginName, Version)]
     public partial class ClothingUnlocker : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.clothingunlocker";
         public const string PluginName = "Clothing Unlocker";
+        public const string PluginNameInternal = Constants.Prefix + "_ClothingUnlocker";
         public const string Version = "2.0.1";
         internal static new ManualLogSource Logger;
 

@@ -10,7 +10,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.listoverride";
         public const string PluginName = "List Override";
-        public const string PluginNameInternal = "KK_ListOverride";
+        public const string PluginNameInternal = Constants.Prefix + "_ListOverride";
         public const string Version = "1.0";
         internal static new ManualLogSource Logger;
         private static readonly string ListOverrideFolder = Path.Combine(Paths.ConfigPath, PluginNameInternal);

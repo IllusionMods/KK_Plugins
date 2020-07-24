@@ -1,13 +1,8 @@
-﻿using BepInEx;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace KK_Plugins
 {
-    [BepInProcess(Constants.StudioProcessName)]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInDependency(MaterialEditor.MEStudio.GUID, "2.0")]
-    [BepInPlugin(GUID, PluginName, Version)]
-    public partial class ImageEmbed : BaseUnityPlugin
+    public partial class ImageEmbed
     {
         private static readonly List<string> DefaultBGs = new List<string>()
         {

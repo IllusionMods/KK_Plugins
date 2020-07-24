@@ -1,12 +1,16 @@
 ﻿using BepInEx.Configuration;
 using KKAPI.Studio.SaveLoad;
+using BepInEx;
 
 namespace KK_Plugins
 {
     /// <summary>
     /// When a Studio scene is loaded or imported, play a sound
     /// </summary>
-    public partial class StudioSceneLoadedSound
+    [BepInPlugin(GUID, PluginName, Version)]
+    [BepInProcess(Constants.StudioProcessName)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    public partial class StudioSceneLoadedSound : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.studiosceneloadedsound";
         public const string PluginName = "Studio Scene Loaded Sound";

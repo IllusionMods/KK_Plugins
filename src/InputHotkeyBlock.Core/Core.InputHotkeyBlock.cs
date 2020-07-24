@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -8,10 +9,12 @@ namespace KK_Plugins
     /// <summary>
     /// Intercepts GetKey to prevent hotkeys from mods from firing while typing in an input field
     /// </summary>
-    public partial class InputHotkeyBlock
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class InputHotkeyBlock : BaseUnityPlugin
     {
-        public const string PluginName = "Input Hotkey Block";
         public const string GUID = "com.deathweasel.bepinex.inputhotkeyblock";
+        public const string PluginName = "Input Hotkey Block";
+        public const string PluginNameInternal = Constants.Prefix + "_InputHotkeyBlock";
         public const string Version = "1.2";
 
         internal void Main() => Harmony.CreateAndPatchAll(typeof(Hooks));

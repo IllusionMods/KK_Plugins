@@ -1,4 +1,5 @@
-﻿using BepInEx.Bootstrap;
+﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -8,7 +9,11 @@ using System.IO;
 
 namespace KK_Plugins
 {
-    public partial class ImageEmbed
+    [BepInProcess(Constants.StudioProcessName)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(MaterialEditor.MaterialEditorPlugin.GUID, "2.0")]
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class ImageEmbed : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.studioimageembed";
         public const string PluginName = "Image Embed";
