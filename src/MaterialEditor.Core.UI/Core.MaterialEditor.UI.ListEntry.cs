@@ -181,7 +181,7 @@ namespace KK_Plugins.MaterialEditor
                         }
                         else
                         {
-                            MaterialPasteButton.enabled = false;
+                            MaterialPasteButton.enabled = true;
                             Text text = MaterialPasteButton.GetComponentInChildren<Text>();
                             text.color = Color.black;
                         }
