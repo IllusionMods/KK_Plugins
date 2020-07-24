@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
 using BepInEx.Logging;
+using HarmonyLib;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
@@ -26,7 +26,7 @@ namespace KK_Plugins
 
             EnableCrossdressing = Config.Bind("Config", "Enable clothing for either gender", true, "Allows any clothing to be worn by either gender.");
 
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
 
             CharacterApi.RegisterExtraBehaviour<ClothingUnlockerController>(GUID);
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;

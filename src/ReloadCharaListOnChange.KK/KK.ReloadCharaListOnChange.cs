@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using BepInEx.Harmony;
 using BepInEx.Logging;
 using ChaCustom;
 using ExtensibleSaveFormat;
@@ -56,7 +55,7 @@ namespace KK_Plugins
 
             SceneManager.sceneUnloaded += SceneUnloaded;
 
-            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
             harmony.Patch(typeof(Studio.MPCharCtrl).GetNestedType("CostumeInfo", BindingFlags.NonPublic).GetMethod("InitFileList", AccessTools.all),
                           new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.StudioCoordinateListPrefix), AccessTools.all)), null);
         }

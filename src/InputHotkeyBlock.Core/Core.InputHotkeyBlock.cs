@@ -1,4 +1,4 @@
-﻿using BepInEx.Harmony;
+﻿using HarmonyLib;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,7 +14,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.inputhotkeyblock";
         public const string Version = "1.2";
 
-        internal void Main() => HarmonyWrapper.PatchAll(typeof(Hooks));
+        internal void Main() => Harmony.CreateAndPatchAll(typeof(Hooks));
         /// <summary>
         /// Check if an input field is selected
         /// </summary>

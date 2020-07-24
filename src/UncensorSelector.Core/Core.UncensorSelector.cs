@@ -1,5 +1,4 @@
 ﻿using BepInEx.Configuration;
-using BepInEx.Harmony;
 using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI.Chara;
@@ -96,7 +95,7 @@ namespace KK_Plugins
             RegisterStudioControls();
 #endif
 
-            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
 #if KK
             Type loadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).First(x => x.Name.StartsWith("<LoadAsync>c__Iterator"));

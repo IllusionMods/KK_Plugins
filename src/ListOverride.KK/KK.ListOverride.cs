@@ -1,6 +1,6 @@
 ﻿using BepInEx;
-using BepInEx.Harmony;
 using BepInEx.Logging;
+using HarmonyLib;
 using System.IO;
 
 namespace KK_Plugins
@@ -18,7 +18,7 @@ namespace KK_Plugins
         internal void Awake()
         {
             Logger = base.Logger;
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
 using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI.Chara;
@@ -50,7 +49,7 @@ namespace KK_Plugins
             //No studio for EC
             RegisterStudioControls();
 #endif
-            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
             //Patch all the slider onValueChanged events to return false and cancel original code
             //Pushup adds its own onValueChanged event that manages this stuff

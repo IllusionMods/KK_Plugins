@@ -1,6 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Studio;
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace KK_Plugins
             ConfigSkirtColliders = Config.Bind("Config", "Skirt Colliders", true, new ConfigDescription("Extra colliders for the legs to cause less skirt clipping.", null, new ConfigurationManagerAttributes { Order = 5 }));
             ConfigSkirtColliders.SettingChanged += ConfigSkirtColliders_SettingChanged;
 
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
         /// <summary>

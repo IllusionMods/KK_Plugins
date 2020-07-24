@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
 using BepInEx.Logging;
+using HarmonyLib;
 using KKAPI.Chara;
 using UnityEngine;
 
@@ -37,7 +37,7 @@ namespace KK_Plugins
             Female2GuideObjectReset = Config.Bind("Keyboard Shortcuts", "Reset Female 2 Position", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl), new ConfigDescription("Reset adjustments for girl 2 position", null, new ConfigurationManagerAttributes { Order = 2 }));
             MaleGuideObjectReset = Config.Bind("Keyboard Shortcuts", "Reset Male Position", new KeyboardShortcut(KeyCode.I, KeyCode.RightControl), new ConfigDescription("Reset adjustments for girl 2 position", null, new ConfigurationManagerAttributes { Order = 1 }));
 
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
             CharacterApi.RegisterExtraBehaviour<HCharaAdjustmentController>(GUID);
         }
 

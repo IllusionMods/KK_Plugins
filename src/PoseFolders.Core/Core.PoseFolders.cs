@@ -1,5 +1,4 @@
-﻿using BepInEx.Harmony;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Studio;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +26,7 @@ namespace KK_Plugins
         internal void Main()
         {
             if (!CurrentDirectory.Exists) CurrentDirectory.Create();
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
         private static string GetFolder()

@@ -39,8 +39,8 @@
       <HintPath>..\..\packages\IllusionLibs.BepInEx.5.1.0\lib\net35\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ECAPI, Version=1.12.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.ECAPI.1.12.3\lib\net46\ECAPI.dll</HintPath>
+    <Reference Include="ECAPI, Version=1.13.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.ECAPI.1.13.0\lib\net46\ECAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">

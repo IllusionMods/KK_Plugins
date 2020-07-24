@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
 using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -59,7 +59,7 @@ namespace KK_Plugins
 
             LoadSubtitles();
 
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
         private void TextAlign_SettingChanged(object sender, EventArgs e)

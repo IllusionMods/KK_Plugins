@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
 using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI.Chara;
@@ -92,7 +91,7 @@ namespace KK_Plugins.MaterialEditor
             ShaderOptimization = Config.Bind("Config", "Shader Optimization", true, new ConfigDescription("Replaces every loaded shader with the MaterialEditor copy of the shader. Reduces the number of copies of shaders loaded which reduces RAM usage and improves performance.", null, new ConfigurationManagerAttributes { Order = 1 }));
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
 
-            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
 #if KK || EC
             //Hooks for transfering accessories (MoreAccessories compatibility)

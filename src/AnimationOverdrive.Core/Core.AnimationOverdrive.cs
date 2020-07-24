@@ -1,4 +1,4 @@
-﻿using BepInEx.Harmony;
+﻿using HarmonyLib;
 
 namespace KK_Plugins
 {
@@ -9,6 +9,6 @@ namespace KK_Plugins
         public const string Version = "1.1";
         private const float AnimationSpeedMax = 1000f;
 
-        internal void Main() => HarmonyWrapper.PatchAll(typeof(Hooks));
+        internal void Main() => Harmony.CreateAndPatchAll(typeof(Hooks));
     }
 }

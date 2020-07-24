@@ -1,5 +1,4 @@
 ﻿using BepInEx.Configuration;
-using BepInEx.Harmony;
 using BepInEx.Logging;
 using HarmonyLib;
 using Studio;
@@ -20,7 +19,7 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
             Enabled = Config.Bind("Config", "Pose Quick Loading", false, "Whether poses in Studio will be loaded by clicking on them. Vanilla behavior requires you to select the pose and then press load.");
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
     }
 

@@ -1,6 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
+using HarmonyLib;
 
 namespace KK_Plugins
 {
@@ -15,7 +15,7 @@ namespace KK_Plugins
         internal void Main()
         {
             Enabled = Config.Bind("Settings", "Enabled", true, "Whether the plugin is enabled");
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
     }
 }

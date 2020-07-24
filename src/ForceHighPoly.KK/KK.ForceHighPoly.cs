@@ -1,6 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
+using HarmonyLib;
 
 namespace KK_Plugins
 {
@@ -23,7 +23,7 @@ namespace KK_Plugins
             var hasEnoughRam = KKAPI.Utilities.MemoryInfo.GetCurrentStatus().ullTotalPhys > 16L * 1000L * 1000L * 1000L; // At least 16GB
             Enabled = Config.Bind("Config", "High poly mode", hasEnoughRam, "Whether or not to load high poly assets. Improves quality of characters in roaming mode and fixes some modded items not appearing.\nMay require exiting to main menu to take effect. This option has high memory requirements, at least 8GB of RAM is recommended (with ~10 characters).");
 
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
     }
 }

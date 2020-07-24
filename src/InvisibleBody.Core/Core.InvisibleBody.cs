@@ -1,5 +1,4 @@
-﻿using BepInEx.Harmony;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using KKAPI;
 using KKAPI.Chara;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
+using HarmonyLib;
 #if AI || HS2
 using AIChara;
 #endif
@@ -45,7 +45,7 @@ namespace KK_Plugins
             CharacterApi.RegisterExtraBehaviour<InvisibleBodyCharaController>(PluginNameInternal);
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
 
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)

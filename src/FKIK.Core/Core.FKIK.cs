@@ -1,5 +1,4 @@
-﻿using BepInEx.Harmony;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI.Studio;
 using Studio;
@@ -22,7 +21,7 @@ namespace KK_Plugins
         {
             Instance = this;
             Logger = base.Logger;
-            var harmony = HarmonyWrapper.PatchAll(typeof(Hooks));
+            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
             harmony.Patch(typeof(MPCharCtrl).GetNestedType("IKInfo", AccessTools.all).GetMethod("Init"), null, new HarmonyMethod(typeof(UI).GetMethod(nameof(UI.InitUI), AccessTools.all)));
             harmony.Patch(typeof(MPCharCtrl).GetNestedType("IKInfo", AccessTools.all).GetMethod("UpdateInfo"), null, new HarmonyMethod(typeof(UI).GetMethod(nameof(UI.UpdateUI), AccessTools.all)));
         }

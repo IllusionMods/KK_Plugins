@@ -1,6 +1,6 @@
 ﻿using BepInEx;
-using BepInEx.Harmony;
 using BepInEx.Logging;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using System.Collections;
@@ -70,7 +70,7 @@ namespace KK_Plugins
 #endif
 
             CharacterApi.RegisterExtraBehaviour<MaleJuiceCharaController>(GUID);
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
         public class MaleJuiceCharaController : CharaCustomFunctionController

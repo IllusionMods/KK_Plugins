@@ -1,6 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 
@@ -22,7 +22,7 @@ namespace KK_Plugins
 
         internal void Main()
         {
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
             CharacterApi.RegisterExtraBehaviour<EyeShakingController>(GUID);
 
             Enabled = Config.Bind("Config", "Enabled", true, "When enabled, virgins in H scenes will appear to have shaking eye highlights");

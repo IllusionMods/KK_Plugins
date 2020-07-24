@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using BepInEx.Harmony;
 using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI.Chara;
@@ -45,7 +44,7 @@ namespace KK_Plugins
 #endif
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
 
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
         /// <summary>
         /// Hides the accessory color controls for the current slot

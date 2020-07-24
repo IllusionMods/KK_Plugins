@@ -1,7 +1,7 @@
 ﻿using BepInEx.Bootstrap;
 using BepInEx.Configuration;
-using BepInEx.Harmony;
 using BepInEx.Logging;
+using HarmonyLib;
 using KKAPI.Studio.SaveLoad;
 using Studio;
 using System.IO;
@@ -29,7 +29,7 @@ namespace KK_Plugins
             SaveFrame = Config.Bind("Config", "Save frame images to scene data", true, new ConfigDescription("Whether images from the userdata/frame folder folder will be saved to scene data. False is vanilla behavior and such images can only be loaded if the same image exists on disk.", null, new ConfigurationManagerAttributes { Order = 1 }));
 
             StudioSaveLoadApi.RegisterExtraBehaviour<ImageEmbedSceneController>(GUID);
-            HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
         private static void SavePatternTex(OCIItem item, int patternIndex, string filePath)
