@@ -39,7 +39,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string Version = "2.1";
+        public const string Version = "2.1.1";
         internal static new ManualLogSource Logger;
 
         internal const string FileExt = ".png";
@@ -166,9 +166,8 @@ namespace KK_Plugins.MaterialEditor
             }
             else if (context.Asset is Shader shader)
             {
-#if EC
                 if (ShaderBlacklist.Contains(shader.name)) return;
-#endif
+
                 if (LoadedShaders.TryGetValue(shader.name, out var shaderData) && shaderData.Shader != null)
                     context.Asset = shaderData.Shader;
             }
