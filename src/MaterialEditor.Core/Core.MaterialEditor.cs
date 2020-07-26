@@ -58,15 +58,6 @@ namespace KK_Plugins.MaterialEditor
         internal static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         internal static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
-        /// <summary>
-        /// Shaders which should not be replaced by shader optimization due to not working correctly because of wrong normalmaps
-        /// </summary>
-#if EC
-        private static readonly List<string> ShaderBlacklist = new List<string>() { "Standard", "Shader Forge/main_opaque", "Shader Forge/main_opaque2", "Shader Forge/main_alpha" };
-#else
-        private static readonly List<string> ShaderBlacklist = new List<string>() { "Standard" };
-#endif
-
         internal static ConfigEntry<float> UIScale { get; private set; }
         internal static ConfigEntry<float> UIWidth { get; private set; }
         internal static ConfigEntry<float> UIHeight { get; private set; }
@@ -144,9 +135,7 @@ namespace KK_Plugins.MaterialEditor
                 {
                     foreach (var mat in rend.materials)
                     {
-                        if (ShaderBlacklist.Contains(mat.shader.name)) continue;
-
-                        if (LoadedShaders.TryGetValue(mat.shader.name, out var shaderData) && shaderData.Shader != null)
+                        if (LoadedShaders.TryGetValue(mat.shader.name, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
                         {
                             int renderQueue = mat.renderQueue;
                             mat.shader = shaderData.Shader;
@@ -157,9 +146,7 @@ namespace KK_Plugins.MaterialEditor
             }
             else if (context.Asset is Material mat)
             {
-                if (ShaderBlacklist.Contains(mat.shader.name)) return;
-
-                if (LoadedShaders.TryGetValue(mat.shader.name, out var shaderData) && shaderData.Shader != null)
+                if (LoadedShaders.TryGetValue(mat.shader.name, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
                 {
                     int renderQueue = mat.renderQueue;
                     mat.shader = shaderData.Shader;
@@ -168,9 +155,7 @@ namespace KK_Plugins.MaterialEditor
             }
             else if (context.Asset is Shader shader)
             {
-                if (ShaderBlacklist.Contains(shader.name)) return;
-
-                if (LoadedShaders.TryGetValue(shader.name, out var shaderData) && shaderData.Shader != null)
+                if (LoadedShaders.TryGetValue(shader.name, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
                     context.Asset = shaderData.Shader;
             }
         }
@@ -235,7 +220,7 @@ namespace KK_Plugins.MaterialEditor
                     Destroy(LoadedShaders[shaderName].Shader);
                     LoadedShaders.Remove(shaderName);
                 }
-                LoadedShaders[shaderName] = new ShaderData(shaderName, shaderElement.Attribute("AssetBundle")?.Value, shaderElement.Attribute("RenderQueue")?.Value, shaderElement.Attribute("Asset")?.Value);
+                LoadedShaders[shaderName] = new ShaderData(shaderName, shaderElement.Attribute("AssetBundle")?.Value, shaderElement.Attribute("RenderQueue")?.Value, shaderElement.Attribute("Asset")?.Value, shaderElement.Attribute("ShaderOptimization")?.Value);
 
                 XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
 
@@ -323,16 +308,23 @@ namespace KK_Plugins.MaterialEditor
             public string ShaderName;
             public Shader Shader;
             public int? RenderQueue = null;
+            public bool ShaderOptimization;
 
-            public ShaderData(string shaderName, string assetBundlePath = "", string renderQueue = "", string assetPath = "")
+            public ShaderData(string shaderName, string assetBundlePath = "", string renderQueue = "", string assetPath = "", string shaderOptimization = null)
             {
                 ShaderName = shaderName;
+
                 if (renderQueue.IsNullOrEmpty())
                     RenderQueue = null;
                 else if (int.TryParse(renderQueue, out int result))
                     RenderQueue = result;
                 else
                     RenderQueue = null;
+
+                if (bool.TryParse(shaderOptimization, out bool shaderOptimizationBool))
+                    ShaderOptimization = shaderOptimizationBool;
+                else
+                    ShaderOptimization = true;
 
                 if (assetBundlePath.IsNullOrEmpty())
                 {

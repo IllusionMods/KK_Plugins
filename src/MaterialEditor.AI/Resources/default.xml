@@ -1,5 +1,5 @@
 <MaterialEditor>
-  <Shader Name="Standard" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_standard">
+  <Shader Name="Standard" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_standard" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
     <Property Name="MainTex" Type="Texture" />
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
