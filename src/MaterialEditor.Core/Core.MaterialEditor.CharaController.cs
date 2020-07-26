@@ -188,9 +188,9 @@ namespace KK_Plugins.MaterialEditor
                     //int counter = 0;
                     //foreach (var tex in TextureDictionary.Values)
                     //{
-                    //    string filename = Path.Combine(ExportPath, $"_Export_{ChaControl.chaFile.parameter.fullname.Trim()}_{counter}.png");
-                    //    SaveTex(TextureFromBytes(tex), filename);
-                    //    Logger.LogInfo($"Exported {filename}");
+                    //    string filename = Path.Combine(MaterialEditorPlugin.ExportPath, $"_Export_{ChaControl.chaFile.parameter.fullname.Trim()}_{counter}.png");
+                    //    MaterialEditorPlugin.SaveTex(tex.Texture, filename);
+                    //    MaterialEditorPlugin.Logger.LogInfo($"Exported {filename}");
                     //    counter++;
                     //}
 
