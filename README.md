@@ -242,7 +242,7 @@ v1.1 Major rewrite, many new features<br/>
 </details>
 
 #### MaterialEditor
-**v2.1.1 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
+**v2.1.2 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
 
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
@@ -288,6 +288,7 @@ v2.0.6 Exposed the AlphaMask texture for main_skin shader, blacklisted it for th
 v2.0.7 Fixed wrong tongue materials after character replacement in KK, fixed wrong face materials after replacing in Studio, fixed shaders not loading in HS2<br/>
 v2.1 Add copy/paste for material edits, shader optimization<br/>
 v2.1.1 Fix paste button being disabled, blacklist Standard shader from optimization<br/>
+v2.1.2 Fixed meka shader in AI/HS2, added option for exclusion from shader optimization to shader xml<br/>
 </details>
 
 #### MaleJuice
