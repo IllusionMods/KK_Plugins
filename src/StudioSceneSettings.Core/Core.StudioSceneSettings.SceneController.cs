@@ -17,6 +17,11 @@ namespace KK_Plugins.StudioSceneSettings
         public static SceneEffectsToggleSet MapMasking;
         public static SceneEffectsSliderSet NearClipPlane;
         public static SceneEffectsSliderSet FarClipPlane;
+        private int CameraLayerDefault;
+
+#if AI || HS2
+        private GameObject studioCameraColliderControllerGO;
+#endif
 
         internal void Start() => SceneManager.sceneLoaded += InitStudioUI;
 
@@ -27,9 +32,7 @@ namespace KK_Plugins.StudioSceneSettings
         {
 
             var data = new PluginData();
-#if KK
             data.data[$"MapMasking"] = MapMasking.Value;
-#endif
 
             if (NearClipPlane.Value == NearClipPlane.InitialValue)
                 data.data[$"NearClipPlane"] = null;
@@ -56,12 +59,10 @@ namespace KK_Plugins.StudioSceneSettings
                     ResetAll();
                 else
                 {
-#if KK
                     if (data.data.TryGetValue("MapMasking", out var mapMasking) && mapMasking != null)
                         MapMasking.Value = (bool)mapMasking;
                     else
                         MapMasking.Reset();
-#endif
 
                     if (data.data.TryGetValue("NearClipPlane", out var nearClipPlane) && nearClipPlane != null && (float)nearClipPlane != 0f)
                         NearClipPlane.Value = (float)nearClipPlane;
@@ -98,12 +99,37 @@ namespace KK_Plugins.StudioSceneSettings
             if (s.name != "Studio") return;
             SceneManager.sceneLoaded -= InitStudioUI;
 
-            var CameraLayerDefault = Camera.main.gameObject.layer;
+#if KK
+            CameraLayerDefault = Camera.main.gameObject.layer;
+#else 
+            CameraLayerDefault = 0;
+#endif
+
+#if AI || HS2
+            //Add a custom collider controller to the camera
+            var mainCamera = GameObject.Find("StudioScene/Camera/CameraSet/MainCamera");
+
+            studioCameraColliderControllerGO = new GameObject();
+            studioCameraColliderControllerGO.name = "StudioCameraColliderController";
+            var studioCameraColliderController = studioCameraColliderControllerGO.AddComponent<StudioCameraColliderController>();
+            var rigidbody = studioCameraColliderControllerGO.AddComponent<Rigidbody>();
+            rigidbody.useGravity = false;
+            rigidbody.isKinematic = true;
+            var collider = studioCameraColliderControllerGO.GetOrAddComponent<CapsuleCollider>();
+            collider.radius = 0.05f;
+            collider.isTrigger = true;
+            collider.direction = 2;
+
+            var cameraControllerGO = GameObject.Find("StudioScene/Camera/CameraSet/CameraController");
+            var cameraController = cameraControllerGO.GetComponent<Studio.CameraControl>();
+            Traverse.Create(cameraController).Field("viewCollider").SetValue(collider);
+            studioCameraColliderControllerGO.transform.SetParent(mainCamera.transform);
+            studioCameraColliderControllerGO.transform.localPosition = new Vector3(0f, 0f, 0f);
+            studioCameraColliderControllerGO.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+#endif
 
             var menu = new SceneEffectsCategory(StudioSceneSettings.PluginNameInternal);
-#if KK
-            MapMasking = menu.AddToggleSet("Map Masking", value => Camera.main.gameObject.layer = value ? StudioSceneSettings.CameraMapMaskingLayer : CameraLayerDefault, false);
-#endif
+            MapMasking = menu.AddToggleSet("Map Masking", value => MapMaskingSetter(value), false);
             NearClipPlane = menu.AddSliderSet("Near Clip Plane", value => NearClipSetter(value), NearClipDefault, 0.01f, 10f);
             FarClipPlane = menu.AddSliderSet("Far Clip Plane", value => FarClipSetter(value), FarClipDefault, 1f, 10000f);
 
@@ -111,12 +137,12 @@ namespace KK_Plugins.StudioSceneSettings
             FarClipPlane.EnforceSliderMaximum = false;
         }
 
-
 #if KK
         internal float NearClipDefault => Camera.main.nearClipPlane;
         internal void NearClipSetter(float value) => Camera.main.nearClipPlane = value;
         internal float FarClipDefault => Camera.main.farClipPlane;
         internal void FarClipSetter(float value) => Camera.main.farClipPlane = value;
+        internal void MapMaskingSetter(bool value) => Camera.main.gameObject.layer = value ? StudioSceneSettings.CameraMapMaskingLayer : CameraLayerDefault;
 #else
         internal float NearClipDefault => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Field("lensSettings").GetValue<LensSettings>().NearClipPlane;
 
@@ -141,6 +167,8 @@ namespace KK_Plugins.StudioSceneSettings
             field.SetValue(lensSettings);
             cameraCtrl.fieldOfView = cameraCtrl.fieldOfView;
         }
+        internal void MapMaskingSetter(bool value) => studioCameraColliderControllerGO.layer = value ? StudioSceneSettings.CameraMapMaskingLayer : CameraLayerDefault;
+
 #endif
     }
 }
