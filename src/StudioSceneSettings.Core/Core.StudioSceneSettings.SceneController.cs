@@ -102,7 +102,7 @@ namespace KK_Plugins.StudioSceneSettings
 #if KK
             CameraLayerDefault = Camera.main.gameObject.layer;
 #else 
-            CameraLayerDefault = 0;
+            CameraLayerDefault = 1;
 #endif
 
 #if AI || HS2
@@ -126,6 +126,7 @@ namespace KK_Plugins.StudioSceneSettings
             studioCameraColliderControllerGO.transform.SetParent(mainCamera.transform);
             studioCameraColliderControllerGO.transform.localPosition = new Vector3(0f, 0f, 0f);
             studioCameraColliderControllerGO.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+            studioCameraColliderControllerGO.layer = CameraLayerDefault;
 #endif
 
             var menu = new SceneEffectsCategory(StudioSceneSettings.PluginNameInternal);
