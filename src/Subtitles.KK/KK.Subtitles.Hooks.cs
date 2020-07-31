@@ -19,22 +19,14 @@ namespace KK_Plugins
                 else if (ActionGameInfoInstance != null && GameObject.Find("ActionScene/ADVScene") == null)
                     Caption.DisplayDialogueSubtitle(__instance);
                 else if (SubtitleDictionary.TryGetValue(__instance.assetName, out string text))
-                    Caption.DisplaySubtitle(__instance, text);
+                    Caption.DisplaySubtitle(__instance.gameObject, text);
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(Info), "Init")]
-            internal static void InfoInit(Info __instance)
-            {
-                Caption.InitGUI();
-                ActionGameInfoInstance = __instance;
-            }
+            internal static void InfoInit(Info __instance) => ActionGameInfoInstance = __instance;
 
             [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
-            internal static void HVoiceCtrlInit()
-            {
-                Caption.InitGUI();
-                HSceneProcInstance = FindObjectOfType<HSceneProc>();
-            }
+            internal static void HVoiceCtrlInit() => HSceneProcInstance = FindObjectOfType<HSceneProc>();
         }
     }
 }

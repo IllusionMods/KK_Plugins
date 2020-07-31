@@ -16,11 +16,6 @@ namespace KK_Plugins
     /// <summary>
     /// Displays subitles on screen for H scenes and in dialogues
     /// </summary>
-#if KK
-    [BepInProcess(Constants.MainGameProcessNameSteam)]
-#endif
-    [BepInProcess(Constants.MainGameProcessName)]
-    [BepInPlugin(GUID, PluginName, Version)]
     public partial class Subtitles : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
@@ -33,7 +28,9 @@ namespace KK_Plugins
 
         internal static Dictionary<string, string> SubtitleDictionary = new Dictionary<string, string>();
 
-#if KK
+#if KK && VR
+        internal static VRHScene VRHSceneInstance;
+#elif KK
         internal static ActionGame.Communication.Info ActionGameInfoInstance;
         internal static HSceneProc HSceneProcInstance;
 #elif HS2

@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="KK.Subtitles.Caption.cs" />
     <Compile Include="KK.Subtitles.Hooks.cs" />
+    <Compile Include="KK.Subtitles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

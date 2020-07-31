@@ -34,7 +34,7 @@ namespace KK_Plugins
                 if (text.IsNullOrEmpty())
                     return;
 
-                DisplaySubtitle(voice, text);
+                DisplaySubtitle(voice.gameObject, text);
             }
 
             internal static void DisplayHSubtitle(LoadAudioBase voice)
@@ -64,7 +64,7 @@ namespace KK_Plugins
                 if (text.IsNullOrEmpty())
                     return;
 
-                DisplaySubtitle(voice, text, init: false);
+                DisplaySubtitle(voice.gameObject, text);
             }
         }
     }

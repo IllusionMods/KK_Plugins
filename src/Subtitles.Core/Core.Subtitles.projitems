@@ -12,5 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.Subtitles.Caption.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.Subtitles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.Subtitles.FollowUI.cs" />
   </ItemGroup>
 </Project>

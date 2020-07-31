@@ -10,7 +10,7 @@ namespace KK_Plugins
             internal static void PlayVoice(LoadAudioBase __instance)
             {
                 if (SubtitleDictionary.TryGetValue(__instance.assetName, out string text))
-                    Caption.DisplaySubtitle(__instance, text);
+                    Caption.DisplaySubtitle(__instance.gameObject, text);
             }
         }
     }

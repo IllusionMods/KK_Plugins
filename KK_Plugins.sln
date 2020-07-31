@@ -287,6 +287,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.MakerDefaults", "src\Mak
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MakerDefaults.KKEC", "src\MakerDefaults.Core.KKEC\Core.MakerDefaults.KKEC.shproj", "{DE81CE27-D308-4E4E-9960-8DB1CB3353C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKVR.Subtitles", "src\Subtitles.KKVR\KKVR.Subtitles.csproj", "{2F165F26-6BCA-4E13-AC55-E71ADB1F84D5}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -322,6 +324,8 @@ Global
 		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{2f165f26-6bca-4e13-ac55-e71adb1f84d5}*SharedItemsImports = 4
+		src\Subtitles.Core\Core.Subtitles.projitems*{2f165f26-6bca-4e13-ac55-e71adb1f84d5}*SharedItemsImports = 4
 		src\InputHotkeyBlock.Core\Core.InputHotkeyBlock.projitems*{352bf11c-8332-48b7-a6d2-36c39dcec282}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{352bf11c-8332-48b7-a6d2-36c39dcec282}*SharedItemsImports = 4
 		src\InputHotkeyBlock.Core\Core.InputHotkeyBlock.projitems*{3557d31c-f7f1-4fc6-bb2f-4360cd50152a}*SharedItemsImports = 4
@@ -829,6 +833,10 @@ Global
 		{1E63BA35-05C5-46C9-AD7F-1FBE7F80BB5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E63BA35-05C5-46C9-AD7F-1FBE7F80BB5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E63BA35-05C5-46C9-AD7F-1FBE7F80BB5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F165F26-6BCA-4E13-AC55-E71ADB1F84D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F165F26-6BCA-4E13-AC55-E71ADB1F84D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F165F26-6BCA-4E13-AC55-E71ADB1F84D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F165F26-6BCA-4E13-AC55-E71ADB1F84D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -942,6 +950,7 @@ Global
 		{1F8E7FEF-B34C-49AF-B94E-2221A1BE84E3} = {CF0424D7-8CE3-4CA1-9C79-2302428E77F6}
 		{1E63BA35-05C5-46C9-AD7F-1FBE7F80BB5B} = {CF0424D7-8CE3-4CA1-9C79-2302428E77F6}
 		{DE81CE27-D308-4E4E-9960-8DB1CB3353C6} = {CF0424D7-8CE3-4CA1-9C79-2302428E77F6}
+		{2F165F26-6BCA-4E13-AC55-E71ADB1F84D5} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

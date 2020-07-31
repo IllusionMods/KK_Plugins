@@ -9,11 +9,7 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
-            internal static void HVoiceCtrlInit()
-            {
-                Caption.InitGUI();
-                HSceneInstance = FindObjectOfType<HScene>();
-            }
+            internal static void HVoiceCtrlInit() => HSceneInstance = FindObjectOfType<HScene>();
 
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), nameof(Manager.Voice.OncePlayChara), typeof(Manager.Voice.Loader))]
             internal static void OncePlayCharaPostfix(Manager.Voice.Loader loader, AudioSource __result)
@@ -21,7 +17,7 @@ namespace KK_Plugins
                 if (HSceneInstance?.ctrlVoice != null)
                     DisplayHSubtitle(loader, __result);
                 else if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
-                    Caption.DisplaySubtitle(__result, loader.asset, text);
+                    Caption.DisplaySubtitle(__result.gameObject, text);
             }
 
             private static void DisplayHSubtitle(Manager.Voice.Loader loader, AudioSource audioSource)
@@ -35,7 +31,7 @@ namespace KK_Plugins
                                 foreach (var e in d.Values)
                                     if (e.nameFile == loader.asset && e.pathAsset == loader.bundle)
                                     {
-                                        Caption.DisplaySubtitle(audioSource, e.nameFile, e.word);
+                                        Caption.DisplaySubtitle(audioSource.gameObject, e.word);
                                         return;
                                     }
             }
