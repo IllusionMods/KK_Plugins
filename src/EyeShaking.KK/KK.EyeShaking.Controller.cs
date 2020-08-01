@@ -33,13 +33,14 @@ namespace KK_Plugins
             }
             protected override void OnReload(GameMode currentGameMode, bool maintainState)
             {
-                _EyeShaking = false;
-
                 if (!StudioAPI.InsideStudio) return;
 
                 var data = GetExtendedData();
                 if (data != null && data.data.TryGetValue("EyeShaking", out var loadedEyeShakingState))
                     EyeShaking = (bool)loadedEyeShakingState;
+                else
+                    //Set EyeShaking on or off, for when characters are replaced in Studio
+                    EyeShaking = _EyeShaking;
             }
 
             internal void HSceneStart(bool virgin)
