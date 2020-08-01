@@ -11,7 +11,6 @@ namespace KK_Plugins
         {
             internal static GameObject Pane;
             internal static GameObject PaneVR;
-            internal static GameObject VRTextContainer;
 
             private static void InitGUI()
             {
@@ -20,16 +19,16 @@ namespace KK_Plugins
 
                 Pane = new GameObject("KK_Subtitles_Caption");
 
-                var cscl = Pane.AddComponent<CanvasScaler>();
+                var cscl = Pane.GetOrAddComponent<CanvasScaler>();
                 cscl.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
                 cscl.referenceResolution = new Vector2(Screen.width, Screen.height);
 
-                var canvas = Pane.AddComponent<Canvas>();
+                var canvas = Pane.GetOrAddComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
                 canvas.sortingOrder = 500;
-                Pane.AddComponent<CanvasGroup>().blocksRaycasts = false;
+                Pane.GetOrAddComponent<CanvasGroup>().blocksRaycasts = false;
 
-                var vlg = Pane.AddComponent<VerticalLayoutGroup>();
+                var vlg = Pane.GetOrAddComponent<VerticalLayoutGroup>();
                 vlg.childForceExpandHeight = false;
                 vlg.childForceExpandWidth = false;
                 vlg.childAlignment = TextAlign.Value;
@@ -44,24 +43,18 @@ namespace KK_Plugins
                 PaneVR = new GameObject("KK_Subtitles_Caption");
                 PaneVR.layer = 5;
                 PaneVR.transform.parent = Camera.main.transform;
-                PaneVR.transform.localPosition = Vector3.zero;
+                PaneVR.transform.localPosition = VRTextOffset.Value;
                 PaneVR.transform.localRotation = Quaternion.identity;
-                var c = PaneVR.AddComponent<Canvas>();
+                var c = PaneVR.GetOrAddComponent<Canvas>();
                 c.renderMode = RenderMode.WorldSpace;
                 c.worldCamera = Camera.main;
                 c.sortingOrder = 500;
 
                 //The resolution of a single HMD screen seems to be 600x800 so we force the scaler to that reference res
-                var scaler = PaneVR.AddComponent<CanvasScaler>();
+                var scaler = PaneVR.GetOrAddComponent<CanvasScaler>();
                 scaler.referenceResolution = new Vector2(600f, 800f);
                 scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-
-                VRTextContainer = new GameObject("VRTextContainer");
-                VRTextContainer.layer = 5;
-                VRTextContainer.transform.parent = PaneVR.transform;
-                VRTextContainer.transform.localPosition = VRTextOffset.Value;
-                VRTextContainer.transform.localRotation = Quaternion.identity;
             }
 
             /// <summary>
@@ -119,7 +112,7 @@ namespace KK_Plugins
 
                 var subtitle = new GameObject("VRText");
                 subtitle.layer = 5;
-                subtitle.transform.parent = VRTextContainer.transform;
+                subtitle.transform.parent = PaneVR.transform;
                 subtitle.transform.localPosition = new Vector3(0f, 0f, 1f);
                 subtitle.transform.localRotation = Quaternion.identity;
                 subtitle.transform.localScale = new Vector3(0.001f * WorldScale, 0.001f * WorldScale, 0.001f * WorldScale);
