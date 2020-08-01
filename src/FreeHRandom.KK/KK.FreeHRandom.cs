@@ -9,6 +9,8 @@ using UILib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
+using UniRx;
 
 namespace KK_Plugins
 {
@@ -18,7 +20,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.freehrandom";
         public const string PluginName = "Free H Random";
         public const string PluginNameInternal = Constants.Prefix + "_FreeHRandom";
-        public const string Version = "1.1.1";
+        public const string Version = "1.2";
 
         private enum CharacterType { Heroine, Partner, Female3P, Player }
 
@@ -33,17 +35,28 @@ namespace KK_Plugins
 
         private void InitUI(string sceneName)
         {
-            if (sceneName != "FreeH")
-                return;
-
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Masturbation/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/PartnerSelectButton")?.GetComponent<RectTransform>(), CharacterType.Partner);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female3P);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
-            CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Dark/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+            if (sceneName == "FreeH")
+            {
+                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
+                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Masturbation/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
+                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
+                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/PartnerSelectButton")?.GetComponent<RectTransform>(), CharacterType.Partner);
+                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female3P);
+                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Dark/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+            }
+            else if (sceneName == "VRCharaSelect")
+            {
+                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Normal/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
+                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Normal/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Masturbation/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
+                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Lesbian/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
+                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Lesbian/PartnerSelectButton")?.GetComponent<RectTransform>(), CharacterType.Partner);
+                CreateRandomButton(GameObject.Find("MainCanvas/Panel/3P/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female3P);
+                CreateRandomButton(GameObject.Find("MainCanvas/Panel/3P/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Dark/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+            }
         }
         /// <summary>
         /// Copy the male/female selection button and rewire it in to a Random button
@@ -59,6 +72,7 @@ namespace KK_Plugins
             RectTransform testButtonRectTransform = randomButton.transform as RectTransform;
             randomButton.transform.SetParent(buttonToCopy.parent, true);
             randomButton.transform.localScale = buttonToCopy.localScale;
+            randomButton.transform.localPosition = buttonToCopy.localPosition;
             testButtonRectTransform.SetRect(buttonToCopy.anchorMin, buttonToCopy.anchorMax, buttonToCopy.offsetMin, buttonToCopy.offsetMax);
             testButtonRectTransform.anchoredPosition = buttonToCopy.anchoredPosition + new Vector2(0f, -50f);
             randomButton.onClick = new Button.ButtonClickedEvent();
@@ -81,7 +95,7 @@ namespace KK_Plugins
             else
                 folderAssist.CreateFolderInfoEx(CC.Paths.FemaleCardPath, new string[] { "*.png" }, true);
 
-            //different fields for different versions of the game, get the correct one
+            //Different fields for different versions of the game, get the correct one
             var listFileObj = folderAssist.GetType().GetField("_lstFile", AccessTools.all)?.GetValue(folderAssist);
             if (listFileObj == null)
                 listFileObj = folderAssist.GetType().GetField("lstFile", AccessTools.all)?.GetValue(folderAssist);
@@ -107,24 +121,42 @@ namespace KK_Plugins
             var chaFileControl = new ChaFileControl();
             if (chaFileControl.LoadCharaFile(filePath, 255, false, true))
             {
-                FreeHScene.Member member = (FreeHScene.Member)Singleton<FreeHScene>.Instance.GetType().GetField("member", AccessTools.all).GetValue(Singleton<FreeHScene>.Instance);
+                object member;
+                if (Singleton<FreeHScene>.Instance == null)
+                {
+                    //Use reflection to get the VR version of the character select screen
+                    Type VRHSceneType = Type.GetType("VRCharaSelectScene, Assembly-CSharp");
+                    var HSceneObject = FindObjectOfType(VRHSceneType);
+                    member = HSceneObject.GetType().GetField("member", AccessTools.all).GetValue(HSceneObject);
+                }
+                else
+                    member = Singleton<FreeHScene>.Instance.GetType().GetField("member", AccessTools.all).GetValue(Singleton<FreeHScene>.Instance);
 
                 switch (characterType)
                 {
                     case CharacterType.Heroine:
-                        member.resultHeroine.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        ReactiveProperty<SaveData.Heroine> heroine = (ReactiveProperty<SaveData.Heroine>)Traverse.Create(member).Field("resultHeroine").GetValue();
+                        heroine.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
                         break;
                     case CharacterType.Partner:
-                        member.resultPartner.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        ReactiveProperty<SaveData.Heroine> resultPartner = (ReactiveProperty<SaveData.Heroine>)Traverse.Create(member).Field("resultPartner").GetValue();
+                        resultPartner.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
                         break;
                     case CharacterType.Female3P:
-                        if (GameObject.Find("FreeHScene/Canvas/Panel/3P/Stage1").activeInHierarchy)
-                            member.resultHeroine.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        if (GameObject.Find("Panel/3P/Stage1").activeInHierarchy)
+                        {
+                            ReactiveProperty<SaveData.Heroine> heroine3P = (ReactiveProperty<SaveData.Heroine>)Traverse.Create(member).Field("resultHeroine").GetValue();
+                            heroine3P.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        }
                         else
-                            member.resultPartner.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        {
+                            ReactiveProperty<SaveData.Heroine> resultPartner3P = (ReactiveProperty<SaveData.Heroine>)Traverse.Create(member).Field("resultPartner").GetValue();
+                            resultPartner3P.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        }
                         break;
                     case CharacterType.Player:
-                        member.resultPlayer.SetValueAndForceNotify(new SaveData.Player(chaFileControl, false));
+                        ReactiveProperty<SaveData.Player> resultPlayer = (ReactiveProperty<SaveData.Player>)Traverse.Create(member).Field("resultPlayer").GetValue();
+                        resultPlayer.SetValueAndForceNotify(new SaveData.Player(chaFileControl, false));
                         break;
                 }
             }
