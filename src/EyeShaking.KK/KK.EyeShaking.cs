@@ -1,10 +1,14 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
-using BepInEx.Logging;
+using KKAPI.Studio;
+using KKAPI.Studio.UI;
+using Studio;
 using System;
+using UniRx;
 
 namespace KK_Plugins
 {
@@ -38,8 +42,25 @@ namespace KK_Plugins
                 harmony.Patch(VRHSceneType.GetMethod("MapSameObjectDisable", AccessTools.all), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.MapSameObjectDisableVR), AccessTools.all)), null);
                 harmony.Patch(VRHSceneType.GetMethod("EndProc", AccessTools.all), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.EndProcVR), AccessTools.all)), null);
             }
+
+            if (StudioAPI.InsideStudio)
+                RegisterStudioControls();
         }
 
         private static EyeShakingController GetController(ChaControl character) => character?.gameObject?.GetComponent<EyeShakingController>();
+        private static EyeShakingController GetSelectedStudioController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<EyeShakingController>();
+
+        private static void RegisterStudioControls()
+        {
+            var invisibleSwitch = new CurrentStateCategorySwitch("Shaking Eye Highlights", controller => controller.charInfo.GetComponent<EyeShakingController>().EyeShaking);
+            invisibleSwitch.Value.Subscribe(Observer.Create((bool value) =>
+            {
+                var controller = GetSelectedStudioController();
+                if (controller != null)
+                    controller.EyeShaking = value;
+            }));
+
+            StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(invisibleSwitch);
+        }
     }
 }
