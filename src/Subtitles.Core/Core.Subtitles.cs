@@ -79,8 +79,8 @@ namespace KK_Plugins
             OutlineThickness = Config.Bind("Config", "Outline Thickness", 2, new ConfigDescription("Outline thickness for subtitle text.", null, new ConfigurationManagerAttributes { Order = 4 }));
             TextColor = Config.Bind("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, new ConfigDescription("Subtitle text color.", null, new ConfigurationManagerAttributes { Order = 3 }));
             OutlineColor = Config.Bind("Config", "Outline Color", Color.black, new ConfigDescription("Subtitle text outline color.", null, new ConfigurationManagerAttributes { Order = 2 }));
-            VRTextOffset = Config.Bind("VR", "VR Text Offset", new Vector3(-0.1f, -0.1f, 0.5f), new ConfigDescription("Subtitle text position in VR.", null, new ConfigurationManagerAttributes { Order = 1 }));
-            VRText2Offset = Config.Bind("VR", "VR Text 2 Offset", new Vector3(0.1f, -0.2f, 0.5f), new ConfigDescription("Subtitle text position in VR. For 3P when two subtitles may be displayed at once.", null, new ConfigurationManagerAttributes { Order = 0 }));
+            VRTextOffset = Config.Bind("VR", "VR Text Offset", new Vector3(-0.1f * WorldScale, -0.1f * WorldScale, 0.5f * WorldScale), new ConfigDescription("Subtitle text position in VR.", null, new ConfigurationManagerAttributes { Order = 1 }));
+            VRText2Offset = Config.Bind("VR", "VR Text 2 Offset", new Vector3(0.1f * WorldScale, -0.2f * WorldScale, 0.5f * WorldScale), new ConfigDescription("Subtitle text position in VR. For 3P when two subtitles may be displayed at once.", null, new ConfigurationManagerAttributes { Order = 0 }));
             TextAlign.SettingChanged += TextAlign_SettingChanged;
 
             LoadSubtitles();
