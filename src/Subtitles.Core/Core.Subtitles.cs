@@ -28,6 +28,12 @@ namespace KK_Plugins
 
         internal static Dictionary<string, string> SubtitleDictionary = new Dictionary<string, string>();
 
+#if KK || EC || HS
+        internal const float WorldScale = 1f;
+#elif AI || HS2
+        internal const float WorldScale = 10f;
+#endif
+
 #if KK && VR
         internal static VRHScene VRHSceneInstance;
 #elif KK
@@ -64,8 +70,7 @@ namespace KK_Plugins
             OutlineThickness = Config.Bind("Config", "Outline Thickness", 2, new ConfigDescription("Outline thickness for subtitle text.", null, new ConfigurationManagerAttributes { Order = 4 }));
             TextColor = Config.Bind("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, new ConfigDescription("Subtitle text color.", null, new ConfigurationManagerAttributes { Order = 3 }));
             OutlineColor = Config.Bind("Config", "Outline Color", Color.black, new ConfigDescription("Subtitle text outline color.", null, new ConfigurationManagerAttributes { Order = 2 }));
-            VRTextOffset = Config.Bind("VR", "Outline Color", new Vector3(-0.1f, 0f, 0.5f), new ConfigDescription("Subtitle text position in VR.", null, new ConfigurationManagerAttributes { Order = 1 }));
-
+            VRTextOffset = Config.Bind("VR", "VR Text Offset", new Vector3(-0.1f * WorldScale, -0.1f * WorldScale, 0.5f * WorldScale), new ConfigDescription("Subtitle text position in VR.", null, new ConfigurationManagerAttributes { Order = 1 }));
             TextAlign.SettingChanged += TextAlign_SettingChanged;
 
             LoadSubtitles();

@@ -122,7 +122,7 @@ namespace KK_Plugins
                 subtitle.transform.parent = VRTextContainer.transform;
                 subtitle.transform.localPosition = new Vector3(0f, 0f, 1f);
                 subtitle.transform.localRotation = Quaternion.identity;
-                subtitle.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+                subtitle.transform.localScale = new Vector3(0.001f * WorldScale, 0.001f * WorldScale, 0.001f * WorldScale);
 
                 Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"Arial.ttf");
 
@@ -135,7 +135,7 @@ namespace KK_Plugins
                 subtitleText.text = "";
 
                 var rect = subtitle.GetComponent<RectTransform>();
-                rect.sizeDelta = new Vector2(600f, 800f);
+                rect.sizeDelta = new Vector2(400f, 400f);
 
                 subtitle.AddComponent<FollowUI>();
 
