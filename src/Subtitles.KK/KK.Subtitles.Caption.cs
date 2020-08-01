@@ -11,60 +11,42 @@ namespace KK_Plugins
         {
             internal static void DisplayDialogueSubtitle(LoadAudioBase voice)
             {
-                string text = "";
-                FindText();
-                void FindText()
-                {
-                    foreach (var a in ActionGameInfoInstance.dicTalkInfo)
-                    {
-                        foreach (var b in a.Value)
-                        {
-                            foreach (var c in b.Value)
+                foreach (var a in ActionGameInfoInstance.dicTalkInfo)
+                    foreach (var b in a.Value)
+                        foreach (var c in b.Value)
+                            foreach (var d in c.Value.Where(x => x is ActionGame.Communication.Info.GenericInfo).Select(x => x as ActionGame.Communication.Info.GenericInfo))
                             {
-                                foreach (var d in c.Value.Where(x => x is ActionGame.Communication.Info.GenericInfo).Select(x => x as ActionGame.Communication.Info.GenericInfo))
+                                var text = d.talk.Where(x => x.assetbundle == voice.assetBundleName && x.file == voice.assetName).Select(x => x.text).FirstOrDefault();
+                                if (!text.IsNullOrEmpty())
                                 {
-                                    text = d.talk.Where(x => x.assetbundle == voice.assetBundleName && x.file == voice.assetName).Select(x => x.text).FirstOrDefault();
-                                    if (!text.IsNullOrEmpty())
-                                        return;
+                                    DisplaySubtitle(voice.gameObject, text);
+                                    return;
                                 }
                             }
-                        }
-                    }
-                }
-                if (text.IsNullOrEmpty())
-                    return;
-
-                DisplaySubtitle(voice.gameObject, text);
             }
 
             internal static void DisplayHSubtitle(LoadAudioBase voice)
             {
-                List<HActionBase> lstProc = (List<HActionBase>)AccessTools.Field(typeof(HSceneProc), "lstProc").GetValue(HSceneProcInstance);
-                HActionBase mode = lstProc[(int)HSceneProcInstance.flags.mode];
+                List<HActionBase> lstProc = (List<HActionBase>)AccessTools.Field(HSceneType, "lstProc").GetValue(HSceneInstance);
+                HFlag flags = (HFlag)Traverse.Create(HSceneInstance).Field("flags").GetValue();
+                HActionBase mode = lstProc[(int)flags.mode];
                 HVoiceCtrl voicectrl = (HVoiceCtrl)AccessTools.Field(typeof(HActionBase), "voice").GetValue(mode);
 
                 //At the start of the H scene, all the text was loaded. Look through the loaded stuff and find the text for the current spoken voice.
-                string text = "";
-                FindText();
-                void FindText()
-                {
-                    foreach (var a in voicectrl.dicVoiceIntos)
-                    {
-                        foreach (var b in a)
+                foreach (var a in voicectrl.dicVoiceIntos)
+                    foreach (var b in a)
+                        foreach (var c in b.Value)
                         {
-                            foreach (var c in b.Value)
+                            var text = c.Value.Where(x => x.Value.pathAsset == voice.assetBundleName && x.Value.nameFile == voice.assetName).Select(x => x.Value.word).FirstOrDefault();
+                            if (!text.IsNullOrEmpty())
                             {
-                                text = c.Value.Where(x => x.Value.pathAsset == voice.assetBundleName && x.Value.nameFile == voice.assetName).Select(x => x.Value.word).FirstOrDefault();
-                                if (!text.IsNullOrEmpty())
-                                    return;
+                                if (HSceneType == typeof(HSceneProc))
+                                    DisplaySubtitle(voice.gameObject, text);
+                                else
+                                    DisplayVRSubtitle(voice.gameObject, text);
+                                return;
                             }
                         }
-                    }
-                }
-                if (text.IsNullOrEmpty())
-                    return;
-
-                DisplaySubtitle(voice.gameObject, text);
             }
         }
     }

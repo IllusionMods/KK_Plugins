@@ -31,7 +31,10 @@ namespace KK_Plugins
                                 foreach (var e in d.Values)
                                     if (e.nameFile == loader.asset && e.pathAsset == loader.bundle)
                                     {
-                                        Caption.DisplaySubtitle(audioSource.gameObject, e.word);
+                                        if (Application.productName == Constants.VRProcessName)
+                                            Caption.DisplayVRSubtitle(audioSource.gameObject, e.word);
+                                        else
+                                            Caption.DisplaySubtitle(audioSource.gameObject, e.word);
                                         return;
                                     }
             }

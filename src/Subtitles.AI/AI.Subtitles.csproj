@@ -83,7 +83,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI.Subtitles.Hooks.cs" />
-    <Compile Include="AI.Subtitles.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\CharaMakerSubs.xml" />

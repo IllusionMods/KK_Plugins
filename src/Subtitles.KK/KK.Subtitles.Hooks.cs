@@ -1,5 +1,6 @@
 ﻿using ActionGame.Communication;
 using HarmonyLib;
+using System;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -14,7 +15,7 @@ namespace KK_Plugins
                 if (__instance.audioSource == null || __instance.audioSource.clip == null || __instance.audioSource.loop)
                     return;
 
-                if (HSceneProcInstance != null)
+                if (HSceneInstance != null)
                     Caption.DisplayHSubtitle(__instance);
                 else if (ActionGameInfoInstance != null && GameObject.Find("ActionScene/ADVScene") == null)
                     Caption.DisplayDialogueSubtitle(__instance);
@@ -26,7 +27,15 @@ namespace KK_Plugins
             internal static void InfoInit(Info __instance) => ActionGameInfoInstance = __instance;
 
             [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
-            internal static void HVoiceCtrlInit() => HSceneProcInstance = FindObjectOfType<HSceneProc>();
+            internal static void HVoiceCtrlInit()
+            {
+                //Get the H scene type used by VR, if possible
+                HSceneType = Type.GetType("VRHScene, Assembly-CSharp");
+                if (HSceneType == null)
+                    HSceneType = typeof(HSceneProc);
+
+                HSceneInstance = FindObjectOfType(HSceneType);
+            }
         }
     }
 }

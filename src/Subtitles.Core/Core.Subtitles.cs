@@ -16,11 +16,20 @@ namespace KK_Plugins
     /// <summary>
     /// Displays subitles on screen for H scenes and in dialogues
     /// </summary>
+#if KK
+    [BepInProcess(Constants.MainGameProcessNameSteam)]
+    [BepInProcess(Constants.VRProcessName)]
+    [BepInProcess(Constants.VRProcessNameSteam)]
+#elif HS2
+    [BepInProcess(Constants.VRProcessName)]
+#endif
+    [BepInProcess(Constants.MainGameProcessName)]
+    [BepInPlugin(GUID, PluginName, Version)]
     public partial class Subtitles : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
-        public const string Version = "1.6.1";
+        public const string Version = "2.0";
         public const string PluginNameInternal = Constants.Prefix + "_Subtitles";
 
         internal static Subtitles Instance;
@@ -34,11 +43,10 @@ namespace KK_Plugins
         internal const float WorldScale = 10f;
 #endif
 
-#if KK && VR
-        internal static VRHScene VRHSceneInstance;
-#elif KK
+#if KK
         internal static ActionGame.Communication.Info ActionGameInfoInstance;
-        internal static HSceneProc HSceneProcInstance;
+        internal static Type HSceneType;
+        internal static object HSceneInstance;
 #elif HS2
         internal static HScene HSceneInstance;
 #endif
@@ -54,6 +62,7 @@ namespace KK_Plugins
         public static ConfigEntry<Color> OutlineColor { get; private set; }
         public static ConfigEntry<string> SubtitleDirectory { get; private set; }
         public static ConfigEntry<Vector3> VRTextOffset { get; private set; }
+        public static ConfigEntry<Vector3> VRText2Offset { get; private set; }
         #endregion
 
         internal void Awake()
@@ -70,7 +79,8 @@ namespace KK_Plugins
             OutlineThickness = Config.Bind("Config", "Outline Thickness", 2, new ConfigDescription("Outline thickness for subtitle text.", null, new ConfigurationManagerAttributes { Order = 4 }));
             TextColor = Config.Bind("Config", "Text Color", ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, new ConfigDescription("Subtitle text color.", null, new ConfigurationManagerAttributes { Order = 3 }));
             OutlineColor = Config.Bind("Config", "Outline Color", Color.black, new ConfigDescription("Subtitle text outline color.", null, new ConfigurationManagerAttributes { Order = 2 }));
-            VRTextOffset = Config.Bind("VR", "VR Text Offset", new Vector3(-0.1f * WorldScale, -0.1f * WorldScale, 0.5f * WorldScale), new ConfigDescription("Subtitle text position in VR.", null, new ConfigurationManagerAttributes { Order = 1 }));
+            VRTextOffset = Config.Bind("VR", "VR Text Offset", new Vector3(-0.1f, -0.1f, 0.5f), new ConfigDescription("Subtitle text position in VR.", null, new ConfigurationManagerAttributes { Order = 1 }));
+            VRText2Offset = Config.Bind("VR", "VR Text 2 Offset", new Vector3(0.1f, -0.2f, 0.5f), new ConfigDescription("Subtitle text position in VR. For 3P when two subtitles may be displayed at once.", null, new ConfigurationManagerAttributes { Order = 0 }));
             TextAlign.SettingChanged += TextAlign_SettingChanged;
 
             LoadSubtitles();

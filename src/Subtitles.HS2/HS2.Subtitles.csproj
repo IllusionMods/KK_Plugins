@@ -90,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HS2.Subtitles.Hooks.cs" />
-    <Compile Include="HS2.Subtitles.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

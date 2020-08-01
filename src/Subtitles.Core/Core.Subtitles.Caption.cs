@@ -11,6 +11,8 @@ namespace KK_Plugins
         {
             internal static GameObject Pane;
             internal static GameObject PaneVR;
+            internal static Text VRText1;
+            internal static Text VRText2;
 
             private static void InitGUI()
             {
@@ -43,7 +45,7 @@ namespace KK_Plugins
                 PaneVR = new GameObject("KK_Subtitles_Caption");
                 PaneVR.layer = 5;
                 PaneVR.transform.parent = Camera.main.transform;
-                PaneVR.transform.localPosition = VRTextOffset.Value;
+                PaneVR.transform.localPosition = Vector3.zero;
                 PaneVR.transform.localRotation = Quaternion.identity;
                 var c = PaneVR.GetOrAddComponent<Canvas>();
                 c.renderMode = RenderMode.WorldSpace;
@@ -55,6 +57,69 @@ namespace KK_Plugins
                 scaler.referenceResolution = new Vector2(600f, 800f);
                 scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+
+                {
+                    var textContainer = new GameObject("VRTextContainer1");
+                    textContainer.transform.parent = PaneVR.transform;
+                    textContainer.transform.localPosition = VRTextOffset.Value;
+                    textContainer.transform.localRotation = Quaternion.identity;
+
+                    var subtitle = new GameObject("VRText1");
+                    subtitle.layer = 5;
+                    subtitle.transform.parent = textContainer.transform;
+                    subtitle.transform.localPosition = Vector3.zero;
+                    subtitle.transform.localRotation = Quaternion.identity;
+                    subtitle.transform.localScale = new Vector3(0.001f * WorldScale, 0.001f * WorldScale, 0.001f * WorldScale);
+
+                    Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"Arial.ttf");
+
+                    VRText1 = subtitle.AddComponent<Text>();
+                    VRText1.font = fontFace;
+                    VRText1.material = fontFace.material;
+                    VRText1.fontSize = 20;
+                    VRText1.alignment = TextAnchor.MiddleCenter;
+                    VRText1.color = TextColor.Value;
+                    VRText1.text = "";
+
+                    var rect = subtitle.GetComponent<RectTransform>();
+                    rect.sizeDelta = new Vector2(400f, 400f);
+
+                    subtitle.AddComponent<FollowUI>();
+
+                    var outline = subtitle.AddComponent<Outline>();
+                    outline.effectDistance = new Vector2(0.8f, 0.8f);
+                }
+                {
+                    var textContainer = new GameObject("VRTextContainer2");
+                    textContainer.transform.parent = PaneVR.transform;
+                    textContainer.transform.localPosition = VRText2Offset.Value;
+                    textContainer.transform.localRotation = Quaternion.identity;
+
+                    var subtitle = new GameObject("VRText2");
+                    subtitle.layer = 5;
+                    subtitle.transform.parent = textContainer.transform;
+                    subtitle.transform.localPosition = Vector3.zero;
+                    subtitle.transform.localRotation = Quaternion.identity;
+                    subtitle.transform.localScale = new Vector3(0.001f * WorldScale, 0.001f * WorldScale, 0.001f * WorldScale);
+
+                    Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"Arial.ttf");
+
+                    VRText2 = subtitle.AddComponent<Text>();
+                    VRText2.font = fontFace;
+                    VRText2.material = fontFace.material;
+                    VRText2.fontSize = 20;
+                    VRText2.alignment = TextAnchor.MiddleCenter;
+                    VRText2.color = TextColor.Value;
+                    VRText2.text = "";
+
+                    var rect = subtitle.GetComponent<RectTransform>();
+                    rect.sizeDelta = new Vector2(400f, 400f);
+
+                    subtitle.AddComponent<FollowUI>();
+
+                    var outline = subtitle.AddComponent<Outline>();
+                    outline.effectDistance = new Vector2(0.8f, 0.8f);
+                }
             }
 
             /// <summary>
@@ -66,7 +131,6 @@ namespace KK_Plugins
             {
                 if (!ShowSubtitles.Value) return;
                 if (text.IsNullOrWhiteSpace()) return;
-
                 InitGUI();
 
                 Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"Arial.ttf");
@@ -94,7 +158,7 @@ namespace KK_Plugins
                 subOutline.effectDistance = new Vector2(OutlineThickness.Value, OutlineThickness.Value);
 
                 subtitleText.text = text;
-                Logger.LogDebug($"{text}");
+                Logger.LogDebug(text);
 
                 voice.OnDestroyAsObservable().Subscribe(delegate (Unit _) { Destroy(subtitle); });
             }
@@ -107,38 +171,19 @@ namespace KK_Plugins
             {
                 if (!ShowSubtitles.Value) return;
                 if (text.IsNullOrWhiteSpace()) return;
-
                 InitVRGUI();
 
-                var subtitle = new GameObject("VRText");
-                subtitle.layer = 5;
-                subtitle.transform.parent = PaneVR.transform;
-                subtitle.transform.localPosition = new Vector3(0f, 0f, 1f);
-                subtitle.transform.localRotation = Quaternion.identity;
-                subtitle.transform.localScale = new Vector3(0.001f * WorldScale, 0.001f * WorldScale, 0.001f * WorldScale);
-
-                Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"Arial.ttf");
-
-                var subtitleText = subtitle.AddComponent<Text>();
-                subtitleText.font = fontFace;
-                subtitleText.material = fontFace.material;
-                subtitleText.fontSize = 20;
-                subtitleText.alignment = TextAnchor.MiddleCenter;
-                subtitleText.color = TextColor.Value;
-                subtitleText.text = "";
-
-                var rect = subtitle.GetComponent<RectTransform>();
-                rect.sizeDelta = new Vector2(400f, 400f);
-
-                subtitle.AddComponent<FollowUI>();
-
-                var outline = subtitle.AddComponent<Outline>();
-                outline.effectDistance = new Vector2(0.8f, 0.8f);
-
-                subtitleText.text = text;
                 Logger.LogDebug(text);
-
-                voice.OnDestroyAsObservable().Subscribe(delegate (Unit _) { Destroy(subtitle); });
+                if (VRText1.text == "")
+                {
+                    VRText1.text = text;
+                    voice.OnDestroyAsObservable().Subscribe(delegate (Unit _) { VRText1.text = ""; });
+                }
+                else
+                {
+                    VRText2.text = text;
+                    voice.OnDestroyAsObservable().Subscribe(delegate (Unit _) { VRText2.text = ""; });
+                }
             }
         }
     }

@@ -11,8 +11,8 @@ namespace KK_Plugins
 
         internal void Start()
         {
-            rot = transform.parent.rotation;
-            pos = transform.parent.position;
+            rot = transform.rotation;
+            pos = transform.position;
         }
 
         internal void Update()
