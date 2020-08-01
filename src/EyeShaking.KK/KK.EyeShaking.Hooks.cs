@@ -16,15 +16,6 @@ namespace KK_Plugins
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(HFlag), nameof(HFlag.AddSonyuAnalPlay))]
             internal static void AddSonyuAnalPlay(HFlag __instance) => GetController(__instance.lstHeroine[0].chaCtrl).OnInsert();
-            /// <summary>
-            /// Something that happens at the end of H scene loading, good enough place to hook
-            /// </summary>
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "MapSameObjectDisable")]
-            internal static void MapSameObjectDisable(HSceneProc __instance)
-            {
-                SaveData.Heroine heroine = __instance.flags.lstHeroine[0];
-                GetController(heroine.chaCtrl).HSceneStart(heroine.isVirgin && heroine.isAnalVirgin);
-            }
 
             [HarmonyPrefix, HarmonyPatch(typeof(HFlag), nameof(HFlag.AddSonyuOrg))]
             internal static void AddSonyuOrg(HFlag __instance) => GetController(__instance.lstHeroine[0].chaCtrl).AddOrgasm();
@@ -35,8 +26,34 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(HFlag), nameof(HFlag.AddSonyuAnalSame))]
             internal static void AddSonyuAnalSame(HFlag __instance) => GetController(__instance.lstHeroine[0].chaCtrl).AddOrgasm();
 
+            /// <summary>
+            /// Something that happens at the end of H scene loading, good enough place to hook
+            /// </summary>
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "MapSameObjectDisable")]
+            internal static void MapSameObjectDisable(HSceneProc __instance)
+            {
+                SaveData.Heroine heroine = __instance.flags.lstHeroine[0];
+                GetController(heroine.chaCtrl).HSceneStart(heroine.isVirgin && heroine.isAnalVirgin);
+            }
+
             [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "EndProc")]
-            internal static void EndProc(HSceneProc __instance) => GetController(__instance.flags.lstHeroine[0].chaCtrl).HSceneEnd();
+            internal static void EndProc(HSceneProc __instance)
+            {
+                GetController(__instance.flags.lstHeroine[0].chaCtrl).HSceneEnd();
+            }
+
+            internal static void MapSameObjectDisableVR(object __instance)
+            {
+                HFlag flags = (HFlag)Traverse.Create(__instance).Field("flags").GetValue();
+                SaveData.Heroine heroine = flags.lstHeroine[0];
+                GetController(heroine.chaCtrl).HSceneStart(heroine.isVirgin && heroine.isAnalVirgin);
+            }
+
+            internal static void EndProcVR(object __instance)
+            {
+                HFlag flags = (HFlag)Traverse.Create(__instance).Field("flags").GetValue();
+                GetController(flags.lstHeroine[0].chaCtrl).HSceneEnd();
+            }
         }
     }
 }
