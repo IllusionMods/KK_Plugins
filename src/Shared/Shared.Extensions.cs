@@ -44,6 +44,12 @@ namespace KK_Plugins
             }
             return Color.white;
         }
+
+        public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
+        {
+            if (gameObject == null) return null;
+            return gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
+        }
     }
 
     internal static class StudioExtensions
