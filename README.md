@@ -68,20 +68,6 @@ v1.3.1 Fixed accessories and items attached by animations from turning invisible
 v1.3.2 Fixed Studio items turning invisible in AI version<br/>
 </details>
 
-#### InputHotkeyBlock
-**v1.2 - [Download](https://www.patreon.com/posts/29761547)** - For Koikatsu, EmotionCreators,  AI Girl, and Honey Select 2<br/>
-
-Blocks mod hotkeys from triggering while typing in input fields and prevents clicks inside mod GUIs from advancing the story.
-
-Credits:
-* essu: Code for blocking hotkeys
-* Kyne: Code for preventing mod GUI clicks from advancing the story in Koikatsu
-
-<details><summary>Change Log</summary>
-v1.1 Blocks hotkeys in studio coordinate fields<br/>
-v1.2 Prevents clicks inside mod GUI elements from advancing the story in Koikatsu (Thanks Kyne)<br/>
-</details>
-
 #### UncensorSelector
 **v3.9.2 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, AI Girland Honey Select 2<br/>
 
@@ -128,7 +114,7 @@ v3.9.2 Fix glossiness being lost on uncensor change, fix monochrome body showing
 </details>
 
 #### Subtitles
-**v1.6.1 - [Download](https://www.patreon.com/posts/27699376)** - For Koikatsu, AI Girl, Honey Select, and Honey Select 2<br/>
+**v2.0 - [Download](https://www.patreon.com/posts/27699376)** - For Koikatsu, AI Girl, Honey Select, and Honey Select 2<br/>
 
 For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
 For AI Girl trial version, adds subtitles for the character maker.<br/>
@@ -142,6 +128,7 @@ v1.5 AI Girl port<br/>
 v1.5.1 Fixed text wrapping, clarified config description<br/>
 v1.6 HS2 port, removed FontName setting<br/>
 v1.6.1 Fixed text going off screen in HS, fixed the TextAlign config setting not working properly<br/>
+v2.0 Implemented subtitles for VR mode in KK and HS2<br/>
 </details>
 
 #### AnimationController
@@ -174,9 +161,13 @@ v2.0.1 Fixed unlock state not saving and loading to coordinates properly<br/>
 </details>
 
 #### EyeShaking
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v38/KK_EyeShaking.v1.0.zip)** - For Koikatsu<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/39984998)** - For Koikatsu<br/>
 
 Virgins in H scenes will appear to have slightly shaking eye highlights.<br/>
+
+<details><summary>Change Log</summary>
+v1.1 VR support, added toggle to Studio<br/>
+</details>
 
 #### RandomCharacterGenerator
 **v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v47/KK_RandomCharacterGenerator.v1.0.zip)** - For Koikatsu<br/>
@@ -224,12 +215,13 @@ v1.1 Added a config option to disable the plugin<br/>
 </details>
 
 #### FreeHRandom
-**v1.1.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_FreeHRandom.v1.1.1.zip)** - For Koikatsu<br/>
+**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_FreeHRandom.v1.1.1.zip)** - For Koikatsu<br/>
 Adds buttons to Free H selection screen to get random characters for your H session.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Added UI, KK Party support<br/>
 v1.1.1 Create card folders if missing to prevent errors<br/>
+v1.2 VR support<br/>
 </details>
 
 #### Colliders
@@ -341,13 +333,17 @@ v2.0 Added a guide object instead of hotkeys for positioning<br/>
 </details>
 
 #### StudioSceneSettings
-**v1.1 - [Download](https://www.patreon.com/posts/32713423)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+**v1.2 - [Download](https://www.patreon.com/posts/32713423)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 Allows you to adjust a few more settings for scenes. Changes save and load with the scene data.<br/>
 
 <details><summary>Settings</summary>
 Map Masking<br/>
 Near Clip Plane<br/>
 Far Clip Plane<br/>
+</details>
+
+<details><summary>Change Log</summary>
+v1.2 Map masking for AI and HS2<br/>
 </details>
 
 #### Pushup
@@ -376,6 +372,9 @@ This plugin will save .png files from your userdata folder to the scene data so 
 #### MakerDefaults
 **v1.0 - [Download](https://www.patreon.com/posts/39323239)** - For Koikatsu, Emotion Creators, AI Girl, and Honey Select 2<br/>
 Allows you to set default settings of the character maker so you don't have to set the same values manually every time.<br/>
+
+#### InputHotkeyBlock
+Moved to the [BepInEx.Utility](https://github.com/BepInEx/BepInEx.Utility) repo.<br/>
 
 #### TranslationSync
 #### TextResourceRedirector
