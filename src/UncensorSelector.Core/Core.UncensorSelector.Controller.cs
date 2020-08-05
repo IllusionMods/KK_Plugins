@@ -297,7 +297,7 @@ namespace KK_Plugins
                 /// </summary>
                 internal static BodyData GetRandomBody(ChaControl chaControl)
                 {
-                    var uncensors = BodyDictionary.Where(x => x.Value.Sex == chaControl.sex && x.Value.AllowRandom).Select(x => x.Value).ToArray();
+                    var uncensors = BodyDictionary.Where(x => x.Value.Sex == chaControl.sex && x.Value.AllowRandom && !IsExcludedFromRandom(chaControl.sex, "Body", x.Key)).Select(x => x.Value).ToArray();
                     if (uncensors.Length == 0)
                         return null;
                     return uncensors[GetRandomNumber(chaControl, uncensors.Length)];
@@ -325,7 +325,7 @@ namespace KK_Plugins
                 /// </summary>
                 internal static PenisData GetRandomPenis(ChaControl chaControl)
                 {
-                    var uncensors = PenisDictionary.Where(x => x.Value.AllowRandom).Select(x => x.Value).ToArray();
+                    var uncensors = PenisDictionary.Where(x => x.Value.AllowRandom && !IsExcludedFromRandom(chaControl.sex, "Penis", x.Key)).Select(x => x.Value).ToArray();
                     if (uncensors.Length == 0)
                         return null;
                     return uncensors[GetRandomNumber(chaControl, uncensors.Length)];
@@ -353,7 +353,7 @@ namespace KK_Plugins
                 /// </summary>
                 private static BallsData GetRandomBalls(ChaControl chaControl)
                 {
-                    var uncensors = BallsDictionary.Where(x => x.Value.AllowRandom).Select(x => x.Value).ToArray();
+                    var uncensors = BallsDictionary.Where(x => x.Value.AllowRandom && !IsExcludedFromRandom(chaControl.sex, "Balls", x.Key)).Select(x => x.Value).ToArray();
                     if (uncensors.Length == 0)
                         return null;
                     return uncensors[GetRandomNumber(chaControl, uncensors.Length)];
