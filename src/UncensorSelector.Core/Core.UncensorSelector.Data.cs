@@ -97,7 +97,6 @@ namespace KK_Plugins
                 BodyGUID = bodyGUID;
                 DisplayName = displayName;
                 Sex = sex;
-                Asset = Sex == 0 ? "p_cm_body_00" : "p_cf_body_00";
                 AllowRandom = false;
                 Normals = Defaults.Normals;
                 BodyMainTex = Defaults.BodyMainTex;
