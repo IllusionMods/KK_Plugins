@@ -33,7 +33,7 @@ namespace KK_Plugins
                 {
                     if (loadedItem is OCIItem item)
                     {
-                        if (item?.itemComponent != null)
+                        if (item.itemComponent != null)
                         {
                             for (int i = 0; i < 3; i++)
                             {
@@ -42,7 +42,7 @@ namespace KK_Plugins
                             }
                         }
 
-                        if (item?.panelComponent != null)
+                        if (item.panelComponent != null)
                             SaveBGTex(item, item.itemInfo.panel.filePath);
                     }
                 }

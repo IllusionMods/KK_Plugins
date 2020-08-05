@@ -524,7 +524,7 @@ namespace KK_Plugins
                 //Apply uncensor overlay texture
                 try
                 {
-                    if (BodyData?.UncensorOverlay != null && BodyData?.OOBase != Defaults.OOBase)
+                    if (BodyData.UncensorOverlay != null && BodyData.OOBase != Defaults.OOBase)
                     {
                         Texture2D uncensorTexture = CommonLib.LoadAsset<Texture2D>(BodyData.OOBase, BodyData.UncensorOverlay);
                         _ksox.AdditionalTextures.Add(new AdditionalTexture(uncensorTexture, TexType.BodyOver, this));
@@ -538,7 +538,7 @@ namespace KK_Plugins
                 //Apply uncensor underlay texture
                 try
                 {
-                    if (BodyData?.UncensorUnderlay != null && BodyData?.OOBase != Defaults.OOBase)
+                    if (BodyData.UncensorUnderlay != null && BodyData.OOBase != Defaults.OOBase)
                     {
                         Texture2D uncensorTexture = CommonLib.LoadAsset<Texture2D>(BodyData.OOBase, BodyData.UncensorUnderlay);
                         _ksox.AdditionalTextures.Add(new AdditionalTexture(uncensorTexture, TexType.BodyUnder, this));

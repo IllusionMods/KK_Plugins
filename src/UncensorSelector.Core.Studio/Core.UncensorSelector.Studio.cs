@@ -138,7 +138,7 @@ namespace KK_Plugins
                     return ballsList.IndexOf("None");
                 if (controller.BallsData?.BallsGUID == null)
                     return ballsList.IndexOf(DefaultBallsGUID);
-                return ballsList.IndexOf(controller.BallsData?.BallsGUID);
+                return ballsList.IndexOf(controller.BallsData.BallsGUID);
             }
             StudioAPI.GetOrCreateCurrentStateCategory(StudioCategoryName).AddControl(ballsDropdown);
         }
