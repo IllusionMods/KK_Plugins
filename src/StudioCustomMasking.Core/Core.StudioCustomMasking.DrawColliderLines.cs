@@ -30,7 +30,7 @@ namespace KK_Plugins
         /// </summary>
         public void OnPostRender()
         {
-            if (StudioCustomMasking.SavingInProgress) return;
+            if (StudioCustomMasking.HideLines) return;
 
             TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
             for (int i = 0; i < selectNodes.Length; i++)

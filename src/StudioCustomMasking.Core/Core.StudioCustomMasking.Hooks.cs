@@ -25,13 +25,25 @@ namespace KK_Plugins
         [HarmonyPrefix, HarmonyPatch(typeof(SystemButtonCtrl), nameof(SystemButtonCtrl.OnClickSave))]
         internal static void OnClickSave()
         {
-            StudioCustomMasking.SavingInProgress = true;
+            StudioCustomMasking.HideLines = true;
 
             StudioCustomMasking.Instance.StartCoroutine(Reset());
             IEnumerator Reset()
             {
                 yield return null;
-                StudioCustomMasking.SavingInProgress = false;
+                StudioCustomMasking.HideLines = false;
+            }
+        }
+
+        internal static void ScreencapHook()
+        {
+            StudioCustomMasking.HideLines = true;
+
+            StudioCustomMasking.Instance.StartCoroutine(Reset());
+            IEnumerator Reset()
+            {
+                yield return null;
+                StudioCustomMasking.HideLines = false;
             }
         }
     }

@@ -1,15 +1,16 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI.Studio.SaveLoad;
+using System;
 using System.IO;
 using System.Reflection;
 using UILib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using BepInEx.Configuration;
 
 namespace KK_Plugins
 {
@@ -24,7 +25,11 @@ namespace KK_Plugins
 
         internal static new ManualLogSource Logger;
         public static StudioCustomMasking Instance;
-        internal static bool SavingInProgress = false;
+
+        /// <summary>
+        /// If true, lines are not rendered. For overriding line drawing during screenshots, scene thumbnail generation, etc.
+        /// </summary>
+        public static bool HideLines = false;
 
 #if KK
         internal const int ColliderLayer = 11;
@@ -39,13 +44,26 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
             Instance = this;
-            Harmony.CreateAndPatchAll(typeof(Hooks));
+            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
             StudioSaveLoadApi.RegisterExtraBehaviour<StudioCustomMaskingSceneController>(GUID);
 
             ColliderColor = Config.Bind("Config", "Collider Color", Color.green, "Color of the collider box drawn when one is selected");
             AddNewMaskToSelected = Config.Bind("Config", "Add New Masks To Selected Object", true, "When enabled, newly created masks will be added to the currently selected object rather than added without a parent object.");
+
+            Type ScreencapType = Type.GetType("Screencap.ScreenshotManager, Screencap");
+            if (ScreencapType == null)
+                ScreencapType = Type.GetType($"Screencap.ScreenshotManager, {Constants.Prefix}_Screencap");
+
+            if (ScreencapType != null)
+            {
+#if KK
+                harmony.Patch(ScreencapType.GetMethod("TakeCharScreenshot", AccessTools.all), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ScreencapHook), AccessTools.all)), null);
+#else
+                harmony.Patch(ScreencapType.GetMethod("CaptureAndWrite", AccessTools.all), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ScreencapHook), AccessTools.all)), null);
+#endif
+            }
         }
 
         /// <summary>
