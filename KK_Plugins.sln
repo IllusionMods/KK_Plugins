@@ -273,6 +273,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.MakerDefaults", "src\Mak
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MakerDefaults.KKEC", "src\MakerDefaults.Core.KKEC\Core.MakerDefaults.KKEC.shproj", "{DE81CE27-D308-4E4E-9960-8DB1CB3353C6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioCustomMasking", "StudioCustomMasking", "{F3751E5B-FC79-462D-89B9-BBF714C03F46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioCustomMasking", "src\StudioCustomMasking.KK\KK.StudioCustomMasking.csproj", "{65E8D9CA-3CBE-4467-B369-0361B5A85D1F}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -350,6 +354,8 @@ Global
 		src\Shared\Shared.projitems*{5fea4668-1430-413b-b744-8951a4c07745}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{6463c4b8-12ce-496b-8578-48d424f61400}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{650f4b0a-be99-495b-84b0-0999afec670d}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{65e8d9ca-3cbe-4467-b369-0361b5a85d1f}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{65e8d9ca-3cbe-4467-b369-0361b5a85d1f}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{69421a19-a4ac-43bf-8729-6c955f39ce89}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{69421a19-a4ac-43bf-8729-6c955f39ce89}*SharedItemsImports = 4
 		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
@@ -784,6 +790,10 @@ Global
 		{1E63BA35-05C5-46C9-AD7F-1FBE7F80BB5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E63BA35-05C5-46C9-AD7F-1FBE7F80BB5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E63BA35-05C5-46C9-AD7F-1FBE7F80BB5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65E8D9CA-3CBE-4467-B369-0361B5A85D1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65E8D9CA-3CBE-4467-B369-0361B5A85D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65E8D9CA-3CBE-4467-B369-0361B5A85D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65E8D9CA-3CBE-4467-B369-0361B5A85D1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -891,6 +901,7 @@ Global
 		{1F8E7FEF-B34C-49AF-B94E-2221A1BE84E3} = {CF0424D7-8CE3-4CA1-9C79-2302428E77F6}
 		{1E63BA35-05C5-46C9-AD7F-1FBE7F80BB5B} = {CF0424D7-8CE3-4CA1-9C79-2302428E77F6}
 		{DE81CE27-D308-4E4E-9960-8DB1CB3353C6} = {CF0424D7-8CE3-4CA1-9C79-2302428E77F6}
+		{65E8D9CA-3CBE-4467-B369-0361B5A85D1F} = {F3751E5B-FC79-462D-89B9-BBF714C03F46}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
