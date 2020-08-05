@@ -17,8 +17,7 @@ namespace KK_Plugins.StudioSceneSettings
             internal static void OnTriggerEnter(Collider other, ref List<Collider> ___listCollider)
             {
                 if (other == null) return;
-
-                if (___listCollider.Find((Collider x) => other.name == x.name) == null)
+                if (!___listCollider.Contains(other))
                     ___listCollider.Add(other);
             }
 
@@ -26,7 +25,7 @@ namespace KK_Plugins.StudioSceneSettings
             internal static void OnTriggerStay(Collider other, ref List<Collider> ___listCollider)
             {
                 if (other == null) return;
-                if (___listCollider.Find((Collider x) => other.name == x.name) == null)
+                if (!___listCollider.Contains(other))
                     ___listCollider.Add(other);
             }
 
