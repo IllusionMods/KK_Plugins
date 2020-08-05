@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
@@ -70,6 +71,15 @@ namespace KK_Plugins
         public static ConfigEntry<string> DefaultFemalePenis { get; private set; }
         public static ConfigEntry<string> DefaultFemaleBalls { get; private set; }
         public static ConfigEntry<bool> DefaultFemaleDisplayBalls { get; private set; }
+        public static ConfigEntry<bool> WriteUncensorsToLog { get; private set; }
+        public static ConfigEntry<string> RandomExcludedMaleBody { get; private set; }
+        public static ConfigEntry<string> RandomExcludedMalePenis { get; private set; }
+        public static ConfigEntry<string> RandomExcludedMaleBalls { get; private set; }
+        public static ConfigEntry<string> RandomExcludedFemaleBody { get; private set; }
+        public static ConfigEntry<string> RandomExcludedFemalePenis { get; private set; }
+        public static ConfigEntry<string> RandomExcludedFemaleBalls { get; private set; }
+
+        private static readonly Dictionary<byte, Dictionary<string, HashSet<string>>> RandomExcludedSets = new Dictionary<byte, Dictionary<string, HashSet<string>>>();
 
         internal void Main()
         {
@@ -88,6 +98,22 @@ namespace KK_Plugins
             DefaultFemaleBalls = Config.Bind("Config", "Default Female Balls", "Random", new ConfigDescription("Balls to use if the character does not have one set. The mosaic penis will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(GetConfigBallsList()), new ConfigurationManagerAttributes { Order = 7 }));
             DefaultFemaleDisplayBalls = Config.Bind("Config", "Default Female Balls Display", false, new ConfigDescription("Whether balls will be displayed on females if not otherwise configured.", null, new ConfigurationManagerAttributes { Order = 6 }));
 
+            WriteUncensorsToLog = Config.Bind("Config", "Log Uncensors", false, new ConfigDescription("Write a list of uncensors and GUIDs to the log file", null, "Advanced"));
+
+            // write to log when setting turned on
+            WriteUncensorsToLog.SettingChanged += (o, s) =>
+            {
+                if (!WriteUncensorsToLog.Value) return;
+                LogUncensors();
+            };
+
+            InitRandomExcludedConfig(RandomExcludedMaleBody, "Male", "Body");
+            InitRandomExcludedConfig(RandomExcludedMalePenis, "Male", "Penis");
+            InitRandomExcludedConfig(RandomExcludedMaleBalls, "Male", "Balls");
+            InitRandomExcludedConfig(RandomExcludedFemaleBody, "Female", "Body");
+            InitRandomExcludedConfig(RandomExcludedFemalePenis, "Female", "Penis");
+            InitRandomExcludedConfig(RandomExcludedFemaleBalls, "Female", "Balls");
+
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             CharacterApi.RegisterExtraBehaviour<UncensorSelectorController>(GUID);
@@ -102,7 +128,96 @@ namespace KK_Plugins
             MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
             harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), AccessTools.all)));
 #endif
+            if (WriteUncensorsToLog.Value) LogUncensors();
         }
+
+        private void UpdateGuidSet(string entry, HashSet<string> set)
+        {
+            set.Clear();
+            foreach (var guid in entry.Split(";,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)))
+            {
+                set.Add(guid);
+            }
+
+        }
+
+        private void InitRandomExcludedConfig(ConfigEntry<string> entry, string sex, string part)
+        {
+            byte sexValue = (byte) (sex == "Male" ? 0 : 1);
+
+            if (!RandomExcludedSets.TryGetValue(sexValue, out var sexExcluded))
+            {
+                sexExcluded = RandomExcludedSets[sexValue] = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+            }
+
+            if (!sexExcluded.TryGetValue(part, out var partExcluded))
+            {
+                partExcluded = sexExcluded[part] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            }
+
+
+            entry = Config.Bind("Random Excluded", $"{sex} {part} GUIDs", string.Empty, new ConfigDescription($"GUIDs of {part} to exclude from random selection for {sex}s", null, "Advanced"));
+            // update on change
+            entry.SettingChanged += (s, o) => UpdateGuidSet(entry.Value, partExcluded);
+            // apply initial config file value now
+            UpdateGuidSet(entry.Value, partExcluded);
+        }
+
+        public static bool IsExcludedFromRandom(byte sex, string part, string guid)
+        {
+            return RandomExcludedSets.TryGetValue(sex, out var sexExcluded) &&
+                sexExcluded.TryGetValue(part, out var excluded) &&
+                excluded.Contains(guid);
+        }
+
+        private void LogUncensors()
+        {
+            var maxGuidLen = new int[]
+            {
+                BodyDictionary.Select(e => e.Key.Length).Max(),
+                PenisDictionary.Select(e => e.Key.Length).Max(),
+                BallsDictionary.Select(e => e.Key.Length).Max()
+            }.Max();
+
+
+            var message = new StringBuilder();
+
+            message.AppendLine("Available Uncensors:");
+
+            message.AppendLine($"  Body Uncensors:");
+
+            foreach (var entry in BodyDictionary.OrderBy(e => e.Key))
+            {
+                message.Append($"    {entry.Key.PadRight(maxGuidLen)} - {entry.Value.DisplayName}");
+                if (!entry.Value.AllowRandom) message.Append(" *");
+                message.AppendLine();
+            }
+
+            message.AppendLine($"  Penis Uncensors:");
+
+            foreach (var entry in PenisDictionary.OrderBy(e => e.Key))
+            {
+                message.Append($"    {entry.Key.PadRight(maxGuidLen)} - {entry.Value.DisplayName}");
+                if (!entry.Value.AllowRandom) message.Append(" *");
+                message.AppendLine();
+            }
+
+            message.AppendLine($"  Balls Uncensors:");
+
+            foreach (var entry in BallsDictionary.OrderBy(e => e.Key))
+            {
+                message.Append($"    {entry.Key.PadRight(maxGuidLen)} - {entry.Value.DisplayName}");
+                if (!entry.Value.AllowRandom) message.Append(" *");
+                message.AppendLine();
+            }
+
+            message.AppendLine();
+            message.AppendLine($"    {"*".PadLeft(maxGuidLen)} = Excluded from random selection");
+
+            Logger.LogInfo(message.ToString());
+
+        }
+
         /// <summary>
         /// Initialize the character maker GUI
         /// </summary>
