@@ -26,6 +26,12 @@ namespace KK_Plugins
         public static StudioCustomMasking Instance;
         internal static bool SavingInProgress = false;
 
+#if KK
+        internal const int ColliderLayer = 11;
+#elif HS2 || AI
+        internal const int ColliderLayer = 19;
+#endif
+
         public static ConfigEntry<Color> ColliderColor { get; private set; }
         public static ConfigEntry<bool> AddNewMaskToSelected { get; private set; }
 

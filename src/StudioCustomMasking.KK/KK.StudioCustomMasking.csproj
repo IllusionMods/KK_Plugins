@@ -79,21 +79,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK.StudioCustomMasking.cs" />
-    <Compile Include="KK.StudioCustomMasking.Hooks.cs" />
-    <Compile Include="KK.StudioCustomMasking.SceneController.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="KK.StudioCustomMasking.DrawColliderLines.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\colorontop.unity3d" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\CustomMaskingIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
+  <Import Project="..\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KK</PostBuildEvent>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>8ce9e538-3e4a-46d5-8681-ed6129216922</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>StudioCustomMasking.Core</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioCustomMasking.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioCustomMasking.DrawColliderLines.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioCustomMasking.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioCustomMasking.SceneController.cs" />
+  </ItemGroup>
+</Project>

@@ -277,6 +277,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioCustomMasking", "Stud
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioCustomMasking", "src\StudioCustomMasking.KK\KK.StudioCustomMasking.csproj", "{65E8D9CA-3CBE-4467-B369-0361B5A85D1F}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioCustomMasking", "src\StudioCustomMasking.Core\Core.StudioCustomMasking.shproj", "{8CE9E538-3E4A-46D5-8681-ED6129216922}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.StudioCustomMasking", "src\StudioCustomMasking.HS2\HS2.StudioCustomMasking.csproj", "{2226B849-68B4-427D-AC83-76C88561182E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.StudioCustomMasking", "src\StudioCustomMasking.AI\AI.StudioCustomMasking.csproj", "{43281CFC-E8BE-4E08-9B88-6E9A24887329}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -301,6 +307,9 @@ Global
 		src\Shared\Shared.projitems*{1e63ba35-05c5-46c9-ad7f-1fbe7f80bb5b}*SharedItemsImports = 4
 		src\MakerDefaults.Core.AIHS2\MakerDefaults.Core.projitems*{1f8e7fef-b34c-49af-b94e-2221a1be84e3}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{1f8e7fef-b34c-49af-b94e-2221a1be84e3}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{2226b849-68b4-427d-ac83-76c88561182e}*SharedItemsImports = 4
+		src\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems*{2226b849-68b4-427d-ac83-76c88561182e}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{2226b849-68b4-427d-ac83-76c88561182e}*SharedItemsImports = 4
 		src\MaleJuice.Core\MaleJuice.Core.projitems*{24305054-ee76-4abb-b5a0-12b16d52c03d}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{24305054-ee76-4abb-b5a0-12b16d52c03d}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{25352133-33b7-41e0-867a-d07c613ac3e9}*SharedItemsImports = 13
@@ -327,6 +336,9 @@ Global
 		src\Colliders.Core\Core.Colliders.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{42f4ccee-063c-482f-aee7-5e8d34433c95}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{43281cfc-e8be-4e08-9b88-6e9a24887329}*SharedItemsImports = 4
+		src\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems*{43281cfc-e8be-4e08-9b88-6e9a24887329}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{43281cfc-e8be-4e08-9b88-6e9a24887329}*SharedItemsImports = 4
 		src\Demosaic.Core\Core.Demosaic.projitems*{46156d49-510c-4070-9a4c-f271910d8a75}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{46156d49-510c-4070-9a4c-f271910d8a75}*SharedItemsImports = 4
 		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{46c0c1ed-0307-4d93-97d5-d71a8d682eea}*SharedItemsImports = 13
@@ -355,6 +367,7 @@ Global
 		src\Shared\Shared.projitems*{6463c4b8-12ce-496b-8578-48d424f61400}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{650f4b0a-be99-495b-84b0-0999afec670d}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{65e8d9ca-3cbe-4467-b369-0361b5a85d1f}*SharedItemsImports = 4
+		src\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems*{65e8d9ca-3cbe-4467-b369-0361b5a85d1f}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{65e8d9ca-3cbe-4467-b369-0361b5a85d1f}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{69421a19-a4ac-43bf-8729-6c955f39ce89}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{69421a19-a4ac-43bf-8729-6c955f39ce89}*SharedItemsImports = 4
@@ -394,6 +407,7 @@ Global
 		src\Shared\Shared.projitems*{8a811717-0cd1-4541-bd67-a0210586e4d0}*SharedItemsImports = 4
 		src\CharacterExport.Core\Core.CharacterExport.projitems*{8bdad525-960e-4e93-9333-f782985c4f99}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{8bdad525-960e-4e93-9333-f782985c4f99}*SharedItemsImports = 4
+		src\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems*{8ce9e538-3e4a-46d5-8681-ed6129216922}*SharedItemsImports = 13
 		src\FKIK.Core\Core.FKIK.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
 		src\Demosaic.Core\Core.Demosaic.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
@@ -794,6 +808,14 @@ Global
 		{65E8D9CA-3CBE-4467-B369-0361B5A85D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65E8D9CA-3CBE-4467-B369-0361B5A85D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65E8D9CA-3CBE-4467-B369-0361B5A85D1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2226B849-68B4-427D-AC83-76C88561182E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2226B849-68B4-427D-AC83-76C88561182E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2226B849-68B4-427D-AC83-76C88561182E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2226B849-68B4-427D-AC83-76C88561182E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43281CFC-E8BE-4E08-9B88-6E9A24887329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43281CFC-E8BE-4E08-9B88-6E9A24887329}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43281CFC-E8BE-4E08-9B88-6E9A24887329}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43281CFC-E8BE-4E08-9B88-6E9A24887329}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -902,6 +924,9 @@ Global
 		{1E63BA35-05C5-46C9-AD7F-1FBE7F80BB5B} = {CF0424D7-8CE3-4CA1-9C79-2302428E77F6}
 		{DE81CE27-D308-4E4E-9960-8DB1CB3353C6} = {CF0424D7-8CE3-4CA1-9C79-2302428E77F6}
 		{65E8D9CA-3CBE-4467-B369-0361B5A85D1F} = {F3751E5B-FC79-462D-89B9-BBF714C03F46}
+		{8CE9E538-3E4A-46D5-8681-ED6129216922} = {F3751E5B-FC79-462D-89B9-BBF714C03F46}
+		{2226B849-68B4-427D-AC83-76C88561182E} = {F3751E5B-FC79-462D-89B9-BBF714C03F46}
+		{43281CFC-E8BE-4E08-9B88-6E9A24887329} = {F3751E5B-FC79-462D-89B9-BBF714C03F46}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

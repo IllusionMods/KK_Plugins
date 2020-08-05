@@ -22,8 +22,6 @@ namespace KK_Plugins
         {
             var data = new PluginData();
 
-            StudioCustomMasking.Logger.LogInfo($"MaskingFolders:{MaskingFolders.Count}");
-
             if (MaskingFolders.Count > 0)
                 data.data.Add(nameof(MaskingFolders), MessagePackSerializer.Serialize(MaskingFolders.Keys.ToList()));
             else
@@ -92,8 +90,13 @@ namespace KK_Plugins
         private void AddColliderToFolder(OCIFolder ociFolder)
         {
             ociFolder.objectItem.name = "FolderCollider";
-            ociFolder.objectItem.AddComponent<BoxCollider>();
-            ociFolder.objectItem.layer = 11; //Map
+            var collider = ociFolder.objectItem.AddComponent<BoxCollider>();
+#if KK
+            collider.size = new Vector3(1f, 1f, 1f);
+#elif AI || HS2
+            collider.size = new Vector3(10f, 10f, 10f);
+#endif
+            ociFolder.objectItem.layer = StudioCustomMasking.ColliderLayer;
             ociFolder.objectItem.transform.parent = ociFolder.objectItem.transform;
             ociFolder.name = "Mask (hides parent)";
 
