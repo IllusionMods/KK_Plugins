@@ -54,6 +54,8 @@ namespace KK_Plugins.StudioCustomMasking
             ColliderColor = Config.Bind("Config", "Collider Color", Color.green, "Color of the collider box drawn when one is selected");
             AddNewMaskToSelected = Config.Bind("Config", "Add New Masks To Selected Object", true, "When enabled, newly created masks will be added to the currently selected object rather than added without a parent object.");
 
+            ColliderColor.SettingChanged += ColliderColor_SettingChanged;
+
             Type ScreencapType = Type.GetType("Screencap.ScreenshotManager, Screencap");
             if (ScreencapType == null)
                 ScreencapType = Type.GetType($"Screencap.ScreenshotManager, {Constants.Prefix}_Screencap");
@@ -66,6 +68,12 @@ namespace KK_Plugins.StudioCustomMasking
                 harmony.Patch(ScreencapType.GetMethod("CaptureAndWrite", AccessTools.all), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ScreencapHook), AccessTools.all)), null);
 #endif
             }
+        }
+
+        private void ColliderColor_SettingChanged(object sender, EventArgs e)
+        {
+            foreach (var colliderLines in FindObjectsOfType<DrawColliderLines>())
+                colliderLines.LineMaterial = null;
         }
 
         /// <summary>
