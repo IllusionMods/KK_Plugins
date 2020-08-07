@@ -12,9 +12,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace KK_Plugins
+namespace KK_Plugins.StudioCustomMasking
 {
     [BepInProcess(Constants.StudioProcessName)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(StudioSceneSettings.StudioSceneSettings.GUID, "1.2")]
     [BepInPlugin(GUID, PluginName, Version)]
     public class StudioCustomMasking : BaseUnityPlugin
     {
@@ -47,7 +49,7 @@ namespace KK_Plugins
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
-            StudioSaveLoadApi.RegisterExtraBehaviour<StudioCustomMaskingSceneController>(GUID);
+            StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(GUID);
 
             ColliderColor = Config.Bind("Config", "Collider Color", Color.green, "Color of the collider box drawn when one is selected");
             AddNewMaskToSelected = Config.Bind("Config", "Add New Masks To Selected Object", true, "When enabled, newly created masks will be added to the currently selected object rather than added without a parent object.");
@@ -107,13 +109,13 @@ namespace KK_Plugins
             }
         }
 
-        private static StudioCustomMaskingSceneController _SceneControllerInstance;
-        public static StudioCustomMaskingSceneController SceneControllerInstance
+        private static SceneController _SceneControllerInstance;
+        public static SceneController SceneControllerInstance
         {
             get
             {
                 if (_SceneControllerInstance == null)
-                    _SceneControllerInstance = Chainloader.ManagerObject.transform.GetComponentInChildren<StudioCustomMaskingSceneController>();
+                    _SceneControllerInstance = Chainloader.ManagerObject.transform.GetComponentInChildren<SceneController>();
                 return _SceneControllerInstance;
             }
         }

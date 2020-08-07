@@ -88,6 +88,12 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StudioSceneSettings.KK\KK.StudioSceneSettings.csproj">
+      <Project>{808eedec-4707-45a1-929c-9e5506180204}</Project>
+      <Name>KK.StudioSceneSettings</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems" Label="Shared" />

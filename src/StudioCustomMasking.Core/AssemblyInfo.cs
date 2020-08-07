@@ -1,6 +1,6 @@
 ﻿using KK_Plugins;
 using System.Reflection;
-using static KK_Plugins.StudioCustomMasking;
+using static KK_Plugins.StudioCustomMasking.StudioCustomMasking;
 
 [assembly: AssemblyTitle(PluginNameInternal)]
 [assembly: AssemblyProduct(PluginNameInternal)]

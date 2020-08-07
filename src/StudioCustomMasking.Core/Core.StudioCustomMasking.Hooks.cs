@@ -3,7 +3,7 @@ using Studio;
 using System.Collections;
 using UnityEngine;
 
-namespace KK_Plugins
+namespace KK_Plugins.StudioCustomMasking
 {
     internal static class Hooks
     {

@@ -9,9 +9,9 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 
-namespace KK_Plugins
+namespace KK_Plugins.StudioCustomMasking
 {
-    public class StudioCustomMaskingSceneController : SceneCustomFunctionController
+    public class SceneController : SceneCustomFunctionController
     {
         /// <summary>
         /// Folders with attached colliders acting as a mask for the object it is attached to

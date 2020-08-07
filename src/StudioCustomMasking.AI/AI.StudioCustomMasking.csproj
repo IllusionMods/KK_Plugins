@@ -114,6 +114,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\CustomMaskingIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StudioSceneSettings.AI\AI.StudioSceneSettings.csproj">
+      <Project>{002aa641-4dc8-4fef-83dd-a7fab3af6daf}</Project>
+      <Name>AI.StudioSceneSettings</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems" Label="Shared" />

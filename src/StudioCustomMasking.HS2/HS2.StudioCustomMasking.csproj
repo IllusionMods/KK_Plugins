@@ -118,6 +118,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\CustomMaskingIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StudioSceneSettings.HS2\HS2.StudioSceneSettings.csproj">
+      <Project>{8169b73c-be43-4ca0-87d8-db580d367d87}</Project>
+      <Name>HS2.StudioSceneSettings</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems" Label="Shared" />

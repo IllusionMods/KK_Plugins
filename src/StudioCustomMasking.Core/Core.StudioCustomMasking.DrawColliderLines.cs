@@ -1,7 +1,7 @@
 ﻿using Studio;
 using UnityEngine;
 
-namespace KK_Plugins
+namespace KK_Plugins.StudioCustomMasking
 {
     class DrawColliderLines : MonoBehaviour
     {
