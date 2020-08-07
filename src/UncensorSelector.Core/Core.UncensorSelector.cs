@@ -109,8 +109,8 @@ namespace KK_Plugins
             DefaultFemalePenis = defaultConf;
             RandomExcludedFemalePenis = excludeConf;
             InitUncensorConfigs("Female", "Balls", BallsDictionary, GetConfigBallsList(), 7, out defaultConf, out excludeConf);
-            DefaultFemaleBody = defaultConf;
-            RandomExcludedFemaleBody = excludeConf;
+            DefaultFemaleBalls = defaultConf;
+            RandomExcludedFemaleBalls = excludeConf;
 
             DefaultFemaleDisplayBalls = Config.Bind("Config", "Default Female Balls Display", false, new ConfigDescription("Whether balls will be displayed on females if not otherwise configured.", null, new ConfigurationManagerAttributes {Order = 6}));
             WriteUncensorsToLog = Config.Bind("Config", "Log Uncensors", false, new ConfigDescription("Write a list of uncensors and GUIDs to the log file", null, "Advanced"));
