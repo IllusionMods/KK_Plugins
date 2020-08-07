@@ -246,14 +246,25 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        internal void ItemDeleteEvent(int ID)
+        internal void ItemDeleteEvent(int id)
         {
-            RendererPropertyList.RemoveAll(x => x.ID == ID);
-            MaterialFloatPropertyList.RemoveAll(x => x.ID == ID);
-            MaterialColorPropertyList.RemoveAll(x => x.ID == ID);
-            MaterialTexturePropertyList.RemoveAll(x => x.ID == ID);
-            MaterialShaderList.RemoveAll(x => x.ID == ID);
+            RendererPropertyList.RemoveAll(x => x.ID == id);
+            MaterialFloatPropertyList.RemoveAll(x => x.ID == id);
+            MaterialColorPropertyList.RemoveAll(x => x.ID == id);
+            MaterialTexturePropertyList.RemoveAll(x => x.ID == id);
+            MaterialShaderList.RemoveAll(x => x.ID == id);
         }
+
+        internal void ItemVisibleEvent(int id, bool visible)
+        {
+            if (visible)
+            {
+                var property = RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == RendererProperties.Enabled);
+                if (property != null)
+                    MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
+            }
+        }
+
         /// <summary>
         /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
+using HarmonyLib;
 using KKAPI.Studio.SaveLoad;
 using Studio;
 using System.Linq;
@@ -66,6 +67,8 @@ namespace KK_Plugins.MaterialEditor
 
             materialEditorButton.onClick = new Button.ButtonClickedEvent();
             materialEditorButton.onClick.AddListener(() => { PopulateListStudio(); });
+
+            Harmony.CreateAndPatchAll(typeof(StudioHooks));
         }
 
         private void PopulateListStudio()
