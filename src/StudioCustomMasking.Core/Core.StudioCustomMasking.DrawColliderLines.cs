@@ -5,9 +5,8 @@ namespace KK_Plugins.StudioCustomMasking
 {
     class DrawColliderLines : MonoBehaviour
     {
-
-        private static Material _LineMaterial = null;
-        private static Material LineMaterial
+        private  Material _LineMaterial = null;
+        public  Material LineMaterial
         {
             get
             {
@@ -22,6 +21,10 @@ namespace KK_Plugins.StudioCustomMasking
                     _LineMaterial.color = StudioCustomMasking.ColliderColor.Value;
                 }
                 return _LineMaterial;
+            }
+            set
+            {
+                _LineMaterial = value;
             }
         }
 
@@ -85,7 +88,7 @@ namespace KK_Plugins.StudioCustomMasking
         /// </summary>
         /// <param name="point1">Start point</param>
         /// <param name="point2">End point</param>
-        public static void DrawLine(Vector3 point1, Vector3 point2)
+        public void DrawLine(Vector3 point1, Vector3 point2)
         {
             GL.Begin(GL.LINES);
             LineMaterial.SetPass(0);
