@@ -46,10 +46,10 @@ namespace KK_Plugins
         internal static MakerDropdown BodyDropdown = null;
         internal static MakerDropdown PenisDropdown = null;
         internal static MakerDropdown BallsDropdown = null;
-        private static readonly HashSet<string> BodyNames = new HashSet<string>() {"o_body_a", "o_body_cf", "o_body_cm"};
-        private static readonly HashSet<string> BodyParts = new HashSet<string>() {"o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster", "cm_o_dan00", "cm_o_dan_f"};
-        private static readonly HashSet<string> PenisParts = new HashSet<string>() {"o_dankon", "o_gomu", "cm_o_dan00"};
-        private static readonly HashSet<string> BallsParts = new HashSet<string>() {"o_dan_f", "cm_o_dan_f"};
+        private static readonly HashSet<string> BodyNames = new HashSet<string>() { "o_body_a", "o_body_cf", "o_body_cm" };
+        private static readonly HashSet<string> BodyParts = new HashSet<string>() { "o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster", "cm_o_dan00", "cm_o_dan_f" };
+        private static readonly HashSet<string> PenisParts = new HashSet<string>() { "o_dankon", "o_gomu", "cm_o_dan00" };
+        private static readonly HashSet<string> BallsParts = new HashSet<string>() { "o_dan_f", "cm_o_dan_f" };
         internal static string CurrentBodyGUID;
         internal static bool DidErrorMessage = false;
 
@@ -71,7 +71,6 @@ namespace KK_Plugins
         public static ConfigEntry<string> DefaultFemalePenis { get; private set; }
         public static ConfigEntry<string> DefaultFemaleBalls { get; private set; }
         public static ConfigEntry<bool> DefaultFemaleDisplayBalls { get; private set; }
-        public static ConfigEntry<bool> WriteUncensorsToLog { get; private set; }
         public static ConfigEntry<string> RandomExcludedMaleBody { get; private set; }
         public static ConfigEntry<string> RandomExcludedMalePenis { get; private set; }
         public static ConfigEntry<string> RandomExcludedMaleBalls { get; private set; }
@@ -89,7 +88,7 @@ namespace KK_Plugins
             PopulateUncensorLists();
 
 #if KK
-            _GenderBender = Config.Bind("Config", "Genderbender Allowed", true, new ConfigDescription("Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.", null, new ConfigurationManagerAttributes {Order = 29}));
+            _GenderBender = Config.Bind("Config", "Genderbender Allowed", true, new ConfigDescription("Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.", null, new ConfigurationManagerAttributes { Order = 29 }));
 #endif
             ConfigEntry<string> defaultConf;
             ConfigEntry<string> excludeConf;
@@ -112,8 +111,7 @@ namespace KK_Plugins
             DefaultFemaleBalls = defaultConf;
             RandomExcludedFemaleBalls = excludeConf;
 
-            DefaultFemaleDisplayBalls = Config.Bind("Config", "Default Female Balls Display", false, new ConfigDescription("Whether balls will be displayed on females if not otherwise configured.", null, new ConfigurationManagerAttributes {Order = 6}));
-            WriteUncensorsToLog = Config.Bind("Config", "Log Uncensors", false, new ConfigDescription("Write a list of uncensors and GUIDs to the log file", null, "Advanced"));
+            DefaultFemaleDisplayBalls = Config.Bind("Config", "Default Female Balls Display", false, new ConfigDescription("Whether balls will be displayed on females if not otherwise configured.", null, new ConfigurationManagerAttributes { Order = 6 }));
 
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
@@ -129,57 +127,44 @@ namespace KK_Plugins
             MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
             harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), AccessTools.all)));
 #endif
-            // write to log when setting turned on
-            WriteUncensorsToLog.SettingChanged += (o, s) =>
-            {
-                if (!WriteUncensorsToLog.Value) return;
-                LogUncensors();
-            };
-
-            if (WriteUncensorsToLog.Value) LogUncensors();
         }
 
         internal void OnGUI()
         {
-            foreach(var settingsGUI in SettingsGUIs.Where(g=>g.Visible)) settingsGUI.DoOnGUI();
+            foreach (var settingsGUI in SettingsGUIs.Where(g => g.Visible))
+                settingsGUI.DoOnGUI();
         }
         internal static void UpdateGuidSet(string entry, HashSet<string> set)
         {
             set.Clear();
             foreach (var guid in entry.Split(";,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)))
-            {
                 set.Add(guid);
-            }
-
         }
-        private void InitUncensorConfigs<T>(string sex, string part, Dictionary<string, T> uncensorDictionary, string[] defaultChoices, int order, out ConfigEntry<string> defaultConf, out ConfigEntry<string> excludeConf) where T: IUncensorData
+
+        private void InitUncensorConfigs<T>(string sex, string part, Dictionary<string, T> uncensorDictionary, string[] defaultChoices, int order, out ConfigEntry<string> defaultConf, out ConfigEntry<string> excludeConf) where T : IUncensorData
         {
-            byte sexValue = (byte) (sex == "Male" ? 0 : 1);
+            byte sexValue = (byte)(sex == "Male" ? 0 : 1);
 
             if (!RandomExcludedSets.TryGetValue(sexValue, out var sexExcluded))
-            {
                 sexExcluded = RandomExcludedSets[sexValue] = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
-            }
 
             if (!sexExcluded.TryGetValue(part, out var partExcluded))
-            {
                 partExcluded = sexExcluded[part] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            }
 
             var defaultDescAttrs = new ConfigurationManagerAttributes { Order = order };
-            var defaultDesc = new ConfigDescription($"{part} to use if the character does not have one set. The {(part == "Body" ? "censored" : "mosaic")} {part.ToLower()} will not be selected randomly if there are any alternatives.", null, defaultDescAttrs);
+            var defaultDesc = new ConfigDescription($"{part} to use if the character does not have one set. The {(part == "Body" ? "censored" : "mosaic")} {part.ToLower()} will not be selected randomly if there are any alternatives.", new AcceptableValueList<string>(defaultChoices), defaultDescAttrs);
             defaultConf = Config.Bind("Config", $"Default {sex} {part}", "Random", defaultDesc);
 
             var settingsGUI = new SettingsGUI<T>(uncensorDictionary, sexValue, part);
             SettingsGUIs.Add(settingsGUI);
-            var excludedDescAttrs = new ConfigurationManagerAttributes {HideDefaultButton = true, IsAdvanced = true, CustomDrawer = settingsGUI.DrawSettingsGUI, Order = order};
+            var excludedDescAttrs = new ConfigurationManagerAttributes { HideDefaultButton = true, CustomDrawer = settingsGUI.DrawSettingsGUI, Order = order };
             var excludedDesc = new ConfigDescription($"{part} uncensors to exclude from random selection for {sex.ToLower()}s", null, excludedDescAttrs);
             excludeConf = Config.Bind("Random Excluded", $"{sex} {part}", string.Empty, excludedDesc);
 
-            // apply initial config file value now
+            //Apply initial config file value now
             UpdateGuidSet(excludeConf.Value, partExcluded);
 
-            // update on change
+            //Update on change
             excludeConf.SettingChanged += (s, a) =>
             {
                 if (!(a is SettingChangedEventArgs args) || !(args.ChangedSetting is ConfigEntry<string> conf))
@@ -197,42 +182,6 @@ namespace KK_Plugins
             return RandomExcludedSets.TryGetValue(sex, out var sexExcluded) &&
                 sexExcluded.TryGetValue(part, out var excluded) &&
                 excluded.Contains(guid);
-        }
-
-        private void LogUncensors()
-        {
-            var maxGuidLen = new int[]
-            {
-                BodyDictionary.Select(e => e.Key.Length).Max(),
-                PenisDictionary.Select(e => e.Key.Length).Max(),
-                BallsDictionary.Select(e => e.Key.Length).Max()
-            }.Max();
-
-
-            var message = new StringBuilder();
-
-            void LogUncensorType<T>(string type, Dictionary<string, T> uncensorDictionary) where T : IUncensorData
-            {
-                message.AppendLine($"  {type} Uncensors:");
-                foreach (var entry in uncensorDictionary.OrderBy(e => e.Key))
-                {
-                    message.Append($"    {entry.Key.PadRight(maxGuidLen)} - {entry.Value.DisplayName}");
-                    if (!entry.Value.AllowRandom) message.Append(" *");
-                    message.AppendLine();
-                }
-                message.AppendLine();
-            }
-            
-            message.AppendLine("Available Uncensors:");
-            
-            LogUncensorType("Body", BodyDictionary);
-            LogUncensorType("Penis", PenisDictionary);
-            LogUncensorType("Balls", BallsDictionary);
-            
-            message.AppendLine($"    {"*".PadLeft(maxGuidLen)} = Excluded from random selection");
-
-            Logger.LogInfo(message.ToString());
-
         }
 
         /// <summary>
