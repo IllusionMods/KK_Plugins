@@ -234,7 +234,7 @@ v1.1 Major rewrite, many new features<br/>
 </details>
 
 #### MaterialEditor
-**v2.1.2 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
+**v2.1.3 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
 
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
@@ -281,6 +281,7 @@ v2.0.7 Fixed wrong tongue materials after character replacement in KK, fixed wro
 v2.1 Add copy/paste for material edits, shader optimization<br/>
 v2.1.1 Fix paste button being disabled, blacklist Standard shader from optimization<br/>
 v2.1.2 Fixed meka shader in AI/HS2, added option for exclusion from shader optimization to shader xml<br/>
+v2.1.3 Fixed items being toggled on in the workspace overriding renderer disabled changes<br/>
 </details>
 
 #### MaleJuice
@@ -333,7 +334,7 @@ v2.0 Added a guide object instead of hotkeys for positioning<br/>
 </details>
 
 #### StudioSceneSettings
-**v1.2 - [Download](https://www.patreon.com/posts/32713423)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+**v1.2.1 - [Download](https://www.patreon.com/posts/32713423)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 Allows you to adjust a few more settings for scenes. Changes save and load with the scene data.<br/>
 
 <details><summary>Settings</summary>
@@ -344,6 +345,7 @@ Far Clip Plane<br/>
 
 <details><summary>Change Log</summary>
 v1.2 Map masking for AI and HS2<br/>
+v1.2.1 Fixed compatibility issues with StudioCustomMasking<br/>
 </details>
 
 #### Pushup
@@ -372,6 +374,10 @@ This plugin will save .png files from your userdata folder to the scene data so 
 #### MakerDefaults
 **v1.0 - [Download](https://www.patreon.com/posts/39323239)** - For Koikatsu, Emotion Creators, AI Girl, and Honey Select 2<br/>
 Allows you to set default settings of the character maker so you don't have to set the same values manually every time.<br/>
+
+#### StudioCustomMasking
+**v1.0 - [Download](https://www.patreon.com/posts/40214619)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+Allows you to add map masking functionality for maps made out of items in Studio.<br/>
 
 #### InputHotkeyBlock
 Moved to the [BepInEx.Utility](https://github.com/BepInEx/BepInEx.Utility) repo.<br/>
