@@ -5,7 +5,14 @@ namespace KK_Plugins
 {
     internal partial class UncensorSelector
     {
-        public class BodyData
+
+        public interface IUncensorData
+        {
+            string GUID { get; }
+            string DisplayName { get; }
+            bool AllowRandom { get; }
+        }
+        public class BodyData : IUncensorData
         {
             public string BodyGUID;
             public string DisplayName;
@@ -23,6 +30,10 @@ namespace KK_Plugins
             public string UncensorUnderlay;
             public List<ColorMatchPart> ColorMatchList = new List<ColorMatchPart>();
             public List<string> AdditionalParts = new List<string>();
+
+            string IUncensorData.GUID => BodyGUID;
+            string IUncensorData.DisplayName => DisplayName;
+            bool IUncensorData.AllowRandom => AllowRandom;
 
             public BodyData(XContainer bodyXMLData)
             {
@@ -107,7 +118,7 @@ namespace KK_Plugins
             }
         }
 
-        public class PenisData
+        public class PenisData : IUncensorData
         {
             public string PenisGUID;
             public string DisplayName;
@@ -115,6 +126,10 @@ namespace KK_Plugins
             public string Asset;
             public bool AllowRandom = true;
             public List<ColorMatchPart> ColorMatchList = new List<ColorMatchPart>();
+
+            string IUncensorData.GUID => PenisGUID;
+            string IUncensorData.DisplayName => DisplayName;
+            bool IUncensorData.AllowRandom => AllowRandom;
 
             public PenisData(XContainer penisXMLData)
             {
@@ -158,7 +173,7 @@ namespace KK_Plugins
             }
         }
 
-        public class BallsData
+        public class BallsData :IUncensorData
         {
             public string BallsGUID;
             public string DisplayName;
@@ -166,6 +181,9 @@ namespace KK_Plugins
             public string Asset;
             public bool AllowRandom = true;
             public List<ColorMatchPart> ColorMatchList = new List<ColorMatchPart>();
+            string IUncensorData.GUID => BallsGUID;
+            string IUncensorData.DisplayName => DisplayName;
+            bool IUncensorData.AllowRandom => AllowRandom;
 
             public BallsData(XContainer ballsXMLData)
             {

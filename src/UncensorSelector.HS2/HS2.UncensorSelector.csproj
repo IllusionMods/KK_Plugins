@@ -47,6 +47,10 @@
       <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.0.3.1\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ConfigurationManager, Version=16.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\BepInEx.ConfigurationManager.16.0.0\lib\net35\ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HS2API, Version=1.13.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionModdingAPI.HS2API.1.13.0\lib\net46\HS2API.dll</HintPath>
       <Private>False</Private>
@@ -85,6 +89,10 @@
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11\lib\net46\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.IMGUIModule.2018.4.11\lib\net46\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

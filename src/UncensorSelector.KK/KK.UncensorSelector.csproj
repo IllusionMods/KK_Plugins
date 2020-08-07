@@ -51,6 +51,10 @@
       <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.0.3.1\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ConfigurationManager, Version=16.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\BepInEx.ConfigurationManager.16.0.0\lib\net35\ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ExtensibleSaveFormat.Koikatu.15.1.2\lib\net35\ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
