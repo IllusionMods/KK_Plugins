@@ -570,7 +570,7 @@
     <Property Name="SpecularHighlights" Type="Float" Range="0,1"/>
     <Property Name="GlossyReflections" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/eyelashes" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_eyelashes">
+  <Shader Name="AIT/eyelashes" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_eyelashes" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="Color" Type="Color" />
     <Property Name="MainTex" Type="Texture" />
