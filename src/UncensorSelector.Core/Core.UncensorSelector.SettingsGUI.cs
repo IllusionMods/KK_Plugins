@@ -108,7 +108,7 @@ namespace KK_Plugins
             private void DoSettingsGUI(int id)
             {
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-                GUILayout.Label("Select uncensors to exclude");
+                GUILayout.Label("Select uncensors to exclude from random selection");
                 GUILayout.EndHorizontal();
 
                 foreach (var value in AllValues)
