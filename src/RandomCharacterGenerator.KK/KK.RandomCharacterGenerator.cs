@@ -11,7 +11,8 @@ namespace KK_Plugins
     /// <summary>
     /// Generates random characters in the character maker
     /// </summary>
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID, KKAPI.KoikatuAPI.VersionConst)]
+    [BepInIncompatibility("info.jbcs.koikatsu.characterrandomizer")]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class RandomCharacterGenerator : BaseUnityPlugin
     {
