@@ -13,7 +13,6 @@ using UnityEngine.UI;
 
 namespace KK_Plugins
 {
-
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class ItemBlacklist : BaseUnityPlugin
     {
@@ -25,8 +24,8 @@ namespace KK_Plugins
 
         private static CustomSelectListCtrl CustomSelectListCtrlInstance;
         private static CustomSelectInfoComponent CurrentCustomSelectInfoComponent;
-        private const string BlacklistDirectory = "UserData/Item Blacklist/";
-        private const string BlacklistFile = "UserData/Item Blacklist/Blacklist.xml";
+        private static string BlacklistDirectory = Path.Combine(UserData.Path, "save");
+        private static string BlacklistFile = Path.Combine(BlacklistDirectory, "blacklist.xml");
         //GUID/Category/ID
         private static readonly Dictionary<string, Dictionary<int, HashSet<int>>> Blacklist = new Dictionary<string, Dictionary<int, HashSet<int>>>();
         private static Dictionary<CustomSelectListCtrl, ListVisibilityType> ListVisibility = new Dictionary<CustomSelectListCtrl, ListVisibilityType>();
