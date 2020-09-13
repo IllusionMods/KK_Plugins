@@ -221,17 +221,23 @@ namespace KK_Plugins
 
         private void PrintInfo(int index)
         {
+            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
+            var customSelectInfo = lstSelectInfo.FirstOrDefault(x => x.index == index);
+
             if (index >= UniversalAutoResolver.BaseSlotID)
             {
-                List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
-                var customSelectInfo = lstSelectInfo.FirstOrDefault(x => x.index == index);
-
                 ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
                 if (Info != null)
+                {
                     Logger.LogMessage($"Item GUID:{Info.GUID} Category:{(int)Info.CategoryNo}({Info.CategoryNo}) ID:{Info.Slot}");
+                    if (Sideloader.Sideloader.ZipArchives.TryGetValue(Info.GUID, out string zipFileName))
+                        Logger.LogMessage($"Zip File:{Path.GetFileName(zipFileName)}");
+                }
             }
             else
+            {
                 Logger.LogMessage($"Item Category:{CurrentCustomSelectInfoComponent.info.category}({(ChaListDefine.CategoryNo)CurrentCustomSelectInfoComponent.info.category}) ID:{CurrentCustomSelectInfoComponent.info.index}");
+            }
             HideMenu();
         }
     }

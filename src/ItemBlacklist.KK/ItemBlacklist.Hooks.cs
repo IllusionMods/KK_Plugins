@@ -3,6 +3,11 @@ using HarmonyLib;
 using Sideloader.AutoResolver;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using System.Linq;
 
 namespace KK_Plugins
 {
