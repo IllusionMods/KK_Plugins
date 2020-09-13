@@ -7,17 +7,19 @@ namespace KK_Plugins
     public partial class ItemBlacklist
     {
         Canvas ContextMenu;
+        CanvasGroup ContextMenuCanvasGroup;
         Image ContextMenuPanel;
         private static Button BlacklistButton;
         private static Button BlacklistModButton;
         private static Button InfoButton;
+        private static Dropdown FilterDropdown;
+
         readonly float UIWidth = 0.175f;
-        readonly float UIHeight = 0.105f;
+        readonly float UIHeight = 0.14f;
 
         internal const float marginSize = 5f;
         internal const float panelHeight = 35f;
         internal const float scrollOffsetX = -15f;
-        internal const float labelWidth = 50f;
         internal static readonly Color rowColor = new Color(1f, 1f, 1f, 1f);
         internal static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
 
@@ -31,7 +33,8 @@ namespace KK_Plugins
             ContextMenu.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f, 1080f);
             ContextMenu.gameObject.transform.SetParent(transform);
             ContextMenu.sortingOrder = 900;
-            ContextMenu.gameObject.SetActive(false);
+            ContextMenuCanvasGroup = ContextMenu.GetOrAddComponent<CanvasGroup>();
+            SetMenuVisibility(false);
 
             ContextMenuPanel = UIUtility.CreatePanel("Panel", ContextMenu.transform);
             ContextMenuPanel.color = Color.white;
@@ -59,8 +62,6 @@ namespace KK_Plugins
 
                 BlacklistButton = UIUtility.CreateButton($"BlacklistButton", itemPanel.transform, "Hide this item");
                 var layoutElement = BlacklistButton.gameObject.AddComponent<LayoutElement>();
-                layoutElement.preferredWidth = labelWidth;
-                layoutElement.flexibleWidth = labelWidth;
             }
             {
                 var contentItem = UIUtility.CreatePanel("BlacklistModContent", scrollRect.content.transform);
@@ -73,8 +74,6 @@ namespace KK_Plugins
 
                 BlacklistModButton = UIUtility.CreateButton($"BlacklistModButton", itemPanel.transform, "Hide all items from this mod");
                 var layoutElement = BlacklistModButton.gameObject.AddComponent<LayoutElement>();
-                layoutElement.preferredWidth = labelWidth;
-                layoutElement.flexibleWidth = labelWidth;
             }
             {
                 var contentItem = UIUtility.CreatePanel("InfoContent", scrollRect.content.transform);
@@ -87,8 +86,43 @@ namespace KK_Plugins
 
                 InfoButton = UIUtility.CreateButton($"InfoButton", itemPanel.transform, "Print item info");
                 var layoutElement = InfoButton.gameObject.AddComponent<LayoutElement>();
-                layoutElement.preferredWidth = labelWidth;
-                layoutElement.flexibleWidth = labelWidth;
+            }
+
+            {
+                var contentItem = UIUtility.CreatePanel("FilterContent", scrollRect.content.transform);
+                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = panelHeight;
+                contentItem.gameObject.AddComponent<Mask>();
+                contentItem.color = rowColor;
+                var itemPanel = UIUtility.CreatePanel("FilterPanel", contentItem.transform);
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+
+                var label = UIUtility.CreateText("FilterText", itemPanel.transform, "Displaying:");
+                label.alignment = TextAnchor.MiddleLeft;
+                label.color = Color.black;
+                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                labelLE.preferredWidth = 20f;
+                labelLE.flexibleWidth = 20f;
+
+                FilterDropdown = UIUtility.CreateDropdown("FilterDropdown", itemPanel.transform);
+                FilterDropdown.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
+                FilterDropdown.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
+                FilterDropdown.captionText.alignment = TextAnchor.MiddleLeft;
+                FilterDropdown.options.Clear();
+                FilterDropdown.options.Add(new Dropdown.OptionData("Filtered List"));
+                FilterDropdown.options.Add(new Dropdown.OptionData("Hidden Items"));
+                FilterDropdown.options.Add(new Dropdown.OptionData("All Items"));
+                FilterDropdown.value = 0;
+                FilterDropdown.captionText.text = "Filtered List";
+                var dropdownEnabledLE = FilterDropdown.gameObject.AddComponent<LayoutElement>();
+                dropdownEnabledLE.preferredWidth = 25f;
+                dropdownEnabledLE.flexibleWidth = 25f;
+
+                FilterDropdown.onValueChanged.AddListener(delegate (int value)
+                {
+                    ChangeListFilter((ListVisibilityType)value);
+                    SetMenuVisibility(false);
+                });
             }
         }
     }

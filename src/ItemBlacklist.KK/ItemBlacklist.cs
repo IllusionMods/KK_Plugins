@@ -9,6 +9,7 @@ using System.Linq;
 using System.Xml.Linq;
 using UILib;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -26,7 +27,9 @@ namespace KK_Plugins
         private static CustomSelectInfoComponent CurrentCustomSelectInfoComponent;
         private const string BlacklistDirectory = "UserData/Item Blacklist/";
         private const string BlacklistFile = "UserData/Item Blacklist/Blacklist.xml";
+        //GUID/Category/ID
         private static readonly Dictionary<string, Dictionary<int, HashSet<int>>> Blacklist = new Dictionary<string, Dictionary<int, HashSet<int>>>();
+        private static Dictionary<CustomSelectListCtrl, ListVisibilityType> ListVisibility = new Dictionary<CustomSelectListCtrl, ListVisibilityType>();
 
         private static bool MouseIn = false;
 
@@ -133,90 +136,194 @@ namespace KK_Plugins
         {
             InitUI();
 
-            ContextMenu.gameObject.SetActive(false);
+            SetMenuVisibility(false);
             if (CurrentCustomSelectInfoComponent == null) return;
             if (!MouseIn) return;
 
-            int index = CurrentCustomSelectInfoComponent.info.index;
             var xPosition = (Event.current.mousePosition.x / Screen.width) + 0.01f;
             var yPosition = 1 - (Event.current.mousePosition.y / Screen.height) - UIHeight - 0.01f;
 
             ContextMenuPanel.transform.SetRect(xPosition, yPosition, UIWidth + xPosition, UIHeight + yPosition);
-            ContextMenu.gameObject.SetActive(true);
+            SetMenuVisibility(true);
 
-            BlacklistButton.onClick.RemoveAllListeners();
-            BlacklistButton.onClick.AddListener(delegate () { BlacklistItem(index); });
+            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
+            int index = CurrentCustomSelectInfoComponent.info.index;
+            var customSelectInfo = lstSelectInfo.FirstOrDefault(x => x.index == index);
+            string guid = null;
+            int category = customSelectInfo.category;
+            int id = index;
 
-            BlacklistModButton.onClick.RemoveAllListeners();
-            BlacklistModButton.onClick.AddListener(delegate () { BlacklistMod(index); });
-
-            InfoButton.onClick.RemoveAllListeners();
-            InfoButton.onClick.AddListener(delegate () { PrintInfo(index); });
-        }
-        void HideMenu() => ContextMenu?.gameObject?.SetActive(false);
-
-        private void BlacklistItem(int index)
-        {
             if (index >= UniversalAutoResolver.BaseSlotID)
             {
-                List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
-                var customSelectInfo = lstSelectInfo.FirstOrDefault(x => x.index == index);
-
                 ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
                 if (Info != null)
                 {
-                    Logger.LogInfo($"Blacklisting item GUID:{Info.GUID} Category:{customSelectInfo.category} ID:{Info.Slot}");
-
-                    if (!Blacklist.ContainsKey(Info.GUID))
-                        Blacklist[Info.GUID] = new Dictionary<int, HashSet<int>>();
-                    if (!Blacklist[Info.GUID].ContainsKey(customSelectInfo.category))
-                        Blacklist[Info.GUID][customSelectInfo.category] = new HashSet<int>();
-                    Blacklist[Info.GUID][customSelectInfo.category].Add(Info.Slot);
-                    SaveBlacklist();
-
-                    CustomSelectListCtrlInstance.DisvisibleItem(customSelectInfo.index, true);
+                    guid = Info.GUID;
+                    id = Info.Slot;
                 }
             }
-            HideMenu();
+
+            if (ListVisibility.TryGetValue(CustomSelectListCtrlInstance, out var listVisibilityType))
+                FilterDropdown.Set((int)listVisibilityType);
+
+            BlacklistButton.onClick.RemoveAllListeners();
+            BlacklistModButton.onClick.RemoveAllListeners();
+            InfoButton.onClick.RemoveAllListeners();
+
+            if (guid == null)
+            {
+                BlacklistButton.enabled = false;
+                BlacklistModButton.enabled = false;
+            }
+            else
+            {
+                BlacklistButton.enabled = true;
+                BlacklistModButton.enabled = true;
+                if (CheckBlacklist(guid, category, id))
+                {
+                    BlacklistButton.GetComponentInChildren<Text>().text = "Unhide this item";
+                    BlacklistButton.onClick.AddListener(delegate () { UnblacklistItem(guid, category, id, index, listVisibilityType); });
+                    BlacklistModButton.GetComponentInChildren<Text>().text = "Unhide all items from this mod";
+                    BlacklistModButton.onClick.AddListener(delegate () { UnblacklistMod(guid, listVisibilityType); });
+                }
+                else
+                {
+                    BlacklistButton.GetComponentInChildren<Text>().text = "Hide this item";
+                    BlacklistButton.onClick.AddListener(delegate () { BlacklistItem(guid, category, id, index, listVisibilityType); });
+                    BlacklistModButton.GetComponentInChildren<Text>().text = "Hide all items from this mod";
+                    BlacklistModButton.onClick.AddListener(delegate () { BlacklistMod(guid, listVisibilityType); });
+                }
+            }
+
+            InfoButton.onClick.AddListener(delegate () { PrintInfo(index); });
+
+        }
+        public void SetMenuVisibility(bool visible)
+        {
+            ContextMenuCanvasGroup.alpha = visible ? 1 : 0;
+            ContextMenuCanvasGroup.blocksRaycasts = visible;
         }
 
-        private void BlacklistMod(int index)
-        {
-            if (index >= UniversalAutoResolver.BaseSlotID)
-            {
-                List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
-                var customSelectInfoItem = lstSelectInfo.FirstOrDefault(x => x.index == index);
+        public void ChangeListFilter(ListVisibilityType visibilityType) => ChangeListFilter(CustomSelectListCtrlInstance, visibilityType);
 
-                string GUID = null;
+        public static void ChangeListFilter(CustomSelectListCtrl customSelectListCtrl, ListVisibilityType visibilityType)
+        {
+            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(customSelectListCtrl).Field("lstSelectInfo").GetValue();
+
+            int count = 0;
+            foreach (CustomSelectInfo customSelectInfo in lstSelectInfo)
+            {
+                if (visibilityType == ListVisibilityType.All)
                 {
-                    ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfoItem.category, customSelectInfoItem.index);
-                    if (Info != null)
-                        GUID = Info.GUID;
+                    customSelectListCtrl.DisvisibleItem(customSelectInfo.index, false);
+                    continue;
                 }
 
-                if (!GUID.IsNullOrEmpty())
-                {
-                    foreach (CustomSelectInfo customSelectInfo in lstSelectInfo)
-                    {
-                        if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
-                        {
-                            ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
-                            if (Info != null && Info.GUID == GUID)
-                            {
-                                if (!Blacklist.ContainsKey(Info.GUID))
-                                    Blacklist[Info.GUID] = new Dictionary<int, HashSet<int>>();
-                                if (!Blacklist[Info.GUID].ContainsKey(customSelectInfo.category))
-                                    Blacklist[Info.GUID][customSelectInfo.category] = new HashSet<int>();
-                                Blacklist[Info.GUID][customSelectInfo.category].Add(Info.Slot);
-                                SaveBlacklist();
+                bool hide = visibilityType != ListVisibilityType.Filtered;
 
-                                CustomSelectListCtrlInstance.DisvisibleItem(customSelectInfo.index, true);
-                            }
+                if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
+                {
+                    ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
+                    if (Info != null)
+                    {
+                        if (CheckBlacklist(Info.GUID, (int)Info.CategoryNo, Info.Slot))
+                        {
+                            hide = visibilityType == ListVisibilityType.Filtered ? true : false;
+                            count++;
                         }
                     }
                 }
+                customSelectListCtrl.DisvisibleItem(customSelectInfo.index, hide);
             }
-            HideMenu();
+            ListVisibility[customSelectListCtrl] = visibilityType;
+
+            if (count == 0 && visibilityType == ListVisibilityType.Hidden)
+            {
+                Logger.LogMessage($"No items are hidden");
+                ChangeListFilter(customSelectListCtrl, ListVisibilityType.Filtered);
+            }
+        }
+
+        private void BlacklistItem(string guid, int category, int id, int index, ListVisibilityType visibilityType)
+        {
+            if (!Blacklist.ContainsKey(guid))
+                Blacklist[guid] = new Dictionary<int, HashSet<int>>();
+            if (!Blacklist[guid].ContainsKey(category))
+                Blacklist[guid][category] = new HashSet<int>();
+            Blacklist[guid][category].Add(id);
+            SaveBlacklist();
+
+            if (visibilityType == ListVisibilityType.Filtered)
+                CustomSelectListCtrlInstance.DisvisibleItem(index, true);
+
+            SetMenuVisibility(false);
+        }
+        private void UnblacklistItem(string guid, int category, int id, int index, ListVisibilityType visibilityType)
+        {
+            if (!Blacklist.ContainsKey(guid))
+                Blacklist[guid] = new Dictionary<int, HashSet<int>>();
+            if (!Blacklist[guid].ContainsKey(category))
+                Blacklist[guid][category] = new HashSet<int>();
+            Blacklist[guid][category].Remove(id);
+            SaveBlacklist();
+
+            if (visibilityType == ListVisibilityType.Hidden)
+                CustomSelectListCtrlInstance.DisvisibleItem(index, true);
+
+            SetMenuVisibility(false);
+        }
+
+        private void BlacklistMod(string guid, ListVisibilityType visibilityType)
+        {
+            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
+
+            foreach (CustomSelectInfo customSelectInfo in lstSelectInfo)
+            {
+                if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
+                {
+                    ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
+                    if (Info != null && Info.GUID == guid)
+                    {
+                        if (!Blacklist.ContainsKey(Info.GUID))
+                            Blacklist[Info.GUID] = new Dictionary<int, HashSet<int>>();
+                        if (!Blacklist[Info.GUID].ContainsKey(customSelectInfo.category))
+                            Blacklist[Info.GUID][customSelectInfo.category] = new HashSet<int>();
+                        Blacklist[Info.GUID][customSelectInfo.category].Add(Info.Slot);
+                        SaveBlacklist();
+
+                        if (visibilityType == ListVisibilityType.Filtered)
+                            CustomSelectListCtrlInstance.DisvisibleItem(customSelectInfo.index, true);
+                    }
+                }
+            }
+
+            SetMenuVisibility(false);
+        }
+        private void UnblacklistMod(string guid, ListVisibilityType visibilityType)
+        {
+            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
+
+            foreach (CustomSelectInfo customSelectInfo in lstSelectInfo)
+            {
+                if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
+                {
+                    ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
+                    if (Info != null && Info.GUID == guid)
+                    {
+                        if (!Blacklist.ContainsKey(Info.GUID))
+                            Blacklist[Info.GUID] = new Dictionary<int, HashSet<int>>();
+                        if (!Blacklist[Info.GUID].ContainsKey(customSelectInfo.category))
+                            Blacklist[Info.GUID][customSelectInfo.category] = new HashSet<int>();
+                        Blacklist[Info.GUID][customSelectInfo.category].Remove(Info.Slot);
+                        SaveBlacklist();
+
+                        if (visibilityType == ListVisibilityType.Hidden)
+                            CustomSelectListCtrlInstance.DisvisibleItem(customSelectInfo.index, true);
+                    }
+                }
+            }
+
+            SetMenuVisibility(false);
         }
 
         private void PrintInfo(int index)
@@ -238,7 +345,9 @@ namespace KK_Plugins
             {
                 Logger.LogMessage($"Item Category:{CurrentCustomSelectInfoComponent.info.category}({(ChaListDefine.CategoryNo)CurrentCustomSelectInfoComponent.info.category}) ID:{CurrentCustomSelectInfoComponent.info.index}");
             }
-            HideMenu();
+            SetMenuVisibility(false);
         }
+
+        public enum ListVisibilityType { Filtered, Hidden, All }
     }
 }
