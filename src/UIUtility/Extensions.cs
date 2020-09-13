@@ -30,9 +30,9 @@ namespace UILib
             scrollbarSetMethod = FindSetMethod(typeof(Scrollbar));
 
             // Find the Dropdown's value field and its' Refresh method
-            dropdownValueField = (typeof(Dropdown)).GetField("m_Value", BindingFlags.NonPublic | BindingFlags.Instance);
+            dropdownValueField = typeof(Dropdown).GetField("m_Value", AccessTools.all);
 #if KK
-            dropdownRefreshMethod = (typeof(Dropdown)).GetMethod("Refresh", BindingFlags.NonPublic | BindingFlags.Instance);  // Unity 5.2 <= only
+            dropdownRefreshMethod = typeof(Dropdown).GetMethod("RefreshShownValue", AccessTools.all);  // Unity 5.2 <= only
 #endif
         }
 
