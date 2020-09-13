@@ -24,11 +24,11 @@ namespace KK_Plugins
 
         private static CustomSelectListCtrl CustomSelectListCtrlInstance;
         private static CustomSelectInfoComponent CurrentCustomSelectInfoComponent;
-        private static string BlacklistDirectory = Path.Combine(UserData.Path, "save");
-        private static string BlacklistFile = Path.Combine(BlacklistDirectory, "blacklist.xml");
+        private static readonly string BlacklistDirectory = Path.Combine(UserData.Path, "save");
+        private static readonly string BlacklistFile = Path.Combine(BlacklistDirectory, "itemblacklist.xml");
         //GUID/Category/ID
         private static readonly Dictionary<string, Dictionary<int, HashSet<int>>> Blacklist = new Dictionary<string, Dictionary<int, HashSet<int>>>();
-        private static Dictionary<CustomSelectListCtrl, ListVisibilityType> ListVisibility = new Dictionary<CustomSelectListCtrl, ListVisibilityType>();
+        private static readonly Dictionary<CustomSelectListCtrl, ListVisibilityType> ListVisibility = new Dictionary<CustomSelectListCtrl, ListVisibilityType>();
 
         private static bool MouseIn = false;
 
@@ -47,7 +47,7 @@ namespace KK_Plugins
                 ShowMenu();
         }
 
-        static bool CheckBlacklist(string guid, int category, int id)
+        private static bool CheckBlacklist(string guid, int category, int id)
         {
             if (Blacklist.TryGetValue(guid, out var x))
                 if (x.TryGetValue(category, out var y))
@@ -56,7 +56,7 @@ namespace KK_Plugins
             return false;
         }
 
-        void LoadBlacklist()
+        private void LoadBlacklist()
         {
             Directory.CreateDirectory(BlacklistDirectory);
 
@@ -99,7 +99,7 @@ namespace KK_Plugins
             }
         }
 
-        void SaveBlacklist()
+        private void SaveBlacklist()
         {
             File.Delete(BlacklistFile);
 
@@ -131,7 +131,7 @@ namespace KK_Plugins
             blacklistXML.Save(BlacklistFile);
         }
 
-        void ShowMenu()
+        private void ShowMenu()
         {
             InitUI();
 

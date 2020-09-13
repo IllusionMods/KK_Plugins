@@ -6,16 +6,15 @@ namespace KK_Plugins
 {
     public partial class ItemBlacklist
     {
-        Canvas ContextMenu;
-        CanvasGroup ContextMenuCanvasGroup;
-        Image ContextMenuPanel;
+        private Canvas ContextMenu;
+        private CanvasGroup ContextMenuCanvasGroup;
+        private Image ContextMenuPanel;
         private static Button BlacklistButton;
         private static Button BlacklistModButton;
         private static Button InfoButton;
         private static Dropdown FilterDropdown;
-
-        readonly float UIWidth = 0.175f;
-        readonly float UIHeight = 0.14f;
+        private readonly float UIWidth = 0.175f;
+        private readonly float UIHeight = 0.14f;
 
         internal const float marginSize = 5f;
         internal const float panelHeight = 35f;
