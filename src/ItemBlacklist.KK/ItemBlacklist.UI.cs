@@ -14,7 +14,7 @@ namespace KK_Plugins
         private static Button InfoButton;
         private static Dropdown FilterDropdown;
         private readonly float UIWidth = 0.175f;
-        private readonly float UIHeight = 0.14f;
+        private readonly float UIHeight = 0.1375f;
 
         internal const float marginSize = 5f;
         internal const float panelHeight = 35f;
