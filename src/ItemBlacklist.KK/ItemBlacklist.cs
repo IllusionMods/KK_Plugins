@@ -181,16 +181,16 @@ namespace KK_Plugins
                 if (CheckBlacklist(guid, category, id))
                 {
                     BlacklistButton.GetComponentInChildren<Text>().text = "Unhide this item";
-                    BlacklistButton.onClick.AddListener(delegate () { UnblacklistItem(guid, category, id, index, listVisibilityType); });
+                    BlacklistButton.onClick.AddListener(delegate () { UnblacklistItem(guid, category, id, index); });
                     BlacklistModButton.GetComponentInChildren<Text>().text = "Unhide all items from this mod";
-                    BlacklistModButton.onClick.AddListener(delegate () { UnblacklistMod(guid, listVisibilityType); });
+                    BlacklistModButton.onClick.AddListener(delegate () { UnblacklistMod(guid); });
                 }
                 else
                 {
                     BlacklistButton.GetComponentInChildren<Text>().text = "Hide this item";
-                    BlacklistButton.onClick.AddListener(delegate () { BlacklistItem(guid, category, id, index, listVisibilityType); });
+                    BlacklistButton.onClick.AddListener(delegate () { BlacklistItem(guid, category, id, index); });
                     BlacklistModButton.GetComponentInChildren<Text>().text = "Hide all items from this mod";
-                    BlacklistModButton.onClick.AddListener(delegate () { BlacklistMod(guid, listVisibilityType); });
+                    BlacklistModButton.onClick.AddListener(delegate () { BlacklistMod(guid); });
                 }
             }
 
@@ -243,7 +243,7 @@ namespace KK_Plugins
             }
         }
 
-        private void BlacklistItem(string guid, int category, int id, int index, ListVisibilityType visibilityType)
+        private void BlacklistItem(string guid, int category, int id, int index)
         {
             if (!Blacklist.ContainsKey(guid))
                 Blacklist[guid] = new Dictionary<int, HashSet<int>>();
@@ -252,12 +252,15 @@ namespace KK_Plugins
             Blacklist[guid][category].Add(id);
             SaveBlacklist();
 
-            if (visibilityType == ListVisibilityType.Filtered)
-                CustomSelectListCtrlInstance.DisvisibleItem(index, true);
+            foreach (var customSelectListCtrl in CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true))
+                if (customSelectListCtrl.GetSelectInfoFromIndex(index)?.category == category)
+                    if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
+                        if (visibilityType == ListVisibilityType.Filtered)
+                            customSelectListCtrl.DisvisibleItem(index, true);
 
             SetMenuVisibility(false);
         }
-        private void UnblacklistItem(string guid, int category, int id, int index, ListVisibilityType visibilityType)
+        private void UnblacklistItem(string guid, int category, int id, int index)
         {
             if (!Blacklist.ContainsKey(guid))
                 Blacklist[guid] = new Dictionary<int, HashSet<int>>();
@@ -266,13 +269,16 @@ namespace KK_Plugins
             Blacklist[guid][category].Remove(id);
             SaveBlacklist();
 
-            if (visibilityType == ListVisibilityType.Hidden)
-                CustomSelectListCtrlInstance.DisvisibleItem(index, true);
+            foreach (var customSelectListCtrl in CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true))
+                if (customSelectListCtrl.GetSelectInfoFromIndex(index)?.category == category)
+                    if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
+                        if (visibilityType == ListVisibilityType.Hidden)
+                            customSelectListCtrl.DisvisibleItem(index, true);
 
             SetMenuVisibility(false);
         }
 
-        private void BlacklistMod(string guid, ListVisibilityType visibilityType)
+        private void BlacklistMod(string guid)
         {
             List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
 
@@ -290,15 +296,18 @@ namespace KK_Plugins
                         Blacklist[Info.GUID][customSelectInfo.category].Add(Info.Slot);
                         SaveBlacklist();
 
-                        if (visibilityType == ListVisibilityType.Filtered)
-                            CustomSelectListCtrlInstance.DisvisibleItem(customSelectInfo.index, true);
+                        foreach (var customSelectListCtrl in CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true))
+                            if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == customSelectInfo.category)
+                                if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
+                                    if (visibilityType == ListVisibilityType.Filtered)
+                                        customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
                     }
                 }
             }
 
             SetMenuVisibility(false);
         }
-        private void UnblacklistMod(string guid, ListVisibilityType visibilityType)
+        private void UnblacklistMod(string guid)
         {
             List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
 
@@ -316,8 +325,11 @@ namespace KK_Plugins
                         Blacklist[Info.GUID][customSelectInfo.category].Remove(Info.Slot);
                         SaveBlacklist();
 
-                        if (visibilityType == ListVisibilityType.Hidden)
-                            CustomSelectListCtrlInstance.DisvisibleItem(customSelectInfo.index, true);
+                        foreach (var customSelectListCtrl in CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true))
+                            if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == customSelectInfo.category)
+                                if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
+                                    if (visibilityType == ListVisibilityType.Hidden)
+                                        customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
                     }
                 }
             }
