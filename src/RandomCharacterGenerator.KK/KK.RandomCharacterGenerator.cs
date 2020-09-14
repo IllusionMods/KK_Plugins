@@ -19,12 +19,9 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.randomcharactergenerator";
         public const string PluginName = "Random Character Generator";
         public const string PluginNameInternal = Constants.Prefix + "_RandomCharacterGenerator";
-        public const string Version = "1.0";
+        public const string Version = "2.0";
 
-        private void Main()
-        {
-            MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
-        }
+        internal void Main() => MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
         {
