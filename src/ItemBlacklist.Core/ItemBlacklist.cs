@@ -14,6 +14,7 @@ using UnityEngine.UI;
 namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
+    [BepInDependency(Sideloader.Sideloader.GUID, "16.0")]
     public partial class ItemBlacklist : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.itemblacklist";
@@ -139,8 +140,8 @@ namespace KK_Plugins
             if (CurrentCustomSelectInfoComponent == null) return;
             if (!MouseIn) return;
 
-            var xPosition = (Event.current.mousePosition.x / Screen.width) + 0.01f;
-            var yPosition = 1 - (Event.current.mousePosition.y / Screen.height) - UIHeight - 0.01f;
+            var xPosition = (Input.mousePosition.x / Screen.width) + 0.01f;
+            var yPosition = (Input.mousePosition.y / Screen.height) - UIHeight - 0.01f;
 
             ContextMenuPanel.transform.SetRect(xPosition, yPosition, UIWidth + xPosition, UIHeight + yPosition);
             SetMenuVisibility(true);
