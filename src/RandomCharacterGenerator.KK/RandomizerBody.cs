@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Manager;
+using System.Collections.Generic;
 using System.Linq;
-using Manager;
 using UnityEngine;
 
 namespace KK_Plugins

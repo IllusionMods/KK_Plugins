@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Manager;
+using System.Collections.Generic;
 using System.Linq;
-using Manager;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -68,8 +68,9 @@ namespace KK_Plugins
                 face.eyebrowColor = Custom.hair.parts[0].baseColor;
                 categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.mt_nose);
                 face.noseId = categoryInfo.Keys.ElementAt(Rand.Next(categoryInfo.Keys.Count));
-                categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.mt_mole);
-                face.moleId = 0; // todo is this a bug? categoryInfo above is not used
+                //Not randomizing mole because too many bad textures which would need to be removed manually almost every time
+                //categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.mt_mole);
+                face.moleId = 0;
                 categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.mt_lipline);
                 face.lipLineId = RandomBool() ? categoryInfo.Keys.ElementAt(Rand.Next(categoryInfo.Keys.Count)) : 0;
                 face.lipLineColor = Custom.body.skinSubColor;
