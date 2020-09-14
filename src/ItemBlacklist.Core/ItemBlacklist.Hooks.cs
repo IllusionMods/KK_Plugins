@@ -18,8 +18,8 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), "OnPointerExit")]
             internal static void OnPointerExitPostfix() => MouseIn = false;
 
-            [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectKind), "Initialize")]
-            internal static void CustomSelectKindInitialize(CustomSelectListCtrl ___listCtrl) => ChangeListFilter(___listCtrl, ListVisibilityType.Filtered);
+            [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), "Create")]
+            internal static void CustomSelectKindInitialize(CustomSelectListCtrl __instance) => ChangeListFilter(__instance, ListVisibilityType.Filtered);
         }
     }
 }
