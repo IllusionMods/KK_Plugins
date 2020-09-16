@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace KK_Plugins
 {
@@ -36,6 +37,7 @@ namespace KK_Plugins
             Logger = base.Logger;
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
+            SceneManager.sceneLoaded += (s, lsm) => SetMenuVisibility(false);
 
             LoadBlacklist();
         }

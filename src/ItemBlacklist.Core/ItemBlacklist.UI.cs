@@ -227,6 +227,7 @@ namespace KK_Plugins
 
         public void SetMenuVisibility(bool visible)
         {
+            if (ContextMenuCanvasGroup == null) return;
             ContextMenuCanvasGroup.alpha = visible ? 1 : 0;
             ContextMenuCanvasGroup.blocksRaycasts = visible;
         }
