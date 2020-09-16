@@ -1,4 +1,9 @@
-﻿using UILib;
+﻿using ChaCustom;
+using HarmonyLib;
+using Sideloader.AutoResolver;
+using System.Collections.Generic;
+using System.Linq;
+using UILib;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,13 +35,13 @@ namespace KK_Plugins
 
             ContextMenu = UIUtility.CreateNewUISystem("ContextMenu");
             ContextMenu.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f, 1080f);
-            ContextMenu.gameObject.transform.SetParent(transform);
+            ContextMenu.transform.SetParent(CustomBase.Instance.transform);
             ContextMenu.sortingOrder = 900;
             ContextMenuCanvasGroup = ContextMenu.GetOrAddComponent<CanvasGroup>();
             SetMenuVisibility(false);
 
             ContextMenuPanel = UIUtility.CreatePanel("Panel", ContextMenu.transform);
-            ContextMenuPanel.color = new Color(0.5f, 0.5f,0.5f,0.5f);
+            ContextMenuPanel.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
             ContextMenuPanel.transform.SetRect(0.05f, 0.05f, UIWidth, UIHeight);
 
             UIUtility.AddOutlineToObject(ContextMenuPanel.transform, Color.black);
@@ -56,7 +61,7 @@ namespace KK_Plugins
                 contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = panelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
                 contentItem.color = rowColor;
-                
+
                 var itemPanel = UIUtility.CreatePanel("BlacklistPanel", contentItem.transform);
                 itemPanel.color = rowColor;
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
@@ -64,7 +69,7 @@ namespace KK_Plugins
 
                 BlacklistButton = UIUtility.CreateButton($"BlacklistButton", itemPanel.transform, "Hide this item");
                 var layoutElement = BlacklistButton.gameObject.AddComponent<LayoutElement>();
-                
+
                 var text = BlacklistButton.GetComponentInChildren<Text>();
                 text.resizeTextForBestFit = false;
                 text.fontSize = 26;
@@ -74,7 +79,7 @@ namespace KK_Plugins
                 contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = panelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
                 contentItem.color = rowColor;
-                
+
                 var itemPanel = UIUtility.CreatePanel("BlacklistModPanel", contentItem.transform);
                 itemPanel.color = rowColor;
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
@@ -82,7 +87,7 @@ namespace KK_Plugins
 
                 BlacklistModButton = UIUtility.CreateButton($"BlacklistModButton", itemPanel.transform, "Hide all items from this mod");
                 var layoutElement = BlacklistModButton.gameObject.AddComponent<LayoutElement>();
-                
+
                 var text = BlacklistModButton.GetComponentInChildren<Text>();
                 text.resizeTextForBestFit = false;
                 text.fontSize = 26;
@@ -92,7 +97,7 @@ namespace KK_Plugins
                 contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = panelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
                 contentItem.color = rowColor;
-                
+
                 var itemPanel = UIUtility.CreatePanel("InfoPanel", contentItem.transform);
                 itemPanel.color = rowColor;
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
@@ -100,7 +105,7 @@ namespace KK_Plugins
 
                 InfoButton = UIUtility.CreateButton($"InfoButton", itemPanel.transform, "Print item info");
                 var layoutElement = InfoButton.gameObject.AddComponent<LayoutElement>();
-                
+
                 var text = InfoButton.GetComponentInChildren<Text>();
                 text.resizeTextForBestFit = false;
                 text.fontSize = 26;
@@ -111,12 +116,12 @@ namespace KK_Plugins
                 contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = panelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
                 contentItem.color = rowColor;
-                
+
                 var itemPanel = UIUtility.CreatePanel("FilterPanel", contentItem.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
                 itemPanel.color = rowColor;
-        
+
                 var label = UIUtility.CreateText("FilterText", itemPanel.transform, "Displaying:");
                 label.color = Color.white;
                 label.resizeTextForBestFit = false;
@@ -134,7 +139,7 @@ namespace KK_Plugins
                 FilterDropdown.captionText.fontSize = 26;
                 FilterDropdown.captionText.alignment = TextAnchor.MiddleCenter;
                 FilterDropdown.itemText.fontStyle = FontStyle.Bold;
-                
+
                 FilterDropdown.options.Clear();
                 FilterDropdown.options.Add(new Dropdown.OptionData("Filtered List"));
                 FilterDropdown.options.Add(new Dropdown.OptionData("Hidden Items"));
@@ -151,6 +156,79 @@ namespace KK_Plugins
                     SetMenuVisibility(false);
                 });
             }
+        }
+
+        private void ShowMenu()
+        {
+            InitUI();
+
+            SetMenuVisibility(false);
+            if (CurrentCustomSelectInfoComponent == null) return;
+            if (!MouseIn) return;
+
+            var xPosition = (Input.mousePosition.x / Screen.width) + 0.01f;
+            var yPosition = (Input.mousePosition.y / Screen.height) - UIHeight - 0.01f;
+
+            ContextMenuPanel.transform.SetRect(xPosition, yPosition, UIWidth + xPosition, UIHeight + yPosition);
+            SetMenuVisibility(true);
+
+            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
+            int index = CurrentCustomSelectInfoComponent.info.index;
+            var customSelectInfo = lstSelectInfo.FirstOrDefault(x => x.index == index);
+            string guid = null;
+            int category = customSelectInfo.category;
+            int id = index;
+
+            if (index >= UniversalAutoResolver.BaseSlotID)
+            {
+                ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
+                if (Info != null)
+                {
+                    guid = Info.GUID;
+                    id = Info.Slot;
+                }
+            }
+
+            if (ListVisibility.TryGetValue(CustomSelectListCtrlInstance, out var listVisibilityType))
+                FilterDropdown.Set((int)listVisibilityType);
+
+            BlacklistButton.onClick.RemoveAllListeners();
+            BlacklistModButton.onClick.RemoveAllListeners();
+            InfoButton.onClick.RemoveAllListeners();
+
+            if (guid == null)
+            {
+                BlacklistButton.enabled = false;
+                BlacklistModButton.enabled = false;
+            }
+            else
+            {
+                BlacklistButton.enabled = true;
+                BlacklistModButton.enabled = true;
+                if (CheckBlacklist(guid, category, id))
+                {
+                    BlacklistButton.GetComponentInChildren<Text>().text = "Unhide this item";
+                    BlacklistButton.onClick.AddListener(delegate () { UnblacklistItem(guid, category, id, index); });
+                    BlacklistModButton.GetComponentInChildren<Text>().text = "Unhide all items from this mod";
+                    BlacklistModButton.onClick.AddListener(delegate () { UnblacklistMod(guid); });
+                }
+                else
+                {
+                    BlacklistButton.GetComponentInChildren<Text>().text = "Hide this item";
+                    BlacklistButton.onClick.AddListener(delegate () { BlacklistItem(guid, category, id, index); });
+                    BlacklistModButton.GetComponentInChildren<Text>().text = "Hide all items from this mod";
+                    BlacklistModButton.onClick.AddListener(delegate () { BlacklistMod(guid); });
+                }
+            }
+
+            InfoButton.onClick.AddListener(delegate () { PrintInfo(index); });
+
+        }
+
+        public void SetMenuVisibility(bool visible)
+        {
+            ContextMenuCanvasGroup.alpha = visible ? 1 : 0;
+            ContextMenuCanvasGroup.blocksRaycasts = visible;
         }
     }
 }
