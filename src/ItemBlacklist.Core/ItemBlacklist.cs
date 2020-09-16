@@ -228,7 +228,7 @@ namespace KK_Plugins
                     {
                         if (CheckBlacklist(Info.GUID, (int)Info.CategoryNo, Info.Slot))
                         {
-                            hide = visibilityType == ListVisibilityType.Filtered ? true : false;
+                            hide = visibilityType == ListVisibilityType.Filtered;
                             count++;
                         }
                     }
@@ -270,12 +270,24 @@ namespace KK_Plugins
             Blacklist[guid][category].Remove(id);
             SaveBlacklist();
 
+            bool changeFilter = false;
             foreach (var customSelectListCtrl in CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true))
+            {
                 if (customSelectListCtrl.GetSelectInfoFromIndex(index)?.category == category)
+                {
                     if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
                         if (visibilityType == ListVisibilityType.Hidden)
                             customSelectListCtrl.DisvisibleItem(index, true);
 
+                    List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(customSelectListCtrl).Field("lstSelectInfo").GetValue();
+
+                    if (lstSelectInfo.All(x => x.disvisible))
+                        changeFilter = true;
+                }
+            }
+
+            if (changeFilter)
+                ChangeListFilter(ListVisibilityType.Filtered);
             SetMenuVisibility(false);
         }
 
@@ -312,6 +324,7 @@ namespace KK_Plugins
         {
             List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
 
+            bool changeFilter = false;
             foreach (CustomSelectInfo customSelectInfo in lstSelectInfo)
             {
                 if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
@@ -328,13 +341,22 @@ namespace KK_Plugins
 
                         foreach (var customSelectListCtrl in CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true))
                             if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == customSelectInfo.category)
+                            {
                                 if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
                                     if (visibilityType == ListVisibilityType.Hidden)
                                         customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
+
+                                List<CustomSelectInfo> lstSelectInfo2 = (List<CustomSelectInfo>)Traverse.Create(customSelectListCtrl).Field("lstSelectInfo").GetValue();
+
+                                if (lstSelectInfo2.All(x => x.disvisible))
+                                    changeFilter = true;
+                            }
                     }
                 }
             }
 
+            if (changeFilter)
+                ChangeListFilter(ListVisibilityType.Filtered);
             SetMenuVisibility(false);
         }
 
