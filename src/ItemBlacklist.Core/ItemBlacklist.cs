@@ -12,6 +12,10 @@ using UnityEngine.SceneManagement;
 
 namespace KK_Plugins
 {
+#if KK
+    [BepInProcess(Constants.MainGameProcessNameSteam)]
+#endif
+    [BepInProcess(Constants.MainGameProcessName)]
     [BepInPlugin(GUID, PluginName, Version)]
     [BepInDependency(Sideloader.Sideloader.GUID, "16.0")]
     public partial class ItemBlacklist : BaseUnityPlugin
