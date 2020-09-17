@@ -30,6 +30,7 @@ namespace KK_Plugins
         protected void InitUI()
         {
             if (ContextMenu != null) return;
+            if (CustomBase.Instance == null) return;
 
             UIUtility.Init(nameof(KK_Plugins));
 
@@ -160,6 +161,7 @@ namespace KK_Plugins
 
         private void ShowMenu()
         {
+            if (CustomBase.Instance == null) return;
             InitUI();
 
             SetMenuVisibility(false);
