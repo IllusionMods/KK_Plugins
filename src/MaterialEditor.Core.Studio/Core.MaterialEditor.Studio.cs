@@ -22,6 +22,8 @@ namespace KK_Plugins.MaterialEditor
     [BepInProcess(Constants.StudioProcessName)]
     [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInDependency(MaterialEditorPlugin.GUID)]
+    [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier)]
+    [BepInDependency(Sideloader.Sideloader.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class MEStudio : UI
     {
