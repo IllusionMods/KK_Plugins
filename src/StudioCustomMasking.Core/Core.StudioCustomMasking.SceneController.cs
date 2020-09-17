@@ -147,11 +147,13 @@ namespace KK_Plugins.StudioCustomMasking
         {
             if (collider == null) return;
 
-            var go = collider.gameObject;
-            var f = MaskingFolders.Values.FirstOrDefault(x => x.objectItem == go);
-            if (f?.treeNodeObject?.parent == null) return;
-            if (f.treeNodeObject.parent.visible)
-                f.treeNodeObject.parent.SetVisible(false);
+            foreach (var x in MaskingFolders)
+                if (x.Value.objectItem == collider.gameObject)
+                {
+                    if (x.Value?.treeNodeObject?.parent == null) return;
+                    if (x.Value.treeNodeObject.parent.visible)
+                        x.Value.treeNodeObject.parent.SetVisible(false);
+                }
         }
 
         internal void ColliderStayEvent(Collider collider) => ColliderEnterEvent(collider);
@@ -160,11 +162,13 @@ namespace KK_Plugins.StudioCustomMasking
         {
             if (collider == null) return;
 
-            var go = collider.gameObject;
-            var f = MaskingFolders.Values.FirstOrDefault(x => x.objectItem == go);
-            if (f?.treeNodeObject?.parent == null) return;
-            if (!f.treeNodeObject.parent.visible)
-                f.treeNodeObject.parent.SetVisible(true);
+            foreach (var x in MaskingFolders)
+                if (x.Value.objectItem == collider.gameObject)
+                {
+                    if (x.Value?.treeNodeObject?.parent == null) return;
+                    if (!x.Value.treeNodeObject.parent.visible)
+                        x.Value.treeNodeObject.parent.SetVisible(true);
+                }
         }
 
         internal void ItemDeleteEvent(TreeNodeObject node)
