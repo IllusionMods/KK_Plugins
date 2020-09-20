@@ -291,6 +291,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.ItemBlacklist", "src\Ite
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.ItemBlacklist", "src\ItemBlacklist.Core\Core.ItemBlacklist.shproj", "{4A43E778-C1FF-4057-89E8-E858AA989810}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FadeAdjuster", "FadeAdjuster", "{7E7FAD27-BC88-4BD1-A5C6-BDB87BA433F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_FadeAdjuster", "src\FadeAdjuster.KK\KK_FadeAdjuster.csproj", "{D8FA2078-DB11-44D0-A09F-6016B47CCE66}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -483,6 +487,7 @@ Global
 		src\UIUtility\UIUtility.projitems*{cfb86ab8-8852-4939-b0eb-09d320a4266b}*SharedItemsImports = 4
 		src\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{d8fa2078-db11-44d0-a09f-6016b47cce66}*SharedItemsImports = 4
 		src\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{d9c3e165-10ab-4561-9d23-35de4e91addb}*SharedItemsImports = 4
 		src\MakerDefaults.Core.KKEC\Core.MakerDefaults.KKEC.projitems*{de81ce27-d308-4e4e-9960-8db1cb3353c6}*SharedItemsImports = 13
@@ -839,6 +844,10 @@ Global
 		{3D0850C7-7C86-45FD-AE7F-7680DB66499C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D0850C7-7C86-45FD-AE7F-7680DB66499C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D0850C7-7C86-45FD-AE7F-7680DB66499C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8FA2078-DB11-44D0-A09F-6016B47CCE66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8FA2078-DB11-44D0-A09F-6016B47CCE66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8FA2078-DB11-44D0-A09F-6016B47CCE66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8FA2078-DB11-44D0-A09F-6016B47CCE66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -953,6 +962,7 @@ Global
 		{3078A5DA-7330-469C-AD65-7F6F2619FAD7} = {B4122549-6849-43E0-8649-A044E95D01C1}
 		{3D0850C7-7C86-45FD-AE7F-7680DB66499C} = {B4122549-6849-43E0-8649-A044E95D01C1}
 		{4A43E778-C1FF-4057-89E8-E858AA989810} = {B4122549-6849-43E0-8649-A044E95D01C1}
+		{D8FA2078-DB11-44D0-A09F-6016B47CCE66} = {7E7FAD27-BC88-4BD1-A5C6-BDB87BA433F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
