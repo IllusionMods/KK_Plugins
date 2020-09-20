@@ -16,13 +16,16 @@ namespace KK_Plugins
         public const string PluginNameInternal = "KK_FadeAdjuster";
         public const string Version = "1.0";
 
+        private static bool UpdateColor = false;
+
         public static ConfigEntry<bool> DisableFade { get; private set; }
         public static ConfigEntry<Color> FadeColor { get; private set; }
 
         internal void Awake()
         {
-            DisableFade = Config.Bind("Config", "Disable Fade", false, "Disables fade on loading screens, may reveal ugly things not meant to be seen");
-            FadeColor = Config.Bind("Config", "Fade Color", Color.white, "Color of the fade for loading screens, requires game restart to take effect");
+            DisableFade = Config.Bind("Config", "Disable Fade", false, "Disables fade on loading screens");
+            FadeColor = Config.Bind("Config", "Fade Color", Color.white, "Color of loading screens");
+            FadeColor.SettingChanged += (a, b) => UpdateColor = true;
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
         }
@@ -39,6 +42,8 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(SimpleFade), "Update")]
             internal static bool SimpleFadeUpdate(SimpleFade __instance)
             {
+                if (UpdateColor)
+                    __instance._Color = FadeColor.Value;
                 if (DisableFade.Value)
                 {
                     __instance.ForceEnd();
