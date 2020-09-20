@@ -381,6 +381,10 @@ Allows you to set default settings of the character maker so you don't have to s
 **v1.0 - [Download](https://www.patreon.com/posts/40214619)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 Allows you to add map masking functionality for maps made out of items in Studio.<br/>
 
+#### FadeAdjuster
+**v1.0 - [Download](https://www.patreon.com/posts/41820329)** - For Koikatsu<br/>
+Allows you to adjust fade color or disable the fade in and out effect.<br/>
+
 #### InputHotkeyBlock
 Moved to the [BepInEx.Utility](https://github.com/BepInEx/BepInEx.Utility) repo.<br/>
 
