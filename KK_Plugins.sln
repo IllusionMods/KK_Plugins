@@ -295,6 +295,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FadeAdjuster", "FadeAdjuste
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_FadeAdjuster", "src\FadeAdjuster.KK\KK_FadeAdjuster.csproj", "{D8FA2078-DB11-44D0-A09F-6016B47CCE66}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FreeHStudioSceneLoader", "FreeHStudioSceneLoader", "{B1C72B63-DC8B-4D34-B414-EC7DB92DB56B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.FreeHStudioSceneLoader", "src\FreeHStudioSceneLoader.KK\KK.FreeHStudioSceneLoader.csproj", "{660BA1A3-65D5-4D7E-8208-F3819881FF45}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -388,6 +392,7 @@ Global
 		src\Shared\Shared.projitems*{65e8d9ca-3cbe-4467-b369-0361b5a85d1f}*SharedItemsImports = 4
 		src\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems*{65e8d9ca-3cbe-4467-b369-0361b5a85d1f}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{65e8d9ca-3cbe-4467-b369-0361b5a85d1f}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{660ba1a3-65d5-4d7e-8208-f3819881ff45}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{69421a19-a4ac-43bf-8729-6c955f39ce89}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{69421a19-a4ac-43bf-8729-6c955f39ce89}*SharedItemsImports = 4
 		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
@@ -848,6 +853,10 @@ Global
 		{D8FA2078-DB11-44D0-A09F-6016B47CCE66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8FA2078-DB11-44D0-A09F-6016B47CCE66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8FA2078-DB11-44D0-A09F-6016B47CCE66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{660BA1A3-65D5-4D7E-8208-F3819881FF45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{660BA1A3-65D5-4D7E-8208-F3819881FF45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{660BA1A3-65D5-4D7E-8208-F3819881FF45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{660BA1A3-65D5-4D7E-8208-F3819881FF45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -963,6 +972,7 @@ Global
 		{3D0850C7-7C86-45FD-AE7F-7680DB66499C} = {B4122549-6849-43E0-8649-A044E95D01C1}
 		{4A43E778-C1FF-4057-89E8-E858AA989810} = {B4122549-6849-43E0-8649-A044E95D01C1}
 		{D8FA2078-DB11-44D0-A09F-6016B47CCE66} = {7E7FAD27-BC88-4BD1-A5C6-BDB87BA433F1}
+		{660BA1A3-65D5-4D7E-8208-F3819881FF45} = {B1C72B63-DC8B-4D34-B414-EC7DB92DB56B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
