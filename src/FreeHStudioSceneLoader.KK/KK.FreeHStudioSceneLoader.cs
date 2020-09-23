@@ -41,6 +41,36 @@ namespace KK_Plugins
 
         private static class Hooks
         {
+            //todo:
+
+            //Goes after the first "if (flags.isFreeH)" in HSceneProc Start
+            /*
+            if (freeHMapCustom != null)
+            {
+                Singleton<Studio.Studio>.Instance.LoadScene(freeHMapCustom);
+                map.no = Singleton<Studio.Studio>.Instance.sceneInfo.map;
+                if (map.no >= 0)
+                {
+                    yield return new WaitUntil(() => Singleton<Map>.Instance.mapRoot != null);
+                }
+                else if (map.no < 0)
+                    map.no = 0;
+                map.mapRoot = Singleton<Map>.Instance.mapRoot;
+                freeHMapNo = map.no;
+            }
+            else
+            {
+                map.Change(freeHMapNo, Scene.Data.FadeType.None);
+                yield return new WaitUntil(() => map.mapRoot != null);
+            }
+            //Added null check
+            GameObject mapRoot = map.mapRoot;
+            GameObject objStartPosition = ((object)mapRoot != null) ? mapRoot.transform.FindLoop("h_free") : null;
+             */
+            //Also add a null check after "if (!startObjName.IsNullOrEmpty())"
+
+            //HSceneProc OnDestroy should call Singleton<Studio.Studio>.Instance.InitScene(); if a studio map was loaded
+
             [HarmonyPrefix, HarmonyPatch(typeof(AssetBundleManager), nameof(AssetBundleManager.LoadAsset), typeof(string), typeof(string), typeof(Type), typeof(string))]
             internal static void LoadAssetPrefix(ref string assetBundleName, ref string assetName)
             {
