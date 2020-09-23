@@ -1,10 +1,16 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using Illusion.Elements.Xml;
+using Illusion.Game;
 using Studio;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +26,7 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
 
         private static bool IsStudio;
+        private static bool LoadingScene = false;
 
         internal void Awake()
         {
@@ -34,6 +41,14 @@ namespace KK_Plugins
 
         private static class Hooks
         {
+            [HarmonyPrefix, HarmonyPatch(typeof(AssetBundleManager), nameof(AssetBundleManager.LoadAsset), typeof(string), typeof(string), typeof(Type), typeof(string))]
+            internal static void LoadAssetPrefix(ref string assetBundleName, ref string assetName)
+            {
+                //Redirect to the Studio asset bundle when loading scenes
+                if (!IsStudio && LoadingScene && (assetName == "p_cf_body_bone" || assetName == "p_cf_head_bone"))
+                    assetBundleName = "studio/base/00.unity3d";
+            }
+
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Config), "Start")]
             internal static void Config_Start()
             {
@@ -56,7 +71,47 @@ namespace KK_Plugins
                 //StudioScene.CreatePatternList();
             }
 
-            #region NullRef Fixes
+            [HarmonyPostfix, HarmonyPatch(typeof(MapSelectMenuScene), "Start")]
+            internal static void MapSelectMenuScene_Start(ref IEnumerator __result, GameObject ___nodeFrame, ReactiveProperty<MapInfo.Param> ____mapInfo)
+            {
+                if (IsStudio) return;
+
+                var original = __result;
+                __result = new[] { original, MapSelectMenuScene_Start_Postfix(___nodeFrame, ____mapInfo) }.GetEnumerator();
+            }
+            private static IEnumerator MapSelectMenuScene_Start_Postfix(GameObject nodeFrame, ReactiveProperty<MapInfo.Param> _mapInfo)
+            {
+                int i = 0;
+                int childCount = nodeFrame.transform.childCount;
+                GameObject currentFrame = null;
+
+                foreach (FileInfo fn in from p in new DirectoryInfo(UserData.Create("studio/scene")).GetFiles("*.png")
+                                        orderby p.CreationTime descending
+                                        select p)
+                {
+                    if (i % childCount == 0)
+                    {
+                        currentFrame = Instantiate(nodeFrame, nodeFrame.transform.parent, false);
+                        currentFrame.SetActive(true);
+                    }
+                    GameObject gameObject = currentFrame.transform.GetChild(i % childCount).gameObject;
+                    i++;
+                    gameObject.SetActive(true);
+                    Button button = gameObject.GetComponent<Button>();
+                    button.GetComponent<Image>().sprite = PngAssist.LoadSpriteFromFile(fn.FullName);
+                    button.onClick.AddListener(delegate
+                    {
+                        var param = new MapInfo.Param();
+                        _mapInfo.Value = param;
+                        Traverse.Create(param).Field("custom").SetValue(fn.FullName);
+
+                        //enterMapColor.Value = button;
+                        Utils.Sound.Play(SystemSE.sel);
+                    });
+                }
+                yield return null;
+            }
+
             [HarmonyPrefix, HarmonyPatch(typeof(BackgroundCtrl), nameof(BackgroundCtrl.isVisible), MethodType.Setter)]
             internal static bool BackgroundCtrl_IsVisible(ref MeshRenderer ___meshRenderer, ref bool ___m_IsVisible, bool value)
             {
@@ -389,6 +444,186 @@ namespace KK_Plugins
                 return false;
             }
 
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddFemale))]
+            internal static bool Studio_AddFemale(Studio.Studio __instance, string _path, TreeNodeCtrl ___m_TreeNodeCtrl)
+            {
+                if (IsStudio) return true;
+
+                AddObjectFemale.Add(_path);
+                Singleton<UndoRedoManager>.Instance.Clear();
+
+                return false;
+            }
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddMale))]
+            internal static bool Studio_AddMale(Studio.Studio __instance, string _path, TreeNodeCtrl ___m_TreeNodeCtrl)
+            {
+                if (IsStudio) return true;
+
+                AddObjectMale.Add(_path);
+                Singleton<UndoRedoManager>.Instance.Clear();
+
+                return false;
+            }
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddItem))]
+            internal static bool Studio_AddItem(int _group, int _category, int _no)
+            {
+                if (IsStudio) return true;
+
+                AddObjectItem.Add(_group, _category, _no);
+                Singleton<UndoRedoManager>.Instance.Clear();
+
+                return false;
+            }
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddLight), typeof(int))]
+            internal static bool Studio_AddLight(Studio.Studio __instance, int _no)
+            {
+                if (IsStudio) return true;
+                if (!__instance.sceneInfo.isLightCheck) return true;
+
+                AddObjectLight.Add(_no);
+                Singleton<UndoRedoManager>.Instance.Clear();
+
+                return false;
+            }
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.LoadScene))]
+            internal static bool Studio_LoadScene(Studio.Studio __instance, string _path, ref bool __result, ref BackgroundCtrl ___m_BackgroundCtrl, ref Studio.CameraControl ___m_CameraCtrl)
+            {
+                if (IsStudio) return true;
+
+                if (!File.Exists(_path))
+                {
+                    __result = false;
+                    return false;
+                }
+                __instance.InitScene(false);
+                var sceneInfo = new SceneInfo();
+                Traverse.Create(__instance).Property("sceneInfo").SetValue(sceneInfo);
+                if (!sceneInfo.Load(_path))
+                {
+                    __result = false;
+                    return false;
+                }
+                Logger.LogInfo($"LoadingScene true");
+                LoadingScene = true;
+                AddObjectAssist.LoadChild(sceneInfo.dicObject);
+                ChangeAmount source = sceneInfo.caMap.Clone();
+                __instance.AddMap(sceneInfo.map, false, false);
+                sceneInfo.caMap.Copy(source);
+                Singleton<MapCtrl>.Instance.Reflect();
+                __instance.bgmCtrl.Play(__instance.bgmCtrl.no);
+                __instance.envCtrl.Play(__instance.envCtrl.no);
+                __instance.outsideSoundCtrl.Play(__instance.outsideSoundCtrl.fileName);
+                //Add the component if it doesn't exist
+                if (___m_BackgroundCtrl == null)
+                    ___m_BackgroundCtrl = Camera.main.gameObject.AddComponent<BackgroundCtrl>();
+                __instance.treeNodeCtrl.RefreshHierachy();
+                if (sceneInfo.cameraSaveData != null)
+                    ___m_CameraCtrl.Import(sceneInfo.cameraSaveData);
+                __instance.cameraLightCtrl.Reflect();
+                sceneInfo.dataVersion = sceneInfo.version;
+                Logger.LogInfo($"LoadingScene false");
+                LoadingScene = false;
+
+                __result = true;
+                return false;
+            }
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.InitScene))]
+            internal static bool Studio_InitScene(Studio.Studio __instance, bool _close, ref BackgroundCtrl ___m_BackgroundCtrl)
+            {
+                if (IsStudio) return true;
+
+                __instance.ChangeCamera(null, false, true);
+                Traverse.Create(__instance).Property("cameraCount").SetValue(0);
+                __instance.treeNodeCtrl.DeleteAllNode();
+                foreach (KeyValuePair<TreeNodeObject, ObjectCtrlInfo> item in __instance.dicInfo)
+                {
+                    switch (item.Value.kind)
+                    {
+                        case 0:
+                            {
+                                OCIChar oCIChar = item.Value as OCIChar;
+                                oCIChar?.StopVoice();
+                                break;
+                            }
+                        case 4:
+                            {
+                                OCIRoute oCIRoute = item.Value as OCIRoute;
+                                oCIRoute.DeleteLine();
+                                break;
+                            }
+                    }
+                    Destroy(item.Value.guideObject.transformTarget.gameObject);
+                }
+                __instance.dicInfo.Clear();
+                __instance.dicChangeAmount.Clear();
+                __instance.dicObjectCtrl.Clear();
+                Singleton<Map>.Instance.ReleaseMap();
+                __instance.cameraCtrl.CloerListCollider();
+                __instance.bgmCtrl.Stop();
+                __instance.envCtrl.Stop();
+                __instance.outsideSoundCtrl.Stop();
+                __instance.sceneInfo.Init();
+                __instance.cameraCtrl.Reset(0);
+                __instance.cameraLightCtrl.Reflect();
+                __instance.onChangeMap?.Invoke();
+                if (_close)
+                {
+                    Destroy(___m_BackgroundCtrl);
+                    ___m_BackgroundCtrl = null;
+                }
+                return false;
+            }
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.Init))]
+            internal static bool Studio_Init(Studio.Studio __instance, ref InputField ____inputFieldNow, ref TMP_InputField ____inputFieldTMPNow)
+            {
+                if (IsStudio) return true;
+
+                Traverse.Create(__instance).Property("sceneInfo").SetValue(new SceneInfo());
+                __instance.cameraLightCtrl.Init();
+                ____inputFieldNow = null;
+                ____inputFieldTMPNow = null;
+                TreeNodeCtrl treeNodeCtrl = __instance.treeNodeCtrl;
+                treeNodeCtrl.onDelete = (Action<TreeNodeObject>)Delegate.Combine(treeNodeCtrl.onDelete, new Action<TreeNodeObject>(__instance.OnDeleteNode));
+                TreeNodeCtrl treeNodeCtrl2 = __instance.treeNodeCtrl;
+                treeNodeCtrl2.onParentage = (Action<TreeNodeObject, TreeNodeObject>)Delegate.Combine(treeNodeCtrl2.onParentage, new Action<TreeNodeObject, TreeNodeObject>(__instance.OnParentage));
+
+                return false;
+            }
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), "Awake")]
+            internal static bool Studio_Awake(Studio.Studio __instance, ref Control ___xmlCtrl)
+            {
+                if (IsStudio) return true;
+
+                //if (CheckInstance())
+                DontDestroyOnLoad(__instance.gameObject);
+                Traverse.Create(__instance).Property("optionSystem").SetValue(new OptionSystem("Option"));
+                ___xmlCtrl = new Control("studio", "option.xml", "Option", Studio.Studio.optionSystem);
+                __instance.LoadOption();
+
+                return false;
+            }
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.ChangeCamera), typeof(OCICamera), typeof(bool), typeof(bool))]
+            internal static bool Studio_ChangeCamera() => IsStudio;
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.SetSunCaster))]
+            internal static bool Studio_SetSunCaster() => IsStudio;
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), "OnApplicationQuit")]
+            internal static bool Studio_OnApplicationQuit() => IsStudio;
+
+            [HarmonyPrefix, HarmonyPatch(typeof(FreeHScene), "SetMapSprite")]
+            internal static bool FreeHScene_SetMapSprite(MapInfo.Param _mapInfo, ref Image ___mapImageNormal, ref Image ___mapImageMasturbation, ref Image ___mapImageLesbian)
+            {
+                if (IsStudio) return true;
+
+                string custom = (string)Traverse.Create(_mapInfo).Field("custom").GetValue();
+                if (custom != null)
+                {
+                    ___mapImageNormal.sprite = PngAssist.LoadSpriteFromFile(custom);
+                    ___mapImageMasturbation.sprite = PngAssist.LoadSpriteFromFile(custom);
+                    ___mapImageLesbian.sprite = PngAssist.LoadSpriteFromFile(custom);
+                }
+                return false;
+            }
+
 
             internal static void CameraLightCtrl_LightCalc_Init(object __instance)
             {
@@ -408,7 +643,6 @@ namespace KK_Plugins
                 if (___light != null) return true;
                 return false;
             }
-            #endregion
         }
     }
 }
