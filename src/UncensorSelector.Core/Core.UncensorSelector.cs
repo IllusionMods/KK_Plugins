@@ -1,4 +1,5 @@
-﻿using BepInEx.Configuration;
+﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI.Chara;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
@@ -22,7 +22,13 @@ namespace KK_Plugins
     /// <summary>
     /// Plugin for assigning uncensors to characters individually
     /// </summary>
-    internal partial class UncensorSelector
+    [BepInDependency(Sideloader.Sideloader.GUID)]
+    [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID, "1.9")]
+    [BepInDependency(KoiSkinOverlayX.KoiSkinOverlayMgr.GUID, "5.1")]
+    [BepInDependency(ConfigurationManager.ConfigurationManager.GUID, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInPlugin(GUID, PluginName, Version)]
+    internal partial class UncensorSelector : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
@@ -43,13 +49,13 @@ namespace KK_Plugins
         public static readonly Dictionary<string, string> BodyConfigListFull = new Dictionary<string, string>();
         public static readonly Dictionary<string, string> PenisConfigListFull = new Dictionary<string, string>();
         public static readonly Dictionary<string, string> BallsConfigListFull = new Dictionary<string, string>();
-        internal static MakerDropdown BodyDropdown = null;
-        internal static MakerDropdown PenisDropdown = null;
-        internal static MakerDropdown BallsDropdown = null;
-        private static readonly HashSet<string> BodyNames = new HashSet<string>() { "o_body_a", "o_body_cf", "o_body_cm" };
-        private static readonly HashSet<string> BodyParts = new HashSet<string>() { "o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster", "cm_o_dan00", "cm_o_dan_f" };
-        private static readonly HashSet<string> PenisParts = new HashSet<string>() { "o_dankon", "o_gomu", "cm_o_dan00" };
-        private static readonly HashSet<string> BallsParts = new HashSet<string>() { "o_dan_f", "cm_o_dan_f" };
+        internal static MakerDropdown BodyDropdown;
+        internal static MakerDropdown PenisDropdown;
+        internal static MakerDropdown BallsDropdown;
+        private static readonly HashSet<string> BodyNames = new HashSet<string> { "o_body_a", "o_body_cf", "o_body_cm" };
+        private static readonly HashSet<string> BodyParts = new HashSet<string> { "o_dankon", "o_dan_f", "o_gomu", "o_mnpa", "o_mnpb", "o_shadowcaster", "cm_o_dan00", "cm_o_dan_f" };
+        private static readonly HashSet<string> PenisParts = new HashSet<string> { "o_dankon", "o_gomu", "cm_o_dan00" };
+        private static readonly HashSet<string> BallsParts = new HashSet<string> { "o_dan_f", "cm_o_dan_f" };
         internal static string CurrentBodyGUID;
         internal static bool DidErrorMessage = false;
 
@@ -90,9 +96,7 @@ namespace KK_Plugins
 #if KK
             _GenderBender = Config.Bind("Config", "Genderbender Allowed", true, new ConfigDescription("Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.", null, new ConfigurationManagerAttributes { Order = 29 }));
 #endif
-            ConfigEntry<string> defaultConf;
-            ConfigEntry<string> excludeConf;
-            InitUncensorConfigs("Male", "Body", BodyDictionary, GetConfigBodyList(), 19, out defaultConf, out excludeConf);
+            InitUncensorConfigs("Male", "Body", BodyDictionary, GetConfigBodyList(), 19, out var defaultConf, out var excludeConf);
             DefaultMaleBody = defaultConf;
             RandomExcludedMaleBody = excludeConf;
             InitUncensorConfigs("Male", "Penis", PenisDictionary, GetConfigPenisList(), 18, out defaultConf, out excludeConf);
@@ -213,7 +217,7 @@ namespace KK_Plugins
             }
 
             BodyDropdown = e.AddControl(new MakerDropdown("Body", BodyListDisplay.ToArray(), MakerConstants.Body.All, 0, this));
-            BodyDropdown.ValueChanged.Subscribe(Observer.Create<int>(BodyDropdownChanged));
+            BodyDropdown.ValueChanged.Subscribe(BodyDropdownChanged);
             void BodyDropdownChanged(int ID)
             {
                 if (DoDropdownEvents == false)
@@ -245,7 +249,7 @@ namespace KK_Plugins
 #else
             PenisDropdown = e.AddControl(new MakerDropdown("Penis", PenisListDisplay.ToArray(), MakerConstants.Body.All, 0, this));
 #endif
-            PenisDropdown.ValueChanged.Subscribe(Observer.Create<int>(PenisDropdownChanged));
+            PenisDropdown.ValueChanged.Subscribe(PenisDropdownChanged);
             void PenisDropdownChanged(int ID)
             {
                 if (DoDropdownEvents == false)
@@ -278,9 +282,9 @@ namespace KK_Plugins
                 BallsListDisplay.Add(balls.DisplayName);
             }
 
-            int ballsInitialValue = characterSex == 0 ? 0 : DefaultFemaleDisplayBalls.Value == true ? 0 : 1;
+            int ballsInitialValue = characterSex == 0 ? 0 : DefaultFemaleDisplayBalls.Value ? 0 : 1;
             BallsDropdown = e.AddControl(new MakerDropdown("Balls", BallsListDisplay.ToArray(), MakerConstants.Body.All, ballsInitialValue, this));
-            BallsDropdown.ValueChanged.Subscribe(Observer.Create<int>(BallsDropdownChanged));
+            BallsDropdown.ValueChanged.Subscribe(BallsDropdownChanged);
             void BallsDropdownChanged(int ID)
             {
                 if (DoDropdownEvents == false)
@@ -296,7 +300,7 @@ namespace KK_Plugins
             if (characterSex == 1)
             {
                 var dickToggle = e.AddControl(new MakerToggle(MakerConstants.Body.All, "Toggle Penis Display", characterSex == 0, this));
-                dickToggle.ValueChanged.Subscribe(Observer.Create<bool>(delegate { MakerAPI.GetCharacterControl().fileStatus.visibleSonAlways = dickToggle.Value; }));
+                dickToggle.ValueChanged.Subscribe(Observer.Create<bool>(obj => MakerAPI.GetCharacterControl().fileStatus.visibleSonAlways = dickToggle.Value));
             }
 #endif
 
@@ -312,7 +316,7 @@ namespace KK_Plugins
         /// <summary>
         /// Set initial values for the loaded character and enable dropdown events
         /// </summary>
-        private void MakerAPI_MakerFinishedLoading(object sender, EventArgs e)
+        private static void MakerAPI_MakerFinishedLoading(object sender, EventArgs e)
         {
             var controller = GetController(MakerAPI.GetCharacterControl());
 
@@ -340,7 +344,7 @@ namespace KK_Plugins
                 {
                     GameObject goFutanari = GameObject.Find("CharaCustom/CustomControl/CanvasMain/SubMenu/SubMenuBody/Scroll View/Viewport/Content/Category/CategoryTop/Futanari/tglFutanari");
                     var tglFutanari = goFutanari.GetComponent<Toggle>();
-                    tglFutanari.onValueChanged.AddListener(delegate (bool value)
+                    tglFutanari.onValueChanged.AddListener(value =>
                     {
                         TogglePenisBallsUI(value);
                         controller.ChaControl.fileStatus.visibleSonAlways = value;
@@ -539,7 +543,7 @@ namespace KK_Plugins
         /// <summary>
         /// Returns the UncensorSelectorController for the specified character or null if it does not exist
         /// </summary>
-        public static UncensorSelectorController GetController(ChaControl character) => character?.gameObject?.GetComponent<UncensorSelectorController>();
+        public static UncensorSelectorController GetController(ChaControl character) => character == null || character.gameObject == null ? null : character.gameObject.GetComponent<UncensorSelectorController>();
         internal static string SetOOBase() => CurrentBodyGUID == null ? Defaults.OOBase : BodyDictionary[CurrentBodyGUID].OOBase;
         internal static string SetBodyMainTex() => CurrentBodyGUID == null ? Defaults.BodyMainTex : BodyDictionary[CurrentBodyGUID].BodyMainTex;
         internal static string SetBodyColorMaskMale() => SetColorMask(0);

@@ -177,6 +177,7 @@ namespace KK_Plugins.MaterialEditor
                 : null;
 
             var count = 0;
+            bool eventSystem = EventSystem.current != null;
             foreach (var item in _items.Skip(itemsAboveViewRect))
             {
                 if (_cachedEntries.Count <= count) break;
@@ -188,8 +189,8 @@ namespace KK_Plugins.MaterialEditor
                 cachedEntry.SetItem(item, false);
                 cachedEntry.SetVisible(true);
 
-                if (ReferenceEquals(selectedItem, item))
-                    EventSystem.current?.SetSelectedGameObject(cachedEntry.gameObject);
+                if (eventSystem && ReferenceEquals(selectedItem, item))
+                    EventSystem.current.SetSelectedGameObject(cachedEntry.gameObject);
             }
 
             // If there are less items than cached list entries, disable unused cache entries

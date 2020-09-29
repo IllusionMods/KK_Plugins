@@ -34,7 +34,7 @@ namespace KK_Plugins
         /// <summary>
         /// Enable simultaneous kinematics for the specified ChaControl
         /// </summary>
-        public static void EnableFKIK(ChaControl chaControl) => EnableFKIK(StudioObjectExtensions.GetOCIChar(chaControl));
+        public static void EnableFKIK(ChaControl chaControl) => EnableFKIK(chaControl.GetOCIChar());
 
         /// <summary>
         /// Enable simultaneous kinematics for the specified OCIChar

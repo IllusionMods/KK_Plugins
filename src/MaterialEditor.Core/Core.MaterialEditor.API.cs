@@ -48,7 +48,7 @@ namespace KK_Plugins.MaterialEditor
             return rendList;
         }
         /// <summary>
-        /// Recursively iterates over game objects to create the list. Use GetRendererList intead.
+        /// Recursively iterates over game objects to create the list. Use GetRendererList instead.
         /// </summary>
         private static void _GetRendererList(GameObject gameObject, List<Renderer> rendList)
         {
@@ -77,8 +77,10 @@ namespace KK_Plugins.MaterialEditor
         private static List<Material> GetMaterials(GameObject gameObject, string materialName)
         {
             List<Material> materials = new List<Material>();
-            foreach (var renderer in GetRendererList(gameObject))
+            var renderers = GetRendererList(gameObject);
+            for (var i = 0; i < renderers.Count; i++)
             {
+                var renderer = renderers[i];
                 //Must use sharedMaterials for ChaControl and materials for other items or bad things happen
                 Material[] materialsToSearch;
                 if (gameObject.GetComponent<ChaControl>() == null)
@@ -86,9 +88,12 @@ namespace KK_Plugins.MaterialEditor
                 else
                     materialsToSearch = renderer.sharedMaterials;
 
-                foreach (var material in materialsToSearch)
+                for (var j = 0; j < materialsToSearch.Length; j++)
+                {
+                    var material = materialsToSearch[j];
                     if (material.NameFormatted() == materialName)
                         materials.Add(material);
+                }
             }
             return materials;
         }
@@ -100,8 +105,10 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="materialName">Name of the material</param>
         public static void CopyMaterial(GameObject gameObject, string materialName)
         {
-            foreach (var renderer in GetRendererList(gameObject))
+            var renderers = GetRendererList(gameObject);
+            for (var i = 0; i < renderers.Count; i++)
             {
+                var renderer = renderers[i];
                 //Must use sharedMaterials for ChaControl and materials for other items or bad things happen
                 Material[] materialsToSearch;
                 if (gameObject.GetComponent<ChaControl>() == null)
@@ -115,8 +122,9 @@ namespace KK_Plugins.MaterialEditor
                     Material originalMat = null;
                     bool copyAdded = false;
                     int copyCount = 0;
-                    foreach (var mat in materialsToSearch)
+                    for (var j = 0; j < materialsToSearch.Length; j++)
                     {
+                        var mat = materialsToSearch[j];
                         if (mat.NameFormatted() == materialName)
                         {
                             originalMat = mat;
@@ -170,8 +178,10 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="gameObject">GameObject for which to remove materials</param>
         public static void RemoveMaterialCopies(GameObject gameObject)
         {
-            foreach (var renderer in GetRendererList(gameObject))
+            var renderers = GetRendererList(gameObject);
+            for (var i = 0; i < renderers.Count; i++)
             {
+                var renderer = renderers[i];
                 Material[] materialsToSearch;
                 if (gameObject.GetComponent<ChaControl>() == null)
                     materialsToSearch = renderer.materials;
@@ -181,9 +191,12 @@ namespace KK_Plugins.MaterialEditor
                 if (materialsToSearch.Any(x => x != null && x.NameFormatted().Contains(MaterialCopyPostfix)))
                 {
                     List<Material> newMats = new List<Material>();
-                    foreach (var mat in renderer.sharedMaterials)
+                    for (var j = 0; j < renderer.sharedMaterials.Length; j++)
+                    {
+                        var mat = renderer.sharedMaterials[j];
                         if (!mat.NameFormatted().Contains(MaterialCopyPostfix))
                             newMats.Add(mat);
+                    }
 
                     if (gameObject.GetComponent<ChaControl>() == null)
                         renderer.materials = newMats.ToArray();
@@ -214,12 +227,16 @@ namespace KK_Plugins.MaterialEditor
         {
             bool didSet = false;
 
-            foreach (var material in GetMaterials(gameObject, materialName))
+            var list = GetMaterials(gameObject, materialName);
+            for (var i = 0; i < list.Count; i++)
+            {
+                var material = list[i];
                 if (material.HasProperty($"_{propertyName}"))
                 {
                     material.SetFloat($"_{propertyName}", value);
                     didSet = true;
                 }
+            }
             return didSet;
         }
 
@@ -262,12 +279,16 @@ namespace KK_Plugins.MaterialEditor
         {
             bool didSet = false;
 
-            foreach (var material in GetMaterials(gameObject, materialName))
+            var materials = GetMaterials(gameObject, materialName);
+            for (var i = 0; i < materials.Count; i++)
+            {
+                var material = materials[i];
                 if (material.HasProperty($"_{propertyName}"))
                 {
                     material.SetColor($"_{propertyName}", value);
                     didSet = true;
                 }
+            }
             return didSet;
         }
 
@@ -335,12 +356,16 @@ namespace KK_Plugins.MaterialEditor
         public static bool SetRendererEnabled(GameObject gameObject, string rendererName, bool value)
         {
             bool didSet = false;
-            foreach (var rend in GetRendererList(gameObject))
-                if (rend.NameFormatted() == rendererName)
+            var renderers = GetRendererList(gameObject);
+            for (var i = 0; i < renderers.Count; i++)
+            {
+                var renderer = renderers[i];
+                if (renderer.NameFormatted() == rendererName)
                 {
-                    rend.enabled = value;
+                    renderer.enabled = value;
                     didSet = true;
                 }
+            }
             return didSet;
         }
 
@@ -362,12 +387,16 @@ namespace KK_Plugins.MaterialEditor
         public static bool SetRendererShadowCastingMode(GameObject gameObject, string rendererName, UnityEngine.Rendering.ShadowCastingMode value)
         {
             bool didSet = false;
-            foreach (var rend in GetRendererList(gameObject))
-                if (rend.NameFormatted() == rendererName)
+            var renderers = GetRendererList(gameObject);
+            for (var i = 0; i < renderers.Count; i++)
+            {
+                var renderer = renderers[i];
+                if (renderer.NameFormatted() == rendererName)
                 {
-                    rend.shadowCastingMode = value;
+                    renderer.shadowCastingMode = value;
                     didSet = true;
                 }
+            }
             return didSet;
         }
 
@@ -389,12 +418,16 @@ namespace KK_Plugins.MaterialEditor
         public static bool SetRendererReceiveShadows(GameObject gameObject, string rendererName, bool value)
         {
             bool didSet = false;
-            foreach (var rend in GetRendererList(gameObject))
-                if (rend.NameFormatted() == rendererName)
+            var renderers = GetRendererList(gameObject);
+            for (var i = 0; i < renderers.Count; i++)
+            {
+                var renderer = renderers[i];
+                if (renderer.NameFormatted() == rendererName)
                 {
-                    rend.receiveShadows = value;
+                    renderer.receiveShadows = value;
                     didSet = true;
                 }
+            }
             return didSet;
         }
 
@@ -418,7 +451,10 @@ namespace KK_Plugins.MaterialEditor
         public static bool SetTexture(GameObject gameObject, string materialName, string propertyName, Texture2D value)
         {
             bool didSet = false;
-            foreach (var material in GetMaterials(gameObject, materialName))
+            var materials = GetMaterials(gameObject, materialName);
+            for (var i = 0; i < materials.Count; i++)
+            {
+                var material = materials[i];
                 if (material.HasProperty($"_{propertyName}"))
                 {
                     var wrapMode = material.GetTexture($"_{propertyName}")?.wrapMode;
@@ -427,6 +463,7 @@ namespace KK_Plugins.MaterialEditor
                     material.SetTexture($"_{propertyName}", value);
                     didSet = true;
                 }
+            }
             return didSet;
         }
 
@@ -452,12 +489,16 @@ namespace KK_Plugins.MaterialEditor
             if (value == null) return false;
             bool didSet = false;
 
-            foreach (var material in GetMaterials(gameObject, materialName))
+            var materials = GetMaterials(gameObject, materialName);
+            for (var i = 0; i < materials.Count; i++)
+            {
+                var material = materials[i];
                 if (material.HasProperty($"_{propertyName}"))
                 {
                     material.SetTextureOffset($"_{propertyName}", (Vector2)value);
                     didSet = true;
                 }
+            }
             return didSet;
         }
 
@@ -483,12 +524,16 @@ namespace KK_Plugins.MaterialEditor
             if (value == null) return false;
             bool didSet = false;
 
-            foreach (var material in GetMaterials(gameObject, materialName))
+            var materials = GetMaterials(gameObject, materialName);
+            for (var i = 0; i < materials.Count; i++)
+            {
+                var material = materials[i];
                 if (material.HasProperty($"_{propertyName}"))
                 {
                     material.SetTextureScale($"_{propertyName}", (Vector2)value);
                     didSet = true;
                 }
+            }
             return didSet;
         }
 
@@ -521,8 +566,10 @@ namespace KK_Plugins.MaterialEditor
             if (!MaterialEditorPlugin.XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
                 shaderPropertyDataList = new Dictionary<string, MaterialEditorPlugin.ShaderPropertyData>();
 
-            foreach (var material in GetMaterials(gameObject, materialName))
+            var materials = GetMaterials(gameObject, materialName);
+            for (var i = 0; i < materials.Count; i++)
             {
+                var material = materials[i];
                 material.shader = shaderData.Shader;
 
                 if (shaderData.RenderQueue != null)
@@ -579,9 +626,11 @@ namespace KK_Plugins.MaterialEditor
             bool didSet = false;
             if (value == null) return false;
 
-            foreach (var material in GetMaterials(gameObject, materialName))
+            var list = GetMaterials(gameObject, materialName);
+            for (var i = 0; i < list.Count; i++)
             {
-                material.renderQueue = (int)value;
+                var material = list[i];
+                material.renderQueue = (int) value;
                 didSet = true;
             }
             return didSet;
@@ -619,7 +668,7 @@ namespace KK_Plugins.MaterialEditor
             /// </summary>
             ShadowCastingMode,
             /// <summary>
-            /// Whether the renderer will recieve shadows cast by other objects
+            /// Whether the renderer will receive shadows cast by other objects
             /// </summary>
             ReceiveShadows
         }

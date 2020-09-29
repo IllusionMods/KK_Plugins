@@ -14,7 +14,7 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), nameof(Manager.Voice.OncePlayChara), typeof(Manager.Voice.Loader))]
             internal static void OncePlayCharaPostfix(Manager.Voice.Loader loader, AudioSource __result)
             {
-                if (HSceneInstance?.ctrlVoice != null)
+                if (HSceneInstance != null && HSceneInstance.ctrlVoice != null)
                     DisplayHSubtitle(loader, __result);
                 else if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
                     Caption.DisplaySubtitle(__result.gameObject, text);

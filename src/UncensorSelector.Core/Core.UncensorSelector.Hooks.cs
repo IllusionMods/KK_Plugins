@@ -103,7 +103,7 @@ namespace KK_Plugins
                 }
             }
 
-            return instructions;
+            return instructionsList;
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace KK_Plugins
                 }
             }
 
-            return instructions;
+            return instructionsList;
         }
     }
 }

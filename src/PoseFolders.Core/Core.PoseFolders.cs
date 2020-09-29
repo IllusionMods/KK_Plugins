@@ -60,8 +60,7 @@ namespace KK_Plugins
 
         private static Transform AddListButton(string text, UnityAction callback)
         {
-            var prefabNode = Instantiate(v_prefabNode);
-            prefabNode.transform.SetParent(v_transformRoot, false);
+            var prefabNode = Instantiate(v_prefabNode, v_transformRoot, false);
             var component = prefabNode.GetComponent<StudioNode>();
             component.active = true;
             component.addOnClick = callback;

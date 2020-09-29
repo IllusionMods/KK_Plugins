@@ -11,7 +11,7 @@ namespace KK_Plugins
         {
             private List<float> _slidersFace;
 
-            public void RandomizeEyes()
+            public static void RandomizeEyes()
             {
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
                 var face = Custom.face;
@@ -52,7 +52,7 @@ namespace KK_Plugins
                 face.eyelineColor = Color.HSVToRGB(h, s, v);
             }
 
-            public void RandomizeEtc()
+            public static void RandomizeEtc()
             {
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
                 var face = Custom.face;
@@ -95,7 +95,8 @@ namespace KK_Plugins
             private static List<float> SaveFaceSiders(ChaFileFace face)
             {
                 var res = new List<float>();
-                for (var i = 0; i < face.shapeValueFace.Length; i++) res.Add(face.shapeValueFace[i]);
+                for (var i = 0; i < face.shapeValueFace.Length; i++)
+                    res.Add(face.shapeValueFace[i]);
                 res.Add(face.cheekGlossPower);
                 res.Add(face.detailPower);
                 res.Add(face.eyelineUpWeight);
@@ -111,7 +112,8 @@ namespace KK_Plugins
             private static void LoadFaceSiders(ChaFileFace face, List<float> list)
             {
                 var n = 0;
-                for (var i = 0; i < face.shapeValueFace.Length; i++) face.shapeValueFace[i] = list[n++];
+                for (var i = 0; i < face.shapeValueFace.Length; i++)
+                    face.shapeValueFace[i] = list[n++];
                 face.cheekGlossPower = list[n++];
                 face.detailPower = list[n++];
                 face.eyelineUpWeight = list[n++];

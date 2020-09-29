@@ -33,7 +33,7 @@ namespace KK_Plugins
             var cat = new MakerCategory(parentCat.CategoryName, "RandomCharacterGeneratorCategory", parentCat.Position + 5, "Randomize");
             e.AddSubCategory(cat);
 
-            e.AddControl(new MakerButton("Set current character as template", cat, this)).OnClick.AddListener(delegate
+            e.AddControl(new MakerButton("Set current character as template", cat, this)).OnClick.AddListener(() =>
             {
                 randomizerBody.SetTemplate();
                 randomizerFace.SetTemplate();
@@ -61,16 +61,16 @@ namespace KK_Plugins
             randomizeBodySliders.Value = true;
             randomizeFaceSliders.Value = true;
 
-            randButton.OnClick.AddListener(delegate
+            randButton.OnClick.AddListener(() =>
             {
-                if (randomizeBody.Value) randomizerBody.RandomizeBody();
+                if (randomizeBody.Value) RandomizerBody.RandomizeBody();
                 if (randomizeBodySliders.Value) randomizerBody.RandomizeSliders();
-                if (randomizeFaceEyes.Value) randomizerFace.RandomizeEyes();
-                if (randomizeFaceEtc.Value) randomizerFace.RandomizeEtc();
+                if (randomizeFaceEyes.Value) RandomizerFace.RandomizeEyes();
+                if (randomizeFaceEtc.Value) RandomizerFace.RandomizeEtc();
                 if (randomizeFaceSliders.Value) randomizerFace.RandomizeSliders();
-                if (randomizeHair.Value) randomizerHair.RandomizeType();
-                if (randomizeHair.Value) randomizerHair.RandomizeEtc();
-                if (randomizeHairColor.Value) randomizerHair.RandomizeColor();
+                if (randomizeHair.Value) RandomizerHair.RandomizeType();
+                if (randomizeHair.Value) RandomizerHair.RandomizeEtc();
+                if (randomizeHairColor.Value) RandomizerHair.RandomizeColor();
 
                 MakerAPI.GetCharacterControl().Reload();
             });
@@ -112,8 +112,7 @@ namespace KK_Plugins
                     s = RandomFloat(0.13, 0.39);
                     v = RandomFloat(0.66, 0.98);
                     break;
-                default:
-                case 2: // Unchanged
+                default: // Unchanged
                     Color.RGBToHSV(currentColor, out h, out s, out v);
                     break;
             }

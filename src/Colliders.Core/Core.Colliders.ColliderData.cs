@@ -13,7 +13,7 @@ namespace KK_Plugins
             public string ColliderNamePostfix;
             public DynamicBoneCollider.Direction ColliderDirection;
 
-            public ColliderData(string boneName, float colliderRadius, float collierHeight, Vector3 colliderCenter, DynamicBoneCollider.Direction colliderDirection = default, string colliderNamePostfix="")
+            public ColliderData(string boneName, float colliderRadius, float collierHeight, Vector3 colliderCenter, DynamicBoneCollider.Direction colliderDirection = default, string colliderNamePostfix = "")
             {
                 BoneName = boneName;
                 ColliderRadius = colliderRadius;

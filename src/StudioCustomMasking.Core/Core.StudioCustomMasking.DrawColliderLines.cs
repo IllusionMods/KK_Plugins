@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace KK_Plugins.StudioCustomMasking
 {
-    class DrawColliderLines : MonoBehaviour
+    public class DrawColliderLines : MonoBehaviour
     {
-        private  Material _LineMaterial = null;
-        public  Material LineMaterial
+        private Material _LineMaterial;
+        public Material LineMaterial
         {
             get
             {
@@ -22,16 +22,13 @@ namespace KK_Plugins.StudioCustomMasking
                 }
                 return _LineMaterial;
             }
-            set
-            {
-                _LineMaterial = value;
-            }
+            set => _LineMaterial = value;
         }
 
         /// <summary>
         /// OnPostRender only works if this MB is attached to a camera
         /// </summary>
-        public void OnPostRender()
+        private void OnPostRender()
         {
             if (StudioCustomMasking.HideLines) return;
 
@@ -51,22 +48,22 @@ namespace KK_Plugins.StudioCustomMasking
         /// Draw a box
         /// </summary>
         /// <param name="box">A box</param>
-        void DrawBox(BoxCollider box)
+        private void DrawBox(BoxCollider box)
         {
             if (box == null) return;
 
-            var transform = box.transform;
+            var boxTransform = box.transform;
             var min = box.center - box.size * 0.5f;
             var max = box.center + box.size * 0.5f;
 
-            var P000 = transform.TransformPoint(new Vector3(min.x, min.y, min.z));
-            var P001 = transform.TransformPoint(new Vector3(min.x, min.y, max.z));
-            var P010 = transform.TransformPoint(new Vector3(min.x, max.y, min.z));
-            var P011 = transform.TransformPoint(new Vector3(min.x, max.y, max.z));
-            var P100 = transform.TransformPoint(new Vector3(max.x, min.y, min.z));
-            var P101 = transform.TransformPoint(new Vector3(max.x, min.y, max.z));
-            var P110 = transform.TransformPoint(new Vector3(max.x, max.y, min.z));
-            var P111 = transform.TransformPoint(new Vector3(max.x, max.y, max.z));
+            var P000 = boxTransform.TransformPoint(new Vector3(min.x, min.y, min.z));
+            var P001 = boxTransform.TransformPoint(new Vector3(min.x, min.y, max.z));
+            var P010 = boxTransform.TransformPoint(new Vector3(min.x, max.y, min.z));
+            var P011 = boxTransform.TransformPoint(new Vector3(min.x, max.y, max.z));
+            var P100 = boxTransform.TransformPoint(new Vector3(max.x, min.y, min.z));
+            var P101 = boxTransform.TransformPoint(new Vector3(max.x, min.y, max.z));
+            var P110 = boxTransform.TransformPoint(new Vector3(max.x, max.y, min.z));
+            var P111 = boxTransform.TransformPoint(new Vector3(max.x, max.y, max.z));
 
             //Draw the rest of the owl
             DrawLine(P000, P001);
@@ -88,7 +85,7 @@ namespace KK_Plugins.StudioCustomMasking
         /// </summary>
         /// <param name="point1">Start point</param>
         /// <param name="point2">End point</param>
-        public void DrawLine(Vector3 point1, Vector3 point2)
+        private void DrawLine(Vector3 point1, Vector3 point2)
         {
             GL.Begin(GL.LINES);
             LineMaterial.SetPass(0);

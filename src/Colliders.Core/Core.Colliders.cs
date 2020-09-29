@@ -45,12 +45,14 @@ namespace KK_Plugins
         /// <summary>
         /// Apply colliders on setting change
         /// </summary>
-        private void ConfigBreastColliders_SettingChanged(object sender, System.EventArgs e)
+        private static void ConfigBreastColliders_SettingChanged(object sender, System.EventArgs e)
         {
             if (StudioAPI.InsideStudio) return;
 
-            foreach (var chaControl in FindObjectsOfType<ChaControl>())
+            var chaControls = FindObjectsOfType<ChaControl>();
+            for (var i = 0; i < chaControls.Length; i++)
             {
+                var chaControl = chaControls[i];
                 var controller = GetController(chaControl);
                 if (controller == null) continue;
 
@@ -62,12 +64,14 @@ namespace KK_Plugins
         /// <summary>
         /// Apply colliders on setting change
         /// </summary>
-        private void ConfigFloorCollider_SettingChanged(object sender, System.EventArgs e)
+        private static void ConfigFloorCollider_SettingChanged(object sender, System.EventArgs e)
         {
             if (StudioAPI.InsideStudio) return;
 
-            foreach (var chaControl in FindObjectsOfType<ChaControl>())
+            var chaControls = FindObjectsOfType<ChaControl>();
+            for (var i = 0; i < chaControls.Length; i++)
             {
+                var chaControl = chaControls[i];
                 var controller = GetController(chaControl);
                 if (controller == null) continue;
 
@@ -126,15 +130,23 @@ namespace KK_Plugins
         }
 
         public static ColliderController GetController(ChaControl chaControl) => chaControl.GetComponent<ColliderController>();
-        private static ColliderController GetSelectedController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<ColliderController>();
+        private static ColliderController GetSelectedController()
+        {
+            var mpCharCtrl = FindObjectOfType<MPCharCtrl>();
+            if (mpCharCtrl == null || mpCharCtrl.ociChar == null || mpCharCtrl.ociChar.charInfo == null)
+                return null;
+            return mpCharCtrl.ociChar.charInfo.GetComponent<ColliderController>();
+        }
+
 
         public class ColliderSceneController : SceneCustomFunctionController
         {
             protected override void OnSceneSave() { }
             protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
             {
-                foreach (var controller in FindObjectsOfType<ColliderController>())
-                    controller.ApplyColliders();
+                var controllers = FindObjectsOfType<ColliderController>();
+                for (var i = 0; i < controllers.Length; i++)
+                    controllers[i].ApplyColliders();
             }
         }
     }

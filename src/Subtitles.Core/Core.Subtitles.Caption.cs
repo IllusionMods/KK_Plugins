@@ -71,7 +71,7 @@ namespace KK_Plugins
                     subtitle.transform.localRotation = Quaternion.identity;
                     subtitle.transform.localScale = new Vector3(0.001f * WorldScale, 0.001f * WorldScale, 0.001f * WorldScale);
 
-                    Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"Arial.ttf");
+                    Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
 
                     VRText1 = subtitle.AddComponent<Text>();
                     VRText1.font = fontFace;
@@ -95,14 +95,13 @@ namespace KK_Plugins
                     textContainer.transform.localPosition = VRText2Offset.Value;
                     textContainer.transform.localRotation = Quaternion.identity;
 
-                    var subtitle = new GameObject("VRText2");
-                    subtitle.layer = 5;
+                    var subtitle = new GameObject("VRText2") { layer = 5 };
                     subtitle.transform.parent = textContainer.transform;
                     subtitle.transform.localPosition = Vector3.zero;
                     subtitle.transform.localRotation = Quaternion.identity;
                     subtitle.transform.localScale = new Vector3(0.001f * WorldScale, 0.001f * WorldScale, 0.001f * WorldScale);
 
-                    Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"Arial.ttf");
+                    Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
 
                     VRText2 = subtitle.AddComponent<Text>();
                     VRText2.font = fontFace;
@@ -133,7 +132,7 @@ namespace KK_Plugins
                 if (text.IsNullOrWhiteSpace()) return;
                 InitGUI();
 
-                Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), $"Arial.ttf");
+                Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
                 int fsize = FontSize.Value;
                 fsize = (int)(fsize < 0 ? (fsize * Screen.height / -100.0) : fsize);
 
@@ -160,7 +159,7 @@ namespace KK_Plugins
                 subtitleText.text = text;
                 Logger.LogDebug(text);
 
-                voice.OnDestroyAsObservable().Subscribe(delegate (Unit _) { Destroy(subtitle); });
+                voice.OnDestroyAsObservable().Subscribe(obj => Destroy(subtitle));
             }
             /// <summary>
             /// Display text on screen, for VR. When the voice GameObject is destroyed, text will be removed from the screen.
@@ -177,12 +176,12 @@ namespace KK_Plugins
                 if (VRText1.text == "")
                 {
                     VRText1.text = text;
-                    voice.OnDestroyAsObservable().Subscribe(delegate (Unit _) { VRText1.text = ""; });
+                    voice.OnDestroyAsObservable().Subscribe(obj => VRText1.text = "");
                 }
                 else
                 {
                     VRText2.text = text;
-                    voice.OnDestroyAsObservable().Subscribe(delegate (Unit _) { VRText2.text = ""; });
+                    voice.OnDestroyAsObservable().Subscribe(obj => VRText2.text = "");
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using ActionGame.Communication;
+using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -14,7 +15,7 @@ namespace KK_Plugins
                 foreach (var a in ActionGameInfoInstance.dicTalkInfo)
                     foreach (var b in a.Value)
                         foreach (var c in b.Value)
-                            foreach (var d in c.Value.Where(x => x is ActionGame.Communication.Info.GenericInfo).Select(x => x as ActionGame.Communication.Info.GenericInfo))
+                            foreach (var d in c.Value.OfType<Info.GenericInfo>())
                             {
                                 var text = d.talk.Where(x => x.assetbundle == voice.assetBundleName && x.file == voice.assetName).Select(x => x.text).FirstOrDefault();
                                 if (!text.IsNullOrEmpty())

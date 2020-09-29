@@ -6,12 +6,12 @@ namespace KK_Plugins
 {
     public partial class HairAccessoryCustomizer
     {
-        private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetController(MakerAPI.GetCharacterControl()).TransferAccessoriesHandler(e);
+        private static void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetController(MakerAPI.GetCharacterControl()).TransferAccessoriesHandler(e);
 #if KK
-        private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetController(MakerAPI.GetCharacterControl()).CopyAccessoriesHandler(e);
+        private static void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetController(MakerAPI.GetCharacterControl()).CopyAccessoriesHandler(e);
 #endif
 
-        private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e)
+        private static void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e)
         {
             if (ReloadingChara) return;
 
@@ -28,7 +28,7 @@ namespace KK_Plugins
                 InitCurrentSlot(controller, false);
         }
 
-        private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e)
+        private static void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e)
         {
             if (ReloadingChara) return;
             if (!MakerAPI.InsideAndLoaded) return;

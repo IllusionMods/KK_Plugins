@@ -32,7 +32,7 @@ namespace KK_Plugins
                     InitCurrentSlot(controller);
                 }
 
-                controller.UpdateAccessories(true);
+                controller.UpdateAccessories();
                 ReloadingChara = false;
             }
         }

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BepInEx.Bootstrap;
+﻿using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using Illusion.Extensions;
-using UnityEngine;
 using KKAPI.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace KK_Plugins
 {
@@ -37,7 +37,7 @@ namespace KK_Plugins
             internal SettingsGUI(IDictionary<string, T> uncensors, byte sex, string part)
             {
                 WindowID = $"{GUID}.{nameof(SettingsGUI<T>)}.{sex}.{part}".GetHashCode();
-                // deal with duplicate displaynames (it happpens)
+                //Deal with duplicate display names (it happens)
                 var displayNames = uncensors.Select(x => x.Value.DisplayName);
 
                 string GetDisplayName(T uncensor)
@@ -55,7 +55,7 @@ namespace KK_Plugins
             public string TitleText { get; }
             public string ButtonText { get; }
 
-            public int WindowID { get; } = -1;
+            public int WindowID { get; }
 
             public bool Visible
             {
@@ -95,8 +95,8 @@ namespace KK_Plugins
                 var height = Math.Min(Screen.height * 0.9f, (valueCountChanged || GUIRect.height < 60) ? (AllValues.Count + 4) * 22f : GUIRect.height);
                 GUIRect = new Rect(
                     // make sure it's not off screen and try not to overlap settings GUI
-                    Screen.width > 1600 ? Screen.width * 0.75f - width * 0.5f : Screen.width - width, 
-                    Math.Max(0, Screen.height/2f - height/2f),
+                    Screen.width > 1600 ? Screen.width * 0.75f - width * 0.5f : Screen.width - width,
+                    Math.Max(0, Screen.height / 2f - height / 2f),
                     width, height);
 
                 LastAllValuesCount = AllValues.Count;
@@ -150,7 +150,7 @@ namespace KK_Plugins
                 GUILayout.EndHorizontal();
             }
 
-            private ConfigurationManager.ConfigurationManager GetConfigurationManager()
+            private static ConfigurationManager.ConfigurationManager GetConfigurationManager()
             {
                 return Chainloader.ManagerObject.transform.GetComponentInChildren<ConfigurationManager.ConfigurationManager>();
             }
@@ -170,11 +170,11 @@ namespace KK_Plugins
 
                 if (Setting == null)
                 {
-                    // first run, set things up
-                    Setting = (ConfigEntry<string>) settingBase;
+                    //First run, set things up
+                    Setting = (ConfigEntry<string>)settingBase;
 
-                    // only update these on first run or when value changes 
-                    // otherwise it would recalcuate on every OnGUI
+                    //Only update these on first run or when value changes 
+                    //Otherwise it would recalculate on every OnGUI
                     Setting.SettingChanged += (o, s) => UpdateSelecedGUIDS(Setting.Value);
                     UpdateSelecedGUIDS(Setting.Value);
 

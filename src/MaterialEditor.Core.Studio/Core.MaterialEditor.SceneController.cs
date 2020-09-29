@@ -6,6 +6,7 @@ using MessagePack;
 using Studio;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -29,7 +30,7 @@ namespace KK_Plugins.MaterialEditor
         private static string FileToSet;
         private static string PropertyToSet;
         private static Material MatToSet;
-        private static int IDToSet = 0;
+        private static int IDToSet;
 
         /// <summary>
         /// Saves data
@@ -40,11 +41,11 @@ namespace KK_Plugins.MaterialEditor
 
             List<int> IDsToPurge = new List<int>();
             foreach (int texID in TextureDictionary.Keys)
-                if (!MaterialTexturePropertyList.Any(x => x.TexID == texID))
+                if (MaterialTexturePropertyList.All(x => x.TexID != texID))
                     IDsToPurge.Add(texID);
 
-            foreach (int texID in IDsToPurge)
-                TextureDictionary.Remove(texID);
+            for (var i = 0; i < IDsToPurge.Count; i++)
+                TextureDictionary.Remove(IDsToPurge[i]);
 
             if (TextureDictionary.Count > 0)
                 data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
@@ -113,7 +114,11 @@ namespace KK_Plugins.MaterialEditor
                         importDictionary[x.Key] = SetAndGetTextureID(x.Value);
 
             if (data.data.TryGetValue(nameof(MaterialShaderList), out var shaderProperties) && shaderProperties != null)
-                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])shaderProperties))
+            {
+                var properties = MessagePackSerializer.Deserialize<List<MaterialShader>>((byte[])shaderProperties);
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var loadedProperty = properties[i];
                     if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                     {
                         bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName);
@@ -121,27 +126,51 @@ namespace KK_Plugins.MaterialEditor
                         if (setShader || setRenderQueue)
                             MaterialShaderList.Add(new MaterialShader(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
                     }
+                }
+            }
 
             if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
-                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties))
+            {
+                var properties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var loadedProperty = properties[i];
                     if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                         if (MaterialAPI.SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, int.Parse(loadedProperty.Value)))
                             RendererPropertyList.Add(new RendererProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                }
+            }
 
             if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
-                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties))
+            {
+                var properties = MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties);
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var loadedProperty = properties[i];
                     if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                         if (SetFloat(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
                             MaterialFloatPropertyList.Add(new MaterialFloatProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                }
+            }
 
             if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
-                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties))
+            {
+                var properties = MessagePackSerializer.Deserialize<List<MaterialColorProperty>>((byte[])materialColorProperties);
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var loadedProperty = properties[i];
                     if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                         if (SetColor(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
                             MaterialColorPropertyList.Add(new MaterialColorProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                }
+            }
 
             if (data.data.TryGetValue(nameof(MaterialTexturePropertyList), out var materialTextureProperties) && materialTextureProperties != null)
-                foreach (var loadedProperty in MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties))
+            {
+                var properties = MessagePackSerializer.Deserialize<List<MaterialTextureProperty>>((byte[])materialTextureProperties);
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var loadedProperty = properties[i];
                     if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                     {
                         int? texID = null;
@@ -165,6 +194,8 @@ namespace KK_Plugins.MaterialEditor
                         if (setTex || setOffset || setScale)
                             MaterialTexturePropertyList.Add(newTextureProperty);
                     }
+                }
+            }
         }
 
         /// <summary>
@@ -183,39 +214,56 @@ namespace KK_Plugins.MaterialEditor
             {
                 if (copiedItem.Value is OCIItem ociItem)
                 {
-                    foreach (var loadedProperty in MaterialShaderList.Where(x => x.ID == copiedItem.Key))
+                    for (var i = 0; i < MaterialShaderList.Count; i++)
                     {
-                        bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName);
-                        bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue);
-                        if (setShader || setRenderQueue)
-                            materialShaderListNew.Add(new MaterialShader(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                        var loadedProperty = MaterialShaderList[i];
+                        if (loadedProperty.ID == copiedItem.Key)
+                        {
+                            bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName);
+                            bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue);
+                            if (setShader || setRenderQueue) materialShaderListNew.Add(new MaterialShader(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                        }
                     }
 
-                    foreach (var loadedProperty in RendererPropertyList.Where(x => x.ID == copiedItem.Key))
-                        if (MaterialAPI.SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value))
-                            rendererPropertyListNew.Add(new RendererProperty(copiedItem.Value.GetSceneId(), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
-
-                    foreach (var loadedProperty in MaterialFloatPropertyList.Where(x => x.ID == copiedItem.Key))
-                        if (SetFloat(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
-                            materialFloatPropertyListNew.Add(new MaterialFloatProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
-
-                    foreach (var loadedProperty in MaterialColorPropertyList.Where(x => x.ID == copiedItem.Key))
-                        if (SetColor(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
-                            materialColorPropertyListNew.Add(new MaterialColorProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
-
-                    foreach (var loadedProperty in MaterialTexturePropertyList.Where(x => x.ID == copiedItem.Key))
+                    for (var i = 0; i < RendererPropertyList.Count; i++)
                     {
-                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+                        var loadedProperty = RendererPropertyList[i];
+                        if (loadedProperty.ID == copiedItem.Key)
+                            if (MaterialAPI.SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value))
+                                rendererPropertyListNew.Add(new RendererProperty(copiedItem.Value.GetSceneId(), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    }
 
-                        bool setTex = false;
-                        if (loadedProperty.TexID != null)
-                            setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TextureDictionary[(int)newTextureProperty.TexID].Texture);
+                    for (var i = 0; i < MaterialFloatPropertyList.Count; i++)
+                    {
+                        var loadedProperty = MaterialFloatPropertyList[i];
+                        if (loadedProperty.ID == copiedItem.Key)
+                            if (SetFloat(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
+                                materialFloatPropertyListNew.Add(new MaterialFloatProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    }
 
-                        bool setOffset = SetTextureOffset(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
-                        bool setScale = SetTextureScale(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Scale);
+                    for (var i = 0; i < MaterialColorPropertyList.Count; i++)
+                    {
+                        var loadedProperty = MaterialColorPropertyList[i];
+                        if (loadedProperty.ID == copiedItem.Key)
+                            if (SetColor(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                                materialColorPropertyListNew.Add(new MaterialColorProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    }
 
-                        if (setTex || setOffset || setScale)
-                            materialTexturePropertyListNew.Add(newTextureProperty);
+                    for (var i = 0; i < MaterialTexturePropertyList.Count; i++)
+                    {
+                        var loadedProperty = MaterialTexturePropertyList[i];
+                        if (loadedProperty.ID == copiedItem.Key)
+                        {
+                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+
+                            bool setTex = false;
+                            if (loadedProperty.TexID != null) setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TextureDictionary[(int)newTextureProperty.TexID].Texture);
+
+                            bool setOffset = SetTextureOffset(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
+                            bool setScale = SetTextureScale(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Scale);
+
+                            if (setTex || setOffset || setScale) materialTexturePropertyListNew.Add(newTextureProperty);
+                        }
                     }
                 }
             }
@@ -291,18 +339,34 @@ namespace KK_Plugins.MaterialEditor
         {
             MaterialEditorPlugin.CopyData.ClearAll();
 
-            foreach (var materialShader in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()))
-                MaterialEditorPlugin.CopyData.MaterialShaderList.Add(new CopyContainer.MaterialShader(materialShader.ShaderName, materialShader.RenderQueue));
-            foreach (var materialFloatProperty in MaterialFloatPropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()))
-                MaterialEditorPlugin.CopyData.MaterialFloatPropertyList.Add(new CopyContainer.MaterialFloatProperty(materialFloatProperty.Property, float.Parse(materialFloatProperty.Value)));
-            foreach (var materialColorProperty in MaterialColorPropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()))
-                MaterialEditorPlugin.CopyData.MaterialColorPropertyList.Add(new CopyContainer.MaterialColorProperty(materialColorProperty.Property, materialColorProperty.Value));
-            foreach (var materialTextureProperty in MaterialTexturePropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()))
+            for (var i = 0; i < MaterialShaderList.Count; i++)
             {
-                if (materialTextureProperty.TexID != null)
-                    MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, TextureDictionary[(int)materialTextureProperty.TexID].Data, materialTextureProperty.Offset, materialTextureProperty.Scale));
-                else
-                    MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
+                var materialShader = MaterialShaderList[i];
+                if (materialShader.ID == id && materialShader.MaterialName == material.NameFormatted())
+                    MaterialEditorPlugin.CopyData.MaterialShaderList.Add(new CopyContainer.MaterialShader(materialShader.ShaderName, materialShader.RenderQueue));
+            }
+            for (var i = 0; i < MaterialFloatPropertyList.Count; i++)
+            {
+                var materialFloatProperty = MaterialFloatPropertyList[i];
+                if (materialFloatProperty.ID == id && materialFloatProperty.MaterialName == material.NameFormatted())
+                    MaterialEditorPlugin.CopyData.MaterialFloatPropertyList.Add(new CopyContainer.MaterialFloatProperty(materialFloatProperty.Property, float.Parse(materialFloatProperty.Value)));
+            }
+            for (var i = 0; i < MaterialColorPropertyList.Count; i++)
+            {
+                var materialColorProperty = MaterialColorPropertyList[i];
+                if (materialColorProperty.ID == id && materialColorProperty.MaterialName == material.NameFormatted())
+                    MaterialEditorPlugin.CopyData.MaterialColorPropertyList.Add(new CopyContainer.MaterialColorProperty(materialColorProperty.Property, materialColorProperty.Value));
+            }
+            for (var i = 0; i < MaterialTexturePropertyList.Count; i++)
+            {
+                var materialTextureProperty = MaterialTexturePropertyList[i];
+                if (materialTextureProperty.ID == id && materialTextureProperty.MaterialName == material.NameFormatted())
+                {
+                    if (materialTextureProperty.TexID != null)
+                        MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, TextureDictionary[(int)materialTextureProperty.TexID].Data, materialTextureProperty.Offset, materialTextureProperty.Scale));
+                    else
+                        MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
+                }
             }
         }
         /// <summary>
@@ -313,22 +377,32 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void MaterialPasteEdits(int id, Material material, bool setProperty = true)
         {
-            foreach (var materialShader in MaterialEditorPlugin.CopyData.MaterialShaderList)
+            for (var i = 0; i < MaterialEditorPlugin.CopyData.MaterialShaderList.Count; i++)
             {
+                var materialShader = MaterialEditorPlugin.CopyData.MaterialShaderList[i];
                 if (materialShader.ShaderName != null)
                     SetMaterialShader(id, material, materialShader.ShaderName, setProperty);
                 if (materialShader.RenderQueue != null)
                     SetMaterialShaderRenderQueue(id, material, (int)materialShader.RenderQueue, setProperty);
             }
-            foreach (var materialFloatProperty in MaterialEditorPlugin.CopyData.MaterialFloatPropertyList)
+            for (var i = 0; i < MaterialEditorPlugin.CopyData.MaterialFloatPropertyList.Count; i++)
+            {
+                var materialFloatProperty = MaterialEditorPlugin.CopyData.MaterialFloatPropertyList[i];
                 if (material.HasProperty($"_{materialFloatProperty.Property}"))
                     SetMaterialFloatProperty(id, material, materialFloatProperty.Property, materialFloatProperty.Value, setProperty);
-            foreach (var materialColorProperty in MaterialEditorPlugin.CopyData.MaterialColorPropertyList)
+            }
+            for (var i = 0; i < MaterialEditorPlugin.CopyData.MaterialColorPropertyList.Count; i++)
+            {
+                var materialColorProperty = MaterialEditorPlugin.CopyData.MaterialColorPropertyList[i];
                 if (material.HasProperty($"_{materialColorProperty.Property}"))
                     SetMaterialColorProperty(id, material, materialColorProperty.Property, materialColorProperty.Value, setProperty);
-            foreach (var materialTextureProperty in MaterialEditorPlugin.CopyData.MaterialTexturePropertyList)
+            }
+            for (var i = 0; i < MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Count; i++)
+            {
+                var materialTextureProperty = MaterialEditorPlugin.CopyData.MaterialTexturePropertyList[i];
                 if (material.HasProperty($"_{materialTextureProperty.Property}"))
                     SetMaterialTexture(id, material, materialTextureProperty.Property, materialTextureProperty.Data);
+            }
         }
 
         #region Set, Get, Remove methods
@@ -342,7 +416,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the renderer</param>
         public void SetRendererProperty(int id, Renderer renderer, RendererProperties property, string value, bool setProperty = true)
         {
-            GameObject gameObject = GetObjectByID(id);
+            GameObject go = GetObjectByID(id);
             var rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted());
             if (rendererProperty == null)
             {
@@ -365,8 +439,9 @@ namespace KK_Plugins.MaterialEditor
             }
 
             if (setProperty)
-                MaterialAPI.SetRendererProperty(gameObject, renderer.NameFormatted(), property, value);
+                MaterialAPI.SetRendererProperty(go, renderer.NameFormatted(), property, value);
         }
+
         /// <summary>
         /// Get the saved renderer property value or null if none is saved
         /// </summary>
@@ -394,12 +469,12 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the renderer</param>
         public void RemoveRendererProperty(int id, Renderer renderer, RendererProperties property, bool setProperty = true)
         {
-            GameObject gameObject = GetObjectByID(id);
+            GameObject go = GetObjectByID(id);
             if (setProperty)
             {
                 var original = GetRendererPropertyValueOriginal(id, renderer, property);
                 if (!original.IsNullOrEmpty())
-                    MaterialAPI.SetRendererProperty(gameObject, renderer.NameFormatted(), property, original);
+                    MaterialAPI.SetRendererProperty(go, renderer.NameFormatted(), property, original);
             }
 
             RendererPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted());
@@ -415,23 +490,23 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialFloatProperty(int id, Material material, string propertyName, float value, bool setProperty = true)
         {
-            GameObject gameObject = GetObjectByID(id);
+            GameObject go = GetObjectByID(id);
             var materialProperty = MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (materialProperty == null)
             {
                 float valueOriginal = material.GetFloat($"_{propertyName}");
-                MaterialFloatPropertyList.Add(new MaterialFloatProperty(id, material.NameFormatted(), propertyName, value.ToString(), valueOriginal.ToString()));
+                MaterialFloatPropertyList.Add(new MaterialFloatProperty(id, material.NameFormatted(), propertyName, value.ToString(CultureInfo.InvariantCulture), valueOriginal.ToString(CultureInfo.InvariantCulture)));
             }
             else
             {
-                if (value.ToString() == materialProperty.ValueOriginal)
+                if (value.ToString(CultureInfo.InvariantCulture) == materialProperty.ValueOriginal)
                     RemoveMaterialFloatProperty(id, material, propertyName, false);
                 else
-                    materialProperty.Value = value.ToString();
+                    materialProperty.Value = value.ToString(CultureInfo.InvariantCulture);
             }
 
             if (setProperty)
-                SetFloat(gameObject, material.NameFormatted(), propertyName, value);
+                SetFloat(go, material.NameFormatted(), propertyName, value);
         }
         /// <summary>
         /// Get the saved material property value or null if none is saved
@@ -470,12 +545,12 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialFloatProperty(int id, Material material, string propertyName, bool setProperty = true)
         {
-            GameObject gameObject = GetObjectByID(id);
+            GameObject go = GetObjectByID(id);
             if (setProperty)
             {
                 var original = GetMaterialFloatPropertyValueOriginal(id, material, propertyName);
                 if (original != null)
-                    SetFloat(gameObject, material.NameFormatted(), propertyName, (float)original);
+                    SetFloat(go, material.NameFormatted(), propertyName, (float)original);
             }
 
             MaterialFloatPropertyList.RemoveAll(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
@@ -490,7 +565,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialColorProperty(int id, Material material, string propertyName, Color value, bool setProperty = true)
         {
-            GameObject gameObject = GetObjectByID(id);
+            GameObject go = GetObjectByID(id);
             var colorProperty = MaterialColorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (colorProperty == null)
             {
@@ -506,7 +581,7 @@ namespace KK_Plugins.MaterialEditor
             }
 
             if (setProperty)
-                SetColor(gameObject, material.NameFormatted(), propertyName, value);
+                SetColor(go, material.NameFormatted(), propertyName, value);
         }
         /// <summary>
         /// Get the saved material property value or null if none is saved
@@ -535,12 +610,12 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialColorProperty(int id, Material material, string propertyName, bool setProperty = true)
         {
-            GameObject gameObject = GetObjectByID(id);
+            GameObject go = GetObjectByID(id);
             if (setProperty)
             {
                 var original = GetMaterialColorPropertyValueOriginal(id, material, propertyName);
                 if (original != null)
-                    SetColor(gameObject, material.NameFormatted(), propertyName, (Color)original);
+                    SetColor(go, material.NameFormatted(), propertyName, (Color)original);
             }
 
             MaterialColorPropertyList.RemoveAll(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
@@ -556,7 +631,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setTexInUpdate">Whether to wait for the next Update</param>
         public void SetMaterialTextureFromFile(int id, Material material, string propertyName, string filePath, bool setTexInUpdate = false)
         {
-            GameObject gameObject = GetObjectByID(id);
+            GameObject go = GetObjectByID(id);
             if (!File.Exists(filePath)) return;
 
             if (setTexInUpdate)
@@ -571,7 +646,7 @@ namespace KK_Plugins.MaterialEditor
                 var texBytes = File.ReadAllBytes(filePath);
                 Texture2D tex = MaterialEditorPlugin.TextureFromBytes(texBytes);
 
-                SetTexture(gameObject, material.NameFormatted(), propertyName, tex);
+                SetTexture(go, material.NameFormatted(), propertyName, tex);
 
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
                 if (textureProperty == null)
@@ -592,12 +667,12 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="data">Byte array containing the texture data</param>
         public void SetMaterialTexture(int id, Material material, string propertyName, byte[] data)
         {
-            GameObject gameObject = GetObjectByID(id);
+            GameObject go = GetObjectByID(id);
             if (data == null) return;
 
             Texture2D tex = MaterialEditorPlugin.TextureFromBytes(data);
 
-            SetTexture(gameObject, material.NameFormatted(), propertyName, tex);
+            SetTexture(go, material.NameFormatted(), propertyName, tex);
 
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty == null)
@@ -622,13 +697,14 @@ namespace KK_Plugins.MaterialEditor
                 return TextureDictionary[(int)textureProperty.TexID].Texture;
             return null;
         }
+
         /// <summary>
         /// Get whether the texture has been changed
         /// </summary>
         /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="propertyName">Property of the material without the leading underscore</param>
-        /// <returns>Saved material property's original value or null if none is saved</returns>
+        /// <returns>True if the texture has not been modified, false if it has been.</returns>
         public bool GetMaterialTextureOriginal(int id, Material material, string propertyName) =>
             MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName)?.TexID == null;
         /// <summary>
@@ -936,25 +1012,29 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialShaderRenderQueue(int id, Material material, bool setProperty = true)
         {
-            GameObject gameObject = GetObjectByID(id);
+            GameObject go = GetObjectByID(id);
             if (setProperty)
             {
                 var original = GetMaterialShaderRenderQueueOriginal(id, material);
                 if (original != null)
-                    SetRenderQueue(gameObject, material.NameFormatted(), original);
+                    SetRenderQueue(go, material.NameFormatted(), original);
             }
 
-            foreach (var materialProperty in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()))
+            for (var i = 0; i < MaterialShaderList.Count; i++)
             {
-                materialProperty.RenderQueue = null;
-                materialProperty.RenderQueueOriginal = null;
+                var materialProperty = MaterialShaderList[i];
+                if (materialProperty.ID == id && materialProperty.MaterialName == material.NameFormatted())
+                {
+                    materialProperty.RenderQueue = null;
+                    materialProperty.RenderQueueOriginal = null;
+                }
             }
 
             MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.NullCheck());
         }
         #endregion
 
-        private GameObject GetObjectByID(int id)
+        private static GameObject GetObjectByID(int id)
         {
             if (!Studio.Studio.Instance.dicObjectCtrl.TryGetValue(id, out var objectCtrlInfo)) return null;
             if (objectCtrlInfo is OCIItem ociItem)

@@ -19,14 +19,14 @@ namespace KK_Plugins
     {
         public partial class ColliderController : CharaCustomFunctionController
         {
-            public DynamicBoneCollider FloorCollider = null;
+            public DynamicBoneCollider FloorCollider;
             private readonly List<DynamicBoneCollider> ArmColliders = new List<DynamicBoneCollider>();
 
             private bool applyColliders;
             private bool applyBreastColliders;
             internal bool applySkirtColliders;
             private bool applyFloorCollider;
-            private bool didSetStates = false;
+            private bool didSetStates;
 
             private float BreastSize => ChaControl.chaFile.custom.body.shapeValueBody[(int)BodyShapeIdx.BustSize];
             public bool BreastCollidersEnabled { get; set; }
@@ -39,13 +39,13 @@ namespace KK_Plugins
                 FloorCollider = AddCollider(FloorColliderData);
 
                 //Add the arm and hand colliders
-                foreach (var colliderData in ArmColliderDataList)
-                    ArmColliders.Add(AddCollider(colliderData));
+                for (var i = 0; i < ArmColliderDataList.Count; i++)
+                    ArmColliders.Add(AddCollider(ArmColliderDataList[i]));
 
 #if KK
                 //Add the leg colliders for skirts
-                foreach (var colliderData in LegColliderDataList)
-                    LegColliders.Add(AddCollider(colliderData));
+                for (var i = 0; i < LegColliderDataList.Count; i++)
+                    LegColliders.Add(AddCollider(LegColliderDataList[i]));
 #endif
             }
 
@@ -117,8 +117,10 @@ namespace KK_Plugins
 #if KK
                     if (applyFloorCollider || applySkirtColliders)
                     {
-                        foreach (DynamicBone dynamicBone in GetComponentsInChildren<DynamicBone>())
+                        var dynamicBones = GetComponentsInChildren<DynamicBone>();
+                        for (var i = 0; i < dynamicBones.Length; i++)
                         {
+                            DynamicBone dynamicBone = dynamicBones[i];
                             if (applyFloorCollider)
                             {
                                 // Prevent affecting charas parented to this chara
@@ -137,8 +139,10 @@ namespace KK_Plugins
 
                     if (applyBreastColliders || applyFloorCollider)
                     {
-                        foreach (DynamicBone_Ver02 dynamicBone in GetComponentsInChildren<DynamicBone_Ver02>(true))
+                        var dynamicBones = GetComponentsInChildren<DynamicBone_Ver02>(true);
+                        for (var i = 0; i < dynamicBones.Length; i++)
                         {
+                            DynamicBone_Ver02 dynamicBone = dynamicBones[i];
                             // Prevent affecting charas parented to this chara
                             if (!StudioAPI.InsideStudio || dynamicBone.GetComponentInParent<ChaControl>() == ChaControl)
                                 UpdateFloorColliderBreastDB(dynamicBone);
@@ -213,8 +217,9 @@ namespace KK_Plugins
                 if (ArmColliders == null) return;
                 UpdateArmCollidersBreastDB(dynamicBone, ArmColliders);
 
-                foreach (var armCollider in ArmColliders)
+                for (var i = 0; i < ArmColliders.Count; i++)
                 {
+                    var armCollider = ArmColliders[i];
                     if (!BreastCollidersEnabled)
                         dynamicBone.Colliders.Remove(armCollider);
                     else if (armCollider != null && !dynamicBone.Colliders.Contains(armCollider))
@@ -229,8 +234,9 @@ namespace KK_Plugins
                 if (!BreastDBComments.Contains(dynamicBone.Comment)) return;
                 if (armColliders == null) return;
 
-                foreach (var armCollider in armColliders)
+                for (var i = 0; i < armColliders.Count; i++)
                 {
+                    var armCollider = armColliders[i];
                     if (!BreastCollidersEnabled)
                         dynamicBone.Colliders.Remove(armCollider);
                     else if (armCollider != null && !dynamicBone.Colliders.Contains(armCollider))
@@ -239,11 +245,12 @@ namespace KK_Plugins
             }
             private void UpdateArmCollidersBreastDBAll()
             {
+                var controllers = FindObjectsOfType<ColliderController>();
                 var dynamicBones = GetComponentsInChildren<DynamicBone_Ver02>(true);
 
-                foreach (var controller in FindObjectsOfType<ColliderController>())
-                    foreach (DynamicBone_Ver02 dynamicBone in dynamicBones)
-                        UpdateArmCollidersBreastDB(dynamicBone, controller.ArmColliders);
+                for (var i = 0; i < controllers.Length; i++)
+                    for (var j = 0; j < dynamicBones.Length; j++)
+                        UpdateArmCollidersBreastDB(dynamicBones[j], controllers[i].ArmColliders);
             }
 
             /// <summary>
@@ -254,8 +261,9 @@ namespace KK_Plugins
                 if (!BreastDBComments.Contains(dynamicBone.Comment)) return;
 
                 //Expand the collision radius for the breast dynamic bones
-                foreach (var pat in dynamicBone.Patterns)
+                for (var index = 0; index < dynamicBone.Patterns.Count; index++)
                 {
+                    var pat = dynamicBone.Patterns[index];
 #if KK
                     pat.Params[0].CollisionRadius = BreastCollidersEnabled ? 0.10f * BreastSize : 0;
                     pat.Params[1].CollisionRadius = BreastCollidersEnabled ? 0.08f * BreastSize : 0;

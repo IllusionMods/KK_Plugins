@@ -143,6 +143,12 @@ namespace KK_Plugins
             StudioAPI.GetOrCreateCurrentStateCategory(StudioCategoryName).AddControl(ballsDropdown);
         }
 
-        private static UncensorSelectorController GetSelectedStudioController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<UncensorSelectorController>();
+        private static UncensorSelectorController GetSelectedStudioController()
+        {
+            var mpCharCtrl = FindObjectOfType<MPCharCtrl>();
+            if (mpCharCtrl == null || mpCharCtrl.ociChar == null || mpCharCtrl.ociChar.charInfo == null)
+                return null;
+            return mpCharCtrl.ociChar.charInfo.GetComponent<UncensorSelectorController>();
+        }
     }
 }

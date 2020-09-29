@@ -57,8 +57,8 @@ namespace KK_Plugins
             string file = Path.GetFileName(filePath);
             if (DefaultBGs.Contains(file.ToLower())) return;
 
-            foreach (var rend in item.panelComponent.renderer)
-                MaterialEditor.MEStudio.GetSceneController().SetMaterialTextureFromFile(item.objectInfo.dicKey, rend.material, "MainTex", filePath);
+            for (var i = 0; i < item.panelComponent.renderer.Length; i++)
+                MaterialEditor.MEStudio.GetSceneController().SetMaterialTextureFromFile(item.objectInfo.dicKey, item.panelComponent.renderer[i].material, "MainTex", filePath);
             item.itemInfo.panel.filePath = "";
         }
 

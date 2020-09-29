@@ -23,16 +23,13 @@ namespace KK_Plugins
                     {
                         var dataXml = XElement.Load("UserData/setup.xml");
 
-                        if (dataXml != null)
+                        IEnumerable<XElement> enumerable = dataXml.Elements();
+                        foreach (XElement xelement in enumerable)
                         {
-                            IEnumerable<XElement> enumerable = dataXml.Elements();
-                            foreach (XElement xelement in enumerable)
+                            if (xelement.Name.ToString() == "Language")
                             {
-                                if (xelement.Name.ToString() == "Language")
-                                {
-                                    _language = int.Parse(xelement.Value);
-                                    break;
-                                }
+                                _language = int.Parse(xelement.Value);
+                                break;
                             }
                         }
                     }

@@ -23,7 +23,7 @@ namespace KK_Plugins
             private static readonly string[] RemoveToggle = { "Toggle Visible", "Toggle Hair", "Toggle Neck", "Toggle Breast", "Toggle Body", "Toggle Right Hand", "Toggle Left Hand", "Toggle Skirt" };
             private static readonly string[] RemoveButton = { "Button To IK", "Button Hair Init", "Button For Anime (1)", "Button For Anime (2)", "Button For Anime (3)", "Button For Anime (4)", "Button Skirt Init" };
 
-            private static GameObject FKIKPanel = null;
+            private static GameObject FKIKPanel;
             private static Toggle ActiveButton;
             private static Toggle tglHair;
             private static Toggle tglHairRef;
@@ -85,7 +85,8 @@ namespace KK_Plugins
                 var newSelect = Instantiate(fkButton, listmenu.transform, true);
                 newSelect.name = "FK & IK";
                 TextMeshProUGUI tmp = newSelect.transform.GetChild(0).GetComponentInChildren(typeof(TextMeshProUGUI)) as TextMeshProUGUI;
-                tmp.text = "FK & IK";
+                if (tmp != null)
+                    tmp.text = "FK & IK";
 
                 Button[] buttons = listmenu.GetComponentsInChildren<Button>();
 
@@ -99,9 +100,9 @@ namespace KK_Plugins
 
                 Button fkikSelectButton = newSelect.GetComponent<Button>();
 
-                foreach (Button button in buttons)
+                for (var i = 0; i < buttons.Length; i++)
                 {
-                    button.onClick.AddListener(delegate ()
+                    buttons[i].onClick.AddListener(() =>
                     {
                         FKIKPanel.SetActive(false);
                         fkikSelectButton.image.color = Color.white;
@@ -109,7 +110,7 @@ namespace KK_Plugins
                 }
 
                 fkikSelectButton.onClick.RemoveAllListeners();
-                fkikSelectButton.onClick.AddListener(delegate ()
+                fkikSelectButton.onClick.AddListener(() =>
                 {
                     foreach (Transform child in kineMenu.transform)
                     {
@@ -118,10 +119,8 @@ namespace KK_Plugins
                             child.gameObject.SetActive(false);
                         }
                     }
-                    foreach (Button button in buttons)
-                    {
-                        button.image.color = Color.white;
-                    }
+                    for (var i = 0; i < buttons.Length; i++)
+                        buttons[i].image.color = Color.white;
                     FKIKPanel.SetActive(true);
                     fkikSelectButton.image.color = Color.green;
                     Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("kinematic").SetValue(-1);
@@ -148,13 +147,13 @@ namespace KK_Plugins
             {
                 ActiveButton = GetPanelObject<Toggle>("Toggle Function");
                 ActiveButton.onValueChanged.RemoveAllListeners();
-                ActiveButton.onValueChanged.AddListener(delegate (bool val)
+                ActiveButton.onValueChanged.AddListener(val =>
                 {
                     if (OverrideEvents) return;
                     ToggleFKIK(val);
                 });
 
-                GetPanelObject<Button>("Button For Anime").onClick.AddListener(delegate ()
+                GetPanelObject<Button>("Button For Anime").onClick.AddListener(() =>
                 {
                     Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("fkInfo").Field("buttonAnime").GetValue<Button>().onClick.Invoke();
                     Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("ikInfo").Field("buttonAnime").GetValue<Button>().onClick.Invoke();
@@ -204,21 +203,21 @@ namespace KK_Plugins
                 SetupButton("FKIK Button Left Leg", 10, KinematicsType.IK, ButtonType.Anime, 3);
 
                 var txtSize = GetPanelObject<Text>("Text Size");
-                txtSize.transform.localPosition = new Vector3(txtSize.transform.localPosition.x, PositionBase + (PositionOffset * 11), txtSize.transform.localPosition.z);
+                txtSize.transform.localPosition = new Vector3(txtSize.transform.localPosition.x, PositionBase + PositionOffset * 11, txtSize.transform.localPosition.z);
                 var sldSize = GetPanelObject<Slider>("Slider Size");
-                sldSize.transform.localPosition = new Vector3(sldSize.transform.localPosition.x, PositionBase + (PositionOffset * 11), sldSize.transform.localPosition.z);
-                sldSize.onValueChanged.AddListener(delegate (float value)
+                sldSize.transform.localPosition = new Vector3(sldSize.transform.localPosition.x, PositionBase + PositionOffset * 11, sldSize.transform.localPosition.z);
+                sldSize.onValueChanged.AddListener(value =>
                 {
                     Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("fkInfo").Field("sliderSize").GetValue<Slider>().value = value;
                     Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("ikInfo").Field("sliderSize").GetValue<Slider>().value = value;
                 });
 
-                foreach (var remove in RemoveText)
-                    Destroy(GetPanelObject<Text>(remove).gameObject);
-                foreach (var remove in RemoveToggle)
-                    Destroy(GetPanelObject<Toggle>(remove).gameObject);
-                foreach (var remove in RemoveButton)
-                    Destroy(GetPanelObject<Button>(remove).gameObject);
+                for (var i = 0; i < RemoveText.Length; i++)
+                    Destroy(GetPanelObject<Text>(RemoveText[i]).gameObject);
+                for (var i = 0; i < RemoveToggle.Length; i++)
+                    Destroy(GetPanelObject<Toggle>(RemoveToggle[i]).gameObject);
+                for (var i = 0; i < RemoveButton.Length; i++)
+                    Destroy(GetPanelObject<Button>(RemoveButton[i]).gameObject);
             }
 
             private static void SetupText(string name, int offset, string text)
@@ -226,7 +225,7 @@ namespace KK_Plugins
                 Text txt = Instantiate(GetPanelObject<Text>("Text Neck"), FKIKPanel.transform);
                 txt.name = name;
                 txt.text = text;
-                txt.transform.localPosition = new Vector3(txt.transform.localPosition.x, PositionBase + (PositionOffset * offset), txt.transform.localPosition.z);
+                txt.transform.localPosition = new Vector3(txt.transform.localPosition.x, PositionBase + PositionOffset * offset, txt.transform.localPosition.z);
             }
 
             private static void SetupToggle(ref Toggle tgl, ref Toggle tglRef, string name, int offset, KinematicsType kinematicsType, string referenceField)
@@ -235,38 +234,48 @@ namespace KK_Plugins
                 tgl = Instantiate(tglOriginal, FKIKPanel.transform);
                 Toggle tglNew = tgl;
                 tglNew.name = name;
-                tglNew.transform.localPosition = new Vector3(tglNew.transform.localPosition.x, PositionBase + (PositionOffset * offset), tglNew.transform.localPosition.z);
+                tglNew.transform.localPosition = new Vector3(tglNew.transform.localPosition.x, PositionBase + PositionOffset * offset, tglNew.transform.localPosition.z);
                 string fieldname = kinematicsType == KinematicsType.FK ? "fkInfo" : "ikInfo";
                 tglRef = Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field(fieldname).Field(referenceField).GetValue<Toggle>();
                 Toggle tglRefNew = tglRef;
 
                 tglNew.onValueChanged.RemoveAllListeners();
                 tglNew.isOn = tglRefNew.isOn;
-                tglNew.onValueChanged.AddListener(delegate (bool value) { if (!OverrideEvents) tglRefNew.onValueChanged.Invoke(value); });
-                tglRefNew.onValueChanged.AddListener(delegate (bool value) { if (!OverrideEvents) tglNew.isOn = value; });
+                tglNew.onValueChanged.AddListener(value =>
+                {
+                    if (!OverrideEvents)
+                        tglRefNew.onValueChanged.Invoke(value);
+                });
+                tglRefNew.onValueChanged.AddListener(value =>
+                {
+                    if (!OverrideEvents)
+                        tglNew.isOn = value;
+                });
             }
 
             private static void SetupButton(string name, int offset, KinematicsType kinematicsType, ButtonType buttonType, int index)
             {
                 Button btn = Instantiate(GetPanelObject<Button>("Button For Anime (2)"), FKIKPanel.transform);
                 btn.name = name;
-                btn.transform.localPosition = new Vector3(btn.transform.localPosition.x, PositionBase + (PositionOffset * offset), btn.transform.localPosition.z);
+                btn.transform.localPosition = new Vector3(btn.transform.localPosition.x, PositionBase + PositionOffset * offset, btn.transform.localPosition.z);
 
                 string fieldname1 = kinematicsType == KinematicsType.FK ? "fkInfo" : "ikInfo";
                 string fieldname2 = buttonType == ButtonType.Anime ? "buttonAnimeSingle" : "buttonInitSingle";
 
                 btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(delegate () { Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field(fieldname1).Field(fieldname2).GetValue<Button[]>()[index].onClick.Invoke(); });
+                btn.onClick.AddListener(() => Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field(fieldname1).Field(fieldname2).GetValue<Button[]>()[index].onClick.Invoke());
             }
 
             private static byte[] LoadPanel()
             {
-                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"KK_Plugins.Resources.Panel.png"))
-                {
-                    byte[] bytesInStream = new byte[stream.Length];
-                    stream.Read(bytesInStream, 0, bytesInStream.Length);
-                    return bytesInStream;
-                }
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("KK_Plugins.Resources.Panel.png"))
+                    if (stream != null)
+                    {
+                        byte[] bytesInStream = new byte[stream.Length];
+                        stream.Read(bytesInStream, 0, bytesInStream.Length);
+                        return bytesInStream;
+                    }
+                return null;
             }
 
             private static T GetPanelObject<T>(string name) => FKIKPanel.GetComponentsInChildren<RectTransform>(true).First(x => x.name == name).GetComponent<T>();
@@ -274,7 +283,7 @@ namespace KK_Plugins
             private enum KinematicsType { FK, IK }
             private enum ButtonType { Anime, Init }
 
-            private static bool overrideEvents = false;
+            private static bool overrideEvents;
             internal static bool OverrideEvents
             {
                 get => overrideEvents;

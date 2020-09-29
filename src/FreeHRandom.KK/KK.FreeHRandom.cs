@@ -1,16 +1,16 @@
 ﻿using BepInEx;
 using HarmonyLib;
 using Illusion.Extensions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TMPro;
 using UILib;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System;
-using UniRx;
 
 namespace KK_Plugins
 {
@@ -69,10 +69,11 @@ namespace KK_Plugins
             var copy = Instantiate(buttonToCopy.gameObject);
             copy.name = $"{buttonToCopy.name}Random";
             Button randomButton = copy.GetComponent<Button>();
-            RectTransform testButtonRectTransform = randomButton.transform as RectTransform;
-            randomButton.transform.SetParent(buttonToCopy.parent, true);
-            randomButton.transform.localScale = buttonToCopy.localScale;
-            randomButton.transform.localPosition = buttonToCopy.localPosition;
+            Transform randomButtonTransform = randomButton.transform;
+            RectTransform testButtonRectTransform = randomButtonTransform as RectTransform;
+            randomButtonTransform.SetParent(buttonToCopy.parent, true);
+            randomButtonTransform.localScale = buttonToCopy.localScale;
+            randomButtonTransform.localPosition = buttonToCopy.localPosition;
             testButtonRectTransform.SetRect(buttonToCopy.anchorMin, buttonToCopy.anchorMax, buttonToCopy.offsetMin, buttonToCopy.offsetMax);
             testButtonRectTransform.anchoredPosition = buttonToCopy.anchoredPosition + new Vector2(0f, -50f);
             randomButton.onClick = new Button.ButtonClickedEvent();
@@ -85,15 +86,15 @@ namespace KK_Plugins
         /// <summary>
         /// Load the list of character cards and choose a random one
         /// </summary>
-        private void RandomizeCharacter(CharacterType characterType)
+        private static void RandomizeCharacter(CharacterType characterType)
         {
             FolderAssist folderAssist = new FolderAssist();
 
             //Get some random cards
             if (characterType == CharacterType.Player)
-                folderAssist.CreateFolderInfoEx(CC.Paths.MaleCardPath, new string[] { "*.png" }, true);
+                folderAssist.CreateFolderInfoEx(CC.Paths.MaleCardPath, new[] { "*.png" });
             else
-                folderAssist.CreateFolderInfoEx(CC.Paths.FemaleCardPath, new string[] { "*.png" }, true);
+                folderAssist.CreateFolderInfoEx(CC.Paths.FemaleCardPath, new[] { "*.png" });
 
             //Different fields for different versions of the game, get the correct one
             var listFileObj = folderAssist.GetType().GetField("_lstFile", AccessTools.all)?.GetValue(folderAssist);
@@ -101,7 +102,7 @@ namespace KK_Plugins
                 listFileObj = folderAssist.GetType().GetField("lstFile", AccessTools.all)?.GetValue(folderAssist);
             List<FolderAssist.FileInfo> lstFile = (List<FolderAssist.FileInfo>)listFileObj;
 
-            if (lstFile.Count() == 0)
+            if (lstFile == null || lstFile.Count == 0)
                 return;
 
             lstFile.Randomize();
@@ -116,10 +117,10 @@ namespace KK_Plugins
         /// <summary>
         /// Load and set the character
         /// </summary>
-        private void SetupCharacter(string filePath, CharacterType characterType)
+        private static void SetupCharacter(string filePath, CharacterType characterType)
         {
             var chaFileControl = new ChaFileControl();
-            if (chaFileControl.LoadCharaFile(filePath, 255, false, true))
+            if (chaFileControl.LoadCharaFile(filePath))
             {
                 object member;
                 if (Singleton<FreeHScene>.Instance == null)

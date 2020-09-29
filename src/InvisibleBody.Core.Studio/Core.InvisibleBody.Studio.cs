@@ -27,6 +27,12 @@ namespace KK_Plugins
             StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(invisibleSwitch);
         }
 
-        private static InvisibleBodyCharaController GetSelectedStudioController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<InvisibleBodyCharaController>();
+        private static InvisibleBodyCharaController GetSelectedStudioController()
+        {
+            var mpCharCtrl = FindObjectOfType<MPCharCtrl>();
+            if (mpCharCtrl == null || mpCharCtrl.ociChar == null || mpCharCtrl.ociChar.charInfo == null)
+                return null;
+            return mpCharCtrl.ociChar.charInfo.GetComponent<InvisibleBodyCharaController>();
+        }
     }
 }

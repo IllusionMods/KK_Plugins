@@ -47,12 +47,8 @@ namespace KK_Plugins
             {
                 bool hasSavedBaseData = false;
                 var flags = MakerAPI.GetCharacterLoadFlags();
-                bool clothesFlag = false;
-                if (flags == null || flags.Clothes)
-                    clothesFlag = true;
-                bool bodyFlag = false;
-                if (flags == null || flags.Body)
-                    bodyFlag = true;
+                bool clothesFlag = flags == null || flags.Clothes;
+                bool bodyFlag = flags == null || flags.Body;
 
                 if (bodyFlag)
                 {
@@ -135,7 +131,10 @@ namespace KK_Plugins
                     {
                         newBraData = MessagePackSerializer.Deserialize<ClothData>((byte[])loadedBraData);
                     }
-                    catch { }
+                    catch
+                    {
+                        Logger.LogError("Error loading coordinate");
+                    }
                 }
 
                 if (data != null && data.data.TryGetValue(PushupConstants.PushupCoordinate_TopData, out var loadedTopData) && loadedTopData != null)
@@ -144,7 +143,10 @@ namespace KK_Plugins
                     {
                         newTopData = MessagePackSerializer.Deserialize<ClothData>((byte[])loadedTopData);
                     }
-                    catch { }
+                    catch
+                    {
+                        Logger.LogError("Error loading coordinate");
+                    }
                 }
                 else
                     CurrentTopData = null;
@@ -155,23 +157,19 @@ namespace KK_Plugins
 
                 //Advanced mode data is too character specific and is not loaded from coordinates
                 CurrentBraData.UseAdvanced = false;
-                CurrentTopData.UseAdvanced = false;
+                if (CurrentTopData != null)
+                    CurrentTopData.UseAdvanced = false;
 
                 RecalculateBody();
             }
 
 #if KK
-            private void OnCoordinateChanged()
+            private static void OnCoordinateChanged()
             {
                 if (MakerAPI.InsideAndLoaded)
                     ReloadPushup();
             }
 #endif
-
-            /// <summary>
-            /// Recalculate the body based on the clothing state and Pushup settings.
-            /// </summary>
-            public void RecalculateBody() => RecalculateBody(true, false);
             /// <summary>
             /// Recalculate the body based on the clothing state and Pushup settings.
             /// </summary>
@@ -210,7 +208,7 @@ namespace KK_Plugins
             private IEnumerator RecalculateBodyCoroutine()
             {
                 yield return null;
-                RecalculateBody(false, false);
+                RecalculateBody(false);
             }
 
             /// <summary>
@@ -273,17 +271,17 @@ namespace KK_Plugins
                     CalculatePushFromClothes(CurrentBraData, CurrentBraData.UseAdvanced);
                     return;
                 }
-                else if (wearing == Wearing.Top)
+                if (wearing == Wearing.Top)
                 {
                     CalculatePushFromClothes(CurrentTopData, CurrentTopData.UseAdvanced);
                     return;
                 }
-                else if (CurrentTopData.UseAdvanced)
+                if (CurrentTopData.UseAdvanced)
                 {
                     CalculatePushFromClothes(CurrentTopData, true);
                     return;
                 }
-                else if (CurrentBraData.UseAdvanced)
+                if (CurrentBraData.UseAdvanced)
                 {
                     CalculatePushFromClothes(CurrentBraData, true);
                     return;
@@ -475,7 +473,7 @@ namespace KK_Plugins
             public int CurrentCoordinateIndex => 0;
 #endif
 
-            private bool characterLoading = false;
+            private bool characterLoading;
             public bool CharacterLoading
             {
                 get => characterLoading;

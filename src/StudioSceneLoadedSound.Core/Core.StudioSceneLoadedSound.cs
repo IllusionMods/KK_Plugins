@@ -1,6 +1,6 @@
-﻿using BepInEx.Configuration;
+﻿using BepInEx;
+using BepInEx.Configuration;
 using KKAPI.Studio.SaveLoad;
-using BepInEx;
 
 namespace KK_Plugins
 {
@@ -27,7 +27,7 @@ namespace KK_Plugins
             StudioSaveLoadApi.SceneLoad += OnSceneLoad;
         }
 
-        private void OnSceneLoad(object sender, SceneLoadEventArgs e)
+        private static void OnSceneLoad(object sender, SceneLoadEventArgs e)
         {
             if (e.Operation == SceneOperationKind.Import && ImportSound.Value)
                 PlayAlertSound();

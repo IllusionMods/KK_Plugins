@@ -31,8 +31,8 @@ namespace KK_Plugins
                 if (dynamicBone.name != "ct_clothesBot") return;
                 if (ArmColliders == null) return;
 
-                foreach (var armCollider in ArmColliders)
-                    dynamicBone.m_Colliders.Remove(armCollider);
+                for (var i = 0; i < ArmColliders.Count; i++)
+                    dynamicBone.m_Colliders.Remove(ArmColliders[i]);
             }
 
             /// <summary>
@@ -43,11 +43,14 @@ namespace KK_Plugins
                 if (dynamicBone.name != "ct_clothesBot") return;
                 if (LegColliders == null) return;
 
-                foreach (var legCollider in LegColliders)
+                for (var i = 0; i < LegColliders.Count; i++)
+                {
+                    var legCollider = LegColliders[i];
                     if (!SkirtCollidersEnabled)
                         dynamicBone.m_Colliders.Remove(legCollider);
                     else if (legCollider != null && !dynamicBone.m_Colliders.Contains(legCollider))
                         dynamicBone.m_Colliders.Add(legCollider);
+                }
             }
         }
     }

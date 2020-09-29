@@ -6,13 +6,13 @@ namespace KK_Plugins
 {
     public partial class StudioSceneLoadedSound
     {
-        private static MethodInfo playSEMethodInfo = null;
+        private static MethodInfo playSEMethodInfo;
 
         private static void PlayStudioSound(SoundPack.SystemSE sound)
         {
             if (playSEMethodInfo == null)
             {
-                var studioUtility = typeof(Studio.Studio)?.Assembly?.GetType("Studio.Utility");
+                var studioUtility = typeof(Studio.Studio).Assembly.GetType("Studio.Utility");
                 if (studioUtility != null)
                     playSEMethodInfo = AccessTools.Method(studioUtility, "PlaySE");
             }

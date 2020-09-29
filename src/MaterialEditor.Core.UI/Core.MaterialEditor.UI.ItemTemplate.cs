@@ -199,8 +199,9 @@ namespace KK_Plugins.MaterialEditor
                 dropdownShader.captionText.alignment = TextAnchor.MiddleLeft;
                 dropdownShader.options.Clear();
                 dropdownShader.options.Add(new Dropdown.OptionData("Reset"));
-                foreach (var shader in MaterialEditorPlugin.XMLShaderProperties.Where(x => x.Key != "default"))
-                    dropdownShader.options.Add(new Dropdown.OptionData(shader.Key));
+                foreach (var shader in MaterialEditorPlugin.XMLShaderProperties)
+                    if (shader.Key != "default")
+                        dropdownShader.options.Add(new Dropdown.OptionData(shader.Key));
                 var dropdownShaderLE = dropdownShader.gameObject.AddComponent<LayoutElement>();
                 dropdownShaderLE.preferredWidth = dropdownWidth * 3;
                 dropdownShaderLE.flexibleWidth = 0;

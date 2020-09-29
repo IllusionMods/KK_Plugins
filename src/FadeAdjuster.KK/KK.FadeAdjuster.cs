@@ -16,7 +16,7 @@ namespace KK_Plugins
         public const string PluginNameInternal = "KK_FadeAdjuster";
         public const string Version = "1.0";
 
-        private static bool UpdateColor = false;
+        private static bool UpdateColor;
 
         public static ConfigEntry<bool> DisableFade { get; private set; }
         public static ConfigEntry<Color> FadeColor { get; private set; }

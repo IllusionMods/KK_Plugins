@@ -20,7 +20,7 @@ namespace KK_Plugins
                 if (SavePattern.Value && !file.IsNullOrEmpty())
                 {
                     //Save the pattern if it is one that comes from the userdata/pattern folder via MaterialEditor
-                    string filePath = UserData.Path + "pattern/" + file;
+                    string filePath = $"{UserData.Path}pattern/{file}";
                     SavePatternTex(__instance, _idx, filePath);
                 }
                 else
@@ -44,14 +44,14 @@ namespace KK_Plugins
                 if (SaveBG.Value && !file.IsNullOrEmpty())
                 {
                     //Save the BG to the scene data via MaterialEditor
-                    string filePath = UserData.Path + BackgroundList.dirName + "/" + file;
+                    string filePath = $"{UserData.Path}{BackgroundList.dirName}/{file}";
                     SaveBGTex(__instance, filePath);
                 }
                 else
                 {
                     //Remove any MaterialEditor MainTex texture edits
-                    foreach (var rend in __instance.panelComponent.renderer)
-                        MaterialEditor.MEStudio.GetSceneController().RemoveMaterialTexture(__instance.objectInfo.dicKey, rend.material, "MainTex", false);
+                    for (var i = 0; i < __instance.panelComponent.renderer.Length; i++)
+                        MaterialEditor.MEStudio.GetSceneController().RemoveMaterialTexture(__instance.objectInfo.dicKey, __instance.panelComponent.renderer[i].material, "MainTex", false);
                 }
             }
 
@@ -61,7 +61,7 @@ namespace KK_Plugins
                 if (SaveFrame.Value && !_file.IsNullOrEmpty() && !DefaultFrames.Contains(_file.ToLower()))
                 {
                     //Save the frame to the scene data
-                    string filePath = UserData.Path + "frame/" + _file;
+                    string filePath = $"{UserData.Path}frame/{_file}";
 
                     GetSceneController().SetFrameTex(filePath);
                 }
@@ -85,7 +85,7 @@ namespace KK_Plugins
                 if (SaveBG.Value && !_file.IsNullOrEmpty() && !DefaultBGs.Contains(_file.ToLower()))
                 {
 #if !HS2
-                    _file = UserData.Path + "bg/" + _file;
+                    _file = $"{UserData.Path}bg/{_file}";
 #endif
 
                     //Save the frame to the scene data

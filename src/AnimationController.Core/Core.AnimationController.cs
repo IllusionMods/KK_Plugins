@@ -36,15 +36,15 @@ namespace KK_Plugins
         public const string Version = "2.2";
         internal static new ManualLogSource Logger;
 
-        private bool GUIVisible = false;
-        private int SelectedGuideObject = 0;
+        private bool GUIVisible;
+        private int SelectedGuideObject;
         private Rect AnimGUI = new Rect(70, 190, 200, 400);
 
-        private static readonly string[] IKGuideObjectsPretty = new string[] { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot", "Eyes", "Neck" };
+        private static readonly string[] IKGuideObjectsPretty = { "Hips", "Left arm", "Left forearm", "Left hand", "Right arm", "Right forearm", "Right hand", "Left thigh", "Left knee", "Left foot", "Right thigh", "Right knee", "Right foot", "Eyes", "Neck" };
 #if KK
-        private static readonly string[] IKGuideObjects = new string[] { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
+        private static readonly string[] IKGuideObjects = { "cf_j_hips", "cf_j_arm00_L", "cf_j_forearm01_L", "cf_j_hand_L", "cf_j_arm00_R", "cf_j_forearm01_R", "cf_j_hand_R", "cf_j_thigh00_L", "cf_j_leg01_L", "cf_j_leg03_L", "cf_j_thigh00_R", "cf_j_leg01_R", "cf_j_leg03_R", "eyes", "neck" };
 #else
-        private static readonly string[] IKGuideObjects = new string[] { "cf_J_Hips", "cf_J_ArmUp00_L", "cf_J_ArmLow01_L", "cf_J_Hand_L", "cf_J_ArmUp00_R", "cf_J_ArmLow01_R", "cf_J_Hand_R", "cf_J_LegUp00_L", "cf_J_LegLow01_L", "cf_J_Foot01_L", "cf_J_LegUp00_R", "cf_J_LegLow01_R", "cf_J_Foot01_R", "eyes", "neck" };
+        private static readonly string[] IKGuideObjects = { "cf_J_Hips", "cf_J_ArmUp00_L", "cf_J_ArmLow01_L", "cf_J_Hand_L", "cf_J_ArmUp00_R", "cf_J_ArmLow01_R", "cf_J_Hand_R", "cf_J_LegUp00_L", "cf_J_LegLow01_L", "cf_J_Foot01_L", "cf_J_LegUp00_R", "cf_J_LegLow01_R", "cf_J_Foot01_R", "eyes", "neck" };
 #endif
 
         public static ConfigEntry<KeyboardShortcut> AnimationControllerHotkey { get; private set; }
@@ -77,7 +77,7 @@ namespace KK_Plugins
             ObjectCtrlInfo SelectedCharacter = null;
             TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
 
-            if (selectNodes.Count() != 2)
+            if (selectNodes.Length != 2)
             {
                 Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "Select both the character and object to link.");
                 return;
@@ -152,11 +152,11 @@ namespace KK_Plugins
         /// <summary>
         /// Get the controller for the character
         /// </summary>
-        public static AnimationControllerCharaController GetController(ChaControl character) => character?.gameObject?.GetComponent<AnimationControllerCharaController>();
+        public static AnimationControllerCharaController GetController(ChaControl character) => character == null ? null : character.gameObject.GetComponent<AnimationControllerCharaController>();
         /// <summary>
         /// Get the controller for the character
         /// </summary>
-        public static AnimationControllerCharaController GetController(OCIChar character) => character?.charInfo?.gameObject?.GetComponent<AnimationControllerCharaController>();
+        public static AnimationControllerCharaController GetController(OCIChar character) => character == null || character.charInfo == null ? null : character.charInfo.gameObject.GetComponent<AnimationControllerCharaController>();
 
         public class AnimationControllerCharaController : CharaCustomFunctionController
         {
@@ -164,9 +164,9 @@ namespace KK_Plugins
             private readonly Dictionary<OCIChar.IKInfo, ObjectCtrlInfo> GuideObjectLinks = new Dictionary<OCIChar.IKInfo, ObjectCtrlInfo>();
             private readonly List<OCIChar.IKInfo> LinksToRemove = new List<OCIChar.IKInfo>();
             private ObjectCtrlInfo EyeLink;
-            private bool EyeLinkEngaged = false;
+            private bool EyeLinkEngaged;
             private ObjectCtrlInfo NeckLink;
-            private bool NeckLinkEngaged = false;
+            private bool NeckLinkEngaged;
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
@@ -259,8 +259,9 @@ namespace KK_Plugins
 
                 if (LinksToRemove.Count > 0)
                 {
-                    foreach (var ikInfo in LinksToRemove)
+                    for (var i = 0; i < LinksToRemove.Count; i++)
                     {
+                        var ikInfo = LinksToRemove[i];
                         RemoveLink(ikInfo);
                         RemoveLink(ikInfo);
                     }
@@ -281,8 +282,9 @@ namespace KK_Plugins
                     {
                         List<AnimationControllerInfo> AnimationControllerInfoList = ((object[])ExtendedData.data["AnimationInfo"]).Select(x => AnimationControllerInfo.Unserialize((byte[])x)).ToList();
 
-                        foreach (var AnimInfo in AnimationControllerInfoList)
+                        for (var i = 0; i < AnimationControllerInfoList.Count; i++)
                         {
+                            var AnimInfo = AnimationControllerInfoList[i];
                             //See if this is the right character
                             if (AnimInfo.CharDicKey != characterDicKey)
                                 continue;
@@ -428,7 +430,7 @@ namespace KK_Plugins
                 var temp = Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar;
                 Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = OCIChar;
                 int eyesLookPtn = OCIChar.charFileStatus.eyesLookPtn;
-                OCIChar.ChangeLookEyesPtn(no, false);
+                OCIChar.ChangeLookEyesPtn(no);
                 Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().LookAtInfo_SliderSize().interactable = false;
                 Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().LookAtInfo_ButtonMode()[eyesLookPtn].image.color = Color.white;
                 Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().LookAtInfo_ButtonMode()[no].image.color = Color.green;
@@ -444,7 +446,7 @@ namespace KK_Plugins
                 var temp = Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar;
                 Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = OCIChar;
                 int neckLookPtn = OCIChar.charFileStatus.neckLookPtn;
-                neckLookPtn = Array.FindIndex(patterns, (int v) => v == neckLookPtn);
+                neckLookPtn = Array.FindIndex(patterns, v => v == neckLookPtn);
                 OCIChar.ChangeLookNeckPtn(patterns[no]);
                 Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().NeckInfo_ButtonMode()[neckLookPtn].image.color = Color.white;
                 Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().NeckInfo_ButtonMode()[no].image.color = Color.green;
@@ -453,11 +455,11 @@ namespace KK_Plugins
             /// <summary>
             /// Used by SetNeckLook
             /// </summary>
-            private readonly int[] patterns = new int[] { 0, 1, 3, 4 };
+            private readonly int[] patterns = { 0, 1, 3, 4 };
             /// <summary>
             /// Because ObjectCtrlInfo does not have a childRoot, cast it as the appropriate type and get it from that.
             /// </summary>
-            private Transform GetChildRootFromObjectCtrl(ObjectCtrlInfo objectCtrlInfo)
+            private static Transform GetChildRootFromObjectCtrl(ObjectCtrlInfo objectCtrlInfo)
             {
                 if (objectCtrlInfo == null) return null;
 
@@ -511,8 +513,8 @@ namespace KK_Plugins
             protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
             {
                 foreach (var kvp in loadedItems)
-                    if (kvp.Value is OCIChar)
-                        GetController(kvp.Value as OCIChar).LoadAnimations(kvp.Key, loadedItems);
+                    if (kvp.Value is OCIChar chara)
+                        GetController(chara).LoadAnimations(kvp.Key, loadedItems);
             }
         }
     }

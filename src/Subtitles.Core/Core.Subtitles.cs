@@ -14,7 +14,7 @@ using UnityEngine.UI;
 namespace KK_Plugins
 {
     /// <summary>
-    /// Displays subitles on screen for H scenes and in dialogues
+    /// Displays subtitles on screen for H scenes and in dialogues
     /// </summary>
 #if KK
     [BepInProcess(Constants.MainGameProcessNameSteam)]
@@ -88,7 +88,7 @@ namespace KK_Plugins
             Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
-        private void TextAlign_SettingChanged(object sender, EventArgs e)
+        private static void TextAlign_SettingChanged(object sender, EventArgs e)
         {
             if (Caption.Pane == null) return;
             var vlg = Caption.Pane.GetComponent<VerticalLayoutGroup>();
@@ -96,7 +96,7 @@ namespace KK_Plugins
             vlg.childAlignment = TextAlign.Value;
         }
 
-        private void LoadSubtitles()
+        private static void LoadSubtitles()
         {
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.CharaMakerSubs.xml"))
                 if (stream != null)

@@ -9,7 +9,7 @@ namespace KK_Plugins
     {
         public class EyeShakingController : CharaCustomFunctionController
         {
-            private bool _EyeShaking = false;
+            private bool _EyeShaking;
             public bool EyeShaking
             {
                 get => _EyeShaking;
@@ -21,7 +21,7 @@ namespace KK_Plugins
             }
             internal bool IsVirgin { get; set; } = true;
             internal bool IsVirginOrg { get; set; } = true;
-            internal bool IsInit { get; set; } = false;
+            internal bool IsInit { get; set; }
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {

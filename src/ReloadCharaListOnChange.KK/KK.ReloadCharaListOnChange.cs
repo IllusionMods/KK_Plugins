@@ -32,9 +32,9 @@ namespace KK_Plugins
         private static FileSystemWatcher StudioFemaleCardWatcher;
         private static FileSystemWatcher StudioMaleCardWatcher;
         private static FileSystemWatcher StudioCoordinateCardWatcher;
-        private static bool DoRefresh = false;
-        private static bool EventFromCharaMaker = false;
-        private static bool InCharaMaker = false;
+        private static bool DoRefresh;
+        private static bool EventFromCharaMaker;
+        private static bool InCharaMaker;
         private static CustomCharaFile CustomCharaFileInstance;
         private static CustomCoordinateFile CustomCoordinateFileInstance;
         private static Studio.CharaList StudioFemaleListInstance;
@@ -57,7 +57,7 @@ namespace KK_Plugins
 
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
             harmony.Patch(typeof(Studio.MPCharCtrl).GetNestedType("CostumeInfo", BindingFlags.NonPublic).GetMethod("InitFileList", AccessTools.all),
-                          new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.StudioCoordinateListPrefix), AccessTools.all)), null);
+                          new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.StudioCoordinateListPrefix), AccessTools.all)));
         }
         /// <summary>
         /// On a game update run the actual refresh. It must be run from an update or it causes all sorts of errors.
@@ -126,7 +126,7 @@ namespace KK_Plugins
         {
             try
             {
-                //Turn off resolving to prevent spam since modded stuff isn't relevent for making this list.
+                //Turn off resolving to prevent spam since modded stuff isn't relevant for making this list.
                 ExtendedSave.LoadEventsEnabled = false;
                 switch (EventType)
                 {
@@ -173,7 +173,7 @@ namespace KK_Plugins
         /// <summary>
         /// End the file watcher and set variables back to default for next time the chara maker is started
         /// </summary>
-        private void SceneUnloaded(Scene s)
+        private static void SceneUnloaded(Scene s)
         {
             if (s.name == "CustomScene")
             {

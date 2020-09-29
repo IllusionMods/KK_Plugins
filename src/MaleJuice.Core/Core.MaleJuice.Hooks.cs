@@ -72,7 +72,7 @@ namespace KK_Plugins
                     for (int i = 4; i >= 0; i--)
                         instructionsList.RemoveAt(i);
                 else
-                    Logger.LogError($"Unable to patch UpdateSiru");
+                    Logger.LogError("Unable to patch UpdateSiru");
 
                 return instructionsList;
             }
@@ -87,7 +87,7 @@ namespace KK_Plugins
                     for (int i = 4; i >= 0; i--)
                         instructionsList.RemoveAt(i);
                 else
-                    Logger.LogError($"Unable to patch UpdateClothesSiru");
+                    Logger.LogError("Unable to patch UpdateClothesSiru");
 
                 return instructionsList;
             }

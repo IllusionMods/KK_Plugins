@@ -12,7 +12,8 @@ namespace KK_Plugins
             internal static void OnPointerEnterPostfix(CustomSelectListCtrl __instance, GameObject obj)
             {
                 CustomSelectListCtrlInstance = __instance;
-                CurrentCustomSelectInfoComponent = obj?.GetComponent<CustomSelectInfoComponent>();
+                if (obj != null)
+                    CurrentCustomSelectInfoComponent = obj.GetComponent<CustomSelectInfoComponent>();
                 MouseIn = true;
             }
             [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), "OnPointerExit")]

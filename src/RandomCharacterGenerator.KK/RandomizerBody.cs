@@ -11,7 +11,7 @@ namespace KK_Plugins
         {
             private List<float> _slidersBody;
 
-            public void RandomizeBody()
+            public static void RandomizeBody()
             {
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
                 var body = Custom.body;
@@ -65,7 +65,8 @@ namespace KK_Plugins
             private static List<float> SaveBodySiders(ChaFileBody body)
             {
                 var res = new List<float>();
-                for (var i = 0; i < body.shapeValueBody.Length; i++) res.Add(body.shapeValueBody[i]);
+                for (var i = 0; i < body.shapeValueBody.Length; i++)
+                    res.Add(body.shapeValueBody[i]);
                 res.Add(body.areolaSize);
                 res.Add(body.bustSoftness);
                 res.Add(body.bustWeight);
@@ -80,7 +81,8 @@ namespace KK_Plugins
             private static void LoadBodySiders(ChaFileBody body, List<float> list)
             {
                 var n = 0;
-                for (var i = 0; i < body.shapeValueBody.Length; i++) body.shapeValueBody[i] = list[n++];
+                for (var i = 0; i < body.shapeValueBody.Length; i++)
+                    body.shapeValueBody[i] = list[n++];
                 body.areolaSize = list[n++];
                 body.bustSoftness = list[n++];
                 body.bustWeight = list[n++];

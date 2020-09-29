@@ -1,18 +1,19 @@
-﻿using ExtensibleSaveFormat;
-using HarmonyLib;
-using KKAPI;
-using KKAPI.Chara;
-using KKAPI.Maker;
+﻿#if AI || HS2
+using AIChara;
+#endif
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UniRx;
-using UnityEngine;
+using ExtensibleSaveFormat;
+using HarmonyLib;
+using KKAPI;
+using KKAPI.Chara;
+using KKAPI.Maker;
 using KoiSkinOverlayX;
-#if AI || HS2
-using AIChara;
-#endif
+using Manager;
+using UnityEngine;
+using Random = System.Random;
 #if KK || AI || HS2
 using KKAPI.Studio;
 #endif
@@ -33,7 +34,7 @@ namespace KK_Plugins
             internal string BallsGUID { get; set; }
             /// <summary> Visibility of the penis as saved to the character.</summary>
 #if AI || HS2
-            internal bool DisplayPenis => ChaControl.sex == 0 ? true : IsFuta;
+            internal bool DisplayPenis => ChaControl.sex == 0 || IsFuta;
 #else
             internal bool DisplayPenis { get; set; }
 #endif
@@ -66,7 +67,7 @@ namespace KK_Plugins
 #if KK || EC
                 DisplayPenis = ChaControl.sex == 0;
 #endif
-                DisplayBalls = ChaControl.sex == 0 ? true : DefaultFemaleDisplayBalls.Value;
+                DisplayBalls = ChaControl.sex == 0 || DefaultFemaleDisplayBalls.Value;
 
                 var data = GetExtendedData();
                 if (data != null)
@@ -146,7 +147,7 @@ namespace KK_Plugins
 #endif
                                 PenisGUID = null;
                             }
-                            else
+                            else if (PenisList != null)
                             {
                                 PenisDropdown?.SetValue(PenisList.IndexOf(PenisGUID), false);
                             }
@@ -167,13 +168,13 @@ namespace KK_Plugins
                         //Set the uncensor stuff to whatever is set in the maker
                         BodyGUID = BodyDropdown.Value == 0 ? null : BodyList[BodyDropdown.Value];
 #if KK
-                        PenisGUID = PenisDropdown?.Value == 0 || PenisDropdown?.Value == 1 ? null : PenisList[PenisDropdown.Value];
-                        DisplayPenis = PenisDropdown?.Value == 1 ? false : true;
+                        PenisGUID = PenisDropdown?.Value == 0 || PenisDropdown?.Value == 1 || PenisDropdown == null ? null : PenisList[PenisDropdown.Value];
+                        DisplayPenis = PenisDropdown?.Value != 1;
 #else
                         PenisGUID = PenisDropdown.Value == 0 ? null : PenisList[PenisDropdown.Value];
 #endif
-                        BallsGUID = BallsDropdown?.Value == 0 || BallsDropdown?.Value == 1 ? null : BallsList[BallsDropdown.Value];
-                        DisplayBalls = BallsDropdown?.Value == 1 ? false : true;
+                        BallsGUID = BallsDropdown?.Value == 0 || BallsDropdown?.Value == 1 || BallsDropdown == null ? null : BallsList[BallsDropdown.Value];
+                        DisplayBalls = BallsDropdown?.Value != 1;
                     }
 #if AI || HS2
                     TogglePenisBallsUI(DisplayPenis);
@@ -181,7 +182,7 @@ namespace KK_Plugins
                 }
 
 #if KK
-                //Correct characters if genderbender is not permitted, except in Studio where it may be required for scene compatibility
+                //Correct characters if gender bender is not permitted, except in Studio where it may be required for scene compatibility
                 if (GenderBender == false && !StudioAPI.InsideStudio)
                 {
                     DisplayPenis = ChaControl.sex == 0;
@@ -363,7 +364,7 @@ namespace KK_Plugins
                 {
                     int key = chaControl.fileParam.birthDay + chaControl.fileParam.personality;
                     key += (int)(chaControl.fileParam.voicePitch * 100);
-                    return new System.Random(key).Next(uncensorCount);
+                    return new Random(key).Next(uncensorCount);
                 }
             }
 
@@ -381,7 +382,7 @@ namespace KK_Plugins
                 if (ExType(ChaControl) == 0)
                 {
                     ChaControl.updateBustSize = true;
-                    Traverse.Create(ChaControl).Method("UpdateSiru", new object[] { true }).GetValue();
+                    Traverse.Create(ChaControl).Method("UpdateSiru", true).GetValue();
                     SetChestNormals();
 
 #if KK || EC
@@ -404,9 +405,25 @@ namespace KK_Plugins
                 {
                     GameObject dick = CommonLib.LoadAsset<GameObject>(PenisData.File, PenisData.Asset, true);
 
-                    foreach (var mesh in dick.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
-                        if (PenisParts.Contains(mesh.name))
-                            UpdateMeshRenderer(mesh, ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
+                    var renderers = dick.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                    for (var i = 0; i < renderers.Length; i++)
+                    {
+                        var renderer = renderers[i];
+                        if (PenisParts.Contains(renderer.name))
+                        {
+
+                            var renderers2 = ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                            for (var j = 0; j < renderers2.Length; j++)
+                            {
+                                var renderer2 = renderers2[j];
+                                if (renderer2.name == renderer.name)
+                                {
+                                    UpdateMeshRenderer(renderer, renderer2, true);
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
                     Destroy(dick);
                 }
@@ -423,16 +440,34 @@ namespace KK_Plugins
                 if (BallsData != null)
                 {
                     GameObject balls = CommonLib.LoadAsset<GameObject>(BallsData.File, BallsData.Asset, true);
-                    foreach (var mesh in balls.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
-                        if (BallsParts.Contains(mesh.name))
-                            UpdateMeshRenderer(mesh, ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), true);
+                    var renderers = balls.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                    for (var i = 0; i < renderers.Length; i++)
+                    {
+                        var renderer = renderers[i];
+                        if (BallsParts.Contains(renderer.name))
+                        {
+                            var renderers2 = ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                            for (var j = 0; j < renderers2.Length; j++)
+                            {
+                                var renderer2 = renderers2[j];
+                                if (renderer2.name == renderer.name)
+                                {
+                                    UpdateMeshRenderer(renderer, renderer2, true);
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
                     Destroy(balls);
                 }
 
-                SkinnedMeshRenderer ballsSMR = ChaControl?.objBody?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => BallsParts.Any(y => y == x.name));
-                if (ballsSMR != null)
-                    ballsSMR.gameObject.GetComponent<Renderer>().enabled = DisplayBalls;
+                if (ChaControl != null && ChaControl.objBody != null)
+                {
+                    var ballsSMR = ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => BallsParts.Any(y => y == x.name));
+                    if (ballsSMR != null)
+                        ballsSMR.gameObject.GetComponent<Renderer>().enabled = DisplayBalls;
+                }
             }
             /// <summary>
             /// Load the body asset, copy its mesh, and delete it
@@ -452,19 +487,41 @@ namespace KK_Plugins
                 //Copy any additional parts to the character
                 if (BodyData != null && bodyMesh != null && BodyData.AdditionalParts.Count > 0)
                 {
-                    foreach (var mesh in uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                    var renderers = uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                    for (var i = 0; i < renderers.Length; i++)
                     {
-                        if (BodyData.AdditionalParts.Contains(mesh.name))
+                        var renderer = renderers[i];
+                        if (BodyData.AdditionalParts.Contains(renderer.name))
                         {
-                            SkinnedMeshRenderer part = ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name);
-                            Transform parent = bodyMesh.gameObject.GetComponentsInChildren<Transform>(true).FirstOrDefault(c => c.name == mesh.transform.parent.name);
-                            if (part == null && parent != null)
+                            SkinnedMeshRenderer part = null;
+                            var renderers2 = ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                            for (var j = 0; j < renderers2.Length; j++)
                             {
-                                var copy = Instantiate(mesh);
-                                copy.name = mesh.name;
-                                copy.transform.parent = parent;
-                                copy.bones = bodyMesh.bones.Where(b => b != null && copy.bones.Any(t => t.name.Equals(b.name))).ToArray();
+                                var renderer2 = renderers2[j];
+                                if (renderer2.name == renderer.name)
+                                {
+                                    part = renderer2;
+                                    break;
+                                }
                             }
+                            if (part != null)
+                                continue;
+
+                            Transform parent = null;
+                            foreach (var c in bodyMesh.gameObject.GetComponentsInChildren<Transform>(true))
+                            {
+                                if (c.name == renderer.transform.parent.name)
+                                {
+                                    parent = c;
+                                    break;
+                                }
+                            }
+                            if (parent == null)
+                                continue;
+
+                            var copy = Instantiate(renderer, parent, true);
+                            copy.name = renderer.name;
+                            copy.bones = bodyMesh.bones.Where(b => b != null && copy.bones.Any(t => t.name.Equals(b.name))).ToArray();
                         }
                     }
                 }
@@ -496,10 +553,10 @@ namespace KK_Plugins
             private void UpdateSkin()
             {
                 //Method changed number of parameters, check number of parameters for compatibility
-                if (typeof(ChaControl).GetMethod("InitBaseCustomTextureBody", AccessTools.all).GetParameters().Count() == 0)
+                if (!typeof(ChaControl).GetMethod("InitBaseCustomTextureBody", AccessTools.all).GetParameters().Any())
                     Traverse.Create(ChaControl).Method("InitBaseCustomTextureBody").GetValue();
                 else
-                    Traverse.Create(ChaControl).Method("InitBaseCustomTextureBody", new object[] { BodyData?.Sex ?? ChaControl.sex }).GetValue();
+                    Traverse.Create(ChaControl).Method("InitBaseCustomTextureBody", BodyData?.Sex ?? ChaControl.sex).GetValue();
 
 #if KK || EC
                 ChaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
@@ -519,7 +576,7 @@ namespace KK_Plugins
             /// </summary>
             private void UpdateSkinOverlay()
             {
-                _ksox.AdditionalTextures.RemoveAll(x => (object)x.Tag == this);
+                _ksox.AdditionalTextures.RemoveAll(x => (UncensorSelectorController)x.Tag == this);
 
                 //Apply uncensor overlay texture
                 try
@@ -532,7 +589,7 @@ namespace KK_Plugins
                 }
                 catch
                 {
-                    Logger.LogError($"Unable to apply uncensor overlay");
+                    Logger.LogError("Unable to apply uncensor overlay");
                 }
 
                 //Apply uncensor underlay texture
@@ -546,7 +603,7 @@ namespace KK_Plugins
                 }
                 catch
                 {
-                    Logger.LogError($"Unable to apply uncensor underlay");
+                    Logger.LogError("Unable to apply uncensor underlay");
                 }
 
                 _ksox.UpdateTexture(TexType.BodyOver);
@@ -586,7 +643,7 @@ namespace KK_Plugins
                 //Sort the bones
                 List<Transform> newBones = new List<Transform>();
                 foreach (Transform t in src.bones)
-                    newBones.Add(Array.Find(dst.bones, c => c?.name == t?.name));
+                    newBones.Add(Array.Find(dst.bones, c => c != null && t != null && c.name == t.name));
                 dst.bones = newBones.ToArray();
 
                 if (copyMaterials)
@@ -609,7 +666,7 @@ namespace KK_Plugins
                 yield return null;
 
 #if KK
-                if (Manager.Scene.Instance.NowSceneNames.Contains("ClassRoomSelect"))
+                if (Scene.Instance.NowSceneNames.Contains("ClassRoomSelect"))
                 {
                     yield return null;
                     yield return null;
@@ -718,14 +775,14 @@ namespace KK_Plugins
                 //find the game object
                 FindAssist findAssist = new FindAssist();
                 findAssist.Initialize(ChaControl.objBody.transform);
-                GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
-                if (gameObject == null)
+                GameObject go = findAssist.GetObjectFromName(colorMatchPart.Object);
+                if (go == null)
                     return;
 
-                if (!gameObject.GetComponent<Renderer>().material.HasProperty("_MainTex"))
+                if (!go.GetComponent<Renderer>().material.HasProperty("_MainTex"))
                     return;
 
-                var customTex = new CustomTextureControl(gameObject.transform);
+                var customTex = new CustomTextureControl(go.transform);
                 customTex.Initialize(file, colorMatchPart.Material, string.Empty, file, colorMatchPart.MaterialCreate, string.Empty, 2048, 2048);
 
                 customTex.SetMainTexture(mainTexture);
@@ -739,7 +796,7 @@ namespace KK_Plugins
                 if (newTex == null)
                     return;
 
-                Material mat = gameObject.GetComponent<Renderer>().material;
+                Material mat = go.GetComponent<Renderer>().material;
                 var mt = mat.GetTexture("_MainTex");
                 mat.SetTexture("_MainTex", newTex);
                 //Destroy the old texture to prevent memory leak
@@ -767,9 +824,9 @@ namespace KK_Plugins
 #if KK || EC
                 FindAssist findAssist = new FindAssist();
                 findAssist.Initialize(ChaControl.objBody.transform);
-                GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
-                if (gameObject != null)
-                    gameObject.GetComponent<Renderer>().material.SetFloat(ChaShader._linetexon, ChaControl.chaFile.custom.body.drawAddLine ? 1f : 0f);
+                GameObject go = findAssist.GetObjectFromName(colorMatchPart.Object);
+                if (go != null)
+                    go.GetComponent<Renderer>().material.SetFloat(ChaShader._linetexon, ChaControl.chaFile.custom.body.drawAddLine ? 1f : 0f);
 #endif
             }
             /// <summary>
@@ -793,9 +850,9 @@ namespace KK_Plugins
 #if KK || EC
                 FindAssist findAssist = new FindAssist();
                 findAssist.Initialize(ChaControl.objBody.transform);
-                GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
-                if (gameObject != null)
-                    gameObject.GetComponent<Renderer>().material.SetFloat(ChaShader._SpecularPower, Mathf.Lerp(ChaControl.chaFile.custom.body.skinGlossPower, 1f, ChaControl.chaFile.status.skinTuyaRate));
+                GameObject go = findAssist.GetObjectFromName(colorMatchPart.Object);
+                if (go != null)
+                    go.GetComponent<Renderer>().material.SetFloat(ChaShader._SpecularPower, Mathf.Lerp(ChaControl.chaFile.custom.body.skinGlossPower, 1f, ChaControl.chaFile.status.skinTuyaRate));
 #endif
             }
         }

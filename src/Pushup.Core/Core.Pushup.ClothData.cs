@@ -26,7 +26,7 @@ namespace KK_Plugins
             public bool FlattenNipples { get; set; } = ConfigFlattenNipplesDefault.Value;
 
             [Key("UseAdvanced")]
-            public bool UseAdvanced { get; set; } = false;
+            public bool UseAdvanced { get; set; }
 
             public ClothData() { }
             public ClothData(ChaFileBody baseBody) : base(baseBody) { }

@@ -68,8 +68,8 @@ namespace KK_Plugins
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
-                BlacklistButton = UIUtility.CreateButton($"BlacklistButton", itemPanel.transform, "Hide this item");
-                var layoutElement = BlacklistButton.gameObject.AddComponent<LayoutElement>();
+                BlacklistButton = UIUtility.CreateButton("BlacklistButton", itemPanel.transform, "Hide this item");
+                BlacklistButton.gameObject.AddComponent<LayoutElement>();
 
                 var text = BlacklistButton.GetComponentInChildren<Text>();
                 text.resizeTextForBestFit = false;
@@ -86,8 +86,8 @@ namespace KK_Plugins
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
-                BlacklistModButton = UIUtility.CreateButton($"BlacklistModButton", itemPanel.transform, "Hide all items from this mod");
-                var layoutElement = BlacklistModButton.gameObject.AddComponent<LayoutElement>();
+                BlacklistModButton = UIUtility.CreateButton("BlacklistModButton", itemPanel.transform, "Hide all items from this mod");
+                BlacklistModButton.gameObject.AddComponent<LayoutElement>();
 
                 var text = BlacklistModButton.GetComponentInChildren<Text>();
                 text.resizeTextForBestFit = false;
@@ -104,8 +104,8 @@ namespace KK_Plugins
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
 
-                InfoButton = UIUtility.CreateButton($"InfoButton", itemPanel.transform, "Print item info");
-                var layoutElement = InfoButton.gameObject.AddComponent<LayoutElement>();
+                InfoButton = UIUtility.CreateButton("InfoButton", itemPanel.transform, "Print item info");
+                InfoButton.gameObject.AddComponent<LayoutElement>();
 
                 var text = InfoButton.GetComponentInChildren<Text>();
                 text.resizeTextForBestFit = false;
@@ -135,10 +135,11 @@ namespace KK_Plugins
 
                 FilterDropdown = UIUtility.CreateDropdown("FilterDropdown", itemPanel.transform);
                 FilterDropdown.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                FilterDropdown.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
-                FilterDropdown.captionText.resizeTextForBestFit = false;
-                FilterDropdown.captionText.fontSize = 26;
-                FilterDropdown.captionText.alignment = TextAnchor.MiddleCenter;
+                Text captionText = FilterDropdown.captionText;
+                captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
+                captionText.resizeTextForBestFit = false;
+                captionText.fontSize = 26;
+                captionText.alignment = TextAnchor.MiddleCenter;
                 FilterDropdown.itemText.fontStyle = FontStyle.Bold;
 
                 FilterDropdown.options.Clear();
@@ -151,7 +152,7 @@ namespace KK_Plugins
                 dropdownEnabledLE.preferredWidth = 30;
                 dropdownEnabledLE.flexibleWidth = 30;
 
-                FilterDropdown.onValueChanged.AddListener(delegate (int value)
+                FilterDropdown.onValueChanged.AddListener(value =>
                 {
                     ChangeListFilter((ListVisibilityType)value);
                     SetMenuVisibility(false);
@@ -168,26 +169,26 @@ namespace KK_Plugins
             if (CurrentCustomSelectInfoComponent == null) return;
             if (!MouseIn) return;
 
-            var xPosition = (Input.mousePosition.x / Screen.width) + 0.01f;
-            var yPosition = (Input.mousePosition.y / Screen.height) - UIHeight - 0.01f;
+            var xPosition = Input.mousePosition.x / Screen.width + 0.01f;
+            var yPosition = Input.mousePosition.y / Screen.height - UIHeight - 0.01f;
 
             ContextMenuPanel.transform.SetRect(xPosition, yPosition, UIWidth + xPosition, UIHeight + yPosition);
             SetMenuVisibility(true);
 
             List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
             int index = CurrentCustomSelectInfoComponent.info.index;
-            var customSelectInfo = lstSelectInfo.FirstOrDefault(x => x.index == index);
+            var customSelectInfo = lstSelectInfo.First(x => x.index == index);
             string guid = null;
             int category = customSelectInfo.category;
             int id = index;
 
             if (index >= UniversalAutoResolver.BaseSlotID)
             {
-                ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
-                if (Info != null)
+                ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
+                if (info != null)
                 {
-                    guid = Info.GUID;
-                    id = Info.Slot;
+                    guid = info.GUID;
+                    id = info.Slot;
                 }
             }
 
@@ -210,20 +211,20 @@ namespace KK_Plugins
                 if (CheckBlacklist(guid, category, id))
                 {
                     BlacklistButton.GetComponentInChildren<Text>().text = "Unhide this item";
-                    BlacklistButton.onClick.AddListener(delegate () { UnblacklistItem(guid, category, id, index); });
+                    BlacklistButton.onClick.AddListener(() => UnblacklistItem(guid, category, id, index));
                     BlacklistModButton.GetComponentInChildren<Text>().text = "Unhide all items from this mod";
-                    BlacklistModButton.onClick.AddListener(delegate () { UnblacklistMod(guid); });
+                    BlacklistModButton.onClick.AddListener(() => UnblacklistMod(guid));
                 }
                 else
                 {
                     BlacklistButton.GetComponentInChildren<Text>().text = "Hide this item";
-                    BlacklistButton.onClick.AddListener(delegate () { BlacklistItem(guid, category, id, index); });
+                    BlacklistButton.onClick.AddListener(() => BlacklistItem(guid, category, id, index));
                     BlacklistModButton.GetComponentInChildren<Text>().text = "Hide all items from this mod";
-                    BlacklistModButton.onClick.AddListener(delegate () { BlacklistMod(guid); });
+                    BlacklistModButton.onClick.AddListener(() => BlacklistMod(guid));
                 }
             }
 
-            InfoButton.onClick.AddListener(delegate () { PrintInfo(index); });
+            InfoButton.onClick.AddListener(() => PrintInfo(index));
 
         }
 

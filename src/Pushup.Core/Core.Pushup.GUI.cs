@@ -51,7 +51,7 @@ namespace KK_Plugins
 
         private static ClothData _activeClothData;
 
-        private void MakerFinishedLoading(object sender, EventArgs e)
+        private static void MakerFinishedLoading(object sender, EventArgs e)
         {
             ReloadPushup();
             _pushUpController.RecalculateBody(coroutine: true);
@@ -69,13 +69,13 @@ namespace KK_Plugins
             bodyTopButtonTrigger.triggers.Add(bodyTopButtonPointerExit);
         }
 
-        private void MakerExiting(object sender, EventArgs e)
+        private static void MakerExiting(object sender, EventArgs e)
         {
             _pushUpController = null;
             _sliderManager = null;
         }
 
-        private void ReloadCustomInterface(object sender, EventArgs e)
+        private static void ReloadCustomInterface(object sender, EventArgs e)
         {
             ReloadPushup();
             _pushUpController.RecalculateBody();
@@ -120,13 +120,11 @@ namespace KK_Plugins
 
         private static void UpdateToggleSubscription(MakerToggle toggle, bool value, Action<bool> action)
         {
-            var pushObserver = Observer.Create<bool>(b =>
+            toggle.ValueChanged.Subscribe(Observer.Create<bool>(b =>
             {
                 action(b);
                 _pushUpController.RecalculateBody(false);
-            });
-
-            toggle.ValueChanged.Subscribe(pushObserver);
+            }));
             toggle.SetValue(value);
         }
 
@@ -138,9 +136,7 @@ namespace KK_Plugins
                 _pushUpController.RecalculateBody(false);
             };
 
-            var pushObserver = Observer.Create<float>(f => slider.Update(f));
-
-            slider.MakerSlider.ValueChanged.Subscribe(pushObserver);
+            slider.MakerSlider.ValueChanged.Subscribe(slider.Update);
             slider.MakerSlider.SetValue(value);
         }
 
@@ -204,13 +200,13 @@ namespace KK_Plugins
             var copyDropdown = new MakerDropdown("Copy To Coordinate", coordinateList.ToArray(), category, 0, this);
             ev.AddControl(copyDropdown);
 
-            string[] DataTypes = new string[] { "Basic and Advanced", "Basic", "Advanced" };
+            string[] DataTypes = { "Basic and Advanced", "Basic", "Advanced" };
             var copyDataDropdown = new MakerDropdown("Data To Copy", DataTypes, category, 0, this);
             ev.AddControl(copyDataDropdown);
 
             var copyButton = new MakerButton("Copy", category, this);
             ev.AddControl(copyButton);
-            copyButton.OnClick.AddListener(delegate
+            copyButton.OnClick.AddListener(() =>
             {
                 bool copyBasic = copyDataDropdown.Value == 0 || copyDataDropdown.Value == 1;
                 bool copyAdvanced = copyDataDropdown.Value == 0 || copyDataDropdown.Value == 2;
@@ -225,14 +221,14 @@ namespace KK_Plugins
             ev.AddSubCategory(category);
         }
 
-        private void CopyBodyToSliders()
+        private static void CopyBodyToSliders()
         {
             _pushUpController.CharacterLoading = true;
             CopyToSliders(_pushUpController.BaseData);
             _pushUpController.RecalculateBody();
         }
 
-        private void CopyBasicToSliders()
+        private static void CopyBasicToSliders()
         {
             _pushUpController.CharacterLoading = true;
             _pushUpController.CalculatePushFromClothes(_activeClothData, false);
@@ -240,7 +236,7 @@ namespace KK_Plugins
             _pushUpController.RecalculateBody();
         }
 
-        private void CopyToSliders(BodyData infoBase)
+        private static void CopyToSliders(BodyData infoBase)
         {
             PushSoftnessSlider.MakerSlider.SetValue(infoBase.Softness);
             PushWeightSlider.MakerSlider.SetValue(infoBase.Weight);
@@ -258,7 +254,7 @@ namespace KK_Plugins
         }
 
 #if KK
-        private void CopySlidersToCoordinate(int coordinateIndex, bool copyBasic, bool copyAdvanced)
+        private static void CopySlidersToCoordinate(int coordinateIndex, bool copyBasic, bool copyAdvanced)
         {
             if (_pushUpController.CurrentCoordinateIndex == coordinateIndex) return;
 
@@ -320,7 +316,13 @@ namespace KK_Plugins
             });
         }
 
-        private static PushupController GetSelectedController() => FindObjectOfType<MPCharCtrl>()?.ociChar?.charInfo?.GetComponent<PushupController>();
+        private static PushupController GetSelectedController()
+        {
+            var mpCharCtrl = FindObjectOfType<MPCharCtrl>();
+            if (mpCharCtrl == null || mpCharCtrl.ociChar == null || mpCharCtrl.ociChar.charInfo == null)
+                return null;
+            return mpCharCtrl.ociChar.charInfo.GetComponent<PushupController>();
+        }
 #endif
     }
 }

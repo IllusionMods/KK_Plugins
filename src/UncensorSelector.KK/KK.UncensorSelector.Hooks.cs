@@ -1,8 +1,7 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
-using UniRx;
+using HarmonyLib;
 
 namespace KK_Plugins
 {
@@ -26,7 +25,7 @@ namespace KK_Plugins
                 }
             }
 
-            return instructions;
+            return instructionsList;
         }
     }
 }

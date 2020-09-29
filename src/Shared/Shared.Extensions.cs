@@ -19,11 +19,11 @@ namespace KK_Plugins
                 list[n] = value;
             }
         }
-        public static string NameFormatted(this GameObject go) => go?.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
-        public static string NameFormatted(this Material go) => go?.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
-        public static string NameFormatted(this Renderer go) => go?.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
-        public static string NameFormatted(this Shader go) => go?.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
-        public static string NameFormatted(this Mesh go) => go?.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
+        public static string NameFormatted(this GameObject go) => go == null ? "" : go.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
+        public static string NameFormatted(this Material go) => go == null ? "" : go.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
+        public static string NameFormatted(this Renderer go) => go == null ? "" : go.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
+        public static string NameFormatted(this Shader go) => go == null ? "" : go.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
+        public static string NameFormatted(this Mesh go) => go == null ? "" : go.name.Replace("(Instance)", "").Replace(" Instance", "").Trim();
         /// <summary>
         /// Convert string to Color
         /// </summary>
@@ -122,15 +122,15 @@ namespace KK_Plugins
 
         private class Vertices
         {
-            private List<Vector3> verts = null;
-            private List<Vector2> uv1 = null;
-            private List<Vector2> uv2 = null;
-            private List<Vector2> uv3 = null;
-            private List<Vector2> uv4 = null;
-            private List<Vector3> normals = null;
-            private List<Vector4> tangents = null;
-            private List<Color32> colors = null;
-            private List<BoneWeight> boneWeights = null;
+            private List<Vector3> verts;
+            private List<Vector2> uv1;
+            private List<Vector2> uv2;
+            private List<Vector2> uv3;
+            private List<Vector2> uv4;
+            private List<Vector3> normals;
+            private List<Vector4> tangents;
+            private List<Color32> colors;
+            private List<BoneWeight> boneWeights;
 
             public Vertices() => verts = new List<Vector3>();
             public Vertices(Mesh mesh)
@@ -146,13 +146,13 @@ namespace KK_Plugins
                 boneWeights = CreateList(mesh.boneWeights);
             }
 
-            private List<T> CreateList<T>(T[] source)
+            private static List<T> CreateList<T>(T[] source)
             {
                 if (source == null || source.Length == 0)
                     return null;
                 return new List<T>(source);
             }
-            private void Copy<T>(ref List<T> dest, List<T> source, int index)
+            private static void Copy<T>(ref List<T> dest, List<T> source, int index)
             {
                 if (source == null)
                     return;

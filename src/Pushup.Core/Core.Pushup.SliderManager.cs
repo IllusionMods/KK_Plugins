@@ -1,6 +1,7 @@
 ﻿using ChaCustom;
 using HarmonyLib;
 using System;
+using System.Globalization;
 using TMPro;
 using UniRx;
 using UnityEngine.UI;
@@ -61,14 +62,14 @@ namespace KK_Plugins
                 input.text = CustomBase.ConvertTextFromRate(0, 100, baseValue);
 
                 if (!DoEvents) return;
-                slider.onValueChanged.AsObservable().Subscribe(delegate (float value)
+                slider.onValueChanged.AsObservable().Subscribe(value =>
                 {
                     if (!DoEvents) return;
                     if (SlidersActive)
                     {
                         //When user is updating the chest sliders set the BaseData
                         sliderSetter(value);
-                        input.text = Math.Round(value * 100).ToString();
+                        input.text = Math.Round(value * 100).ToString(CultureInfo.InvariantCulture);
                         pushupController.RecalculateBody();
                     }
                     else

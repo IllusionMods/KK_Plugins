@@ -90,7 +90,7 @@ namespace KK_Plugins.MaterialEditor
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
 #if KK || EC
-            //Hooks for transfering accessories (MoreAccessories compatibility)
+            //Hooks for transferring accessories (MoreAccessories compatibility)
             foreach (var method in typeof(ChaCustom.CvsAccessoryChange).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>m__4")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.AccessoryTransferHook), AccessTools.all)));
 #elif AI || HS2
@@ -108,40 +108,28 @@ namespace KK_Plugins.MaterialEditor
             ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerResourceLoaded, AssetLoadedHook);
         }
 
-        //internal void Update()
-        //{
-        //    if (Input.GetKeyDown(KeyCode.C))
-        //    {
-        //        Dictionary<string, int> shaders = new Dictionary<string, int>();
-        //        foreach (var shader in Resources.FindObjectsOfTypeAll<Shader>())
-        //            if (shaders.ContainsKey(shader.name))
-        //                shaders[shader.name]++;
-        //            else
-        //                shaders[shader.name] = 1;
-        //        foreach (var shader in shaders)
-        //            Logger.LogInfo($"Shader:{shader.Key} {shader.Value}");
-        //    }
-        //}
-
         /// <summary>
         /// Every time an asset is loaded, swap its shader for the one loaded by MaterialEditor. This reduces the number of instances of a shader once they are cleaned up by garbage collection
         /// which reduce RAM usage, etc. Also fixes KK mods in EC by swapping them to the equivalent EC shader.
         /// </summary>
-        private void AssetLoadedHook(AssetLoadedContext context)
+        private static void AssetLoadedHook(AssetLoadedContext context)
         {
             if (!ShaderOptimization.Value) return;
 
             if (context.Asset is GameObject go)
             {
-                foreach (var rend in go.GetComponentsInChildren<Renderer>())
+                var renderers = go.GetComponentsInChildren<Renderer>();
+                for (var i = 0; i < renderers.Length; i++)
                 {
-                    foreach (var mat in rend.materials)
+                    var renderer = renderers[i];
+                    for (var j = 0; j < renderer.materials.Length; j++)
                     {
-                        if (LoadedShaders.TryGetValue(mat.shader.name, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
+                        var material = renderer.materials[j];
+                        if (LoadedShaders.TryGetValue(material.shader.name, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
                         {
-                            int renderQueue = mat.renderQueue;
-                            mat.shader = shaderData.Shader;
-                            mat.renderQueue = renderQueue;
+                            int renderQueue = material.renderQueue;
+                            material.shader = shaderData.Shader;
+                            material.renderQueue = renderQueue;
                         }
                     }
                 }
@@ -179,19 +167,19 @@ namespace KK_Plugins.MaterialEditor
                 BodyParts.Add(parts);
         }
 
-        private void WatchTexChanges_SettingChanged(object sender, EventArgs e)
+        private static void WatchTexChanges_SettingChanged(object sender, EventArgs e)
         {
             if (!WatchTexChanges.Value)
                 UI.TexChangeWatcher?.Dispose();
         }
-        private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
-        private void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
-        private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
+        private static void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
+        private static void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
+        private static void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
 #if KK
-        private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
+        private static void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
 #endif
 
-        private IEnumerator LoadXML()
+        private static IEnumerator LoadXML()
         {
             yield return new WaitUntil(() => AssetBundleManager.ManifestBundlePack.Count != 0);
 
@@ -199,8 +187,9 @@ namespace KK_Plugins.MaterialEditor
             XMLShaderProperties["default"] = new Dictionary<string, ShaderPropertyData>();
 
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.default.xml"))
-            using (XmlReader reader = XmlReader.Create(stream))
-                LoadXML(XDocument.Load(reader).Element("MaterialEditor"));
+                if (stream != null)
+                    using (XmlReader reader = XmlReader.Create(stream))
+                        LoadXML(XDocument.Load(reader).Element("MaterialEditor"));
 
             foreach (var manifest in loadedManifests.Values)
             {
@@ -209,7 +198,7 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        private void LoadXML(XElement materialEditorElement)
+        private static void LoadXML(XElement materialEditorElement)
         {
             if (materialEditorElement == null) return;
 
@@ -274,7 +263,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         /// <param name="chaControl"></param>
         /// <returns>KKAPI character controller</returns>
-        public static MaterialEditorCharaController GetCharaController(ChaControl chaControl) => chaControl?.gameObject?.GetComponent<MaterialEditorCharaController>();
+        public static MaterialEditorCharaController GetCharaController(ChaControl chaControl) => chaControl == null ? null : chaControl.gameObject.GetComponent<MaterialEditorCharaController>();
 
         internal static Texture2D GetT2D(RenderTexture renderTexture)
         {
@@ -309,7 +298,7 @@ namespace KK_Plugins.MaterialEditor
         {
             public string ShaderName;
             public Shader Shader;
-            public int? RenderQueue = null;
+            public int? RenderQueue;
             public bool ShaderOptimization;
 
             public ShaderData(string shaderName, string assetBundlePath = "", string renderQueue = "", string assetPath = "", string shaderOptimization = null)
@@ -363,10 +352,17 @@ namespace KK_Plugins.MaterialEditor
                                 Shader = bundle.LoadAsset<Shader>(shaderName);
 
                                 var go = bundle.LoadAsset<GameObject>(assetPath);
-                                foreach (var x in go.GetComponentsInChildren<Renderer>())
-                                    foreach (var y in x.materials)
-                                        if (y.shader.NameFormatted() == ShaderName)
-                                            Shader = y.shader;
+                                var renderers = go.GetComponentsInChildren<Renderer>();
+                                for (var i = 0; i < renderers.Length; i++)
+                                {
+                                    var renderer = renderers[i];
+                                    for (var j = 0; j < renderer.materials.Length; j++)
+                                    {
+                                        var material = renderer.materials[j];
+                                        if (material.shader.NameFormatted() == ShaderName)
+                                            Shader = material.shader;
+                                    }
+                                }
                                 Destroy(go);
 
                                 bundle.Unload(false);
@@ -374,10 +370,17 @@ namespace KK_Plugins.MaterialEditor
                             else
                             {
                                 var go = CommonLib.LoadAsset<GameObject>(assetBundlePath, assetPath);
-                                foreach (var x in go.GetComponentsInChildren<Renderer>())
-                                    foreach (var y in x.materials)
-                                        if (y.shader.NameFormatted() == ShaderName)
-                                            Shader = y.shader;
+                                var renderers = go.GetComponentsInChildren<Renderer>();
+                                for (var i = 0; i < renderers.Length; i++)
+                                {
+                                    var renderer = renderers[i];
+                                    for (var j = 0; j < renderer.materials.Length; j++)
+                                    {
+                                        var material = renderer.materials[j];
+                                        if (material.shader.NameFormatted() == ShaderName)
+                                            Shader = material.shader;
+                                    }
+                                }
                                 Destroy(go);
                             }
                         }
@@ -395,10 +398,10 @@ namespace KK_Plugins.MaterialEditor
         {
             public string Name;
             public ShaderPropertyType Type;
-            public string DefaultValue = null;
-            public string DefaultValueAssetBundle = null;
-            public float? MinValue = null;
-            public float? MaxValue = null;
+            public string DefaultValue;
+            public string DefaultValueAssetBundle;
+            public float? MinValue;
+            public float? MaxValue;
 
             public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string minValue = null, string maxValue = null)
             {

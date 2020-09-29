@@ -103,9 +103,9 @@ namespace KK_Plugins.MaterialEditor
                         ShowRenderer();
                         SetLabelText(RendererLabel, item.LabelText);
                         ExportUVButton.onClick.RemoveAllListeners();
-                        ExportUVButton.onClick.AddListener(delegate { item.ExportUVOnClick(); });
+                        ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
                         ExportObjButton.onClick.RemoveAllListeners();
-                        ExportObjButton.onClick.AddListener(delegate { item.ExportObjOnClick(); });
+                        ExportObjButton.onClick.AddListener(() => item.ExportObjOnClick());
                         RendererText.text = item.RendererName;
                         break;
                     case ItemInfo.RowItemType.RendererEnabled:
@@ -113,7 +113,7 @@ namespace KK_Plugins.MaterialEditor
                         SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal);
                         RendererEnabledDropdown.onValueChanged.RemoveAllListeners();
                         RendererEnabledDropdown.value = item.RendererEnabled;
-                        RendererEnabledDropdown.onValueChanged.AddListener(delegate (int value)
+                        RendererEnabledDropdown.onValueChanged.AddListener(value =>
                         {
                             item.RendererEnabled = value;
                             if (item.RendererEnabled != item.RendererEnabledOriginal)
@@ -124,7 +124,7 @@ namespace KK_Plugins.MaterialEditor
                         });
 
                         RendererEnabledResetButton.onClick.RemoveAllListeners();
-                        RendererEnabledResetButton.onClick.AddListener(delegate { RendererEnabledDropdown.value = item.RendererEnabledOriginal; });
+                        RendererEnabledResetButton.onClick.AddListener(() => RendererEnabledDropdown.value = item.RendererEnabledOriginal);
 
                         break;
                     case ItemInfo.RowItemType.RendererShadowCastingMode:
@@ -132,7 +132,7 @@ namespace KK_Plugins.MaterialEditor
                         SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal);
                         RendererShadowCastingModeDropdown.onValueChanged.RemoveAllListeners();
                         RendererShadowCastingModeDropdown.value = item.RendererShadowCastingMode;
-                        RendererShadowCastingModeDropdown.onValueChanged.AddListener(delegate (int value)
+                        RendererShadowCastingModeDropdown.onValueChanged.AddListener(value =>
                         {
                             item.RendererShadowCastingMode = value;
                             if (item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal)
@@ -143,7 +143,7 @@ namespace KK_Plugins.MaterialEditor
                         });
 
                         RendererShadowCastingModeResetButton.onClick.RemoveAllListeners();
-                        RendererShadowCastingModeResetButton.onClick.AddListener(delegate { RendererShadowCastingModeDropdown.value = item.RendererShadowCastingModeOriginal; });
+                        RendererShadowCastingModeResetButton.onClick.AddListener(() => RendererShadowCastingModeDropdown.value = item.RendererShadowCastingModeOriginal);
 
                         break;
                     case ItemInfo.RowItemType.RendererReceiveShadows:
@@ -151,7 +151,7 @@ namespace KK_Plugins.MaterialEditor
                         SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal);
                         RendererReceiveShadowsDropdown.onValueChanged.RemoveAllListeners();
                         RendererReceiveShadowsDropdown.value = item.RendererReceiveShadows;
-                        RendererReceiveShadowsDropdown.onValueChanged.AddListener(delegate (int value)
+                        RendererReceiveShadowsDropdown.onValueChanged.AddListener(value =>
                         {
                             item.RendererReceiveShadows = value;
                             if (item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal)
@@ -162,7 +162,7 @@ namespace KK_Plugins.MaterialEditor
                         });
 
                         RendererReceiveShadowsResetButton.onClick.RemoveAllListeners();
-                        RendererReceiveShadowsResetButton.onClick.AddListener(delegate { RendererReceiveShadowsDropdown.value = item.RendererReceiveShadowsOriginal; });
+                        RendererReceiveShadowsResetButton.onClick.AddListener(() => RendererReceiveShadowsDropdown.value = item.RendererReceiveShadowsOriginal);
 
                         break;
                     case ItemInfo.RowItemType.Material:
@@ -170,9 +170,9 @@ namespace KK_Plugins.MaterialEditor
                         SetLabelText(MaterialLabel, item.LabelText);
                         MaterialText.text = item.MaterialName;
                         MaterialCopyButton.onClick.RemoveAllListeners();
-                        MaterialCopyButton.onClick.AddListener(delegate { item.MaterialOnCopy.Invoke(); });
+                        MaterialCopyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
                         MaterialPasteButton.onClick.RemoveAllListeners();
-                        MaterialPasteButton.onClick.AddListener(delegate { item.MaterialOnPaste.Invoke(); });
+                        MaterialPasteButton.onClick.AddListener(() => item.MaterialOnPaste.Invoke());
                         if (MaterialEditorPlugin.CopyData.IsEmpty)
                         {
                             MaterialPasteButton.enabled = false;
@@ -195,7 +195,7 @@ namespace KK_Plugins.MaterialEditor
                         ShaderDropdown.onValueChanged.RemoveAllListeners();
                         ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderName);
                         ShaderDropdown.captionText.text = item.ShaderName;
-                        ShaderDropdown.onValueChanged.AddListener(delegate (int value)
+                        ShaderDropdown.onValueChanged.AddListener(value =>
                         {
                             var selected = ShaderDropdown.OptionText(value);
                             if (value == 0 || selected.IsNullOrEmpty())
@@ -210,7 +210,7 @@ namespace KK_Plugins.MaterialEditor
                         });
 
                         ShaderResetButton.onClick.RemoveAllListeners();
-                        ShaderResetButton.onClick.AddListener(delegate { ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderNameOriginal); });
+                        ShaderResetButton.onClick.AddListener(() => ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderNameOriginal));
 
                         break;
                     case ItemInfo.RowItemType.ShaderRenderQueue:
@@ -218,7 +218,7 @@ namespace KK_Plugins.MaterialEditor
                         SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
                         ShaderRenderQueueInput.onEndEdit.RemoveAllListeners();
                         ShaderRenderQueueInput.text = item.ShaderRenderQueue.ToString();
-                        ShaderRenderQueueInput.onEndEdit.AddListener(delegate (string value)
+                        ShaderRenderQueueInput.onEndEdit.AddListener(value =>
                         {
                             if (!int.TryParse(value, out int intValue))
                             {
@@ -237,7 +237,7 @@ namespace KK_Plugins.MaterialEditor
                         });
 
                         ShaderRenderQueueResetButton.onClick.RemoveAllListeners();
-                        ShaderRenderQueueResetButton.onClick.AddListener(delegate
+                        ShaderRenderQueueResetButton.onClick.AddListener(() =>
                         {
                             ShaderRenderQueueInput.text = item.ShaderRenderQueueOriginal.ToString();
                             item.ShaderRenderQueue = item.ShaderRenderQueueOriginal;
@@ -270,9 +270,9 @@ namespace KK_Plugins.MaterialEditor
                         }
 
                         ExportTextureButton.onClick.RemoveAllListeners();
-                        ExportTextureButton.onClick.AddListener(delegate { item.TextureOnExport(); });
+                        ExportTextureButton.onClick.AddListener(() => item.TextureOnExport());
                         ImportTextureButton.onClick.RemoveAllListeners();
-                        ImportTextureButton.onClick.AddListener(delegate
+                        ImportTextureButton.onClick.AddListener(() =>
                         {
                             item.TextureChanged = true;
                             item.TextureExists = true;
@@ -282,7 +282,7 @@ namespace KK_Plugins.MaterialEditor
                         });
 
                         TextureResetButton.onClick.RemoveAllListeners();
-                        TextureResetButton.onClick.AddListener(delegate
+                        TextureResetButton.onClick.AddListener(() =>
                         {
                             item.TextureChanged = false;
                             item.TextureOnReset();
@@ -303,7 +303,7 @@ namespace KK_Plugins.MaterialEditor
                         ScaleXInput.text = item.Scale.x.ToString();
                         ScaleYInput.text = item.Scale.y.ToString();
 
-                        OffsetXInput.onEndEdit.AddListener(delegate (string value)
+                        OffsetXInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
@@ -322,7 +322,7 @@ namespace KK_Plugins.MaterialEditor
                             SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
                         });
 
-                        OffsetYInput.onEndEdit.AddListener(delegate (string value)
+                        OffsetYInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
@@ -341,7 +341,7 @@ namespace KK_Plugins.MaterialEditor
                             SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
                         });
 
-                        ScaleXInput.onEndEdit.AddListener(delegate (string value)
+                        ScaleXInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
@@ -360,7 +360,7 @@ namespace KK_Plugins.MaterialEditor
                             SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
                         });
 
-                        ScaleYInput.onEndEdit.AddListener(delegate (string value)
+                        ScaleYInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
@@ -380,7 +380,7 @@ namespace KK_Plugins.MaterialEditor
                         });
 
                         OffsetScaleResetButton.onClick.RemoveAllListeners();
-                        OffsetScaleResetButton.onClick.AddListener(delegate
+                        OffsetScaleResetButton.onClick.AddListener(() =>
                         {
                             item.Offset = item.OffsetOriginal;
                             item.Scale = item.ScaleOriginal;
@@ -410,7 +410,7 @@ namespace KK_Plugins.MaterialEditor
                         ColorBInput.text = item.ColorValue.b.ToString();
                         ColorAInput.text = item.ColorValue.a.ToString();
 
-                        ColorRInput.onEndEdit.AddListener(delegate (string value)
+                        ColorRInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
@@ -429,7 +429,7 @@ namespace KK_Plugins.MaterialEditor
                             SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
 
-                        ColorGInput.onEndEdit.AddListener(delegate (string value)
+                        ColorGInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
@@ -448,7 +448,7 @@ namespace KK_Plugins.MaterialEditor
                             SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
 
-                        ColorBInput.onEndEdit.AddListener(delegate (string value)
+                        ColorBInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
@@ -467,7 +467,7 @@ namespace KK_Plugins.MaterialEditor
                             SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
 
-                        ColorAInput.onEndEdit.AddListener(delegate (string value)
+                        ColorAInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
@@ -487,7 +487,7 @@ namespace KK_Plugins.MaterialEditor
                         });
 
                         ColorResetButton.onClick.RemoveAllListeners();
-                        ColorResetButton.onClick.AddListener(delegate
+                        ColorResetButton.onClick.AddListener(() =>
                         {
                             item.ColorValue = item.ColorValueOriginal;
 
@@ -511,13 +511,13 @@ namespace KK_Plugins.MaterialEditor
                         FloatSlider.value = item.FloatValue;
                         FloatInputField.text = item.FloatValue.ToString();
 
-                        FloatSlider.onValueChanged.AddListener(delegate (float value)
+                        FloatSlider.onValueChanged.AddListener(value =>
                         {
                             FloatInputField.text = value.ToString();
                             FloatInputField.onEndEdit.Invoke(value.ToString());
                         });
 
-                        FloatInputField.onEndEdit.AddListener(delegate (string value)
+                        FloatInputField.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
@@ -537,7 +537,7 @@ namespace KK_Plugins.MaterialEditor
                         });
 
                         FloatResetButton.onClick.RemoveAllListeners();
-                        FloatResetButton.onClick.AddListener(delegate
+                        FloatResetButton.onClick.AddListener(() =>
                         {
                             item.FloatValue = item.FloatValueOriginal;
 
@@ -558,7 +558,7 @@ namespace KK_Plugins.MaterialEditor
                 gameObject.SetActive(visible);
         }
 
-        private void SetLabelText(Text label, string text, bool valueChanged = false)
+        private static void SetLabelText(Text label, string text, bool valueChanged = false)
         {
             if (text.IsNullOrEmpty())
             {

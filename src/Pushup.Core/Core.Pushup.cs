@@ -57,12 +57,20 @@ namespace KK_Plugins
 
             //Patch all the slider onValueChanged events to return false and cancel original code
             //Pushup adds its own onValueChanged event that manages this stuff
-            foreach (var anonType in typeof(ChaCustom.CvsBreast).GetNestedTypes(AccessTools.all).Where(x => x.Name.Contains("<Start>")))
-                foreach (var anonTypeMethod in anonType.GetMethods(AccessTools.all).Where(x => x.Name.Contains("<>m")))
-                    if (anonTypeMethod.GetParameters().Any(x => x.ParameterType == typeof(float)))
-                        harmony.Patch(anonTypeMethod, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
+            for (var i = 0; i < typeof(ChaCustom.CvsBreast).GetNestedTypes(AccessTools.all).Length; i++)
+            {
+                var anonType = typeof(ChaCustom.CvsBreast).GetNestedTypes(AccessTools.all)[i];
+                if (anonType.Name.Contains("<Start>"))
+                    for (var index = 0; index < anonType.GetMethods(AccessTools.all).Length; index++)
+                    {
+                        var anonTypeMethod = anonType.GetMethods(AccessTools.all)[index];
+                        if (anonTypeMethod.Name.Contains("<>m"))
+                            if (anonTypeMethod.GetParameters().Any(x => x.ParameterType == typeof(float)))
+                                harmony.Patch(anonTypeMethod, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
+                    }
+            }
 
-            var sliders = typeof(ChaCustom.CvsBreast).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>") && x.GetParameters().Any(y => y.ParameterType == typeof(float))).ToList();
+            var sliders = typeof(ChaCustom.CvsBreast).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>") && x.GetParameters().Any(y => y.ParameterType == typeof(float)));
             //Don't patch areola size or nipple gloss since they are not managed by this plugin
             foreach (var slider in sliders)
             {
@@ -86,7 +94,7 @@ namespace KK_Plugins
             }
         }
 
-        public static PushupController GetCharaController(ChaControl character) => character?.gameObject?.GetComponent<PushupController>();
+        public static PushupController GetCharaController(ChaControl character) => character == null ? null : character.gameObject.GetComponent<PushupController>();
 
         internal enum Wearing { None, Bra, Top, Both }
     }

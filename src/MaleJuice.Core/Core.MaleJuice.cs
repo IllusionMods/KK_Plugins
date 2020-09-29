@@ -25,9 +25,9 @@ namespace KK_Plugins
         public const string Version = "1.2.2";
 
 #if KK
-        private static Texture LiquidMask = null;
+        private static Texture LiquidMask;
 #else
-        private static Material LiquidMat = null;
+        private static Material LiquidMat;
 #endif
 
         internal static new ManualLogSource Logger;
@@ -39,7 +39,7 @@ namespace KK_Plugins
             StartCoroutine(LoadJuice());
         }
 
-        private IEnumerator LoadJuice()
+        private static IEnumerator LoadJuice()
         {
             yield return new WaitUntil(() => AssetBundleManager.ManifestBundlePack.Count != 0);
 
@@ -62,7 +62,7 @@ namespace KK_Plugins
             }
             catch
             {
-                Logger.LogError($"Could not load juice textures.");
+                Logger.LogError("Could not load juice textures.");
             }
 
 #if KK

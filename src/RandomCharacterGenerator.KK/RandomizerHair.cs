@@ -8,7 +8,7 @@ namespace KK_Plugins
     {
         private class RandomizerHair
         {
-            public void RandomizeType()
+            public static void RandomizeType()
             {
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
                 var hair = Custom.hair;
@@ -42,7 +42,7 @@ namespace KK_Plugins
 
             }
 
-            public void RandomizeColor()
+            public static void RandomizeColor()
             {
                 var baseColor = RandomColor();
                 Color.RGBToHSV(baseColor, out var h, out var s, out var v);
@@ -65,7 +65,7 @@ namespace KK_Plugins
                 Custom.body.underhairColor = hair.parts[0].baseColor;
             }
 
-            public void RandomizeEtc()
+            public static void RandomizeEtc()
             {
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
                 var hair = Custom.hair;

@@ -77,7 +77,7 @@ namespace KK_Plugins
 
             protected override void Update()
             {
-                if (GuideObject != null)
+                if (GuideObject)
                 {
                     //If the guide object is visible set the character position to the guide object position, otherwise the guide object follows the character
                     if (GuideObject.gameObject.activeInHierarchy)
@@ -111,7 +111,7 @@ namespace KK_Plugins
                 base.Update();
             }
 
-            internal enum CharacterType { Female1, Female2, Male, Unknown}
+            internal enum CharacterType { Female1, Female2, Male, Unknown }
         }
     }
 }

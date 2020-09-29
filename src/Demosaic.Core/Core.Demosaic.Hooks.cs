@@ -1,12 +1,11 @@
-﻿using BepInEx;
-using HarmonyLib;
+﻿using HarmonyLib;
 #if AI || HS2
 using AIChara;
 #endif
 
 namespace KK_Plugins
 {
-    public partial class Demosaic : BaseUnityPlugin
+    public partial class Demosaic
     {
         internal static class Hooks
         {

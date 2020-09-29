@@ -83,7 +83,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK.UncensorSelector.cs" />
     <Compile Include="KK.UncensorSelector.Hooks.cs" />
   </ItemGroup>
   <ItemGroup>

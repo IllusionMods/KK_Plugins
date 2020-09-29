@@ -17,7 +17,6 @@ namespace KK_Plugins
                         GetController(__instance.flags.lstHeroine[i].chaCtrl).CreateGuideObject(__instance, HCharaAdjustmentController.CharacterType.Female1);
                     else if (i == 1)
                         GetController(__instance.flags.lstHeroine[i].chaCtrl).CreateGuideObject(__instance, HCharaAdjustmentController.CharacterType.Female2);
-                    else continue;
                 GetController(__instance.flags.player.chaCtrl).CreateGuideObject(__instance, HCharaAdjustmentController.CharacterType.Male);
             }
 
@@ -28,8 +27,9 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "GotoPointMoveScene")]
             internal static void GotoPointMoveScene(HSceneProc __instance)
             {
-                foreach (var heroine in __instance.flags.lstHeroine)
-                    GetController(heroine.chaCtrl).HideGuideObject();
+                var heroines = __instance.flags.lstHeroine;
+                for (var i = 0; i < heroines.Count; i++)
+                    GetController(heroines[i].chaCtrl).HideGuideObject();
             }
 
             /// <summary>
@@ -39,8 +39,9 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(HSceneProc), "ChangeCategory")]
             internal static void ChangeCategory(HSceneProc __instance)
             {
-                foreach (var heroine in __instance.flags.lstHeroine)
-                    GetController(heroine.chaCtrl).SetGuideObjectOriginalPosition();
+                var heroines = __instance.flags.lstHeroine;
+                for (var i = 0; i < heroines.Count; i++)
+                    GetController(heroines[i].chaCtrl).SetGuideObjectOriginalPosition();
             }
         }
     }

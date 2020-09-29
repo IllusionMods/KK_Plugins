@@ -28,7 +28,7 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
 
-            CharacterExportHotkey = Config.Bind("Keyboard Shortcuts", "Export Characters", new KeyboardShortcut(KeyCode.E, new KeyCode[] { KeyCode.LeftControl }), "Export all currently loaded characters in the game.");
+            CharacterExportHotkey = Config.Bind("Keyboard Shortcuts", "Export Characters", new KeyboardShortcut(KeyCode.E, KeyCode.LeftControl), "Export all currently loaded characters in the game.");
             OpenFolderAfterExport = Config.Bind("Config", "Open Folder After Export", true, "Whether to open the folder after exporting characters.");
         }
 

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace KK_Plugins.StudioSceneSettings
 {
-    public partial class StudioSceneSettings : BaseUnityPlugin
+    public partial class StudioSceneSettings
     {
         internal static class Hooks
         {
@@ -53,16 +53,17 @@ namespace KK_Plugins.StudioSceneSettings
                 List<ExcelData> excelDataList = new List<ExcelData>();
                 List<string> assetBundleList = CommonLib.GetAssetBundleNameListFromPath(_assetbundle);
                 assetBundleList.Sort();
-                foreach (string ab in assetBundleList)
+                for (var i = 0; i < assetBundleList.Count; i++)
                 {
+                    string ab = assetBundleList[i];
                     var excelData = CommonLib.LoadAsset<ExcelData>(ab, _file);
                     if (excelData != null)
                         excelDataList.Add(excelData);
                 }
 
-                foreach (ExcelData excelData in excelDataList)
+                for (var i = 0; i < excelDataList.Count; i++)
                 {
-                    foreach (ExcelData.Param param in excelData.list.Skip(2))
+                    foreach (ExcelData.Param param in excelDataList[i].list.Skip(2))
                     {
                         Studio.CameraControl.VisibleObject visibleObject = new Studio.CameraControl.VisibleObject();
                         visibleObject.nameCollider = param.list[0];

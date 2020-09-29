@@ -20,13 +20,14 @@ namespace KK_Plugins
             {
                 List<CodeInstruction> instructionsList = instructions.ToList();
 
-                foreach (var x in instructionsList)
+                for (var index = 0; index < instructionsList.Count; index++)
                 {
+                    var x = instructionsList[index];
                     if (x.opcode == OpCodes.Ldc_R4 && x.operand?.ToString() == "3")
                         x.operand = AnimationSpeedMax;
                 }
 
-                return instructions;
+                return instructionsList;
             }
 
             /// <summary>

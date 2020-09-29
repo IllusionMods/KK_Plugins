@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using Studio;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -25,8 +24,10 @@ namespace KK_Plugins
                     v_transformRoot = (Transform)AccessTools.Field(typeof(PauseRegistrationList), "transformRoot").GetValue(__instance);
                 }
 
-                foreach (var subDir in CurrentDirectory.GetDirectories().Reverse())
+                var dirs = CurrentDirectory.GetDirectories();
+                for (var i = dirs.Length - 1; i >= 0; i--)
                 {
+                    var subDir = dirs[i];
                     AddListButton($"[{subDir.Name}]", () =>
                     {
                         CurrentDirectory = subDir;

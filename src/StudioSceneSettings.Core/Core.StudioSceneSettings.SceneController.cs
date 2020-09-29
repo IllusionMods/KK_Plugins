@@ -32,17 +32,17 @@ namespace KK_Plugins.StudioSceneSettings
         {
 
             var data = new PluginData();
-            data.data[$"MapMasking"] = MapMasking.Value;
+            data.data["MapMasking"] = MapMasking.Value;
 
             if (NearClipPlane.Value == NearClipPlane.InitialValue)
-                data.data[$"NearClipPlane"] = null;
+                data.data["NearClipPlane"] = null;
             else
-                data.data[$"NearClipPlane"] = NearClipPlane.Value;
+                data.data["NearClipPlane"] = NearClipPlane.Value;
 
             if (FarClipPlane.Value == FarClipPlane.InitialValue)
-                data.data[$"FarClipPlane"] = null;
+                data.data["FarClipPlane"] = null;
             else
-                data.data[$"FarClipPlane"] = FarClipPlane.Value;
+                data.data["FarClipPlane"] = FarClipPlane.Value;
 
             SetExtendedData(data);
         }
@@ -77,8 +77,7 @@ namespace KK_Plugins.StudioSceneSettings
             }
             else if (operation == SceneOperationKind.Clear)
                 ResetAll();
-            else //Do not import saved data, keep current settings
-                return;
+            //Do not import saved data, keep current settings
         }
 
         /// <summary>
@@ -111,7 +110,7 @@ namespace KK_Plugins.StudioSceneSettings
 
             studioCameraColliderControllerGO = new GameObject();
             studioCameraColliderControllerGO.name = "StudioCameraColliderController";
-            var studioCameraColliderController = studioCameraColliderControllerGO.AddComponent<StudioCameraColliderController>();
+            studioCameraColliderControllerGO.AddComponent<StudioCameraColliderController>();
             var rigidbody = studioCameraColliderControllerGO.AddComponent<Rigidbody>();
             rigidbody.useGravity = false;
             rigidbody.isKinematic = true;
@@ -130,9 +129,9 @@ namespace KK_Plugins.StudioSceneSettings
 #endif
 
             var menu = new SceneEffectsCategory(StudioSceneSettings.PluginNameInternal);
-            MapMasking = menu.AddToggleSet("Map Masking", value => MapMaskingSetter(value), false);
-            NearClipPlane = menu.AddSliderSet("Near Clip Plane", value => NearClipSetter(value), NearClipDefault, 0.01f, 10f);
-            FarClipPlane = menu.AddSliderSet("Far Clip Plane", value => FarClipSetter(value), FarClipDefault, 1f, 10000f);
+            MapMasking = menu.AddToggleSet("Map Masking", MapMaskingSetter, false);
+            NearClipPlane = menu.AddSliderSet("Near Clip Plane", NearClipSetter, NearClipDefault, 0.01f, 10f);
+            FarClipPlane = menu.AddSliderSet("Far Clip Plane", FarClipSetter, FarClipDefault, 1f, 10000f);
 
             NearClipPlane.EnforceSliderMaximum = false;
             FarClipPlane.EnforceSliderMaximum = false;

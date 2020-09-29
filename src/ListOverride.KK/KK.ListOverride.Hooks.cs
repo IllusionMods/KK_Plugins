@@ -19,8 +19,10 @@ namespace KK_Plugins
                 int counter = 0;
                 Dictionary<ChaListDefine.CategoryNo, Dictionary<int, ListInfoBase>> dictListInfo = Traverse.Create(__instance).Field("dictListInfo").GetValue() as Dictionary<ChaListDefine.CategoryNo, Dictionary<int, ListInfoBase>>;
 
-                foreach (var fileName in Directory.GetFiles(ListOverrideFolder))
+                var files = Directory.GetFiles(ListOverrideFolder);
+                for (var i = 0; i < files.Length; i++)
                 {
+                    var fileName = files[i];
                     try
                     {
                         XDocument doc = XDocument.Load(fileName);

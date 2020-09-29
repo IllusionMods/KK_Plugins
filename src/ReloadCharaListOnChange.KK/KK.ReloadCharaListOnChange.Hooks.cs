@@ -14,7 +14,7 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(ChaFileControl), "SaveCharaFile", typeof(BinaryWriter), typeof(bool))]
             internal static void SaveCharaFilePrefix()
             {
-                if (InCharaMaker && Singleton<CustomBase>.Instance.customCtrl.saveNew == true)
+                if (InCharaMaker && Singleton<CustomBase>.Instance.customCtrl.saveNew)
                     EventFromCharaMaker = true;
             }
             /// <summary>

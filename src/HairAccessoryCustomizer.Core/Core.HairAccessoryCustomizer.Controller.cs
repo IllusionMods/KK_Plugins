@@ -1,4 +1,5 @@
-﻿using ExtensibleSaveFormat;
+﻿using ChaCustom;
+using ExtensibleSaveFormat;
 using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
@@ -198,11 +199,8 @@ namespace KK_Plugins
                     }
                     return false;
                 }
-                else
-                {
-                    RemoveHairAccessoryInfo(slot);
-                    return false;
-                }
+                RemoveHairAccessoryInfo(slot);
+                return false;
             }
             /// <summary>
             /// Removes the HairAccessoryInfo for the slot
@@ -275,7 +273,7 @@ namespace KK_Plugins
             /// <summary>
             /// Checks if the specified accessory is a hair accessory
             /// </summary>
-            public bool IsHairAccessory(ChaAccessoryComponent chaAccessoryComponent) => chaAccessoryComponent?.gameObject.GetComponent<ChaCustomHairComponent>() != null;
+            public bool IsHairAccessory(ChaAccessoryComponent chaAccessoryComponent) => chaAccessoryComponent != null && chaAccessoryComponent.gameObject.GetComponent<ChaCustomHairComponent>() != null;
             /// <summary>
             /// Checks if the specified accessory is a hair accessory
             /// </summary>
@@ -283,7 +281,7 @@ namespace KK_Plugins
             {
                 try
                 {
-                    return AccessoriesApi.GetAccessory(ChaControl, slot)?.gameObject.GetComponent<ChaCustomHairComponent>() != null;
+                    return ChaControl.GetAccessory(slot)?.gameObject.GetComponent<ChaCustomHairComponent>() != null;
                 }
                 catch
                 {
@@ -295,10 +293,11 @@ namespace KK_Plugins
             /// </summary>
             public bool HasAccessoryPart()
             {
-                var chaCustomHairComponent = AccessoriesApi.GetAccessory(ChaControl, AccessoriesApi.SelectedMakerAccSlot)?.gameObject.GetComponent<ChaCustomHairComponent>();
+                var chaCustomHairComponent = ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot)?.gameObject.GetComponent<ChaCustomHairComponent>();
                 if (chaCustomHairComponent != null)
-                    foreach (Renderer renderer in chaCustomHairComponent.rendAccessory)
-                        if (renderer != null) return true;
+                    for (var i = 0; i < chaCustomHairComponent.rendAccessory.Length; i++)
+                        if (chaCustomHairComponent.rendAccessory[i] != null)
+                            return true;
                 return false;
             }
             /// <summary>
@@ -306,10 +305,11 @@ namespace KK_Plugins
             /// </summary>
             public bool HasLengthTransforms()
             {
-                var chaCustomHairComponent = AccessoriesApi.GetAccessory(ChaControl, AccessoriesApi.SelectedMakerAccSlot)?.gameObject.GetComponent<ChaCustomHairComponent>();
+                var chaCustomHairComponent = ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot)?.gameObject.GetComponent<ChaCustomHairComponent>();
                 if (chaCustomHairComponent != null)
-                    foreach (Transform transform in chaCustomHairComponent.trfLength)
-                        if (transform != null) return true;
+                    for (var i = 0; i < chaCustomHairComponent.trfLength.Length; i++)
+                        if (chaCustomHairComponent.trfLength[i] != null)
+                            return true;
                 return false;
             }
 #if KK
@@ -382,19 +382,21 @@ namespace KK_Plugins
             {
                 if (!IsHairAccessory(slot)) return;
 
-                ChaAccessoryComponent chaAccessoryComponent = AccessoriesApi.GetAccessory(ChaControl, slot);
-                ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent?.gameObject.GetComponent<ChaCustomHairComponent>();
+                ChaAccessoryComponent chaAccessoryComponent = ChaControl.GetAccessory(slot);
+                if (chaAccessoryComponent == null) return;
+                ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent.gameObject.GetComponent<ChaCustomHairComponent>();
+                if (chaCustomHairComponent.rendHair == null) return;
 
                 if (!HairAccessories.ContainsKey(CurrentCoordinateIndex)) return;
                 if (!HairAccessories[CurrentCoordinateIndex].TryGetValue(slot, out var hairAccessoryInfo)) return;
-                if (chaAccessoryComponent?.rendNormal == null) return;
-                if (chaCustomHairComponent?.rendHair == null) return;
+                if (chaAccessoryComponent.rendNormal == null) return;
+                if (chaCustomHairComponent.rendHair == null) return;
 
                 if (updateCharacter && hairAccessoryInfo.ColorMatch)
                 {
                     if (MakerAPI.InsideAndLoaded)
                     {
-                        ChaCustom.CvsAccessory cvsAccessory = AccessoriesApi.GetCvsAccessory(slot);
+                        CvsAccessory cvsAccessory = AccessoriesApi.GetCvsAccessory(slot);
                         cvsAccessory.UpdateAcsColor01(ChaControl.chaFile.custom.hair.parts[0].baseColor);
                         cvsAccessory.UpdateAcsColor02(ChaControl.chaFile.custom.hair.parts[0].startColor);
                         cvsAccessory.UpdateAcsColor03(ChaControl.chaFile.custom.hair.parts[0].endColor);
@@ -403,8 +405,9 @@ namespace KK_Plugins
                     }
                     else
                     {
-                        foreach (Renderer renderer in chaCustomHairComponent.rendHair)
+                        for (var i = 0; i < chaCustomHairComponent.rendHair.Length; i++)
                         {
+                            Renderer renderer = chaCustomHairComponent.rendHair[i];
                             if (renderer == null) continue;
 
                             if (renderer.sharedMaterial.HasProperty(ChaShader._Color))
@@ -419,8 +422,9 @@ namespace KK_Plugins
 
                 Texture2D texHairGloss = (Texture2D)AccessTools.Property(typeof(ChaControl), "texHairGloss").GetValue(ChaControl, null);
 
-                foreach (Renderer renderer in chaCustomHairComponent.rendHair)
+                for (var i = 0; i < chaCustomHairComponent.rendHair.Length; i++)
                 {
+                    Renderer renderer = chaCustomHairComponent.rendHair[i];
                     if (renderer == null) continue;
 
                     if (renderer.sharedMaterial.HasProperty(ChaShader._HairGloss))
@@ -438,8 +442,9 @@ namespace KK_Plugins
                             renderer.sharedMaterial.SetColor(ChaShader._LineColor, hairAccessoryInfo.OutlineColor);
                 }
 
-                foreach (Renderer renderer in chaCustomHairComponent.rendAccessory)
+                for (var i = 0; i < chaCustomHairComponent.rendAccessory.Length; i++)
                 {
+                    Renderer renderer = chaCustomHairComponent.rendAccessory[i];
                     if (renderer == null) continue;
 
                     if (renderer.sharedMaterial.HasProperty(ChaShader._Color))

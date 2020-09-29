@@ -65,9 +65,9 @@ namespace KK_Plugins
             ev.AddSubCategory(category);
         }
 
-        private void MakerAPI_MakerFinishedLoading(object sender, EventArgs e) => ClothingUnlockToggle.SetValue(GetController(MakerAPI.GetCharacterControl()).GetClothingUnlocked());
-        private void MakerAPI_ReloadCustomInterface(object sender, EventArgs e) => ClothingUnlockToggle.SetValue(GetController(MakerAPI.GetCharacterControl()).GetClothingUnlocked());
+        private static void MakerAPI_MakerFinishedLoading(object sender, EventArgs e) => ClothingUnlockToggle.SetValue(GetController(MakerAPI.GetCharacterControl()).GetClothingUnlocked());
+        private static void MakerAPI_ReloadCustomInterface(object sender, EventArgs e) => ClothingUnlockToggle.SetValue(GetController(MakerAPI.GetCharacterControl()).GetClothingUnlocked());
 
-        public static ClothingUnlockerController GetController(ChaControl chaControl) => chaControl?.gameObject?.GetComponent<ClothingUnlockerController>();
+        public static ClothingUnlockerController GetController(ChaControl chaControl) => chaControl == null ? null : chaControl.gameObject.GetComponent<ClothingUnlockerController>();
     }
 }

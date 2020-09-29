@@ -42,7 +42,7 @@ namespace KK_Plugins
             HotkeyAll = Config.Bind("Keyboard Shortcuts", "Hotkey All", new KeyboardShortcut(KeyCode.T), "Key for moving objects in Studio. Select an object or node then press and hold the key while moving the mouse.");
         }
 
-        public GuideObject GetTargetObject() => Singleton<GuideObjectManager>.Instance.operationTarget ?? Singleton<GuideObjectManager>.Instance.selectObject;
+        public GuideObject GetTargetObject() => Singleton<GuideObjectManager>.Instance.operationTarget == null ? Singleton<GuideObjectManager>.Instance.selectObject : Singleton<GuideObjectManager>.Instance.operationTarget;
 
         internal void Update()
         {
@@ -104,7 +104,7 @@ namespace KK_Plugins
                         FinishScale();
                     break;
                 case Key.NONE:
-                    if (Singleton<GuideObjectManager>.Instance.selectObjects == null || Singleton<GuideObjectManager>.Instance.selectObjects.Length == 0)
+                    if (Singleton<GuideObjectManager>.Instance.selectObjects?.Length == 0)
                         return;
 
                     switch (guideObjectMode)
@@ -188,8 +188,10 @@ namespace KK_Plugins
         {
             Dictionary<int, Vector3> dictionary = new Dictionary<int, Vector3>();
             Targets = new Dictionary<int, GuideObject>();
-            foreach (GuideObject guideObject in Singleton<GuideObjectManager>.Instance.selectObjects)
+            var selectObjects = Singleton<GuideObjectManager>.Instance.selectObjects;
+            for (var i = 0; i < selectObjects.Length; i++)
             {
+                GuideObject guideObject = selectObjects[i];
                 if (guideObject.enablePos)
                 {
                     dictionary.Add(guideObject.dicKey, guideObject.changeAmount.pos);
@@ -203,8 +205,9 @@ namespace KK_Plugins
         {
             Dictionary<int, Vector3> dictionary = new Dictionary<int, Vector3>();
             Targets = new Dictionary<int, GuideObject>();
-            foreach (GuideObject guideObject in Singleton<GuideObjectManager>.Instance.selectObjects)
+            for (var i = 0; i < Singleton<GuideObjectManager>.Instance.selectObjects.Length; i++)
             {
+                GuideObject guideObject = Singleton<GuideObjectManager>.Instance.selectObjects[i];
                 if (guideObject.enableRot)
                 {
                     dictionary.Add(guideObject.dicKey, guideObject.changeAmount.rot);
@@ -218,8 +221,9 @@ namespace KK_Plugins
         {
             Dictionary<int, Vector3> dictionary = new Dictionary<int, Vector3>();
             Targets = new Dictionary<int, GuideObject>();
-            foreach (GuideObject guideObject in Singleton<GuideObjectManager>.Instance.selectObjects)
+            for (var i = 0; i < Singleton<GuideObjectManager>.Instance.selectObjects.Length; i++)
             {
+                GuideObject guideObject = Singleton<GuideObjectManager>.Instance.selectObjects[i];
                 if (guideObject.enableScale)
                 {
                     dictionary.Add(guideObject.dicKey, guideObject.changeAmount.scale);
@@ -283,7 +287,6 @@ namespace KK_Plugins
 
         private void FinishRotate()
         {
-            GuideObjectManager instance = Singleton<GuideObjectManager>.Instance;
             GuideCommand.EqualsInfo[] changeAmountInfo = (from v in Targets
                                                           select new GuideCommand.EqualsInfo
                                                           {
@@ -314,7 +317,6 @@ namespace KK_Plugins
 
         private void FinishScale()
         {
-            GuideObjectManager instance = Singleton<GuideObjectManager>.Instance;
             GuideCommand.EqualsInfo[] changeAmountInfo = (from v in Targets
                                                           select new GuideCommand.EqualsInfo
                                                           {
@@ -326,7 +328,7 @@ namespace KK_Plugins
             KeyMode = Key.NONE;
         }
 
-        private Vector2 GetMousePos()
+        private static Vector2 GetMousePos()
         {
             Vector2 vector = Input.mousePosition;
             return new Vector2(vector.x / Screen.width, vector.y / Screen.height);

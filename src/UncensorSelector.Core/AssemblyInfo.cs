@@ -1,5 +1,5 @@
-﻿using KK_Plugins;
-using System.Reflection;
+﻿using System.Reflection;
+using KK_Plugins;
 using static KK_Plugins.UncensorSelector;
 
 [assembly: AssemblyTitle(PluginNameInternal)]

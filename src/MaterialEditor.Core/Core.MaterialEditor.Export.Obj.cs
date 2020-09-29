@@ -44,18 +44,27 @@ namespace KK_Plugins.MaterialEditor
 
                 sb.Append("g ").Append($"{rend.NameFormatted()}_{x}").Append("\n");
 
-                foreach (Vector3 v in subMesh.vertices)
-                    sb.Append(string.Format("v {0:0.000000} {1:0.000000} {2:0.000000}\n", -v.x, v.y, v.z));
+                for (var i = 0; i < subMesh.vertices.Length; i++)
+                {
+                    Vector3 v = subMesh.vertices[i];
+                    sb.Append($"v {-v.x:0.000000} {v.y:0.000000} {v.z:0.000000}\n");
+                }
 
-                foreach (Vector3 v in subMesh.uv)
-                    sb.Append(string.Format("vt {0:0.000000} {1:0.000000}\n", v.x, v.y));
+                for (var i = 0; i < subMesh.uv.Length; i++)
+                {
+                    Vector3 v = subMesh.uv[i];
+                    sb.Append($"vt {v.x:0.000000} {v.y:0.000000}\n");
+                }
 
-                foreach (Vector3 v in subMesh.normals)
-                    sb.Append(string.Format("vn {0:0.000000} {1:0.000000} {2:0.000000}\n", -v.x, v.y, v.z));
+                for (var i = 0; i < subMesh.normals.Length; i++)
+                {
+                    Vector3 v = subMesh.normals[i];
+                    sb.Append($"vn {-v.x:0.000000} {v.y:0.000000} {v.z:0.000000}\n");
+                }
 
                 int[] triangles = mesh.GetTriangles(x);
                 for (int i = 0; i < triangles.Length; i += 3)
-                    sb.Append(string.Format("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", triangles[i] + 1, triangles[i + 2] + 1, triangles[i + 1] + 1));
+                    sb.Append($"f {triangles[i] + 1}/{triangles[i] + 1}/{triangles[i] + 1} {triangles[i + 2] + 1}/{triangles[i + 2] + 1}/{triangles[i + 2] + 1} {triangles[i + 1] + 1}/{triangles[i + 1] + 1}/{triangles[i + 1] + 1}\n");
             }
             return sb.ToString();
         }

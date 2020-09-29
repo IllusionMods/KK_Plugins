@@ -10,7 +10,7 @@ namespace KK_Plugins
 {
     public class ClothingUnlockerController : CharaCustomFunctionController
     {
-        private Dictionary<int, bool> ClothingUnlocked = null;
+        private Dictionary<int, bool> ClothingUnlocked;
 
 #if KK
         public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;

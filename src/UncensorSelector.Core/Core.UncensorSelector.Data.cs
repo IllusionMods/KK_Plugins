@@ -19,7 +19,7 @@ namespace KK_Plugins
             public string OOBase;
             public string MMBase;
             public string Normals;
-            public byte Sex = 0;
+            public byte Sex;
             public bool AllowRandom = true;
             public string BodyMainTex;
             public string BodyColorMask;
@@ -62,7 +62,7 @@ namespace KK_Plugins
 
                     foreach (XElement parts in oo_base.Elements("additionalPart"))
                     {
-                        string part = parts?.Value;
+                        string part = parts.Value;
                         if (!part.IsNullOrWhiteSpace())
                             AdditionalParts.Add(part);
                     }
@@ -173,7 +173,7 @@ namespace KK_Plugins
             }
         }
 
-        public class BallsData :IUncensorData
+        public class BallsData : IUncensorData
         {
             public string BallsGUID;
             public string DisplayName;

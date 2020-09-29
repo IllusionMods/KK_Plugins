@@ -11,7 +11,7 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
-            private static bool ChangingChara = false;
+            private static bool ChangingChara;
 
             /// <summary>
             /// Enable simultaneous kinematics on pose load

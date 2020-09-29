@@ -1,5 +1,6 @@
 ﻿using BepInEx.Logging;
 using ExtensibleSaveFormat;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -9,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using HarmonyLib;
 #if AI || HS2
 using AIChara;
 #endif
@@ -51,13 +51,13 @@ namespace KK_Plugins
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
         {
             InvisibleToggle = e.AddControl(new MakerToggle(MakerConstants.Body.All, "Invisible Body", false, this));
-            InvisibleToggle.ValueChanged.Subscribe(Observer.Create<bool>(delegate { GetController(MakerAPI.GetCharacterControl()).Visible = !InvisibleToggle.Value; }));
+            InvisibleToggle.ValueChanged.Subscribe(Observer.Create<bool>(obj => GetController(MakerAPI.GetCharacterControl()).Visible = !InvisibleToggle.Value));
         }
 
         /// <summary>
         /// Get the InvisibleBodyCharaController for the character
         /// </summary>
-        public static InvisibleBodyCharaController GetController(ChaControl character) => character?.gameObject?.GetComponent<InvisibleBodyCharaController>();
+        public static InvisibleBodyCharaController GetController(ChaControl character) => character == null ? null : character.gameObject.GetComponent<InvisibleBodyCharaController>();
 
         public class InvisibleBodyCharaController : CharaCustomFunctionController
         {
@@ -135,7 +135,11 @@ namespace KK_Plugins
             private void SetVisibleState()
             {
                 //Don't set the visible state if it is already set
-                if (ChaControl?.objBody?.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a" || x.name == "o_body_cf" || x.name == "o_body_cm")?.GetComponent<Renderer>().enabled == Visible)
+                if (ChaControl == null)
+                    return;
+                if (ChaControl.objBody == null)
+                    return;
+                if (ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a" || x.name == "o_body_cf" || x.name == "o_body_cm")?.GetComponent<Renderer>().enabled == Visible)
                     return;
 
 #if AI || HS2
@@ -213,10 +217,8 @@ namespace KK_Plugins
                     rend.enabled = Visible;
                 }
             }
-            /// <summary>
-            /// Recursively finds the parents of a game object and builds a string of the full path. Only used for debug purposes.
-            /// </summary>
-            private static string DebugFullObjectPath(GameObject go) => go.transform.parent == null ? go.name : DebugFullObjectPath(go.transform.parent.gameObject) + "/" + go.name;
+            //Recursively finds the parents of a game object and builds a string of the full path. Only used for debug purposes.
+            //private static string DebugFullObjectPath(GameObject go) => go.transform.parent == null ? go.name : DebugFullObjectPath(go.transform.parent.gameObject) + "/" + go.name;
         }
     }
 }

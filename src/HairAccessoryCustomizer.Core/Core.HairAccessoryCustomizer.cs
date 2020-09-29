@@ -30,8 +30,8 @@ namespace KK_Plugins
         internal static AccessoryControlWrapper<MakerSlider, float> HairLengthSlider;
         private static readonly bool ColorMatchDefault = true;
         private static readonly bool HairGlossDefault = true;
-        private static Color OutlineColorDefault = Color.black;
-        private static Color AccessoryColorDefault = Color.red;
+        private static readonly Color OutlineColorDefault = Color.black;
+        private static readonly Color AccessoryColorDefault = Color.red;
         private static readonly float HairLengthDefault = 0;
 
         internal void Start()
@@ -112,11 +112,11 @@ namespace KK_Plugins
                 OutlineColorPicker.Control.Visible.OnNext(false);
                 AccessoryColorPicker.Control.Visible.OnNext(false);
                 HairLengthSlider.Control.Visible.OnNext(false);
-                ShowAccColors(AccessoriesApi.GetAccessory(controller.ChaControl, AccessoriesApi.SelectedMakerAccSlot) != null);
+                ShowAccColors(controller.ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot) != null);
             }
         }
         internal static void InitCurrentSlot(HairAccessoryController controller) => InitCurrentSlot(controller, controller.IsHairAccessory(AccessoriesApi.SelectedMakerAccSlot));
 
-        internal static HairAccessoryController GetController(ChaControl character) => character?.gameObject?.GetComponent<HairAccessoryController>();
+        internal static HairAccessoryController GetController(ChaControl character) => character == null ? null : character.gameObject.GetComponent<HairAccessoryController>();
     }
 }

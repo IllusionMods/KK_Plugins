@@ -26,7 +26,7 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
 
         private static bool IsStudio;
-        private static bool LoadingScene = false;
+        private static bool LoadingScene;
 
         internal void Awake()
         {
@@ -129,7 +129,7 @@ namespace KK_Plugins
                     gameObject.SetActive(true);
                     Button button = gameObject.GetComponent<Button>();
                     button.GetComponent<Image>().sprite = PngAssist.LoadSpriteFromFile(fn.FullName);
-                    button.onClick.AddListener(delegate
+                    button.onClick.AddListener(() =>
                     {
                         var param = new MapInfo.Param();
                         _mapInfo.Value = param;
@@ -221,7 +221,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), "LateUpdate")]
-            internal static bool GuideObject_LateUpdate(GuideObject __instance, ref int ___m_DicKey, ref GameObject[] ___roots)
+            internal static bool GuideObject_LateUpdate(GuideObject __instance, ref GameObject[] ___roots)
             {
                 if (IsStudio) return true;
 
@@ -288,9 +288,11 @@ namespace KK_Plugins
                 ___dicTransLight.Clear();
                 ___dicGuideLight.Clear();
                 //Added null check
-                __instance.drawLightLine?.Clear();
+                if (__instance.drawLightLine != null)
+                    __instance.drawLightLine.Clear();
                 //Added null check
-                __instance.guideInput?.Stop();
+                if (__instance.guideInput != null)
+                    __instance.guideInput.Stop();
 
                 return false;
             }
@@ -381,11 +383,12 @@ namespace KK_Plugins
             {
                 if (IsStudio) return true;
 
-                if ((_node != null) && _node.enableChangeParent && (!(bool)Traverse.Create(__instance).Method("RefreshHierachy").GetValue(_node) || !(_parent == null)) && _node.SetParent(_parent))
+                if (_node != null && _node.enableChangeParent && (!(bool)Traverse.Create(__instance).Method("RefreshHierachy").GetValue(_node) || !(_parent == null)) && _node.SetParent(_parent))
                 {
                     Traverse.Create(__instance).Method("RefreshHierachy").GetValue();
                     //Added null check
-                    ___m_TreeRoot?.Invoke("SetDirty", 0f);
+                    if (___m_TreeRoot != null)
+                        ___m_TreeRoot.Invoke("SetDirty", 0f);
                     ___onParentage?.Invoke(_parent, _node);
                 }
                 return false;
@@ -407,11 +410,10 @@ namespace KK_Plugins
                 if (IsStudio) return true;
 
                 ___m_Visible = _visible;
-                __instance?.onVisible(_visible);
-                //Don't do this outside of Studio
-                //imageVisible.sprite = m_SpriteVisible[_visible ? 1 : 0];
-                foreach (TreeNodeObject item in ___m_child)
-                    Traverse.Create(__instance).Method("SetVisibleChild").GetValue(item, _visible);
+                if (__instance != null)
+                    __instance.onVisible(_visible);
+                for (var i = 0; i < ___m_child.Count; i++)
+                    Traverse.Create(__instance).Method("SetVisibleChild").GetValue(___m_child[i], _visible);
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.ResetVisible))]
@@ -419,10 +421,11 @@ namespace KK_Plugins
             {
                 if (IsStudio) return true;
 
-                __instance?.onVisible(___m_Visible);
-                //Don't do this outside of Studio
-                //imageVisible.sprite = m_SpriteVisible[m_Visible ? 1 : 0];
-                __instance.buttonVisible.interactable = true;
+                if (__instance != null)
+                {
+                    __instance.onVisible(___m_Visible);
+                    __instance.buttonVisible.interactable = true;
+                }
                 foreach (TreeNodeObject item in __instance.child)
                     Traverse.Create(__instance).Method("SetVisibleChild").GetValue(item, ___m_Visible);
                 return false;
@@ -450,9 +453,11 @@ namespace KK_Plugins
                 if (IsStudio) return true;
 
                 Singleton<Studio.Studio>.Instance.sceneInfo.sunLightType = (int)value;
-                __instance.sunLightInfo?.Set(value, Singleton<Studio.Studio>.Instance.cameraCtrl.mainCmaera);
+                if (__instance.sunLightInfo != null)
+                    __instance.sunLightInfo.Set(value, Singleton<Studio.Studio>.Instance.cameraCtrl.mainCmaera);
                 //Added null check
-                Singleton<Studio.Studio>.Instance.systemButtonCtrl?.MapDependent();
+                if (Singleton<Studio.Studio>.Instance.systemButtonCtrl != null)
+                    Singleton<Studio.Studio>.Instance.systemButtonCtrl.MapDependent();
 
                 return false;
             }
@@ -475,7 +480,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddFemale))]
-            internal static bool Studio_AddFemale(Studio.Studio __instance, string _path, TreeNodeCtrl ___m_TreeNodeCtrl)
+            internal static bool Studio_AddFemale(string _path)
             {
                 if (IsStudio) return true;
 
@@ -485,7 +490,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddMale))]
-            internal static bool Studio_AddMale(Studio.Studio __instance, string _path, TreeNodeCtrl ___m_TreeNodeCtrl)
+            internal static bool Studio_AddMale(string _path)
             {
                 if (IsStudio) return true;
 
@@ -533,7 +538,7 @@ namespace KK_Plugins
                     __result = false;
                     return false;
                 }
-                Logger.LogInfo($"LoadingScene true");
+                Logger.LogInfo("LoadingScene true");
                 LoadingScene = true;
                 AddObjectAssist.LoadChild(sceneInfo.dicObject);
                 ChangeAmount source = sceneInfo.caMap.Clone();
@@ -551,7 +556,7 @@ namespace KK_Plugins
                     ___m_CameraCtrl.Import(sceneInfo.cameraSaveData);
                 __instance.cameraLightCtrl.Reflect();
                 sceneInfo.dataVersion = sceneInfo.version;
-                Logger.LogInfo($"LoadingScene false");
+                Logger.LogInfo("LoadingScene false");
                 LoadingScene = false;
 
                 __result = true;
@@ -578,7 +583,7 @@ namespace KK_Plugins
                         case 4:
                             {
                                 OCIRoute oCIRoute = item.Value as OCIRoute;
-                                oCIRoute.DeleteLine();
+                                oCIRoute?.DeleteLine();
                                 break;
                             }
                     }
@@ -653,7 +658,6 @@ namespace KK_Plugins
                 }
                 return false;
             }
-
 
             internal static void CameraLightCtrl_LightCalc_Init(object __instance)
             {

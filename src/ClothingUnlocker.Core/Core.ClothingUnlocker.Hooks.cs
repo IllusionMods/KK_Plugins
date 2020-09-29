@@ -1,9 +1,8 @@
-﻿using BepInEx;
-using HarmonyLib;
+﻿using HarmonyLib;
 
 namespace KK_Plugins
 {
-    public partial class ClothingUnlocker : BaseUnityPlugin
+    public partial class ClothingUnlocker
     {
         internal static class Hooks
         {
