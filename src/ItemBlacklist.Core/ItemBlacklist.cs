@@ -2,6 +2,7 @@
 using BepInEx.Logging;
 using ChaCustom;
 using HarmonyLib;
+using Manager;
 using Sideloader.AutoResolver;
 using System.Collections.Generic;
 using System.IO;
@@ -322,6 +323,21 @@ namespace KK_Plugins
                 if (info != null)
                 {
                     Logger.LogMessage($"Item GUID:{info.GUID} Category:{(int)info.CategoryNo}({info.CategoryNo}) ID:{info.Slot}");
+
+                    Dictionary<int, ListInfoBase> dictionary = Singleton<Character>.Instance.chaListCtrl.GetCategoryInfo(info.CategoryNo);
+                    if (dictionary != null && dictionary.TryGetValue(customSelectInfo.index, out ListInfoBase listInfoBase))
+                    {
+                        string assetBundle = listInfoBase.GetInfo(ChaListDefine.KeyType.MainAB);
+                        if (!assetBundle.IsNullOrEmpty() && assetBundle != "0")
+                        {
+                            string asset = TryGetMainAsset(listInfoBase);
+                            if (asset == null)
+                                Logger.LogMessage($"AssetBundle:{assetBundle}");
+                            else
+                                Logger.LogMessage($"AssetBundle:{assetBundle} Asset:{asset}");
+                        }
+                    }
+
                     if (Sideloader.Sideloader.ZipArchives.TryGetValue(info.GUID, out string zipFileName))
                         Logger.LogMessage($"Zip File:{Path.GetFileName(zipFileName)}");
                 }
@@ -329,8 +345,50 @@ namespace KK_Plugins
             else
             {
                 Logger.LogMessage($"Item Category:{CurrentCustomSelectInfoComponent.info.category}({(ChaListDefine.CategoryNo)CurrentCustomSelectInfoComponent.info.category}) ID:{CurrentCustomSelectInfoComponent.info.index}");
+
+                Dictionary<int, ListInfoBase> dictionary = Singleton<Character>.Instance.chaListCtrl.GetCategoryInfo((ChaListDefine.CategoryNo)CurrentCustomSelectInfoComponent.info.category);
+                if (dictionary != null && dictionary.TryGetValue(customSelectInfo.index, out var listInfoBase))
+                {
+                    string assetBundle = listInfoBase.GetInfo(ChaListDefine.KeyType.MainAB);
+                    if (!assetBundle.IsNullOrEmpty() && assetBundle != "0")
+                    {
+                        string asset = TryGetMainAsset(listInfoBase);
+                        if (asset == null)
+                            Logger.LogMessage($"AssetBundle:{assetBundle}");
+                        else
+                            Logger.LogMessage($"AssetBundle:{assetBundle} Asset:{asset}");
+                    }
+                }
             }
             SetMenuVisibility(false);
+        }
+
+        /// <summary>
+        /// Try to get the primary asset by trying various things
+        /// </summary>
+        /// <param name="listInfoBase"></param>
+        /// <returns>Null if the main asset wasn't found</returns>
+        private static string TryGetMainAsset(ListInfoBase listInfoBase)
+        {
+            string asset = listInfoBase.GetInfo(ChaListDefine.KeyType.MainData);
+            if (!asset.IsNullOrEmpty() && asset != "0")
+                return asset;
+            asset = listInfoBase.GetInfo(ChaListDefine.KeyType.MainTex);
+            if (!asset.IsNullOrEmpty() && asset != "0")
+                return asset;
+            asset = listInfoBase.GetInfo(ChaListDefine.KeyType.PaintTex);
+            if (!asset.IsNullOrEmpty() && asset != "0")
+                return asset;
+            asset = listInfoBase.GetInfo(ChaListDefine.KeyType.NipTex);
+            if (!asset.IsNullOrEmpty() && asset != "0")
+                return asset;
+            asset = listInfoBase.GetInfo(ChaListDefine.KeyType.SunburnTex);
+            if (!asset.IsNullOrEmpty() && asset != "0")
+                return asset;
+            asset = listInfoBase.GetInfo(ChaListDefine.KeyType.UnderhairTex);
+            if (!asset.IsNullOrEmpty() && asset != "0")
+                return asset;
+            return null;
         }
 
         public enum ListVisibilityType { Filtered, Hidden, All }
