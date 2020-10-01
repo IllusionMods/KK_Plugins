@@ -24,7 +24,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.itemblacklist";
         public const string PluginName = "Item Blacklist";
         public const string PluginNameInternal = "KK_ItemBlacklist";
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         internal static new ManualLogSource Logger;
 
         private static CustomSelectListCtrl CustomSelectListCtrlInstance;
