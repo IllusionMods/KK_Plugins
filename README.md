@@ -171,9 +171,13 @@ v1.1 VR support, added toggle to Studio<br/>
 </details>
 
 #### RandomCharacterGenerator
-**v1.0 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v47/KK_RandomCharacterGenerator.v1.0.zip)** - For Koikatsu<br/>
+**v2.0 - [Download](https://www.patreon.com/posts/42250080)** - For Koikatsu<br/>
 
 Generates random characters in the character maker.<br/>
+
+<details><summary>Change Log</summary>
+v2.0 Merged changes from https://github.com/AUTOMATIC1111/KoikatsuMods<br/>
+</details>
 
 #### PoseFolders
 **v1.0 - [Download](https://www.patreon.com/posts/31127973)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
