@@ -381,6 +381,14 @@ Allows you to set default settings of the character maker so you don't have to s
 **v1.0 - [Download](https://www.patreon.com/posts/40214619)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 Allows you to add map masking functionality for maps made out of items in Studio.<br/>
 
+#### ItemBlacklist
+**v1.1 - [Download](https://www.patreon.com/posts/41607128)** - For Koikatsu and EmotionCreators<br/>
+Right click an item in the character maker to hide it from your lists<br/>
+
+<details><summary>Change Log</summary>
+v1.1 Item info shows Asset and AssetBundle, better UI<br/>
+</details>
+
 #### FadeAdjuster
 **v1.0 - [Download](https://www.patreon.com/posts/41820329)** - For Koikatsu<br/>
 Allows you to adjust fade color or disable the fade in and out effect.<br/>
