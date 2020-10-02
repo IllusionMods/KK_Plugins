@@ -15,6 +15,10 @@ namespace KK_Plugins
                 if (__instance.audioSource == null || __instance.audioSource.clip == null || __instance.audioSource.loop)
                     return;
 
+                //Why is this even allowed
+                if (HSceneInstance?.ToString() == "null")
+                    HSceneInstance = null;
+
                 if (HSceneInstance != null)
                     Caption.DisplayHSubtitle(__instance);
                 else if (ActionGameInfoInstance != null && GameObject.Find("ActionScene/ADVScene") == null)
