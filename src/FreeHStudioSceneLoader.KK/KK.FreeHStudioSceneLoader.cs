@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using ActionGame;
+using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using Illusion.Elements.Xml;
@@ -27,6 +28,8 @@ namespace KK_Plugins
 
         private static bool IsStudio;
         private static bool LoadingScene;
+        private static string StudioSceneFile;
+        private static int StudioMapNo;
 
         internal void Awake()
         {
@@ -41,35 +44,43 @@ namespace KK_Plugins
 
         private static class Hooks
         {
-            //todo:
-
-            //Goes after the first "if (flags.isFreeH)" in HSceneProc Start
-            /*
-            if (freeHMapCustom != null)
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "OnDestroy")]
+            internal static void HSceneProc_OnDestroy()
             {
-                Singleton<Studio.Studio>.Instance.LoadScene(freeHMapCustom);
-                map.no = Singleton<Studio.Studio>.Instance.sceneInfo.map;
-                if (map.no >= 0)
-                {
-                    yield return new WaitUntil(() => Singleton<Map>.Instance.mapRoot != null);
-                }
-                else if (map.no < 0)
-                    map.no = 0;
-                map.mapRoot = Singleton<Map>.Instance.mapRoot;
-                freeHMapNo = map.no;
-            }
-            else
-            {
-                map.Change(freeHMapNo, Scene.Data.FadeType.None);
-                yield return new WaitUntil(() => map.mapRoot != null);
-            }
-            //Added null check
-            GameObject mapRoot = map.mapRoot;
-            GameObject objStartPosition = ((object)mapRoot != null) ? mapRoot.transform.FindLoop("h_free") : null;
-             */
-            //Also add a null check after "if (!startObjName.IsNullOrEmpty())"
+                if (IsStudio) return;
 
-            //HSceneProc OnDestroy should call Singleton<Studio.Studio>.Instance.InitScene(); if a studio map was loaded
+                Singleton<Studio.Studio>.Instance.InitScene();
+            }
+
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "Start")]
+            internal static void HSceneProc_Start(HSceneProc __instance)
+            {
+                if (IsStudio) return;
+
+                if (StudioSceneFile != null)
+                    __instance.dataH.mapNoFreeH = -1;
+            }
+
+            [HarmonyPrefix, HarmonyPatch(typeof(ActionMap), nameof(ActionMap.Change))]
+            internal static bool ActionMap_Change(ActionMap __instance, ref int no)
+            {
+                if (IsStudio) return true;
+                if (StudioSceneFile == null) return true;
+
+                Singleton<Studio.Studio>.Instance.LoadScene(StudioSceneFile);
+                StudioMapNo = Singleton<Studio.Studio>.Instance.sceneInfo.map;
+
+                //Because the map IDs in the Studio list files don't match the Map list files
+                //Todo: Sideloader map support
+                if (Studio.Info.Instance.dicMapLoadInfo.TryGetValue(StudioMapNo, out var mapLoadInfo))
+                    foreach (var x in __instance.infoDic)
+                        if (x.Value.AssetBundleName == mapLoadInfo.bundlePath && x.Value.AssetName == mapLoadInfo.fileName)
+                            StudioMapNo = x.Key;
+
+                no = StudioMapNo;
+                Traverse.Create(__instance).Property("no").SetValue(StudioMapNo);
+                return false;
+            }
 
             [HarmonyPrefix, HarmonyPatch(typeof(AssetBundleManager), nameof(AssetBundleManager.LoadAsset), typeof(string), typeof(string), typeof(Type), typeof(string))]
             internal static void LoadAssetPrefix(ref string assetBundleName, ref string assetName)
@@ -111,6 +122,8 @@ namespace KK_Plugins
             }
             private static IEnumerator MapSelectMenuScene_Start_Postfix(GameObject nodeFrame, ReactiveProperty<MapInfo.Param> _mapInfo)
             {
+                StudioSceneFile = null;
+
                 int i = 0;
                 int childCount = nodeFrame.transform.childCount;
                 GameObject currentFrame = null;
@@ -133,7 +146,7 @@ namespace KK_Plugins
                     {
                         var param = new MapInfo.Param();
                         _mapInfo.Value = param;
-                        Traverse.Create(param).Field("custom").SetValue(fn.FullName);
+                        StudioSceneFile = fn.FullName;
 
                         //enterMapColor.Value = button;
                         Utils.Sound.Play(SystemSE.sel);
@@ -366,7 +379,7 @@ namespace KK_Plugins
                 if (IsStudio) return true;
 
                 for (int i = 0; i < ___m_TreeNodeObject.Count; i++)
-                    Traverse.Create(__instance).Method("DeleteNodeLoop").GetValue(___m_TreeNodeObject[i]);
+                    Traverse.Create(__instance).Method("DeleteNodeLoop", ___m_TreeNodeObject[i]).GetValue();
                 ___m_TreeNodeObject.Clear();
                 ___hashSelectNode.Clear();
                 //Added null check
@@ -538,7 +551,6 @@ namespace KK_Plugins
                     __result = false;
                     return false;
                 }
-                Logger.LogInfo("LoadingScene true");
                 LoadingScene = true;
                 AddObjectAssist.LoadChild(sceneInfo.dicObject);
                 ChangeAmount source = sceneInfo.caMap.Clone();
@@ -556,7 +568,6 @@ namespace KK_Plugins
                     ___m_CameraCtrl.Import(sceneInfo.cameraSaveData);
                 __instance.cameraLightCtrl.Reflect();
                 sceneInfo.dataVersion = sceneInfo.version;
-                Logger.LogInfo("LoadingScene false");
                 LoadingScene = false;
 
                 __result = true;
@@ -648,14 +659,11 @@ namespace KK_Plugins
             internal static bool FreeHScene_SetMapSprite(MapInfo.Param _mapInfo, ref Image ___mapImageNormal, ref Image ___mapImageMasturbation, ref Image ___mapImageLesbian)
             {
                 if (IsStudio) return true;
+                if (StudioSceneFile == null) return true;
 
-                string custom = (string)Traverse.Create(_mapInfo).Field("custom").GetValue();
-                if (custom != null)
-                {
-                    ___mapImageNormal.sprite = PngAssist.LoadSpriteFromFile(custom);
-                    ___mapImageMasturbation.sprite = PngAssist.LoadSpriteFromFile(custom);
-                    ___mapImageLesbian.sprite = PngAssist.LoadSpriteFromFile(custom);
-                }
+                ___mapImageNormal.sprite = PngAssist.LoadSpriteFromFile(StudioSceneFile);
+                ___mapImageMasturbation.sprite = PngAssist.LoadSpriteFromFile(StudioSceneFile);
+                ___mapImageLesbian.sprite = PngAssist.LoadSpriteFromFile(StudioSceneFile);
                 return false;
             }
 
