@@ -29,7 +29,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
-        public const string Version = "2.0";
+        public const string Version = "2.0.1";
         public const string PluginNameInternal = Constants.Prefix + "_Subtitles";
 
         internal static Subtitles Instance;
@@ -46,7 +46,7 @@ namespace KK_Plugins
 #if KK
         internal static ActionGame.Communication.Info ActionGameInfoInstance;
         internal static Type HSceneType;
-        internal static object HSceneInstance;
+        internal static UnityEngine.Object HSceneInstance;
 #elif HS2
         internal static HScene HSceneInstance;
 #endif
