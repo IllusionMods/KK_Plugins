@@ -231,12 +231,13 @@ v1.2 VR support<br/>
 </details>
 
 #### Colliders
-**v1.1 - [Download](https://www.patreon.com/posts/35243498)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+**v1.1.1 - [Download](https://www.patreon.com/posts/35243498)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
 Adds floor, breast, hand, and skirt colliders. Colliders can be toggled on and off in Studio and their state saves with the scene.<br/>
 
 <details><summary>Change Log</summary>
 v1.1 Major rewrite, many new features<br/>
+v1.1.1 ModBoneImplantor compatibility<br/>
 </details>
 
 #### MaterialEditor
