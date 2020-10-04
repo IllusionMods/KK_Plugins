@@ -15,12 +15,14 @@ namespace KK_Plugins
             {
                 if (dynamicBone.name != "ct_clothesBot") return;
 
-                int idx = int.Parse(dynamicBone.m_Root.name.Split('_')[3]);
-                if (idx == 0)
-                    if (SkirtCollidersEnabled)
-                        dynamicBone.m_FreezeAxis = DynamicBone.FreezeAxis.X;
-                    else
-                        dynamicBone.m_FreezeAxis = DynamicBone.FreezeAxis.None;
+                var nameSplit = dynamicBone.m_Root.name.Split('_');
+                if (nameSplit.Length >= 4)
+                    if (int.TryParse(nameSplit[3], out int idx))
+                        if (idx == 0)
+                            if (SkirtCollidersEnabled)
+                                dynamicBone.m_FreezeAxis = DynamicBone.FreezeAxis.X;
+                            else
+                                dynamicBone.m_FreezeAxis = DynamicBone.FreezeAxis.None;
             }
 
             /// <summary>
