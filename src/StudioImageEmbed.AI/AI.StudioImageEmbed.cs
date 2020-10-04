@@ -4,7 +4,7 @@ namespace KK_Plugins
 {
     public partial class ImageEmbed
     {
-        private static readonly List<string> DefaultBGs = new List<string>()
+        private static readonly List<string> DefaultBGs = new List<string>
         {
             "ai_mapsample00.png", "ai_mapsample01.png", "ai_mapsample02.png", "ai_mapsample03.png"
         };
