@@ -81,9 +81,9 @@ namespace KK_Plugins
 #endif
                         }
                         else if (ConfigDefaultStudioSettings.Value == DefaultStudioSettings.On)
-                            BreastCollidersEnabled = FloorColliderEnabled = SkirtCollidersEnabled = true;
+                            BreastCollidersEnabled = FloorColliderEnabled = SkirtCollidersEnabled = ArmCollidersEnabled = true;
                         else
-                            BreastCollidersEnabled = FloorColliderEnabled = SkirtCollidersEnabled = false;
+                            BreastCollidersEnabled = FloorColliderEnabled = SkirtCollidersEnabled = ArmCollidersEnabled = false;
 
                         var data = GetExtendedData();
                         if (data != null)
