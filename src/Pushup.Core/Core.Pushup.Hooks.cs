@@ -15,7 +15,11 @@ namespace KK_Plugins
             internal static void SetClothesStatePostfix(ChaControl __instance, int clothesKind)
             {
                 if (clothesKind == 0 || clothesKind == 2) //tops and bras
-                    GetCharaController(__instance)?.ClothesStateChangeEvent();
+                {
+                    var controller = GetCharaController(__instance);
+                    if (controller != null)
+                        controller.ClothesStateChangeEvent();
+                }
             }
 
             /// <summary>
@@ -53,7 +57,11 @@ namespace KK_Plugins
             {
                 if (MakerAPI.InsideAndLoaded)
                     if (kind == 0 || kind == 2) //Tops and bras
-                        GetCharaController(__instance)?.ClothesChangeEvent();
+                    {
+                        var controller = GetCharaController(__instance);
+                        if (controller != null)
+                            controller.ClothesChangeEvent();
+                    }
             }
 
             /// <summary>

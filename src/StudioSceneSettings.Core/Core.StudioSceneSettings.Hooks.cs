@@ -1,5 +1,4 @@
-﻿using BepInEx;
-using HarmonyLib;
+﻿using HarmonyLib;
 using IllusionUtility.GetUtility;
 using System.Collections;
 using System.Collections.Generic;
@@ -72,12 +71,8 @@ namespace KK_Plugins.StudioSceneSettings
                             if (param.list[l].IsNullOrEmpty())
                                 break;
 
-#if AI
-                            GameObject go = _objMap.transform.FindLoop(param.list[l]);
-#else
-                            GameObject go = _objMap.transform.FindLoop(param.list[l])?.gameObject;
-#endif
-                            if (!(go == null))
+                            var go = _objMap.transform.FindLoop(param.list[l]);
+                            if (go != null)
                             {
                                 MeshRenderer[] componentsInChildren = go.GetComponentsInChildren<MeshRenderer>(true);
                                 visibleObject.listRender.AddRange(componentsInChildren);

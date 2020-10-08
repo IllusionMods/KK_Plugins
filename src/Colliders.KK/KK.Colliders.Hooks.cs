@@ -7,7 +7,12 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
-            internal static void ChangeCoordinateTypeHook(ChaControl __instance) => GetController(__instance)?.ApplyColliders();
+            internal static void ChangeCoordinateTypeHook(ChaControl __instance)
+            {
+                var controller = GetController(__instance);
+                if (controller != null)
+                    controller.ApplyColliders();
+            }
         }
     }
 }

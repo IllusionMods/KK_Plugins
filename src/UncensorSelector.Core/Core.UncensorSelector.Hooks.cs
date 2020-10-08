@@ -16,7 +16,12 @@ namespace KK_Plugins
         /// Do color matching whenever the body texture is changed
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-        internal static void CreateBodyTexture(ChaControl __instance) => UncensorSelector.GetController(__instance)?.UpdateSkinColor();
+        internal static void CreateBodyTexture(ChaControl __instance)
+        {
+            var controller = UncensorSelector.GetController(__instance);
+            if (controller != null)
+                controller.UpdateSkinColor();
+        }
 
         /// <summary>
         /// Postfix patch to check underwear clothing state and hide objDanTop when the clothes are on. Would be better as a transpiler.
@@ -42,7 +47,12 @@ namespace KK_Plugins
         /// Do color matching whenever the body texture is changed
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetBodyBaseMaterial))]
-        internal static void SetBodyBaseMaterial(ChaControl __instance) => UncensorSelector.GetController(__instance)?.UpdateSkinColor();
+        internal static void SetBodyBaseMaterial(ChaControl __instance)
+        {
+            var controller = UncensorSelector.GetController(__instance);
+            if (controller != null)
+                controller.UpdateSkinColor();
+        }
 #endif
 
 
@@ -51,13 +61,23 @@ namespace KK_Plugins
         /// LineMask texture assigned to the material, toggled on and off for any color matching parts along with the body
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.VisibleAddBodyLine))]
-        internal static void VisibleAddBodyLine(ChaControl __instance) => UncensorSelector.GetController(__instance)?.UpdateSkinLine();
+        internal static void VisibleAddBodyLine(ChaControl __instance)
+        {
+            var controller = UncensorSelector.GetController(__instance);
+            if (controller != null)
+                controller.UpdateSkinLine();
+        }
 
         /// <summary>
         /// Skin gloss slider level, as assigned in the character maker. This corresponds to the red coloring in the DetailMask texture.
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingSkinGlossPower))]
-        internal static void ChangeSettingSkinGlossPower(ChaControl __instance) => UncensorSelector.GetController(__instance)?.UpdateSkinGloss();
+        internal static void ChangeSettingSkinGlossPower(ChaControl __instance)
+        {
+            var controller = UncensorSelector.GetController(__instance);
+            if (controller != null)
+                controller.UpdateSkinGloss();
+        }
 #endif
 
         /// <summary>
@@ -67,10 +87,20 @@ namespace KK_Plugins
         internal static void LateUpdateForce(ChaControl __instance) => __instance.hideMoz = true;
 
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-        internal static void CreateBodyTexturePrefix(ChaControl __instance) => UncensorSelector.CurrentBodyGUID = UncensorSelector.GetController(__instance)?.BodyData?.BodyGUID;
+        internal static void CreateBodyTexturePrefix(ChaControl __instance)
+        {
+            var controller = UncensorSelector.GetController(__instance);
+            if (controller != null && controller.BodyData != null)
+                UncensorSelector.CurrentBodyGUID = controller.BodyData.BodyGUID;
+        }
 
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
-        internal static void InitBaseCustomTextureBodyPrefix(ChaControl __instance) => UncensorSelector.CurrentBodyGUID = UncensorSelector.GetController(__instance)?.BodyData?.BodyGUID;
+        internal static void InitBaseCustomTextureBodyPrefix(ChaControl __instance)
+        {
+            var controller = UncensorSelector.GetController(__instance);
+            if (controller != null && controller.BodyData != null)
+                UncensorSelector.CurrentBodyGUID = controller.BodyData.BodyGUID;
+        }
 
         /// <summary>
         /// Modifies the code for string replacement of oo_base, etc.

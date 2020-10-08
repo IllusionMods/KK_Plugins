@@ -1,5 +1,4 @@
-﻿using IllusionUtility.GetUtility;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -52,79 +51,79 @@ namespace KK_Plugins.MaterialEditor
 
             var listEntry = EntryTemplate.AddComponent<ListEntry>();
 
-            listEntry.RendererPanel = listEntry.transform.FindLoop("RendererPanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find RendererPanel");
-            listEntry.RendererLabel = listEntry.transform.FindLoop("RendererLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find RendererLabel");
-            listEntry.RendererText = listEntry.transform.FindLoop("RendererText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find RendererText");
-            listEntry.ExportUVButton = listEntry.transform.FindLoop("ExportUVButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find ExportUVButton");
-            listEntry.ExportObjButton = listEntry.transform.FindLoop("ExportObjButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find ExportObjButton");
+            listEntry.RendererPanel = listEntry.GetUIComponent<CanvasGroup>("RendererPanel");
+            listEntry.RendererLabel = listEntry.GetUIComponent<Text>("RendererLabel");
+            listEntry.RendererText = listEntry.GetUIComponent<Text>("RendererText");
+            listEntry.ExportUVButton = listEntry.GetUIComponent<Button>("ExportUVButton");
+            listEntry.ExportObjButton = listEntry.GetUIComponent<Button>("ExportObjButton");
 
-            listEntry.RendererEnabledPanel = listEntry.transform.FindLoop("RendererEnabledPanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find RendererEnabledPanel");
-            listEntry.RendererEnabledLabel = listEntry.transform.FindLoop("RendererEnabledLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find RendererEnabledLabel");
-            listEntry.RendererEnabledDropdown = listEntry.transform.FindLoop("RendererEnabledDropdown")?.GetComponent<Dropdown>() ?? throw new ArgumentException("Couldn't find RendererEnabledDropdown");
-            listEntry.RendererEnabledResetButton = listEntry.transform.FindLoop("RendererEnabledResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find RendererEnabledResetButton");
+            listEntry.RendererEnabledPanel = listEntry.GetUIComponent<CanvasGroup>("RendererEnabledPanel");
+            listEntry.RendererEnabledLabel = listEntry.GetUIComponent<Text>("RendererEnabledLabel");
+            listEntry.RendererEnabledDropdown = listEntry.GetUIComponent<Dropdown>("RendererEnabledDropdown");
+            listEntry.RendererEnabledResetButton = listEntry.GetUIComponent<Button>("RendererEnabledResetButton");
 
-            listEntry.RendererShadowCastingModePanel = listEntry.transform.FindLoop("RendererShadowCastingModePanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find RendererShadowCastingModePanel");
-            listEntry.RendererShadowCastingModeLabel = listEntry.transform.FindLoop("RendererShadowCastingModeLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find RendererShadowCastingModeLabel");
-            listEntry.RendererShadowCastingModeDropdown = listEntry.transform.FindLoop("RendererShadowCastingModeDropdown")?.GetComponent<Dropdown>() ?? throw new ArgumentException("Couldn't find RendererShadowCastingModeDropdown");
-            listEntry.RendererShadowCastingModeResetButton = listEntry.transform.FindLoop("RendererShadowCastingModeResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find RendererShadowCastingModeResetButton");
+            listEntry.RendererShadowCastingModePanel = listEntry.GetUIComponent<CanvasGroup>("RendererShadowCastingModePanel");
+            listEntry.RendererShadowCastingModeLabel = listEntry.GetUIComponent<Text>("RendererShadowCastingModeLabel");
+            listEntry.RendererShadowCastingModeDropdown = listEntry.GetUIComponent<Dropdown>("RendererShadowCastingModeDropdown");
+            listEntry.RendererShadowCastingModeResetButton = listEntry.GetUIComponent<Button>("RendererShadowCastingModeResetButton");
 
-            listEntry.RendererReceiveShadowsPanel = listEntry.transform.FindLoop("RendererReceiveShadowsPanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find RendererReceiveShadowsPanel");
-            listEntry.RendererReceiveShadowsLabel = listEntry.transform.FindLoop("RendererReceiveShadowsLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find RendererReceiveShadowsLabel");
-            listEntry.RendererReceiveShadowsDropdown = listEntry.transform.FindLoop("RendererReceiveShadowsDropdown")?.GetComponent<Dropdown>() ?? throw new ArgumentException("Couldn't find RendererReceiveShadowsDropdown");
-            listEntry.RendererReceiveShadowsResetButton = listEntry.transform.FindLoop("RendererReceiveShadowsResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find RendererReceiveShadowsResetButton");
+            listEntry.RendererReceiveShadowsPanel = listEntry.GetUIComponent<CanvasGroup>("RendererReceiveShadowsPanel");
+            listEntry.RendererReceiveShadowsLabel = listEntry.GetUIComponent<Text>("RendererReceiveShadowsLabel");
+            listEntry.RendererReceiveShadowsDropdown = listEntry.GetUIComponent<Dropdown>("RendererReceiveShadowsDropdown");
+            listEntry.RendererReceiveShadowsResetButton = listEntry.GetUIComponent<Button>("RendererReceiveShadowsResetButton");
 
-            listEntry.MaterialPanel = listEntry.transform.FindLoop("MaterialPanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find MaterialPanel");
-            listEntry.MaterialLabel = listEntry.transform.FindLoop("MaterialLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find MaterialLabel");
-            listEntry.MaterialText = listEntry.transform.FindLoop("MaterialText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find MaterialText");
-            listEntry.MaterialCopyButton = listEntry.transform.FindLoop("MaterialCopy")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find MaterialCopy");
-            listEntry.MaterialPasteButton = listEntry.transform.FindLoop("MaterialPaste")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find MaterialPaste");
+            listEntry.MaterialPanel = listEntry.GetUIComponent<CanvasGroup>("MaterialPanel");
+            listEntry.MaterialLabel = listEntry.GetUIComponent<Text>("MaterialLabel");
+            listEntry.MaterialText = listEntry.GetUIComponent<Text>("MaterialText");
+            listEntry.MaterialCopyButton = listEntry.GetUIComponent<Button>("MaterialCopy");
+            listEntry.MaterialPasteButton = listEntry.GetUIComponent<Button>("MaterialPaste");
             //listEntry.MaterialCopyRemove = listEntry.transform.FindLoop("MaterialCopyRemove")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find MaterialCopyRemove");
 
-            listEntry.ShaderPanel = listEntry.transform.FindLoop("ShaderPanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find ShaderPanel");
-            listEntry.ShaderLabel = listEntry.transform.FindLoop("ShaderLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ShaderLabel");
-            listEntry.ShaderDropdown = listEntry.transform.FindLoop("ShaderDropdown")?.GetComponent<Dropdown>() ?? throw new ArgumentException("Couldn't find ShaderDropdown");
-            listEntry.ShaderResetButton = listEntry.transform.FindLoop("ShaderResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find ShaderResetButton");
+            listEntry.ShaderPanel = listEntry.GetUIComponent<CanvasGroup>("ShaderPanel");
+            listEntry.ShaderLabel = listEntry.GetUIComponent<Text>("ShaderLabel");
+            listEntry.ShaderDropdown = listEntry.GetUIComponent<Dropdown>("ShaderDropdown");
+            listEntry.ShaderResetButton = listEntry.GetUIComponent<Button>("ShaderResetButton");
 
-            listEntry.ShaderRenderQueuePanel = listEntry.transform.FindLoop("ShaderRenderQueuePanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find ShaderRenderQueuePanel");
-            listEntry.ShaderRenderQueueLabel = listEntry.transform.FindLoop("ShaderRenderQueueLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ShaderRenderQueueLabel");
-            listEntry.ShaderRenderQueueInput = listEntry.transform.FindLoop("ShaderRenderQueueInput")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find ShaderRenderQueueInput");
-            listEntry.ShaderRenderQueueResetButton = listEntry.transform.FindLoop("ShaderRenderQueueResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find ShaderRenderQueueResetButton");
+            listEntry.ShaderRenderQueuePanel = listEntry.GetUIComponent<CanvasGroup>("ShaderRenderQueuePanel");
+            listEntry.ShaderRenderQueueLabel = listEntry.GetUIComponent<Text>("ShaderRenderQueueLabel");
+            listEntry.ShaderRenderQueueInput = listEntry.GetUIComponent<InputField>("ShaderRenderQueueInput");
+            listEntry.ShaderRenderQueueResetButton = listEntry.GetUIComponent<Button>("ShaderRenderQueueResetButton");
 
-            listEntry.TexturePanel = listEntry.transform.FindLoop("TexturePanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find TexturePanel");
-            listEntry.TextureLabel = listEntry.transform.FindLoop("TextureLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find TextureLabel");
-            listEntry.ExportTextureButton = listEntry.transform.FindLoop("TextureExportButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find ExportTextureButton");
-            listEntry.ImportTextureButton = listEntry.transform.FindLoop("TextureImportButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find ImportTextureButton");
-            listEntry.TextureResetButton = listEntry.transform.FindLoop("TextureResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find TextureResetButton");
+            listEntry.TexturePanel = listEntry.GetUIComponent<CanvasGroup>("TexturePanel");
+            listEntry.TextureLabel = listEntry.GetUIComponent<Text>("TextureLabel");
+            listEntry.ExportTextureButton = listEntry.GetUIComponent<Button>("TextureExportButton");
+            listEntry.ImportTextureButton = listEntry.GetUIComponent<Button>("TextureImportButton");
+            listEntry.TextureResetButton = listEntry.GetUIComponent<Button>("TextureResetButton");
 
-            listEntry.OffsetScalePanel = listEntry.transform.FindLoop("OffsetScalePanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find OffsetScalePanel");
-            listEntry.OffsetScaleLabel = listEntry.transform.FindLoop("OffsetScaleLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find OffsetScaleLabel");
-            listEntry.OffsetXText = listEntry.transform.FindLoop("OffsetXText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find OffsetXText");
-            listEntry.OffsetXInput = listEntry.transform.FindLoop("OffsetXInput")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find OffsetXInput");
-            listEntry.OffsetYText = listEntry.transform.FindLoop("OffsetYText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find OffsetYText");
-            listEntry.OffsetYInput = listEntry.transform.FindLoop("OffsetYInput")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find OffsetYInput");
-            listEntry.ScaleXText = listEntry.transform.FindLoop("ScaleXText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ScaleXText");
-            listEntry.ScaleXInput = listEntry.transform.FindLoop("ScaleXInput")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find ScaleXInput");
-            listEntry.ScaleYText = listEntry.transform.FindLoop("ScaleYText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ScaleYText");
-            listEntry.ScaleYInput = listEntry.transform.FindLoop("ScaleYInput")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find ScaleYInput");
-            listEntry.OffsetScaleResetButton = listEntry.transform.FindLoop("OffsetScaleResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find OffsetScaleResetButton");
+            listEntry.OffsetScalePanel = listEntry.GetUIComponent<CanvasGroup>("OffsetScalePanel");
+            listEntry.OffsetScaleLabel = listEntry.GetUIComponent<Text>("OffsetScaleLabel");
+            listEntry.OffsetXText = listEntry.GetUIComponent<Text>("OffsetXText");
+            listEntry.OffsetXInput = listEntry.GetUIComponent<InputField>("OffsetXInput");
+            listEntry.OffsetYText = listEntry.GetUIComponent<Text>("OffsetYText");
+            listEntry.OffsetYInput = listEntry.GetUIComponent<InputField>("OffsetYInput");
+            listEntry.ScaleXText = listEntry.GetUIComponent<Text>("ScaleXText");
+            listEntry.ScaleXInput = listEntry.GetUIComponent<InputField>("ScaleXInput");
+            listEntry.ScaleYText = listEntry.GetUIComponent<Text>("ScaleYText");
+            listEntry.ScaleYInput = listEntry.GetUIComponent<InputField>("ScaleYInput");
+            listEntry.OffsetScaleResetButton = listEntry.GetUIComponent<Button>("OffsetScaleResetButton");
 
-            listEntry.ColorPanel = listEntry.transform.FindLoop("ColorPanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find ColorPanel");
-            listEntry.ColorLabel = listEntry.transform.FindLoop("ColorLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ColorLabel");
-            listEntry.ColorRText = listEntry.transform.FindLoop("ColorRText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ColorRText");
-            listEntry.ColorGText = listEntry.transform.FindLoop("ColorGText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ColorGText");
-            listEntry.ColorBText = listEntry.transform.FindLoop("ColorBText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ColorBText");
-            listEntry.ColorAText = listEntry.transform.FindLoop("ColorAText")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find ColorAText");
-            listEntry.ColorRInput = listEntry.transform.FindLoop("ColorRInput")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find ColorRInput");
-            listEntry.ColorGInput = listEntry.transform.FindLoop("ColorGInput")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find ColorGInput");
-            listEntry.ColorBInput = listEntry.transform.FindLoop("ColorBInput")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find ColorBInput");
-            listEntry.ColorAInput = listEntry.transform.FindLoop("ColorAInput")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find ColorAInput");
-            listEntry.ColorResetButton = listEntry.transform.FindLoop("ColorResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find ColorResetButton");
+            listEntry.ColorPanel = listEntry.GetUIComponent<CanvasGroup>("ColorPanel");
+            listEntry.ColorLabel = listEntry.GetUIComponent<Text>("ColorLabel");
+            listEntry.ColorRText = listEntry.GetUIComponent<Text>("ColorRText");
+            listEntry.ColorGText = listEntry.GetUIComponent<Text>("ColorGText");
+            listEntry.ColorBText = listEntry.GetUIComponent<Text>("ColorBText");
+            listEntry.ColorAText = listEntry.GetUIComponent<Text>("ColorAText");
+            listEntry.ColorRInput = listEntry.GetUIComponent<InputField>("ColorRInput");
+            listEntry.ColorGInput = listEntry.GetUIComponent<InputField>("ColorGInput");
+            listEntry.ColorBInput = listEntry.GetUIComponent<InputField>("ColorBInput");
+            listEntry.ColorAInput = listEntry.GetUIComponent<InputField>("ColorAInput");
+            listEntry.ColorResetButton = listEntry.GetUIComponent<Button>("ColorResetButton");
 
-            listEntry.FloatPanel = listEntry.transform.FindLoop("FloatPanel")?.GetComponent<CanvasGroup>() ?? throw new ArgumentException("Couldn't find FloatPanel");
-            listEntry.FloatLabel = listEntry.transform.FindLoop("FloatLabel")?.GetComponent<Text>() ?? throw new ArgumentException("Couldn't find FloatLabel");
-            listEntry.FloatSlider = listEntry.transform.FindLoop("FloatSlider")?.GetComponent<Slider>() ?? throw new ArgumentException("Couldn't find FloatSlider");
-            listEntry.FloatInputField = listEntry.transform.FindLoop("FloatInputField")?.GetComponent<InputField>() ?? throw new ArgumentException("Couldn't find FloatInputField");
-            listEntry.FloatResetButton = listEntry.transform.FindLoop("FloatResetButton")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find FloatResetButton");
+            listEntry.FloatPanel = listEntry.GetUIComponent<CanvasGroup>("FloatPanel");
+            listEntry.FloatLabel = listEntry.GetUIComponent<Text>("FloatLabel");
+            listEntry.FloatSlider = listEntry.GetUIComponent<Slider>("FloatSlider");
+            listEntry.FloatInputField = listEntry.GetUIComponent<InputField>("FloatInputField");
+            listEntry.FloatResetButton = listEntry.GetUIComponent<Button>("FloatResetButton");
 
             listEntry.SetItem(null, true);
         }
@@ -172,9 +171,13 @@ namespace KK_Plugins.MaterialEditor
             _dirty = false;
 
             // Store selected item to preserve selection when moving the list with mouse
-            var selectedItem = EventSystem.current != null
-                ? _cachedEntries.Find(x => x.gameObject == EventSystem.current.currentSelectedGameObject)?.CurrentItem
-                : null;
+            ItemInfo selectedItem = null;
+            if (EventSystem.current != null)
+            {
+                var cachedEntry = _cachedEntries.Find(x => x.gameObject == EventSystem.current.currentSelectedGameObject);
+                if (cachedEntry != null)
+                    selectedItem = cachedEntry.CurrentItem;
+            }
 
             var count = 0;
             bool eventSystem = EventSystem.current != null;

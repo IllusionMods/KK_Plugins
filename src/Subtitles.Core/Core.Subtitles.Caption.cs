@@ -139,11 +139,11 @@ namespace KK_Plugins
                 GameObject subtitle = new GameObject("SubtitleText");
                 subtitle.transform.SetParent(Pane.transform);
 
-                var rect = subtitle.GetComponent<RectTransform>() ?? subtitle.AddComponent<RectTransform>();
+                var rect = subtitle.GetOrAddComponent<RectTransform>();
                 rect.pivot = new Vector2(0.5f, 0);
                 rect.sizeDelta = new Vector2(Screen.width * 0.990f, fsize + (fsize * 0.05f));
 
-                var subtitleText = subtitle.GetComponent<Text>() ?? subtitle.AddComponent<Text>();
+                var subtitleText = subtitle.GetOrAddComponent<Text>();
                 subtitleText.font = fontFace;
                 subtitleText.fontSize = fsize;
                 subtitleText.fontStyle = fontFace.dynamic ? FontStyle.Value : UnityEngine.FontStyle.Normal;
@@ -152,7 +152,7 @@ namespace KK_Plugins
                 subtitleText.verticalOverflow = VerticalWrapMode.Overflow;
                 subtitleText.color = TextColor.Value;
 
-                var subOutline = subtitle.GetComponent<Outline>() ?? subtitle.AddComponent<Outline>();
+                var subOutline = subtitle.GetOrAddComponent<Outline>();
                 subOutline.effectColor = OutlineColor.Value;
                 subOutline.effectDistance = new Vector2(OutlineThickness.Value, OutlineThickness.Value);
 

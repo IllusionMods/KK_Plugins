@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using IllusionUtility.GetUtility;
+using System;
+using UnityEngine;
 using UnityEngine.UI;
 using static UILib.Extensions;
 
@@ -649,6 +651,17 @@ namespace KK_Plugins.MaterialEditor
         {
             FloatPanel.alpha = visible ? 1 : 0;
             FloatPanel.blocksRaycasts = visible;
+        }
+
+        public T GetUIComponent<T>(string gameObjectName) where T : Component
+        {
+            GameObject uiObject = transform.FindLoop(gameObjectName).gameObject;
+            if (uiObject == null)
+                throw new ArgumentException($"Couldn't find {gameObjectName}");
+            var component = uiObject.GetComponent<T>();
+            if (component == null)
+                throw new ArgumentException($"Couldn't find {gameObjectName}");
+            return component;
         }
     }
 }

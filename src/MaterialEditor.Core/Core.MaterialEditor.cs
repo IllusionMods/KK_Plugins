@@ -172,11 +172,31 @@ namespace KK_Plugins.MaterialEditor
             if (!WatchTexChanges.Value)
                 UI.TexChangeWatcher?.Dispose();
         }
-        private static void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryTransferredEvent(sender, e);
-        private static void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoryKindChangeEvent(sender, e);
-        private static void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessorySelectedSlotChangeEvent(sender, e);
+        private static void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e)
+        {
+            var controller = GetCharaController(MakerAPI.GetCharacterControl());
+            if (controller != null)
+                controller.AccessoryTransferredEvent(sender, e);
+        }
+        private static void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e)
+        {
+            var controller = GetCharaController(MakerAPI.GetCharacterControl());
+            if (controller != null)
+                controller.AccessoryKindChangeEvent(sender, e);
+        }
+        private static void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e)
+        {
+            var controller = GetCharaController(MakerAPI.GetCharacterControl());
+            if (controller != null)
+                controller.AccessorySelectedSlotChangeEvent(sender, e);
+        }
 #if KK
-        private static void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetCharaController(MakerAPI.GetCharacterControl())?.AccessoriesCopiedEvent(sender, e);
+        private static void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e)
+        {
+            var controller = GetCharaController(MakerAPI.GetCharacterControl());
+            if (controller != null)
+                controller.AccessoriesCopiedEvent(sender, e);
+        }
 #endif
 
         private static IEnumerator LoadXML()

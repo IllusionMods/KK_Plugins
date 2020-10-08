@@ -281,7 +281,10 @@ namespace KK_Plugins
             {
                 try
                 {
-                    return ChaControl.GetAccessory(slot)?.gameObject.GetComponent<ChaCustomHairComponent>() != null;
+                    var accessory = ChaControl.GetAccessory(slot);
+                    if (accessory == null)
+                        return false;
+                    return accessory.gameObject.GetComponent<ChaCustomHairComponent>() != null;
                 }
                 catch
                 {
@@ -293,7 +296,10 @@ namespace KK_Plugins
             /// </summary>
             public bool HasAccessoryPart()
             {
-                var chaCustomHairComponent = ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot)?.gameObject.GetComponent<ChaCustomHairComponent>();
+                var accessory = ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot);
+                if (accessory == null)
+                    return false;
+                var chaCustomHairComponent = accessory.gameObject.GetComponent<ChaCustomHairComponent>();
                 if (chaCustomHairComponent != null)
                     for (var i = 0; i < chaCustomHairComponent.rendAccessory.Length; i++)
                         if (chaCustomHairComponent.rendAccessory[i] != null)
@@ -305,7 +311,10 @@ namespace KK_Plugins
             /// </summary>
             public bool HasLengthTransforms()
             {
-                var chaCustomHairComponent = ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot)?.gameObject.GetComponent<ChaCustomHairComponent>();
+                var accessory = ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot);
+                if (accessory == null)
+                    return false;
+                var chaCustomHairComponent = accessory.gameObject.GetComponent<ChaCustomHairComponent>();
                 if (chaCustomHairComponent != null)
                     for (var i = 0; i < chaCustomHairComponent.trfLength.Length; i++)
                         if (chaCustomHairComponent.trfLength[i] != null)

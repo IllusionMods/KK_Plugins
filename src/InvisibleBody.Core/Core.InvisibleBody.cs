@@ -139,7 +139,8 @@ namespace KK_Plugins
                     return;
                 if (ChaControl.objBody == null)
                     return;
-                if (ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a" || x.name == "o_body_cf" || x.name == "o_body_cm")?.GetComponent<Renderer>().enabled == Visible)
+                var bodyRenderer = ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a" || x.name == "o_body_cf" || x.name == "o_body_cm");
+                if (bodyRenderer != null && bodyRenderer.GetComponent<Renderer>().enabled == Visible)
                     return;
 
 #if AI || HS2

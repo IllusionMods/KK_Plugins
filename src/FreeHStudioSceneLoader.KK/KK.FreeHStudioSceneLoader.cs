@@ -656,7 +656,7 @@ namespace KK_Plugins
             internal static bool Studio_OnApplicationQuit() => IsStudio;
 
             [HarmonyPrefix, HarmonyPatch(typeof(FreeHScene), "SetMapSprite")]
-            internal static bool FreeHScene_SetMapSprite(MapInfo.Param _mapInfo, ref Image ___mapImageNormal, ref Image ___mapImageMasturbation, ref Image ___mapImageLesbian)
+            internal static bool FreeHScene_SetMapSprite(ref Image ___mapImageNormal, ref Image ___mapImageMasturbation, ref Image ___mapImageLesbian)
             {
                 if (IsStudio) return true;
                 if (StudioSceneFile == null) return true;

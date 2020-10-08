@@ -752,11 +752,14 @@ namespace KK_Plugins
                 //find the game object
                 FindAssist findAssist = new FindAssist();
                 findAssist.Initialize(ChaControl.objBody.transform);
-                GameObject gameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
-                if (gameObject == null)
+                GameObject colorMatchgameObject = findAssist.GetObjectFromName(colorMatchPart.Object);
+                if (colorMatchgameObject == null)
+                    return;
+                Renderer colorMatchRenderer = colorMatchgameObject.GetComponent<Renderer>();
+                if (colorMatchRenderer == null)
                     return;
 
-                Material mat = gameObject.GetComponent<Renderer>()?.material;
+                Material mat = colorMatchRenderer.material;
                 if (mat == null)
                     return;
 

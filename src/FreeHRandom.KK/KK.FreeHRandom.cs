@@ -37,32 +37,36 @@ namespace KK_Plugins
         {
             if (sceneName == "FreeH")
             {
-                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Normal/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
-                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Masturbation/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Lesbian/PartnerSelectButton")?.GetComponent<RectTransform>(), CharacterType.Partner);
-                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female3P);
-                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/3P/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
-                CreateRandomButton(GameObject.Find("FreeHScene/Canvas/Panel/Dark/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+                CreateRandomButton("FreeHScene/Canvas/Panel/Normal/FemaleSelectButton", CharacterType.Heroine);
+                CreateRandomButton("FreeHScene/Canvas/Panel/Normal/MaleSelectButton", CharacterType.Player);
+                CreateRandomButton("FreeHScene/Canvas/Panel/Masturbation/FemaleSelectButton", CharacterType.Heroine);
+                CreateRandomButton("FreeHScene/Canvas/Panel/Lesbian/FemaleSelectButton", CharacterType.Heroine);
+                CreateRandomButton("FreeHScene/Canvas/Panel/Lesbian/PartnerSelectButton", CharacterType.Partner);
+                CreateRandomButton("FreeHScene/Canvas/Panel/3P/FemaleSelectButton", CharacterType.Female3P);
+                CreateRandomButton("FreeHScene/Canvas/Panel/3P/MaleSelectButton", CharacterType.Player);
+                CreateRandomButton("FreeHScene/Canvas/Panel/Dark/MaleSelectButton", CharacterType.Player);
             }
             else if (sceneName == "VRCharaSelect")
             {
-                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Normal/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Normal/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
-                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Masturbation/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Lesbian/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Heroine);
-                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Lesbian/PartnerSelectButton")?.GetComponent<RectTransform>(), CharacterType.Partner);
-                CreateRandomButton(GameObject.Find("MainCanvas/Panel/3P/FemaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Female3P);
-                CreateRandomButton(GameObject.Find("MainCanvas/Panel/3P/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
-                CreateRandomButton(GameObject.Find("MainCanvas/Panel/Dark/MaleSelectButton")?.GetComponent<RectTransform>(), CharacterType.Player);
+                CreateRandomButton("MainCanvas/Panel/Normal/FemaleSelectButton", CharacterType.Heroine);
+                CreateRandomButton("MainCanvas/Panel/Normal/MaleSelectButton", CharacterType.Player);
+                CreateRandomButton("MainCanvas/Panel/Masturbation/FemaleSelectButton", CharacterType.Heroine);
+                CreateRandomButton("MainCanvas/Panel/Lesbian/FemaleSelectButton", CharacterType.Heroine);
+                CreateRandomButton("MainCanvas/Panel/Lesbian/PartnerSelectButton", CharacterType.Partner);
+                CreateRandomButton("MainCanvas/Panel/3P/FemaleSelectButton", CharacterType.Female3P);
+                CreateRandomButton("MainCanvas/Panel/3P/MaleSelectButton", CharacterType.Player);
+                CreateRandomButton("MainCanvas/Panel/Dark/MaleSelectButton", CharacterType.Player);
             }
         }
         /// <summary>
         /// Copy the male/female selection button and rewire it in to a Random button
         /// </summary>
-        private void CreateRandomButton(RectTransform buttonToCopy, CharacterType characterType)
+        private static void CreateRandomButton(string buttonObjectPath, CharacterType characterType)
         {
+            var buttonObject = GameObject.Find(buttonObjectPath);
+            if (buttonObject == null)
+                return;
+            RectTransform buttonToCopy = buttonObject.GetComponent<RectTransform>();
             if (buttonToCopy == null)
                 return;
 
