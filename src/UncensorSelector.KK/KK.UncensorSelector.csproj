@@ -91,6 +91,9 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.8.2\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+  </ItemGroup>
   <Import Project="..\UncensorSelector.Core\Core.UncensorSelector.projitems" Label="Shared" />
   <Import Project="..\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

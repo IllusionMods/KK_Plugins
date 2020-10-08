@@ -87,6 +87,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.8.2\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+  </ItemGroup>
   <Import Project="..\InvisibleBody.Core\Core.InvisibleBody.projitems" Label="Shared" />
   <Import Project="..\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
