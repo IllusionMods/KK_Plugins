@@ -5,7 +5,7 @@ https://www.patreon.com/DeathWeasel
 Plugins for Koikatsu, EmotionCreators, and AI Girl
 
 ## Installation
-1. Install [BepInEx v5.0](https://github.com/BepInEx/BepInEx/releases)
+1. Install [BepInEx v5.3](https://github.com/BepInEx/BepInEx/releases)
 2. Install [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases)
 3. Install [IllusionModdingAPI](https://github.com/IllusionMods/IllusionModdingAPI)
 4. Extract the plugin .zip file to your game folder
