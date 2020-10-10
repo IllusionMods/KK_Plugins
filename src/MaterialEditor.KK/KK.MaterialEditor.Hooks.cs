@@ -1,17 +1,22 @@
 ﻿using ChaCustom;
 using HarmonyLib;
+using KKAPI.Maker;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
-using KKAPI.Maker;
-using System.Collections.Generic;
 
 namespace KK_Plugins.MaterialEditor
 {
     internal static partial class Hooks
     {
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
-        internal static void ChangeCoordinateTypePrefix(ChaControl __instance) => MaterialEditorPlugin.GetCharaController(__instance)?.CoordinateChangeEvent();
+        internal static void ChangeCoordinateTypePrefix(ChaControl __instance)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+                controller.CoordinateChangeEvent();
+        }
 
         [HarmonyPostfix, HarmonyPatch(typeof(CvsClothesCopy), "CopyClothes")]
         internal static void CopyClothesPostfix(TMP_Dropdown[] ___ddCoordeType, Toggle[] ___tglKind)
@@ -21,7 +26,9 @@ namespace KK_Plugins.MaterialEditor
                 if (___tglKind[i].isOn)
                     copySlots.Add(i);
 
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())?.ClothingCopiedEvent(___ddCoordeType[1].value, ___ddCoordeType[0].value, copySlots);
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
+            if (controller != null)
+                controller.ClothingCopiedEvent(___ddCoordeType[1].value, ___ddCoordeType[0].value, copySlots);
         }
     }
 }

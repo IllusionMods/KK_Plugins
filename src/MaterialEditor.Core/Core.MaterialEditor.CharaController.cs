@@ -1760,9 +1760,17 @@ namespace KK_Plugins.MaterialEditor
             if (objectType == ObjectType.Clothing)
                 return ChaControl.objClothes[slot];
             if (objectType == ObjectType.Accessory)
-                return ChaControl.GetAccessory(slot)?.gameObject;
+            {
+                var acc = ChaControl.GetAccessory(slot);
+                if (acc != null)
+                    return acc.gameObject;
+            }
             if (objectType == ObjectType.Hair)
-                return ChaControl.objHair[slot]?.gameObject;
+            {
+                var hair = ChaControl.objHair[slot];
+                if (hair != null)
+                    return hair.gameObject;
+            }
             if (objectType == ObjectType.Character)
                 return ChaControl.gameObject;
             return null;

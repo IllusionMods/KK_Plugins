@@ -9,19 +9,44 @@ namespace KK_Plugins.MaterialEditor
     internal partial class Hooks
     {
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
-        internal static void SetClothesStatePostfix(ChaControl __instance) => MaterialEditorPlugin.GetCharaController(__instance)?.ClothesStateChangeEvent();
+        internal static void SetClothesStatePostfix(ChaControl __instance)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+                controller.ClothesStateChangeEvent();
+        }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]
-        internal static void ChangeCustomClothes(ChaControl __instance, int kind) => MaterialEditorPlugin.GetCharaController(__instance)?.ChangeCustomClothesEvent(kind);
+        internal static void ChangeCustomClothes(ChaControl __instance, int kind)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+                controller.ChangeCustomClothesEvent(kind);
+        }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessory), typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool))]
-        internal static void ChangeAccessory(ChaControl __instance, int slotNo, int type) => MaterialEditorPlugin.GetCharaController(__instance)?.ChangeAccessoryEvent(slotNo, type);
+        internal static void ChangeAccessory(ChaControl __instance, int slotNo, int type)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+                controller.ChangeAccessoryEvent(slotNo, type);
+        }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), typeof(int), typeof(int), typeof(bool), typeof(bool))]
-        internal static void ChangeHair(ChaControl __instance, int kind) => MaterialEditorPlugin.GetCharaController(__instance)?.ChangeHairEvent(kind);
+        internal static void ChangeHair(ChaControl __instance, int kind)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+                controller.ChangeHairEvent(kind);
+        }
 
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-        internal static void CreateBodyTextureHook(ChaControl __instance) => MaterialEditorPlugin.GetCharaController(__instance).RefreshBodyMainTex();
+        internal static void CreateBodyTextureHook(ChaControl __instance)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+                controller.RefreshBodyMainTex();
+        }
 
 #if AI || HS2
         internal static void ClothesColorChangeHook()

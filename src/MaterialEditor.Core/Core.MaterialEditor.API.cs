@@ -457,9 +457,9 @@ namespace KK_Plugins.MaterialEditor
                 var material = materials[i];
                 if (material.HasProperty($"_{propertyName}"))
                 {
-                    var wrapMode = material.GetTexture($"_{propertyName}")?.wrapMode;
-                    if (wrapMode != null && value != null)
-                        value.wrapMode = (TextureWrapMode)wrapMode;
+                    var tex = material.GetTexture($"_{propertyName}");
+                    if (tex != null && value != null)
+                        value.wrapMode = tex.wrapMode;
                     material.SetTexture($"_{propertyName}", value);
                     didSet = true;
                 }
@@ -630,7 +630,7 @@ namespace KK_Plugins.MaterialEditor
             for (var i = 0; i < list.Count; i++)
             {
                 var material = list[i];
-                material.renderQueue = (int) value;
+                material.renderQueue = (int)value;
                 didSet = true;
             }
             return didSet;
