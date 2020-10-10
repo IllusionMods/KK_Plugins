@@ -64,7 +64,7 @@ namespace KK_Plugins
             }
         }
 
-        
+
         /// <summary>
         /// Apply colliders on setting change
         /// </summary>
@@ -120,6 +120,18 @@ namespace KK_Plugins
                 }
             });
 
+            var arm = new CurrentStateCategorySwitch("Arm", ocichar => ocichar.charInfo.GetComponent<ColliderController>().ArmCollidersEnabled);
+            arm.Value.Subscribe(value =>
+            {
+                var controller = GetSelectedController();
+                if (controller == null) return;
+                if (controller.ArmCollidersEnabled != value)
+                {
+                    controller.ArmCollidersEnabled = value;
+                    controller.ApplyArmColliders();
+                }
+            });
+
 #if KK
             var skirt = new CurrentStateCategorySwitch("Skirt", ocichar => ocichar.charInfo.GetComponent<ColliderController>().SkirtCollidersEnabled);
             skirt.Value.Subscribe(value =>
@@ -130,18 +142,6 @@ namespace KK_Plugins
                 {
                     controller.SkirtCollidersEnabled = value;
                     controller.ApplySkirtColliders();
-                }
-            });
-
-            var arm= new CurrentStateCategorySwitch("Arm", ocichar => ocichar.charInfo.GetComponent<ColliderController>().ArmCollidersEnabled);
-            arm.Value.Subscribe(value =>
-            {
-                var controller = GetSelectedController();
-                if (controller == null) return;
-                if (controller.ArmCollidersEnabled != value)
-                {
-                    controller.ArmCollidersEnabled = value;
-                    controller.ApplyArmColliders();
                 }
             });
 #endif
@@ -159,9 +159,9 @@ namespace KK_Plugins
             });
 
             StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(breast);
+            StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(arm);
 #if KK
             StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(skirt);
-            StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(arm);
 #endif
             StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(floor);
         }
@@ -174,7 +174,6 @@ namespace KK_Plugins
                 return null;
             return mpCharCtrl.ociChar.charInfo.GetComponent<ColliderController>();
         }
-
 
         public class ColliderSceneController : SceneCustomFunctionController
         {

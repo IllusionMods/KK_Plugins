@@ -58,12 +58,13 @@ namespace KK_Plugins
                 var data = new PluginData();
                 data.data.Add(nameof(BreastCollidersEnabled), BreastCollidersEnabled);
                 data.data.Add(nameof(FloorColliderEnabled), FloorColliderEnabled);
+                data.data.Add(nameof(ArmCollidersEnabled), ArmCollidersEnabled);
 #if KK
                 data.data.Add(nameof(SkirtCollidersEnabled), SkirtCollidersEnabled);
-                data.data.Add(nameof(ArmCollidersEnabled), ArmCollidersEnabled);
 #endif
                 SetExtendedData(data);
             }
+
             protected override void OnReload(GameMode currentGameMode, bool maintainState)
             {
                 if (StudioAPI.InsideStudio)
@@ -74,10 +75,9 @@ namespace KK_Plugins
                         {
                             BreastCollidersEnabled = ConfigBreastColliders.Value;
                             FloorColliderEnabled = ConfigFloorCollider.Value;
+                            ArmCollidersEnabled = ConfigArmColliders.Value;
 #if KK
                             SkirtCollidersEnabled = ConfigSkirtColliders.Value;
-                            ArmCollidersEnabled = ConfigArmColliders.Value;
-
 #endif
                         }
                         else if (ConfigDefaultStudioSettings.Value == DefaultStudioSettings.On)
@@ -92,11 +92,11 @@ namespace KK_Plugins
                                 BreastCollidersEnabled = (bool)loadedBreastCollidersEnabled;
                             if (data.data.TryGetValue(nameof(FloorColliderEnabled), out var loadedFloorColliderEnabled))
                                 FloorColliderEnabled = (bool)loadedFloorColliderEnabled;
+                            if (data.data.TryGetValue(nameof(ArmCollidersEnabled), out var loadedArmCollidersEnabled))
+                                ArmCollidersEnabled = (bool)loadedArmCollidersEnabled;
 #if KK
                             if (data.data.TryGetValue(nameof(SkirtCollidersEnabled), out var loadedSkirtCollidersEnabled))
                                 SkirtCollidersEnabled = (bool)loadedSkirtCollidersEnabled;
-                            if (data.data.TryGetValue(nameof(ArmCollidersEnabled), out var loadedArmCollidersEnabled))
-                                ArmCollidersEnabled = (bool)loadedArmCollidersEnabled;
 #endif
                         }
 
@@ -107,9 +107,9 @@ namespace KK_Plugins
                 {
                     BreastCollidersEnabled = ConfigBreastColliders.Value;
                     FloorColliderEnabled = ConfigFloorCollider.Value;
+                    ArmCollidersEnabled = ConfigArmColliders.Value;
 #if KK
                     SkirtCollidersEnabled = ConfigSkirtColliders.Value;
-                    ArmCollidersEnabled = ConfigArmColliders.Value;
 #endif
                 }
 
@@ -165,7 +165,7 @@ namespace KK_Plugins
                         }
                     }
 
-                    if (applyBreastColliders)
+                    if (applyBreastColliders || applyArmColliders)
                     {
                         //Apply other character's arm colliders to this character's breasts
                         if (StudioAPI.InsideStudio)
@@ -175,19 +175,6 @@ namespace KK_Plugins
                         if (FindObjectOfType<HSceneProc>() != null)
                             UpdateArmCollidersBreastDBAll();
 #endif
-                    }
-
-                    
-                    if (applyArmColliders) 
-                    {
-                        //Apply other character's arm colliders to this character's breasts
-                        if (StudioAPI.InsideStudio) 
-                            UpdateArmCollidersBreastDBAll();                    
-
-
-                        if (FindObjectOfType<HSceneProc>() != null) 
-                            UpdateArmCollidersBreastDBAll();   
-                                                 
                     }
 
                     applyBreastColliders = applySkirtColliders = applyFloorCollider = applyArmColliders = applyColliders = false;
