@@ -55,14 +55,19 @@ namespace KK_Plugins
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
-                var data = new PluginData();
-                data.data.Add(nameof(BreastCollidersEnabled), BreastCollidersEnabled);
-                data.data.Add(nameof(FloorColliderEnabled), FloorColliderEnabled);
-                data.data.Add(nameof(ArmCollidersEnabled), ArmCollidersEnabled);
+                if (StudioAPI.InsideStudio)
+                {
+                    var data = new PluginData();
+                    data.data.Add(nameof(BreastCollidersEnabled), BreastCollidersEnabled);
+                    data.data.Add(nameof(FloorColliderEnabled), FloorColliderEnabled);
+                    data.data.Add(nameof(ArmCollidersEnabled), ArmCollidersEnabled);
 #if KK
-                data.data.Add(nameof(SkirtCollidersEnabled), SkirtCollidersEnabled);
+                    data.data.Add(nameof(SkirtCollidersEnabled), SkirtCollidersEnabled);
 #endif
-                SetExtendedData(data);
+                    SetExtendedData(data);
+                }
+                else
+                    SetExtendedData(null);
             }
 
             protected override void OnReload(GameMode currentGameMode, bool maintainState)
