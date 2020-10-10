@@ -15,7 +15,7 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
         private static readonly string ListOverrideFolder = Path.Combine(Paths.ConfigPath, PluginNameInternal);
 
-        internal void Awake()
+        private void Awake()
         {
             Logger = base.Logger;
             Harmony.CreateAndPatchAll(typeof(Hooks));

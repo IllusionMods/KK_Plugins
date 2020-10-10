@@ -24,7 +24,7 @@ namespace KK_Plugins
         public static ConfigEntry<KeyboardShortcut> CharacterExportHotkey { get; private set; }
         public static ConfigEntry<bool> OpenFolderAfterExport { get; private set; }
 
-        internal void Start()
+        private void Start()
         {
             Logger = base.Logger;
 
@@ -32,7 +32,7 @@ namespace KK_Plugins
             OpenFolderAfterExport = Config.Bind("Config", "Open Folder After Export", true, "Whether to open the folder after exporting characters.");
         }
 
-        internal void Update()
+        private void Update()
         {
             if (CharacterExportHotkey.Value.IsDown())
                 ExportCharacters();

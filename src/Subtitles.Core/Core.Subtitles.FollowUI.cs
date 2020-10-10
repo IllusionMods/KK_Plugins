@@ -10,14 +10,14 @@ namespace KK_Plugins
         private Quaternion rot;
         private new Transform transform;
 
-        internal void Start()
+        private void Start()
         {
             transform = base.transform;
             rot = transform.rotation;
             pos = transform.position;
         }
 
-        internal void Update()
+        private void Update()
         {
             var parent = transform.parent;
             var position = parent.position;

@@ -278,7 +278,7 @@ namespace KK_Plugins
                 return null;
             }
 
-            private static T GetPanelObject<T>(string name) => FKIKPanel.GetComponentsInChildren<RectTransform>(true).First(x => x.name == name).GetComponent<T>();
+            private static T GetPanelObject<T>(string name) where T : Component => FKIKPanel.GetComponentsInChildren<RectTransform>(true).First(x => x.name == name).GetComponent<T>();
 
             private enum KinematicsType { FK, IK }
             private enum ButtonType { Anime, Init }

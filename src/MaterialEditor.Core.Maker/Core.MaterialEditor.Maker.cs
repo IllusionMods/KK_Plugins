@@ -38,7 +38,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal static MEMaker Instance;
 
-        internal void Start()
+        private void Start()
         {
             Instance = this;
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;

@@ -62,7 +62,7 @@ namespace KK_Plugins
         /// <summary>
         /// On a game update run the actual refresh. It must be run from an update or it causes all sorts of errors.
         /// </summary>
-        internal void Update()
+        private void Update()
         {
             if (EventFromCharaMaker && DoRefresh)
             {

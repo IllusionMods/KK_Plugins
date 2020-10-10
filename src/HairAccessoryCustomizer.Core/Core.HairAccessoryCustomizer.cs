@@ -34,7 +34,7 @@ namespace KK_Plugins
         private static readonly Color AccessoryColorDefault = Color.red;
         private static readonly float HairLengthDefault = 0;
 
-        internal void Start()
+        private void Start()
         {
             Logger = base.Logger;
             CharacterApi.RegisterExtraBehaviour<HairAccessoryController>(GUID);

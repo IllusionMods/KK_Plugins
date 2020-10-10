@@ -23,7 +23,7 @@ namespace KK_Plugins.StudioSceneSettings
         private GameObject studioCameraColliderControllerGO;
 #endif
 
-        internal void Start() => SceneManager.sceneLoaded += InitStudioUI;
+        private void Start() => SceneManager.sceneLoaded += InitStudioUI;
 
         /// <summary>
         /// Save the modified values to the scene extended data

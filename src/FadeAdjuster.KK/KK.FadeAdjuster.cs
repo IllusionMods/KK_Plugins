@@ -21,7 +21,7 @@ namespace KK_Plugins
         public static ConfigEntry<bool> DisableFade { get; private set; }
         public static ConfigEntry<Color> FadeColor { get; private set; }
 
-        internal void Awake()
+        private void Awake()
         {
             DisableFade = Config.Bind("Config", "Disable Fade", false, "Disables fade on loading screens");
             FadeColor = Config.Bind("Config", "Fade Color", Color.white, "Color of loading screens");

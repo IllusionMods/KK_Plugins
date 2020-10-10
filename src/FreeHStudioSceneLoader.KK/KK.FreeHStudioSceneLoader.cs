@@ -31,7 +31,7 @@ namespace KK_Plugins
         private static string StudioSceneFile;
         private static int StudioMapNo;
 
-        internal void Awake()
+        private void Awake()
         {
             Logger = base.Logger;
             IsStudio = Application.productName == "CharaStudio";

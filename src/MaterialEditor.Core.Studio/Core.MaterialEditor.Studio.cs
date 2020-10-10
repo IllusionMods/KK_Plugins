@@ -40,7 +40,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public const string Version = MaterialEditorPlugin.Version;
 
-        internal void Start()
+        private void Start()
         {
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
             StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(MaterialEditorPlugin.GUID);

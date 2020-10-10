@@ -36,7 +36,7 @@ namespace KK_Plugins
 
         internal static readonly HashSet<string> BreastDBComments = new HashSet<string> { "右胸", "左胸" };
 
-        internal void Start()
+        private void Start()
         {
             ConfigSkirtColliders = Config.Bind("Config", "Skirt Colliders", true, new ConfigDescription("Extra colliders for the legs to cause less skirt clipping.", null, new ConfigurationManagerAttributes { Order = 5 }));
             ConfigSkirtColliders.SettingChanged += ConfigSkirtColliders_SettingChanged;

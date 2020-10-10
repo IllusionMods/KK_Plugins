@@ -38,7 +38,7 @@ namespace KK_Plugins
 
         private static MakerToggle InvisibleToggle;
 
-        internal void Start()
+        private void Start()
         {
             Logger = base.Logger;
 

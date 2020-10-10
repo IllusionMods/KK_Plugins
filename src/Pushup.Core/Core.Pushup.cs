@@ -30,7 +30,7 @@ namespace KK_Plugins
         public static ConfigEntry<int> ConfigSliderMin { get; private set; }
         public static ConfigEntry<int> ConfigSliderMax { get; private set; }
 
-        internal void Start()
+        private void Start()
         {
             Logger = base.Logger;
 

@@ -22,7 +22,7 @@ namespace KK_Plugins
         public static ConfigEntry<bool> EnableCrossdressing;
         public static MakerToggle ClothingUnlockToggle;
 
-        internal void Start()
+        private void Start()
         {
             Logger = base.Logger;
 

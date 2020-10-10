@@ -63,7 +63,7 @@ namespace KK_Plugins
                 AnimGUI = new Rect(110, 510, 200, 400);
         }
 
-        internal void Update()
+        private void Update()
         {
             if (AnimationControllerHotkey.Value.IsDown())
                 GUIVisible = !GUIVisible;

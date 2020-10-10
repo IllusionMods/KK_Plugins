@@ -44,7 +44,7 @@ namespace KK_Plugins
 
         public GuideObject GetTargetObject() => Singleton<GuideObjectManager>.Instance.operationTarget == null ? Singleton<GuideObjectManager>.Instance.selectObject : Singleton<GuideObjectManager>.Instance.operationTarget;
 
-        internal void Update()
+        private void Update()
         {
             if (!Singleton<GuideObjectManager>.IsInstance()) return;
             GuideObjectMode guideObjectMode = (GuideObjectMode)Singleton<GuideObjectManager>.Instance.mode;

@@ -65,7 +65,7 @@ namespace KK_Plugins
         public static ConfigEntry<Vector3> VRText2Offset { get; private set; }
         #endregion
 
-        internal void Awake()
+        private void Awake()
         {
             Logger = base.Logger;
             Instance = this;

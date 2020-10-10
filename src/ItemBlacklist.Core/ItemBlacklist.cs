@@ -47,7 +47,7 @@ namespace KK_Plugins
             LoadBlacklist();
         }
 
-        internal void Update()
+        private void Update()
         {
             if (Input.GetMouseButtonDown(1))
                 ShowMenu();
