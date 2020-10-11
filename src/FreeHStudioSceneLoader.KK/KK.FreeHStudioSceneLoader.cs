@@ -45,7 +45,7 @@ namespace KK_Plugins
         private static class Hooks
         {
             [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "OnDestroy")]
-            internal static void HSceneProc_OnDestroy()
+            private static void HSceneProc_OnDestroy()
             {
                 if (IsStudio) return;
 
@@ -53,7 +53,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "Start")]
-            internal static void HSceneProc_Start(HSceneProc __instance)
+            private static void HSceneProc_Start(HSceneProc __instance)
             {
                 if (IsStudio) return;
 
@@ -62,7 +62,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(ActionMap), nameof(ActionMap.Change))]
-            internal static bool ActionMap_Change(ActionMap __instance, ref int no)
+            private static bool ActionMap_Change(ActionMap __instance, ref int no)
             {
                 if (IsStudio) return true;
                 if (StudioSceneFile == null) return true;
@@ -83,7 +83,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(AssetBundleManager), nameof(AssetBundleManager.LoadAsset), typeof(string), typeof(string), typeof(Type), typeof(string))]
-            internal static void LoadAssetPrefix(ref string assetBundleName, ref string assetName)
+            private static void LoadAssetPrefix(ref string assetBundleName, ref string assetName)
             {
                 //Redirect to the Studio asset bundle when loading scenes
                 if (!IsStudio && LoadingScene && (assetName == "p_cf_body_bone" || assetName == "p_cf_head_bone"))
@@ -91,7 +91,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Config), "Start")]
-            internal static void Config_Start()
+            private static void Config_Start()
             {
                 if (IsStudio) return;
 
@@ -113,7 +113,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(MapSelectMenuScene), "Start")]
-            internal static void MapSelectMenuScene_Start(ref IEnumerator __result, GameObject ___nodeFrame, ReactiveProperty<MapInfo.Param> ____mapInfo)
+            private static void MapSelectMenuScene_Start(ref IEnumerator __result, GameObject ___nodeFrame, ReactiveProperty<MapInfo.Param> ____mapInfo)
             {
                 if (IsStudio) return;
 
@@ -156,7 +156,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(BackgroundCtrl), nameof(BackgroundCtrl.isVisible), MethodType.Setter)]
-            internal static bool BackgroundCtrl_IsVisible(ref MeshRenderer ___meshRenderer, ref bool ___m_IsVisible, bool value)
+            private static bool BackgroundCtrl_IsVisible(ref MeshRenderer ___meshRenderer, ref bool ___m_IsVisible, bool value)
             {
                 if (IsStudio) return true;
 
@@ -168,7 +168,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.CameraControl), nameof(Studio.CameraControl.ReflectOption))]
-            internal static bool CameraControl_ReflectOption(Studio.CameraControl __instance, ref float ___rateAddSpeed, ref Camera ___m_SubCamera)
+            private static bool CameraControl_ReflectOption(Studio.CameraControl __instance, ref float ___rateAddSpeed, ref Camera ___m_SubCamera)
             {
                 if (IsStudio) return true;
 
@@ -191,7 +191,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.guideMove), MethodType.Getter)]
-            internal static bool GuideObject_guideMove(ref GuideMove[] __result)
+            private static bool GuideObject_guideMove(ref GuideMove[] __result)
             {
                 if (IsStudio) return true;
 
@@ -199,7 +199,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.guideSelect), MethodType.Getter)]
-            internal static bool GuideObject_guideSelect(ref GuideSelect __result)
+            private static bool GuideObject_guideSelect(ref GuideSelect __result)
             {
                 if (IsStudio) return true;
 
@@ -207,19 +207,19 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.enablePos), MethodType.Setter)]
-            internal static bool GuideObject_enablePos() => IsStudio;
+            private static bool GuideObject_enablePos() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.enableRot), MethodType.Setter)]
-            internal static bool GuideObject_enableRot() => IsStudio;
+            private static bool GuideObject_enableRot() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.enableScale), MethodType.Setter)]
-            internal static bool GuideObject_enableScale() => IsStudio;
+            private static bool GuideObject_enableScale() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.SetMode))]
-            internal static bool GuideObject_SetMode() => IsStudio;
+            private static bool GuideObject_SetMode() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.SetScale))]
-            internal static bool GuideObject_SetScale() => IsStudio;
+            private static bool GuideObject_SetScale() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.SetVisibleCenter))]
-            internal static bool GuideObject_SetVisibleCenter() => IsStudio;
+            private static bool GuideObject_SetVisibleCenter() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), "Awake")]
-            internal static bool GuideObject_Awake(GuideObject __instance, ref int ___m_DicKey)
+            private static bool GuideObject_Awake(GuideObject __instance, ref int ___m_DicKey)
             {
                 if (IsStudio) return true;
 
@@ -234,7 +234,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), "LateUpdate")]
-            internal static bool GuideObject_LateUpdate(GuideObject __instance, ref GameObject[] ___roots)
+            private static bool GuideObject_LateUpdate(GuideObject __instance, ref GameObject[] ___roots)
             {
                 if (IsStudio) return true;
 
@@ -274,18 +274,18 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(OCILight), nameof(OCILight.SetDrawTarget))]
-            internal static bool OCILight_SetDrawTarget() => IsStudio;
+            private static bool OCILight_SetDrawTarget() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(MapCtrl), nameof(MapCtrl.UpdateUI))]
-            internal static bool MapCtrl_UpdateUI() => IsStudio;
+            private static bool MapCtrl_UpdateUI() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(MapCtrl), "Awake")]
-            internal static bool MapCtrl_Awake() => IsStudio;
+            private static bool MapCtrl_Awake() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(PatternSelectListCtrl), nameof(PatternSelectListCtrl.Create))]
-            internal static bool PatternSelectListCtrl_Create() => IsStudio;
+            private static bool PatternSelectListCtrl_Create() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(PatternSelectListCtrl), "Start")]
-            internal static bool PatternSelectListCtrl_Start() => IsStudio;
+            private static bool PatternSelectListCtrl_Start() => IsStudio;
 
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObjectManager), nameof(GuideObjectManager.DeleteAll))]
-            internal static bool GuideObjectManager_DeleteAll(GuideObjectManager __instance, ref HashSet<GuideObject> ___hashSelectObject, ref Dictionary<Transform, GuideObject> ___dicGuideObject, ref Dictionary<Transform, Light> ___dicTransLight, ref Dictionary<GuideObject, Light> ___dicGuideLight)
+            private static bool GuideObjectManager_DeleteAll(GuideObjectManager __instance, ref HashSet<GuideObject> ___hashSelectObject, ref Dictionary<Transform, GuideObject> ___dicGuideObject, ref Dictionary<Transform, Light> ___dicTransLight, ref Dictionary<GuideObject, Light> ___dicGuideLight)
             {
                 if (IsStudio) return true;
 
@@ -311,7 +311,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObjectManager), "Awake")]
-            internal static void GuideObjectManager_Awake(ref GameObject ___objectOriginal)
+            private static void GuideObjectManager_Awake(ref GameObject ___objectOriginal)
             {
                 if (IsStudio) return;
 
@@ -325,7 +325,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.AddNode), typeof(string), typeof(TreeNodeObject))]
-            internal static bool TreeNodeCtrl_AddNode(TreeNodeCtrl __instance, TreeNodeObject _parent, ref TreeNodeObject __result, ref List<TreeNodeObject> ___m_TreeNodeObject)
+            private static bool TreeNodeCtrl_AddNode(TreeNodeCtrl __instance, TreeNodeObject _parent, ref TreeNodeObject __result, ref List<TreeNodeObject> ___m_TreeNodeObject)
             {
                 if (IsStudio) return true;
 
@@ -342,7 +342,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.DeleteNode), typeof(TreeNodeObject))]
-            internal static bool TreeNodeCtrl_DeleteNode(TreeNodeCtrl __instance, TreeNodeObject _node, ref List<TreeNodeObject> ___m_TreeNodeObject, ref ScrollRect ___scrollRect)
+            private static bool TreeNodeCtrl_DeleteNode(TreeNodeCtrl __instance, TreeNodeObject _node, ref List<TreeNodeObject> ___m_TreeNodeObject, ref ScrollRect ___scrollRect)
             {
                 if (IsStudio) return true;
 
@@ -360,21 +360,20 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.SelectMultiple))]
-            internal static bool TreeNodeCtrl_SelectMultiple() => IsStudio;
+            private static bool TreeNodeCtrl_SelectMultiple() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), "RefreshHierachyLoop")]
-            internal static bool TreeNodeCtrl_RefreshHierachyLoop() => IsStudio;
+            private static bool TreeNodeCtrl_RefreshHierachyLoop() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), "RefreshVisibleLoop")]
-            internal static bool TreeNodeCtrl_RefreshVisibleLoop() => IsStudio;
+            private static bool TreeNodeCtrl_RefreshVisibleLoop() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), "SetSelectNode")]
-            internal static bool TreeNodeCtrl_SetSelectNode() => IsStudio;
+            private static bool TreeNodeCtrl_SetSelectNode() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.OnPointerDown))]
-            internal static bool TreeNodeCtrl_OnPointerDown() => IsStudio;
+            private static bool TreeNodeCtrl_OnPointerDown() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), "Start")]
-            internal static bool TreeNodeCtrl_Start() => IsStudio;
-
+            private static bool TreeNodeCtrl_Start() => IsStudio;
 
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.DeleteAllNode))]
-            internal static bool TreeNodeCtrl_DeleteAllNode(TreeNodeCtrl __instance, ref List<TreeNodeObject> ___m_TreeNodeObject, ref ScrollRect ___scrollRect, ref HashSet<TreeNodeObject> ___hashSelectNode)
+            private static bool TreeNodeCtrl_DeleteAllNode(TreeNodeCtrl __instance, ref List<TreeNodeObject> ___m_TreeNodeObject, ref ScrollRect ___scrollRect, ref HashSet<TreeNodeObject> ___hashSelectNode)
             {
                 if (IsStudio) return true;
 
@@ -392,7 +391,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.SetParent), typeof(TreeNodeObject), typeof(TreeNodeObject))]
-            internal static bool TreeNodeCtrl_SetParent(TreeNodeObject _node, TreeNodeObject _parent, TreeNodeCtrl __instance, ref GUITree.TreeRoot ___m_TreeRoot, ref Action<TreeNodeObject, TreeNodeObject> ___onParentage)
+            private static bool TreeNodeCtrl_SetParent(TreeNodeObject _node, TreeNodeObject _parent, TreeNodeCtrl __instance, ref GUITree.TreeRoot ___m_TreeRoot, ref Action<TreeNodeObject, TreeNodeObject> ___onParentage)
             {
                 if (IsStudio) return true;
 
@@ -408,9 +407,9 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.colorSelect), MethodType.Setter)]
-            internal static bool TreeNodeObject_colorSelect() => IsStudio;
+            private static bool TreeNodeObject_colorSelect() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.textName), MethodType.Getter)]
-            internal static bool TreeNodeObject_guideMove(ref string __result)
+            private static bool TreeNodeObject_guideMove(ref string __result)
             {
                 if (IsStudio) return true;
 
@@ -418,7 +417,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.SetVisible))]
-            internal static bool TreeNodeObject_SetVisible(TreeNodeObject __instance, bool _visible, ref bool ___m_Visible, ref List<TreeNodeObject> ___m_child)
+            private static bool TreeNodeObject_SetVisible(TreeNodeObject __instance, bool _visible, ref bool ___m_Visible, ref List<TreeNodeObject> ___m_child)
             {
                 if (IsStudio) return true;
 
@@ -430,7 +429,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.ResetVisible))]
-            internal static bool TreeNodeObject_ResetVisible(TreeNodeObject __instance, ref bool ___m_Visible)
+            private static bool TreeNodeObject_ResetVisible(TreeNodeObject __instance, ref bool ___m_Visible)
             {
                 if (IsStudio) return true;
 
@@ -444,24 +443,24 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.textName), MethodType.Setter)]
-            internal static bool TreeNodeObject_textName() => IsStudio;
+            private static bool TreeNodeObject_textName() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.enableVisible), MethodType.Setter)]
-            internal static bool TreeNodeObject_enableVisible() => IsStudio;
+            private static bool TreeNodeObject_enableVisible() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.SetTreeState))]
-            internal static bool TreeNodeObject_SetTreeState() => IsStudio;
+            private static bool TreeNodeObject_SetTreeState() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.Select))]
-            internal static bool TreeNodeObject_Select() => IsStudio;
+            private static bool TreeNodeObject_Select() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), "SetStateVisible")]
-            internal static bool TreeNodeObject_SetStateVisible() => IsStudio;
+            private static bool TreeNodeObject_SetStateVisible() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), "SetVisibleLoop")]
-            internal static bool TreeNodeObject_SetVisibleLoop() => IsStudio;
+            private static bool TreeNodeObject_SetVisibleLoop() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), "SetVisibleChild")]
-            internal static bool TreeNodeObject_SetVisibleChild() => IsStudio;
+            private static bool TreeNodeObject_SetVisibleChild() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), "RecalcSelectButtonPos")]
-            internal static bool TreeNodeObject_RecalcSelectButtonPos() => IsStudio;
+            private static bool TreeNodeObject_RecalcSelectButtonPos() => IsStudio;
 
             [HarmonyPrefix, HarmonyPatch(typeof(Map), nameof(Map.sunType), MethodType.Setter)]
-            internal static bool Map_sunType(Map __instance, SunLightInfo.Info.Type value)
+            private static bool Map_sunType(Map __instance, SunLightInfo.Info.Type value)
             {
                 if (IsStudio) return true;
 
@@ -475,7 +474,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Map), nameof(Map.ReleaseMap))]
-            internal static bool Map_ReleaseMap(Map __instance)
+            private static bool Map_ReleaseMap(Map __instance)
             {
                 if (IsStudio) return true;
 
@@ -493,7 +492,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddFemale))]
-            internal static bool Studio_AddFemale(string _path)
+            private static bool Studio_AddFemale(string _path)
             {
                 if (IsStudio) return true;
 
@@ -503,7 +502,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddMale))]
-            internal static bool Studio_AddMale(string _path)
+            private static bool Studio_AddMale(string _path)
             {
                 if (IsStudio) return true;
 
@@ -513,7 +512,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddItem))]
-            internal static bool Studio_AddItem(int _group, int _category, int _no)
+            private static bool Studio_AddItem(int _group, int _category, int _no)
             {
                 if (IsStudio) return true;
 
@@ -523,7 +522,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.AddLight), typeof(int))]
-            internal static bool Studio_AddLight(Studio.Studio __instance, int _no)
+            private static bool Studio_AddLight(Studio.Studio __instance, int _no)
             {
                 if (IsStudio) return true;
                 if (!__instance.sceneInfo.isLightCheck) return true;
@@ -534,7 +533,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.LoadScene))]
-            internal static bool Studio_LoadScene(Studio.Studio __instance, string _path, ref bool __result, ref BackgroundCtrl ___m_BackgroundCtrl, ref Studio.CameraControl ___m_CameraCtrl)
+            private static bool Studio_LoadScene(Studio.Studio __instance, string _path, ref bool __result, ref BackgroundCtrl ___m_BackgroundCtrl, ref Studio.CameraControl ___m_CameraCtrl)
             {
                 if (IsStudio) return true;
 
@@ -574,7 +573,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.InitScene))]
-            internal static bool Studio_InitScene(Studio.Studio __instance, bool _close, ref BackgroundCtrl ___m_BackgroundCtrl)
+            private static bool Studio_InitScene(Studio.Studio __instance, bool _close, ref BackgroundCtrl ___m_BackgroundCtrl)
             {
                 if (IsStudio) return true;
 
@@ -620,7 +619,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.Init))]
-            internal static bool Studio_Init(Studio.Studio __instance, ref InputField ____inputFieldNow, ref TMP_InputField ____inputFieldTMPNow)
+            private static bool Studio_Init(Studio.Studio __instance, ref InputField ____inputFieldNow, ref TMP_InputField ____inputFieldTMPNow)
             {
                 if (IsStudio) return true;
 
@@ -636,7 +635,7 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), "Awake")]
-            internal static bool Studio_Awake(Studio.Studio __instance, ref Control ___xmlCtrl)
+            private static bool Studio_Awake(Studio.Studio __instance, ref Control ___xmlCtrl)
             {
                 if (IsStudio) return true;
 
@@ -649,14 +648,14 @@ namespace KK_Plugins
                 return false;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.ChangeCamera), typeof(OCICamera), typeof(bool), typeof(bool))]
-            internal static bool Studio_ChangeCamera() => IsStudio;
+            private static bool Studio_ChangeCamera() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.SetSunCaster))]
-            internal static bool Studio_SetSunCaster() => IsStudio;
+            private static bool Studio_SetSunCaster() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), "OnApplicationQuit")]
-            internal static bool Studio_OnApplicationQuit() => IsStudio;
+            private static bool Studio_OnApplicationQuit() => IsStudio;
 
             [HarmonyPrefix, HarmonyPatch(typeof(FreeHScene), "SetMapSprite")]
-            internal static bool FreeHScene_SetMapSprite(ref Image ___mapImageNormal, ref Image ___mapImageMasturbation, ref Image ___mapImageLesbian)
+            private static bool FreeHScene_SetMapSprite(ref Image ___mapImageNormal, ref Image ___mapImageMasturbation, ref Image ___mapImageLesbian)
             {
                 if (IsStudio) return true;
                 if (StudioSceneFile == null) return true;

@@ -9,7 +9,7 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), "OnPointerEnter")]
-            internal static void OnPointerEnterPostfix(CustomSelectListCtrl __instance, GameObject obj)
+            private static void OnPointerEnterPostfix(CustomSelectListCtrl __instance, GameObject obj)
             {
                 CustomSelectListCtrlInstance = __instance;
                 if (obj != null)
@@ -17,10 +17,10 @@ namespace KK_Plugins
                 MouseIn = true;
             }
             [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), "OnPointerExit")]
-            internal static void OnPointerExitPostfix() => MouseIn = false;
+            private static void OnPointerExitPostfix() => MouseIn = false;
 
             [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), "Create")]
-            internal static void CustomSelectKindInitialize(CustomSelectListCtrl __instance) => ChangeListFilter(__instance, ListVisibilityType.Filtered);
+            private static void CustomSelectKindInitialize(CustomSelectListCtrl __instance) => ChangeListFilter(__instance, ListVisibilityType.Filtered);
         }
     }
 }

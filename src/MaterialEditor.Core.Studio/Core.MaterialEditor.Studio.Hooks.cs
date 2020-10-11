@@ -6,7 +6,7 @@ namespace KK_Plugins.MaterialEditor
     internal static class StudioHooks
     {
         [HarmonyPrefix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.OnDelete))]
-        internal static void OCIItemOnDelete(OCIItem __instance)
+        private static void OCIItemOnDelete(OCIItem __instance)
         {
             var controller = MEStudio.GetSceneController();
             if (controller != null)
@@ -14,7 +14,7 @@ namespace KK_Plugins.MaterialEditor
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.visible), MethodType.Setter)]
-        internal static void OCIItemVisible(OCIItem __instance, bool value)
+        private static void OCIItemVisible(OCIItem __instance, bool value)
         {
             var controller = MEStudio.GetSceneController();
             if (controller != null)

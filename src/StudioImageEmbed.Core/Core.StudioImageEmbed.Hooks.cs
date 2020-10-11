@@ -11,7 +11,7 @@ namespace KK_Plugins
             /// Save the pattern image to the scene data
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.SetPatternTex), typeof(int), typeof(int))]
-            internal static void OCIItem_SetPatternTex_Postfix(OCIItem __instance, int _idx)
+            private static void OCIItem_SetPatternTex_Postfix(OCIItem __instance, int _idx)
             {
                 if (__instance?.itemComponent == null) return;
 
@@ -35,7 +35,7 @@ namespace KK_Plugins
             /// Save the BG image to the scene data
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.SetMainTex), typeof(string))]
-            internal static void OCIItem_SetMainTex_Postfix(OCIItem __instance)
+            private static void OCIItem_SetMainTex_Postfix(OCIItem __instance)
             {
                 if (__instance?.panelComponent == null) return;
 
@@ -56,7 +56,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(FrameCtrl), nameof(FrameCtrl.Load))]
-            internal static void FrameCtrl_Load_Postfix(string _file)
+            private static void FrameCtrl_Load_Postfix(string _file)
             {
                 if (SaveFrame.Value && !_file.IsNullOrEmpty() && !DefaultFrames.Contains(_file.ToLower()))
                 {
@@ -72,7 +72,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(BackgroundCtrl), nameof(BackgroundCtrl.Load))]
-            internal static void BackgroundCtrl_Load_Postfix(string _file)
+            private static void BackgroundCtrl_Load_Postfix(string _file)
             {
 #if HS2
                 if (_file.StartsWith("DefaultData"))

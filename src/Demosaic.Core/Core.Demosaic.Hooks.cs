@@ -10,7 +10,7 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "LateUpdateForce")]
-            internal static void LateUpdateForce(ChaControl __instance)
+            private static void LateUpdateForce(ChaControl __instance)
             {
                 if (Enabled.Value)
                     __instance.hideMoz = true;

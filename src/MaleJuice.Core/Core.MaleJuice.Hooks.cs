@@ -17,7 +17,7 @@ namespace KK_Plugins
             /// Set juice flags for males in Studio
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(OCIChar), nameof(OCIChar.SetSiruFlags))]
-            internal static void SetSiruFlags(ChaFileDefine.SiruParts _parts, byte _state, OCIChar __instance)
+            private static void SetSiruFlags(ChaFileDefine.SiruParts _parts, byte _state, OCIChar __instance)
             {
                 if (__instance is OCICharMale charMale)
 #if KK
@@ -30,7 +30,7 @@ namespace KK_Plugins
             /// Get juice flags for males in Studio
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(OCIChar), nameof(OCIChar.GetSiruFlags))]
-            internal static void GetSiruFlags(ChaFileDefine.SiruParts _parts, OCIChar __instance, ref byte __result)
+            private static void GetSiruFlags(ChaFileDefine.SiruParts _parts, OCIChar __instance, ref byte __result)
             {
                 if (__instance is OCICharMale charMale)
 #if KK
@@ -43,7 +43,7 @@ namespace KK_Plugins
             /// Enable the juice section in Studio always, not just for females
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(MPCharCtrl.LiquidInfo), nameof(MPCharCtrl.LiquidInfo.UpdateInfo))]
-            internal static void LiquidInfoUpdateInfo(OCIChar _char, MPCharCtrl.LiquidInfo __instance)
+            private static void LiquidInfoUpdateInfo(OCIChar _char, MPCharCtrl.LiquidInfo __instance)
             {
                 __instance.active = true;
                 __instance.face.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruKao);
@@ -63,7 +63,7 @@ namespace KK_Plugins
 
 #if AI || HS2
             [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), "UpdateSiru")]
-            internal static IEnumerable<CodeInstruction> UpdateSiruTranspiler(IEnumerable<CodeInstruction> instructions)
+            private static IEnumerable<CodeInstruction> UpdateSiruTranspiler(IEnumerable<CodeInstruction> instructions)
             {
                 List<CodeInstruction> instructionsList = instructions.ToList();
 
@@ -78,7 +78,7 @@ namespace KK_Plugins
             }
 
             [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), "UpdateClothesSiru")]
-            internal static IEnumerable<CodeInstruction> UpdateClothesSiruTranspiler(IEnumerable<CodeInstruction> instructions)
+            private static IEnumerable<CodeInstruction> UpdateClothesSiruTranspiler(IEnumerable<CodeInstruction> instructions)
             {
                 List<CodeInstruction> instructionsList = instructions.ToList();
 

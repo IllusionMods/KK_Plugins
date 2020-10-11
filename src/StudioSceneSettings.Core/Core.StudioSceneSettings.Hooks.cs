@@ -13,7 +13,7 @@ namespace KK_Plugins.StudioSceneSettings
         {
 #if AI || HS2
             [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), "OnTriggerEnter")]
-            internal static void OnTriggerEnter(Collider other, ref List<Collider> ___listCollider)
+            private static void OnTriggerEnter(Collider other, ref List<Collider> ___listCollider)
             {
                 if (other == null) return;
                 if (!___listCollider.Contains(other))
@@ -21,7 +21,7 @@ namespace KK_Plugins.StudioSceneSettings
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), "OnTriggerStay")]
-            internal static void OnTriggerStay(Collider other, ref List<Collider> ___listCollider)
+            private static void OnTriggerStay(Collider other, ref List<Collider> ___listCollider)
             {
                 if (other == null) return;
                 if (!___listCollider.Contains(other))
@@ -29,7 +29,7 @@ namespace KK_Plugins.StudioSceneSettings
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), nameof(Studio.CameraControl.LoadVanish))]
-            internal static void LoadVanish(string _assetbundle, string _file, GameObject _objMap, ref List<Studio.CameraControl.VisibleObject> ___lstMapVanish, ref bool __result)
+            private static void LoadVanish(string _assetbundle, string _file, GameObject _objMap, ref List<Studio.CameraControl.VisibleObject> ___lstMapVanish, ref bool __result)
             {
                 ___lstMapVanish.Clear();
 

@@ -14,7 +14,7 @@ namespace KK_Plugins
             /// </summary>
             /// <param name="__instance"></param>
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitShapeFace))]
-            internal static void InitShapeFace(ChaControl __instance) => GetController(__instance).UpdateVisible(true);
+            private static void InitShapeFace(ChaControl __instance) => GetController(__instance).UpdateVisible(true);
         }
     }
 }

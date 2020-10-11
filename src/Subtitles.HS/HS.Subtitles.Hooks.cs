@@ -7,7 +7,7 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(LoadAudioBase), "Play")]
-            internal static void PlayVoice(LoadAudioBase __instance)
+            private static void PlayVoice(LoadAudioBase __instance)
             {
                 string[] assetNameSplit = __instance.assetName.Split('_');
 

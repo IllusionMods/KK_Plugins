@@ -33,14 +33,14 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Scene), "Awake")]
-            internal static void Awake(ref Color ___initFadeColor)
+            private static void Awake(ref Color ___initFadeColor)
             {
                 if (FadeColor.Value != Color.white)
                     ___initFadeColor = FadeColor.Value;
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(SimpleFade), "Update")]
-            internal static bool SimpleFadeUpdate(SimpleFade __instance)
+            private static bool SimpleFadeUpdate(SimpleFade __instance)
             {
                 if (UpdateColor)
                     __instance._Color = FadeColor.Value;

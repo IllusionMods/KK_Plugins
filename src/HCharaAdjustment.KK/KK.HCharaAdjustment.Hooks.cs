@@ -10,7 +10,7 @@ namespace KK_Plugins
             /// Something that happens at the end of H scene loading, good enough place to initialize stuff
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "MapSameObjectDisable")]
-            internal static void MapSameObjectDisable(HSceneProc __instance)
+            private static void MapSameObjectDisable(HSceneProc __instance)
             {
                 for (int i = 0; i < __instance.flags.lstHeroine.Count; i++)
                     if (i == 0)
@@ -25,7 +25,7 @@ namespace KK_Plugins
             /// </summary>
             /// <param name="__instance"></param>
             [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "GotoPointMoveScene")]
-            internal static void GotoPointMoveScene(HSceneProc __instance)
+            private static void GotoPointMoveScene(HSceneProc __instance)
             {
                 var heroines = __instance.flags.lstHeroine;
                 for (var i = 0; i < heroines.Count; i++)
@@ -37,7 +37,7 @@ namespace KK_Plugins
             /// </summary>
             /// <param name="__instance"></param>
             [HarmonyPostfix, HarmonyPatch(typeof(HSceneProc), "ChangeCategory")]
-            internal static void ChangeCategory(HSceneProc __instance)
+            private static void ChangeCategory(HSceneProc __instance)
             {
                 var heroines = __instance.flags.lstHeroine;
                 for (var i = 0; i < heroines.Count; i++)

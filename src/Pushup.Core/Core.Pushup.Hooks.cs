@@ -12,7 +12,7 @@ namespace KK_Plugins
             /// Trigger the ClothesStateChangeEvent for tops and bras
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
-            internal static void SetClothesStatePostfix(ChaControl __instance, int clothesKind)
+            private static void SetClothesStatePostfix(ChaControl __instance, int clothesKind)
             {
                 if (clothesKind == 0 || clothesKind == 2) //tops and bras
                 {
@@ -26,7 +26,7 @@ namespace KK_Plugins
             /// Set the CharacterLoading flag
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-            internal static void CreateBodyTextureHook(ChaControl __instance)
+            private static void CreateBodyTextureHook(ChaControl __instance)
             {
                 var controller = GetCharaController(__instance);
                 if (controller != null)
@@ -37,7 +37,7 @@ namespace KK_Plugins
             /// When the Breast tab of the character maker is set active. disable the sliders because the game will try to set them to the current body values.
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CustomBase), nameof(ChaCustom.CustomBase.updateCvsBreast), MethodType.Setter)]
-            internal static void UpdateCvsBreastPrefix()
+            private static void UpdateCvsBreastPrefix()
             {
                 SliderManager.SlidersActive = false;
 
@@ -53,7 +53,7 @@ namespace KK_Plugins
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]
-            internal static void ChangeCustomClothes(ChaControl __instance, int kind)
+            private static void ChangeCustomClothes(ChaControl __instance, int kind)
             {
                 if (MakerAPI.InsideAndLoaded)
                     if (kind == 0 || kind == 2) //Tops and bras

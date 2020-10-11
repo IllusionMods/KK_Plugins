@@ -10,7 +10,7 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(LoadAudioBase), "Play")]
-            internal static void PlayVoice(LoadAudioBase __instance)
+            private static void PlayVoice(LoadAudioBase __instance)
             {
                 if (__instance.audioSource == null || __instance.audioSource.clip == null || __instance.audioSource.loop)
                     return;
@@ -24,10 +24,10 @@ namespace KK_Plugins
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(Info), "Init")]
-            internal static void InfoInit(Info __instance) => ActionGameInfoInstance = __instance;
+            private static void InfoInit(Info __instance) => ActionGameInfoInstance = __instance;
 
             [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
-            internal static void HVoiceCtrlInit()
+            private static void HVoiceCtrlInit()
             {
                 //Get the H scene type used by VR, if possible
                 HSceneType = Type.GetType("VRHScene, Assembly-CSharp");

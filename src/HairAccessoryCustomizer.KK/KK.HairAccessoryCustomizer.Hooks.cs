@@ -9,7 +9,7 @@ namespace KK_Plugins
         internal partial class Hooks
         {
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
-            internal static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));
+            private static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));
 
             private static IEnumerator ChangeCoordinateActions(ChaControl __instance)
             {

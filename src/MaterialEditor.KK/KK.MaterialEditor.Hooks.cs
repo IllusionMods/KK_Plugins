@@ -11,7 +11,7 @@ namespace KK_Plugins.MaterialEditor
     internal static partial class Hooks
     {
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
-        internal static void ChangeCoordinateTypePrefix(ChaControl __instance)
+        private static void ChangeCoordinateTypePrefix(ChaControl __instance)
         {
             var controller = MaterialEditorPlugin.GetCharaController(__instance);
             if (controller != null)
@@ -19,7 +19,7 @@ namespace KK_Plugins.MaterialEditor
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(CvsClothesCopy), "CopyClothes")]
-        internal static void CopyClothesPostfix(TMP_Dropdown[] ___ddCoordeType, Toggle[] ___tglKind)
+        private static void CopyClothesPostfix(TMP_Dropdown[] ___ddCoordeType, Toggle[] ___tglKind)
         {
             List<int> copySlots = new List<int>();
             for (int i = 0; i < Enum.GetNames(typeof(ChaFileDefine.ClothesKind)).Length; i++)

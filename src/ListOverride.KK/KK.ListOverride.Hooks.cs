@@ -12,7 +12,7 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(ChaListControl), "LoadListInfoAll")]
-            internal static void LoadListInfoAllPostfix(ChaListControl __instance)
+            private static void LoadListInfoAllPostfix(ChaListControl __instance)
             {
                 if (!Directory.Exists(ListOverrideFolder)) return;
 

@@ -9,10 +9,10 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
-            internal static void HVoiceCtrlInit() => HSceneInstance = FindObjectOfType<HScene>();
+            private static void HVoiceCtrlInit() => HSceneInstance = FindObjectOfType<HScene>();
 
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), nameof(Manager.Voice.OncePlayChara), typeof(Manager.Voice.Loader))]
-            internal static void OncePlayCharaPostfix(Manager.Voice.Loader loader, AudioSource __result)
+            private static void OncePlayCharaPostfix(Manager.Voice.Loader loader, AudioSource __result)
             {
                 if (HSceneInstance != null && HSceneInstance.ctrlVoice != null)
                     DisplayHSubtitle(loader, __result);

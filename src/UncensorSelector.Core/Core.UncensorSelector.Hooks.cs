@@ -16,7 +16,7 @@ namespace KK_Plugins
         /// Do color matching whenever the body texture is changed
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-        internal static void CreateBodyTexture(ChaControl __instance)
+        private static void CreateBodyTexture(ChaControl __instance)
         {
             var controller = UncensorSelector.GetController(__instance);
             if (controller != null)
@@ -27,7 +27,7 @@ namespace KK_Plugins
         /// Postfix patch to check underwear clothing state and hide objDanTop when the clothes are on. Would be better as a transpiler.
         /// </summary>
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), "UpdateVisible")]
-        internal static void UpdateVisible(ChaControl __instance, bool ___drawSimple, bool ___confSon, List<bool> ___lstActive)
+        private static void UpdateVisible(ChaControl __instance, bool ___drawSimple, bool ___confSon, List<bool> ___lstActive)
         {
             if (!___drawSimple && __instance.cmpBody && __instance.cmpBody.targetEtc.objDanTop)
             {
@@ -47,7 +47,7 @@ namespace KK_Plugins
         /// Do color matching whenever the body texture is changed
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetBodyBaseMaterial))]
-        internal static void SetBodyBaseMaterial(ChaControl __instance)
+        private static void SetBodyBaseMaterial(ChaControl __instance)
         {
             var controller = UncensorSelector.GetController(__instance);
             if (controller != null)
@@ -61,7 +61,7 @@ namespace KK_Plugins
         /// LineMask texture assigned to the material, toggled on and off for any color matching parts along with the body
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.VisibleAddBodyLine))]
-        internal static void VisibleAddBodyLine(ChaControl __instance)
+        private static void VisibleAddBodyLine(ChaControl __instance)
         {
             var controller = UncensorSelector.GetController(__instance);
             if (controller != null)
@@ -72,7 +72,7 @@ namespace KK_Plugins
         /// Skin gloss slider level, as assigned in the character maker. This corresponds to the red coloring in the DetailMask texture.
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingSkinGlossPower))]
-        internal static void ChangeSettingSkinGlossPower(ChaControl __instance)
+        private static void ChangeSettingSkinGlossPower(ChaControl __instance)
         {
             var controller = UncensorSelector.GetController(__instance);
             if (controller != null)
@@ -84,10 +84,10 @@ namespace KK_Plugins
         /// Demosaic
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "LateUpdateForce")]
-        internal static void LateUpdateForce(ChaControl __instance) => __instance.hideMoz = true;
+        private static void LateUpdateForce(ChaControl __instance) => __instance.hideMoz = true;
 
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-        internal static void CreateBodyTexturePrefix(ChaControl __instance)
+        private static void CreateBodyTexturePrefix(ChaControl __instance)
         {
             var controller = UncensorSelector.GetController(__instance);
             if (controller != null && controller.BodyData != null)
@@ -95,7 +95,7 @@ namespace KK_Plugins
         }
 
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
-        internal static void InitBaseCustomTextureBodyPrefix(ChaControl __instance)
+        private static void InitBaseCustomTextureBodyPrefix(ChaControl __instance)
         {
             var controller = UncensorSelector.GetController(__instance);
             if (controller != null && controller.BodyData != null)
@@ -106,7 +106,7 @@ namespace KK_Plugins
         /// Modifies the code for string replacement of oo_base, etc.
         /// </summary>
         [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
-        internal static IEnumerable<CodeInstruction> CreateBodyTextureTranspiler(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> CreateBodyTextureTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> instructionsList = instructions.ToList();
 
@@ -140,7 +140,7 @@ namespace KK_Plugins
         /// Modifies the code for string replacement of mm_base, etc.
         /// </summary>
         [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
-        internal static IEnumerable<CodeInstruction> InitBaseCustomTextureBodyTranspiler(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> InitBaseCustomTextureBodyTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> instructionsList = instructions.ToList();
 

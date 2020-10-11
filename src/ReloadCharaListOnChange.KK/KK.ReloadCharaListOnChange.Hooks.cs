@@ -12,7 +12,7 @@ namespace KK_Plugins
             /// When saving a new character card in game set a flag
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(ChaFileControl), "SaveCharaFile", typeof(BinaryWriter), typeof(bool))]
-            internal static void SaveCharaFilePrefix()
+            private static void SaveCharaFilePrefix()
             {
                 if (InCharaMaker && Singleton<CustomBase>.Instance.customCtrl.saveNew)
                     EventFromCharaMaker = true;
@@ -21,7 +21,7 @@ namespace KK_Plugins
             /// When saving a new coordinate card in game set a flag
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(ChaFileCoordinate), nameof(ChaFileCoordinate.SaveFile), typeof(string))]
-            internal static void SaveCoordinateFilePrefix(string path)
+            private static void SaveCoordinateFilePrefix(string path)
             {
                 if (InCharaMaker && !File.Exists(path))
                     EventFromCharaMaker = true;
@@ -30,7 +30,7 @@ namespace KK_Plugins
             /// When deleting a chara card in game set a flag
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCharaFile), "DeleteCharaFile")]
-            internal static void DeleteCharaFilePrefix()
+            private static void DeleteCharaFilePrefix()
             {
                 if (InCharaMaker)
                     EventFromCharaMaker = true;
@@ -39,7 +39,7 @@ namespace KK_Plugins
             /// When deleting a coordinate card in game set a flag
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCoordinateFile), "DeleteCoordinateFile")]
-            internal static void DeleteCoordinateFilePrefix()
+            private static void DeleteCoordinateFilePrefix()
             {
                 if (InCharaMaker)
                     EventFromCharaMaker = true;
@@ -48,7 +48,7 @@ namespace KK_Plugins
             /// Initialize the character card file watcher when the chara maker starts
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
-            internal static void CustomCharaFileInitializePrefix(CustomCharaFile __instance)
+            private static void CustomCharaFileInitializePrefix(CustomCharaFile __instance)
             {
                 if (CharacterCardWatcher == null)
                 {
@@ -70,7 +70,7 @@ namespace KK_Plugins
             /// Initialize the coordinate card file watcher when the chara maker starts
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCoordinateFile), "Initialize")]
-            internal static void CustomCoordinateFileInitializePrefix(CustomCoordinateFile __instance)
+            private static void CustomCoordinateFileInitializePrefix(CustomCoordinateFile __instance)
             {
                 if (CoordinateCardWatcher == null)
                 {
@@ -90,7 +90,7 @@ namespace KK_Plugins
             /// Initialize the file watcher once the list has been initiated
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.CharaList), "InitFemaleList")]
-            internal static void StudioFemaleListPrefix(Studio.CharaList __instance)
+            private static void StudioFemaleListPrefix(Studio.CharaList __instance)
             {
                 if (StudioFemaleCardWatcher == null)
                 {
@@ -110,7 +110,7 @@ namespace KK_Plugins
             /// Initialize the file watcher once the list has been initiated
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.CharaList), "InitMaleList")]
-            internal static void StudioMaleListPrefix(Studio.CharaList __instance)
+            private static void StudioMaleListPrefix(Studio.CharaList __instance)
             {
                 if (StudioMaleCardWatcher == null)
                 {

@@ -10,13 +10,13 @@ namespace KK_Plugins
         internal static class Hooks
         {
             [HarmonyTranspiler, HarmonyPatch(typeof(PauseRegistrationList), "InitList")]
-            internal static IEnumerable<CodeInstruction> tpl_PauseRegistrationList_InitList(IEnumerable<CodeInstruction> _instructions) => ReplacePath(_instructions);
+            private static IEnumerable<CodeInstruction> tpl_PauseRegistrationList_InitList(IEnumerable<CodeInstruction> _instructions) => ReplacePath(_instructions);
 
             [HarmonyTranspiler, HarmonyPatch(typeof(PauseCtrl), "Save")]
-            internal static IEnumerable<CodeInstruction> tpl_PauseCtrl_Save(IEnumerable<CodeInstruction> _instructions) => ReplacePath(_instructions);
+            private static IEnumerable<CodeInstruction> tpl_PauseCtrl_Save(IEnumerable<CodeInstruction> _instructions) => ReplacePath(_instructions);
 
             [HarmonyPostfix, HarmonyPatch(typeof(PauseRegistrationList), "InitList")]
-            internal static void post_PauseRegistrationList_InitList(PauseRegistrationList __instance)
+            private static void post_PauseRegistrationList_InitList(PauseRegistrationList __instance)
             {
                 if (v_prefabNode == null)
                 {

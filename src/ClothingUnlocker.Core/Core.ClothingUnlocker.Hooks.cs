@@ -9,7 +9,7 @@ namespace KK_Plugins
             private static ChaControl chaControl;
 
             [HarmonyPostfix, HarmonyPatch(typeof(ListInfoBase), nameof(ListInfoBase.GetInfoInt))]
-            internal static void GetInfoIntPostfix(ChaListDefine.KeyType keyType, ref int __result)
+            private static void GetInfoIntPostfix(ChaListDefine.KeyType keyType, ref int __result)
             {
                 if (keyType == ChaListDefine.KeyType.Sex && EnableCrossdressing.Value)
                     __result = 1;
@@ -21,7 +21,7 @@ namespace KK_Plugins
                 }
             }
             [HarmonyPostfix, HarmonyPatch(typeof(ListInfoBase), nameof(ListInfoBase.GetInfo))]
-            internal static void GetInfoPostfix(ChaListDefine.KeyType keyType, ref string __result)
+            private static void GetInfoPostfix(ChaListDefine.KeyType keyType, ref string __result)
             {
                 var value = CheckOverride(keyType);
                 if (value != null)
@@ -45,13 +45,13 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTop))]
-            internal static void ChangeClothesTop(ChaControl __instance) => chaControl = __instance;
+            private static void ChangeClothesTop(ChaControl __instance) => chaControl = __instance;
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesBot))]
-            internal static void ChangeClothesBot(ChaControl __instance) => chaControl = __instance;
+            private static void ChangeClothesBot(ChaControl __instance) => chaControl = __instance;
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesBra))]
-            internal static void ChangeClothesBra(ChaControl __instance) => chaControl = __instance;
+            private static void ChangeClothesBra(ChaControl __instance) => chaControl = __instance;
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesShorts))]
-            internal static void ChangeClothesShorts(ChaControl __instance) => chaControl = __instance;
+            private static void ChangeClothesShorts(ChaControl __instance) => chaControl = __instance;
         }
     }
 }
