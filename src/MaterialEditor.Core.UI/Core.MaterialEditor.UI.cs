@@ -20,6 +20,7 @@ namespace KK_Plugins.MaterialEditor
     /// <summary>
     /// Code for the MaterialEditor UI
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Class Declaration", "BepInEx001:Class inheriting from BaseUnityPlugin missing BepInPlugin attribute")]
     public abstract class UI : BaseUnityPlugin
     {
         internal static Canvas MaterialEditorWindow;

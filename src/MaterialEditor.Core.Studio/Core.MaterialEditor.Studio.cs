@@ -25,6 +25,7 @@ namespace KK_Plugins.MaterialEditor
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier)]
     [BepInDependency(Sideloader.Sideloader.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Class Declaration", "BepInEx002:Classes with BepInPlugin attribute must inherit from BaseUnityPlugin")]
     public partial class MEStudio : UI
     {
         /// <summary>
