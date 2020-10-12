@@ -47,24 +47,24 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < subMesh.vertices.Length; i++)
                 {
                     Vector3 v = subMesh.vertices[i];
-                    sb.Append($"v {-v.x:0.000000} {v.y:0.000000} {v.z:0.000000}\n");
+                    sb.Append($"v {-v.x} {v.y} {v.z}\n");
                 }
 
                 for (var i = 0; i < subMesh.uv.Length; i++)
                 {
                     Vector3 v = subMesh.uv[i];
-                    sb.Append($"vt {v.x:0.000000} {v.y:0.000000}\n");
+                    sb.Append($"vt {v.x} {v.y}\n");
                 }
 
                 for (var i = 0; i < subMesh.normals.Length; i++)
                 {
                     Vector3 v = subMesh.normals[i];
-                    sb.Append($"vn {-v.x:0.000000} {v.y:0.000000} {v.z:0.000000}\n");
+                    sb.Append($"vn {-v.x} {v.y} {v.z}\n");
                 }
 
                 int[] triangles = subMesh.GetTriangles(x);
                 for (int i = 0; i < triangles.Length; i += 3)
-                    sb.Append($"f {triangles[i] + 1}/{triangles[i] + 1}/{triangles[i] + 1} {triangles[i + 2] + 1}/{triangles[i + 2] + 1}/{triangles[i + 2] + 1} {triangles[i + 1] + 1}/{triangles[i + 1] + 1}/{triangles[i + 1] + 1}\n");
+                    sb.AppendFormat("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", triangles[i] + 1, triangles[i + 1] + 1, triangles[i + 2] + 1);
             }
             return sb.ToString();
         }
