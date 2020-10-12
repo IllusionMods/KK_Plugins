@@ -62,7 +62,7 @@ namespace KK_Plugins.MaterialEditor
                     sb.Append($"vn {-v.x:0.000000} {v.y:0.000000} {v.z:0.000000}\n");
                 }
 
-                int[] triangles = mesh.GetTriangles(x);
+                int[] triangles = subMesh.GetTriangles(x);
                 for (int i = 0; i < triangles.Length; i += 3)
                     sb.Append($"f {triangles[i] + 1}/{triangles[i] + 1}/{triangles[i] + 1} {triangles[i + 2] + 1}/{triangles[i + 2] + 1}/{triangles[i + 2] + 1} {triangles[i + 1] + 1}/{triangles[i + 1] + 1}/{triangles[i + 1] + 1}\n");
             }
