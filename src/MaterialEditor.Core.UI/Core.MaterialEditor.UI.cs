@@ -83,7 +83,7 @@ namespace KK_Plugins.MaterialEditor
             UIUtility.MakeObjectDraggable(drag.rectTransform, MaterialEditorMainPanel.rectTransform);
 
             var nametext = UIUtility.CreateText("Nametext", drag.transform, "Material Editor");
-            nametext.transform.SetRect(0f, 0f, 1f, 1f, 0f, 0f, 0f);
+            nametext.transform.SetRect();
             nametext.alignment = TextAnchor.MiddleCenter;
 
             FilterInputField = UIUtility.CreateInputField("Filter", drag.transform, "Filter");

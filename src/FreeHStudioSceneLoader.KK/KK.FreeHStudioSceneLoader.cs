@@ -37,9 +37,9 @@ namespace KK_Plugins
             IsStudio = Application.productName == "CharaStudio";
 
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
-            harmony.Patch(typeof(CameraLightCtrl).GetNestedType("LightCalc", AccessTools.all).GetMethod("Init"), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CameraLightCtrl_LightCalc_Init), AccessTools.all)), null);
-            harmony.Patch(typeof(CameraLightCtrl).GetNestedType("LightCalc", AccessTools.all).GetMethod("UpdateUI"), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CameraLightCtrl_LightCalc_UpdateUI), AccessTools.all)), null);
-            harmony.Patch(typeof(CameraLightCtrl).GetNestedType("LightCalc", AccessTools.all).GetMethod("Reflect"), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CameraLightCtrl_LightCalc_Reflect), AccessTools.all)), null);
+            harmony.Patch(typeof(CameraLightCtrl).GetNestedType("LightCalc", AccessTools.all).GetMethod("Init"), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CameraLightCtrl_LightCalc_Init), AccessTools.all)));
+            harmony.Patch(typeof(CameraLightCtrl).GetNestedType("LightCalc", AccessTools.all).GetMethod("UpdateUI"), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CameraLightCtrl_LightCalc_UpdateUI), AccessTools.all)));
+            harmony.Patch(typeof(CameraLightCtrl).GetNestedType("LightCalc", AccessTools.all).GetMethod("Reflect"), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CameraLightCtrl_LightCalc_Reflect), AccessTools.all)));
         }
 
         private static class Hooks

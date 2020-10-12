@@ -3,9 +3,6 @@ using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
-#if AI || HS2
-using AIChara;
-#endif
 
 namespace KK_Plugins.MaterialEditor
 {
