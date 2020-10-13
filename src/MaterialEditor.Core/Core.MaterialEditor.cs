@@ -43,7 +43,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string Version = "2.1.4";
+        public const string Version = "2.1.5";
         internal static new ManualLogSource Logger;
 
         internal const string FileExt = ".png";
