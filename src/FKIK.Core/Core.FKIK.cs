@@ -41,6 +41,9 @@ namespace KK_Plugins
         /// </summary>
         public static void EnableFKIK(OCIChar ociChar)
         {
+
+            var origPtn = ociChar.neckLookCtrl.ptnNo;
+            
             ociChar.oiCharInfo.enableIK = true;
             ociChar.ActiveIK(BoneGroup.Body, ociChar.oiCharInfo.activeIK[0], true);
             ociChar.ActiveIK(BoneGroup.RightLeg, ociChar.oiCharInfo.activeIK[1], true);
@@ -55,15 +58,19 @@ namespace KK_Plugins
 
             for (int j = 0; j < FKCtrl.parts.Length; j++)
                 ociChar.ActiveFK(FKCtrl.parts[j], ociChar.oiCharInfo.activeFK[j], true);
+
+            if (origPtn != ociChar.neckLookCtrl.ptnNo) ociChar.ChangeLookNeckPtn(origPtn);
         }
 
         internal static void DisableFKIK(OCIChar ociChar)
         {
+            var origPtn = ociChar.neckLookCtrl.ptnNo;
             ociChar.oiCharInfo.enableIK = false;
             ociChar.oiCharInfo.enableFK = false;
             ociChar.finalIK.enabled = true;
             ociChar.ActiveKinematicMode(OICharInfo.KinematicMode.IK, false, true);
             ociChar.ActiveKinematicMode(OICharInfo.KinematicMode.FK, false, true);
+            if (origPtn != ociChar.neckLookCtrl.ptnNo) ociChar.ChangeLookNeckPtn(origPtn);
         }
 
         internal static void ToggleFKIK(bool toggle)

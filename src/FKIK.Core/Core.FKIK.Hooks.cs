@@ -13,6 +13,8 @@ namespace KK_Plugins
         {
             private static bool ChangingChara;
 
+            private static int ChangingCharaNeckPtn;
+
             /// <summary>
             /// Enable simultaneous kinematics on pose load
             /// </summary>
@@ -59,7 +61,11 @@ namespace KK_Plugins
             /// Set a flag when changing characters in Studio
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(OCIChar), nameof(OCIChar.ChangeChara))]
-            private static void ActiveKinematicMode() => ChangingChara = true;
+            private static void ActiveKinematicMode(OCIChar __instance)
+            {
+                ChangingChara = true;
+                ChangingCharaNeckPtn = (__instance != null && __instance.neckLookCtrl != null) ? __instance.neckLookCtrl.ptnNo : -1;
+            }
 
             /// <summary>
             /// Enable simultaneous kinematics on character change. Pass the FK/IK state to the postfix
@@ -82,6 +88,8 @@ namespace KK_Plugins
             {
                 yield return null;
                 ChangingChara = false;
+                if (ChangingCharaNeckPtn != -1) ociChar.ChangeLookNeckPtn(ChangingCharaNeckPtn);
+                ChangingCharaNeckPtn = -1;
                 EnableFKIK(ociChar);
             }
         }
