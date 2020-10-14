@@ -79,7 +79,6 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(OCIChar), nameof(OCIChar.ActiveKinematicMode))]
             private static void ActiveKinematicModePostfix(OCIChar __instance, ref bool __state)
             {
-
                 if (__state && ChangingChara)
                     Instance.StartCoroutine(EnableFKIKCoroutine(__instance));
             }
