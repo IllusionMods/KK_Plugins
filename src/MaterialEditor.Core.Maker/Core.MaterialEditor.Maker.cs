@@ -49,6 +49,7 @@ namespace KK_Plugins.MaterialEditor
 
 #if KK || EC
             MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(PopulateListAccessory);
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Body.All, this)).OnClick.AddListener(() => PopulateListCharacter("body"));
             e.AddControl(new MakerButton("Open Material Editor (Body)", MakerConstants.Face.All, this)).OnClick.AddListener(() => PopulateListCharacter("body"));
             e.AddControl(new MakerButton("Open Material Editor (Face)", MakerConstants.Face.All, this)).OnClick.AddListener(() => PopulateListCharacter("face"));
             e.AddControl(new MakerButton("Open Material Editor (All)", MakerConstants.Face.All, this)).OnClick.AddListener(() => PopulateListCharacter());
