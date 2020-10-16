@@ -64,7 +64,7 @@ namespace KK_Plugins.MaterialEditor
 
                 int[] triangles = subMesh.GetTriangles(x);
                 for (int i = 0; i < triangles.Length; i += 3)
-                    sb.AppendFormat("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", triangles[i] + 1, triangles[i + 1] + 1, triangles[i + 2] + 1);
+                    sb.AppendFormat("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", triangles[i] + 1, triangles[i + 2] + 1, triangles[i + 1] + 1);
             }
             return sb.ToString();
         }
