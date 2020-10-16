@@ -42,24 +42,24 @@ namespace KK_Plugins.MaterialEditor
             {
                 Mesh subMesh = mesh.Submesh(x);
 
-                sb.Append("g ").Append($"{rend.NameFormatted()}_{x}").Append("\n");
+                sb.AppendLine($"g {rend.NameFormatted()}_{x}");
 
                 for (var i = 0; i < subMesh.vertices.Length; i++)
                 {
                     Vector3 v = subMesh.vertices[i];
-                    sb.Append($"v {-v.x} {v.y} {v.z}\n");
+                    sb.AppendLine($"v {-v.x} {v.y} {v.z}");
                 }
 
                 for (var i = 0; i < subMesh.uv.Length; i++)
                 {
                     Vector3 v = subMesh.uv[i];
-                    sb.Append($"vt {v.x} {v.y}\n");
+                    sb.AppendLine($"vt {v.x} {v.y}");
                 }
 
                 for (var i = 0; i < subMesh.normals.Length; i++)
                 {
                     Vector3 v = subMesh.normals[i];
-                    sb.Append($"vn {-v.x} {v.y} {v.z}\n");
+                    sb.AppendLine($"vn {-v.x} {v.y} {v.z}");
                 }
 
                 int[] triangles = subMesh.GetTriangles(x);
