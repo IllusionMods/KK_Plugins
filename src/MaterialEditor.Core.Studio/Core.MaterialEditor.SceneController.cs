@@ -295,6 +295,15 @@ namespace KK_Plugins.MaterialEditor
                 if (count > 0)
                     MaterialEditorPlugin.Logger.LogMessage($"Enabled ShadowCasting for {count} items");
             }
+            else if (MaterialEditorPlugin.ResetShadowCastingHotkey.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "-1", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Reset ShadowCasting for {count} items");
+            }
             else if (MaterialEditorPlugin.DisableReceiveShadows.Value.IsDown())
             {
                 int count = 0;
@@ -313,7 +322,15 @@ namespace KK_Plugins.MaterialEditor
                 if (count > 0)
                     MaterialEditorPlugin.Logger.LogMessage($"Enabled ReceiveShadows for {count} items");
             }
-
+            else if (MaterialEditorPlugin.ResetReceiveShadows.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ReceiveShadows, "-1", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Reset ReceiveShadows for {count} items");
+            }
             try
             {
                 if (!FileToSet.IsNullOrEmpty())
@@ -339,6 +356,60 @@ namespace KK_Plugins.MaterialEditor
                     count++;
                     for (var index = 0; index < ociItem.arrayRender.Length; index++)
                         SetRendererProperty(ociItem.objectInfo.dicKey, ociItem.arrayRender[index], property, value);
+                }
+                else if (objectCtrlInfo is OCIChar ociChar)
+                {
+                    count++;
+                    var chaControl = ociChar.charInfo;
+                    foreach (var rend in GetRendererList(chaControl.gameObject))
+                    {
+                        //Disable the shadowcaster renderer instead of changing the shadowcasting mode
+                        if (property == RendererProperties.ShadowCastingMode && rend.name == "o_shadowcaster")
+                        {
+                            if (value == "-1")
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, rend, RendererProperties.Enabled, chaControl.gameObject);
+                            else
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, rend, RendererProperties.Enabled, value, chaControl.gameObject);
+                        }
+                        else
+                        {
+                            if (value == "-1")
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, rend, property, chaControl.gameObject);
+                            else
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, rend, property, value, chaControl.gameObject);
+                        }
+
+                    }
+                    for (var i = 0; i < chaControl.objClothes.Length; i++)
+                    {
+                        var gameObj = chaControl.objClothes[i];
+                        var rendList = GetRendererList(gameObj);
+                        for (var j = 0; j < rendList.Count; j++)
+                            if (value == "-1")
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, rendList[j], property, gameObj);
+                            else
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, rendList[j], property, value, gameObj);
+                    }
+                    for (var i = 0; i < chaControl.objHair.Length; i++)
+                    {
+                        var gameObj = chaControl.objHair[i];
+                        var rendList = GetRendererList(gameObj);
+                        for (var j = 0; j < rendList.Count; j++)
+                            if (value == "-1")
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, rendList[j], property, gameObj);
+                            else
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, rendList[j], property, value, gameObj);
+                    }
+                    for (var i = 0; i < chaControl.objAccessory.Length; i++)
+                    {
+                        var gameObj = chaControl.objAccessory[i];
+                        var rendList = GetRendererList(gameObj);
+                        for (var j = 0; j < rendList.Count; j++)
+                            if (value == "-1")
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, rendList[j], property, gameObj);
+                            else
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, rendList[j], property, value, gameObj);
+                    }
                 }
             foreach (var child in node.child)
                 SetRendererPropertyRecursive(child, property, value, ref count);

@@ -67,8 +67,10 @@ namespace KK_Plugins.MaterialEditor
         internal static ConfigEntry<bool> ShaderOptimization { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> DisableShadowCastingHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> EnableShadowCastingHotkey { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> ResetShadowCastingHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> DisableReceiveShadows { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> EnableReceiveShadows { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> ResetReceiveShadows { get; private set; }
 
         internal void Main()
         {
@@ -91,8 +93,10 @@ namespace KK_Plugins.MaterialEditor
             ShaderOptimization = Config.Bind("Config", "Shader Optimization", true, new ConfigDescription("Replaces every loaded shader with the MaterialEditor copy of the shader. Reduces the number of copies of shaders loaded which reduces RAM usage and improves performance.", null, new ConfigurationManagerAttributes { Order = 1 }));
             DisableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Disable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl), "Disable ShadowCasting for all selected items and their child items in Studio");
             EnableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Enable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftAlt), "Enable ShadowCasting for all selected items and their child items in Studio");
+            ResetShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Reset ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl, KeyCode.LeftAlt), "Reset ShadowCasting for all selected items and their child items in Studio");
             DisableReceiveShadows = Config.Bind("Keyboard Shortcuts", "Disable ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftControl), "Disable ReceiveShadows for all selected items and their child items in Studio");
             EnableReceiveShadows = Config.Bind("Keyboard Shortcuts", "Enable ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftAlt), "Enable ReceiveShadows for all selected items and their child items in Studio");
+            ResetReceiveShadows = Config.Bind("Keyboard Shortcuts", "Reset ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftControl, KeyCode.LeftAlt), "Reset ReceiveShadows for all selected items and their child items in Studio");
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
 
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
