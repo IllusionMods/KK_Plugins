@@ -277,6 +277,43 @@ namespace KK_Plugins.MaterialEditor
 
         private void Update()
         {
+            if (MaterialEditorPlugin.DisableShadowCastingHotkey.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "0", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Disabled ShadowCasting for {count} items");
+            }
+            else if (MaterialEditorPlugin.EnableShadowCastingHotkey.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "1", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Enabled ShadowCasting for {count} items");
+            }
+            else if (MaterialEditorPlugin.DisableReceiveShadows.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ReceiveShadows, "0", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Disabled ReceiveShadows for {count} items");
+            }
+            else if (MaterialEditorPlugin.EnableReceiveShadows.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ReceiveShadows, "1", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Enabled ReceiveShadows for {count} items");
+            }
+
             try
             {
                 if (!FileToSet.IsNullOrEmpty())
@@ -292,6 +329,19 @@ namespace KK_Plugins.MaterialEditor
                 PropertyToSet = null;
                 MatToSet = null;
             }
+        }
+
+        private void SetRendererPropertyRecursive(TreeNodeObject node, RendererProperties property, string value, ref int count)
+        {
+            if (Studio.Studio.Instance.dicInfo.TryGetValue(node, out ObjectCtrlInfo objectCtrlInfo))
+                if (objectCtrlInfo is OCIItem ociItem)
+                {
+                    count++;
+                    for (var index = 0; index < ociItem.arrayRender.Length; index++)
+                        SetRendererProperty(ociItem.objectInfo.dicKey, ociItem.arrayRender[index], property, value);
+                }
+            foreach (var child in node.child)
+                SetRendererPropertyRecursive(child, property, value, ref count);
         }
 
         internal void ItemDeleteEvent(int id)

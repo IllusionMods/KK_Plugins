@@ -43,7 +43,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string Version = "2.1.6";
+        public const string Version = "2.1.7";
         internal static new ManualLogSource Logger;
 
         internal const string FileExt = ".png";
@@ -65,6 +65,10 @@ namespace KK_Plugins.MaterialEditor
         internal static ConfigEntry<float> UIHeight { get; private set; }
         internal static ConfigEntry<bool> WatchTexChanges { get; private set; }
         internal static ConfigEntry<bool> ShaderOptimization { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> DisableShadowCastingHotkey { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> EnableShadowCastingHotkey { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> DisableReceiveShadows { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> EnableReceiveShadows { get; private set; }
 
         internal void Main()
         {
@@ -85,6 +89,10 @@ namespace KK_Plugins.MaterialEditor
             UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 3, ShowRangeAsPercent = false }));
             WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI.", null, new ConfigurationManagerAttributes { Order = 2 }));
             ShaderOptimization = Config.Bind("Config", "Shader Optimization", true, new ConfigDescription("Replaces every loaded shader with the MaterialEditor copy of the shader. Reduces the number of copies of shaders loaded which reduces RAM usage and improves performance.", null, new ConfigurationManagerAttributes { Order = 1 }));
+            DisableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Disable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl), "Disable ShadowCasting for all selected items and their child items in Studio");
+            EnableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Enable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftAlt), "Enable ShadowCasting for all selected items and their child items in Studio");
+            DisableReceiveShadows = Config.Bind("Keyboard Shortcuts", "Disable ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftControl), "Disable ReceiveShadows for all selected items and their child items in Studio");
+            EnableReceiveShadows = Config.Bind("Keyboard Shortcuts", "Enable ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftAlt), "Enable ReceiveShadows for all selected items and their child items in Studio");
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
 
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
