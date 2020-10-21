@@ -28,7 +28,7 @@
     <Property Name="DstBlend" Type="Float"/>
     <Property Name="ZWrite" Type="Float"/>
   </Shader>
-  <Shader Name="Standard_culloff" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_standard_culloff">
+  <Shader Name="Standard_culloff" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_standard_culloff" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
     <Property Name="MainTex" Type="Texture" />
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
@@ -53,7 +53,7 @@
     <Property Name="DstBlend" Type="Float"/>
     <Property Name="ZWrite" Type="Float"/>
   </Shader>
-  <Shader Name="AIT/Clothes True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes_true">
+  <Shader Name="AIT/Clothes True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes_true" ShaderOptimization="False">
     <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
     <Property Name="YabureDitherSwitch" Type="Float" Range="0,1"/>
     <Property Name="VertexColor" Type="Float" Range="0,1"/>
@@ -107,7 +107,7 @@
     <Property Name="WeatheringMask" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
   </Shader>
-  <Shader Name="AIT/Clothes Alpha" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes_alpha">
+  <Shader Name="AIT/Clothes Alpha" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes_alpha" ShaderOptimization="False">
     <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
     <Property Name="YabureDitherSwitch" Type="Float" Range="0,1"/>
     <Property Name="VertexColor" Type="Float" Range="0,1"/>
@@ -183,7 +183,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/Clothes Alpha True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes_alpha_true">
+  <Shader Name="AIT/Clothes Alpha True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes_alpha_true" ShaderOptimization="False">
     <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
     <Property Name="YabureDitherSwitch" Type="Float" Range="0,1"/>
     <Property Name="VertexColor" Type="Float" Range="0,1"/>
@@ -240,7 +240,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="texcoord2" Type="Texture" />
   </Shader>
-  <Shader Name="AIT/Clothes" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes">
+  <Shader Name="AIT/Clothes" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
     <Property Name="VertexColor" Type="Float" Range="0,1"/>
@@ -319,7 +319,7 @@
     <Property Name="WeatheringMask" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
   </Shader>
-  <Shader Name="Shader Forge/hair_07" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_hair_07">
+  <Shader Name="Shader Forge/hair_07" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_hair_07" ShaderOptimization="False">
     <Property Name="TopGradation" Type="Float" Range="0,5"/>
     <Property Name="UnderGradation" Type="Float" Range="0,5"/>
     <Property Name="Metallic" Type="Float" Range="0,1"/>
@@ -338,7 +338,7 @@
     <Property Name="DetailMask" Type="Texture" />
     <Property Name="Occlusion" Type="Texture" />
   </Shader>
-  <Shader Name="Shader Forge/hair_08" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_hair_08">
+  <Shader Name="Shader Forge/hair_08" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_hair_08" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
     <Property Name="Specular" Type="Color" />
     <Property Name="TopColor" Type="Color" />
@@ -367,7 +367,7 @@
     <Property Name="MeshColor_01" Type="Color" />
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/Item" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item">
+  <Shader Name="AIT/Item" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="FresnelScale" Type="Float" Range="0,1"/>
     <Property Name="bitangentrim" Type="Float" Range="0,1"/>
@@ -439,7 +439,7 @@
     <Property Name="PatternMask3" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
   </Shader>
-  <Shader Name="AIT/Skin True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_true">
+  <Shader Name="AIT/Skin True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_true" ShaderOptimization="False">
     <Property Name="matcaptilling" Type="Float" Range="0,5"/>
     <Property Name="matcapscale" Type="Float" Range="0,1"/>
     <Property Name="Metallic" Type="Float" Range="0,1"/>
@@ -493,7 +493,7 @@
     <Property Name="texcoord2" Type="Texture" />
     <Property Name="texcoord3" Type="Texture" />
   </Shader>
-  <Shader Name="KriptoFX/ME/Distortion" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_distortion">
+  <Shader Name="KriptoFX/ME/Distortion" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_distortion" ShaderOptimization="False">
     <Property Name="UseMainTex" Type="Float" Range="0,1"/>
     <Property Name="TintColor" Type="Color" />
     <Property Name="MainTex" Type="Texture" />
@@ -524,7 +524,7 @@
     <Property Name="AlphaClip" Type="Float" Range="0,10"/>
     <Property Name="UseBlending" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="KriptoFX/ME/GlowCutoutGradient" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_glowcutoutgradient">
+  <Shader Name="KriptoFX/ME/GlowCutoutGradient" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_glowcutoutgradient" ShaderOptimization="False">
     <Property Name="TintColor" Type="Color" />
     <Property Name="GradientStrength" Type="Float" Range="0,1"/>
     <Property Name="TimeScale" Type="Color" />
@@ -538,7 +538,7 @@
     <Property Name="InvFade" Type="Float" Range="0,1"/>
     <Property Name="FresnelStr" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/Eye Translucency" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_eye_translucency">
+  <Shader Name="AIT/Eye Translucency" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_eye_translucency" ShaderOptimization="False">
     <Property Name="Shininess" Type="Float" Range="0.01,1"/>
     <Property Name="Translucency" Type="Float" Range="0,50"/>
     <Property Name="TransNormalDistortion" Type="Float" Range="0,1"/>
@@ -578,7 +578,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/Item Meka studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item_meka_studio">
+  <Shader Name="AIT/Item Meka studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item_meka_studio" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="alpha" Type="Float" Range="0,1"/>
     <Property Name="BitangentRim" Type="Float" Range="0,1"/>
@@ -649,7 +649,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/Item studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item_studio">
+  <Shader Name="AIT/Item studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item_studio" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="alpha" Type="Float" Range="0,1"/>
     <Property Name="BitangentRim" Type="Float" Range="0,1"/>
@@ -724,7 +724,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/Liquid" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_liquid">
+  <Shader Name="AIT/Liquid" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_liquid" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="UVScalePattern" Type="Color" />
     <Property Name="ChromaticAberration" Type="Float" Range="0,0.3"/>
@@ -741,14 +741,14 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/main eyeshadow lambert" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_eyeshadow_lambert">
+  <Shader Name="AIT/main eyeshadow lambert" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_eyeshadow_lambert" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
     <Property Name="MainTex" Type="Texture" />
     <Property Name="ShadowScale" Type="Float" Range="0.1, 0.9"/>
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/main Item Glass" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_item_glass">
+  <Shader Name="AIT/main Item Glass" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_item_glass" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
     <Property Name="MainTex" Type="Texture" />
     <Property Name="Glossiness4" Type="Float" Range="0,1"/>
@@ -758,14 +758,14 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="Shader Forge/main_item_studio_add" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_item_studio_add">
+  <Shader Name="Shader Forge/main_item_studio_add" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_item_studio_add" ShaderOptimization="False">
     <Property Name="MainTex" Type="Texture" />
     <Property Name="Color" Type="Color" />
     <Property Name="Color2" Type="Color" />
     <Property Name="Color3" Type="Color" />
     <Property Name="alpha" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/main Light" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_light">
+  <Shader Name="AIT/main Light" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_light" ShaderOptimization="False">
     <Property Name="Float0" Type="Float" Range="0,1"/>
     <Property Name="Float1" Type="Float" Range="0,1"/>
     <Property Name="Color" Type="Color" />
@@ -776,7 +776,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/main namida" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_namida">
+  <Shader Name="AIT/main namida" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_namida" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
     <Property Name="MainTex" Type="Texture" />
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
@@ -788,7 +788,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/main texture studio unlit" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_texture_studio_unlit">
+  <Shader Name="AIT/main texture studio unlit" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_texture_studio_unlit" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="patternuv1" Type="Color" />
     <Property Name="patternuv1Rotator" Type="Float" Range="-1,1"/>
@@ -798,13 +798,13 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/mnpb" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_mnpb">
+  <Shader Name="AIT/mnpb" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_mnpb" ShaderOptimization="False">
     <Property Name="WhiteOff" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="Custom/Silhouette" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_silhouette">
+  <Shader Name="Custom/Silhouette" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_silhouette" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
   </Shader>
-  <Shader Name="AIT/Skin Translucency" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_translucency">
+  <Shader Name="AIT/Skin Translucency" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_translucency" ShaderOptimization="False">
     <Property Name="alpha_a" Type="Float" Range="0,1"/>
     <Property Name="Float0" Type="Float" Range="0,1"/>
     <Property Name="alpha_b" Type="Float" Range="0,1"/>
@@ -851,7 +851,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/Skin Translucency simple" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_translucency_simple">
+  <Shader Name="AIT/Skin Translucency simple" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_translucency_simple" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
     <Property Name="MatcapTexture" Type="Texture" />
     <Property Name="matcaptilling" Type="Float" Range="0,1"/>
@@ -874,7 +874,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="AIT/Skin True Face" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_true_face">
+  <Shader Name="AIT/Skin True Face" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_true_face" ShaderOptimization="False">
     <Property Name="WeatheringMap" Type="Texture" />
     <Property Name="WeatheringMask" Type="Texture" />
     <Property Name="WeatheringUV" Type="Color" />
@@ -928,7 +928,7 @@
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="Shader Forge/studio_hair_07" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_studio_hair_07">
+  <Shader Name="Shader Forge/studio_hair_07" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_studio_hair_07" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
     <Property Name="Color4" Type="Color" />
     <Property Name="Color2" Type="Color" />
@@ -948,10 +948,10 @@
     <Property Name="ExGloss" Type="Float" Range="0,1"/>
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
   </Shader>
-  <Shader Name="Unlit/Color" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_unlit_color">
+  <Shader Name="Unlit/Color" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_unlit_color" ShaderOptimization="False">
     <Property Name="Color" Type="Color" />
   </Shader>
-  <Shader Name="AIT/Additive" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_additive">
+  <Shader Name="AIT/Additive" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_additive" ShaderOptimization="False">
     <Property Name="Emissive" Type="Float" Range="0,1"/>
     <Property Name="UVPannerTime" Type="Float" Range="0,1"/>
     <Property Name="UVPannerSpeedy" Type="Float" Range="0,1"/>
@@ -963,7 +963,7 @@
     <Property Name="MainTex" Type="Texture" />
     <Property Name="TimeMask" Type="Texture" />
   </Shader>
-  <Shader Name="AIT/Item studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item_studio">
+  <Shader Name="AIT/Item studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item_studio" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="alpha" Type="Float" Range="0,1"/>
     <Property Name="BitangentRim" Type="Float" Range="0,1"/>
@@ -1037,7 +1037,7 @@
     <Property Name="PatternMask3" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
   </Shader>
-  <Shader Name="AIT/main standard2" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2">
+  <Shader Name="AIT/main standard2" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="AlphaEx" Type="Float" Range="0,1"/>
     <Property Name="Metallic" Type="Float" Range="0,1"/>
@@ -1080,7 +1080,7 @@
     <Property Name="PatternMask3" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
   </Shader>
-  <Shader Name="AIT/main standard2 studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2_studio">
+  <Shader Name="AIT/main standard2 studio" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2_studio" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
     <Property Name="alpha" Type="Float" Range="0,1"/>
@@ -1134,7 +1134,7 @@
     <Property Name="PatternMask3" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
   </Shader>
-  <Shader Name="AIT/main standard2 studio alpha" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2_studio_alpha">
+  <Shader Name="AIT/main standard2 studio alpha" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2_studio_alpha" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="alpha" Type="Float" Range="0,1"/>
     <Property Name="Metallic" Type="Float" Range="0,1"/>
