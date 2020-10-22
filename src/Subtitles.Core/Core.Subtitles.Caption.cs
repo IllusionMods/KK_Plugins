@@ -2,6 +2,8 @@
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System;
 
 namespace KK_Plugins
 {
@@ -13,11 +15,13 @@ namespace KK_Plugins
             internal static GameObject PaneVR;
             internal static Text VRText1;
             internal static Text VRText2;
+            internal static Scene ActiveScene;
 
             private static void InitGUI()
             {
                 if (Pane != null)
                     return;
+
 
                 Pane = new GameObject("KK_Subtitles_Caption");
 
@@ -35,6 +39,8 @@ namespace KK_Plugins
                 vlg.childForceExpandWidth = false;
                 vlg.childAlignment = TextAlign.Value;
                 vlg.padding = new RectOffset(0, 0, 0, TextOffset.Value);
+
+                UpdateScene(ActiveScene);
             }
 
             private static void InitVRGUI()
@@ -119,6 +125,7 @@ namespace KK_Plugins
                     var outline = subtitle.AddComponent<Outline>();
                     outline.effectDistance = new Vector2(0.8f, 0.8f);
                 }
+                UpdateScene(ActiveScene);
             }
 
             /// <summary>
@@ -183,6 +190,28 @@ namespace KK_Plugins
                     VRText2.text = text;
                     voice.OnDestroyAsObservable().Subscribe(obj => VRText2.text = "");
                 }
+            }
+
+            internal static void UpdateScene()
+            {
+                UpdateScene(SceneManager.GetActiveScene());
+            }
+
+            internal static void UpdateScene(Scene newScene)
+            {
+                ActiveScene = newScene;
+                if (Pane != null && Pane.scene != newScene) SceneManager.MoveGameObjectToScene(Pane, newScene);
+                if (PaneVR != null && PaneVR.scene != newScene) SceneManager.MoveGameObjectToScene(PaneVR, newScene);
+            }
+
+            public static void SceneUnloaded(Scene scene)
+            {
+                if (scene == ActiveScene) UpdateScene();
+            }
+
+            internal static void SceneLoaded(Scene scene, LoadSceneMode mode)
+            {
+                if (mode == LoadSceneMode.Single) UpdateScene(scene);
             }
         }
     }
