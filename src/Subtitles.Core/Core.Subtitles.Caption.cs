@@ -1,9 +1,8 @@
 ﻿using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System;
+using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -192,26 +191,30 @@ namespace KK_Plugins
                 }
             }
 
-            internal static void UpdateScene()
-            {
-                UpdateScene(SceneManager.GetActiveScene());
-            }
+            internal static void UpdateScene() => UpdateScene(SceneManager.GetActiveScene());
 
+            /// <summary>
+            /// Move the pane to the scene so that it is properly scoped for XUnity.AutoTranslator compatiblity
+            /// </summary>
             internal static void UpdateScene(Scene newScene)
             {
                 ActiveScene = newScene;
-                if (Pane != null && Pane.scene != newScene) SceneManager.MoveGameObjectToScene(Pane, newScene);
-                if (PaneVR != null && PaneVR.scene != newScene) SceneManager.MoveGameObjectToScene(PaneVR, newScene);
+                if (Pane != null && Pane.scene != newScene)
+                    SceneManager.MoveGameObjectToScene(Pane, newScene);
+                if (PaneVR != null && PaneVR.scene != newScene)
+                    SceneManager.MoveGameObjectToScene(PaneVR, newScene);
             }
 
             public static void SceneUnloaded(Scene scene)
             {
-                if (scene == ActiveScene) UpdateScene();
+                if (scene == ActiveScene)
+                    UpdateScene();
             }
 
             internal static void SceneLoaded(Scene scene, LoadSceneMode mode)
             {
-                if (mode == LoadSceneMode.Single) UpdateScene(scene);
+                if (mode == LoadSceneMode.Single)
+                    UpdateScene(scene);
             }
         }
     }
