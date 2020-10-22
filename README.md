@@ -115,7 +115,7 @@ v3.10 Add ability to exclude uncensors from random selection (Thanks Gebo)<br/>
 </details>
 
 #### Subtitles
-**v2.0.1 - [Download](https://www.patreon.com/posts/27699376)** - For Koikatsu, AI Girl, Honey Select, and Honey Select 2<br/>
+**v2.0.2 - [Download](https://www.patreon.com/posts/27699376)** - For Koikatsu, AI Girl, Honey Select, and Honey Select 2<br/>
 
 For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
 For AI Girl trial version, adds subtitles for the character maker.<br/>
@@ -131,6 +131,7 @@ v1.6 HS2 port, removed FontName setting<br/>
 v1.6.1 Fixed text going off screen in HS, fixed the TextAlign config setting not working properly<br/>
 v2.0 Implemented subtitles for VR mode in KK and HS2<br/>
 v2.0.1 Fixed using the wrong object type causing HSceneInstance to bypass null checks<br/>
+v2.0.2 Subtitles are now part of the scene so they can be scoped to XUA translations<br/>
 </details>
 
 #### AnimationController
