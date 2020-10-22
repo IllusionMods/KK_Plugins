@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace KK_Plugins
@@ -86,6 +87,11 @@ namespace KK_Plugins
             LoadSubtitles();
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
+
+#if !HS
+            SceneManager.sceneLoaded += Caption.SceneLoaded;
+            SceneManager.sceneUnloaded += Caption.SceneUnloaded;
+#endif
         }
 
         private static void TextAlign_SettingChanged(object sender, EventArgs e)
