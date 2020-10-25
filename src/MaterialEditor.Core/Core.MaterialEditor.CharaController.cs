@@ -541,6 +541,12 @@ namespace KK_Plugins.MaterialEditor
                 SetTextureOffset(go, property.MaterialName, property.Property, property.Offset);
                 SetTextureScale(go, property.MaterialName, property.Property, property.Scale);
             }
+
+
+#if KK || EC
+            if (MaterialEditorPlugin.RimRemover.Value)
+                RemoveRim();
+#endif
         }
         /// <summary>
         /// Corrects the tongue materials since some of them are not properly refreshed on replacing a character
@@ -582,6 +588,64 @@ namespace KK_Plugins.MaterialEditor
             }
 #endif
         }
+
+#if KK || EC
+        private void RemoveRim()
+        {
+            for (var i = 0; i < ChaControl.objClothes.Length; i++)
+                RemoveRimClothes(i);
+            for (var i = 0; i < ChaControl.objHair.Length; i++)
+                RemoveRimHair(i);
+            for (var i = 0; i < ChaControl.objAccessory.Length; i++)
+                RemoveRimAccessory(i);
+        }
+        private void RemoveRimClothes(int slot)
+        {
+            var gameObj = ChaControl.objClothes[slot];
+            var rendList = GetRendererList(gameObj);
+            for (var j = 0; j < rendList.Count; j++)
+            {
+                var mats = GetMaterials(rendList[j]);
+                for (int k = 0; k < mats.Count; k++)
+                {
+                    Material mat = mats[k];
+                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", gameObj) == null)
+                        SetMaterialFloatProperty(slot, mat, "rimV", 0, gameObj);
+                }
+            }
+        }
+        private void RemoveRimHair(int slot)
+        {
+            var gameObj = ChaControl.objHair[slot];
+            var rendList = GetRendererList(gameObj);
+            for (var j = 0; j < rendList.Count; j++)
+            {
+                var mats = GetMaterials(rendList[j]);
+                for (int k = 0; k < mats.Count; k++)
+                {
+                    Material mat = mats[k];
+                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", gameObj) == null)
+                        SetMaterialFloatProperty(slot, mat, "rimV", 0, gameObj);
+                }
+            }
+        }
+        private void RemoveRimAccessory(int slot)
+        {
+            var gameObj = ChaControl.objAccessory[slot];
+            var rendList = GetRendererList(gameObj);
+            for (var j = 0; j < rendList.Count; j++)
+            {
+                var mats = GetMaterials(rendList[j]);
+                for (int k = 0; k < mats.Count; k++)
+                {
+                    Material mat = mats[k];
+                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", gameObj) == null)
+                        SetMaterialFloatProperty(slot, mat, "rimV", 0, gameObj);
+                }
+            }
+        }
+#endif
+
         /// <summary>
         /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
         /// </summary>
@@ -675,6 +739,11 @@ namespace KK_Plugins.MaterialEditor
             if (MakerAPI.InsideAndLoaded)
                 if (UI.Visible && MEMaker.Instance != null)
                     MEMaker.Instance.PopulateListAccessory();
+
+#if KK || EC
+            if (MaterialEditorPlugin.RimRemover.Value)
+                RemoveRimAccessory(e.SlotIndex);
+#endif
         }
 
         internal void AccessorySelectedSlotChangeEvent(object sender, AccessorySlotEventArgs e)
@@ -796,6 +865,10 @@ namespace KK_Plugins.MaterialEditor
 
             if (MakerAPI.InsideAndLoaded)
                 UI.Visible = false;
+#if KK || EC
+            if (MaterialEditorPlugin.RimRemover.Value)
+                RemoveRimAccessory(slot);
+#endif
         }
 
         internal void ChangeCustomClothesEvent(int slot)
@@ -822,6 +895,11 @@ namespace KK_Plugins.MaterialEditor
 
             if (MakerAPI.InsideAndLoaded)
                 UI.Visible = false;
+
+#if KK || EC
+            if (MaterialEditorPlugin.RimRemover.Value)
+                RemoveRimClothes(slot);
+#endif
         }
 
         internal void ChangeHairEvent(int slot)
@@ -837,6 +915,11 @@ namespace KK_Plugins.MaterialEditor
 
             if (MakerAPI.InsideAndLoaded)
                 UI.Visible = false;
+
+#if KK || EC
+            if (MaterialEditorPlugin.RimRemover.Value)
+                RemoveRimHair(slot);
+#endif
         }
         /// <summary>
         /// Refresh the clothes MainTex, typically called after editing colors in the character maker
