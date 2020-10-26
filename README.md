@@ -403,6 +403,10 @@ v1.1 Item info shows Asset and AssetBundle, better UI<br/>
 **v1.0 - [Download](https://www.patreon.com/posts/41820329)** - For Koikatsu<br/>
 Allows you to adjust fade color or disable the fade in and out effect.<br/>
 
+#### Profile
+**v1.0 - [Download](https://www.patreon.com/posts/43152413)** - For Koikatsu and EmotionCreators<br/>
+A big textbox in the character creator where you can write a character description.<br/>
+
 #### InputHotkeyBlock
 Moved to the [BepInEx.Utility](https://github.com/BepInEx/BepInEx.Utility) repo.<br/>
 
