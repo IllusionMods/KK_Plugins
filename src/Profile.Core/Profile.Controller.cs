@@ -25,7 +25,7 @@ namespace KK_Plugins
 
             var data = GetExtendedData();
             if (data != null && data.data.TryGetValue(nameof(ProfileText), out var loadedProfileText))
-                ProfileText = loadedProfileText.ToString();
+                ProfileText = loadedProfileText?.ToString();
 
             if (MakerAPI.InsideMaker)
                 Profile.ProfileTextbox.Value = ProfileText ?? "";

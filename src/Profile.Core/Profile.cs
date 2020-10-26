@@ -8,13 +8,18 @@ using UnityEngine.UI;
 
 namespace KK_Plugins
 {
+#if KK
+    [BepInProcess(Constants.MainGameProcessNameSteam)]
+#endif
+    [BepInProcess(Constants.MainGameProcessName)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class Profile : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.profile";
         public const string PluginName = "Profile";
         public const string PluginNameInternal = Constants.Prefix + "_Profile";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
 
         internal static MakerTextbox ProfileTextbox;
 
