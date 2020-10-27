@@ -1864,7 +1864,7 @@ namespace KK_Plugins.MaterialEditor
             if (go.GetComponent<ChaControl>())
                 return ObjectType.Character;
 #if KK || EC
-            if (go.GetComponentInChildren<ChaClothesComponent>())
+            if (go.GetComponentInChildren<ChaClothesComponent>(true))
                 return ObjectType.Clothing;
             if (go.GetComponent<ChaAccessoryComponent>())
                 return ObjectType.Accessory;
