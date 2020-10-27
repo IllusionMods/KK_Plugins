@@ -311,6 +311,10 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.Profile", "src\Profile
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.Profile", "src\Profile.EC\EC.Profile.csproj", "{B8FB4195-DC85-49A2-A893-562255EF84A0}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.AccessoryClothes", "src\AccessoryClothes.Core\Core.AccessoryClothes.shproj", "{9C636011-35A4-4201-8F81-81564F1EDAFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessoryClothes.EC", "src\AccessoryClothes.EC\AccessoryClothes.EC.csproj", "{84060175-95BD-4AD7-BA46-508DC8959B32}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -382,6 +386,7 @@ Global
 		src\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{472a10cf-2ca5-4846-8cc1-18d72a2d87f9}*SharedItemsImports = 4
 		src\MaleJuice.Core\MaleJuice.Core.projitems*{473a64c4-230e-4e81-91c3-8be288246d86}*SharedItemsImports = 13
+		src\AccessoryClothes.Core\AccessoryClothes.Core.projitems*{49002a35-8753-442f-9781-45e9881fd7ab}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{49002a35-8753-442f-9781-45e9881fd7ab}*SharedItemsImports = 4
 		src\ItemBlacklist.Core\ItemBlacklist.Core.projitems*{4a43e778-c1ff-4057-89e8-e858aa989810}*SharedItemsImports = 13
 		src\Shared\Shared.projitems*{4b2a5873-42e3-446f-b986-6b57693928c7}*SharedItemsImports = 4
@@ -436,6 +441,8 @@ Global
 		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{81de7d3b-a8a0-43c2-ac9d-f65ac528b997}*SharedItemsImports = 13
 		src\Colliders.Core\Core.Colliders.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
+		src\AccessoryClothes.Core\AccessoryClothes.Core.projitems*{84060175-95bd-4ad7-ba46-508dc8959b32}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{84060175-95bd-4ad7-ba46-508dc8959b32}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
 		src\MakerDefaults.Core.KKEC\Core.MakerDefaults.KKEC.projitems*{878bb100-7d7c-43d2-8e9d-608d93d738e4}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{878bb100-7d7c-43d2-8e9d-608d93d738e4}*SharedItemsImports = 4
@@ -456,6 +463,7 @@ Global
 		src\Subtitles.Core\Core.Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
 		src\PoseFolders.Core\Core.PoseFolders.projitems*{9c19b785-e8e3-4ff0-9e3f-8254355b1ce7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{9c19b785-e8e3-4ff0-9e3f-8254355b1ce7}*SharedItemsImports = 4
+		src\AccessoryClothes.Core\AccessoryClothes.Core.projitems*{9c636011-35a4-4201-8f81-81564f1edafc}*SharedItemsImports = 13
 		src\StudioImageEmbed.Core\Core.StudioImageEmbed.projitems*{a18c34c6-1220-487a-8448-fc1a8251fc57}*SharedItemsImports = 13
 		src\Profile.Core\Profile.Core.projitems*{a566dc0b-c265-447f-86e0-806e3c8abe46}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{a566dc0b-c265-447f-86e0-806e3c8abe46}*SharedItemsImports = 4
@@ -887,6 +895,10 @@ Global
 		{B8FB4195-DC85-49A2-A893-562255EF84A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8FB4195-DC85-49A2-A893-562255EF84A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8FB4195-DC85-49A2-A893-562255EF84A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84060175-95BD-4AD7-BA46-508DC8959B32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84060175-95BD-4AD7-BA46-508DC8959B32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84060175-95BD-4AD7-BA46-508DC8959B32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84060175-95BD-4AD7-BA46-508DC8959B32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1007,6 +1019,8 @@ Global
 		{A566DC0B-C265-447F-86E0-806E3C8ABE46} = {BD1386F5-CFAE-4BF1-8826-78DB7F21BC46}
 		{2C0B61EF-61E4-45D7-ADDB-27DE541F62E9} = {BD1386F5-CFAE-4BF1-8826-78DB7F21BC46}
 		{B8FB4195-DC85-49A2-A893-562255EF84A0} = {BD1386F5-CFAE-4BF1-8826-78DB7F21BC46}
+		{9C636011-35A4-4201-8F81-81564F1EDAFC} = {CE50952C-C3F5-473A-8C8E-FE59B58EF7C0}
+		{84060175-95BD-4AD7-BA46-508DC8959B32} = {CE50952C-C3F5-473A-8C8E-FE59B58EF7C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

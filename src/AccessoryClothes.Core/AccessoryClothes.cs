@@ -1,10 +1,9 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using HarmonyLib;
-using Studio;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static System.String;
 
 namespace KK_Plugins
 {
@@ -13,17 +12,24 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.accessoryclothes";
         public const string PluginName = "Accessory Clothes";
-        public const string PluginNameInternal = "KK_AccessoryClothes";
+        public const string PluginNameInternal = Constants.Prefix + "_AccessoryClothes";
         public const string Version = "1.0";
+        internal static new ManualLogSource Logger;
+        internal static AccessoryClothes Instance;
 
-        internal void Main() => Harmony.CreateAndPatchAll(typeof(Hooks));
+        internal void Main()
+        {
+            Logger = base.Logger;
+            Instance = this;
+            Harmony.CreateAndPatchAll(typeof(Hooks));
+        }
 
         /// <summary>
         /// FindLoop but doesn't search through accessories
         /// </summary>
         public static GameObject FindLoopNoAcc(Transform transform, string name)
         {
-            if (CompareOrdinal(name, transform.gameObject.name) == 0)
+            if (string.CompareOrdinal(name, transform.gameObject.name) == 0)
                 return transform.gameObject;
 
             if (transform.gameObject.name.StartsWith("ca_slot"))
@@ -41,12 +47,13 @@ namespace KK_Plugins
 
         static class Hooks
         {
+#if KK
             //Prevent certain methods from searching through accessory bones, if these methods find body bone names within accessories it breaks everything
             //This is done by replacing calls to FindLoop with calls to a similar method that doesn't search accessories
             [HarmonyTranspiler]
-            [HarmonyPatch(typeof(FKCtrl), nameof(FKCtrl.InitBones))]
-            [HarmonyPatch(typeof(AddObjectAssist), nameof(AddObjectAssist.InitBone))]
-            [HarmonyPatch(typeof(AddObjectAssist), nameof(AddObjectAssist.InitHairBone))]
+            [HarmonyPatch(typeof(Studio.FKCtrl), nameof(Studio.FKCtrl.InitBones))]
+            [HarmonyPatch(typeof(Studio.AddObjectAssist), nameof(Studio.AddObjectAssist.InitBone))]
+            [HarmonyPatch(typeof(Studio.AddObjectAssist), nameof(Studio.AddObjectAssist.InitHairBone))]
             private static IEnumerable<CodeInstruction> InitBoneTranspiler(IEnumerable<CodeInstruction> instructions)
             {
                 List<CodeInstruction> instructionsList = instructions.ToList();
@@ -60,6 +67,7 @@ namespace KK_Plugins
 
                 return instructionsList;
             }
+#endif
         }
     }
 
