@@ -23,7 +23,7 @@ namespace KK_Plugins
 
         private void Awake()
         {
-            //Move the armature outside of the character so these transforms are not found by certain methods that travse the body hierarchy
+            //Move the armature outside of the character so these transforms are not found by certain methods that traverse the body hierarchy
             ArmatureRoot.SetParent(AccessoryClothes.Instance.transform);
         }
 
