@@ -1,8 +1,5 @@
 ﻿using BepInEx;
-using BepInEx.Logging;
 using HarmonyLib;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -14,65 +11,22 @@ namespace KK_Plugins
         public const string PluginName = "Accessory Clothes";
         public const string PluginNameInternal = Constants.Prefix + "_AccessoryClothes";
         public const string Version = "1.0";
-        internal static new ManualLogSource Logger;
+
         internal static AccessoryClothes Instance;
 
-        internal void Main()
-        {
-            Logger = base.Logger;
-            Instance = this;
-            Harmony.CreateAndPatchAll(typeof(Hooks));
-        }
-
-        /// <summary>
-        /// FindLoop but doesn't search through accessories
-        /// </summary>
-        public static GameObject FindLoopNoAcc(Transform transform, string name)
-        {
-            if (string.CompareOrdinal(name, transform.gameObject.name) == 0)
-                return transform.gameObject;
-
-            if (transform.gameObject.name.StartsWith("ca_slot"))
-                return null;
-
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                GameObject gameObject = FindLoopNoAcc(transform.GetChild(i), name);
-                if (gameObject != null)
-                    return gameObject;
-            }
-
-            return null;
-        }
-
-        static class Hooks
-        {
-#if KK
-            //Prevent certain methods from searching through accessory bones, if these methods find body bone names within accessories it breaks everything
-            //This is done by replacing calls to FindLoop with calls to a similar method that doesn't search accessories
-            [HarmonyTranspiler]
-            [HarmonyPatch(typeof(Studio.FKCtrl), nameof(Studio.FKCtrl.InitBones))]
-            [HarmonyPatch(typeof(Studio.AddObjectAssist), nameof(Studio.AddObjectAssist.InitBone))]
-            [HarmonyPatch(typeof(Studio.AddObjectAssist), nameof(Studio.AddObjectAssist.InitHairBone))]
-            private static IEnumerable<CodeInstruction> InitBoneTranspiler(IEnumerable<CodeInstruction> instructions)
-            {
-                List<CodeInstruction> instructionsList = instructions.ToList();
-
-                for (var index = 0; index < instructionsList.Count; index++)
-                {
-                    var x = instructionsList[index];
-                    if (x.operand?.ToString() == "UnityEngine.GameObject FindLoop(UnityEngine.Transform, System.String)")
-                        x.operand = typeof(AccessoryClothes).GetMethod(nameof(FindLoopNoAcc), AccessTools.all);
-                }
-
-                return instructionsList;
-            }
-#endif
-        }
+        private void Awake() => Instance = this;
     }
 
     public class ChaAccessoryClothes : MonoBehaviour
     {
+        public Transform ArmatureRoot;
+
+        private void Awake()
+        {
+            //Move the armature outside of the character so these transforms are not found by certain methods that travse the body hierarchy
+            ArmatureRoot.SetParent(AccessoryClothes.Instance.transform);
+        }
+
         private void Start()
         {
             ChaAccessoryComponent chaAccessory = gameObject.GetComponent<ChaAccessoryComponent>();
@@ -84,6 +38,9 @@ namespace KK_Plugins
             //AssignedWeightsAndSetBounds replaces the bones of an object with the body bones
             for (var index = 0; index < chaAccessory.rendNormal.Length; index++)
                 aaWeightsBody.AssignedWeightsAndSetBounds(chaAccessory.rendNormal[index].gameObject, "cf_j_root", bounds, objRootBone.transform);
+
+            //Get rid of this since it's no longer needed
+            Destroy(ArmatureRoot.gameObject);
         }
     }
 }

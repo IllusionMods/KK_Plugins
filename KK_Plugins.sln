@@ -313,7 +313,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.Profile", "src\Profile.E
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.AccessoryClothes", "src\AccessoryClothes.Core\Core.AccessoryClothes.shproj", "{9C636011-35A4-4201-8F81-81564F1EDAFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessoryClothes.EC", "src\AccessoryClothes.EC\AccessoryClothes.EC.csproj", "{84060175-95BD-4AD7-BA46-508DC8959B32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.AccessoryClothes", "src\AccessoryClothes.EC\EC.AccessoryClothes.csproj", "{84060175-95BD-4AD7-BA46-508DC8959B32}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
