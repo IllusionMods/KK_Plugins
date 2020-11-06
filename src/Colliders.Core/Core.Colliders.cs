@@ -171,13 +171,6 @@ namespace KK_Plugins
         }
 
         public static ColliderController GetController(ChaControl chaControl) => chaControl.GetComponent<ColliderController>();
-        private static ColliderController GetSelectedController()
-        {
-            var mpCharCtrl = FindObjectOfType<MPCharCtrl>();
-            if (mpCharCtrl == null || mpCharCtrl.ociChar == null || mpCharCtrl.ociChar.charInfo == null)
-                return null;
-            return mpCharCtrl.ociChar.charInfo.GetComponent<ColliderController>();
-        }
 
         public class ColliderSceneController : SceneCustomFunctionController
         {

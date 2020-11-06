@@ -1,7 +1,5 @@
-﻿using BepInEx;
-using KKAPI.Studio;
+﻿using KKAPI.Studio;
 using KKAPI.Studio.UI;
-using Studio;
 using UniRx;
 
 namespace KK_Plugins
@@ -26,14 +24,6 @@ namespace KK_Plugins
             }));
 
             StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(invisibleSwitch);
-        }
-
-        private static InvisibleBodyCharaController GetSelectedStudioController()
-        {
-            var mpCharCtrl = FindObjectOfType<MPCharCtrl>();
-            if (mpCharCtrl == null || mpCharCtrl.ociChar == null || mpCharCtrl.ociChar.charInfo == null)
-                return null;
-            return mpCharCtrl.ociChar.charInfo.GetComponent<InvisibleBodyCharaController>();
         }
     }
 }

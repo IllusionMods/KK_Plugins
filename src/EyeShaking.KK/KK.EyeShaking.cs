@@ -6,7 +6,6 @@ using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
-using Studio;
 using System;
 using UniRx;
 
@@ -48,13 +47,6 @@ namespace KK_Plugins
         }
 
         private static EyeShakingController GetController(ChaControl character) => character == null ? null : character.gameObject.GetComponent<EyeShakingController>();
-        private static EyeShakingController GetSelectedStudioController()
-        {
-            var mpCharCtrl = FindObjectOfType<MPCharCtrl>();
-            if (mpCharCtrl == null || mpCharCtrl.ociChar == null || mpCharCtrl.ociChar.charInfo == null)
-                return null;
-            return mpCharCtrl.ociChar.charInfo.GetComponent<EyeShakingController>();
-        }
 
         private static void RegisterStudioControls()
         {
