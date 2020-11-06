@@ -111,24 +111,26 @@ namespace KK_Plugins
             var breast = new CurrentStateCategorySwitch("Breast", ocichar => ocichar.charInfo.GetComponent<ColliderController>().BreastCollidersEnabled);
             breast.Value.Subscribe(value =>
             {
-                var controller = GetSelectedController();
-                if (controller == null) return;
-                if (controller.BreastCollidersEnabled != value)
+                foreach (var controller in StudioAPI.GetSelectedControllers<ColliderController>())
                 {
-                    controller.BreastCollidersEnabled = value;
-                    controller.ApplyBreastColliders();
+                    if (controller.BreastCollidersEnabled != value)
+                    {
+                        controller.BreastCollidersEnabled = value;
+                        controller.ApplyBreastColliders();
+                    }
                 }
             });
 
             var arm = new CurrentStateCategorySwitch("Arm", ocichar => ocichar.charInfo.GetComponent<ColliderController>().ArmCollidersEnabled);
             arm.Value.Subscribe(value =>
             {
-                var controller = GetSelectedController();
-                if (controller == null) return;
-                if (controller.ArmCollidersEnabled != value)
+                foreach (var controller in StudioAPI.GetSelectedControllers<ColliderController>())
                 {
-                    controller.ArmCollidersEnabled = value;
-                    controller.ApplyArmColliders();
+                    if (controller.ArmCollidersEnabled != value)
+                    {
+                        controller.ArmCollidersEnabled = value;
+                        controller.ApplyArmColliders();
+                    }
                 }
             });
 
@@ -136,12 +138,13 @@ namespace KK_Plugins
             var skirt = new CurrentStateCategorySwitch("Skirt", ocichar => ocichar.charInfo.GetComponent<ColliderController>().SkirtCollidersEnabled);
             skirt.Value.Subscribe(value =>
             {
-                var controller = GetSelectedController();
-                if (controller == null) return;
-                if (controller.SkirtCollidersEnabled != value)
+                foreach (var controller in StudioAPI.GetSelectedControllers<ColliderController>())
                 {
-                    controller.SkirtCollidersEnabled = value;
-                    controller.ApplySkirtColliders();
+                    if (controller.SkirtCollidersEnabled != value)
+                    {
+                        controller.SkirtCollidersEnabled = value;
+                        controller.ApplySkirtColliders();
+                    }
                 }
             });
 #endif
@@ -149,12 +152,13 @@ namespace KK_Plugins
             var floor = new CurrentStateCategorySwitch("Floor", ocichar => ocichar.charInfo.GetComponent<ColliderController>().FloorColliderEnabled);
             floor.Value.Subscribe(value =>
             {
-                var controller = GetSelectedController();
-                if (controller == null) return;
-                if (controller.FloorColliderEnabled != value)
+                foreach (var controller in StudioAPI.GetSelectedControllers<ColliderController>())
                 {
-                    controller.FloorColliderEnabled = value;
-                    controller.ApplyFloorCollider();
+                    if (controller.FloorColliderEnabled != value)
+                    {
+                        controller.FloorColliderEnabled = value;
+                        controller.ApplyFloorCollider();
+                    }
                 }
             });
 

@@ -61,9 +61,10 @@ namespace KK_Plugins
             var invisibleSwitch = new CurrentStateCategorySwitch("Shaking Eye Highlights", controller => controller.charInfo.GetComponent<EyeShakingController>().EyeShaking);
             invisibleSwitch.Value.Subscribe(Observer.Create((bool value) =>
             {
-                var controller = GetSelectedStudioController();
-                if (controller != null)
+                foreach (var controller in StudioAPI.GetSelectedControllers<EyeShakingController>())
+                {
                     controller.EyeShaking = value;
+                }
             }));
 
             StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(invisibleSwitch);

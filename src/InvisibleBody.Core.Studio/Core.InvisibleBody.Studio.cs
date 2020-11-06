@@ -19,9 +19,10 @@ namespace KK_Plugins
             var invisibleSwitch = new CurrentStateCategorySwitch("Invisible Body", controller => controller.charInfo.GetComponent<InvisibleBodyCharaController>().Invisible);
             invisibleSwitch.Value.Subscribe(Observer.Create((bool value) =>
             {
-                var controller = GetSelectedStudioController();
-                if (controller != null)
+                foreach (var controller in StudioAPI.GetSelectedControllers<InvisibleBodyCharaController>())
+                {
                     controller.Invisible = value;
+                }
             }));
 
             StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(invisibleSwitch);
