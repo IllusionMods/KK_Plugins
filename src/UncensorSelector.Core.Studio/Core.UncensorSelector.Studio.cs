@@ -1,7 +1,7 @@
 ﻿using KKAPI.Studio;
 using KKAPI.Studio.UI;
-using Studio;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 
 namespace KK_Plugins
@@ -26,31 +26,36 @@ namespace KK_Plugins
             var bodyDropdown = new CurrentStateCategoryDropdown("Uncensor", bodyListDisplay.ToArray(), c => BodyIndex());
             bodyDropdown.Value.Subscribe(value =>
             {
-                var controller = GetSelectedStudioController();
-
-                if (controller != null)
+                bool first = true;
+                foreach (var controller in StudioAPI.GetSelectedControllers<UncensorSelectorController>())
                 {
-#if AI
+#if AI || HS2
+                    //Hide the body dropdown for male characters
+                    if (first)
+                        if (controller.ChaControl.sex == 0)
+                            bodyDropdown.Visible.OnNext(false);
+                        else
+                            bodyDropdown.Visible.OnNext(true);
+
                     if (controller.ChaControl.sex == 0)
-                    {
-                        bodyDropdown.Visible.OnNext(false);
-                        return;
-                    }
-                    else
-                        bodyDropdown.Visible.OnNext(true);
+                        continue;
 #endif
+
                     var guid = bodyList[value];
-                    if (controller.BodyData?.BodyGUID != guid)
-                    {
-                        controller.BodyGUID = guid;
-                        controller.UpdateUncensor();
-                    }
+
+                    //Prevent changing other characters when the value did not actually change
+                    if (first && controller.BodyData?.BodyGUID == guid)
+                        break;
+
+                    first = false;
+                    controller.BodyGUID = guid;
+                    controller.UpdateUncensor();
                 }
             });
 
             int BodyIndex()
             {
-                var controller = GetSelectedStudioController();
+                var controller = StudioAPI.GetSelectedControllers<UncensorSelectorController>().First();
                 return bodyList.IndexOf(controller.BodyData?.BodyGUID);
             }
             StudioAPI.GetOrCreateCurrentStateCategory(StudioCategoryName).AddControl(bodyDropdown);
@@ -67,9 +72,7 @@ namespace KK_Plugins
             var penisDropdown = new CurrentStateCategoryDropdown("Penis", penisListDisplay.ToArray(), c => PenisIndex());
             penisDropdown.Value.Subscribe(value =>
             {
-                var controller = GetSelectedStudioController();
-
-                if (controller != null)
+                foreach (var controller in StudioAPI.GetSelectedControllers<UncensorSelectorController>())
                 {
                     var guid = penisList[value];
                     if (controller.PenisData?.PenisGUID != guid)
@@ -82,7 +85,7 @@ namespace KK_Plugins
 
             int PenisIndex()
             {
-                var controller = GetSelectedStudioController();
+                var controller = StudioAPI.GetSelectedControllers<UncensorSelectorController>().First();
                 if (controller.PenisData?.PenisGUID == null)
                     return penisList.IndexOf(DefaultPenisGUID);
                 return penisList.IndexOf(controller.PenisData.PenisGUID);
@@ -105,9 +108,7 @@ namespace KK_Plugins
             var ballsDropdown = new CurrentStateCategoryDropdown("Balls", ballsListDisplay.ToArray(), c => BallsIndex());
             ballsDropdown.Value.Subscribe(value =>
             {
-                var controller = GetSelectedStudioController();
-
-                if (controller != null)
+                foreach (var controller in StudioAPI.GetSelectedControllers<UncensorSelectorController>())
                 {
                     if (value == 0)//"None"
                     {
@@ -133,7 +134,7 @@ namespace KK_Plugins
 
             int BallsIndex()
             {
-                var controller = GetSelectedStudioController();
+                var controller = StudioAPI.GetSelectedControllers<UncensorSelectorController>().First();
                 if (controller.DisplayBalls == false)
                     return ballsList.IndexOf("None");
                 if (controller.BallsData?.BallsGUID == null)
@@ -141,14 +142,6 @@ namespace KK_Plugins
                 return ballsList.IndexOf(controller.BallsData?.BallsGUID);
             }
             StudioAPI.GetOrCreateCurrentStateCategory(StudioCategoryName).AddControl(ballsDropdown);
-        }
-
-        private static UncensorSelectorController GetSelectedStudioController()
-        {
-            var mpCharCtrl = FindObjectOfType<MPCharCtrl>();
-            if (mpCharCtrl == null || mpCharCtrl.ociChar == null || mpCharCtrl.ociChar.charInfo == null)
-                return null;
-            return mpCharCtrl.ociChar.charInfo.GetComponent<UncensorSelectorController>();
         }
     }
 }

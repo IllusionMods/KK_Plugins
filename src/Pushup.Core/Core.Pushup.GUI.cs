@@ -293,10 +293,13 @@ namespace KK_Plugins
             StudioAPI.GetOrCreateCurrentStateCategory("Pushup").AddControl(pushupBraToggle);
             pushupBraToggle.Value.Subscribe(value =>
             {
-                var controller = GetSelectedController();
-                if (controller == null) return;
-                if (controller.CurrentBraData.EnablePushup != value)
+                bool first = true;
+                foreach (var controller in StudioAPI.GetSelectedControllers<PushupController>())
                 {
+                    if (first && controller.CurrentBraData.EnablePushup == value)
+                        break;
+
+                    first = false;
                     controller.CurrentBraData.EnablePushup = value;
                     controller.RecalculateBody();
                 }
@@ -306,22 +309,17 @@ namespace KK_Plugins
             StudioAPI.GetOrCreateCurrentStateCategory("Pushup").AddControl(pushupTopToggle);
             pushupTopToggle.Value.Subscribe(value =>
             {
-                var controller = GetSelectedController();
-                if (controller == null) return;
-                if (controller.CurrentTopData.EnablePushup != value)
+                bool first = true;
+                foreach (var controller in StudioAPI.GetSelectedControllers<PushupController>())
                 {
+                    if (first && controller.CurrentTopData.EnablePushup == value)
+                        break;
+
+                    first = false;
                     controller.CurrentTopData.EnablePushup = value;
                     controller.RecalculateBody();
                 }
             });
-        }
-
-        private static PushupController GetSelectedController()
-        {
-            var mpCharCtrl = FindObjectOfType<MPCharCtrl>();
-            if (mpCharCtrl == null || mpCharCtrl.ociChar == null || mpCharCtrl.ociChar.charInfo == null)
-                return null;
-            return mpCharCtrl.ociChar.charInfo.GetComponent<PushupController>();
         }
 #endif
     }
