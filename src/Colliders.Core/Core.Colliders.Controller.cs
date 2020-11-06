@@ -26,7 +26,6 @@ namespace KK_Plugins
             private bool applyBreastColliders;
             internal bool applySkirtColliders;
             private bool applyFloorCollider;
-            private bool applyArmColliders;
 
             private bool didSetStates;
 
@@ -34,8 +33,6 @@ namespace KK_Plugins
             public bool BreastCollidersEnabled { get; set; }
             public bool SkirtCollidersEnabled { get; set; }
             public bool FloorColliderEnabled { get; set; }
-            public bool ArmCollidersEnabled { get; set; }
-
 
             internal void Main()
             {
@@ -60,7 +57,6 @@ namespace KK_Plugins
                     var data = new PluginData();
                     data.data.Add(nameof(BreastCollidersEnabled), BreastCollidersEnabled);
                     data.data.Add(nameof(FloorColliderEnabled), FloorColliderEnabled);
-                    data.data.Add(nameof(ArmCollidersEnabled), ArmCollidersEnabled);
 #if KK
                     data.data.Add(nameof(SkirtCollidersEnabled), SkirtCollidersEnabled);
 #endif
@@ -80,15 +76,14 @@ namespace KK_Plugins
                         {
                             BreastCollidersEnabled = ConfigBreastColliders.Value;
                             FloorColliderEnabled = ConfigFloorCollider.Value;
-                            ArmCollidersEnabled = ConfigArmColliders.Value;
 #if KK
                             SkirtCollidersEnabled = ConfigSkirtColliders.Value;
 #endif
                         }
                         else if (ConfigDefaultStudioSettings.Value == DefaultStudioSettings.On)
-                            BreastCollidersEnabled = FloorColliderEnabled = SkirtCollidersEnabled = ArmCollidersEnabled = true;
+                            BreastCollidersEnabled = FloorColliderEnabled = SkirtCollidersEnabled = true;
                         else
-                            BreastCollidersEnabled = FloorColliderEnabled = SkirtCollidersEnabled = ArmCollidersEnabled = false;
+                            BreastCollidersEnabled = FloorColliderEnabled = SkirtCollidersEnabled = false;
 
                         var data = GetExtendedData();
                         if (data != null)
@@ -97,8 +92,6 @@ namespace KK_Plugins
                                 BreastCollidersEnabled = (bool)loadedBreastCollidersEnabled;
                             if (data.data.TryGetValue(nameof(FloorColliderEnabled), out var loadedFloorColliderEnabled))
                                 FloorColliderEnabled = (bool)loadedFloorColliderEnabled;
-                            if (data.data.TryGetValue(nameof(ArmCollidersEnabled), out var loadedArmCollidersEnabled))
-                                ArmCollidersEnabled = (bool)loadedArmCollidersEnabled;
 #if KK
                             if (data.data.TryGetValue(nameof(SkirtCollidersEnabled), out var loadedSkirtCollidersEnabled))
                                 SkirtCollidersEnabled = (bool)loadedSkirtCollidersEnabled;
@@ -112,7 +105,6 @@ namespace KK_Plugins
                 {
                     BreastCollidersEnabled = ConfigBreastColliders.Value;
                     FloorColliderEnabled = ConfigFloorCollider.Value;
-                    ArmCollidersEnabled = ConfigArmColliders.Value;
 #if KK
                     SkirtCollidersEnabled = ConfigSkirtColliders.Value;
 #endif
@@ -170,7 +162,7 @@ namespace KK_Plugins
                         }
                     }
 
-                    if (applyBreastColliders || applyArmColliders)
+                    if (applyBreastColliders)
                     {
                         //Apply other character's arm colliders to this character's breasts
                         if (StudioAPI.InsideStudio)
@@ -182,14 +174,13 @@ namespace KK_Plugins
 #endif
                     }
 
-                    applyBreastColliders = applySkirtColliders = applyFloorCollider = applyArmColliders = applyColliders = false;
+                    applyBreastColliders = applySkirtColliders = applyFloorCollider = applyColliders = false;
                 }
             }
 
-            public void ApplyColliders() => applyBreastColliders = applySkirtColliders = applyFloorCollider = applyArmColliders = applyColliders = true;
+            public void ApplyColliders() => applyBreastColliders = applySkirtColliders = applyFloorCollider = applyColliders = true;
             public void ApplyBreastColliders() => applyColliders = applyBreastColliders = true;
             public void ApplySkirtColliders() => applyColliders = applySkirtColliders = true;
-            public void ApplyArmColliders() => applyColliders = applyArmColliders = true;
             public void ApplyFloorCollider() => applyColliders = applyFloorCollider = true;
 
 #if KK
@@ -236,7 +227,7 @@ namespace KK_Plugins
                 for (var i = 0; i < ArmColliders.Count; i++)
                 {
                     var armCollider = ArmColliders[i];
-                    if (!BreastCollidersEnabled || !ArmCollidersEnabled)
+                    if (!BreastCollidersEnabled)
                         dynamicBone.Colliders.Remove(armCollider);
                     else if (armCollider != null && !dynamicBone.Colliders.Contains(armCollider))
                         dynamicBone.Colliders.Add(armCollider);
@@ -253,7 +244,7 @@ namespace KK_Plugins
                 for (var i = 0; i < armColliders.Count; i++)
                 {
                     var armCollider = armColliders[i];
-                    if (!BreastCollidersEnabled || !ArmCollidersEnabled)
+                    if (!BreastCollidersEnabled)
                         dynamicBone.Colliders.Remove(armCollider);
                     else if (armCollider != null && !dynamicBone.Colliders.Contains(armCollider))
                         dynamicBone.Colliders.Add(armCollider);
