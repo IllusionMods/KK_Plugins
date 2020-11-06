@@ -11,6 +11,13 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
             private static void HVoiceCtrlInit() => HSceneInstance = FindObjectOfType<HScene>();
 
+            [HarmonyPostfix, HarmonyPatch(typeof(Manager.Sound), "Play", typeof(Manager.Sound.Loader))]
+            private static void PlayPostfix(Manager.Sound.Loader loader, AudioSource __result)
+            {
+                if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
+                    Caption.DisplaySubtitle(__result.gameObject, text);
+            }
+
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), nameof(Manager.Voice.OncePlayChara), typeof(Manager.Voice.Loader))]
             private static void OncePlayCharaPostfix(Manager.Voice.Loader loader, AudioSource __result)
             {
