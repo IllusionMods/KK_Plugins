@@ -61,6 +61,10 @@ namespace KK_Plugins
 
         public class InvisibleBodyCharaController : CharaCustomFunctionController
         {
+#if !EC
+            private bool CharacterLoaded = false;
+#endif
+
             private bool _visible = true;
             /// <summary>
             /// Gets or sets the visible state of a character
@@ -92,11 +96,21 @@ namespace KK_Plugins
 
             protected override void OnReload(GameMode currentGameMode, bool maintainState)
             {
-                Visible = true;
+#if EC
+                bool loadData = true;
+#else
+                //Skip loading data when replacing a character in Studio
+                bool loadData = !KKAPI.Studio.StudioAPI.InsideStudio || CharacterLoaded == false;
+                CharacterLoaded = true;
+#endif
 
-                var data = GetExtendedData();
-                if (data != null && data.data.TryGetValue("Visible", out var loadedVisibleState))
-                    _visible = (bool)loadedVisibleState;
+                if (loadData)
+                {
+                    _visible = true;
+                    var data = GetExtendedData();
+                    if (data != null && data.data.TryGetValue("Visible", out var loadedVisibleState))
+                        _visible = (bool)loadedVisibleState;
+                }
 
                 if (MakerAPI.InsideAndLoaded)
                     InvisibleToggle.SetValue(Invisible, false);
@@ -105,7 +119,7 @@ namespace KK_Plugins
                     SetVisibleState();
                 else
                     //Visible state will be set next frame, otherwise the head will be visible and not the body
-                    ChaControl.StartCoroutine(WaitAndSetVisibleState());
+                    ChaControl.StartCoroutine(WaitAndSetVisibleState(!loadData));
             }
             /// <summary>
             /// Update the visibility state of the character
@@ -121,18 +135,18 @@ namespace KK_Plugins
             /// <summary>
             /// Wait one frame and set visible state
             /// </summary>
-            private IEnumerator WaitAndSetVisibleState()
+            private IEnumerator WaitAndSetVisibleState(bool force = false)
             {
                 yield return null;
                 while (ChaControl.objBody == null || ChaControl.objHead == null || ChaControl.objHeadBone == null || ChaControl.objAnim == null)
                     yield return null;
 
-                SetVisibleState();
+                SetVisibleState(force);
             }
             /// <summary>
             /// Sets the visibility state of a character.
             /// </summary>
-            private void SetVisibleState()
+            private void SetVisibleState(bool force = false)
             {
                 //Don't set the visible state if it is already set
                 if (ChaControl == null)
@@ -140,7 +154,7 @@ namespace KK_Plugins
                 if (ChaControl.objBody == null)
                     return;
                 var bodyRenderer = ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == "o_body_a" || x.name == "o_body_cf" || x.name == "o_body_cm");
-                if (bodyRenderer != null && bodyRenderer.GetComponent<Renderer>().enabled == Visible)
+                if (!force && bodyRenderer != null && bodyRenderer.GetComponent<Renderer>().enabled == Visible)
                     return;
 
 #if AI || HS2
