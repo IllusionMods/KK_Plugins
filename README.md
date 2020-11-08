@@ -222,7 +222,7 @@ v1.1 Added a config option to disable the plugin<br/>
 </details>
 
 #### FreeHRandom
-**v1.2 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_FreeHRandom.v1.1.1.zip)** - For Koikatsu<br/>
+**v1.2 - [Download](https://www.patreon.com/posts/39984022)** - For Koikatsu<br/>
 Adds buttons to Free H selection screen to get random characters for your H session.<br/>
 
 <details><summary>Change Log</summary>
