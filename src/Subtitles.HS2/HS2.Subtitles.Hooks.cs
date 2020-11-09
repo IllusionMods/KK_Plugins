@@ -14,19 +14,33 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Sound), "Play", typeof(Manager.Sound.Loader))]
             private static void PlayPostfix(Manager.Sound.Loader loader, AudioSource __result)
             {
+                if (loader.asset.IsNullOrEmpty() || loader.asset.Contains("_bgm_"))
+                    return;
+
                 if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
                     Caption.DisplaySubtitle(__result.gameObject, text);
+#if DEBUG
+                else
+                    Logger.LogDebug($"No subtitle for {loader.asset}");
+#endif
             }
 
-            [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), nameof(Manager.Voice.OncePlayChara), typeof(Manager.Voice.Loader))]
-            private static void OncePlayCharaPostfix(Manager.Voice.Loader loader, AudioSource __result)
+            [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), "Play_Standby", typeof(AudioSource), typeof(Manager.Voice.Loader))]
+            private static void PlayStandbyPostfix(AudioSource audioSource, Manager.Voice.Loader loader)
             {
-                if (HSceneInstance != null && HSceneInstance.ctrlVoice != null)
-                    DisplayHSubtitle(loader, __result);
-                else if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
-                    Caption.DisplaySubtitle(__result.gameObject, text);
-            }
+                if (loader.asset.IsNullOrEmpty() || loader.asset.Contains("_bgm_"))
+                    return;
 
+                if (HSceneInstance != null && HSceneInstance.ctrlVoice != null)
+                    DisplayHSubtitle(loader, audioSource);
+                else if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
+                    Caption.DisplaySubtitle(audioSource.gameObject, text);
+#if DEBUG
+                else
+                    Logger.LogDebug($"No subtitle for {loader.asset}");
+#endif
+            }
+            
             private static void DisplayHSubtitle(Manager.Voice.Loader loader, AudioSource audioSource)
             {
                 Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[] dicdiclstVoiceList = (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[])Traverse.Create(HSceneInstance.ctrlVoice).Field("dicdiclstVoiceList").GetValue();
