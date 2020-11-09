@@ -302,6 +302,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AccessoryClothes", "AccessoryClothes", "{CE50952C-C3F5-473A-8C8E-FE59B58EF7C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.AccessoryClothes", "src\AccessoryClothes.KK\KK.AccessoryClothes.csproj", "{49002A35-8753-442F-9781-45E9881FD7AB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{84060175-95BD-4AD7-BA46-508DC8959B32} = {84060175-95BD-4AD7-BA46-508DC8959B32}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Profile", "Profile", "{BD1386F5-CFAE-4BF1-8826-78DB7F21BC46}"
 EndProject
