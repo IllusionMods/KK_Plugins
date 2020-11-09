@@ -79,6 +79,9 @@
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" EC</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "EC_AccessoryClothes.dll"
+del "$(TargetPath)"
+IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetDir)\EC_AccessoryClothes.dll" EC
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
