@@ -76,17 +76,23 @@ namespace KK_Plugins.MaterialEditor
 
         private static List<Material> GetMaterials(GameObject gameObject, string materialName)
         {
+            //Must use sharedMaterials for ChaControl and materials for other items or bad things happen
+            bool sharedMaterials = gameObject.GetComponent<ChaControl>() != null;
+#if KK || EC
+            if (sharedMaterials && materialName=="cf_m_tang")
+                sharedMaterials = false;
+#endif
+
             List<Material> materials = new List<Material>();
             var renderers = GetRendererList(gameObject);
             for (var i = 0; i < renderers.Count; i++)
             {
                 var renderer = renderers[i];
-                //Must use sharedMaterials for ChaControl and materials for other items or bad things happen
                 Material[] materialsToSearch;
-                if (gameObject.GetComponent<ChaControl>() == null)
-                    materialsToSearch = renderer.materials;
-                else
+                if (sharedMaterials)
                     materialsToSearch = renderer.sharedMaterials;
+                else
+                    materialsToSearch = renderer.materials;
 
                 for (var j = 0; j < materialsToSearch.Length; j++)
                 {
