@@ -104,7 +104,7 @@ namespace KK_Plugins
 
         private static void LoadSubtitles()
         {
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.CharaMakerSubs.xml"))
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.EmbeddedSubs.xml"))
                 if (stream != null)
                     using (XmlReader reader = XmlReader.Create(stream))
                     {

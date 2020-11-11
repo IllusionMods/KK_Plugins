@@ -75,7 +75,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\CharaMakerSubs.xml" />
+    <EmbeddedResource Include="Resources\EmbeddedSubs.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

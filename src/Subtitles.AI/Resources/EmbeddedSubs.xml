@@ -1,4 +1,5 @@
 <AI_Subtitles>
+  <!--Character maker subtitles-->
   <Sub Asset="ai_csv_00_00" Text="あなたはいろんなこと、知ってる"/>
   <Sub Asset="ai_csv_00_01" Text="あなたの言うことは、やっぱりわからない"/>
   <Sub Asset="ai_csv_00_02" Text="ありがとう"/>

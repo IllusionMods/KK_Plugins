@@ -85,7 +85,7 @@
     <Compile Include="AI.Subtitles.Hooks.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\CharaMakerSubs.xml" />
+    <EmbeddedResource Include="Resources\EmbeddedSubs.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
