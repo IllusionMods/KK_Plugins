@@ -18,7 +18,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.colliders";
         public const string PluginName = "Colliders";
         public const string PluginNameInternal = Constants.Prefix + "_Colliders";
-        public const string Version = "1.1.1";
+        public const string Version = "1.2";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<bool> ConfigBreastColliders { get; private set; }

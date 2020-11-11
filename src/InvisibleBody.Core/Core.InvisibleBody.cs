@@ -24,7 +24,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.invisiblebody";
         public const string PluginName = "Invisible Body";
         public const string PluginNameInternal = "KK_InvisibleBody"; //Intentionally left as KK because changing it would break extended save data
-        public const string Version = "1.3.2";
+        public const string Version = "1.4";
         internal static new ManualLogSource Logger;
 
         /// <summary>
