@@ -19,10 +19,6 @@ namespace KK_Plugins
 
                 if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
                     Caption.DisplaySubtitle(__result.gameObject, text);
-#if DEBUG
-                else
-                    Logger.LogDebug($"No subtitle for {loader.asset}");
-#endif
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), "Play_Standby", typeof(AudioSource), typeof(Manager.Voice.Loader))]
@@ -35,12 +31,8 @@ namespace KK_Plugins
                     DisplayHSubtitle(loader, audioSource);
                 else if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
                     Caption.DisplaySubtitle(audioSource.gameObject, text);
-#if DEBUG
-                else
-                    Logger.LogDebug($"No subtitle for {loader.asset}");
-#endif
             }
-            
+
             private static void DisplayHSubtitle(Manager.Voice.Loader loader, AudioSource audioSource)
             {
                 Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[] dicdiclstVoiceList = (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[])Traverse.Create(HSceneInstance.ctrlVoice).Field("dicdiclstVoiceList").GetValue();
