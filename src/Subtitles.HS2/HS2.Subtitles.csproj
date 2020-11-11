@@ -105,6 +105,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\CharaMakerSubs.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\FurSubtitles.xml" />
+    <EmbeddedResource Include="Resources\SitriSubtitles.xml" />
+  </ItemGroup>
   <Import Project="..\Subtitles.Core\Core.Subtitles.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
