@@ -5,8 +5,6 @@ using KKAPI.Utilities;
 using Studio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-
 #if AI || HS2
 using Cinemachine;
 using HarmonyLib;
@@ -51,7 +49,7 @@ namespace KK_Plugins.StudioSceneSettings
                 data.data["ShadowDistance"] = null;
             else
                 data.data["ShadowDistance"] = ShadowDistance.Value;
-            
+
             SetExtendedData(data);
         }
 
@@ -81,7 +79,7 @@ namespace KK_Plugins.StudioSceneSettings
                         FarClipPlane.Value = (float)farClipPlane;
                     else
                         FarClipPlane.Reset();
-                    
+
                     if (data.data.TryGetValue("ShadowDistance", out var shadowDistance) && shadowDistance != null && (float)shadowDistance != 0f)
                         ShadowDistance.Value = (float)shadowDistance;
                     else
