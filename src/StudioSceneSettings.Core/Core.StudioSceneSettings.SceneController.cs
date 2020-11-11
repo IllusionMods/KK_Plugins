@@ -5,6 +5,8 @@ using KKAPI.Utilities;
 using Studio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 #if AI || HS2
 using Cinemachine;
 using HarmonyLib;
@@ -17,6 +19,7 @@ namespace KK_Plugins.StudioSceneSettings
         public static SceneEffectsToggleSet MapMasking;
         public static SceneEffectsSliderSet NearClipPlane;
         public static SceneEffectsSliderSet FarClipPlane;
+        public static SceneEffectsSliderSet ShadowDistance;
         private int CameraLayerDefault;
 
 #if AI || HS2
@@ -44,6 +47,11 @@ namespace KK_Plugins.StudioSceneSettings
             else
                 data.data["FarClipPlane"] = FarClipPlane.Value;
 
+            if (ShadowDistance.Value == ShadowDistance.InitialValue)
+                data.data["ShadowDistance"] = null;
+            else
+                data.data["ShadowDistance"] = ShadowDistance.Value;
+            
             SetExtendedData(data);
         }
 
@@ -73,6 +81,11 @@ namespace KK_Plugins.StudioSceneSettings
                         FarClipPlane.Value = (float)farClipPlane;
                     else
                         FarClipPlane.Reset();
+                    
+                    if (data.data.TryGetValue("ShadowDistance", out var shadowDistance) && shadowDistance != null && (float)shadowDistance != 0f)
+                        ShadowDistance.Value = (float)shadowDistance;
+                    else
+                        ShadowDistance.Reset();
                 }
             }
             else if (operation == SceneOperationKind.Clear)
@@ -88,6 +101,7 @@ namespace KK_Plugins.StudioSceneSettings
             MapMasking?.Reset();
             NearClipPlane.Reset();
             FarClipPlane.Reset();
+            ShadowDistance.Reset();
         }
 
         /// <summary>
@@ -132,9 +146,11 @@ namespace KK_Plugins.StudioSceneSettings
             MapMasking = menu.AddToggleSet("Map Masking", MapMaskingSetter, false);
             NearClipPlane = menu.AddSliderSet("Near Clip Plane", NearClipSetter, NearClipDefault, 0.01f, 10f);
             FarClipPlane = menu.AddSliderSet("Far Clip Plane", FarClipSetter, FarClipDefault, 1f, 10000f);
+            ShadowDistance = menu.AddSliderSet("Shadow Distance", ShadowDistanceSetter, ShadowDistanceDefault, 1f, 1000f);
 
             NearClipPlane.EnforceSliderMaximum = false;
             FarClipPlane.EnforceSliderMaximum = false;
+            ShadowDistance.EnforceSliderMaximum = false;
         }
 
 #if KK
@@ -167,8 +183,11 @@ namespace KK_Plugins.StudioSceneSettings
             field.SetValue(lensSettings);
             cameraCtrl.fieldOfView = cameraCtrl.fieldOfView;
         }
+
         internal void MapMaskingSetter(bool value) => studioCameraColliderControllerGO.layer = value ? StudioSceneSettings.CameraMapMaskingLayer : CameraLayerDefault;
 
 #endif
+        internal float ShadowDistanceDefault => QualitySettings.shadowDistance;
+        internal void ShadowDistanceSetter(float value) => QualitySettings.shadowDistance = value;
     }
 }
