@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Studio;
+using static KK_Plugins.ImageEmbedConstants;
 
 namespace KK_Plugins
 {

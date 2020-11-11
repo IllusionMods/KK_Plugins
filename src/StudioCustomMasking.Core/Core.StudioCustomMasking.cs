@@ -3,6 +3,7 @@ using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Studio.SaveLoad;
 using System;
 using System.IO;
@@ -15,8 +16,8 @@ using UnityEngine.UI;
 namespace KK_Plugins.StudioCustomMasking
 {
     [BepInProcess(Constants.StudioProcessName)]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInDependency(StudioSceneSettings.StudioSceneSettings.GUID, "1.2")]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(StudioSceneSettings.StudioSceneSettings.GUID, StudioSceneSettings.StudioSceneSettings.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class StudioCustomMasking : BaseUnityPlugin
     {

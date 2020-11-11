@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Studio;
 using Studio;
 using static Studio.OIBoneInfo;
@@ -10,7 +11,7 @@ using AIChara;
 
 namespace KK_Plugins
 {
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInProcess(Constants.StudioProcessName)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class FKIK : BaseUnityPlugin

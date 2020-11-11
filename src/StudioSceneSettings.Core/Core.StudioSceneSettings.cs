@@ -8,7 +8,7 @@ using UnityEngine;
 namespace KK_Plugins.StudioSceneSettings
 {
     [BepInProcess(Constants.StudioProcessName)]
-    [BepInDependency(KoikatuAPI.GUID, "1.11")]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class StudioSceneSettings : BaseUnityPlugin
     {

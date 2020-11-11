@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
@@ -12,7 +13,7 @@ namespace KK_Plugins
     [BepInProcess(Constants.MainGameProcessNameSteam)]
 #endif
     [BepInProcess(Constants.MainGameProcessName)]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class Profile : BaseUnityPlugin
     {

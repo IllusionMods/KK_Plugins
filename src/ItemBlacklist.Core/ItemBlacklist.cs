@@ -17,8 +17,8 @@ namespace KK_Plugins
     [BepInProcess(Constants.MainGameProcessNameSteam)]
 #endif
     [BepInProcess(Constants.MainGameProcessName)]
+    [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
-    [BepInDependency(Sideloader.Sideloader.GUID, "16.0")]
     public partial class ItemBlacklist : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.itemblacklist";

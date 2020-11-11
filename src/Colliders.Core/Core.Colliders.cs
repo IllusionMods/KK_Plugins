@@ -1,5 +1,8 @@
-﻿using BepInEx.Configuration;
+﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
+using HarmonyLib;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
@@ -13,7 +16,9 @@ using AIChara;
 
 namespace KK_Plugins
 {
-    public partial class Colliders
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInPlugin(GUID, PluginName, Version)]
+    public partial class Colliders : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.colliders";
         public const string PluginName = "Colliders";
@@ -23,6 +28,9 @@ namespace KK_Plugins
 
         public static ConfigEntry<bool> ConfigBreastColliders { get; private set; }
         public static ConfigEntry<bool> ConfigFloorCollider { get; private set; }
+#if KK
+        public static ConfigEntry<bool> ConfigSkirtColliders { get; private set; }
+#endif
         public static ConfigEntry<DefaultStudioSettings> ConfigDefaultStudioSettings { get; private set; }
         public enum DefaultStudioSettings { Config, On, Off }
 
@@ -38,6 +46,13 @@ namespace KK_Plugins
 
             ConfigBreastColliders.SettingChanged += ConfigBreastColliders_SettingChanged;
             ConfigFloorCollider.SettingChanged += ConfigFloorCollider_SettingChanged;
+
+#if KK
+            ConfigSkirtColliders = Config.Bind("Config", "Skirt Colliders", true, new ConfigDescription("Extra colliders for the legs to cause less skirt clipping.", null, new ConfigurationManagerAttributes { Order = 5 }));
+            ConfigSkirtColliders.SettingChanged += ConfigSkirtColliders_SettingChanged;
+
+            Harmony.CreateAndPatchAll(typeof(Hooks));
+#endif
 
             RegisterStudioControls();
         }
@@ -79,6 +94,26 @@ namespace KK_Plugins
                 GetController(chaControl).ApplyFloorCollider();
             }
         }
+#if KK
+        /// <summary>
+        /// Apply colliders on setting change
+        /// </summary>
+        private static void ConfigSkirtColliders_SettingChanged(object sender, System.EventArgs e)
+        {
+            if (StudioAPI.InsideStudio) return;
+
+            var chaControls = FindObjectsOfType<ChaControl>();
+            for (var i = 0; i < chaControls.Length; i++)
+            {
+                var chaControl = chaControls[i];
+                var controller = GetController(chaControl);
+                if (controller == null) continue;
+
+                controller.SkirtCollidersEnabled = ConfigSkirtColliders.Value;
+                GetController(chaControl).ApplySkirtColliders();
+            }
+        }
+#endif
 
         private static void RegisterStudioControls()
         {

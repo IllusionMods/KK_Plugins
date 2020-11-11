@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
+using KKAPI;
 
 namespace KK_Plugins
 {
@@ -8,7 +9,7 @@ namespace KK_Plugins
     /// Replaces all _low assets with normal assets, forcing everything to load as high poly
     /// </summary>
     [BepInPlugin(GUID, PluginName, Version)]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID, "1.10")]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public partial class ForceHighPoly : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.forcehighpoly";

@@ -89,9 +89,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK.MaterialEditor.Hooks.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />
   </ItemGroup>
   <ItemGroup>

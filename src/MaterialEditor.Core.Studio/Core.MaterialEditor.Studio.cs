@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Studio.SaveLoad;
 using Studio;
 using System.Linq;
@@ -20,10 +21,10 @@ namespace KK_Plugins.MaterialEditor
     /// Plugin responsible for handling the Studio UI and the KKAPI Studio controller
     /// </summary>
     [BepInProcess(Constants.StudioProcessName)]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInDependency(MaterialEditorPlugin.GUID)]
-    [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier)]
-    [BepInDependency(Sideloader.Sideloader.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(MaterialEditorPlugin.GUID, MaterialEditorPlugin.Version)]
+    [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
+    [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class MEStudio : UI
     {

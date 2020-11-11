@@ -1,19 +1,23 @@
-﻿using BepInEx;
-using BepInEx.Configuration;
-using HarmonyLib;
-using KKAPI;
-using KKAPI.Studio;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace KK_Plugins
 {
-    [BepInDependency(KoikatuAPI.GUID)]
-    [BepInPlugin(GUID, PluginName, Version)]
-    public partial class Colliders : BaseUnityPlugin
+    internal static class ColliderConstants
     {
-        public static ConfigEntry<bool> ConfigSkirtColliders { get; private set; }
-
+#if AI || HS2
+        internal static ColliderData FloorColliderData = new ColliderData("cf_J_Root", 100f, 0f, new Vector3(0, -100.01f, 0f));
+        internal static readonly List<ColliderData> ArmColliderDataList = new List<ColliderData>
+        {
+            new ColliderData("cf_J_Hand_s_L", 0.20f, 0.75f, new Vector3(-0.3f, -0.05f, 0f)),
+            new ColliderData("cf_J_Hand_s_R", 0.20f, 0.75f, new Vector3(0.3f, -0.05f, 0f)),
+            new ColliderData("cf_J_ArmLow02_s_L", 0.25f, 2.5f, new Vector3(0f, 0f, 0f)),
+            new ColliderData("cf_J_ArmLow02_s_R", 0.25f, 2.5f, new Vector3(0f, 0f, 0f)),
+            new ColliderData("cf_J_ArmUp02_s_L", 0.25f, 2.5f, new Vector3(0f, 0f, 0f)),
+            new ColliderData("cf_J_ArmUp02_s_R", 0.25f, 2.5f, new Vector3(0f, 0f, 0f)),
+        };
+        internal static readonly HashSet<string> BreastDBComments = new HashSet<string> { "Mune_L", "Mune_R" };
+#elif KK
         internal static ColliderData FloorColliderData = new ColliderData("cf_j_root", 100f, 0f, new Vector3(0, -100.01f, 0f));
         internal static readonly List<ColliderData> ArmColliderDataList = new List<ColliderData>
         {
@@ -33,34 +37,7 @@ namespace KK_Plugins
             new ColliderData("cf_s_thigh02_L", 0.083f, 0.35f, new Vector3(-0.0065f, 0f, -0.012f), DynamicBoneCollider.Direction.Y),
             new ColliderData("cf_s_thigh02_R", 0.083f, 0.35f, new Vector3(0.0065f, 0f, -0.012f), DynamicBoneCollider.Direction.Y),
         };
-
         internal static readonly HashSet<string> BreastDBComments = new HashSet<string> { "右胸", "左胸" };
-
-        private void Start()
-        {
-            ConfigSkirtColliders = Config.Bind("Config", "Skirt Colliders", true, new ConfigDescription("Extra colliders for the legs to cause less skirt clipping.", null, new ConfigurationManagerAttributes { Order = 5 }));
-            ConfigSkirtColliders.SettingChanged += ConfigSkirtColliders_SettingChanged;
-
-            Harmony.CreateAndPatchAll(typeof(Hooks));
-        }
-
-        /// <summary>
-        /// Apply colliders on setting change
-        /// </summary>
-        private static void ConfigSkirtColliders_SettingChanged(object sender, System.EventArgs e)
-        {
-            if (StudioAPI.InsideStudio) return;
-
-            var chaControls = FindObjectsOfType<ChaControl>();
-            for (var i = 0; i < chaControls.Length; i++)
-            {
-                var chaControl = chaControls[i];
-                var controller = GetController(chaControl);
-                if (controller == null) continue;
-
-                controller.SkirtCollidersEnabled = ConfigSkirtColliders.Value;
-                GetController(chaControl).ApplySkirtColliders();
-            }
-        }
+#endif
     }
 }

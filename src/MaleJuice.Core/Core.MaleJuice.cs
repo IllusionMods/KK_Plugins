@@ -15,7 +15,7 @@ namespace KK_Plugins
     /// <summary>
     /// Enables juice textures for male characters
     /// </summary>
-    [BepInDependency(KoikatuAPI.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class MaleJuice : BaseUnityPlugin
     {

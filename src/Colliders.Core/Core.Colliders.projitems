@@ -11,7 +11,9 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.Colliders.ColliderData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.Colliders.Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.Colliders.Controller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.Colliders.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.Colliders.Hooks.cs" />
   </ItemGroup>
 </Project>

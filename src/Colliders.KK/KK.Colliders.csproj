@@ -78,11 +78,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK.Colliders.Controller.cs" />
-    <Compile Include="KK.Colliders.cs" />
-    <Compile Include="KK.Colliders.Hooks.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

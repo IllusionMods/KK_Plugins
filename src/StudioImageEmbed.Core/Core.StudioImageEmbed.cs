@@ -3,15 +3,17 @@ using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Studio.SaveLoad;
 using Studio;
 using System.IO;
+using static KK_Plugins.ImageEmbedConstants;
 
 namespace KK_Plugins
 {
     [BepInProcess(Constants.StudioProcessName)]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInDependency(MaterialEditor.MaterialEditorPlugin.GUID, "2.0")]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(MaterialEditor.MaterialEditorPlugin.GUID, MaterialEditor.MaterialEditorPlugin.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class ImageEmbed : BaseUnityPlugin
     {

@@ -26,7 +26,7 @@ namespace KK_Plugins
     /// Allows attaching IK nodes to objects to create custom animations
     /// </summary>
     [BepInProcess(Constants.StudioProcessName)]
-    [BepInDependency(KoikatuAPI.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class AnimationController : BaseUnityPlugin
     {

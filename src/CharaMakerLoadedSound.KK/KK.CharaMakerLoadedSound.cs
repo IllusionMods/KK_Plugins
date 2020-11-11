@@ -1,12 +1,13 @@
 ﻿using BepInEx;
 using Illusion.Game;
+using KKAPI;
 
 namespace KK_Plugins
 {
     /// <summary>
     /// When Chara Maker starts, wait a bit for lag to stop then play a sound
     /// </summary>
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class CharaMakerLoadedSound : BaseUnityPlugin
     {

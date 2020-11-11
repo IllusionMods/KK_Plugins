@@ -14,7 +14,7 @@ namespace KK_Plugins
     /// <summary>
     /// Adds shaking to a character's eye highlights when she is a virgin in an H scene
     /// </summary>
-    [BepInDependency(KoikatuAPI.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class EyeShaking : BaseUnityPlugin
     {

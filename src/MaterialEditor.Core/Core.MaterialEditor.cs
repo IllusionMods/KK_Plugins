@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using System;
@@ -25,9 +26,9 @@ namespace KK_Plugins.MaterialEditor
     /// <summary>
     /// MaterialEditor plugin base
     /// </summary>
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier)]
-    [BepInDependency(Sideloader.Sideloader.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
+    [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class MaterialEditorPlugin : BaseUnityPlugin
     {

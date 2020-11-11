@@ -1,7 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
@@ -22,11 +24,10 @@ namespace KK_Plugins
     /// <summary>
     /// Plugin for assigning uncensors to characters individually
     /// </summary>
-    [BepInDependency(Sideloader.Sideloader.GUID)]
-    [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID)]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID, "1.9")]
+    [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
+    [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(KoiSkinOverlayX.KoiSkinOverlayMgr.GUID, "5.1")]
-    [BepInDependency(ConfigurationManager.ConfigurationManager.GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(GUID, PluginName, Version)]
     internal partial class UncensorSelector : BaseUnityPlugin
     {

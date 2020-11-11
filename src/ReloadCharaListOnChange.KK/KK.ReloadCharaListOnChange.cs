@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using ChaCustom;
 using ExtensibleSaveFormat;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Maker;
 using System;
 using System.IO;
@@ -17,8 +18,8 @@ namespace KK_Plugins
     /// <summary>
     /// Watches the character folders for changes and updates the character/coordinate list in the chara maker and studio.
     /// </summary>
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInDependency(ExtendedSave.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class ReloadCharaListOnChange : BaseUnityPlugin
     {

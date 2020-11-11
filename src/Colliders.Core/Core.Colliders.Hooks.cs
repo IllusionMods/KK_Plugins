@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿#if KK
+using HarmonyLib;
 
 namespace KK_Plugins
 {
@@ -16,3 +17,4 @@ namespace KK_Plugins
         }
     }
 }
+#endif

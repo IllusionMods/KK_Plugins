@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UnityEngine;
@@ -13,10 +14,10 @@ namespace KK_Plugins.MaterialEditor
     [BepInProcess(Constants.MainGameProcessNameSteam)]
 #endif
     [BepInProcess(Constants.MainGameProcessName)]
-    [BepInDependency(KKAPI.KoikatuAPI.GUID)]
-    [BepInDependency(MaterialEditorPlugin.GUID)]
-    [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier)]
-    [BepInDependency(Sideloader.Sideloader.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(MaterialEditorPlugin.GUID, MaterialEditorPlugin.Version)]
+    [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
+    [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class MEMaker : UI
     {

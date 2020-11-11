@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.StudioImageEmbed.Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.StudioImageEmbed.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.StudioImageEmbed.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.StudioImageEmbed.SceneController.cs" />

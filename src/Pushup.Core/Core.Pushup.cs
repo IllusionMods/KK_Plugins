@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace KK_Plugins
 {
-    [BepInDependency(KoikatuAPI.GUID)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class Pushup : BaseUnityPlugin
     {

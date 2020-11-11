@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using System;
@@ -11,7 +12,7 @@ namespace KK_Plugins
     /// <summary>
     /// Generates random characters in the character maker
     /// </summary>
-    [BepInDependency(KKAPI.KoikatuAPI.GUID, KKAPI.KoikatuAPI.VersionConst)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInIncompatibility("info.jbcs.koikatsu.characterrandomizer")]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class RandomCharacterGenerator : BaseUnityPlugin
