@@ -614,6 +614,11 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
         }
+        private IEnumerator RemoveRimHairCo(int slot)
+        {
+            yield return null;
+            RemoveRimHair(slot);
+        }
         private void RemoveRimHair(int slot)
         {
             var gameObj = ChaControl.objHair[slot];
@@ -918,7 +923,7 @@ namespace KK_Plugins.MaterialEditor
 
 #if KK || EC
             if (MaterialEditorPlugin.RimRemover.Value)
-                RemoveRimHair(slot);
+                StartCoroutine(RemoveRimHairCo(slot));
 #endif
         }
         /// <summary>
