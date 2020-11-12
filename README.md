@@ -247,7 +247,7 @@ v1.2 Changes made in Studio apply to all selected characters<br/>
 </details>
 
 #### MaterialEditor
-**v2.3 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
+**v2.3.1 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
 
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
@@ -299,6 +299,7 @@ v2.1.4 Blacklist AIT/eyelashes shader from optimization<br/>
 v2.1.5 Fix .obj export<br/>
 v2.2 Added hotkeys for disabling or enabling ShadowCastingMode and ReceiveShadows for all selected items in Studio<br/>
 v2.3 Fix for tongue edits applying to other characters</br>
+v2.3.1 Fix nullref</br>
 </details>
 
 #### MaleJuice
