@@ -76,6 +76,9 @@ namespace KK_Plugins.MaterialEditor
 
         private static List<Material> GetMaterials(GameObject gameObject, string materialName)
         {
+            if (gameObject == null)
+                return new List<Material>();
+
             //Must use sharedMaterials for ChaControl and materials for other items or bad things happen
             bool sharedMaterials = gameObject.GetComponent<ChaControl>() != null;
 
