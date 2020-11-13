@@ -576,7 +576,7 @@ namespace KK_Plugins
             /// </summary>
             private void UpdateSkinOverlay()
             {
-                _ksox.AdditionalTextures.RemoveAll(x => (UncensorSelectorController)x.Tag == this);
+                _ksox.AdditionalTextures.RemoveAll(x => x.Tag is UncensorSelectorController);
 
                 //Apply uncensor overlay texture
                 try

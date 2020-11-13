@@ -27,7 +27,7 @@ namespace KK_Plugins
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
-    [BepInDependency(KoiSkinOverlayX.KoiSkinOverlayMgr.GUID, "5.1")]
+    [BepInDependency(KoiSkinOverlayX.KoiSkinOverlayMgr.GUID, "5.1.1")]
     [BepInPlugin(GUID, PluginName, Version)]
     internal partial class UncensorSelector : BaseUnityPlugin
     {
