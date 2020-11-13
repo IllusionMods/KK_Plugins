@@ -596,21 +596,21 @@ namespace KK_Plugins.MaterialEditor
                 RemoveRimClothes(i);
             for (var i = 0; i < ChaControl.objHair.Length; i++)
                 RemoveRimHair(i);
-            for (var i = 0; i < ChaControl.objAccessory.Length; i++)
-                RemoveRimAccessory(i);
+            foreach (var accessoryIndex in MaterialEditorPlugin.GetAcccessoryIndices(ChaControl))
+                RemoveRimAccessory(accessoryIndex);
         }
         private void RemoveRimClothes(int slot)
         {
-            var gameObj = ChaControl.objClothes[slot];
-            var rendList = GetRendererList(gameObj);
+            var go = ChaControl.objClothes[slot];
+            var rendList = GetRendererList(go);
             for (var j = 0; j < rendList.Count; j++)
             {
                 var mats = GetMaterials(rendList[j]);
                 for (int k = 0; k < mats.Count; k++)
                 {
                     Material mat = mats[k];
-                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", gameObj) == null)
-                        SetMaterialFloatProperty(slot, mat, "rimV", 0, gameObj);
+                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", go) == null)
+                        SetMaterialFloatProperty(slot, mat, "rimV", 0, go);
                 }
             }
         }
@@ -621,31 +621,31 @@ namespace KK_Plugins.MaterialEditor
         }
         private void RemoveRimHair(int slot)
         {
-            var gameObj = ChaControl.objHair[slot];
-            var rendList = GetRendererList(gameObj);
+            var go = ChaControl.objHair[slot];
+            var rendList = GetRendererList(go);
             for (var j = 0; j < rendList.Count; j++)
             {
                 var mats = GetMaterials(rendList[j]);
                 for (int k = 0; k < mats.Count; k++)
                 {
                     Material mat = mats[k];
-                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", gameObj) == null)
-                        SetMaterialFloatProperty(slot, mat, "rimV", 0, gameObj);
+                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", go) == null)
+                        SetMaterialFloatProperty(slot, mat, "rimV", 0, go);
                 }
             }
         }
         private void RemoveRimAccessory(int slot)
         {
-            var gameObj = ChaControl.objAccessory[slot];
-            var rendList = GetRendererList(gameObj);
+            var go = ChaControl.GetAccessory(slot).gameObject;
+            var rendList = GetRendererList(go);
             for (var j = 0; j < rendList.Count; j++)
             {
                 var mats = GetMaterials(rendList[j]);
                 for (int k = 0; k < mats.Count; k++)
                 {
                     Material mat = mats[k];
-                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", gameObj) == null)
-                        SetMaterialFloatProperty(slot, mat, "rimV", 0, gameObj);
+                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", go) == null)
+                        SetMaterialFloatProperty(slot, mat, "rimV", 0, go);
                 }
             }
         }

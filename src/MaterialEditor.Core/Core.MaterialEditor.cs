@@ -19,6 +19,7 @@ using XUnity.ResourceRedirector;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
 #if AI || HS2
 using AIChara;
+using ChaAccessoryComponent = AIChara.CmpAccessory;
 #endif
 
 namespace KK_Plugins.MaterialEditor
@@ -184,6 +185,20 @@ namespace KK_Plugins.MaterialEditor
             var AllAdditionalParts = Traverse.Create(uncensorSelectorObject).Field("AllAdditionalParts").GetValue<HashSet<string>>();
             foreach (var parts in AllAdditionalParts)
                 BodyParts.Add(parts);
+        }
+
+        /// <summary>
+        /// Return a list of accessory indices for the character
+        /// </summary>
+        public static IEnumerable<int> GetAcccessoryIndices(ChaControl chaControl)
+        {
+            var accessories = chaControl.GetComponentsInChildren<ChaAccessoryComponent>();
+            for (int i = 0; i < accessories.Length; i++)
+            {
+                var accessory = accessories[i];
+                if (int.TryParse(accessory.gameObject.name.Replace("ca_slot", ""), out int index))
+                    yield return index;
+            }
         }
 
         private static void WatchTexChanges_SettingChanged(object sender, EventArgs e)

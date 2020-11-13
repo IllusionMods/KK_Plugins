@@ -473,17 +473,21 @@ namespace KK_Plugins.MaterialEditor
             ItemTypeDropDown.onValueChanged.AddListener(value => ChangeItemType(value, chaControl));
             ItemTypeDropDown.options.Clear();
             ItemTypeDropDown.options.Add(new Dropdown.OptionData("Body"));
+            ItemTypeDropDown.Set(0);
             ItemTypeDropDown.captionText.text = "Body";
 
             for (var i = 0; i < chaControl.objClothes.Length; i++)
                 if (chaControl.objClothes[i] != null && chaControl.objClothes[i].GetComponentInChildren<ChaClothesComponent>() != null)
                     ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Clothes {ClothesIndexToString(i)}"));
+
             for (var i = 0; i < chaControl.objHair.Length; i++)
                 if (chaControl.objHair[i] != null && chaControl.objHair[i].GetComponent<ChaCustomHairComponent>() != null)
                     ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Hair {HairIndexToString(i)}"));
-            for (var i = 0; i < chaControl.objAccessory.Length; i++)
-                if (chaControl.objAccessory[i] != null && chaControl.GetAccessory(i) != null)
-                    ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(i)}"));
+
+            var accessories = GetAcccessoryIndices(chaControl).ToList();
+            accessories.Sort();
+            for (var i = 0; i < accessories.Count; i++)
+                ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(accessories[i])}"));
         }
 
         private void ChangeItemType(int selectedItem, ChaControl chaControl)
@@ -520,11 +524,12 @@ namespace KK_Plugins.MaterialEditor
                 case "Accessory":
                     if (option.Length > 1)
                         index = AccessoryStringToIndex(option[1]);
+                    var accessory = chaControl.GetAccessory(index);
 
-                    if (index == -1 || chaControl.objAccessory[index] == null || chaControl.GetAccessory(index) == null)
+                    if (accessory == null)
                         PopulateList(chaControl.gameObject);
                     else
-                        PopulateList(chaControl.GetAccessory(index).gameObject, index);
+                        PopulateList(accessory.gameObject, index);
                     break;
             }
         }
