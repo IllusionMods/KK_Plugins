@@ -552,10 +552,15 @@ namespace KK_Plugins.MaterialEditor
                     return "Pantyhose";
                 case 6:
                     return "Legwear";
+#if !KK
+                case 7:
+                    return "Shoes";
+#else
                 case 7:
                     return "Indoor Shoes";
                 case 8:
                     return "Outdoor Shoes";
+#endif
                 default:
                     return "";
             }
@@ -580,6 +585,7 @@ namespace KK_Plugins.MaterialEditor
                     return 6;
                 case "Indoor Shoes":
                 case "Indoor":
+                case "Shoes":
                     return 7;
                 case "Outdoor Shoes":
                 case "Outdoor":
