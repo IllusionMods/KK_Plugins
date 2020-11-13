@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using KKAPI.Maker;
 using KKAPI.Utilities;
 using System;
 using System.Collections;
@@ -13,6 +14,9 @@ using static KK_Plugins.MaterialEditor.MaterialAPI;
 using static KK_Plugins.MaterialEditor.MaterialEditorPlugin;
 #if AI || HS2
 using AIChara;
+using ChaClothesComponent = AIChara.CmpClothes;
+using ChaCustomHairComponent = AIChara.CmpHair;
+using ChaAccessoryComponent = AIChara.CmpAccessory;
 #endif
 
 namespace KK_Plugins.MaterialEditor
@@ -26,9 +30,10 @@ namespace KK_Plugins.MaterialEditor
         private static Image MaterialEditorMainPanel;
         private static ScrollRect MaterialEditorScrollableUI;
         private static InputField FilterInputField;
+        internal static Dropdown ItemTypeDropDown;
 
         internal static FileSystemWatcher TexChangeWatcher;
-        VirtualList virtualList;
+        private VirtualList virtualList;
 
         internal const float marginSize = 5f;
         internal const float headerSize = 20f;
@@ -89,6 +94,12 @@ namespace KK_Plugins.MaterialEditor
             FilterInputField = UIUtility.CreateInputField("Filter", drag.transform, "Filter");
             FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
             FilterInputField.onValueChanged.AddListener(RefreshUI);
+
+            ItemTypeDropDown = UIUtility.CreateDropdown("ItemType", drag.transform);
+            ItemTypeDropDown.transform.SetRect(1f, 0f, 1f, 1f, -200f, 0f, -20f);
+            ItemTypeDropDown.captionText.transform.SetRect(0.05f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
+            ItemTypeDropDown.captionText.alignment = TextAnchor.MiddleLeft;
+            ItemTypeDropDown.gameObject.SetActive(false);
 
             var close = UIUtility.CreateButton("CloseButton", drag.transform, "");
             close.transform.SetRect(1f, 0f, 1f, 1f, -20f);
@@ -451,6 +462,166 @@ namespace KK_Plugins.MaterialEditor
             yield return null;
             yield return null;
             PopulateList(go, slot, filter);
+        }
+
+        /// <summary>
+        /// Populate the ItemType dropdown for switching between displaying various types of items on a character
+        /// </summary>
+        protected void PopulateItemTypeDropdown(ChaControl chaControl)
+        {
+            ItemTypeDropDown.onValueChanged.RemoveAllListeners();
+            ItemTypeDropDown.onValueChanged.AddListener(value => ChangeItemType(value, chaControl));
+            ItemTypeDropDown.options.Clear();
+            ItemTypeDropDown.options.Add(new Dropdown.OptionData("Body"));
+            ItemTypeDropDown.captionText.text = "Body";
+
+            for (var i = 0; i < chaControl.objClothes.Length; i++)
+                if (chaControl.objClothes[i] != null && chaControl.objClothes[i].GetComponentInChildren<ChaClothesComponent>() != null)
+                    ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Clothes {ClothesIndexToString(i)}"));
+            for (var i = 0; i < chaControl.objHair.Length; i++)
+                if (chaControl.objHair[i] != null && chaControl.objHair[i].GetComponent<ChaCustomHairComponent>() != null)
+                    ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Hair {HairIndexToString(i)}"));
+            for (var i = 0; i < chaControl.objAccessory.Length; i++)
+                if (chaControl.objAccessory[i] != null && chaControl.GetAccessory(i) != null)
+                    ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(i)}"));
+        }
+
+        private void ChangeItemType(int selectedItem, ChaControl chaControl)
+        {
+            var option = ItemTypeDropDown.OptionText(selectedItem).Split(' ');
+            int index = 0;
+
+            if (chaControl == null)
+                PopulateList(null);
+
+            switch (option[0])
+            {
+                case "Body":
+                    PopulateList(chaControl.gameObject);
+                    break;
+                case "Clothes":
+                    if (option.Length > 1)
+                        index = ClothesStringToIndex(option[1]);
+
+                    if (index == -1 || chaControl.objClothes[index] == null || chaControl.objClothes[index].GetComponentInChildren<ChaClothesComponent>() == null)
+                        PopulateList(chaControl.gameObject);
+                    else
+                        PopulateList(chaControl.objClothes[index], index);
+                    break;
+                case "Hair":
+                    if (option.Length > 1)
+                        index = HairStringToIndex(option[1]);
+
+                    if (index == -1 || chaControl.objHair[index] == null || chaControl.objHair[index].GetComponent<ChaCustomHairComponent>() == null)
+                        PopulateList(chaControl.gameObject);
+                    else
+                        PopulateList(chaControl.objHair[index], index);
+                    break;
+                case "Accessory":
+                    if (option.Length > 1)
+                        index = AccessoryStringToIndex(option[1]);
+
+                    if (index == -1 || chaControl.objAccessory[index] == null || chaControl.GetAccessory(index) == null)
+                        PopulateList(chaControl.gameObject);
+                    else
+                        PopulateList(chaControl.GetAccessory(index).gameObject, index);
+                    break;
+            }
+        }
+
+        private string ClothesIndexToString(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return "Top";
+                case 1:
+                    return "Bottom";
+                case 2:
+                    return "Bra";
+                case 3:
+                    return "Underwear";
+                case 4:
+                    return "Gloves";
+                case 5:
+                    return "Pantyhose";
+                case 6:
+                    return "Legwear";
+                case 7:
+                    return "Indoor Shoes";
+                case 8:
+                    return "Outdoor Shoes";
+                default:
+                    return "";
+            }
+        }
+        private int ClothesStringToIndex(string s)
+        {
+            switch (s)
+            {
+                case "Top":
+                    return 0;
+                case "Bottom":
+                    return 1;
+                case "Bra":
+                    return 2;
+                case "Underwear":
+                    return 3;
+                case "Gloves":
+                    return 4;
+                case "Pantyhose":
+                    return 5;
+                case "Legwear":
+                    return 6;
+                case "Indoor Shoes":
+                case "Indoor":
+                    return 7;
+                case "Outdoor Shoes":
+                case "Outdoor":
+                    return 8;
+                default:
+                    return -1;
+            }
+        }
+
+        private string HairIndexToString(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return "Back";
+                case 1:
+                    return "Front";
+                case 2:
+                    return "Side";
+                case 3:
+                    return "Extension";
+                default:
+                    return "";
+            }
+        }
+        private int HairStringToIndex(string s)
+        {
+            switch (s)
+            {
+                case "Back":
+                    return 0;
+                case "Front":
+                    return 1;
+                case "Side":
+                    return 2;
+                case "Extension":
+                    return 3;
+                default:
+                    return -1;
+            }
+        }
+        private string AccessoryIndexToString(int index) => $"{index + 1:00}";
+        private int AccessoryStringToIndex(string s)
+        {
+            if (int.TryParse(s, out int index))
+                return index - 1;
+            return -1;
         }
 
         private static void ExportTexture(Material mat, string property)

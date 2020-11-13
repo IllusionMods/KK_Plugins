@@ -61,7 +61,7 @@ namespace KK_Plugins.MaterialEditor
 
                 Dropdown dropdownEnabled = UIUtility.CreateDropdown("RendererEnabledDropdown", itemPanel.transform);
                 dropdownEnabled.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownEnabled.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
+                dropdownEnabled.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
                 dropdownEnabled.captionText.alignment = TextAnchor.MiddleLeft;
                 dropdownEnabled.options.Clear();
                 dropdownEnabled.options.Add(new Dropdown.OptionData("Off"));
@@ -93,7 +93,7 @@ namespace KK_Plugins.MaterialEditor
 
                 Dropdown dropdownShadowCastingMode = UIUtility.CreateDropdown("RendererShadowCastingModeDropdown", itemPanel.transform);
                 dropdownShadowCastingMode.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownShadowCastingMode.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
+                dropdownShadowCastingMode.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
                 dropdownShadowCastingMode.captionText.alignment = TextAnchor.MiddleLeft;
                 dropdownShadowCastingMode.options.Clear();
                 dropdownShadowCastingMode.options.Add(new Dropdown.OptionData("Off"));
@@ -127,7 +127,7 @@ namespace KK_Plugins.MaterialEditor
 
                 Dropdown dropdownReceiveShadows = UIUtility.CreateDropdown("RendererReceiveShadowsDropdown", itemPanel.transform);
                 dropdownReceiveShadows.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownReceiveShadows.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
+                dropdownReceiveShadows.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
                 dropdownReceiveShadows.captionText.alignment = TextAnchor.MiddleLeft;
                 dropdownReceiveShadows.options.Clear();
                 dropdownReceiveShadows.options.Add(new Dropdown.OptionData("Off"));
@@ -195,7 +195,7 @@ namespace KK_Plugins.MaterialEditor
 
                 Dropdown dropdownShader = UIUtility.CreateDropdown("ShaderDropdown", itemPanel.transform);
                 dropdownShader.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownShader.captionText.transform.SetRect(0f, 0f, 1f, 1f, 0f, 2f, -15f, -2f);
+                dropdownShader.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
                 dropdownShader.captionText.alignment = TextAnchor.MiddleLeft;
                 dropdownShader.options.Clear();
                 dropdownShader.options.Add(new Dropdown.OptionData("Reset"));
