@@ -1024,9 +1024,9 @@ namespace KK_Plugins.MaterialEditor
                 if (material.HasProperty($"_{materialTextureProperty.Property}"))
                     SetMaterialTexture(slot, material, materialTextureProperty.Property, materialTextureProperty.Data, go);
                 if (materialTextureProperty.Offset != null)
-                    SetMaterialTextureOffset(slot, material, materialTextureProperty.Property, (Vector2) materialTextureProperty.Offset, go, setProperty);
+                    SetMaterialTextureOffset(slot, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Offset, go, setProperty);
                 if (materialTextureProperty.Scale != null)
-                    SetMaterialTextureScale(slot, material, materialTextureProperty.Property, (Vector2) materialTextureProperty.Scale, go, setProperty);
+                    SetMaterialTextureScale(slot, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, go, setProperty);
             }
         }
 

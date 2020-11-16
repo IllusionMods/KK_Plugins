@@ -523,6 +523,10 @@ namespace KK_Plugins.MaterialEditor
                 var materialTextureProperty = MaterialEditorPlugin.CopyData.MaterialTexturePropertyList[i];
                 if (material.HasProperty($"_{materialTextureProperty.Property}"))
                     SetMaterialTexture(id, material, materialTextureProperty.Property, materialTextureProperty.Data);
+                if (materialTextureProperty.Offset != null)
+                    SetMaterialTextureOffset(id, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Offset, setProperty);
+                if (materialTextureProperty.Scale != null)
+                    SetMaterialTextureScale(id, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, setProperty);
             }
         }
 
