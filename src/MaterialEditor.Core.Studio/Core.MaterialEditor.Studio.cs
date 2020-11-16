@@ -43,9 +43,14 @@ namespace KK_Plugins.MaterialEditor
         /// MaterialEditor Studio plugin Version
         /// </summary>
         public const string Version = MaterialEditorPlugin.Version;
+        /// <summary>
+        /// Instance of the plugin
+        /// </summary>
+        public static MEStudio Instance;
 
         private void Start()
         {
+            Instance = this;
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
             StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(MaterialEditorPlugin.GUID);
         }
@@ -72,12 +77,15 @@ namespace KK_Plugins.MaterialEditor
             MatEditorIcon.color = Color.white;
 
             materialEditorButton.onClick = new Button.ButtonClickedEvent();
-            materialEditorButton.onClick.AddListener(() => { PopulateListStudio(); });
+            materialEditorButton.onClick.AddListener(() => { UpdateUI(); });
 
             Harmony.CreateAndPatchAll(typeof(StudioHooks));
         }
 
-        private void PopulateListStudio()
+        /// <summary>
+        /// Shows the MaterialEditor UI for the selected item or refreshes the UI if already open
+        /// </summary>
+        public void UpdateUI()
         {
             if (Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes.Length != 1)
                 return;

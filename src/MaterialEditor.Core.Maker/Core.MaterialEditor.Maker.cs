@@ -1,9 +1,15 @@
 ﻿using BepInEx;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialAPI;
+#if AI || HS2
+using AIChara;
+using ChaClothesComponent = AIChara.CmpClothes;
+using ChaCustomHairComponent = AIChara.CmpHair;
+#endif
 
 namespace KK_Plugins.MaterialEditor
 {
@@ -33,14 +39,21 @@ namespace KK_Plugins.MaterialEditor
         /// MaterialEditor Maker plugin version
         /// </summary>
         public const string Version = MaterialEditorPlugin.Version;
+        /// <summary>
+        /// Instance of the plugin
+        /// </summary>
+        public static MEMaker Instance;
 
-        internal static MEMaker Instance;
+        internal static int currentHairIndex;
+        internal static int currentClothesIndex;
 
         private void Start()
         {
             Instance = this;
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
+
+            Harmony.CreateAndPatchAll(typeof(MakerHooks));
         }
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
@@ -48,95 +61,146 @@ namespace KK_Plugins.MaterialEditor
             InitUI();
 
 #if KK || EC
-            MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(PopulateListAccessory);
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Body.All, this)).OnClick.AddListener(() => PopulateListCharacter("body"));
-            e.AddControl(new MakerButton("Open Material Editor (Body)", MakerConstants.Face.All, this)).OnClick.AddListener(() => PopulateListCharacter("body"));
-            e.AddControl(new MakerButton("Open Material Editor (Face)", MakerConstants.Face.All, this)).OnClick.AddListener(() => PopulateListCharacter("face"));
-            e.AddControl(new MakerButton("Open Material Editor (All)", MakerConstants.Face.All, this)).OnClick.AddListener(() => PopulateListCharacter());
+            MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(UpdateUIAccessory);
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Body.All, this)).OnClick.AddListener(() => UpdateUICharacter("body"));
+            e.AddControl(new MakerButton("Open Material Editor (Body)", MakerConstants.Face.All, this)).OnClick.AddListener(() => UpdateUICharacter("body"));
+            e.AddControl(new MakerButton("Open Material Editor (Face)", MakerConstants.Face.All, this)).OnClick.AddListener(() => UpdateUICharacter("face"));
+            e.AddControl(new MakerButton("Open Material Editor (All)", MakerConstants.Face.All, this)).OnClick.AddListener(() => UpdateUICharacter());
 
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Top, this)).OnClick.AddListener(() => PopulateListClothes(0));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Bottom, this)).OnClick.AddListener(() => PopulateListClothes(1));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Bra, this)).OnClick.AddListener(() => PopulateListClothes(2));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Shorts, this)).OnClick.AddListener(() => PopulateListClothes(3));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Gloves, this)).OnClick.AddListener(() => PopulateListClothes(4));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Panst, this)).OnClick.AddListener(() => PopulateListClothes(5));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Socks, this)).OnClick.AddListener(() => PopulateListClothes(6));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Top, this)).OnClick.AddListener(() => UpdateUIClothes(0));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Bottom, this)).OnClick.AddListener(() => UpdateUIClothes(1));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Bra, this)).OnClick.AddListener(() => UpdateUIClothes(2));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Shorts, this)).OnClick.AddListener(() => UpdateUIClothes(3));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Gloves, this)).OnClick.AddListener(() => UpdateUIClothes(4));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Panst, this)).OnClick.AddListener(() => UpdateUIClothes(5));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Socks, this)).OnClick.AddListener(() => UpdateUIClothes(6));
 #if KK
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.InnerShoes, this)).OnClick.AddListener(() => PopulateListClothes(7));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(() => PopulateListClothes(8));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.InnerShoes, this)).OnClick.AddListener(() => UpdateUIClothes(7));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(() => UpdateUIClothes(8));
 #else
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Shoes, this)).OnClick.AddListener(() => PopulateListClothes(7));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Clothes.Shoes, this)).OnClick.AddListener(() => UpdateUIClothes(7));
 #endif
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Back, this)).OnClick.AddListener(() => PopulateListHair(0));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Front, this)).OnClick.AddListener(() => PopulateListHair(1));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Side, this)).OnClick.AddListener(() => PopulateListHair(2));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Extension, this)).OnClick.AddListener(() => PopulateListHair(3));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Back, this)).OnClick.AddListener(() => UpdateUIHair(0));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Front, this)).OnClick.AddListener(() => UpdateUIHair(1));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Side, this)).OnClick.AddListener(() => UpdateUIHair(2));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Hair.Extension, this)).OnClick.AddListener(() => UpdateUIHair(3));
 
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eyebrow, this)).OnClick.AddListener(() => PopulateListCharacter("mayuge"));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eye, this)).OnClick.AddListener(() => PopulateListCharacter("eyeline,hitomi"));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Nose, this)).OnClick.AddListener(() => PopulateListCharacter("nose"));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Mouth, this)).OnClick.AddListener(() => PopulateListCharacter("tang,tooth,canine"));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eyebrow, this)).OnClick.AddListener(() => UpdateUICharacter("mayuge"));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eye, this)).OnClick.AddListener(() => UpdateUICharacter("eyeline,hitomi"));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Nose, this)).OnClick.AddListener(() => UpdateUICharacter("nose"));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Mouth, this)).OnClick.AddListener(() => UpdateUICharacter("tang,tooth,canine"));
 #endif
+
+            currentHairIndex = 0;
+            currentClothesIndex = 0;
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
         {
 #if AI || HS2
-            MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(PopulateListAccessory);
-            e.AddControl(new MakerButton("Open Material Editor (Body)", MakerConstants.Body.All, this)).OnClick.AddListener(() => PopulateListCharacter("body"));
-            e.AddControl(new MakerButton("Open Material Editor (Head)", MakerConstants.Body.All, this)).OnClick.AddListener(() => PopulateListCharacter("head"));
-            e.AddControl(new MakerButton("Open Material Editor (All)", MakerConstants.Body.All, this)).OnClick.AddListener(() => PopulateListCharacter());
+            MakerAPI.AddAccessoryWindowControl(new MakerButton("Open Material Editor", null, this)).OnClick.AddListener(UpdateUIAccessory);
+            e.AddControl(new MakerButton("Open Material Editor (Body)", MakerConstants.Body.All, this)).OnClick.AddListener(() => UpdateUICharacter("body"));
+            e.AddControl(new MakerButton("Open Material Editor (Head)", MakerConstants.Body.All, this)).OnClick.AddListener(() => UpdateUICharacter("head"));
+            e.AddControl(new MakerButton("Open Material Editor (All)", MakerConstants.Body.All, this)).OnClick.AddListener(() => UpdateUICharacter());
 
             MakerCategory hairCategory = new MakerCategory(MakerConstants.Hair.CategoryName, "ME", 0, "Material Editor");
-            e.AddControl(new MakerButton("Open Material Editor (Back)", hairCategory, this)).OnClick.AddListener(() => PopulateListHair(0));
-            e.AddControl(new MakerButton("Open Material Editor (Front)", hairCategory, this)).OnClick.AddListener(() => PopulateListHair(1));
-            e.AddControl(new MakerButton("Open Material Editor (Side)", hairCategory, this)).OnClick.AddListener(() => PopulateListHair(2));
-            e.AddControl(new MakerButton("Open Material Editor (Extension)", hairCategory, this)).OnClick.AddListener(() => PopulateListHair(3));
+            e.AddControl(new MakerButton("Open Material Editor (Back)", hairCategory, this)).OnClick.AddListener(() => UpdateUIHair(0));
+            e.AddControl(new MakerButton("Open Material Editor (Front)", hairCategory, this)).OnClick.AddListener(() => UpdateUIHair(1));
+            e.AddControl(new MakerButton("Open Material Editor (Side)", hairCategory, this)).OnClick.AddListener(() => UpdateUIHair(2));
+            e.AddControl(new MakerButton("Open Material Editor (Extension)", hairCategory, this)).OnClick.AddListener(() => UpdateUIHair(3));
             e.AddSubCategory(hairCategory);
 
             MakerCategory clothesCategory = new MakerCategory(MakerConstants.Clothes.CategoryName, "ME", 0, "Material Editor");
-            e.AddControl(new MakerButton("Open Material Editor (Top)", clothesCategory, this)).OnClick.AddListener(() => PopulateListClothes(0));
-            e.AddControl(new MakerButton("Open Material Editor (Bottom)", clothesCategory, this)).OnClick.AddListener(() => PopulateListClothes(1));
-            e.AddControl(new MakerButton("Open Material Editor (Bra)", clothesCategory, this)).OnClick.AddListener(() => PopulateListClothes(2));
-            e.AddControl(new MakerButton("Open Material Editor (Underwear)", clothesCategory, this)).OnClick.AddListener(() => PopulateListClothes(3));
-            e.AddControl(new MakerButton("Open Material Editor (Gloves)", clothesCategory, this)).OnClick.AddListener(() => PopulateListClothes(4));
-            e.AddControl(new MakerButton("Open Material Editor (Pantyhose)", clothesCategory, this)).OnClick.AddListener(() => PopulateListClothes(5));
-            e.AddControl(new MakerButton("Open Material Editor (Socks)", clothesCategory, this)).OnClick.AddListener(() => PopulateListClothes(6));
-            e.AddControl(new MakerButton("Open Material Editor (Shoes)", clothesCategory, this)).OnClick.AddListener(() => PopulateListClothes(7));
+            e.AddControl(new MakerButton("Open Material Editor (Top)", clothesCategory, this)).OnClick.AddListener(() => UpdateUIClothes(0));
+            e.AddControl(new MakerButton("Open Material Editor (Bottom)", clothesCategory, this)).OnClick.AddListener(() => UpdateUIClothes(1));
+            e.AddControl(new MakerButton("Open Material Editor (Bra)", clothesCategory, this)).OnClick.AddListener(() => UpdateUIClothes(2));
+            e.AddControl(new MakerButton("Open Material Editor (Underwear)", clothesCategory, this)).OnClick.AddListener(() => UpdateUIClothes(3));
+            e.AddControl(new MakerButton("Open Material Editor (Gloves)", clothesCategory, this)).OnClick.AddListener(() => UpdateUIClothes(4));
+            e.AddControl(new MakerButton("Open Material Editor (Pantyhose)", clothesCategory, this)).OnClick.AddListener(() => UpdateUIClothes(5));
+            e.AddControl(new MakerButton("Open Material Editor (Socks)", clothesCategory, this)).OnClick.AddListener(() => UpdateUIClothes(6));
+            e.AddControl(new MakerButton("Open Material Editor (Shoes)", clothesCategory, this)).OnClick.AddListener(() => UpdateUIClothes(7));
             e.AddSubCategory(clothesCategory);
 
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Mouth, this)).OnClick.AddListener(() => PopulateListCharacter("tang,tooth"));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eyes, this)).OnClick.AddListener(() => PopulateListCharacter("eyebase,eyeshadow"));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.HL, this)).OnClick.AddListener(() => PopulateListCharacter("eyebase,eyeshadow"));
-            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eyelashes, this)).OnClick.AddListener(() => PopulateListCharacter("eyelashes"));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Mouth, this)).OnClick.AddListener(() => UpdateUICharacter("tang,tooth"));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eyes, this)).OnClick.AddListener(() => UpdateUICharacter("eyebase,eyeshadow"));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.HL, this)).OnClick.AddListener(() => UpdateUICharacter("eyebase,eyeshadow"));
+            e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Eyelashes, this)).OnClick.AddListener(() => UpdateUICharacter("eyelashes"));
 #endif
         }
 
-        internal void PopulateListCharacter(string filter = "")
+        /// <summary>
+        /// Shows the MaterialEditor UI for the character or refreshes the UI if already open
+        /// </summary>
+        /// <param name="filter"></param>
+        public void UpdateUICharacter(string filter = "")
         {
+            if (!MakerAPI.InsideAndLoaded)
+                return;
+
             var chaControl = MakerAPI.GetCharacterControl();
             PopulateList(chaControl.gameObject, filter: filter);
         }
 
-        private void PopulateListClothes(int index)
+        /// <summary>
+        /// Shows the MaterialEditor UI for the specified clothing index or refreshes the UI if already open
+        /// </summary>
+        /// <param name="index"></param>
+        public void UpdateUIClothes(int index)
         {
+            if (!MakerAPI.InsideAndLoaded)
+                return;
+
+#if KK
+            if (index > 8)
+#else
+            if (index > 7)
+#endif
+            {
+                Visible = false;
+                return;
+            }
+
             var chaControl = MakerAPI.GetCharacterControl();
-            PopulateList(chaControl.objClothes[index], index);
+            if (chaControl.objClothes[index] == null || chaControl.objClothes[index].GetComponentInChildren<ChaClothesComponent>() == null)
+                Visible = false;
+            else
+                PopulateList(chaControl.objClothes[index], index);
         }
 
-        internal void PopulateListAccessory()
+        /// <summary>
+        /// Shows the MaterialEditor UI for the currently selected accesory or refreshes the UI if already open
+        /// </summary>
+        public void UpdateUIAccessory()
         {
+            if (!MakerAPI.InsideAndLoaded)
+                return;
+
             var chaAccessoryComponent = MakerAPI.GetCharacterControl().GetAccessory(AccessoriesApi.SelectedMakerAccSlot);
             if (chaAccessoryComponent == null)
-                PopulateList(null, AccessoriesApi.SelectedMakerAccSlot);
+                Visible = false;
             else
                 PopulateList(chaAccessoryComponent.gameObject, AccessoriesApi.SelectedMakerAccSlot);
         }
 
-        private void PopulateListHair(int index)
+        /// <summary>
+        /// Shows the MaterialEditor UI for the specified hair index or refreshes the UI if already open
+        /// </summary>
+        public void UpdateUIHair(int index)
         {
+            if (!MakerAPI.InsideAndLoaded)
+                return;
+
+            if (index > 3)
+            {
+                Visible = false;
+                return;
+            }
+
             var chaControl = MakerAPI.GetCharacterControl();
-            PopulateList(chaControl.objHair[index], index);
+            if (chaControl.objHair[index].GetComponent<ChaCustomHairComponent>() == null)
+                Visible = false;
+            else
+                PopulateList(chaControl.objHair[index], index);
         }
 
         internal override string GetRendererPropertyValueOriginal(int slot, Renderer renderer, RendererProperties property, GameObject go) =>

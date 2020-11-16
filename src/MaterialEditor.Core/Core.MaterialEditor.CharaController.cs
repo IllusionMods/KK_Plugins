@@ -743,7 +743,7 @@ namespace KK_Plugins.MaterialEditor
 
             if (MakerAPI.InsideAndLoaded)
                 if (UI.Visible && MEMaker.Instance != null)
-                    MEMaker.Instance.PopulateListAccessory();
+                    MEMaker.Instance.UpdateUIAccessory();
 
 #if KK || EC
             if (MaterialEditorPlugin.RimRemover.Value)
@@ -760,7 +760,7 @@ namespace KK_Plugins.MaterialEditor
 #if KK || EC
             if (MakerAPI.InsideAndLoaded)
                 if (UI.Visible && MEMaker.Instance != null)
-                    MEMaker.Instance.PopulateListAccessory();
+                    MEMaker.Instance.UpdateUIAccessory();
 #else
             ChaControl.StartCoroutine(LoadData(false, true, false));
             ChaControl.StartCoroutine(RefreshUI());
@@ -769,7 +769,7 @@ namespace KK_Plugins.MaterialEditor
                 yield return null;
                 if (MakerAPI.InsideAndLoaded)
                     if (UI.Visible && MEMaker.Instance != null)
-                        MEMaker.Instance.PopulateListAccessory();
+                        MEMaker.Instance.UpdateUIAccessory();
             }
 #endif
         }

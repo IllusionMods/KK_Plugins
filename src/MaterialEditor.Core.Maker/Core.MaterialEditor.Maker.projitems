@@ -10,5 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Maker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Maker.Hooks.cs" />
   </ItemGroup>
 </Project>
