@@ -45,7 +45,7 @@ namespace KK_Plugins
             if (filePath.IsNullOrEmpty()) return;
             if (!File.Exists(filePath)) return;
 
-            foreach (var rend in item.itemComponent.GetRenderers())
+            foreach (var rend in MaterialEditor.MaterialAPI.GetRendererList(item.itemComponent))
                 MaterialEditor.MEStudio.GetSceneController().SetMaterialTextureFromFile(item.objectInfo.dicKey, rend.material, $"PatternMask{patternIndex + 1}", filePath);
             item.SetPatternPath(patternIndex, "");
         }

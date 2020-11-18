@@ -27,7 +27,7 @@ namespace KK_Plugins
                 else
                 {
                     //Remove any MaterialEditor pattern texture edits when changing patterns
-                    foreach (var rend in __instance.itemComponent.GetRenderers())
+                    foreach (var rend in MaterialEditor.MaterialAPI.GetRendererList(__instance.itemComponent))
                         MaterialEditor.MEStudio.GetSceneController().RemoveMaterialTexture(__instance.objectInfo.dicKey, rend.material, $"PatternMask{_idx + 1}", false);
                 }
             }

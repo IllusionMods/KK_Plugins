@@ -76,19 +76,6 @@ namespace KK_Plugins
             throw new System.NotImplementedException("StudioExtensions.SetPatternPath");
 #endif
         }
-
-#if !HS && !PH
-        public static IEnumerable<Renderer> GetRenderers(this Studio.ItemComponent itemComponent)
-        {
-#if KK
-            return itemComponent.rendNormal;
-#elif AI || HS2
-            return itemComponent.rendererInfos.Select(x => x.renderer);
-#else
-            throw new System.NotImplementedException("StudioExtensions.GetRenderers");
-#endif
-        }
-#endif
 #endif
     }
 
