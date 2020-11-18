@@ -5,6 +5,11 @@ using UnityEngine;
 #if AI || HS2
 using AIChara;
 #endif
+#if EC
+using Map;
+#else
+using Studio;
+#endif
 
 namespace KK_Plugins.MaterialEditor
 {
@@ -40,21 +45,73 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public static List<Renderer> GetRendererList(GameObject gameObject)
         {
-            List<Renderer> rendList = new List<Renderer>();
-            if (gameObject == null) return rendList;
+            if (gameObject == null)
+                return new List<Renderer>();
+
             var chaControl = gameObject.GetComponent<ChaControl>();
+            if (chaControl)
+                return GetRendererList(chaControl);
 
-            if (chaControl != null)
-                _GetRendererList(gameObject, rendList);
-            else
-                rendList = gameObject.GetComponentsInChildren<Renderer>(true).ToList();
+            var itemComponent = gameObject.GetComponent<ItemComponent>();
+            if (itemComponent)
+                return GetRendererList(itemComponent);
 
+            return gameObject.GetComponentsInChildren<Renderer>(true).ToList();
+        }
+
+        /// <summary>
+        /// Gets renderers of the body and face (i.e. not clothes, accessories, etc.)
+        /// </summary>
+        public static List<Renderer> GetRendererList(ChaControl chaControl)
+        {
+            List<Renderer> rendList = new List<Renderer>();
+
+            if (!chaControl)
+                return rendList;
+
+            GetRendererList(chaControl.gameObject, rendList);
             return rendList;
         }
+
         /// <summary>
-        /// Recursively iterates over game objects to create the list. Use GetRendererList instead.
+        /// Get a list of all the renderers
         /// </summary>
-        private static void _GetRendererList(GameObject gameObject, List<Renderer> rendList)
+        public static List<Renderer> GetRendererList(ItemComponent itemComponent)
+        {
+            List<Renderer> rendList = new List<Renderer>();
+
+            if (!itemComponent)
+                return rendList;
+
+#if KK
+            for (int i = 0; i < itemComponent.rendNormal.Length; i++)
+                if (itemComponent.rendNormal[i])
+                    rendList.Add(itemComponent.rendNormal[i]);
+            for (int i = 0; i < itemComponent.rendAlpha.Length; i++)
+                if (itemComponent.rendAlpha[i])
+                    rendList.Add(itemComponent.rendAlpha[i]);
+            for (int i = 0; i < itemComponent.rendGlass.Length; i++)
+                if (itemComponent.rendGlass[i])
+                    rendList.Add(itemComponent.rendGlass[i]);
+#elif EC
+            for (int i = 0; i < itemComponent.renderers.Length; i++)
+                if (itemComponent.renderers[i])
+                    rendList.Add(itemComponent.renderers[i]);
+#else
+            for (int i = 0; i < itemComponent.rendererInfos.Length; i++)
+                if (itemComponent.rendererInfos[i].renderer)
+                    rendList.Add(itemComponent.rendererInfos[i].renderer);
+            for (int i = 0; i < itemComponent.renderersSea.Length; i++)
+                if (itemComponent.renderersSea[i])
+                    rendList.Add(itemComponent.renderersSea[i]);
+#endif
+            return rendList;
+        }
+
+        /// <summary>
+        /// Recursively iterates over game objects to create the list. Use GetRendererList(GameObject) instead.
+        /// </summary>
+        private static void GetRendererList(GameObject gameObject, List<Renderer> rendList)
         {
             if (gameObject == null) return;
 
@@ -63,7 +120,7 @@ namespace KK_Plugins.MaterialEditor
                 rendList.Add(rend);
 
             for (int i = 0; i < gameObject.transform.childCount; i++)
-                _GetRendererList(gameObject.transform.GetChild(i).gameObject, rendList);
+                GetRendererList(gameObject.transform.GetChild(i).gameObject, rendList);
         }
 
         /// <summary>
