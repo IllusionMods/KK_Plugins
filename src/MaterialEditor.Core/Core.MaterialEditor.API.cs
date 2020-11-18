@@ -85,24 +85,24 @@ namespace KK_Plugins.MaterialEditor
 
 #if KK
             for (int i = 0; i < itemComponent.rendNormal.Length; i++)
-                if (itemComponent.rendNormal[i])
+                if (itemComponent.rendNormal[i] && !rendList.Contains(itemComponent.rendNormal[i]))
                     rendList.Add(itemComponent.rendNormal[i]);
             for (int i = 0; i < itemComponent.rendAlpha.Length; i++)
-                if (itemComponent.rendAlpha[i])
+                if (itemComponent.rendAlpha[i] && !rendList.Contains(itemComponent.rendAlpha[i]))
                     rendList.Add(itemComponent.rendAlpha[i]);
             for (int i = 0; i < itemComponent.rendGlass.Length; i++)
-                if (itemComponent.rendGlass[i])
+                if (itemComponent.rendGlass[i] && !rendList.Contains(itemComponent.rendGlass[i]))
                     rendList.Add(itemComponent.rendGlass[i]);
 #elif EC
             for (int i = 0; i < itemComponent.renderers.Length; i++)
-                if (itemComponent.renderers[i])
+                if (itemComponent.renderers[i] && !rendList.Contains(itemComponent.renderers[i]))
                     rendList.Add(itemComponent.renderers[i]);
 #else
             for (int i = 0; i < itemComponent.rendererInfos.Length; i++)
-                if (itemComponent.rendererInfos[i].renderer)
+                if (itemComponent.rendererInfos[i].renderer && !rendList.Contains(itemComponent.rendererInfos[i].renderer))
                     rendList.Add(itemComponent.rendererInfos[i].renderer);
             for (int i = 0; i < itemComponent.renderersSea.Length; i++)
-                if (itemComponent.renderersSea[i])
+                if (itemComponent.renderersSea[i] && !rendList.Contains(itemComponent.renderersSea[i]))
                     rendList.Add(itemComponent.renderersSea[i]);
 #endif
             return rendList;
