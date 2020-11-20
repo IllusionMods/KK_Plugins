@@ -857,7 +857,12 @@ namespace KK_Plugins.MaterialEditor
 #if AI || HS2
             if (type != 350) return; //type 350 = no category, accessory being removed
 #else
-            if (type != 120) return; //type 120 = no category, accessory being removed
+            if (type != 120) //type 120 = no category, accessory being removed
+            {
+                if (MaterialEditorPlugin.RimRemover.Value)
+                    RemoveRimAccessory(slot);
+                return; 
+            }
 #endif
             if (!MakerAPI.InsideAndLoaded) return;
             if (CoordinateChanging) return;
@@ -870,10 +875,6 @@ namespace KK_Plugins.MaterialEditor
 
             if (MakerAPI.InsideAndLoaded)
                 UI.Visible = false;
-#if KK || EC
-            if (MaterialEditorPlugin.RimRemover.Value)
-                RemoveRimAccessory(slot);
-#endif
         }
 
         internal void ChangeCustomClothesEvent(int slot)
