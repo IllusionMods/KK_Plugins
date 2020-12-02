@@ -1,8 +1,17 @@
-﻿using UniRx;
-using UniRx.Triggers;
+﻿using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
+#if !PC
+using UniRx;
+using UniRx.Triggers;
+using UnityEngine.SceneManagement;
+#endif
+
+#if PC
+// IsNullOrWhitespace
+using BepInEx;
+#endif
 
 namespace KK_Plugins
 {
@@ -36,8 +45,8 @@ namespace KK_Plugins
                 var vlg = Pane.GetOrAddComponent<VerticalLayoutGroup>();
                 vlg.childForceExpandHeight = false;
                 vlg.childForceExpandWidth = false;
-                vlg.childAlignment = TextAlign.Value;
-                vlg.padding = new RectOffset(0, 0, 0, TextOffset.Value);
+                vlg.childAlignment =  TextAlign.Value;
+                vlg.padding = new RectOffset(TextHorizontalOffset.Value, TextHorizontalOffset.Value, TextVerticalOffset.Value, TextVerticalOffset.Value);
 
                 UpdateScene(ActiveScene);
             }
@@ -46,6 +55,16 @@ namespace KK_Plugins
             {
                 if (PaneVR != null)
                     return;
+
+#if PC
+                Color textColor = DefaultTextColor;
+                Vector3 textOffset = new Vector3(-0.1f * WorldScale, -0.1f * WorldScale, 0.5f * WorldScale);
+                Vector3 text2Offset = new Vector3(0.1f * WorldScale, -0.2f * WorldScale, 0.5f * WorldScale);
+#else
+                Color textColor = TextColor.Value;
+                Vector3 textOffset = VRTextOffset.Value;
+                Vector3 text2Offset = VRText2Offset.Value;
+#endif
 
                 PaneVR = new GameObject("KK_Subtitles_Caption");
                 PaneVR.layer = 5;
@@ -66,7 +85,7 @@ namespace KK_Plugins
                 {
                     var textContainer = new GameObject("VRTextContainer1");
                     textContainer.transform.parent = PaneVR.transform;
-                    textContainer.transform.localPosition = VRTextOffset.Value;
+                    textContainer.transform.localPosition = textOffset;
                     textContainer.transform.localRotation = Quaternion.identity;
 
                     var subtitle = new GameObject("VRText1");
@@ -83,7 +102,7 @@ namespace KK_Plugins
                     VRText1.material = fontFace.material;
                     VRText1.fontSize = 20;
                     VRText1.alignment = TextAnchor.MiddleCenter;
-                    VRText1.color = TextColor.Value;
+                    VRText1.color = textColor;
                     VRText1.text = "";
 
                     var rect = subtitle.GetComponent<RectTransform>();
@@ -97,7 +116,7 @@ namespace KK_Plugins
                 {
                     var textContainer = new GameObject("VRTextContainer2");
                     textContainer.transform.parent = PaneVR.transform;
-                    textContainer.transform.localPosition = VRText2Offset.Value;
+                    textContainer.transform.localPosition = text2Offset;
                     textContainer.transform.localRotation = Quaternion.identity;
 
                     var subtitle = new GameObject("VRText2") { layer = 5 };
@@ -113,7 +132,7 @@ namespace KK_Plugins
                     VRText2.material = fontFace.material;
                     VRText2.fontSize = 20;
                     VRText2.alignment = TextAnchor.MiddleCenter;
-                    VRText2.color = TextColor.Value;
+                    VRText2.color = textColor;
                     VRText2.text = "";
 
                     var rect = subtitle.GetComponent<RectTransform>();
@@ -128,11 +147,13 @@ namespace KK_Plugins
             }
 
             /// <summary>
-            /// Display text on screen. When the voice GameObject is destroyed, text will be removed from the screen.
+            /// Display text on screen. Callback is responsible for making sure subtitle is destroyed when text should be removed from screen.
             /// </summary>
-            /// <param name="voice">GameObject to watch. When destroyed, text is removed from the screen.</param>
             /// <param name="text">Text to display</param>
-            public static void DisplaySubtitle(GameObject voice, string text)
+            /// <param name="textColor">Text color</param>
+            /// <param name="outlineColor">Text outline color</param>
+            /// <param name="watcher">Callback that which must call Destroy(subtitle) when text should be removed.</param>
+            public static void DisplaySubtitle(string text, Color textColor, Color outlineColor, Action<GameObject> watcher)
             {
                 if (!ShowSubtitles.Value) return;
                 if (text.IsNullOrWhiteSpace()) return;
@@ -156,17 +177,31 @@ namespace KK_Plugins
                 subtitleText.alignment = TextAlign.Value;
                 subtitleText.horizontalOverflow = HorizontalWrapMode.Wrap;
                 subtitleText.verticalOverflow = VerticalWrapMode.Overflow;
-                subtitleText.color = TextColor.Value;
+                subtitleText.color = textColor;
 
                 var subOutline = subtitle.GetOrAddComponent<Outline>();
-                subOutline.effectColor = OutlineColor.Value;
+                subOutline.effectColor = outlineColor;
+
                 subOutline.effectDistance = new Vector2(OutlineThickness.Value, OutlineThickness.Value);
 
                 subtitleText.text = text;
                 Logger.LogDebug(text);
 
-                voice.OnDestroyAsObservable().Subscribe(obj => Destroy(subtitle));
+                watcher(subtitle);
             }
+
+#if !PC
+            /// <summary>
+            /// Display text on screen. When the voice GameObject is destroyed, text will be removed from the screen.
+            /// </summary>
+            /// <param name="voice">GameObject to watch. When destroyed, text is removed from the screen.</param>
+            /// <param name="text">Text to display</param>
+            public static void DisplaySubtitle(GameObject voice, string text)
+            {
+                DisplaySubtitle(text, TextColor.Value, OutlineColor.Value, subtitle => voice.OnDestroyAsObservable().Subscribe(obj => Destroy(subtitle)));
+            }
+#endif
+
             /// <summary>
             /// Display text on screen, for VR. When the voice GameObject is destroyed, text will be removed from the screen.
             /// </summary>
@@ -174,6 +209,7 @@ namespace KK_Plugins
             /// <param name="text">Text to display</param>
             public static void DisplayVRSubtitle(GameObject voice, string text)
             {
+#if !PC
                 if (!ShowSubtitles.Value) return;
                 if (text.IsNullOrWhiteSpace()) return;
                 InitVRGUI();
@@ -189,22 +225,35 @@ namespace KK_Plugins
                     VRText2.text = text;
                     voice.OnDestroyAsObservable().Subscribe(obj => VRText2.text = "");
                 }
+#endif
             }
 
-            internal static void UpdateScene() => UpdateScene(SceneManager.GetActiveScene());
-
+            internal static void UpdateScene()
+            {
+#if PC
+                UpdateScene(null);
+#else
+                UpdateScene(SceneManager.GetActiveScene());
+#endif
+            }
             /// <summary>
-            /// Move the pane to the scene so that it is properly scoped for XUnity.AutoTranslator compatiblity
+            /// Move the pane to the scene so that it is properly scoped for XUnity.AutoTranslator compatibility
             /// </summary>
             internal static void UpdateScene(Scene newScene)
             {
                 ActiveScene = newScene;
+#if !PC
+                if (newScene == null)
+                    return;
+
                 if (Pane != null && Pane.scene != newScene)
                     SceneManager.MoveGameObjectToScene(Pane, newScene);
                 if (PaneVR != null && PaneVR.scene != newScene)
                     SceneManager.MoveGameObjectToScene(PaneVR, newScene);
+#endif
             }
 
+#if !PC
             public static void SceneUnloaded(Scene scene)
             {
                 if (scene == ActiveScene)
@@ -216,6 +265,8 @@ namespace KK_Plugins
                 if (mode == LoadSceneMode.Single)
                     UpdateScene(scene);
             }
+#endif
+
         }
     }
 }
