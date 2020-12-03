@@ -120,7 +120,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal override string GetRendererPropertyValueOriginal(int slot, Renderer renderer, RendererProperties property, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 return MaterialEditorPlugin.GetCharaController(chaControl).GetRendererPropertyValueOriginal(slot, renderer, property, go);
             else
@@ -128,7 +128,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void SetRendererProperty(int slot, Renderer renderer, RendererProperties property, string value, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).SetRendererProperty(slot, renderer, property, value, go);
             else
@@ -136,7 +136,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void RemoveRendererProperty(int slot, Renderer renderer, RendererProperties property, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveRendererProperty(slot, renderer, property, go);
             else
@@ -145,7 +145,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal override void MaterialCopyEdits(int slot, Material material, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).MaterialCopyEdits(slot, material, go);
             else
@@ -153,7 +153,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void MaterialPasteEdits(int slot, Material material, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).MaterialPasteEdits(slot, material, go);
             else
@@ -162,7 +162,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal override string GetMaterialShaderNameOriginal(int slot, Material material, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderOriginal(slot, material, go);
             else
@@ -170,7 +170,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void SetMaterialShaderName(int slot, Material material, string value, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialShader(slot, material, value, go);
             else
@@ -178,7 +178,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void RemoveMaterialShaderName(int slot, Material material, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShader(slot, material, go);
             else
@@ -187,7 +187,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal override int? GetMaterialShaderRenderQueueOriginal(int slot, Material material, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderRenderQueueOriginal(slot, material, go);
             else
@@ -195,7 +195,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void SetMaterialShaderRenderQueue(int slot, Material material, int value, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialShaderRenderQueue(slot, material, value, go);
             else
@@ -203,7 +203,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void RemoveMaterialShaderRenderQueue(int slot, Material material, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShaderRenderQueue(slot, material, go);
             else
@@ -212,7 +212,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal override bool GetMaterialTextureValueOriginal(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOriginal(slot, material, propertyName, go);
             else
@@ -220,7 +220,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void SetMaterialTexture(int slot, Material material, string propertyName, string filePath, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialTextureFromFile(slot, material, propertyName, filePath, go, true);
             else
@@ -228,7 +228,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void RemoveMaterialTexture(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTexture(slot, material, propertyName, go);
             else
@@ -237,7 +237,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal override Vector2? GetMaterialTextureOffsetOriginal(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOffsetOriginal(slot, material, propertyName, go);
             else
@@ -253,7 +253,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void RemoveMaterialTextureOffset(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureOffset(slot, material, propertyName, go);
             else
@@ -262,7 +262,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal override Vector2? GetMaterialTextureScaleOriginal(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureScaleOriginal(slot, material, propertyName, go);
             else
@@ -270,7 +270,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void SetMaterialTextureScale(int slot, Material material, string propertyName, Vector2 value, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialTextureScale(slot, material, propertyName, value, go);
             else
@@ -278,7 +278,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void RemoveMaterialTextureScale(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureScale(slot, material, propertyName, go);
             else
@@ -287,7 +287,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal override Color? GetMaterialColorPropertyValueOriginal(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialColorPropertyValueOriginal(slot, material, propertyName, go);
             else
@@ -295,7 +295,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void SetMaterialColorProperty(int slot, Material material, string propertyName, Color value, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialColorProperty(slot, material, propertyName, value, go);
             else
@@ -303,7 +303,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void RemoveMaterialColorProperty(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialColorProperty(slot, material, propertyName, go);
             else
@@ -312,7 +312,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal override float? GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(slot, material, propertyName, go);
             else
@@ -320,7 +320,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void SetMaterialFloatProperty(int slot, Material material, string propertyName, float value, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialFloatProperty(slot, material, propertyName, value, go);
             else
@@ -328,7 +328,7 @@ namespace KK_Plugins.MaterialEditor
         }
         internal override void RemoveMaterialFloatProperty(int slot, Material material, string propertyName, GameObject go)
         {
-            var chaControl = go.GetComponentInParent<ChaControl>();
+            var chaControl = go.GetComponent<ChaControl>();
             if (chaControl != null)
                 MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialFloatProperty(slot, material, propertyName, go);
             else
