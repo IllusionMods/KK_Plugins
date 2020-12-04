@@ -36,6 +36,11 @@
         internal const string GameName = "Play Home";
         internal const string StudioProcessName = "PlayHomeStudio64bit";
         internal const string MainGameProcessName = "PlayHome64bit";
+#elif PC
+        internal const string Prefix = "PC";
+        internal const string GameName = "Play Club";
+        internal const string StudioProcessName = "PlayClubStudio";
+        internal const string MainGameProcessName = "PlayClub";
 #endif
     }
 }

@@ -52,6 +52,7 @@ namespace KK_Plugins
         }
     }
 
+#if !PC
     internal static class StudioExtensions
     {
 #if !EC
@@ -175,4 +176,5 @@ namespace KK_Plugins
             }
         }
     }
+#endif
 }
