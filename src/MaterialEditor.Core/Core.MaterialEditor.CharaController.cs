@@ -203,8 +203,9 @@ namespace KK_Plugins.MaterialEditor
                         for (var i = 0; i < properties.Count; i++)
                         {
                             var loadedProperty = properties[i];
+                            int coordinateIndex = loadedProperty.ObjectType == ObjectType.Character ? 0 : loadedProperty.CoordinateIndex;
                             if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
-                                MaterialShaderList.Add(new MaterialShader(loadedProperty.ObjectType, loadedProperty.CoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                                MaterialShaderList.Add(new MaterialShader(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
                         }
                     }
 
@@ -214,8 +215,9 @@ namespace KK_Plugins.MaterialEditor
                         for (var i = 0; i < properties.Count; i++)
                         {
                             var loadedProperty = properties[i];
+                            int coordinateIndex = loadedProperty.ObjectType == ObjectType.Character ? 0 : loadedProperty.CoordinateIndex;
                             if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
-                                RendererPropertyList.Add(new RendererProperty(loadedProperty.ObjectType, loadedProperty.CoordinateIndex, loadedProperty.Slot, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                                RendererPropertyList.Add(new RendererProperty(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                         }
                     }
 
@@ -225,8 +227,9 @@ namespace KK_Plugins.MaterialEditor
                         for (var i = 0; i < properties.Count; i++)
                         {
                             var loadedProperty = properties[i];
+                            int coordinateIndex = loadedProperty.ObjectType == ObjectType.Character ? 0 : loadedProperty.CoordinateIndex;
                             if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
-                                MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedProperty.ObjectType, loadedProperty.CoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                                MaterialFloatPropertyList.Add(new MaterialFloatProperty(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                         }
                     }
 
@@ -236,8 +239,9 @@ namespace KK_Plugins.MaterialEditor
                         for (var i = 0; i < properties.Count; i++)
                         {
                             var loadedProperty = properties[i];
+                            int coordinateIndex = loadedProperty.ObjectType == ObjectType.Character ? 0 : loadedProperty.CoordinateIndex;
                             if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
-                                MaterialColorPropertyList.Add(new MaterialColorProperty(loadedProperty.ObjectType, loadedProperty.CoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                                MaterialColorPropertyList.Add(new MaterialColorProperty(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                         }
                     }
 
@@ -252,8 +256,8 @@ namespace KK_Plugins.MaterialEditor
                                 int? texID = null;
                                 if (loadedProperty.TexID != null)
                                     texID = importDictionary[(int)loadedProperty.TexID];
-
-                                MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(loadedProperty.ObjectType, loadedProperty.CoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+                                int coordinateIndex = loadedProperty.ObjectType == ObjectType.Character ? 0 : loadedProperty.CoordinateIndex;
+                                MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
                                 MaterialTexturePropertyList.Add(newTextureProperty);
                             }
                         }
@@ -861,7 +865,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 if (MaterialEditorPlugin.RimRemover.Value)
                     RemoveRimAccessory(slot);
-                return; 
+                return;
             }
 #endif
             if (!MakerAPI.InsideAndLoaded) return;
