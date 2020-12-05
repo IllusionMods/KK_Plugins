@@ -182,13 +182,21 @@ namespace KK_Plugins
         private void DeleteAutosaves(string folder)
         {
             DirectoryInfo di = new DirectoryInfo(UserData.Create(folder));
-            var files = di.GetFiles("autosave*").ToList();
+            var files = di.GetFiles("autosave*.png").ToList();
             files.OrderBy(x => x.CreationTime);
             while (files.Count > AutosaveFileLimit.Value)
             {
                 var fileToDelete = files[0];
+                string filenameToDelete = files[0].Name;
                 files.RemoveAt(0);
                 fileToDelete.Delete();
+
+#if PH
+                //Remove any extra files starting with the same name (PH ext save data)
+                var extraFiles = di.GetFiles(filenameToDelete + "*").ToList();
+                foreach (var extraFile in extraFiles)
+                    extraFile.Delete();
+#endif
             }
         }
 
