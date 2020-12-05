@@ -2,7 +2,6 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using Studio;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +16,9 @@ using ChaControl = Human;
 #endif
 #if !HS
 using KKAPI;
+#endif
+#if !EC
+using Studio;
 #endif
 
 namespace KK_Plugins
@@ -36,12 +38,18 @@ namespace KK_Plugins
         public const string Version = "1.0";
         internal static new ManualLogSource Logger;
 
+#if !EC
         public const string AutosavePathStudio = Studio.Studio.savePath + "/_autosave";
+#endif
         public const string AutosavePathMale = "chara/male/_autosave";
         public const string AutosavePathFemale = "chara/female/_autosave";
         private static GameObject AutosaveCanvas;
         private static Text AutosaveText;
-        private static bool InStudio;
+#if EC
+        private static readonly bool InStudio = false;
+#else
+        private static readonly bool InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
+#endif
 #if !HS
         private Coroutine MakerCoroutine;
 #endif
@@ -60,21 +68,26 @@ namespace KK_Plugins
             AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
             AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
 
-            InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
             if (InStudio)
+            {
+#if !EC
                 StartCoroutine(AutosaveStudio());
-#if !HS
+#endif
+            }
             else
             {
+#if !HS
                 KKAPI.Maker.MakerAPI.MakerFinishedLoading += (a, b) => MakerCoroutine = StartCoroutine(AutosaveMaker());
                 KKAPI.Maker.MakerAPI.MakerExiting += (a, b) => StopCoroutine(MakerCoroutine);
-            }
 #endif
+            }
 
             //Delete any leftover autosaves
             if (AutosaveFileLimit.Value == 0)
             {
+#if !EC
                 DeleteAutosaves(AutosavePathStudio);
+#endif
                 DeleteAutosaves(AutosavePathMale);
                 DeleteAutosaves(AutosavePathFemale);
             }
@@ -132,6 +145,7 @@ namespace KK_Plugins
         }
 #endif
 
+#if !EC
         private IEnumerator AutosaveStudio()
         {
             while (true)
@@ -176,6 +190,7 @@ namespace KK_Plugins
                 }
             }
         }
+#endif
 
         /// <summary>
         /// Delete all but the latest few autosaves
