@@ -15,12 +15,18 @@ using AIChara;
 #elif PH
 using ChaControl = Human;
 #endif
+#if !HS
+using KKAPI;
+#endif
 
 namespace KK_Plugins
 {
     /// <summary>
-    /// Autosave for Studio scenes
+    /// Autosave for Studio scenes and character maker cards
     /// </summary>
+#if !HS
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+#endif
     [BepInPlugin(GUID, PluginName, Version)]
     public class Autosave : BaseUnityPlugin
     {
