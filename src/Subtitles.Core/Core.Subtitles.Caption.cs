@@ -45,7 +45,7 @@ namespace KK_Plugins
                 var vlg = Pane.GetOrAddComponent<VerticalLayoutGroup>();
                 vlg.childForceExpandHeight = false;
                 vlg.childForceExpandWidth = false;
-                vlg.childAlignment =  TextAlign.Value;
+                vlg.childAlignment = TextAlign.Value;
                 vlg.padding = new RectOffset(TextHorizontalOffset.Value, TextHorizontalOffset.Value, TextVerticalOffset.Value, TextVerticalOffset.Value);
 
                 UpdateScene(ActiveScene);
@@ -242,7 +242,7 @@ namespace KK_Plugins
             internal static void UpdateScene(Scene newScene)
             {
                 ActiveScene = newScene;
-#if !PC
+#if !PC && !HS
                 if (newScene == null)
                     return;
 
