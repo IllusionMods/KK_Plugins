@@ -1,15 +1,13 @@
-﻿using System.Collections;
+﻿using BepInEx;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using BepInEx;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace KK_Plugins
 {
-    partial class Subtitles
+    public partial class Subtitles
     {
-        partial class Caption
+        public partial class Caption
         {
             private static readonly YieldInstruction SubtitleRemovalDelay = new WaitForSeconds(0.75f);
 
@@ -45,7 +43,7 @@ namespace KK_Plugins
             private static Color GetTextColor(string assetName) => TextColors.TryGetValue(assetName.Substring(0, 3), out var color) ? color : DefaultTextColor;
 
             private static IEnumerator MonitorAudioSource(GameObject subtitle, AudioSource audioSource)
-            { 
+            {
                 var audioClip = audioSource.clip;
                 while (audioSource.isPlaying && audioSource.clip == audioClip)
                     yield return null;

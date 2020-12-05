@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using BepInEx;
+﻿using BepInEx;
 using HarmonyLib;
+using System.Collections.Generic;
 
 namespace KK_Plugins
 {
@@ -16,7 +15,7 @@ namespace KK_Plugins
 
             private static string GetAssetType(string assetName)
             {
-                if (assetName.IsNullOrWhiteSpace()) 
+                if (assetName.IsNullOrWhiteSpace())
                     return string.Empty;
                 string[] assetNameSplit = assetName.Split('_');
                 return assetNameSplit.Length <= 1 ? string.Empty : assetNameSplit[1].Split("0123456789".ToCharArray(), 2)[0];
@@ -26,9 +25,9 @@ namespace KK_Plugins
             [HarmonyPatch(typeof(Human), nameof(Human.Talk))]
             private static void PlayPostfix(Human __instance, string asset, bool isOneShot, bool __result)
             {
-                if (!__result || !isOneShot || AssetTypesToSkip.Contains(GetAssetType(asset))) 
+                if (!__result || !isOneShot || AssetTypesToSkip.Contains(GetAssetType(asset)))
                     return;
-                
+
                 if (SubtitleDictionary.TryGetValue(asset, out var text))
                     Caption.DisplaySubtitle(__instance.voice.voiceSource, text, asset);
             }
