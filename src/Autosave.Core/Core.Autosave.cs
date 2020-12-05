@@ -41,6 +41,7 @@ namespace KK_Plugins
         public const string AutosavePathFemale = "chara/female/_autosave";
         private static GameObject AutosaveCanvas;
         private static Text AutosaveText;
+        private static bool InStudio;
 #if !HS
         private Coroutine MakerCoroutine;
 #endif
@@ -59,7 +60,8 @@ namespace KK_Plugins
             AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
             AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
 
-            if (Application.productName == Constants.StudioProcessName)
+            InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
+            if (InStudio)
                 StartCoroutine(AutosaveStudio());
 #if !HS
             else
@@ -204,7 +206,7 @@ namespace KK_Plugins
         {
             if (AutosaveCanvas != null)
                 return;
-            var align = Application.productName == Constants.StudioProcessName ? TextAnchor.MiddleLeft : TextAnchor.UpperCenter;
+            var align = InStudio ? TextAnchor.MiddleLeft : TextAnchor.UpperCenter;
 
             AutosaveCanvas = new GameObject("AutosaveCanvas");
 
