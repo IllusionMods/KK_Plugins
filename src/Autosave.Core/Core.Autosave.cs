@@ -31,7 +31,7 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
 
         public const string AutosavePathStudio = Studio.Studio.savePath + "/_autosave";
-        private static GameObject AutoSaveCanvas;
+        private static GameObject AutosaveCanvas;
         private static Text AutosaveText;
 #if !HS
         private Coroutine MakerCoroutine;
@@ -180,31 +180,32 @@ namespace KK_Plugins
 
         private static void InitGUI()
         {
-            if (AutoSaveCanvas != null)
+            if (AutosaveCanvas != null)
                 return;
+            var align = Application.productName == Constants.StudioProcessName ? TextAnchor.MiddleLeft : TextAnchor.UpperCenter;
 
-            AutoSaveCanvas = new GameObject("AutoSaveCanvas");
+            AutosaveCanvas = new GameObject("AutosaveCanvas");
 
-            var cscl = AutoSaveCanvas.GetOrAddComponent<CanvasScaler>();
+            var cscl = AutosaveCanvas.GetOrAddComponent<CanvasScaler>();
             cscl.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             cscl.referenceResolution = new Vector2(Screen.width, Screen.height);
 
-            var canvas = AutoSaveCanvas.GetOrAddComponent<Canvas>();
+            var canvas = AutosaveCanvas.GetOrAddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 500;
-            AutoSaveCanvas.GetOrAddComponent<CanvasGroup>().blocksRaycasts = false;
+            AutosaveCanvas.GetOrAddComponent<CanvasGroup>().blocksRaycasts = false;
 
-            var vlg = AutoSaveCanvas.GetOrAddComponent<VerticalLayoutGroup>();
+            var vlg = AutosaveCanvas.GetOrAddComponent<VerticalLayoutGroup>();
             vlg.childForceExpandHeight = false;
             vlg.childForceExpandWidth = false;
-            vlg.childAlignment = TextAnchor.MiddleLeft;
+            vlg.childAlignment = align;
             vlg.padding = new RectOffset(10, 10, 10, 10);
 
             Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
             int fsize = 16;
 
             GameObject autosaveTextObject = new GameObject("AutosaveText");
-            autosaveTextObject.transform.SetParent(AutoSaveCanvas.transform);
+            autosaveTextObject.transform.SetParent(AutosaveCanvas.transform);
 
             var rect = autosaveTextObject.GetOrAddComponent<RectTransform>();
             rect.pivot = new Vector2(0.5f, 0);
@@ -214,7 +215,7 @@ namespace KK_Plugins
             AutosaveText.font = fontFace;
             AutosaveText.fontSize = fsize;
             AutosaveText.fontStyle = UnityEngine.FontStyle.Normal;
-            AutosaveText.alignment = TextAnchor.MiddleLeft;
+            AutosaveText.alignment = align;
             AutosaveText.horizontalOverflow = HorizontalWrapMode.Wrap;
             AutosaveText.verticalOverflow = VerticalWrapMode.Overflow;
             AutosaveText.color = Color.red;
