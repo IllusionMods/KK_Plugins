@@ -1,0 +1,233 @@
+﻿using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
+using HarmonyLib;
+using Studio;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+#if AI || HS2
+using AIChara;
+#elif PH
+using ChaControl = Human;
+#endif
+
+namespace KK_Plugins
+{
+    /// <summary>
+    /// Autosave for Studio scenes
+    /// </summary>
+    [BepInPlugin(GUID, PluginName, Version)]
+    public class Autosave : BaseUnityPlugin
+    {
+        public const string GUID = "com.deathweasel.bepinex.autosave";
+        public const string PluginName = "Autosave";
+        public const string PluginNameInternal = Constants.Prefix + "_Autosave";
+        public const string Version = "1.0";
+        internal static new ManualLogSource Logger;
+
+        public const string AutosavePathStudio = Studio.Studio.savePath + "/_autosave";
+        private static GameObject AutoSaveCanvas;
+        private static Text AutosaveText;
+#if !HS
+        private Coroutine MakerCoroutine;
+#endif
+
+        public static ConfigEntry<int> AutosaveIntervalStudio { get; private set; }
+        public static ConfigEntry<int> AutosaveIntervalMaker { get; private set; }
+        public static ConfigEntry<int> AutosaveCountdown { get; private set; }
+        public static ConfigEntry<int> AutosaveFileLimit { get; private set; }
+
+        internal void Main()
+        {
+            Logger = base.Logger;
+
+            AutosaveIntervalStudio = Config.Bind("Config", "Autosave Interval Studio", 10, new ConfigDescription("Minutes between autosaves in Studio", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
+            AutosaveIntervalMaker = Config.Bind("Config", "Autosave Interval Maker", 5, new ConfigDescription("Minutes between autosaves in the character maker", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
+            AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
+            AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(1, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
+
+            if (Application.productName == Constants.StudioProcessName)
+                StartCoroutine(AutosaveStudio());
+#if !HS
+            else
+            {
+                KKAPI.Maker.MakerAPI.MakerFinishedLoading += (a, b) => MakerCoroutine = StartCoroutine(AutosaveMaker());
+                KKAPI.Maker.MakerAPI.MakerExiting += (a, b) => StopCoroutine(MakerCoroutine);
+            }
+#endif
+        }
+
+#if !HS
+        private IEnumerator AutosaveMaker()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(AutosaveIntervalMaker.Value * 60);
+
+                //Display a counter before saving so that the user has a chance to stop moving the camera around
+                if (AutosaveCountdown.Value > 0)
+                    for (int countdown = AutosaveCountdown.Value; countdown > 0; countdown--)
+                    {
+                        SetText($"Autosaving in {countdown}");
+                        yield return new WaitForSeconds(1);
+                    }
+
+                SetText("Saving...");
+                yield return new WaitForSeconds(1);
+                yield return new WaitForEndOfFrame();
+
+                string folder = "";
+                var charas = FindObjectsOfType<ChaControl>();
+                for (int counter = 0; counter < charas.Length; counter++)
+                {
+                    DateTime now = DateTime.Now;
+                    string filename = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
+                    string sex;
+#if PH
+                    sex = charas[counter] is Male ? "male" : "female";
+#else
+                    sex= charas[counter].sex == 0 ? "male" : "female";
+#endif
+                    folder = $"chara/{sex}/_autosave";
+                    string filepath = $"{UserData.Create(folder)}{filename}";
+#if AI || EC || HS2
+                    Traverse.Create(charas[counter].chaFile).Method("SaveFile", filepath, 0).GetValue();
+#elif KK
+                    Traverse.Create(charas[counter].chaFile).Method("SaveFile", filepath).GetValue();
+#elif PH
+                    charas[counter].Save(filepath);
+#else
+                    Logger.LogError($"Exporting not yet implemented");
+#endif
+                }
+
+                //Delete all but the latest few autosaves
+                if (folder != "")
+                {
+                    DirectoryInfo di = new DirectoryInfo(UserData.Create(folder));
+                    var files = di.GetFiles("autosave*").ToList();
+                    files.OrderBy(x => x.CreationTime);
+                    while (files.Count > AutosaveFileLimit.Value)
+                    {
+                        var fileToDelete = files[0];
+                        files.RemoveAt(0);
+                        fileToDelete.Delete();
+                    }
+                }
+
+                SetText("Saved!");
+                yield return new WaitForSeconds(2);
+                SetText("");
+            }
+        }
+#endif
+
+        private IEnumerator AutosaveStudio()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(AutosaveIntervalStudio.Value * 60);
+
+                //Studio not loaded yet
+                if (!Studio.Studio.IsInstance())
+                    continue;
+
+                //Display a counter before saving so that the user has a chance to stop moving the camera around
+                if (AutosaveCountdown.Value > 0)
+                    for (int countdown = AutosaveCountdown.Value; countdown > 0; countdown--)
+                    {
+                        SetText($"Autosaving in {countdown}");
+                        yield return new WaitForSeconds(1);
+                    }
+
+                SetText("Saving...");
+                yield return new WaitForSeconds(1);
+
+                //Needed so the thumbnail is correct
+                yield return new WaitForEndOfFrame();
+
+                //Game runs similar code
+                foreach (KeyValuePair<int, ObjectCtrlInfo> item in Studio.Studio.Instance.dicObjectCtrl)
+                    item.Value.OnSavePreprocessing();
+                Studio.CameraControl m_CameraCtrl = (Studio.CameraControl)Traverse.Create(Studio.Studio.Instance).Field("m_CameraCtrl").GetValue();
+                Studio.Studio.Instance.sceneInfo.cameraSaveData = m_CameraCtrl.Export();
+                DateTime now = DateTime.Now;
+                string str = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
+                string path = $"{UserData.Create(AutosavePathStudio)}{str}";
+                Studio.Studio.Instance.sceneInfo.Save(path);
+
+                //Delete all but the latest few autosaves
+                DirectoryInfo di = new DirectoryInfo(UserData.Create(AutosavePathStudio));
+                var files = di.GetFiles("autosave*").ToList();
+                files.OrderBy(x => x.CreationTime);
+                while (files.Count > AutosaveFileLimit.Value)
+                {
+                    var fileToDelete = files[0];
+                    files.RemoveAt(0);
+                    fileToDelete.Delete();
+                }
+
+                SetText("Saved!");
+                yield return new WaitForSeconds(2);
+                SetText("");
+            }
+        }
+
+        private static void InitGUI()
+        {
+            if (AutoSaveCanvas != null)
+                return;
+
+            AutoSaveCanvas = new GameObject("AutoSaveCanvas");
+
+            var cscl = AutoSaveCanvas.GetOrAddComponent<CanvasScaler>();
+            cscl.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            cscl.referenceResolution = new Vector2(Screen.width, Screen.height);
+
+            var canvas = AutoSaveCanvas.GetOrAddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 500;
+            AutoSaveCanvas.GetOrAddComponent<CanvasGroup>().blocksRaycasts = false;
+
+            var vlg = AutoSaveCanvas.GetOrAddComponent<VerticalLayoutGroup>();
+            vlg.childForceExpandHeight = false;
+            vlg.childForceExpandWidth = false;
+            vlg.childAlignment = TextAnchor.MiddleLeft;
+            vlg.padding = new RectOffset(10, 10, 10, 10);
+
+            Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
+            int fsize = 16;
+
+            GameObject autosaveTextObject = new GameObject("AutosaveText");
+            autosaveTextObject.transform.SetParent(AutoSaveCanvas.transform);
+
+            var rect = autosaveTextObject.GetOrAddComponent<RectTransform>();
+            rect.pivot = new Vector2(0.5f, 0);
+            rect.sizeDelta = new Vector2(Screen.width * 0.990f, fsize + (fsize * 0.05f));
+
+            AutosaveText = autosaveTextObject.GetOrAddComponent<Text>();
+            AutosaveText.font = fontFace;
+            AutosaveText.fontSize = fsize;
+            AutosaveText.fontStyle = UnityEngine.FontStyle.Normal;
+            AutosaveText.alignment = TextAnchor.MiddleLeft;
+            AutosaveText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            AutosaveText.verticalOverflow = VerticalWrapMode.Overflow;
+            AutosaveText.color = Color.red;
+
+            var autosaveTextOutline = autosaveTextObject.GetOrAddComponent<Outline>();
+            autosaveTextOutline.effectColor = Color.black;
+            autosaveTextOutline.effectDistance = new Vector2(1, 1);
+        }
+
+        private static void SetText(string text)
+        {
+            InitGUI();
+            AutosaveText.text = text;
+        }
+    }
+}
