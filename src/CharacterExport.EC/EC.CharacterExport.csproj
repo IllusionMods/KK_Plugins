@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,7 +39,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6\lib\net46\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.2\lib\net46\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx, Version=5.3.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -57,11 +59,11 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.1\lib\net46\UnityEngine.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\lib\net46\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.1\lib\net46\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\lib\net46\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -74,7 +76,7 @@
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.8.2\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.9.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\CharacterExport.Core\Core.CharacterExport.projitems" Label="Shared" />
@@ -82,4 +84,13 @@
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" EC</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets')" />
 </Project>
