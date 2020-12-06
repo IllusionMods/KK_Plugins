@@ -11,13 +11,11 @@ using UnityEngine;
 using UnityEngine.UI;
 #if AI || HS2
 using AIChara;
-#elif PH
-using ChaControl = Human;
 #endif
-#if !HS
+#if !HS && !PC
 using KKAPI;
 #endif
-#if !EC
+#if !EC && !PC
 using Studio;
 #endif
 
@@ -26,7 +24,7 @@ namespace KK_Plugins
     /// <summary>
     /// Autosave for Studio scenes and character maker cards
     /// </summary>
-#if !HS
+#if !HS && !PC
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
 #endif
     [BepInPlugin(GUID, PluginName, Version)]
@@ -37,22 +35,30 @@ namespace KK_Plugins
         public const string PluginNameInternal = Constants.Prefix + "_Autosave";
         public const string Version = "1.0";
         internal static new ManualLogSource Logger;
+        internal static Autosave Instance;
 
-#if !EC
+#if !EC && !PC
         public const string AutosavePathStudio = Studio.Studio.savePath + "/_autosave";
 #endif
+#if PC
+        public const string AutosavePath = "chara/_autosave";
+#else
         public const string AutosavePathMale = "chara/male/_autosave";
         public const string AutosavePathFemale = "chara/female/_autosave";
+#endif
         private static GameObject AutosaveCanvas;
         private static Text AutosaveText;
-#if EC
+#if EC || PC
         private static readonly bool InStudio = false;
 #else
         private static readonly bool InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
 #endif
-#if !HS
-        private Coroutine MakerCoroutine;
+#if PC
+        private static CharaCustomMode CharaCustomModeInstance;
+#elif HS
+        private static CustomControl CustomControlInstance;
 #endif
+        private static Coroutine MakerCoroutine;
 
         public static ConfigEntry<int> AutosaveIntervalStudio { get; private set; }
         public static ConfigEntry<int> AutosaveIntervalMaker { get; private set; }
@@ -62,43 +68,53 @@ namespace KK_Plugins
         private void Start()
         {
             Logger = base.Logger;
+            Instance = this;
 
             AutosaveIntervalStudio = Config.Bind("Config", "Autosave Interval Studio", 10, new ConfigDescription("Minutes between autosaves in Studio", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
             AutosaveIntervalMaker = Config.Bind("Config", "Autosave Interval Maker", 5, new ConfigDescription("Minutes between autosaves in the character maker", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
             AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
             AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
 
+            Harmony.CreateAndPatchAll(typeof(Hooks));
+
             if (InStudio)
             {
-#if !EC
+#if !EC && !PC
                 StartCoroutine(AutosaveStudio());
 #endif
             }
             else
             {
-#if !HS
+#if !HS && !PC
                 KKAPI.Maker.MakerAPI.MakerFinishedLoading += (a, b) => MakerCoroutine = StartCoroutine(AutosaveMaker());
-                KKAPI.Maker.MakerAPI.MakerExiting += (a, b) => StopCoroutine(MakerCoroutine);
+                KKAPI.Maker.MakerAPI.MakerExiting += (a, b) => StopMakerCoroutine();
 #endif
             }
 
             //Delete any leftover autosaves
             if (AutosaveFileLimit.Value == 0)
             {
-#if !EC
-                DeleteAutosaves(AutosavePathStudio);
-#endif
+#if PC
+                DeleteAutosaves(AutosavePath);
+#else
                 DeleteAutosaves(AutosavePathMale);
                 DeleteAutosaves(AutosavePathFemale);
+#endif
             }
         }
 
-#if !HS
         private IEnumerator AutosaveMaker()
         {
             while (true)
             {
                 yield return new WaitForSeconds(AutosaveIntervalMaker.Value * 60);
+#if HS
+                if (CustomControlInstance == null)
+                {
+                    StopMakerCoroutine();
+                    break;
+                }
+#endif
 
                 if (AutosaveFileLimit.Value != 0)
                 {
@@ -114,28 +130,44 @@ namespace KK_Plugins
                     yield return new WaitForSeconds(1);
                     yield return new WaitForEndOfFrame();
 
-                    var charas = FindObjectsOfType<ChaControl>();
-                    for (int counter = 0; counter < charas.Length; counter++)
+#if HS
+                    if (CustomControlInstance == null)
                     {
-                        DateTime now = DateTime.Now;
-                        string filename = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
-#if PH
-                        string folder = charas[counter] is Male ? AutosavePathMale : AutosavePathFemale;
-#else
-                        string folder = charas[counter].sex == 0 ? AutosavePathMale : AutosavePathFemale;
-#endif
-                        string filepath = $"{UserData.Create(folder)}{filename}";
-#if AI || EC || HS2
-                        Traverse.Create(charas[counter].chaFile).Method("SaveFile", filepath, 0).GetValue();
-#elif KK
-                        Traverse.Create(charas[counter].chaFile).Method("SaveFile", filepath).GetValue();
-#elif PH
-                        charas[counter].Save(filepath);
-#endif
+                        StopMakerCoroutine();
+                        break;
                     }
+#endif
+                    DateTime now = DateTime.Now;
+                    string filename = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
+#if PC
+                    string folder = AutosavePath;
+#elif PH
+                    string folder = KKAPI.Maker.MakerAPI.GetCharacterControl() is Male ? AutosavePathMale : AutosavePathFemale;
+#elif HS
+                    string folder = CustomControlInstance.chainfo.Sex == 0 ? AutosavePathMale : AutosavePathFemale;
+#else                    
+                    string folder = KKAPI.Maker.MakerAPI.GetCharacterControl().sex == 0 ? AutosavePathMale : AutosavePathFemale;
+#endif
+                    string filepath = $"{UserData.Create(folder)}{filename}";
 
+#if AI || EC || HS2
+                    Traverse.Create(KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile).Method("SaveFile", filepath, 0).GetValue();
+#elif KK
+                    Traverse.Create(KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile).Method("SaveFile", filepath).GetValue();
+#elif PC
+                    ((Human)Traverse.Create(CharaCustomModeInstance).Field("human").GetValue()).Custom.Save(filepath, null);
+#elif PH
+                    KKAPI.Maker.MakerAPI.GetCharacterControl().Save(filepath);
+#elif HS
+                    CustomControlInstance.CustomSaveCharaAssist(filepath);
+#endif
+
+#if PC
+                    DeleteAutosaves(AutosavePath);
+#else
                     DeleteAutosaves(AutosavePathMale);
                     DeleteAutosaves(AutosavePathFemale);
+#endif
 
                     SetText("Saved!");
                     yield return new WaitForSeconds(2);
@@ -143,9 +175,8 @@ namespace KK_Plugins
                 }
             }
         }
-#endif
 
-#if !EC
+#if !EC && !PC
         private IEnumerator AutosaveStudio()
         {
             while (true)
@@ -217,6 +248,12 @@ namespace KK_Plugins
             }
         }
 
+        private static void StopMakerCoroutine()
+        {
+            SetText("");
+            Instance.StopCoroutine(MakerCoroutine);
+        }
+
         private static void InitGUI()
         {
             if (AutosaveCanvas != null)
@@ -268,6 +305,29 @@ namespace KK_Plugins
         {
             InitGUI();
             AutosaveText.text = text;
+        }
+
+        private static class Hooks
+        {
+#if PC
+            [HarmonyPostfix, HarmonyPatch(typeof(CharaCustomMode), nameof(CharaCustomMode.Start))]
+            private static void CharaCustomMode_Start(CharaCustomMode __instance)
+            {
+                CharaCustomModeInstance = __instance;
+                MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
+            }
+
+            [HarmonyPostfix, HarmonyPatch(typeof(CharaCustomMode), nameof(CharaCustomMode.End))]
+            private static void CharaCustomMode_End() => StopMakerCoroutine();
+#elif HS
+
+            [HarmonyPostfix, HarmonyPatch(typeof(CustomControl), "Start")]
+            private static void CustomControl_Start(CustomControl __instance)
+            {
+                CustomControlInstance = __instance;
+                MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
+            }
+#endif
         }
     }
 }
