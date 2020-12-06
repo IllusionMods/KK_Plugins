@@ -39,8 +39,11 @@
 #elif PC
         internal const string Prefix = "PC";
         internal const string GameName = "Play Club";
-        internal const string StudioProcessName = "PlayClubStudio";
         internal const string MainGameProcessName = "PlayClub";
+#elif SBPR
+        internal const string Prefix = "SBPR";
+        internal const string GameName = "Sexy Beach Premium Resort";
+        internal const string MainGameProcessName = "SexyBeachPR_64";
 #endif
     }
 }

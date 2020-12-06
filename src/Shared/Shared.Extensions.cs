@@ -52,10 +52,9 @@ namespace KK_Plugins
         }
     }
 
-#if !PC
+#if !PC && !SBPR && !EC
     internal static class StudioExtensions
     {
-#if !EC
         public static string GetPatternPath(this Studio.OCIItem ociItem, int index)
         {
 #if KK
@@ -77,9 +76,10 @@ namespace KK_Plugins
             throw new System.NotImplementedException("StudioExtensions.SetPatternPath");
 #endif
         }
-#endif
     }
+#endif
 
+#if !PC && !SBPR
     internal static class MeshExtensions
     {
         public static Mesh Submesh(this Mesh mesh, int submeshIndex)

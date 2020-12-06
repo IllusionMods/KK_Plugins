@@ -12,10 +12,10 @@ using UnityEngine.UI;
 #if AI || HS2
 using AIChara;
 #endif
-#if !HS && !PC
+#if !HS && !PC && !SBPR
 using KKAPI;
 #endif
-#if !EC && !PC
+#if !EC && !PC && !SBPR
 using Studio;
 #endif
 
@@ -24,7 +24,7 @@ namespace KK_Plugins
     /// <summary>
     /// Autosave for Studio scenes and character maker cards
     /// </summary>
-#if !HS && !PC
+#if !HS && !PC && !SBPR
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
 #endif
     [BepInPlugin(GUID, PluginName, Version)]
@@ -33,11 +33,11 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.autosave";
         public const string PluginName = "Autosave";
         public const string PluginNameInternal = Constants.Prefix + "_Autosave";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
         internal static new ManualLogSource Logger;
         internal static Autosave Instance;
 
-#if !EC && !PC
+#if !EC && !PC && !SBPR
         public const string AutosavePathStudio = Studio.Studio.savePath + "/_autosave";
 #endif
 #if PC
@@ -48,14 +48,14 @@ namespace KK_Plugins
 #endif
         private static GameObject AutosaveCanvas;
         private static Text AutosaveText;
-#if EC || PC
+#if EC || PC || SBPR
         private static readonly bool InStudio = false;
 #else
         private static readonly bool InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
 #endif
 #if PC
         private static CharaCustomMode CharaCustomModeInstance;
-#elif HS
+#elif HS || SBPR
         private static CustomControl CustomControlInstance;
 #endif
         private static Coroutine MakerCoroutine;
@@ -79,13 +79,13 @@ namespace KK_Plugins
 
             if (InStudio)
             {
-#if !EC && !PC
+#if !EC && !PC && !SBPR
                 StartCoroutine(AutosaveStudio());
 #endif
             }
             else
             {
-#if !HS && !PC
+#if !HS && !PC && !SBPR
                 KKAPI.Maker.MakerAPI.MakerFinishedLoading += (a, b) => MakerCoroutine = StartCoroutine(AutosaveMaker());
                 KKAPI.Maker.MakerAPI.MakerExiting += (a, b) => StopMakerCoroutine();
 #endif
@@ -145,14 +145,14 @@ namespace KK_Plugins
                     string folder = KKAPI.Maker.MakerAPI.GetCharacterControl() is Male ? AutosavePathMale : AutosavePathFemale;
 #elif HS
                     string folder = CustomControlInstance.chainfo.Sex == 0 ? AutosavePathMale : AutosavePathFemale;
-#else                    
+#elif SBPR
+                    string folder = CustomControlInstance.chabody.Sex == 0 ? AutosavePathMale : AutosavePathFemale;
+#else
                     string folder = KKAPI.Maker.MakerAPI.GetCharacterControl().sex == 0 ? AutosavePathMale : AutosavePathFemale;
 #endif
                     string filepath = $"{UserData.Create(folder)}{filename}";
 
-#if AI || EC || HS2
-                    Traverse.Create(KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile).Method("SaveFile", filepath, 0).GetValue();
-#elif KK
+#if KK
                     Traverse.Create(KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile).Method("SaveFile", filepath).GetValue();
 #elif PC
                     ((Human)Traverse.Create(CharaCustomModeInstance).Field("human").GetValue()).Custom.Save(filepath, null);
@@ -160,6 +160,10 @@ namespace KK_Plugins
                     KKAPI.Maker.MakerAPI.GetCharacterControl().Save(filepath);
 #elif HS
                     CustomControlInstance.CustomSaveCharaAssist(filepath);
+#elif SBPR
+                    CustomControlInstance.chabody.OverwriteCharaFile(filepath);
+#else
+                    Traverse.Create(KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile).Method("SaveFile", filepath, 0).GetValue();
 #endif
 
 #if PC
@@ -176,7 +180,7 @@ namespace KK_Plugins
             }
         }
 
-#if !EC && !PC
+#if !EC && !PC && !SBPR
         private IEnumerator AutosaveStudio()
         {
             while (true)
@@ -325,6 +329,13 @@ namespace KK_Plugins
             private static void CustomControl_Start(CustomControl __instance)
             {
                 CustomControlInstance = __instance;
+                MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
+            }
+#elif SBPR
+            [HarmonyPostfix, HarmonyPatch(typeof(CustomScene), "Start")]
+            private static void CustomScene_Start(CustomScene __instance)
+            {
+                CustomControlInstance = __instance.customControl;
                 MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
             }
 #endif
