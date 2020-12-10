@@ -117,7 +117,7 @@ v3.11 Changes made in Studio apply to all selected characters<br/>
 </details>
 
 #### Subtitles
-**v2.1 - [Download](https://www.patreon.com/posts/27699376)** - For Koikatsu, AI Girl, Honey Select, and Honey Select 2<br/>
+**v2.2 - [Download](https://www.patreon.com/posts/27699376)** - For Koikatsu, AI Girl, Honey Select, Honey Select 2, and Play Club<br/>
 
 For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
 For AI Girl trial version, adds subtitles for the character maker.<br/>
@@ -135,6 +135,7 @@ v2.0 Implemented subtitles for VR mode in KK and HS2<br/>
 v2.0.1 Fixed using the wrong object type causing HSceneInstance to bypass null checks<br/>
 v2.0.2 Subtitles are now part of the scene so they can be scoped to XUA translations<br/>
 v2.1 Subtitles for character maker, Fur, Sitri in HS2</br>
+v2.2 Play Club version
 </details>
 
 #### AnimationController
@@ -247,7 +248,7 @@ v1.2 Changes made in Studio apply to all selected characters<br/>
 </details>
 
 #### MaterialEditor
-**v2.4 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
+**v2.4.1 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
 
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
@@ -301,6 +302,7 @@ v2.2 Added hotkeys for disabling or enabling ShadowCastingMode and ReceiveShadow
 v2.3 Fix for tongue edits applying to other characters</br>
 v2.3.1 Fix nullref</br>
 v2.4 Dropdown for editing clothes, hair, and accessories in Studio</br>
+v2.4.1 Various bug fixes</br>
 </details>
 
 #### MaleJuice
