@@ -53,69 +53,74 @@ namespace KK_Plugins
 
         private static void MakerFinishedLoading(object sender, EventArgs e)
         {
+            //Find the sidebar transform (KKAPI compatibility)
+            var sidebar = CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/SidebarScrollView/Viewport/Content");
+            if (sidebar == null)
+                sidebar = CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top");
+
             //Clothing state
             switch (DefaultClothingState.Value)
             {
                 case ClothingState.Clothed:
-                    CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/rbClothesState/imgRbCol01").GetComponent<Toggle>().isOn = true;
+                    sidebar.Find("rbClothesState/imgRbCol01").GetComponent<Toggle>().isOn = true;
                     break;
                 case ClothingState.Underwear:
-                    CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/rbClothesState/imgRbCol02").GetComponent<Toggle>().isOn = true;
+                    sidebar.Find("rbClothesState/imgRbCol02").GetComponent<Toggle>().isOn = true;
                     break;
                 case ClothingState.Naked:
-                    CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/rbClothesState/imgRbCol03").GetComponent<Toggle>().isOn = true;
+                    sidebar.Find("rbClothesState/imgRbCol03").GetComponent<Toggle>().isOn = true;
                     break;
             }
 
             //Set eyebrow pattern. 0=Default, 1=Angry, etc.
             if (DefaultEyebrowPattern.Value != EyebrowPattern.Default)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpEyebrowPtn/ddEyebrowPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultEyebrowPattern.Value;
+                sidebar.Find("grpEyebrowPtn/ddEyebrowPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultEyebrowPattern.Value;
 
             //Set eye pattern. 0=Default, 1=Closed, etc.
             if (DefaultEyePattern.Value != EyePattern.Default)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpEyesPtn/ddEyesPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultEyePattern.Value;
+                sidebar.Find("grpEyesPtn/ddEyesPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultEyePattern.Value;
 
             //Eye openness
             if (DefaultEyeOpenness.Value != 1f)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/sldEyeOpen/Slider").GetComponent<Slider>().value = DefaultEyeOpenness.Value;
+                sidebar.Find("sldEyeOpen/Slider").GetComponent<Slider>().value = DefaultEyeOpenness.Value;
 
             //Disable blinking
             if (DefaultDisableBlinking.Value)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/tglBlink/imgTglCol").GetComponent<Toggle>().isOn = DefaultDisableBlinking.Value;
+                sidebar.Find("tglBlink/imgTglCol").GetComponent<Toggle>().isOn = DefaultDisableBlinking.Value;
 
             //Set mouth pattern. 0=Default, 1=Smile, etc.
             if (DefaultMouthPattern.Value != MouthPattern.Default)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpMouthPtn/ddMouthPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultMouthPattern.Value;
+                sidebar.Find("grpMouthPtn/ddMouthPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultMouthPattern.Value;
 
             //Mouth open
             if (DefaultMouthOpenness.Value != 0f)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/sldMouthOpen/Slider").GetComponent<Slider>().value = DefaultMouthOpenness.Value;
+                sidebar.Find("sldMouthOpen/Slider").GetComponent<Slider>().value = DefaultMouthOpenness.Value;
 
             //Gaze Direction
             if (DefaultGazeDirection.Value != GazeDirection.AtCamera)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpEyesLookPtn/ddEyesLookPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultGazeDirection.Value;
+                sidebar.Find("grpEyesLookPtn/ddEyesLookPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultGazeDirection.Value;
 
             if (DefaultGazeDirectionRate.Value != 1f)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpEyesLookRate/Slider").GetComponent<Slider>().value = DefaultGazeDirectionRate.Value;
+                sidebar.Find("grpEyesLookRate/Slider").GetComponent<Slider>().value = DefaultGazeDirectionRate.Value;
 
             //Head Direction
             if (DefaultHeadDirection.Value != HeadDirection.FromAnimation)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpNeckLookPtn/ddNeckLookPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultHeadDirection.Value;
+                sidebar.Find("grpNeckLookPtn/ddNeckLookPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultHeadDirection.Value;
 
             if (DefaultHeadDirectionRate.Value != 1f)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpNeckLookRate/Slider").GetComponent<Slider>().value = DefaultHeadDirectionRate.Value;
+                sidebar.Find("grpNeckLookRate/Slider").GetComponent<Slider>().value = DefaultHeadDirectionRate.Value;
 
             //Pose
             if (DefaultPose.Value != 0)
             {
-                var ddPose = CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/grpPose/ddPose").GetComponent<TMP_Dropdown>();
+                var ddPose = sidebar.Find("grpPose/ddPose").GetComponent<TMP_Dropdown>();
                 if (DefaultPose.Value < ddPose.options.Count)
                     ddPose.value = DefaultPose.Value;
             }
 
             //Background
             if (DefaultBackground.Value != Background.Image)
-                CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/rbBackType/imgRbCol01").GetComponent<Toggle>().isOn = true;
+                sidebar.Find("rbBackType/imgRbCol01").GetComponent<Toggle>().isOn = true;
         }
 
 #if KK
