@@ -419,6 +419,10 @@ Allows you to adjust fade color or disable the fade in and out effect.<br/>
 **v1.0 - [Download](https://www.patreon.com/posts/43152413)** - For Koikatsu and EmotionCreators<br/>
 A big textbox in the character creator where you can write a character description.<br/>
 
+#### EyeControl
+**v1.0 - [Download](https://www.patreon.com/posts/45075996)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
+Allows you to set a max eye openness, setting it to zero would let you create a character with permanently closed eyes. Can also disable a character's blinking.<br/>
+
 #### InputHotkeyBlock
 Moved to the [BepInEx.Utility](https://github.com/BepInEx/BepInEx.Utility) repo.<br/>
 
