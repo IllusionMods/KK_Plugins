@@ -340,6 +340,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PC.Autosave", "src\Autosave
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBPR.Autosave", "src\Autosave.SBPR\SBPR.Autosave.csproj", "{20E2B252-C7CE-417E-A542-56D3CF7912C4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EyeControl", "EyeControl", "{D07B596D-5603-4B11-B705-F3B377BBC174}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.EyeControl", "src\EyeControl.KK\KK.EyeControl.csproj", "{D542A220-A4DB-4CFA-9A1D-27E0F6D43E13}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.EyeControl", "src\EyeControl.Core\Core.EyeControl.shproj", "{E23F72A1-9DD2-424B-9A9F-DA7FC6BEFCA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.EyeControl", "src\EyeControl.EC\EC.EyeControl.csproj", "{5FAF179D-8DB3-4C89-AAA7-41BCF21588F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.EyeControl", "src\EyeControl.AI\AI.EyeControl.csproj", "{42B5ACA2-B5F7-417E-A8FD-A64EBB85194B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.EyeControl", "src\EyeControl.HS2\HS2.EyeControl.csproj", "{6AFB0781-9AB9-4B4A-97E3-FA73C7990A32}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -405,6 +417,8 @@ Global
 		src\UIUtility\UIUtility.projitems*{3d0850c7-7c86-45fd-ae7f-7680db66499c}*SharedItemsImports = 4
 		src\Colliders.Core\Core.Colliders.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{3d3a1302-c529-4d07-97a4-02c23560a547}*SharedItemsImports = 4
+		src\EyeControl.Core\EyeControl.Core.projitems*{42b5aca2-b5f7-417e-a8fd-a64ebb85194b}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{42b5aca2-b5f7-417e-a8fd-a64ebb85194b}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{42f4ccee-063c-482f-aee7-5e8d34433c95}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{43281cfc-e8be-4e08-9b88-6e9a24887329}*SharedItemsImports = 4
 		src\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems*{43281cfc-e8be-4e08-9b88-6e9a24887329}*SharedItemsImports = 4
@@ -435,6 +449,8 @@ Global
 		src\Shared\Shared.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
 		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
 		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{5a8fdb27-ffca-4a77-ab0f-afdef9a034ed}*SharedItemsImports = 13
+		src\EyeControl.Core\EyeControl.Core.projitems*{5faf179d-8db3-4c89-aaa7-41bcf21588f0}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{5faf179d-8db3-4c89-aaa7-41bcf21588f0}*SharedItemsImports = 4
 		src\CharacterExport.Core\Core.CharacterExport.projitems*{5fea4668-1430-413b-b744-8951a4c07745}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{5fea4668-1430-413b-b744-8951a4c07745}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{6463c4b8-12ce-496b-8578-48d424f61400}*SharedItemsImports = 4
@@ -447,6 +463,8 @@ Global
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{69421a19-a4ac-43bf-8729-6c955f39ce89}*SharedItemsImports = 4
 		src\Autosave.Core\Autosave.Core.projitems*{6a1b1a7f-29e4-4984-b5c3-5a8bbb09e7b2}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{6a1b1a7f-29e4-4984-b5c3-5a8bbb09e7b2}*SharedItemsImports = 4
+		src\EyeControl.Core\EyeControl.Core.projitems*{6afb0781-9ab9-4b4a-97e3-fa73c7990a32}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{6afb0781-9ab9-4b4a-97e3-fa73c7990a32}*SharedItemsImports = 4
 		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		src\AnimationController.Core\Core.AnimationController.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 4
@@ -556,6 +574,8 @@ Global
 		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{cfb86ab8-8852-4939-b0eb-09d320a4266b}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{cfb86ab8-8852-4939-b0eb-09d320a4266b}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{cfb86ab8-8852-4939-b0eb-09d320a4266b}*SharedItemsImports = 4
+		src\EyeControl.Core\EyeControl.Core.projitems*{d542a220-a4db-4cfa-9a1d-27e0f6d43e13}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{d542a220-a4db-4cfa-9a1d-27e0f6d43e13}*SharedItemsImports = 4
 		src\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
 		src\Autosave.Core\Autosave.Core.projitems*{d88e5332-ba52-4f80-b2f7-97ef1bccacfe}*SharedItemsImports = 4
@@ -567,6 +587,7 @@ Global
 		src\Demosaic.Core\Core.Demosaic.projitems*{dff56dbe-9617-48e7-9dab-213890dbee6a}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{dff56dbe-9617-48e7-9dab-213890dbee6a}*SharedItemsImports = 4
 		src\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems*{e011fb17-92b1-4302-ba02-f5dd9a9d9de0}*SharedItemsImports = 13
+		src\EyeControl.Core\EyeControl.Core.projitems*{e23f72a1-9dd2-424b-9a9f-da7fc6befca3}*SharedItemsImports = 13
 		src\Colliders.Core\Core.Colliders.projitems*{e528bd96-46a2-4671-ba1f-315a036bc2b0}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{e528bd96-46a2-4671-ba1f-315a036bc2b0}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
@@ -979,6 +1000,22 @@ Global
 		{20E2B252-C7CE-417E-A542-56D3CF7912C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20E2B252-C7CE-417E-A542-56D3CF7912C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20E2B252-C7CE-417E-A542-56D3CF7912C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D542A220-A4DB-4CFA-9A1D-27E0F6D43E13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D542A220-A4DB-4CFA-9A1D-27E0F6D43E13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D542A220-A4DB-4CFA-9A1D-27E0F6D43E13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D542A220-A4DB-4CFA-9A1D-27E0F6D43E13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FAF179D-8DB3-4C89-AAA7-41BCF21588F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FAF179D-8DB3-4C89-AAA7-41BCF21588F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FAF179D-8DB3-4C89-AAA7-41BCF21588F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FAF179D-8DB3-4C89-AAA7-41BCF21588F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42B5ACA2-B5F7-417E-A8FD-A64EBB85194B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B5ACA2-B5F7-417E-A8FD-A64EBB85194B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B5ACA2-B5F7-417E-A8FD-A64EBB85194B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B5ACA2-B5F7-417E-A8FD-A64EBB85194B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AFB0781-9AB9-4B4A-97E3-FA73C7990A32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AFB0781-9AB9-4B4A-97E3-FA73C7990A32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AFB0781-9AB9-4B4A-97E3-FA73C7990A32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AFB0781-9AB9-4B4A-97E3-FA73C7990A32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1111,6 +1148,11 @@ Global
 		{6A1B1A7F-29E4-4984-B5C3-5A8BBB09E7B2} = {08E5FA33-E6A8-45D5-8F77-7D9B7DF80A93}
 		{EFDBCED8-840A-423B-8304-01F7E24475B0} = {08E5FA33-E6A8-45D5-8F77-7D9B7DF80A93}
 		{20E2B252-C7CE-417E-A542-56D3CF7912C4} = {08E5FA33-E6A8-45D5-8F77-7D9B7DF80A93}
+		{D542A220-A4DB-4CFA-9A1D-27E0F6D43E13} = {D07B596D-5603-4B11-B705-F3B377BBC174}
+		{E23F72A1-9DD2-424B-9A9F-DA7FC6BEFCA3} = {D07B596D-5603-4B11-B705-F3B377BBC174}
+		{5FAF179D-8DB3-4C89-AAA7-41BCF21588F0} = {D07B596D-5603-4B11-B705-F3B377BBC174}
+		{42B5ACA2-B5F7-417E-A8FD-A64EBB85194B} = {D07B596D-5603-4B11-B705-F3B377BBC174}
+		{6AFB0781-9AB9-4B4A-97E3-FA73C7990A32} = {D07B596D-5603-4B11-B705-F3B377BBC174}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
