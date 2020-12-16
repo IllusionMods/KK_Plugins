@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using ChaCustom;
+using HarmonyLib;
 using KKAPI.Maker;
 using System;
 using TMPro;
@@ -15,7 +16,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.makerdefaults";
         public const string PluginName = "Maker Defaults";
         public const string PluginNameInternal = Constants.Prefix + "_MakerDefaults";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<ClothingState> DefaultClothingState { get; private set; }
@@ -53,74 +54,87 @@ namespace KK_Plugins
 
         private static void MakerFinishedLoading(object sender, EventArgs e)
         {
-            //Find the sidebar transform (KKAPI compatibility)
-            var sidebar = CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top/SidebarScrollView/Viewport/Content");
-            if (sidebar == null)
-                sidebar = CustomBase.Instance.transform.Find("FrontUIGroup/CvsDraw/Top");
+            var cmpDrawCtrl = Traverse.Create(CustomBase.Instance.customCtrl.cmpDrawCtrl);
 
             //Clothing state
-            switch (DefaultClothingState.Value)
+            if (DefaultClothingState.Value != ClothingState.Automatic)
             {
-                case ClothingState.Clothed:
-                    sidebar.Find("rbClothesState/imgRbCol01").GetComponent<Toggle>().isOn = true;
-                    break;
-                case ClothingState.Underwear:
-                    sidebar.Find("rbClothesState/imgRbCol02").GetComponent<Toggle>().isOn = true;
-                    break;
-                case ClothingState.Naked:
-                    sidebar.Find("rbClothesState/imgRbCol03").GetComponent<Toggle>().isOn = true;
-                    break;
+                Toggle[] tglClothesState = (Toggle[])cmpDrawCtrl.Field("tglClothesState").GetValue();
+                switch (DefaultClothingState.Value)
+                {
+                    case ClothingState.Clothed:
+                        tglClothesState[1].isOn = true;
+                        break;
+                    case ClothingState.Underwear:
+                        tglClothesState[2].isOn = true;
+                        break;
+#if KK
+                    case ClothingState.Naked:
+                        tglClothesState[3].isOn = true;
+                        break;
+#elif EC
+                    case ClothingState.HalfOff:
+                        tglClothesState[3].isOn = true;
+                        break;
+                    case ClothingState.Naked:
+                        tglClothesState[4].isOn = true;
+                        break;
+#endif
+                }
             }
 
             //Set eyebrow pattern. 0=Default, 1=Angry, etc.
             if (DefaultEyebrowPattern.Value != EyebrowPattern.Default)
-                sidebar.Find("grpEyebrowPtn/ddEyebrowPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultEyebrowPattern.Value;
+                ((TMP_Dropdown)cmpDrawCtrl.Field("ddEyesPtn").GetValue()).value = (int)DefaultEyebrowPattern.Value;
 
             //Set eye pattern. 0=Default, 1=Closed, etc.
             if (DefaultEyePattern.Value != EyePattern.Default)
-                sidebar.Find("grpEyesPtn/ddEyesPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultEyePattern.Value;
+                ((TMP_Dropdown)cmpDrawCtrl.Field("ddEyesPtn").GetValue()).value = (int)DefaultEyePattern.Value;
 
             //Eye openness
             if (DefaultEyeOpenness.Value != 1f)
-                sidebar.Find("sldEyeOpen/Slider").GetComponent<Slider>().value = DefaultEyeOpenness.Value;
+                ((Slider)cmpDrawCtrl.Field("sldEyesOpen").GetValue()).value = DefaultEyeOpenness.Value;
 
             //Disable blinking
             if (DefaultDisableBlinking.Value)
-                sidebar.Find("tglBlink/imgTglCol").GetComponent<Toggle>().isOn = DefaultDisableBlinking.Value;
+                ((Toggle)cmpDrawCtrl.Field("tglBlink").GetValue()).isOn = DefaultDisableBlinking.Value;
 
             //Set mouth pattern. 0=Default, 1=Smile, etc.
             if (DefaultMouthPattern.Value != MouthPattern.Default)
-                sidebar.Find("grpMouthPtn/ddMouthPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultMouthPattern.Value;
+                ((TMP_Dropdown)cmpDrawCtrl.Field("ddMouthPtn").GetValue()).value = (int)DefaultMouthPattern.Value;
 
             //Mouth open
             if (DefaultMouthOpenness.Value != 0f)
-                sidebar.Find("sldMouthOpen/Slider").GetComponent<Slider>().value = DefaultMouthOpenness.Value;
+                ((Slider)cmpDrawCtrl.Field("sldMouthOpen").GetValue()).value = DefaultMouthOpenness.Value;
 
             //Gaze Direction
             if (DefaultGazeDirection.Value != GazeDirection.AtCamera)
-                sidebar.Find("grpEyesLookPtn/ddEyesLookPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultGazeDirection.Value;
+                ((TMP_Dropdown)cmpDrawCtrl.Field("ddEyesLook").GetValue()).value = (int)DefaultGazeDirection.Value;
 
             if (DefaultGazeDirectionRate.Value != 1f)
-                sidebar.Find("grpEyesLookRate/Slider").GetComponent<Slider>().value = DefaultGazeDirectionRate.Value;
+                ((Slider)cmpDrawCtrl.Field("sldEyesLookRate").GetValue()).value = DefaultGazeDirectionRate.Value;
 
             //Head Direction
             if (DefaultHeadDirection.Value != HeadDirection.FromAnimation)
-                sidebar.Find("grpNeckLookPtn/ddNeckLookPtn").GetComponent<TMP_Dropdown>().value = (int)DefaultHeadDirection.Value;
+                ((TMP_Dropdown)cmpDrawCtrl.Field("ddNeckLook").GetValue()).value = (int)DefaultHeadDirection.Value;
 
             if (DefaultHeadDirectionRate.Value != 1f)
-                sidebar.Find("grpNeckLookRate/Slider").GetComponent<Slider>().value = DefaultHeadDirectionRate.Value;
+                ((Slider)cmpDrawCtrl.Field("sldNeckLookRate").GetValue()).value = DefaultHeadDirectionRate.Value;
 
             //Pose
             if (DefaultPose.Value != 0)
             {
-                var ddPose = sidebar.Find("grpPose/ddPose").GetComponent<TMP_Dropdown>();
+                TMP_Dropdown ddPose = (TMP_Dropdown)cmpDrawCtrl.Field("ddPose").GetValue();
                 if (DefaultPose.Value < ddPose.options.Count)
                     ddPose.value = DefaultPose.Value;
             }
 
             //Background
             if (DefaultBackground.Value != Background.Image)
-                sidebar.Find("rbBackType/imgRbCol01").GetComponent<Toggle>().isOn = true;
+            {
+                Toggle[] tglBackType = (Toggle[])cmpDrawCtrl.Field("tglBackType").GetValue();
+                tglBackType[1].isOn = true;
+            }
         }
 
 #if KK
