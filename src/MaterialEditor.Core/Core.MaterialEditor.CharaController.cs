@@ -2,6 +2,7 @@
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
+using MaterialEditor;
 using MessagePack;
 using System;
 using System.Collections;
@@ -11,12 +12,13 @@ using System.IO;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using static KK_Plugins.MaterialEditor.MaterialAPI;
+using static MaterialEditor.MaterialAPI;
+using static MaterialEditor.MaterialEditorPlugin;
 #if AI || HS2
 using AIChara;
 #endif
 
-namespace KK_Plugins.MaterialEditor
+namespace KK_Plugins.MaterialEditorWrapper
 {
     /// <summary>
     /// KKAPI character controller that handles saving and loading character data as well as provides methods to get or set the saved data
@@ -464,7 +466,7 @@ namespace KK_Plugins.MaterialEditor
             CoordinateChanging = true;
 
             if (MakerAPI.InsideAndLoaded)
-                UI.Visible = false;
+                MaterialEditorUI.Visible = false;
 
             ChaControl.StartCoroutine(LoadData(true, true, false));
             base.OnCoordinateBeingLoaded(coordinate, maintainState);
@@ -514,7 +516,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
+                if (Plugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 SetFloat(go, property.MaterialName, property.Property, float.Parse(property.Value));
             }
@@ -526,7 +528,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
+                if (Plugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 SetColor(go, property.MaterialName, property.Property, property.Value);
             }
@@ -538,7 +540,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
+                if (Plugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 if (property.TexID != null)
                     SetTexture(go, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
@@ -548,7 +550,7 @@ namespace KK_Plugins.MaterialEditor
 
 
 #if KK || EC
-            if (MaterialEditorPlugin.RimRemover.Value)
+            if (Plugin.RimRemover.Value)
                 RemoveRim();
 #endif
         }
@@ -557,17 +559,16 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         private void CorrectTongue()
         {
-#if KK || EC
 #if KK
             if (!ChaControl.hiPoly) return;
 #endif
 
+#if KK || EC
             //Get the tongue material used by the head since this one is properly refreshed with every character reload
             Material tongueMat = null;
-            var renderers = GetRendererList(ChaControl.objHead.gameObject);
-            foreach (var renderer in renderers)
+            foreach (var renderer in GetRendererList(ChaControl.objHead.gameObject))
             {
-                var mat = GetMaterials(renderer).FirstOrDefault(x => x.name.Contains("tang"));
+                var mat = GetMaterials(ChaControl.gameObject, renderer).FirstOrDefault(x => x.name.Contains("tang"));
                 if (mat != null)
                     tongueMat = mat;
             }
@@ -578,16 +579,16 @@ namespace KK_Plugins.MaterialEditor
                 string shaderName = tongueMat.shader.NameFormatted();
                 string materialName = tongueMat.NameFormatted();
 
-                SetShader(ChaControl, materialName, shaderName);
+                SetShader(ChaControl.gameObject, materialName, shaderName);
 
-                foreach (var property in MaterialEditorPlugin.XMLShaderProperties[MaterialEditorPlugin.XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"])
+                foreach (var property in XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"])
                 {
                     if (property.Value.Type == ShaderPropertyType.Color)
-                        SetColor(ChaControl, materialName, property.Key, tongueMat.GetColor("_" + property.Key));
+                        SetColor(ChaControl.gameObject, materialName, property.Key, tongueMat.GetColor("_" + property.Key));
                     else if (property.Value.Type == ShaderPropertyType.Float)
-                        SetFloat(ChaControl, materialName, property.Key, tongueMat.GetFloat("_" + property.Key));
+                        SetFloat(ChaControl.gameObject, materialName, property.Key, tongueMat.GetFloat("_" + property.Key));
                     else if (property.Value.Type == ShaderPropertyType.Texture)
-                        SetTexture(ChaControl, materialName, property.Key, (Texture2D)tongueMat.GetTexture("_" + property.Key));
+                        SetTexture(ChaControl.gameObject, materialName, property.Key, (Texture2D)tongueMat.GetTexture("_" + property.Key));
                 }
             }
 #endif
@@ -600,23 +601,16 @@ namespace KK_Plugins.MaterialEditor
                 RemoveRimClothes(i);
             for (var i = 0; i < ChaControl.objHair.Length; i++)
                 RemoveRimHair(i);
-            foreach (var accessoryIndex in MaterialEditorPlugin.GetAcccessoryIndices(ChaControl))
+            foreach (var accessoryIndex in Plugin.GetAcccessoryIndices(ChaControl))
                 RemoveRimAccessory(accessoryIndex);
         }
         private void RemoveRimClothes(int slot)
         {
             var go = ChaControl.objClothes[slot];
-            var rendList = GetRendererList(go);
-            for (var j = 0; j < rendList.Count; j++)
-            {
-                var mats = GetMaterials(rendList[j]);
-                for (int k = 0; k < mats.Count; k++)
-                {
-                    Material mat = mats[k];
-                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", go) == null)
-                        SetMaterialFloatProperty(slot, mat, "rimV", 0, go);
-                }
-            }
+            foreach (var renderer in GetRendererList(go))
+                foreach (var material in GetMaterials(go, renderer))
+                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, material, "rimV", go) == null)
+                        SetMaterialFloatProperty(slot, material, "rimV", 0, go);
         }
         private IEnumerator RemoveRimHairCo(int slot)
         {
@@ -626,32 +620,18 @@ namespace KK_Plugins.MaterialEditor
         private void RemoveRimHair(int slot)
         {
             var go = ChaControl.objHair[slot];
-            var rendList = GetRendererList(go);
-            for (var j = 0; j < rendList.Count; j++)
-            {
-                var mats = GetMaterials(rendList[j]);
-                for (int k = 0; k < mats.Count; k++)
-                {
-                    Material mat = mats[k];
-                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", go) == null)
-                        SetMaterialFloatProperty(slot, mat, "rimV", 0, go);
-                }
-            }
+            foreach (var renderer in GetRendererList(go))
+                foreach (var material in GetMaterials(go, renderer))
+                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, material, "rimV", go) == null)
+                        SetMaterialFloatProperty(slot, material, "rimV", 0, go);
         }
         private void RemoveRimAccessory(int slot)
         {
             var go = ChaControl.GetAccessory(slot).gameObject;
-            var rendList = GetRendererList(go);
-            for (var j = 0; j < rendList.Count; j++)
-            {
-                var mats = GetMaterials(rendList[j]);
-                for (int k = 0; k < mats.Count; k++)
-                {
-                    Material mat = mats[k];
-                    if (mat.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, mat, "rimV", go) == null)
-                        SetMaterialFloatProperty(slot, mat, "rimV", 0, go);
-                }
-            }
+            foreach (var renderer in GetRendererList(go))
+                foreach (var material in GetMaterials(go, renderer))
+                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, material, "rimV", go) == null)
+                        SetMaterialFloatProperty(slot, material, "rimV", 0, go);
         }
 #endif
 
@@ -687,7 +667,7 @@ namespace KK_Plugins.MaterialEditor
             ChaControl.StartCoroutine(LoadData(true, true, false));
 
             if (MakerAPI.InsideAndLoaded)
-                UI.Visible = false;
+                MaterialEditorUI.Visible = false;
         }
 
 #if KK
@@ -726,7 +706,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
 
                 if (copyDestination == CurrentCoordinateIndex)
-                    UI.Visible = false;
+                    MaterialEditorUI.Visible = false;
 
                 ChaControl.StartCoroutine(LoadData(true, true, false));
             }
@@ -746,11 +726,11 @@ namespace KK_Plugins.MaterialEditor
             MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
 
             if (MakerAPI.InsideAndLoaded)
-                if (UI.Visible && MEMaker.Instance != null)
+                if (MaterialEditorUI.Visible && MEMaker.Instance != null)
                     MEMaker.Instance.UpdateUIAccessory();
 
 #if KK || EC
-            if (MaterialEditorPlugin.RimRemover.Value)
+            if (Plugin.RimRemover.Value)
                 RemoveRimAccessory(e.SlotIndex);
 #endif
         }
@@ -763,7 +743,7 @@ namespace KK_Plugins.MaterialEditor
 
 #if KK || EC
             if (MakerAPI.InsideAndLoaded)
-                if (UI.Visible && MEMaker.Instance != null)
+                if (MaterialEditorUI.Visible && MEMaker.Instance != null)
                     MEMaker.Instance.UpdateUIAccessory();
 #else
             ChaControl.StartCoroutine(LoadData(false, true, false));
@@ -772,7 +752,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 yield return null;
                 if (MakerAPI.InsideAndLoaded)
-                    if (UI.Visible && MEMaker.Instance != null)
+                    if (MaterialEditorUI.Visible && MEMaker.Instance != null)
                         MEMaker.Instance.UpdateUIAccessory();
             }
 #endif
@@ -810,7 +790,7 @@ namespace KK_Plugins.MaterialEditor
             MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
 
             if (MakerAPI.InsideAndLoaded)
-                UI.Visible = false;
+                MaterialEditorUI.Visible = false;
 
             ChaControl.StartCoroutine(LoadData(true, true, false));
         }
@@ -851,7 +831,7 @@ namespace KK_Plugins.MaterialEditor
 
                 if (MakerAPI.InsideAndLoaded)
                     if ((int)e.CopyDestination == CurrentCoordinateIndex)
-                        UI.Visible = false;
+                        MaterialEditorUI.Visible = false;
             }
         }
 #endif
@@ -863,7 +843,7 @@ namespace KK_Plugins.MaterialEditor
 #else
             if (type != 120) //type 120 = no category, accessory being removed
             {
-                if (MaterialEditorPlugin.RimRemover.Value)
+                if (Plugin.RimRemover.Value)
                     RemoveRimAccessory(slot);
                 return;
             }
@@ -878,7 +858,7 @@ namespace KK_Plugins.MaterialEditor
             MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
 
             if (MakerAPI.InsideAndLoaded)
-                UI.Visible = false;
+                MaterialEditorUI.Visible = false;
         }
 
         internal void ChangeCustomClothesEvent(int slot)
@@ -904,10 +884,10 @@ namespace KK_Plugins.MaterialEditor
             MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot);
 
             if (MakerAPI.InsideAndLoaded)
-                UI.Visible = false;
+                MaterialEditorUI.Visible = false;
 
 #if KK || EC
-            if (MaterialEditorPlugin.RimRemover.Value)
+            if (Plugin.RimRemover.Value)
                 RemoveRimClothes(slot);
 #endif
         }
@@ -924,10 +904,10 @@ namespace KK_Plugins.MaterialEditor
             MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair && x.Slot == slot);
 
             if (MakerAPI.InsideAndLoaded)
-                UI.Visible = false;
+                MaterialEditorUI.Visible = false;
 
 #if KK || EC
-            if (MaterialEditorPlugin.RimRemover.Value)
+            if (Plugin.RimRemover.Value)
                 StartCoroutine(RemoveRimHairCo(slot));
 #endif
         }
@@ -941,7 +921,7 @@ namespace KK_Plugins.MaterialEditor
             for (var i = 0; i < MaterialTexturePropertyList.Count; i++)
             {
                 var property = MaterialTexturePropertyList[i];
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property))
+                if (Plugin.CheckBlacklist(property.MaterialName, property.Property))
                     continue;
 
                 if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
@@ -960,12 +940,12 @@ namespace KK_Plugins.MaterialEditor
             for (var i = 0; i < MaterialTexturePropertyList.Count; i++)
             {
                 var property = MaterialTexturePropertyList[i];
-                if (MaterialEditorPlugin.CheckBlacklist(property.MaterialName, property.Property))
+                if (Plugin.CheckBlacklist(property.MaterialName, property.Property))
                     continue;
 
                 if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")
                     if (property.TexID != null)
-                        SetTexture(ChaControl, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                        SetTexture(ChaControl.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
             }
         }
 
@@ -977,21 +957,21 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="go">GameObject the material belongs to</param>
         public void MaterialCopyEdits(int slot, Material material, GameObject go)
         {
-            MaterialEditorPlugin.CopyData.ClearAll();
+            CopyData.ClearAll();
             ObjectType objectType = FindGameObjectType(go);
 
             foreach (var materialShader in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
-                MaterialEditorPlugin.CopyData.MaterialShaderList.Add(new CopyContainer.MaterialShader(materialShader.ShaderName, materialShader.RenderQueue));
+                CopyData.MaterialShaderList.Add(new CopyContainer.MaterialShader(materialShader.ShaderName, materialShader.RenderQueue));
             foreach (var materialFloatProperty in MaterialFloatPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
-                MaterialEditorPlugin.CopyData.MaterialFloatPropertyList.Add(new CopyContainer.MaterialFloatProperty(materialFloatProperty.Property, float.Parse(materialFloatProperty.Value)));
+                CopyData.MaterialFloatPropertyList.Add(new CopyContainer.MaterialFloatProperty(materialFloatProperty.Property, float.Parse(materialFloatProperty.Value)));
             foreach (var materialColorProperty in MaterialColorPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
-                MaterialEditorPlugin.CopyData.MaterialColorPropertyList.Add(new CopyContainer.MaterialColorProperty(materialColorProperty.Property, materialColorProperty.Value));
+                CopyData.MaterialColorPropertyList.Add(new CopyContainer.MaterialColorProperty(materialColorProperty.Property, materialColorProperty.Value));
             foreach (var materialTextureProperty in MaterialTexturePropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
             {
                 if (materialTextureProperty.TexID != null)
-                    MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, TextureDictionary[(int)materialTextureProperty.TexID].Data, materialTextureProperty.Offset, materialTextureProperty.Scale));
+                    CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, TextureDictionary[(int)materialTextureProperty.TexID].Data, materialTextureProperty.Offset, materialTextureProperty.Scale));
                 else
-                    MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
+                    CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
             }
         }
         /// <summary>
@@ -1003,29 +983,29 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void MaterialPasteEdits(int slot, Material material, GameObject go, bool setProperty = true)
         {
-            for (var i = 0; i < MaterialEditorPlugin.CopyData.MaterialShaderList.Count; i++)
+            for (var i = 0; i < CopyData.MaterialShaderList.Count; i++)
             {
-                var materialShader = MaterialEditorPlugin.CopyData.MaterialShaderList[i];
+                var materialShader = CopyData.MaterialShaderList[i];
                 if (materialShader.ShaderName != null)
                     SetMaterialShader(slot, material, materialShader.ShaderName, go, setProperty);
                 if (materialShader.RenderQueue != null)
                     SetMaterialShaderRenderQueue(slot, material, (int)materialShader.RenderQueue, go, setProperty);
             }
-            for (var i = 0; i < MaterialEditorPlugin.CopyData.MaterialFloatPropertyList.Count; i++)
+            for (var i = 0; i < CopyData.MaterialFloatPropertyList.Count; i++)
             {
-                var materialFloatProperty = MaterialEditorPlugin.CopyData.MaterialFloatPropertyList[i];
+                var materialFloatProperty = CopyData.MaterialFloatPropertyList[i];
                 if (material.HasProperty($"_{materialFloatProperty.Property}"))
                     SetMaterialFloatProperty(slot, material, materialFloatProperty.Property, materialFloatProperty.Value, go, setProperty);
             }
-            for (var i = 0; i < MaterialEditorPlugin.CopyData.MaterialColorPropertyList.Count; i++)
+            for (var i = 0; i < CopyData.MaterialColorPropertyList.Count; i++)
             {
-                var materialColorProperty = MaterialEditorPlugin.CopyData.MaterialColorPropertyList[i];
+                var materialColorProperty = CopyData.MaterialColorPropertyList[i];
                 if (material.HasProperty($"_{materialColorProperty.Property}"))
                     SetMaterialColorProperty(slot, material, materialColorProperty.Property, materialColorProperty.Value, go, setProperty);
             }
-            for (var i = 0; i < MaterialEditorPlugin.CopyData.MaterialTexturePropertyList.Count; i++)
+            for (var i = 0; i < CopyData.MaterialTexturePropertyList.Count; i++)
             {
-                var materialTextureProperty = MaterialEditorPlugin.CopyData.MaterialTexturePropertyList[i];
+                var materialTextureProperty = CopyData.MaterialTexturePropertyList[i];
                 if (material.HasProperty($"_{materialTextureProperty.Property}"))
                     SetMaterialTexture(slot, material, materialTextureProperty.Property, materialTextureProperty.Data, go);
                 if (materialTextureProperty.Offset != null)
@@ -1296,7 +1276,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 var texBytes = File.ReadAllBytes(filePath);
-                Texture2D tex = MaterialEditorPlugin.TextureFromBytes(texBytes);
+                Texture2D tex = Plugin.TextureFromBytes(texBytes);
 
                 SetTexture(go, material.NameFormatted(), propertyName, tex);
 
@@ -1321,7 +1301,7 @@ namespace KK_Plugins.MaterialEditor
 
             ObjectType objectType = FindGameObjectType(go);
 
-            Texture2D tex = MaterialEditorPlugin.TextureFromBytes(data);
+            Texture2D tex = Plugin.TextureFromBytes(data);
 
             SetTexture(go, material.NameFormatted(), propertyName, tex);
 
@@ -1375,7 +1355,7 @@ namespace KK_Plugins.MaterialEditor
             if (textureProperty != null)
             {
                 if (displayMessage)
-                    MaterialEditorPlugin.Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
+                    Plugin.Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
                 textureProperty.TexID = null;
                 if (textureProperty.NullCheck())
                     MaterialTexturePropertyList.Remove(textureProperty);

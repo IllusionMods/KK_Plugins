@@ -32,8 +32,6 @@ namespace KK_Plugins
             if (ContextMenu != null) return;
             if (CustomBase.Instance == null) return;
 
-            UIUtility.Init(nameof(KK_Plugins));
-
             ContextMenu = UIUtility.CreateNewUISystem("ContextMenu");
             ContextMenu.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f, 1080f);
             ContextMenu.transform.SetParent(CustomBase.Instance.transform);

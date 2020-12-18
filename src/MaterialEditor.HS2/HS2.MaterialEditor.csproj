@@ -31,7 +31,8 @@
     <DefineConstants>TRACE;HS2;Studio</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\bin\HS2_MaterialEditor.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -150,9 +151,14 @@
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
     <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.9.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MaterialEditor\MaterialEditor.csproj">
+      <Project>{398dcfa5-74d2-4f81-bce7-9f00813328aa}</Project>
+      <Name>MaterialEditor</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\MaterialEditor.Core\Core.MaterialEditor.projitems" Label="Shared" />
   <Import Project="..\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems" Label="Shared" />
-  <Import Project="..\MaterialEditor.Core.UI\Core.MaterialEditor.UI.projitems" Label="Shared" />
   <Import Project="..\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />

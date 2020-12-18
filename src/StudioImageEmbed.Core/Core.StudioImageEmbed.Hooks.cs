@@ -27,8 +27,8 @@ namespace KK_Plugins
                 else
                 {
                     //Remove any MaterialEditor pattern texture edits when changing patterns
-                    foreach (var rend in MaterialEditor.MaterialAPI.GetRendererList(__instance.itemComponent))
-                        MaterialEditor.MEStudio.GetSceneController().RemoveMaterialTexture(__instance.objectInfo.dicKey, rend.material, $"PatternMask{_idx + 1}", false);
+                    foreach (var rend in MaterialEditor.MaterialAPI.GetRendererList(__instance.objectItem))
+                        MaterialEditorWrapper.MEStudio.GetSceneController().RemoveMaterialTexture(__instance.objectInfo.dicKey, rend.material, $"PatternMask{_idx + 1}", false);
                 }
             }
 
@@ -52,7 +52,7 @@ namespace KK_Plugins
                 {
                     //Remove any MaterialEditor MainTex texture edits
                     for (var i = 0; i < __instance.panelComponent.renderer.Length; i++)
-                        MaterialEditor.MEStudio.GetSceneController().RemoveMaterialTexture(__instance.objectInfo.dicKey, __instance.panelComponent.renderer[i].material, "MainTex", false);
+                        MaterialEditorWrapper.MEStudio.GetSceneController().RemoveMaterialTexture(__instance.objectInfo.dicKey, __instance.panelComponent.renderer[i].material, "MainTex", false);
                 }
             }
 

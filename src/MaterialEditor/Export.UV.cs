@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 
-namespace KK_Plugins.MaterialEditor
+namespace MaterialEditor
 {
     /// <summary>
     /// Contains methods for exporting the renderer data in various formats
@@ -15,8 +15,10 @@ namespace KK_Plugins.MaterialEditor
         {
             bool openedFile = false;
             Shader shader = Shader.Find("Hidden/Internal-Colored");
-            var lineMaterial = new Material(shader);
-            lineMaterial.hideFlags = HideFlags.HideAndDontSave;
+            var lineMaterial = new Material(shader)
+            {
+                hideFlags = HideFlags.HideAndDontSave
+            };
             lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
@@ -75,7 +77,7 @@ namespace KK_Plugins.MaterialEditor
                 Object.DestroyImmediate(png);
                 MaterialEditorPlugin.Logger.LogInfo($"Exported {filename}");
                 if (!openedFile)
-                    CC.OpenFileInExplorer(filename);
+                    Utilities.OpenFileInExplorer(filename);
                 openedFile = true;
             }
         }

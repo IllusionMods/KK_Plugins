@@ -6,54 +6,43 @@ namespace UILib
 {
     internal class MovableWindow : UIBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
-        private Vector2 _cachedDragPosition;
-        private Vector2 _cachedMousePosition;
-        private bool _pointerDownCalled;
-        private BaseCameraControl _cameraControl;
-        private BaseCameraControl.NoCtrlFunc _noControlFunctionCached;
+        private Vector2 CachedDragPosition;
+        private Vector2 CachedMousePosition;
+        private bool PointerDownCalled;
 
-        public event Action<PointerEventData> onPointerDown;
-        public event Action<PointerEventData> onDrag;
-        public event Action<PointerEventData> onPointerUp;
+        public event Action<PointerEventData> OnPointerDownEvent;
+        public event Action<PointerEventData> OnDragEvent;
+        public event Action<PointerEventData> OnPointerUpEvent;
 
-        public RectTransform toDrag;
-        public bool preventCameraControl;
+        public RectTransform ToDrag;
 
         protected override void Awake()
         {
             base.Awake();
-            _cameraControl = FindObjectOfType<BaseCameraControl>();
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (preventCameraControl && _cameraControl)
-            {
-                _noControlFunctionCached = _cameraControl.NoCtrlCondition;
-                _cameraControl.NoCtrlCondition = () => true;
-            }
-            _pointerDownCalled = true;
-            _cachedDragPosition = toDrag.position;
-            _cachedMousePosition = Input.mousePosition;
-            onPointerDown?.Invoke(eventData);
+            PointerDownCalled = true;
+            CachedDragPosition = ToDrag.position;
+            CachedMousePosition = Input.mousePosition;
+            OnPointerDownEvent?.Invoke(eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (_pointerDownCalled == false)
+            if (PointerDownCalled == false)
                 return;
-            toDrag.position = _cachedDragPosition + ((Vector2)Input.mousePosition - _cachedMousePosition);
-            onDrag?.Invoke(eventData);
+            ToDrag.position = CachedDragPosition + ((Vector2)Input.mousePosition - CachedMousePosition);
+            OnDragEvent?.Invoke(eventData);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (_pointerDownCalled == false)
+            if (PointerDownCalled == false)
                 return;
-            if (preventCameraControl && _cameraControl)
-                _cameraControl.NoCtrlCondition = _noControlFunctionCached;
-            _pointerDownCalled = false;
-            onPointerUp?.Invoke(eventData);
+            PointerDownCalled = false;
+            OnPointerUpEvent?.Invoke(eventData);
         }
     }
 }

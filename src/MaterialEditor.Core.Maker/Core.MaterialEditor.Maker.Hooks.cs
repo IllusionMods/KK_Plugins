@@ -1,9 +1,10 @@
 ﻿using HarmonyLib;
+using MaterialEditor;
 #if KK || EC
 using ChaCustom;
 #endif
 
-namespace KK_Plugins.MaterialEditor
+namespace KK_Plugins.MaterialEditorWrapper
 {
     internal static class MakerHooks
     {
@@ -25,7 +26,7 @@ namespace KK_Plugins.MaterialEditor
                         if (value)
                         {
                             MEMaker.currentHairIndex = index;
-                            if (UI.Visible)
+                            if (MaterialEditorUI.Visible)
                                 MEMaker.Instance.UpdateUIHair(index);
                         }
                     });
@@ -50,7 +51,7 @@ namespace KK_Plugins.MaterialEditor
                         if (value)
                         {
                             MEMaker.currentClothesIndex = index;
-                            if (UI.Visible)
+                            if (MaterialEditorUI.Visible)
                                 MEMaker.Instance.UpdateUIClothes(index);
                         }
                     });
@@ -72,7 +73,7 @@ namespace KK_Plugins.MaterialEditor
                 {
                     tglItem.onValueChanged.AddListener(value =>
                     {
-                        if (value && UI.Visible)
+                        if (value && MaterialEditorUI.Visible)
                         {
                             if (index == 2)
                                 MEMaker.Instance.UpdateUIHair(MEMaker.currentHairIndex);
@@ -81,7 +82,7 @@ namespace KK_Plugins.MaterialEditor
                             else if (index == 4)
                                 MEMaker.Instance.UpdateUIAccessory();
                             else
-                                UI.Visible = false;
+                                MaterialEditorUI.Visible = false;
                         }
                     });
                 }

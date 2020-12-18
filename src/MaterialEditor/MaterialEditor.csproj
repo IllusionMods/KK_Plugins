@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B743E048-5913-4DEC-9067-8AFD1293A211}</ProjectGuid>
+    <ProjectGuid>{398DCFA5-74D2-4F81-BCE7-9F00813328AA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KK_Plugins</RootNamespace>
-    <AssemblyName>KK_MaterialEditor</AssemblyName>
+    <RootNamespace>MaterialEditor</RootNamespace>
+    <AssemblyName>MaterialEditor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -17,10 +17,10 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>embedded</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;KK;Studio</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -28,35 +28,17 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\</OutputPath>
-    <DefineConstants>TRACE;KK;Studio</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DebugSymbols>false</DebugSymbols>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>..\..\bin\MaterialEditor.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HarmonyX.2.2.0\lib\net35\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp.2019.4.27.2\lib\net35\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\lib\net35\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="BepInEx, Version=5.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\BepInEx.BaseLib.5.4.4\lib\net35\BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.Koikatu.16.0.0\lib\net35\ExtensibleSaveFormat.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KKAPI, Version=1.13.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.KKAPI.1.13.4\lib\net35\KKAPI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.dll</HintPath>
@@ -76,20 +58,12 @@
     <Reference Include="MonoMod.Utils, Version=20.11.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MonoMod.Utils.20.11.5.1\lib\net35\MonoMod.Utils.dll</HintPath>
     </Reference>
-    <Reference Include="Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sideloader.Koikatu.16.0.0\lib\net35\Sideloader.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TextMeshPro-1.0.55.56.0b12, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\lib\net35\TextMeshPro-1.0.55.56.0b12.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\lib\net35\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -104,56 +78,43 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\default.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\MaterialEditorIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\KK_Shaders.unity3d" />
+    <Compile Include="API.cs" />
+    <Compile Include="ConfigurationManagerAttributes.cs" />
+    <Compile Include="CopyContainer.cs" />
+    <Compile Include="Export.Obj.cs" />
+    <Compile Include="Export.UV.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\UI.cs" />
+    <Compile Include="UI\UI.ItemInfo.cs" />
+    <Compile Include="UI\UI.ItemTemplate.cs" />
+    <Compile Include="UI\UI.ListEntry.cs" />
+    <Compile Include="UI\UI.VirtualList.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
     <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.9.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MaterialEditor\MaterialEditor.csproj">
-      <Project>{398dcfa5-74d2-4f81-bce7-9f00813328aa}</Project>
-      <Name>MaterialEditor</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
-  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <Import Project="..\MaterialEditor.Core\Core.MaterialEditor.projitems" Label="Shared" />
-  <Import Project="..\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems" Label="Shared" />
-  <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />
-  <Import Project="..\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KK</PostBuildEvent>
-  </PropertyGroup>
-  <Import Project="..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp.targets')" />
+  <Import Project="..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets" Condition="Exists('..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\build\IllusionLibs.Koikatu.TextMeshPro.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\build\IllusionLibs.Koikatu.TextMeshPro.targets'))" />
+    <Error Condition="!Exists('..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.Koikatu.UnityEngine.UI.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.Koikatu.UnityEngine.UI.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.UI.targets'))" />
-    <Error Condition="!Exists('..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets'))" />
   </Target>
-  <Import Project="..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\build\IllusionLibs.Koikatu.TextMeshPro.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\build\IllusionLibs.Koikatu.TextMeshPro.targets')" />
   <Import Project="..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.targets')" />
   <Import Project="..\..\packages\IllusionLibs.Koikatu.UnityEngine.UI.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.UnityEngine.UI.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.UI.targets')" />
-  <Import Project="..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets" Condition="Exists('..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" ME</PostBuildEvent>
+  </PropertyGroup>
 </Project>

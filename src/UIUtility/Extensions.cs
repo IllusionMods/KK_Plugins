@@ -9,30 +9,30 @@ namespace UILib
 {
     internal static class Extensions
     {
-        private static readonly MethodInfo toggleSetMethod;
-        private static readonly MethodInfo sliderSetMethod;
-        private static readonly MethodInfo scrollbarSetMethod;
+        private static readonly MethodInfo ToggleSetMethod;
+        private static readonly MethodInfo SliderSetMethod;
+        private static readonly MethodInfo ScrollbarSetMethod;
 
-        private static readonly FieldInfo dropdownValueField;
+        private static readonly FieldInfo DropdownValueField;
 #if KK
-        private static readonly MethodInfo dropdownRefreshMethod;  // Unity 5.2 <= only
+        private static readonly MethodInfo DropdownRefreshMethod;  // Unity 5.2 <= only
 #endif
 
         static Extensions()
         {
             // Find the Toggle's set method
-            toggleSetMethod = FindSetMethod(typeof(Toggle));
+            ToggleSetMethod = FindSetMethod(typeof(Toggle));
 
             // Find the Slider's set method
-            sliderSetMethod = FindSetMethod(typeof(Slider));
+            SliderSetMethod = FindSetMethod(typeof(Slider));
 
             // Find the Scrollbar's set method
-            scrollbarSetMethod = FindSetMethod(typeof(Scrollbar));
+            ScrollbarSetMethod = FindSetMethod(typeof(Scrollbar));
 
             // Find the Dropdown's value field and its' Refresh method
-            dropdownValueField = typeof(Dropdown).GetField("m_Value", AccessTools.all);
+            DropdownValueField = typeof(Dropdown).GetField("m_Value", AccessTools.all);
 #if KK
-            dropdownRefreshMethod = typeof(Dropdown).GetMethod("RefreshShownValue", AccessTools.all);  // Unity 5.2 <= only
+            DropdownRefreshMethod = typeof(Dropdown).GetMethod("RefreshShownValue", AccessTools.all);  // Unity 5.2 <= only
 #endif
         }
 
@@ -78,7 +78,7 @@ namespace UILib
         /// <param name="sendCallback">Whether to trigger events</param>
         public static void Set(this Toggle instance, bool value, bool sendCallback = false)
         {
-            toggleSetMethod.Invoke(instance, new object[] { value, sendCallback });
+            ToggleSetMethod.Invoke(instance, new object[] { value, sendCallback });
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace UILib
         /// <param name="sendCallback">Whether to trigger events</param>
         public static void Set(this Slider instance, float value, bool sendCallback = false)
         {
-            sliderSetMethod.Invoke(instance, new object[] { value, sendCallback });
+            SliderSetMethod.Invoke(instance, new object[] { value, sendCallback });
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace UILib
         /// <param name="sendCallback">Whether to trigger events</param>
         public static void Set(this Scrollbar instance, float value, bool sendCallback = false)
         {
-            scrollbarSetMethod.Invoke(instance, new object[] { value, sendCallback });
+            ScrollbarSetMethod.Invoke(instance, new object[] { value, sendCallback });
         }
 
         /// <summary>
@@ -110,9 +110,9 @@ namespace UILib
         /// <param name="value"></param>
         public static void Set(this Dropdown instance, int value)
         {
-            dropdownValueField.SetValue(instance, value);
+            DropdownValueField.SetValue(instance, value);
 #if KK
-            dropdownRefreshMethod.Invoke(instance, new object[] { }); // Unity 5.2 <= only
+            DropdownRefreshMethod.Invoke(instance, new object[] { }); // Unity 5.2 <= only
 #else
             instance.RefreshShownValue(); // Unity 5.3 >= only
 #endif
@@ -141,9 +141,7 @@ namespace UILib
             for (var i = 0; i < methods.Length; i++)
             {
                 if (methods[i].Name == "Set" && methods[i].GetParameters().Length == 2)
-                {
                     return methods[i];
-                }
             }
 
             return null;

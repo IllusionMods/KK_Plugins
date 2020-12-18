@@ -2,7 +2,7 @@
 using System.Text;
 using UnityEngine;
 
-namespace KK_Plugins.MaterialEditor
+namespace MaterialEditor
 {
     /// <summary>
     /// Contains methods for exporting the renderer data in various formats
@@ -22,7 +22,7 @@ namespace KK_Plugins.MaterialEditor
                 {
                     sw.Write(mesh);
                     MaterialEditorPlugin.Logger.LogInfo($"Exported {filename}");
-                    CC.OpenFileInExplorer(filename);
+                    Utilities.OpenFileInExplorer(filename);
                 }
             }
         }

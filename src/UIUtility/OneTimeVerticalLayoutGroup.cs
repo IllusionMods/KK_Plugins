@@ -12,8 +12,6 @@ namespace UILib
                 this.ExecuteDelayed(() => enabled = false, 3);
         }
 
-        protected override void OnDisable() { }
-
         public void UpdateLayout() => enabled = true;
     }
 }

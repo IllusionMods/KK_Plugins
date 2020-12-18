@@ -95,6 +95,10 @@
       <Project>{b743e048-5913-4dec-9067-8afd1293a211}</Project>
       <Name>KK.MaterialEditor</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MaterialEditor\MaterialEditor.csproj">
+      <Project>{398dcfa5-74d2-4f81-bce7-9f00813328aa}</Project>
+      <Name>MaterialEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />

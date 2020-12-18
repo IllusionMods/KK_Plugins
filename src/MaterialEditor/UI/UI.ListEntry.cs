@@ -1,10 +1,9 @@
-﻿using IllusionUtility.GetUtility;
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 using static UILib.Extensions;
 
-namespace KK_Plugins.MaterialEditor
+namespace MaterialEditor
 {
     internal class ListEntry : MonoBehaviour
     {

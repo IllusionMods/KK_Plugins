@@ -4,12 +4,14 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static KK_Plugins.MaterialEditor.UI;
+using static MaterialEditor.MaterialEditorUI;
 
-namespace KK_Plugins.MaterialEditor
+namespace MaterialEditor
 {
     internal class VirtualList : MonoBehaviour
     {
+        private static readonly bool instantiateOverloadExists = typeof(UnityEngine.Object).GetMethod("Instantiate", new[] { typeof(GameObject), typeof(Transform) }) != null;
+
         private readonly List<ListEntry> _cachedEntries = new List<ListEntry>();
         private readonly List<ItemInfo> _items = new List<ItemInfo>();
 
@@ -135,7 +137,16 @@ namespace KK_Plugins.MaterialEditor
 
             for (var i = 0; i < visibleEntryCount; i++)
             {
-                var copy = Instantiate(EntryTemplate, EntryTemplate.transform.parent);
+                GameObject copy;
+                if (instantiateOverloadExists)
+                {
+                    copy = Instantiate(EntryTemplate, EntryTemplate.transform.parent);
+                }
+                else
+                {
+                    copy = Instantiate(EntryTemplate);
+                    copy.transform.parent = EntryTemplate.transform.parent;
+                }
                 var entry = copy.GetComponent<ListEntry>();
                 _cachedEntries.Add(entry);
                 entry.SetVisible(false);

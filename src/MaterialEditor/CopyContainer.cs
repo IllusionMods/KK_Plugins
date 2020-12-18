@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace KK_Plugins.MaterialEditor
+namespace MaterialEditor
 {
     /// <summary>
     /// Class containing material data, used to for copy and paste of material edits

@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using UILib;
+﻿using UILib;
 using UnityEngine;
 using UnityEngine.UI;
-using static KK_Plugins.MaterialEditor.UI;
+using static MaterialEditor.MaterialEditorUI;
 
-namespace KK_Plugins.MaterialEditor
+namespace MaterialEditor
 {
     internal static class ItemTemplate
     {

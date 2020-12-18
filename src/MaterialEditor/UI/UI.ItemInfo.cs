@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace KK_Plugins.MaterialEditor
+namespace MaterialEditor
 {
     internal sealed class ItemInfo
     {

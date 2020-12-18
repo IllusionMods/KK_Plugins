@@ -1,7 +1,8 @@
 ﻿using HarmonyLib;
+using MaterialEditor;
 using Studio;
 
-namespace KK_Plugins.MaterialEditor
+namespace KK_Plugins.MaterialEditorWrapper
 {
     internal static class StudioHooks
     {
@@ -25,9 +26,9 @@ namespace KK_Plugins.MaterialEditor
         /// Refresh the UI when changing selected item
         /// </summary>
         [HarmonyPostfix, HarmonyPatch(typeof(WorkspaceCtrl), nameof(WorkspaceCtrl.OnSelectSingle))]
-        private static void WorkspaceCtrl_OnSelectSingle(TreeNodeObject _node)
+        private static void WorkspaceCtrl_OnSelectSingle()
         {
-            if (!UI.Visible)
+            if (!MaterialEditorUI.Visible)
                 return;
 
             var controller = MEStudio.GetSceneController();

@@ -6,8 +6,24 @@ namespace UILib
 {
     internal static class Resource
     {
-        public static string Namespace { get; set; }
-        public static byte[] DefaultResourceKOI => LoadEmbeddedResource($"{Namespace}.Resources.DefaultResourcesKOI.unity3d");
+        private static byte[] _DefaultResources;
+        public static byte[] DefaultResources
+        {
+            get
+            {
+                if (_DefaultResources == null)
+                {
+                    var resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+                    for (int i = 0; i < resources.Length; i++)
+                    {
+                        var resource = resources[i];
+                        if (resource.EndsWith("Resources.DefaultResources.unity3d"))
+                            _DefaultResources = LoadEmbeddedResource(resource);
+                    }
+                }
+                return _DefaultResources;
+            }
+        }
 
         public static byte[] LoadEmbeddedResource(string resourceName)
         {

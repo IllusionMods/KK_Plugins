@@ -6,14 +6,6 @@ namespace UILib
 {
     internal static class UIUtility
     {
-        #region Public Types
-        public enum Binary
-        {
-            Neo,
-            Game,
-        }
-        #endregion
-
         public const RenderMode canvasRenderMode = RenderMode.ScreenSpaceOverlay;
         public const bool canvasPixelPerfect = false;
 
@@ -42,16 +34,9 @@ namespace UILib
         public static int scrollSensitivity = 32;
         public static DefaultControls.Resources resources;
 
-        private static bool _initCalled;
-
-        public static void Init(string resourceNamespace)
+        static UIUtility()
         {
-            if (_initCalled)
-                return;
-            _initCalled = true;
-
-            Resource.Namespace = resourceNamespace;
-            AssetBundle bundle = AssetBundle.LoadFromMemory(Resource.DefaultResourceKOI);
+            AssetBundle bundle = AssetBundle.LoadFromMemory(Resource.DefaultResources);
 
             var sprites = bundle.LoadAllAssets<Sprite>();
             for (var i = 0; i < sprites.Length; i++)
@@ -335,11 +320,10 @@ namespace UILib
             return i;
         }
 
-        public static MovableWindow MakeObjectDraggable(RectTransform clickableDragZone, RectTransform draggableObject, bool preventCameraControl = true)
+        public static MovableWindow MakeObjectDraggable(RectTransform clickableDragZone, RectTransform draggableObject)
         {
             MovableWindow mv = clickableDragZone.gameObject.AddComponent<MovableWindow>();
-            mv.toDrag = draggableObject;
-            mv.preventCameraControl = preventCameraControl;
+            mv.ToDrag = draggableObject;
             return mv;
         }
     }
