@@ -1,0 +1,31 @@
+<MaterialEditor>
+  <Shader Name="default">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
+    <Property Name="Glossiness" Type="Float" Range="0,1"/>
+    <Property Name="GlossMapScale" Type="Float" Range="0,1"/>
+    <Property Name="SmoothnessTextureChannel" Type="Float"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="SpecularHighlights" Type="Float"/>
+    <Property Name="GlossyReflections" Type="Float"/>
+    <Property Name="BumpScale" Type="Float"/>
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0.005,0.08"/>
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float"/>
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="UVSec" Type="Float"/>
+    <Property Name="Mode" Type="Float"/>
+    <Property Name="SrcBlend" Type="Float"/>
+    <Property Name="DstBlend" Type="Float"/>
+    <Property Name="ZWrite" Type="Float"/>
+  </Shader>
+</MaterialEditor>
