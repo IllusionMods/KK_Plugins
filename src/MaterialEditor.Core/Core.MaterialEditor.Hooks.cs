@@ -16,6 +16,9 @@ using Map;
 #else
 using Studio;
 #endif
+#if PH
+using ChaControl = Human;
+#endif
 
 namespace KK_Plugins.MaterialEditorWrapper
 {
@@ -52,6 +55,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 return false;
             }
 
+#if !PH
             //If this is an ItemComponent return only the renderers in the arrays, otherwise child objects will show in the UI
             var itemComponent = gameObject.GetComponent<ItemComponent>();
             if (itemComponent)
@@ -83,6 +87,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 __result = rendList;
                 return false;
             }
+#endif
 
             return true;
         }
@@ -131,6 +136,14 @@ namespace KK_Plugins.MaterialEditorWrapper
         }
 #endif
 
+        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), "LoadShaderDefaultTexture")]
+        private static bool MaterialAPI_LoadShaderDefaultTexture(ref Texture2D __result, string assetBundlePath, string assetPath)
+        {
+            __result = CommonLib.LoadAsset<Texture2D>(assetBundlePath, assetPath);
+            return false;
+        }
+
+#if !PH
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
         private static void SetClothesStatePostfix(ChaControl __instance)
         {
@@ -238,6 +251,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             controller.CustomClothesOverride = true;
             controller.RefreshClothesMainTex();
         }
+#endif
 #endif
 
 #if KK

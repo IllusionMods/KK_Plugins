@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+#if AI || HS2
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
@@ -51,6 +54,27 @@ namespace KK_Plugins
             return gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
         }
     }
+
+#if !PC && !SBPR && !HS
+    internal static class CharacterExtensions
+    {
+#if PH
+        public static GameObject[] GetClothes(this Human human) => human.wears.objWear;
+        public static GameObject GetClothes(this Human human, int index) => human.wears.objWear[index];
+        public static GameObject[] GetHair(this Human human) => human.hairs.objHairs;
+        public static GameObject GetHair(this Human human, int index) => human.hairs.objHairs[index];
+        public static GameObject GetHead(this Human human) => human.head.Obj;
+        public static GameObject GetAccessory(this Human human, int index) => human.accessories.objAcs[index];
+
+#else
+        public static GameObject[] GetClothes(this ChaControl chaControl) => chaControl.objClothes;
+        public static GameObject GetClothes(this ChaControl chaControl, int index) => chaControl.objClothes[index];
+        public static GameObject[] GetHair(this ChaControl chaControl) => chaControl.objHair;
+        public static GameObject GetHair(this ChaControl chaControl, int index) => chaControl.objHair[index];
+        public static GameObject GetHead(this ChaControl chaControl) => chaControl.objHead;
+#endif
+    }
+#endif
 
 #if !PC && !SBPR && !EC
     internal static class StudioExtensions

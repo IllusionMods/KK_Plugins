@@ -13,5 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CharaController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.ObjectData.cs" />
   </ItemGroup>
 </Project>

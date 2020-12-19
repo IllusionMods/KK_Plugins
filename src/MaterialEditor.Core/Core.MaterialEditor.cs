@@ -27,6 +27,9 @@ using Map;
 #else
 using Studio;
 #endif
+#if PH
+using ChaControl = Human;
+#endif
 
 namespace KK_Plugins.MaterialEditorWrapper
 {
@@ -35,8 +38,10 @@ namespace KK_Plugins.MaterialEditorWrapper
     /// </summary>
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
-    [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
+#if !PH
+    [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
+#endif
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public partial class Plugin : BaseUnityPlugin
     {
@@ -69,7 +74,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         public static HashSet<string> BodyParts = new HashSet<string> {
             "o_eyebase_L", "o_eyebase_R", "o_eyelashes", "o_eyeshadow", "o_head", "o_namida", "o_tang", "o_tooth", "o_body_cf", "o_mnpa", "o_mnpb", "cm_o_dan00", "o_tang",
             "cm_o_dan00", "o_tang", "o_silhouette_cf", "o_body_cf", "o_body_cm", "o_head" };
-#else
+#elif KK || EC
         public static HashSet<string> BodyParts = new HashSet<string> {
             "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang", "n_tang_silhouette",  "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_mayuge", "cf_Ohitomi_L", "cf_Ohitomi_R",
             "cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_noseline", "cf_O_namida_L", "cf_O_namida_M", "o_dankon", "o_gomu", "o_dan_f", "cf_O_namida_S", "cf_O_gag_eye_00", "cf_O_gag_eye_01",
@@ -78,6 +83,11 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// Parts of the mouth that need special handling
         /// </summary>
         public static HashSet<string> MouthParts = new HashSet<string> { "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang" };
+#elif PH
+        public static HashSet<string> BodyParts = new HashSet<string> {
+            "cf_O_eyekage1", "cf_O_ha", "cf_O_head", "cf_O_matuge", "cf_O_mayuge", "cf_O_sita", "cf_O_eyehikari_L", "cf_O_eyewhite_L", "cf_O_eyehikari_R", "cf_O_eyewhite_R", 
+            "cf_O_namida01", "cf_O_namida02", "cf_O_namida03", "cf_O_body_00", "cf_O_mnpk", "cf_O_mnpk_00_00", "cf_O_mnpk_00_01", "cf_O_mnpk_00_02", "cf_O_mnpk_00_03", 
+            "cf_O_mnpk_00_04", "cf_O_mnpk_00_05", "cf_O_nail", "cf_O_tang", "cf_O_tikubiL_00", "cf_O_tikubiR_00" };
 #endif
 
         internal void Main()
@@ -86,9 +96,11 @@ namespace KK_Plugins.MaterialEditorWrapper
 
             MakerAPI.MakerExiting += (s, e) => MaterialEditorUI.Visible = false;
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(PluginGUID);
+#if !PH
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
+#endif
 #if KK
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
@@ -139,6 +151,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 BodyParts.Add(parts);
         }
 
+#if !PH
         /// <summary>
         /// Return a list of accessory indices for the character
         /// </summary>
@@ -171,6 +184,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (controller != null)
                 controller.AccessorySelectedSlotChangeEvent(sender, e);
         }
+#endif
 #if KK
         private static void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e)
         {
@@ -184,18 +198,19 @@ namespace KK_Plugins.MaterialEditorWrapper
         {
             yield return new WaitUntil(() => AssetBundleManager.ManifestBundlePack.Count != 0);
 
-            var loadedManifests = Sideloader.Sideloader.Manifests;
-
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.default.xml"))
                 if (stream != null)
                     using (XmlReader reader = XmlReader.Create(stream))
                         LoadXML(XDocument.Load(reader).Element("MaterialEditor"));
 
+#if !PH
+            var loadedManifests = Sideloader.Sideloader.Manifests;
             foreach (var manifest in loadedManifests.Values)
             {
                 LoadXML(manifest.manifestDocument?.Root?.Element(PluginNameInternal));
                 LoadXML(manifest.manifestDocument?.Root?.Element("MaterialEditor"));
             }
+#endif
         }
 
         private static void LoadXML(XElement materialEditorElement)

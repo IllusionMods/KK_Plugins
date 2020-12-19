@@ -17,6 +17,10 @@ using static MaterialEditor.MaterialEditorPlugin;
 #if AI || HS2
 using AIChara;
 #endif
+#if PH
+using ChaFileCoordinate = Character.CustomParameter;
+using ChaControl = Human;
+#endif
 
 namespace KK_Plugins.MaterialEditorWrapper
 {
@@ -45,6 +49,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         private string PropertyToSet;
         private Material MatToSet;
         private int SlotToSet;
+        private ObjectType ObjectTypeToSet;
         private GameObject GameObjectToSet;
 
         /// <summary>
@@ -278,7 +283,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             try
             {
                 if (FileToSet != null)
-                    SetMaterialTextureFromFile(SlotToSet, MatToSet, PropertyToSet, FileToSet, GameObjectToSet);
+                    SetMaterialTextureFromFile(SlotToSet, ObjectTypeToSet, MatToSet, PropertyToSet, FileToSet, GameObjectToSet);
             }
             catch
             {
@@ -482,7 +487,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 yield return null;
             }
 #endif
-            while (ChaControl == null || ChaControl.objHead == null)
+            while (ChaControl == null || ChaControl.GetHead() == null)
                 yield return null;
 
             CorrectTongue();
@@ -609,8 +614,8 @@ namespace KK_Plugins.MaterialEditorWrapper
             var go = ChaControl.objClothes[slot];
             foreach (var renderer in GetRendererList(go))
                 foreach (var material in GetMaterials(go, renderer))
-                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, material, "rimV", go) == null)
-                        SetMaterialFloatProperty(slot, material, "rimV", 0, go);
+                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, ObjectType.Clothing, material, "rimV", go) == null)
+                        SetMaterialFloatProperty(slot, ObjectType.Clothing, material, "rimV", 0, go);
         }
         private IEnumerator RemoveRimHairCo(int slot)
         {
@@ -622,16 +627,16 @@ namespace KK_Plugins.MaterialEditorWrapper
             var go = ChaControl.objHair[slot];
             foreach (var renderer in GetRendererList(go))
                 foreach (var material in GetMaterials(go, renderer))
-                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, material, "rimV", go) == null)
-                        SetMaterialFloatProperty(slot, material, "rimV", 0, go);
+                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, ObjectType.Hair, material, "rimV", go) == null)
+                        SetMaterialFloatProperty(slot, ObjectType.Hair, material, "rimV", 0, go);
         }
         private void RemoveRimAccessory(int slot)
         {
             var go = ChaControl.GetAccessory(slot).gameObject;
             foreach (var renderer in GetRendererList(go))
                 foreach (var material in GetMaterials(go, renderer))
-                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, material, "rimV", go) == null)
-                        SetMaterialFloatProperty(slot, material, "rimV", 0, go);
+                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, ObjectType.Accessory, material, "rimV", go) == null)
+                        SetMaterialFloatProperty(slot, ObjectType.Accessory, material, "rimV", 0, go);
         }
 #endif
 
@@ -713,6 +718,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         }
 #endif
 
+#if !PH
         internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
         {
             if (AccessorySelectedSlotChanging) return;
@@ -794,6 +800,7 @@ namespace KK_Plugins.MaterialEditorWrapper
 
             ChaControl.StartCoroutine(LoadData(true, true, false));
         }
+#endif
 
 #if KK
         internal void AccessoriesCopiedEvent(object sender, AccessoryCopyEventArgs e)
@@ -840,7 +847,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         {
 #if AI || HS2
             if (type != 350) return; //type 350 = no category, accessory being removed
-#else
+#elif KK || EC
             if (type != 120) //type 120 = no category, accessory being removed
             {
                 if (Plugin.RimRemover.Value)
@@ -955,10 +962,9 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="go">GameObject the material belongs to</param>
-        public void MaterialCopyEdits(int slot, Material material, GameObject go)
+        public void MaterialCopyEdits(int slot, ObjectType objectType, Material material, GameObject go)
         {
             CopyData.ClearAll();
-            ObjectType objectType = FindGameObjectType(go);
 
             foreach (var materialShader in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))
                 CopyData.MaterialShaderList.Add(new CopyContainer.MaterialShader(materialShader.ShaderName, materialShader.RenderQueue));
@@ -981,37 +987,37 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void MaterialPasteEdits(int slot, Material material, GameObject go, bool setProperty = true)
+        public void MaterialPasteEdits(int slot, ObjectType objectType, Material material, GameObject go, bool setProperty = true)
         {
             for (var i = 0; i < CopyData.MaterialShaderList.Count; i++)
             {
                 var materialShader = CopyData.MaterialShaderList[i];
                 if (materialShader.ShaderName != null)
-                    SetMaterialShader(slot, material, materialShader.ShaderName, go, setProperty);
+                    SetMaterialShader(slot, objectType, material, materialShader.ShaderName, go, setProperty);
                 if (materialShader.RenderQueue != null)
-                    SetMaterialShaderRenderQueue(slot, material, (int)materialShader.RenderQueue, go, setProperty);
+                    SetMaterialShaderRenderQueue(slot, objectType, material, (int)materialShader.RenderQueue, go, setProperty);
             }
             for (var i = 0; i < CopyData.MaterialFloatPropertyList.Count; i++)
             {
                 var materialFloatProperty = CopyData.MaterialFloatPropertyList[i];
                 if (material.HasProperty($"_{materialFloatProperty.Property}"))
-                    SetMaterialFloatProperty(slot, material, materialFloatProperty.Property, materialFloatProperty.Value, go, setProperty);
+                    SetMaterialFloatProperty(slot, objectType, material, materialFloatProperty.Property, materialFloatProperty.Value, go, setProperty);
             }
             for (var i = 0; i < CopyData.MaterialColorPropertyList.Count; i++)
             {
                 var materialColorProperty = CopyData.MaterialColorPropertyList[i];
                 if (material.HasProperty($"_{materialColorProperty.Property}"))
-                    SetMaterialColorProperty(slot, material, materialColorProperty.Property, materialColorProperty.Value, go, setProperty);
+                    SetMaterialColorProperty(slot, objectType, material, materialColorProperty.Property, materialColorProperty.Value, go, setProperty);
             }
             for (var i = 0; i < CopyData.MaterialTexturePropertyList.Count; i++)
             {
                 var materialTextureProperty = CopyData.MaterialTexturePropertyList[i];
                 if (material.HasProperty($"_{materialTextureProperty.Property}"))
-                    SetMaterialTexture(slot, material, materialTextureProperty.Property, materialTextureProperty.Data, go);
+                    SetMaterialTexture(slot, objectType, material, materialTextureProperty.Property, materialTextureProperty.Data, go);
                 if (materialTextureProperty.Offset != null)
-                    SetMaterialTextureOffset(slot, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Offset, go, setProperty);
+                    SetMaterialTextureOffset(slot, objectType, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Offset, go, setProperty);
                 if (materialTextureProperty.Scale != null)
-                    SetMaterialTextureScale(slot, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, go, setProperty);
+                    SetMaterialTextureScale(slot, objectType, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, go, setProperty);
             }
         }
 
@@ -1025,9 +1031,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="value">Value</param>
         /// <param name="go">GameObject the renderer belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the renderer</param>
-        public void SetRendererProperty(int slot, Renderer renderer, RendererProperties property, string value, GameObject go, bool setProperty = true)
+        public void SetRendererProperty(int slot, ObjectType objectType, Renderer renderer, RendererProperties property, string value, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             RendererProperty rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.RendererName == renderer.NameFormatted());
             if (rendererProperty == null)
             {
@@ -1044,7 +1049,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             else
             {
                 if (value == rendererProperty.ValueOriginal)
-                    RemoveRendererProperty(slot, renderer, property, go, false);
+                    RemoveRendererProperty(slot, objectType, renderer, property, go, false);
                 else
                     rendererProperty.Value = value;
             }
@@ -1059,9 +1064,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="property">Property of the renderer</param>
         /// <param name="go">GameObject the renderer belongs to</param>
         /// <returns>Saved renderer property value</returns>
-        public string GetRendererPropertyValue(int slot, Renderer renderer, RendererProperties property, GameObject go)
+        public string GetRendererPropertyValue(int slot, ObjectType objectType, Renderer renderer, RendererProperties property, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.RendererName == renderer.NameFormatted())?.Value;
         }
         /// <summary>
@@ -1072,9 +1076,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="property">Property of the renderer</param>
         /// <param name="go">GameObject the renderer belongs to</param>
         /// <returns>Saved renderer property value</returns>
-        public string GetRendererPropertyValueOriginal(int slot, Renderer renderer, RendererProperties property, GameObject go)
+        public string GetRendererPropertyValueOriginal(int slot, ObjectType objectType, Renderer renderer, RendererProperties property, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.RendererName == renderer.NameFormatted())?.ValueOriginal;
         }
         /// <summary>
@@ -1085,12 +1088,11 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="property">Property of the renderer</param>
         /// <param name="go">GameObject the renderer belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the renderer</param>
-        public void RemoveRendererProperty(int slot, Renderer renderer, RendererProperties property, GameObject go, bool setProperty = true)
+        public void RemoveRendererProperty(int slot, ObjectType objectType, Renderer renderer, RendererProperties property, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             if (setProperty)
             {
-                var original = GetRendererPropertyValueOriginal(slot, renderer, property, go);
+                var original = GetRendererPropertyValueOriginal(slot, objectType, renderer, property, go);
                 if (!original.IsNullOrEmpty())
                     MaterialAPI.SetRendererProperty(go, renderer.NameFormatted(), property, original);
             }
@@ -1106,9 +1108,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="value">Value</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void SetMaterialFloatProperty(int slot, Material material, string propertyName, float value, GameObject go, bool setProperty = true)
+        public void SetMaterialFloatProperty(int slot, ObjectType objectType, Material material, string propertyName, float value, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var materialProperty = MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (materialProperty == null)
             {
@@ -1118,7 +1119,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             else
             {
                 if (value.ToString(CultureInfo.InvariantCulture) == materialProperty.ValueOriginal)
-                    RemoveMaterialFloatProperty(slot, material, propertyName, go, false);
+                    RemoveMaterialFloatProperty(slot, objectType, material, propertyName, go, false);
                 else
                     materialProperty.Value = value.ToString(CultureInfo.InvariantCulture);
             }
@@ -1133,9 +1134,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property value or null if none is saved</returns>
-        public float? GetMaterialFloatPropertyValue(int slot, Material material, string propertyName, GameObject go)
+        public float? GetMaterialFloatPropertyValue(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var value = MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
             if (value.IsNullOrEmpty())
                 return null;
@@ -1149,9 +1149,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property's original value or null if none is saved</returns>
-        public float? GetMaterialFloatPropertyValueOriginal(int slot, Material material, string propertyName, GameObject go)
+        public float? GetMaterialFloatPropertyValueOriginal(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var valueOriginal = MaterialFloatPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
             if (valueOriginal.IsNullOrEmpty())
                 return null;
@@ -1165,12 +1164,11 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void RemoveMaterialFloatProperty(int slot, Material material, string propertyName, GameObject go, bool setProperty = true)
+        public void RemoveMaterialFloatProperty(int slot, ObjectType objectType, Material material, string propertyName, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             if (setProperty)
             {
-                var original = GetMaterialFloatPropertyValueOriginal(slot, material, propertyName, go);
+                var original = GetMaterialFloatPropertyValueOriginal(slot, objectType, material, propertyName, go);
                 if (original != null)
                     SetFloat(go, material.NameFormatted(), propertyName, (float)original);
             }
@@ -1186,9 +1184,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="value">Value</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void SetMaterialColorProperty(int slot, Material material, string propertyName, Color value, GameObject go, bool setProperty = true)
+        public void SetMaterialColorProperty(int slot, ObjectType objectType, Material material, string propertyName, Color value, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var colorProperty = MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (colorProperty == null)
             {
@@ -1198,7 +1195,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             else
             {
                 if (value == colorProperty.ValueOriginal)
-                    RemoveMaterialColorProperty(slot, material, propertyName, go, false);
+                    RemoveMaterialColorProperty(slot, objectType, material, propertyName, go, false);
                 else
                     colorProperty.Value = value;
             }
@@ -1213,9 +1210,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property value or null if none is saved</returns>
-        public Color? GetMaterialColorPropertyValue(int slot, Material material, string propertyName, GameObject go)
+        public Color? GetMaterialColorPropertyValue(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
         }
         /// <summary>
@@ -1226,9 +1222,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property's original value or null if none is saved</returns>
-        public Color? GetMaterialColorPropertyValueOriginal(int slot, Material material, string propertyName, GameObject go)
+        public Color? GetMaterialColorPropertyValueOriginal(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialColorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
         }
         /// <summary>
@@ -1239,12 +1234,11 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void RemoveMaterialColorProperty(int slot, Material material, string propertyName, GameObject go, bool setProperty = true)
+        public void RemoveMaterialColorProperty(int slot, ObjectType objectType, Material material, string propertyName, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             if (setProperty)
             {
-                var original = GetMaterialColorPropertyValueOriginal(slot, material, propertyName, go);
+                var original = GetMaterialColorPropertyValueOriginal(slot, objectType, material, propertyName, go);
                 if (original != null)
                     SetColor(go, material.NameFormatted(), propertyName, (Color)original);
             }
@@ -1260,11 +1254,10 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="filePath">Path to the .png file on disk</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setTexInUpdate">Whether to wait for the next Update</param>
-        public void SetMaterialTextureFromFile(int slot, Material material, string propertyName, string filePath, GameObject go, bool setTexInUpdate = false)
+        public void SetMaterialTextureFromFile(int slot, ObjectType objectType, Material material, string propertyName, string filePath, GameObject go, bool setTexInUpdate = false)
         {
             if (!File.Exists(filePath)) return;
 
-            ObjectType objectType = FindGameObjectType(go);
             if (setTexInUpdate)
             {
                 FileToSet = filePath;
@@ -1272,6 +1265,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 MatToSet = material;
                 GameObjectToSet = go;
                 SlotToSet = slot;
+                ObjectTypeToSet = objectType;
             }
             else
             {
@@ -1295,11 +1289,9 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="data">Byte array containing the texture data</param>
         /// <param name="go">GameObject the material belongs to</param>
-        public void SetMaterialTexture(int slot, Material material, string propertyName, byte[] data, GameObject go)
+        public void SetMaterialTexture(int slot, ObjectType objectType, Material material, string propertyName, byte[] data, GameObject go)
         {
             if (data == null) return;
-
-            ObjectType objectType = FindGameObjectType(go);
 
             Texture2D tex = Plugin.TextureFromBytes(data);
 
@@ -1319,9 +1311,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property value or null if none is saved</returns>
-        public Texture2D GetMaterialTexture(int slot, Material material, string propertyName, GameObject go)
+        public Texture2D GetMaterialTexture(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty?.TexID != null)
                 return TextureDictionary[(int)textureProperty.TexID].Texture;
@@ -1335,9 +1326,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>True if the texture has been modified, false if not</returns>
-        public bool GetMaterialTextureOriginal(int slot, Material material, string propertyName, GameObject go)
+        public bool GetMaterialTextureOriginal(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.TexID == null;
         }
         /// <summary>
@@ -1348,9 +1338,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="displayMessage">Whether to display a message on screen telling the user to save and reload to refresh textures</param>
-        public void RemoveMaterialTexture(int slot, Material material, string propertyName, GameObject go, bool displayMessage = true)
+        public void RemoveMaterialTexture(int slot, ObjectType objectType, Material material, string propertyName, GameObject go, bool displayMessage = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty != null)
             {
@@ -1371,9 +1360,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="value">Value</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void SetMaterialTextureOffset(int slot, Material material, string propertyName, Vector2 value, GameObject go, bool setProperty = true)
+        public void SetMaterialTextureOffset(int slot, ObjectType objectType, Material material, string propertyName, Vector2 value, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty == null)
             {
@@ -1383,7 +1371,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             else
             {
                 if (value == textureProperty.OffsetOriginal)
-                    RemoveMaterialTextureOffset(slot, material, propertyName, go, false);
+                    RemoveMaterialTextureOffset(slot, objectType, material, propertyName, go, false);
                 else
                 {
                     textureProperty.Offset = value;
@@ -1402,9 +1390,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property value or null if none is saved</returns>
-        public Vector2? GetMaterialTextureOffset(int slot, Material material, string propertyName, GameObject go)
+        public Vector2? GetMaterialTextureOffset(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Offset;
         }
         /// <summary>
@@ -1415,9 +1402,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property's original value or null if none is saved</returns>
-        public Vector2? GetMaterialTextureOffsetOriginal(int slot, Material material, string propertyName, GameObject go)
+        public Vector2? GetMaterialTextureOffsetOriginal(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.OffsetOriginal;
         }
         /// <summary>
@@ -1428,12 +1414,11 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void RemoveMaterialTextureOffset(int slot, Material material, string propertyName, GameObject go, bool setProperty = true)
+        public void RemoveMaterialTextureOffset(int slot, ObjectType objectType, Material material, string propertyName, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             if (setProperty)
             {
-                var original = GetMaterialTextureOffsetOriginal(slot, material, propertyName, go);
+                var original = GetMaterialTextureOffsetOriginal(slot, objectType, material, propertyName, go);
                 if (original != null)
                     SetTextureOffset(go, material.NameFormatted(), propertyName, (Vector2)original);
             }
@@ -1457,9 +1442,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="value">Value</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void SetMaterialTextureScale(int slot, Material material, string propertyName, Vector2 value, GameObject go, bool setProperty = true)
+        public void SetMaterialTextureScale(int slot, ObjectType objectType, Material material, string propertyName, Vector2 value, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty == null)
             {
@@ -1469,7 +1453,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             else
             {
                 if (value == textureProperty.ScaleOriginal)
-                    RemoveMaterialTextureScale(slot, material, propertyName, go, false);
+                    RemoveMaterialTextureScale(slot, objectType, material, propertyName, go, false);
                 else
                 {
                     textureProperty.Scale = value;
@@ -1489,9 +1473,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property value or null if none is saved</returns>
-        public Vector2? GetMaterialTextureScale(int slot, Material material, string propertyName, GameObject go)
+        public Vector2? GetMaterialTextureScale(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Scale;
         }
         /// <summary>
@@ -1502,9 +1485,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property's original value or null if none is saved</returns>
-        public Vector2? GetMaterialTextureScaleOriginal(int slot, Material material, string propertyName, GameObject go)
+        public Vector2? GetMaterialTextureScaleOriginal(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ScaleOriginal;
         }
         /// <summary>
@@ -1515,12 +1497,11 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void RemoveMaterialTextureScale(int slot, Material material, string propertyName, GameObject go, bool setProperty = true)
+        public void RemoveMaterialTextureScale(int slot, ObjectType objectType, Material material, string propertyName, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             if (setProperty)
             {
-                var original = GetMaterialTextureScaleOriginal(slot, material, propertyName, go);
+                var original = GetMaterialTextureScaleOriginal(slot, objectType, material, propertyName, go);
                 if (original != null)
                     SetTextureScale(go, material.NameFormatted(), propertyName, (Vector2)original);
             }
@@ -1543,9 +1524,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="shaderName">Name of the shader to be saved, must be a shader that has been loaded by MaterialEditor</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void SetMaterialShader(int slot, Material material, string shaderName, GameObject go, bool setProperty = true)
+        public void SetMaterialShader(int slot, ObjectType objectType, Material material, string shaderName, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted());
             if (materialProperty == null)
             {
@@ -1555,7 +1535,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             else
             {
                 if (shaderName == materialProperty.ShaderNameOriginal)
-                    RemoveMaterialShader(slot, material, go, false);
+                    RemoveMaterialShader(slot, objectType, material, go, false);
                 else
                 {
                     materialProperty.ShaderName = shaderName;
@@ -1566,7 +1546,7 @@ namespace KK_Plugins.MaterialEditorWrapper
 
             if (setProperty)
             {
-                RemoveMaterialShaderRenderQueue(slot, material, go, false);
+                RemoveMaterialShaderRenderQueue(slot, objectType, material, go, false);
                 SetShader(go, material.NameFormatted(), shaderName);
             }
         }
@@ -1578,9 +1558,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved shader name or null if none is saved</returns>
-        public string GetMaterialShader(int slot, Material material, GameObject go)
+        public string GetMaterialShader(int slot, ObjectType objectType, Material material, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted())?.ShaderName;
         }
         /// <summary>
@@ -1590,9 +1569,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved shader name's original value or null if none is saved</returns>
-        public string GetMaterialShaderOriginal(int slot, Material material, GameObject go)
+        public string GetMaterialShaderOriginal(int slot, ObjectType objectType, Material material, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted())?.ShaderNameOriginal;
         }
 
@@ -1603,12 +1581,11 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void RemoveMaterialShader(int slot, Material material, GameObject go, bool setProperty = true)
+        public void RemoveMaterialShader(int slot, ObjectType objectType, Material material, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             if (setProperty)
             {
-                var original = GetMaterialShaderOriginal(slot, material, go);
+                var original = GetMaterialShaderOriginal(slot, objectType, material, go);
                 if (!original.IsNullOrEmpty())
                     SetShader(go, material.NameFormatted(), original);
             }
@@ -1630,9 +1607,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="renderQueue">Value</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void SetMaterialShaderRenderQueue(int slot, Material material, int renderQueue, GameObject go, bool setProperty = true)
+        public void SetMaterialShaderRenderQueue(int slot, ObjectType objectType, Material material, int renderQueue, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted());
             if (materialProperty == null)
             {
@@ -1642,7 +1618,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             else
             {
                 if (renderQueue == materialProperty.RenderQueueOriginal)
-                    RemoveMaterialShaderRenderQueue(slot, material, go, false);
+                    RemoveMaterialShaderRenderQueue(slot, objectType, material, go, false);
                 else
                 {
                     materialProperty.RenderQueue = renderQueue;
@@ -1661,9 +1637,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved render queue or null if none is saved</returns>
-        public int? GetMaterialShaderRenderQueue(int slot, Material material, GameObject go)
+        public int? GetMaterialShaderRenderQueue(int slot, ObjectType objectType, Material material, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted())?.RenderQueue;
         }
         /// <summary>
@@ -1673,9 +1648,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved render queue's original value or null if none is saved</returns>
-        public int? GetMaterialShaderRenderQueueOriginal(int slot, Material material, GameObject go)
+        public int? GetMaterialShaderRenderQueueOriginal(int slot, ObjectType objectType, Material material, GameObject go)
         {
-            ObjectType objectType = FindGameObjectType(go);
             return MaterialShaderList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted())?.RenderQueueOriginal;
         }
         /// <summary>
@@ -1685,12 +1659,11 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void RemoveMaterialShaderRenderQueue(int slot, Material material, GameObject go, bool setProperty = true)
+        public void RemoveMaterialShaderRenderQueue(int slot, ObjectType objectType, Material material, GameObject go, bool setProperty = true)
         {
-            ObjectType objectType = FindGameObjectType(go);
             if (setProperty)
             {
-                var original = GetMaterialShaderRenderQueueOriginal(slot, material, go);
+                var original = GetMaterialShaderRenderQueueOriginal(slot, objectType, material, go);
                 if (original != null)
                     SetRenderQueue(go, material.NameFormatted(), original);
             }
@@ -1835,7 +1808,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         private GameObject FindGameObject(ObjectType objectType, int slot)
         {
             if (objectType == ObjectType.Clothing)
-                return ChaControl.objClothes[slot];
+                return ChaControl.GetClothes(slot);
             if (objectType == ObjectType.Accessory)
             {
                 var acc = ChaControl.GetAccessory(slot);
@@ -1844,36 +1817,13 @@ namespace KK_Plugins.MaterialEditorWrapper
             }
             if (objectType == ObjectType.Hair)
             {
-                var hair = ChaControl.objHair[slot];
+                var hair = ChaControl.GetHair(slot);
                 if (hair != null)
                     return hair.gameObject;
             }
             if (objectType == ObjectType.Character)
                 return ChaControl.gameObject;
             return null;
-        }
-
-        private static ObjectType FindGameObjectType(GameObject go)
-        {
-            if (go.GetComponent<ChaControl>())
-                return ObjectType.Character;
-#if KK || EC
-            if (go.GetComponentInChildren<ChaClothesComponent>(true))
-                return ObjectType.Clothing;
-            if (go.GetComponent<ChaAccessoryComponent>())
-                return ObjectType.Accessory;
-            if (go.GetComponent<ChaCustomHairComponent>())
-                return ObjectType.Hair;
-#elif AI || HS2
-            if (go.GetComponent<CmpClothes>())
-                return ObjectType.Clothing;
-            if (go.GetComponent<CmpAccessory>())
-                return ObjectType.Accessory;
-            if (go.GetComponent<CmpHair>())
-                return ObjectType.Hair;
-#endif
-
-            throw new Exception("Could not determine object's type. Object may have a missing or misconfigured MonoBehavior.");
         }
 
         /// <summary>

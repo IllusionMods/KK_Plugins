@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FC88B474-B516-4F2E-8C04-8250BF6BA3B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KK_Plugins</RootNamespace>
+    <AssemblyName>PH_MaterialEditor</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;PH</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE;PH</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HarmonyX.2.2.0\lib\net35\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp.2018.3.11.2\lib\net35\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.2018.3.11.2\lib\net35\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BepInEx, Version=5.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\BepInEx.BaseLib.5.4.4\lib\net35\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour, Version=20.11.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MonoMod.RuntimeDetour.20.11.5.1\lib\net35\MonoMod.RuntimeDetour.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.Utils, Version=20.11.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MonoMod.Utils.20.11.5.1\lib\net35\MonoMod.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="PHAPI, Version=1.11.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.PHAPI.1.11.3\lib\net35\PHAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PH_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ExtensibleSaveFormat.PlayHome.16.1.0\lib\net35\PH_ExtensibleSaveFormat.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.PlayHome.UnityEngine.5.5.5.2\lib\net35\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.2\lib\net35\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="XUnity.ResourceRedirector, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.XUnity.ResourceRedirector.4.13.0\lib\net35\XUnity.ResourceRedirector.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MaterialEditor\MaterialEditor.csproj">
+      <Project>{398dcfa5-74d2-4f81-bce7-9f00813328aa}</Project>
+      <Name>MaterialEditor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
+  </ItemGroup>
+  <Import Project="..\MaterialEditor.Core\Core.MaterialEditor.projitems" Label="Shared" />
+  <Import Project="..\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems" Label="Shared" />
+  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+  <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
+  <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" PH</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets" Condition="Exists('..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\BepInEx.Core.5.4.4\build\BepInEx.Core.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.PlayHome.UnityEngine.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.PlayHome.UnityEngine.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.UI.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\IllusionLibs.PlayHome.UnityEngine.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.targets" Condition="Exists('..\..\packages\IllusionLibs.PlayHome.UnityEngine.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.UI.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.targets')" />
+</Project>

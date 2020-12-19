@@ -24,7 +24,9 @@ namespace KK_Plugins.MaterialEditorWrapper
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(Plugin.PluginGUID, Plugin.PluginVersion)]
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
+#if !PH
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
+#endif
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class MEMaker : MaterialEditorUI
     {
@@ -92,6 +94,37 @@ namespace KK_Plugins.MaterialEditorWrapper
             e.AddControl(new MakerButton("Open Material Editor", MakerConstants.Face.Mouth, this)).OnClick.AddListener(() => UpdateUICharacter("tang,tooth,canine"));
 #endif
 
+#if PH
+            MakerAPI.AddAccessoryWindowControl(new MakerButton("Material Editor", null, this)).OnClick.AddListener(UpdateUIAccessory);
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Body.General, this)).OnClick.AddListener(() => UpdateUICharacter());
+            e.AddControl(new MakerButton("Material Editor (Body)", MakerConstants.Body.General, this)).OnClick.AddListener(() => UpdateUICharacter("body"));
+            e.AddControl(new MakerButton("Material Editor (Head)", MakerConstants.Body.General, this)).OnClick.AddListener(() => UpdateUICharacter("head"));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Body.Nail, this)).OnClick.AddListener(() => UpdateUICharacter("nail"));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Body.Lower, this)).OnClick.AddListener(() => UpdateUICharacter("mnpk"));
+
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.General, this)).OnClick.AddListener(() => UpdateUICharacter("head"));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eye, this)).OnClick.AddListener(() => UpdateUICharacter("eye"));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eyebrow, this)).OnClick.AddListener(() => UpdateUICharacter("mayuge"));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eyelash, this)).OnClick.AddListener(() => UpdateUICharacter("matuge"));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Mouth, this)).OnClick.AddListener(() => UpdateUICharacter("ha,sita"));
+
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.Tops, this)).OnClick.AddListener(() => UpdateUIClothes(0));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.Bottoms, this)).OnClick.AddListener(() => UpdateUIClothes(1));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.Bra, this)).OnClick.AddListener(() => UpdateUIClothes(2));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.Shorts, this)).OnClick.AddListener(() => UpdateUIClothes(3));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.SwimWear, this)).OnClick.AddListener(() => UpdateUIClothes(4));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.SwimTops, this)).OnClick.AddListener(() => UpdateUIClothes(5));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.SwimWear, this)).OnClick.AddListener(() => UpdateUIClothes(6));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.Glove, this)).OnClick.AddListener(() => UpdateUIClothes(7));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.Panst, this)).OnClick.AddListener(() => UpdateUIClothes(8));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.Socks, this)).OnClick.AddListener(() => UpdateUIClothes(9));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Wear.Shoes, this)).OnClick.AddListener(() => UpdateUIClothes(10));
+
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Hair.Back, this)).OnClick.AddListener(() => UpdateUIHair(0));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Hair.Front, this)).OnClick.AddListener(() => UpdateUIHair(1));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Hair.Side, this)).OnClick.AddListener(() => UpdateUIHair(2));
+
+#endif
             currentHairIndex = 0;
             currentClothesIndex = 0;
         }
@@ -139,7 +172,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 return;
 
             var chaControl = MakerAPI.GetCharacterControl();
-            PopulateList(chaControl.gameObject, 0, filter);
+            PopulateList(chaControl.gameObject, new ObjectData(0, MaterialEditorCharaController.ObjectType.Character), filter);
         }
 
         /// <summary>
@@ -153,6 +186,8 @@ namespace KK_Plugins.MaterialEditorWrapper
 
 #if KK
             if (index > 8)
+#elif PH
+            if (index > 10)
 #else
             if (index > 7)
 #endif
@@ -162,10 +197,15 @@ namespace KK_Plugins.MaterialEditorWrapper
             }
 
             var chaControl = MakerAPI.GetCharacterControl();
-            if (chaControl.objClothes[index] == null || chaControl.objClothes[index].GetComponentInChildren<ChaClothesComponent>() == null)
+            var clothes = chaControl.GetClothes(index);
+#if PH
+            if (clothes == null)
+#else
+            if (clothes == null || clothes.GetComponentInChildren<ChaClothesComponent>() == null)
+#endif
                 Visible = false;
             else
-                PopulateList(chaControl.objClothes[index], index);
+                PopulateList(clothes, new ObjectData(index, MaterialEditorCharaController.ObjectType.Clothing));
         }
 
         /// <summary>
@@ -176,11 +216,13 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (!MakerAPI.InsideAndLoaded)
                 return;
 
+#if !PH
             var chaAccessoryComponent = MakerAPI.GetCharacterControl().GetAccessory(AccessoriesApi.SelectedMakerAccSlot);
             if (chaAccessoryComponent == null)
                 Visible = false;
             else
-                PopulateList(chaAccessoryComponent.gameObject, AccessoriesApi.SelectedMakerAccSlot);
+                PopulateList(chaAccessoryComponent.gameObject, new ObjectData(AccessoriesApi.SelectedMakerAccSlot, MaterialEditorCharaController.ObjectType.Accessory));
+#endif
         }
 
         /// <summary>
@@ -198,71 +240,154 @@ namespace KK_Plugins.MaterialEditorWrapper
             }
 
             var chaControl = MakerAPI.GetCharacterControl();
-            if (chaControl.objHair[index].GetComponent<ChaCustomHairComponent>() == null)
+            var hair = chaControl.GetHair(index);
+#if PH
+            if (hair == null)
+#else
+            if (hair.GetComponent<ChaCustomHairComponent>() == null)
+#endif
                 Visible = false;
             else
-                PopulateList(chaControl.objHair[index], index);
+                PopulateList(hair, new ObjectData(index, MaterialEditorCharaController.ObjectType.Hair));
         }
 
-        public override string GetRendererPropertyValueOriginal(object data, Renderer renderer, RendererProperties property, GameObject go) =>
-           Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetRendererPropertyValueOriginal((int)data, renderer, property, go);
-        public override void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject go) =>
-           Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetRendererProperty((int)data, renderer, property, value, go);
-        public override void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveRendererProperty((int)data, renderer, property, go);
+        public override string GetRendererPropertyValueOriginal(object data, Renderer renderer, RendererProperties property, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetRendererPropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, property, go);
+        }
+        public override void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, value, go);
+        }
+        public override void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, go);
+        }
 
-        public override void MaterialCopyEdits(object data, Material material, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialCopyEdits((int)data, material, go);
-        public override void MaterialPasteEdits(object data, Material material, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialPasteEdits((int)data, material, go);
+        public override void MaterialCopyEdits(object data, Material material, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialCopyEdits(objectData.Slot, objectData.ObjectType, material, go);
+        }
+        public override void MaterialPasteEdits(object data, Material material, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialPasteEdits(objectData.Slot, objectData.ObjectType, material, go);
+        }
 
-        public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialShaderOriginal((int)data, material, go);
-        public override void SetMaterialShaderName(object data, Material material, string value, GameObject go) =>
-           Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialShader((int)data, material, value, go);
-        public override void RemoveMaterialShaderName(object data, Material material, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialShader((int)data, material, go);
+        public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialShaderOriginal(objectData.Slot, objectData.ObjectType, material, go);
+        }
+        public override void SetMaterialShaderName(object data, Material material, string value, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialShader(objectData.Slot, objectData.ObjectType, material, value, go);
+        }
+        public override void RemoveMaterialShaderName(object data, Material material, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialShader(objectData.Slot, objectData.ObjectType, material, go);
+        }
 
-        public override int? GetMaterialShaderRenderQueueOriginal(object data, Material material, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialShaderRenderQueueOriginal((int)data, material, go);
-        public override void SetMaterialShaderRenderQueue(object data, Material material, int value, GameObject go) =>
-           Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialShaderRenderQueue((int)data, material, value, go);
-        public override void RemoveMaterialShaderRenderQueue(object data, Material material, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialShaderRenderQueue((int)data, material, go);
+        public override int? GetMaterialShaderRenderQueueOriginal(object data, Material material, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialShaderRenderQueueOriginal(objectData.Slot, objectData.ObjectType, material, go);
+        }
+        public override void SetMaterialShaderRenderQueue(object data, Material material, int value, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, value, go);
+        }
+        public override void RemoveMaterialShaderRenderQueue(object data, Material material, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, go);
+        }
 
-        public override bool GetMaterialTextureValueOriginal(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureOriginal((int)data, material, propertyName, go);
-        public override void SetMaterialTexture(object data, Material material, string propertyName, string filePath, GameObject go) =>
-             Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureFromFile((int)data, material, propertyName, filePath, go, true);
-        public override void RemoveMaterialTexture(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTexture((int)data, material, propertyName, go);
+        public override bool GetMaterialTextureValueOriginal(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
+        public override void SetMaterialTexture(object data, Material material, string propertyName, string filePath, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureFromFile(objectData.Slot, objectData.ObjectType, material, propertyName, filePath, go, true);
+        }
+        public override void RemoveMaterialTexture(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTexture(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
 
-        public override Vector2? GetMaterialTextureOffsetOriginal(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureOffsetOriginal((int)data, material, propertyName, go);
-        public override void SetMaterialTextureOffset(object data, Material material, string propertyName, Vector2 value, GameObject go) =>
-           Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureOffset((int)data, material, propertyName, value, go);
-        public override void RemoveMaterialTextureOffset(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureOffset((int)data, material, propertyName, go);
+        public override Vector2? GetMaterialTextureOffsetOriginal(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureOffsetOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
+        public override void SetMaterialTextureOffset(object data, Material material, string propertyName, Vector2 value, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+        }
+        public override void RemoveMaterialTextureOffset(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
 
-        public override Vector2? GetMaterialTextureScaleOriginal(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureScaleOriginal((int)data, material, propertyName, go);
-        public override void SetMaterialTextureScale(object data, Material material, string propertyName, Vector2 value, GameObject go) =>
-           Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureScale((int)data, material, propertyName, value, go);
-        public override void RemoveMaterialTextureScale(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureScale((int)data, material, propertyName, go);
+        public override Vector2? GetMaterialTextureScaleOriginal(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureScaleOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
+        public override void SetMaterialTextureScale(object data, Material material, string propertyName, Vector2 value, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+        }
+        public override void RemoveMaterialTextureScale(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
 
-        public override Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialColorPropertyValueOriginal((int)data, material, propertyName, go);
-        public override void SetMaterialColorProperty(object data, Material material, string propertyName, Color value, GameObject go) =>
-           Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialColorProperty((int)data, material, propertyName, value, go);
-        public override void RemoveMaterialColorProperty(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialColorProperty((int)data, material, propertyName, go);
+        public override Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialColorPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
+        public override void SetMaterialColorProperty(object data, Material material, string propertyName, Color value, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+        }
+        public override void RemoveMaterialColorProperty(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
 
-        public override float? GetMaterialFloatPropertyValueOriginal(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialFloatPropertyValueOriginal((int)data, material, propertyName, go);
-        public override void SetMaterialFloatProperty(object data, Material material, string propertyName, float value, GameObject go) =>
-           Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialFloatProperty((int)data, material, propertyName, value, go);
-        public override void RemoveMaterialFloatProperty(object data, Material material, string propertyName, GameObject go) =>
-            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialFloatProperty((int)data, material, propertyName, go);
+        public override float? GetMaterialFloatPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return Plugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialFloatPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
+        public override void SetMaterialFloatProperty(object data, Material material, string propertyName, float value, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+        }
+        public override void RemoveMaterialFloatProperty(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            Plugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
     }
 }

@@ -39,9 +39,12 @@ namespace MaterialEditor
         /// <summary>
         /// Set the material array for a renderer
         /// </summary>
+        /// <param name="gameObject">GameObject to which the renderer belongs</param>
         /// <param name="renderer">Renderer containing the materials</param>
         /// <param name="materials">Materials to set</param>
+#pragma warning disable IDE0060 // Remove unused parameter
         public static void SetMaterials(GameObject gameObject, Renderer renderer, Material[] materials) => renderer.materials = materials;
+#pragma warning restore IDE0060 // Remove unused parameter
 
         private static List<Material> GetObjectMaterials(GameObject gameObject, string materialName)
         {
@@ -416,10 +419,8 @@ namespace MaterialEditor
                                 if (shaderPropertyData.DefaultValue.IsNullOrEmpty()) continue;
                                 try
                                 {
-                                    AssetBundle bundle = AssetBundle.LoadFromFile(shaderPropertyData.DefaultValueAssetBundle);
-                                    Texture2D tex = bundle.LoadAsset<Texture2D>(shaderPropertyData.DefaultValue);
+                                    var tex = LoadShaderDefaultTexture(shaderPropertyData.DefaultValueAssetBundle, shaderPropertyData.DefaultValue);
                                     SetTexture(gameObject, materialName, shaderPropertyData.Name, tex);
-                                    bundle.Unload(false);
                                 }
                                 catch
                                 {
@@ -454,6 +455,14 @@ namespace MaterialEditor
                 didSet = true;
             }
             return didSet;
+        }
+
+        private static Texture2D LoadShaderDefaultTexture(string assetBundlePath, string assetPath)
+        {
+            AssetBundle bundle = AssetBundle.LoadFromFile(assetBundlePath);
+            Texture2D tex = bundle.LoadAsset<Texture2D>(assetPath);
+            bundle.Unload(false);
+            return tex;
         }
 
         /// <summary>

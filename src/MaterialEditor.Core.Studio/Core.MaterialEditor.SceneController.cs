@@ -369,16 +369,16 @@ namespace KK_Plugins.MaterialEditorWrapper
                         if (property == RendererProperties.ShadowCastingMode && rend.name == "o_shadowcaster")
                         {
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, rend, RendererProperties.Enabled, chaControl.gameObject);
+                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, rend, RendererProperties.Enabled, value, chaControl.gameObject);
+                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, value, chaControl.gameObject);
                         }
                         else
                         {
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, rend, property, chaControl.gameObject);
+                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, chaControl.gameObject);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, rend, property, value, chaControl.gameObject);
+                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, chaControl.gameObject);
                         }
                     }
                     for (var i = 0; i < chaControl.objClothes.Length; i++)
@@ -386,27 +386,27 @@ namespace KK_Plugins.MaterialEditorWrapper
                         var gameObj = chaControl.objClothes[i];
                         foreach (var renderer in GetRendererList(gameObj))
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, renderer, property, gameObj);
+                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, gameObj);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, renderer, property, value, gameObj);
+                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, value, gameObj);
                     }
                     for (var i = 0; i < chaControl.objHair.Length; i++)
                     {
                         var gameObj = chaControl.objHair[i];
                         foreach (var renderer in GetRendererList(gameObj))
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, renderer, property, gameObj);
+                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Hair, renderer, property, gameObj);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, renderer, property, value, gameObj);
+                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Hair, renderer, property, value, gameObj);
                     }
                     for (var i = 0; i < chaControl.objAccessory.Length; i++)
                     {
                         var gameObj = chaControl.objAccessory[i];
                         foreach (var renderer in GetRendererList(gameObj))
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, renderer, property, gameObj);
+                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, gameObj);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, renderer, property, value, gameObj);
+                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, value, gameObj);
                     }
                 }
             foreach (var child in node.child)
