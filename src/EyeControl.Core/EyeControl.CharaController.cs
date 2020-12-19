@@ -82,20 +82,7 @@ namespace KK_Plugins
 
         protected override void OnReload(GameMode currentGameMode, bool maintainState)
         {
-            var data = GetExtendedData();
-            if (data == null)
-            {
-                EyeOpenMax = 1f;
-                DisableBlinking = false;
-            }
-            else
-            {
-                if (data.data.TryGetValue("EyeOpenMax", out var loadedEyeOpenMax))
-                    EyeOpenMax = (float)loadedEyeOpenMax;
-                if (data.data.TryGetValue("DisableBlinking", out var loadedDisableBlinking))
-                    DisableBlinking = (bool)loadedDisableBlinking;
-            }
-
+            LoadExtendedSaveData();
             base.OnReload(currentGameMode, maintainState);
         }
 
@@ -104,9 +91,25 @@ namespace KK_Plugins
         /// </summary>
         internal void OnCharacterAddedToScene()
         {
+            LoadExtendedSaveData();
             ChaControl.ChangeEyesOpenMax(EyeOpenMax);
             if (DisableBlinking)
                 ChaControl.ChangeEyesBlinkFlag(!DisableBlinking);
+        }
+
+        private void LoadExtendedSaveData()
+        {
+            EyeOpenMax = 1f;
+            DisableBlinking = false;
+
+            var data = GetExtendedData();
+            if (data != null)
+            {
+                if (data.data.TryGetValue("EyeOpenMax", out var loadedEyeOpenMax))
+                    EyeOpenMax = (float)loadedEyeOpenMax;
+                if (data.data.TryGetValue("DisableBlinking", out var loadedDisableBlinking))
+                    DisableBlinking = (bool)loadedDisableBlinking;
+            }
         }
     }
 }

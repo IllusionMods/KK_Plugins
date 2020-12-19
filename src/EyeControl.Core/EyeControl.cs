@@ -18,7 +18,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.eyecontrol";
         public const string PluginName = "Eye Control";
         public const string PluginNameInternal = Constants.Prefix + "_EyeControl";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
         internal static new ManualLogSource Logger;
 
         internal static MakerSlider EyeOpenMaxSlider;
