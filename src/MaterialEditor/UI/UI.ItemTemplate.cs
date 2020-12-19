@@ -163,20 +163,20 @@ namespace MaterialEditor
                 materialTextLE.preferredWidth = 200;
                 materialTextLE.flexibleWidth = 0;
 
-                var copy = UIUtility.CreateButton($"MaterialCopy", itemPanel.transform, "Copy Edits");
+                var copyEdits = UIUtility.CreateButton($"MaterialCopy", itemPanel.transform, "Copy Edits");
+                var copyEditsLE = copyEdits.gameObject.AddComponent<LayoutElement>();
+                copyEditsLE.preferredWidth = buttonWidth;
+                copyEditsLE.flexibleWidth = 0;
+
+                var pasteEdits = UIUtility.CreateButton($"MaterialPaste", itemPanel.transform, "Paste Edits");
+                var pasteEditsLE = pasteEdits.gameObject.AddComponent<LayoutElement>();
+                pasteEditsLE.preferredWidth = buttonWidth;
+                pasteEditsLE.flexibleWidth = 0;
+
+                var copy = UIUtility.CreateButton($"MaterialCopyRemove", itemPanel.transform, "Copy Material");
                 var copyLE = copy.gameObject.AddComponent<LayoutElement>();
                 copyLE.preferredWidth = buttonWidth;
                 copyLE.flexibleWidth = 0;
-
-                var paste = UIUtility.CreateButton($"MaterialPaste", itemPanel.transform, "Paste Edits");
-                var pasteLE = paste.gameObject.AddComponent<LayoutElement>();
-                pasteLE.preferredWidth = buttonWidth;
-                pasteLE.flexibleWidth = 0;
-
-                //var copy = UIUtility.CreateButton($"MaterialCopyRemove", itemPanel.transform, "Copy Material");
-                //var copyLE = copy.gameObject.AddComponent<LayoutElement>();
-                //copyLE.preferredWidth = buttonWidth;
-                //copyLE.flexibleWidth = 0;
             }
 
             //Material Shader

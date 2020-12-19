@@ -33,7 +33,7 @@ namespace MaterialEditor
         public Text MaterialText;
         public Button MaterialCopyButton;
         public Button MaterialPasteButton;
-        //public Button MaterialCopyRemove;
+        public Button MaterialCopyRemove;
 
         public CanvasGroup ShaderPanel;
         public Text ShaderLabel;
@@ -187,8 +187,8 @@ namespace MaterialEditor
                             text.color = Color.black;
                         }
 
-                        //MaterialCopyRemove.onClick.RemoveAllListeners();
-                        //MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
+                        MaterialCopyRemove.onClick.RemoveAllListeners();
+                        MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
                         break;
                     case ItemInfo.RowItemType.Shader:
                         ShowShader();

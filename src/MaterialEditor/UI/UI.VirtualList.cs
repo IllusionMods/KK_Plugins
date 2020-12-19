@@ -79,7 +79,7 @@ namespace MaterialEditor
             listEntry.MaterialText = listEntry.GetUIComponent<Text>("MaterialText");
             listEntry.MaterialCopyButton = listEntry.GetUIComponent<Button>("MaterialCopy");
             listEntry.MaterialPasteButton = listEntry.GetUIComponent<Button>("MaterialPaste");
-            //listEntry.MaterialCopyRemove = listEntry.transform.FindLoop("MaterialCopyRemove")?.GetComponent<Button>() ?? throw new ArgumentException("Couldn't find MaterialCopyRemove");
+            listEntry.MaterialCopyRemove = listEntry.GetUIComponent<Button>("MaterialCopyRemove");
 
             listEntry.ShaderPanel = listEntry.GetUIComponent<CanvasGroup>("ShaderPanel");
             listEntry.ShaderLabel = listEntry.GetUIComponent<Text>("ShaderLabel");

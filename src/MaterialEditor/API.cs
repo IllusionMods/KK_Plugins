@@ -41,7 +41,7 @@ namespace MaterialEditor
         /// </summary>
         /// <param name="renderer">Renderer containing the materials</param>
         /// <param name="materials">Materials to set</param>
-        public static void SetMaterials(Renderer renderer, Material[] materials) => renderer.materials = materials;
+        public static void SetMaterials(GameObject gameObject, Renderer renderer, Material[] materials) => renderer.materials = materials;
 
         private static List<Material> GetObjectMaterials(GameObject gameObject, string materialName)
         {
@@ -115,7 +115,7 @@ namespace MaterialEditor
                         newMats.Add(newMat);
                     }
 
-                    SetMaterials(renderer, newMats.ToArray());
+                    SetMaterials(gameObject, renderer, newMats.ToArray());
                 }
             }
         }
@@ -137,7 +137,7 @@ namespace MaterialEditor
                         if (!mat.NameFormatted().Contains(MaterialCopyPostfix))
                             newMats.Add(mat);
 
-                    SetMaterials(renderer, newMats.ToArray());
+                    SetMaterials(gameObject, renderer, newMats.ToArray());
                 }
             }
         }

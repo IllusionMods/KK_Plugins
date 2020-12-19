@@ -104,6 +104,23 @@ namespace KK_Plugins.MaterialEditorWrapper
             return true;
         }
 
+        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), nameof(MaterialEditor.MaterialAPI.SetMaterials))]
+        private static bool MaterialAPI_SetMaterials(GameObject gameObject, Renderer renderer, Material[] materials)
+        {
+            //Must use sharedMaterials for character objects or it breaks body masks, etc.
+#if KK || EC
+            if (gameObject.GetComponent<ChaControl>() && !Plugin.MouthParts.Contains(renderer.NameFormatted()))
+#else
+            if (gameObject.GetComponent<ChaControl>())
+#endif
+            {
+                renderer.sharedMaterials = materials;
+                return false;
+            }
+
+            return true;
+        }
+
 #if KK || EC
         [HarmonyPostfix, HarmonyPatch(typeof(MaterialEditor.MaterialEditorPlugin), nameof(MaterialEditor.MaterialEditorPlugin.CheckBlacklist))]
         private static void MaterialAPI_CheckBlacklist(ref bool __result, string materialName, string propertyName)

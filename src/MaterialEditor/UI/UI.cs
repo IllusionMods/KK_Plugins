@@ -283,11 +283,11 @@ namespace MaterialEditor
                         PopulateList(go, data, filter);
                     }
                 };
-                //materialItem.MaterialOnCopyRemove = () =>
-                //{
-                //    CopyMaterial(gameObject, materialName);
-                //    PopulateList(gameObject, slot, filter);
-                //};
+                materialItem.MaterialOnCopyRemove = () =>
+                {
+                    CopyMaterial(go, materialName);
+                    PopulateList(go, data, filter);
+                };
                 items.Add(materialItem);
 
                 //Shader
