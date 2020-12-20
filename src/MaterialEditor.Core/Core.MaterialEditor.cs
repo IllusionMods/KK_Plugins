@@ -85,8 +85,8 @@ namespace KK_Plugins.MaterialEditorWrapper
         public static HashSet<string> MouthParts = new HashSet<string> { "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang" };
 #elif PH
         public static HashSet<string> BodyParts = new HashSet<string> {
-            "cf_O_eyekage1", "cf_O_ha", "cf_O_head", "cf_O_matuge", "cf_O_mayuge", "cf_O_sita", "cf_O_eyehikari_L", "cf_O_eyewhite_L", "cf_O_eyehikari_R", "cf_O_eyewhite_R", 
-            "cf_O_namida01", "cf_O_namida02", "cf_O_namida03", "cf_O_body_00", "cf_O_mnpk", "cf_O_mnpk_00_00", "cf_O_mnpk_00_01", "cf_O_mnpk_00_02", "cf_O_mnpk_00_03", 
+            "cf_O_eyekage1", "cf_O_ha", "cf_O_head", "cf_O_matuge", "cf_O_mayuge", "cf_O_sita", "cf_O_eyehikari_L", "cf_O_eyewhite_L", "cf_O_eyehikari_R", "cf_O_eyewhite_R",
+            "cf_O_namida01", "cf_O_namida02", "cf_O_namida03", "cf_O_body_00", "cf_O_mnpk", "cf_O_mnpk_00_00", "cf_O_mnpk_00_01", "cf_O_mnpk_00_02", "cf_O_mnpk_00_03",
             "cf_O_mnpk_00_04", "cf_O_mnpk_00_05", "cf_O_nail", "cf_O_tang", "cf_O_tikubiL_00", "cf_O_tikubiR_00" };
 #endif
 
@@ -196,14 +196,38 @@ namespace KK_Plugins.MaterialEditorWrapper
 
         private static IEnumerator LoadXML()
         {
+#if PH
+            yield return null;
+#else
             yield return new WaitUntil(() => AssetBundleManager.ManifestBundlePack.Count != 0);
+#endif
 
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.default.xml"))
                 if (stream != null)
                     using (XmlReader reader = XmlReader.Create(stream))
                         LoadXML(XDocument.Load(reader).Element("MaterialEditor"));
 
-#if !PH
+#if PH
+            var di = new DirectoryInfo("abdata/MaterialEditor");
+            if (di.Exists)
+            {
+                var files = di.GetFiles("*.xml", SearchOption.AllDirectories);
+                for (var i = 0; i < files.Length; i++)
+                {
+                    var fileName = files[i].FullName;
+                    try
+                    {
+                        XDocument doc = XDocument.Load(fileName);
+                        LoadXML(doc.Element("MaterialEditor"));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Error, $"Failed to load {PluginNameInternal} xml file.");
+                        Logger.Log(LogLevel.Error, ex);
+                    }
+                }
+            }
+#else
             var loadedManifests = Sideloader.Sideloader.Manifests;
             foreach (var manifest in loadedManifests.Values)
             {
@@ -314,7 +338,13 @@ namespace KK_Plugins.MaterialEditorWrapper
                         }
                         else
                         {
+#if PH
+                            AssetBundle bundle = AssetBundle.LoadFromFile(assetBundlePath);
+                            var go = bundle.LoadAsset<GameObject>(assetPath);
+                            bundle.Unload(false);
+#else
                             var go = CommonLib.LoadAsset<GameObject>(assetBundlePath, assetPath);
+#endif
                             var renderers = go.GetComponentsInChildren<Renderer>();
                             for (var i = 0; i < renderers.Length; i++)
                             {
