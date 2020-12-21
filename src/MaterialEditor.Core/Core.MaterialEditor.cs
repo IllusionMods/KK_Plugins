@@ -302,7 +302,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                             return shader;
                         }
                         else
-                            return CommonLib.LoadAsset<Shader>(assetBundlePath, $"{shaderName}"); ;
+                            return CommonLib.LoadAsset<Shader>(assetBundlePath, $"{shaderName}");
                     }
                     catch
                     {
@@ -318,22 +318,25 @@ namespace KK_Plugins.MaterialEditorWrapper
                         {
                             AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_Plugins)}.{assetBundlePath}"));
                             shader = bundle.LoadAsset<Shader>(shaderName);
-
                             var go = bundle.LoadAsset<GameObject>(assetPath);
-                            var renderers = go.GetComponentsInChildren<Renderer>();
-                            for (var i = 0; i < renderers.Length; i++)
+                            bundle.Unload(false);
+
+                            if (shader == null)
                             {
-                                var renderer = renderers[i];
-                                for (var j = 0; j < renderer.materials.Length; j++)
+                                var renderers = go.GetComponentsInChildren<Renderer>();
+                                for (var i = 0; i < renderers.Length; i++)
                                 {
-                                    var material = renderer.materials[j];
-                                    if (material.shader.NameFormatted() == shaderName)
-                                        shader = material.shader;
+                                    var renderer = renderers[i];
+                                    for (var j = 0; j < renderer.materials.Length; j++)
+                                    {
+                                        var material = renderer.materials[j];
+                                        if (material.shader.NameFormatted() == shaderName)
+                                            shader = material.shader;
+                                    }
                                 }
                             }
                             Destroy(go);
 
-                            bundle.Unload(false);
                             return shader;
                         }
                         else

@@ -103,10 +103,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\ph_shaders.unity3d" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\default.xml" />
   </ItemGroup>
   <Import Project="..\MaterialEditor.Core\Core.MaterialEditor.projitems" Label="Shared" />
   <Import Project="..\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems" Label="Shared" />

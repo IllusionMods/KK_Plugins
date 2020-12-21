@@ -1,0 +1,1054 @@
+<MaterialEditor>
+  <Shader Name="Alloy/Decal/Alpha" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_decal_alpha" ShaderOptimization="False">
+    <Property Name="HasBumpMap" Type="Float" />
+    <Property Name="MainTextures" Type="Float" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainTexVelocity" Type="Color" />
+    <Property Name="MainTexUV" Type="Float" />
+    <Property Name="SpecTex" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="BaseColorVertexTint" Type="Float" Range="0,1" />
+    <Property Name="MainPhysicalProperties" Type="Float" />
+    <Property Name="Metal" Type="Float" Range="0,1" />
+    <Property Name="Specularity" Type="Float" Range="0,1" />
+    <Property Name="Roughness" Type="Float" Range="0,1" />
+    <Property Name="Occlusion" Type="Float" Range="0,1" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="ParallaxT" Type="Float" />
+    <Property Name="BumpMode" Type="Float" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0,0.08" />
+    <Property Name="MinSamples" Type="Float" />
+    <Property Name="MaxSamples" Type="Float" />
+    <Property Name="AO2" Type="Float" />
+    <Property Name="Ao2Map" Type="Texture" />
+    <Property Name="Ao2MapUV" Type="Float" />
+    <Property Name="Ao2Occlusion" Type="Float" Range="0,1" />
+    <Property Name="DetailT" Type="Float" />
+    <Property Name="DetailMaskSource" Type="Float" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailMaskStrength" Type="Float" Range="0,1" />
+    <Property Name="DetailMode" Type="Float" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailAlbedoMapVelocity" Type="Color" />
+    <Property Name="DetailAlbedoMapUV" Type="Float" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailWeight" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="TeamColor" Type="Float" />
+    <Property Name="TeamColorMasksAsTint" Type="Float" />
+    <Property Name="TeamColorMaskMap" Type="Texture" />
+    <Property Name="TeamColorMasks" Type="Color" />
+    <Property Name="TeamColor0" Type="Color" />
+    <Property Name="TeamColor1" Type="Color" />
+    <Property Name="TeamColor2" Type="Color" />
+    <Property Name="TeamColor3" Type="Color" />
+    <Property Name="Decal" Type="Float" />
+    <Property Name="DecalColor" Type="Color" />
+    <Property Name="DecalTex" Type="Texture" />
+    <Property Name="DecalTexUV" Type="Float" />
+    <Property Name="DecalWeight" Type="Float" Range="0,1" />
+    <Property Name="DecalSpecularity" Type="Float" Range="0,1" />
+    <Property Name="DecalAlphaVertexTint" Type="Float" Range="0,1" />
+    <Property Name="Emission" Type="Float" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="IncandescenceMap" Type="Texture" />
+    <Property Name="IncandescenceMapVelocity" Type="Color" />
+    <Property Name="IncandescenceMapUV" Type="Float" />
+    <Property Name="EmissionWeight" Type="Float" Range="0,1" />
+    <Property Name="Rim" Type="Float" />
+    <Property Name="RimColor" Type="Color" />
+    <Property Name="RimTex" Type="Texture" />
+    <Property Name="RimTexVelocity" Type="Color" />
+    <Property Name="RimTexUV" Type="Float" />
+    <Property Name="RimWeight" Type="Float" Range="0,1" />
+    <Property Name="RimBias" Type="Float" Range="0,1" />
+    <Property Name="RimPower" Type="Float" />
+    <Property Name="Dissolve" Type="Float" />
+    <Property Name="DissolveGlowColor" Type="Color" />
+    <Property Name="DissolveTex" Type="Texture" />
+    <Property Name="DissolveTexUV" Type="Float" />
+    <Property Name="DissolveCutoff" Type="Float" Range="0,1" />
+    <Property Name="DissolveGlowWeight" Type="Float" Range="0,1" />
+    <Property Name="DissolveEdgeWidth" Type="Float" Range="0,1" />
+    <Property Name="WetnessProperties" Type="Float" />
+    <Property Name="WetMaskSource" Type="Float" />
+    <Property Name="WetMask" Type="Texture" />
+    <Property Name="WetMaskVelocity" Type="Color" />
+    <Property Name="WetMaskUV" Type="Float" />
+    <Property Name="WetMaskStrength" Type="Float" Range="0,1" />
+    <Property Name="WetTint" Type="Color" />
+    <Property Name="WetNormalMap" Type="Texture" />
+    <Property Name="WetNormalMapVelocity" Type="Color" />
+    <Property Name="WetNormalMapUV" Type="Float" />
+    <Property Name="WetWeight" Type="Float" Range="0,1" />
+    <Property Name="WetRoughness" Type="Float" Range="0,1" />
+    <Property Name="WetNormalMapScale" Type="Float" />
+  </Shader>
+  <Shader Name="Alloy/Human/Eye" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_eye" ShaderOptimization="False">
+    <Property Name="Lightmapping" Type="Float" />
+    <Property Name="EyeballTextures" Type="Float" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="BaseColorVertexTint" Type="Float" Range="0,1" />
+    <Property Name="CorneaProperties" Type="Float" />
+    <Property Name="CorneaColor" Type="Color" />
+    <Property Name="CorneaNormalMap" Type="Texture" />
+    <Property Name="CorneaSpecularity" Type="Float" Range="0,1" />
+    <Property Name="CorneaRoughness" Type="Float" Range="0,1" />
+    <Property Name="CorneaNormalMapScale" Type="Float" />
+    <Property Name="IrisProperties" Type="Float" />
+    <Property Name="IrisColor" Type="Color" />
+    <Property Name="Parallax" Type="Float" Range="0,0.08" />
+    <Property Name="IrisPupilSize" Type="Float" Range="0,1" />
+    <Property Name="IrisShadowing" Type="Float" />
+    <Property Name="IrisScatterIntensity" Type="Float" />
+    <Property Name="IrisScatterPower" Type="Float" />
+    <Property Name="ScleraProperties" Type="Float" />
+    <Property Name="ScleraColor" Type="Color" />
+    <Property Name="ScleraSpecularity" Type="Float" Range="0,1" />
+    <Property Name="ScleraRoughness" Type="Float" Range="0,1" />
+    <Property Name="ScleraNormalMapScale" Type="Float" />
+    <Property Name="DetailT" Type="Float" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailWeight" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="Decal" Type="Float" />
+    <Property Name="DecalColor" Type="Color" />
+    <Property Name="DecalTex" Type="Texture" />
+    <Property Name="DecalTexUV" Type="Float" />
+    <Property Name="DecalWeight" Type="Float" Range="0,1" />
+    <Property Name="DecalSpecularity" Type="Float" Range="0,1" />
+    <Property Name="DecalAlphaVertexTint" Type="Float" Range="0,1" />
+    <Property Name="Emission" Type="Float" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="IncandescenceMap" Type="Texture" />
+    <Property Name="IncandescenceMapVelocity" Type="Color" />
+    <Property Name="IncandescenceMapUV" Type="Float" />
+    <Property Name="EmissionWeight" Type="Float" Range="0,1" />
+    <Property Name="Rim" Type="Float" />
+    <Property Name="RimColor" Type="Color" />
+    <Property Name="RimTex" Type="Texture" />
+    <Property Name="RimTexVelocity" Type="Color" />
+    <Property Name="RimTexUV" Type="Float" />
+    <Property Name="RimWeight" Type="Float" Range="0,1" />
+    <Property Name="RimBias" Type="Float" Range="0,1" />
+    <Property Name="RimPower" Type="Float" />
+    <Property Name="Dissolve" Type="Float" />
+    <Property Name="DissolveGlowColor" Type="Color" />
+    <Property Name="DissolveTex" Type="Texture" />
+    <Property Name="DissolveTexUV" Type="Float" />
+    <Property Name="DissolveCutoff" Type="Float" Range="0,1" />
+    <Property Name="DissolveGlowWeight" Type="Float" Range="0,1" />
+    <Property Name="DissolveEdgeWidth" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Alloy/Human/Hair/HighQuality OneSided" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_hair_highquality_onesided" ShaderOptimization="False">
+    <Property Name="Lightmapping" Type="Float" />
+    <Property Name="MainTextures" Type="Float" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainTexVelocity" Type="Color" />
+    <Property Name="MainTexUV" Type="Float" />
+    <Property Name="SpecTex" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="BaseColorVertexTint" Type="Float" Range="0,1" />
+    <Property Name="HairProperties" Type="Float" />
+    <Property Name="HairDiffuseWrapAmount" Type="Float" Range="0,1" />
+    <Property Name="HairSpecularity" Type="Float" Range="0,1" />
+    <Property Name="AnisoAngle" Type="Float" Range="0,180" />
+    <Property Name="Occlusion" Type="Float" Range="0,1" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="PrimaryAnisoProperties" Type="Float" />
+    <Property Name="HighlightTint0" Type="Color" />
+    <Property Name="HighlightWidth0" Type="Float" Range="0,1" />
+    <Property Name="HighlightShift0" Type="Float" />
+    <Property Name="SecondaryAnisoProperties" Type="Float" />
+    <Property Name="HighlightTint1" Type="Color" />
+    <Property Name="HighlightWidth1" Type="Float" Range="0,1" />
+    <Property Name="HighlightShift1" Type="Float" />
+    <Property Name="Decal" Type="Float" />
+    <Property Name="DecalColor" Type="Color" />
+    <Property Name="DecalTex" Type="Texture" />
+    <Property Name="DecalTexUV" Type="Float" />
+    <Property Name="DecalWeight" Type="Float" Range="0,1" />
+    <Property Name="DecalSpecularity" Type="Float" Range="0,1" />
+    <Property Name="DecalAlphaVertexTint" Type="Float" Range="0,1" />
+    <Property Name="Emission" Type="Float" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="IncandescenceMap" Type="Texture" />
+    <Property Name="IncandescenceMapVelocity" Type="Color" />
+    <Property Name="IncandescenceMapUV" Type="Float" />
+    <Property Name="EmissionWeight" Type="Float" Range="0,1" />
+    <Property Name="Rim" Type="Float" />
+    <Property Name="RimColor" Type="Color" />
+    <Property Name="RimTex" Type="Texture" />
+    <Property Name="RimTexVelocity" Type="Color" />
+    <Property Name="RimTexUV" Type="Float" />
+    <Property Name="RimWeight" Type="Float" Range="0,1" />
+    <Property Name="RimBias" Type="Float" Range="0,1" />
+    <Property Name="RimPower" Type="Float" />
+    <Property Name="Dissolve" Type="Float" />
+    <Property Name="DissolveGlowColor" Type="Color" />
+    <Property Name="DissolveTex" Type="Texture" />
+    <Property Name="DissolveTexUV" Type="Float" />
+    <Property Name="DissolveCutoff" Type="Float" Range="0,1" />
+    <Property Name="DissolveGlowWeight" Type="Float" Range="0,1" />
+    <Property Name="DissolveEdgeWidth" Type="Float" Range="0,1" />
+    <Property Name="WetnessProperties" Type="Float" />
+    <Property Name="WetMaskSource" Type="Float" />
+    <Property Name="WetMask" Type="Texture" />
+    <Property Name="WetMaskVelocity" Type="Color" />
+    <Property Name="WetMaskUV" Type="Float" />
+    <Property Name="WetMaskStrength" Type="Float" Range="0,1" />
+    <Property Name="WetTint" Type="Color" />
+    <Property Name="WetWeight" Type="Float" Range="0,1" />
+    <Property Name="WetRoughness" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Alloy/Human/Hair/HighQuality TwoSided" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_hair_highquality_twosided" ShaderOptimization="False">
+    <Property Name="Lightmapping" Type="Float" />
+    <Property Name="MainTextures" Type="Float" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainTexVelocity" Type="Color" />
+    <Property Name="MainTexUV" Type="Float" />
+    <Property Name="SpecTex" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="BaseColorVertexTint" Type="Float" Range="0,1" />
+    <Property Name="HairProperties" Type="Float" />
+    <Property Name="HairDiffuseWrapAmount" Type="Float" Range="0,1" />
+    <Property Name="HairSpecularity" Type="Float" Range="0,1" />
+    <Property Name="AnisoAngle" Type="Float" Range="0,180" />
+    <Property Name="Occlusion" Type="Float" Range="0,1" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="PrimaryAnisoProperties" Type="Float" />
+    <Property Name="HighlightTint0" Type="Color" />
+    <Property Name="HighlightWidth0" Type="Float" Range="0,1" />
+    <Property Name="HighlightShift0" Type="Float" />
+    <Property Name="SecondaryAnisoProperties" Type="Float" />
+    <Property Name="HighlightTint1" Type="Color" />
+    <Property Name="HighlightWidth1" Type="Float" Range="0,1" />
+    <Property Name="HighlightShift1" Type="Float" />
+    <Property Name="Decal" Type="Float" />
+    <Property Name="DecalColor" Type="Color" />
+    <Property Name="DecalTex" Type="Texture" />
+    <Property Name="DecalTexUV" Type="Float" />
+    <Property Name="DecalWeight" Type="Float" Range="0,1" />
+    <Property Name="DecalSpecularity" Type="Float" Range="0,1" />
+    <Property Name="DecalAlphaVertexTint" Type="Float" Range="0,1" />
+    <Property Name="Emission" Type="Float" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="IncandescenceMap" Type="Texture" />
+    <Property Name="IncandescenceMapVelocity" Type="Color" />
+    <Property Name="IncandescenceMapUV" Type="Float" />
+    <Property Name="EmissionWeight" Type="Float" Range="0,1" />
+    <Property Name="Rim" Type="Float" />
+    <Property Name="RimColor" Type="Color" />
+    <Property Name="RimTex" Type="Texture" />
+    <Property Name="RimTexVelocity" Type="Color" />
+    <Property Name="RimTexUV" Type="Float" />
+    <Property Name="RimWeight" Type="Float" Range="0,1" />
+    <Property Name="RimBias" Type="Float" Range="0,1" />
+    <Property Name="RimPower" Type="Float" />
+    <Property Name="Dissolve" Type="Float" />
+    <Property Name="DissolveGlowColor" Type="Color" />
+    <Property Name="DissolveTex" Type="Texture" />
+    <Property Name="DissolveTexUV" Type="Float" />
+    <Property Name="DissolveCutoff" Type="Float" Range="0,1" />
+    <Property Name="DissolveGlowWeight" Type="Float" Range="0,1" />
+    <Property Name="DissolveEdgeWidth" Type="Float" Range="0,1" />
+    <Property Name="WetnessProperties" Type="Float" />
+    <Property Name="WetMaskSource" Type="Float" />
+    <Property Name="WetMask" Type="Texture" />
+    <Property Name="WetMaskVelocity" Type="Color" />
+    <Property Name="WetMaskUV" Type="Float" />
+    <Property Name="WetMaskStrength" Type="Float" Range="0,1" />
+    <Property Name="WetTint" Type="Color" />
+    <Property Name="WetWeight" Type="Float" Range="0,1" />
+    <Property Name="WetRoughness" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Alloy/Human/Skin (Forward)" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_skin_forward" ShaderOptimization="False">
+    <Property Name="Lightmapping" Type="Float" />
+    <Property Name="HasBumpMap" Type="Float" />
+    <Property Name="MainTextures" Type="Float" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainTexVelocity" Type="Color" />
+    <Property Name="MainTexUV" Type="Float" />
+    <Property Name="SpecTex" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="BaseColorVertexTint" Type="Float" Range="0,1" />
+    <Property Name="MainPhysicalProperties" Type="Float" />
+    <Property Name="Metal" Type="Float" Range="0,1" />
+    <Property Name="Specularity" Type="Float" Range="0,1" />
+    <Property Name="Roughness" Type="Float" Range="0,1" />
+    <Property Name="Occlusion" Type="Float" Range="0,1" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="SkinScatteringProperties" Type="Float" />
+    <Property Name="SssBrdfTex" Type="Texture" />
+    <Property Name="SssWeight" Type="Float" Range="0,1" />
+    <Property Name="SssMaskCutoff" Type="Float" Range="0.01,1" />
+    <Property Name="SssBias" Type="Float" Range="0,1" />
+    <Property Name="SssScale" Type="Float" Range="0,1" />
+    <Property Name="SssBumpBlur" Type="Float" Range="0,1" />
+    <Property Name="SssTransmissionAbsorption" Type="Color" />
+    <Property Name="SssColorBleedAoWeights" Type="Color" />
+    <Property Name="TransmissionProperties" Type="Float" />
+    <Property Name="TransWeight" Type="Float" Range="0,1" />
+    <Property Name="TransDistortion" Type="Float" Range="0,1" />
+    <Property Name="TransPower" Type="Float" />
+    <Property Name="ParallaxT" Type="Float" />
+    <Property Name="BumpMode" Type="Float" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0,0.08" />
+    <Property Name="MinSamples" Type="Float" />
+    <Property Name="MaxSamples" Type="Float" />
+    <Property Name="DetailT" Type="Float" />
+    <Property Name="DetailMaskSource" Type="Float" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailMaskStrength" Type="Float" Range="0,1" />
+    <Property Name="DetailMode" Type="Float" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailAlbedoMapVelocity" Type="Color" />
+    <Property Name="DetailAlbedoMapUV" Type="Float" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailWeight" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="TeamColor" Type="Float" />
+    <Property Name="TeamColorMasksAsTint" Type="Float" />
+    <Property Name="TeamColorMaskMap" Type="Texture" />
+    <Property Name="TeamColorMasks" Type="Color" />
+    <Property Name="TeamColor0" Type="Color" />
+    <Property Name="TeamColor1" Type="Color" />
+    <Property Name="TeamColor2" Type="Color" />
+    <Property Name="TeamColor3" Type="Color" />
+    <Property Name="Decal" Type="Float" />
+    <Property Name="DecalColor" Type="Color" />
+    <Property Name="DecalTex" Type="Texture" />
+    <Property Name="DecalTexUV" Type="Float" />
+    <Property Name="DecalWeight" Type="Float" Range="0,1" />
+    <Property Name="DecalSpecularity" Type="Float" Range="0,1" />
+    <Property Name="DecalAlphaVertexTint" Type="Float" Range="0,1" />
+    <Property Name="Emission" Type="Float" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="IncandescenceMap" Type="Texture" />
+    <Property Name="IncandescenceMapVelocity" Type="Color" />
+    <Property Name="IncandescenceMapUV" Type="Float" />
+    <Property Name="EmissionWeight" Type="Float" Range="0,1" />
+    <Property Name="Rim" Type="Float" />
+    <Property Name="RimColor" Type="Color" />
+    <Property Name="RimTex" Type="Texture" />
+    <Property Name="RimTexVelocity" Type="Color" />
+    <Property Name="RimTexUV" Type="Float" />
+    <Property Name="RimWeight" Type="Float" Range="0,1" />
+    <Property Name="RimBias" Type="Float" Range="0,1" />
+    <Property Name="RimPower" Type="Float" />
+    <Property Name="Dissolve" Type="Float" />
+    <Property Name="DissolveGlowColor" Type="Color" />
+    <Property Name="DissolveTex" Type="Texture" />
+    <Property Name="DissolveTexUV" Type="Float" />
+    <Property Name="DissolveCutoff" Type="Float" Range="0,1" />
+    <Property Name="DissolveGlowWeight" Type="Float" Range="0,1" />
+    <Property Name="DissolveEdgeWidth" Type="Float" Range="0,1" />
+    <Property Name="WetnessProperties" Type="Float" />
+    <Property Name="WetMaskSource" Type="Float" />
+    <Property Name="WetMask" Type="Texture" />
+    <Property Name="WetMaskVelocity" Type="Color" />
+    <Property Name="WetMaskUV" Type="Float" />
+    <Property Name="WetMaskStrength" Type="Float" Range="0,1" />
+    <Property Name="WetTint" Type="Color" />
+    <Property Name="WetNormalMap" Type="Texture" />
+    <Property Name="WetNormalMapVelocity" Type="Color" />
+    <Property Name="WetNormalMapUV" Type="Float" />
+    <Property Name="WetWeight" Type="Float" Range="0,1" />
+    <Property Name="WetRoughness" Type="Float" Range="0,1" />
+    <Property Name="WetNormalMapScale" Type="Float" />
+  </Shader>
+
+  <Shader Name="Shader Forge/Hair/ShaderForge_Hair" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_hair" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="Metalic" Type="Float" Range="0,1" />
+    <Property Name="Roughness" Type="Float" Range="0,1" />
+    <Property Name="CuticleColor" Type="Color" />
+    <Property Name="CuticleExp" Type="Float" Range="1,20" />
+    <Property Name="CuticleY" Type="Float" Range="-1,1" />
+    <Property Name="FrenelExp" Type="Float" Range="0,8" />
+    <Property Name="FrenelColor" Type="Color" />
+    <Property Name="LightDirAtten" Type="Float" Range="0,1" />
+    <Property Name="AmbientLightAdd" Type="Float" Range="-1,1" />
+  </Shader>
+  <Shader Name="Shader Forge/Hair/ShaderForge_Hair_CullOff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_hair_culloff" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="Metalic" Type="Float" Range="0,1" />
+    <Property Name="Roughness" Type="Float" Range="0,1" />
+    <Property Name="CuticleColor" Type="Color" />
+    <Property Name="CuticleExp" Type="Float" Range="1,20" />
+    <Property Name="CuticleY" Type="Float" Range="-1,1" />
+    <Property Name="FrenelExp" Type="Float" Range="0,8" />
+    <Property Name="FrenelColor" Type="Color" />
+    <Property Name="LightDirAtten" Type="Float" Range="0,1" />
+    <Property Name="AmbientLightAdd" Type="Float" Range="-1,1" />
+  </Shader>
+  <Shader Name="Shader Forge/Hair/ShaderForge_Hair_CullOff Opaque" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_hair_culloff_opaque" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="Metalic" Type="Float" Range="0,1" />
+    <Property Name="Roughness" Type="Float" Range="0,1" />
+    <Property Name="CuticleColor" Type="Color" />
+    <Property Name="CuticleExp" Type="Float" Range="1,20" />
+    <Property Name="CuticleY" Type="Float" Range="-1,1" />
+    <Property Name="FrenelExp" Type="Float" Range="0,8" />
+    <Property Name="FrenelColor" Type="Color" />
+    <Property Name="LightDirAtten" Type="Float" Range="0,1" />
+    <Property Name="AmbientLightAdd" Type="Float" Range="-1,1" />
+  </Shader>
+  <Shader Name="Shader Forge/Hair/ShaderForge_Hair_Opaque" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_hair_opaque" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="Metalic" Type="Float" Range="0,1" />
+    <Property Name="Roughness" Type="Float" Range="0,1" />
+    <Property Name="CuticleColor" Type="Color" />
+    <Property Name="CuticleExp" Type="Float" Range="1,20" />
+    <Property Name="CuticleY" Type="Float" Range="-1,1" />
+    <Property Name="FrenelExp" Type="Float" Range="0,8" />
+    <Property Name="FrenelColor" Type="Color" />
+    <Property Name="LightDirAtten" Type="Float" Range="0,1" />
+    <Property Name="AmbientLightAdd" Type="Float" Range="-1,1" />
+  </Shader>
+
+  <Shader Name="Shader Forge/liquid" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_liquid" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="Transmission" Type="Float" Range="0,1" />
+    <Property Name="LightWrapping" Type="Color" />
+  </Shader>
+
+  <Shader Name="Shader Forge/PBR_SG" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbr_sg" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainColor" Type="Color" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="SpecularGlossTex" Type="Texture" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="Specular" Type="Float" Range="0,1" />
+    <Property Name="Gloss" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="MainDetail" Type="Texture" />
+    <Property Name="MainDetailRate" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/PBR_SG Alpha" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbr_sg_alpha" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainColor" Type="Color" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="SpecularGlossTex" Type="Texture" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="Specular" Type="Float" Range="0,1" />
+    <Property Name="Gloss" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="MainDetail" Type="Texture" />
+    <Property Name="MainDetailRate" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/PBR_SG DoubleSide" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbr_sg_doubleside" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainColor" Type="Color" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="SpecularGlossTex" Type="Texture" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="Specular" Type="Float" Range="0,1" />
+    <Property Name="Gloss" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="MainDetail" Type="Texture" />
+    <Property Name="MainDetailRate" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/PBR_SG Clip" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbr_sg_clip" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainColor" Type="Color" />
+    <Property Name="Clip" Type="Float" Range="-0.5,0.5" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="SpecularGlossTex" Type="Texture" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="Specular" Type="Float" Range="0,1" />
+    <Property Name="Gloss" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="MainDetail" Type="Texture" />
+    <Property Name="MainDetailRate" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/PBR_SG_2Layer" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbr_sg_2layer" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainColor" Type="Color" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="SpecularGlossTex" Type="Texture" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="Specular" Type="Float" Range="0,1" />
+    <Property Name="Gloss" Type="Float" Range="0,1" />
+    <Property Name="OverlapTex" Type="Texture" />
+    <Property Name="OverlapColor" Type="Color" />
+    <Property Name="OverlapSpecularColor" Type="Color" />
+    <Property Name="OverlapSpecular" Type="Float" Range="0,1" />
+    <Property Name="OverlapGloss" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="MainDetail" Type="Texture" />
+    <Property Name="MainDetailRate" Type="Float" Range="0,1" />
+    <Property Name="OverlapDetail" Type="Texture" />
+    <Property Name="OverlapDetailRate" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/PBR_SG_2Layer Alpha DoubleSide" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbr_sg_2layer_alpha_doubleside" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainColor" Type="Color" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="SpecularGlossTex" Type="Texture" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="Specular" Type="Float" Range="0,1" />
+    <Property Name="Gloss" Type="Float" Range="0,1" />
+    <Property Name="OverlapTex" Type="Texture" />
+    <Property Name="OverlapColor" Type="Color" />
+    <Property Name="OverlapSpecularColor" Type="Color" />
+    <Property Name="OverlapSpecular" Type="Float" Range="0,1" />
+    <Property Name="OverlapGloss" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="MainDetail" Type="Texture" />
+    <Property Name="MainDetailRate" Type="Float" Range="0,1" />
+    <Property Name="OverlapDetail" Type="Texture" />
+    <Property Name="OverlapDetailRate" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/PBR_SG_2Layer DoubleSide" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbr_sg_2layer_doubleside" ShaderOptimization="False">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MainColor" Type="Color" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="SpecularGlossTex" Type="Texture" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="Specular" Type="Float" Range="0,1" />
+    <Property Name="Gloss" Type="Float" Range="0,1" />
+    <Property Name="OverlapTex" Type="Texture" />
+    <Property Name="OverlapColor" Type="Color" />
+    <Property Name="OverlapSpecularColor" Type="Color" />
+    <Property Name="OverlapSpecular" Type="Float" Range="0,1" />
+    <Property Name="OverlapGloss" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="MainDetail" Type="Texture" />
+    <Property Name="MainDetailRate" Type="Float" Range="0,1" />
+    <Property Name="OverlapDetail" Type="Texture" />
+    <Property Name="OverlapDetailRate" Type="Float" Range="0,1" />
+  </Shader>
+
+  <Shader Name="Shader Forge/PBRsp" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_2layer" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_2layer" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="Color_2" Type="Color" />
+    <Property Name="OverTex" Type="Texture" />
+    <Property Name="SpecColor_2" Type="Color" />
+    <Property Name="SpecGlossMap2" Type="Texture" />
+    <Property Name="BumpMap2" Type="Texture" />
+    <Property Name="DetailMask2" Type="Float" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_2layer_alpha_culloff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_2layer_alpha_culloff" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="Color_2" Type="Color" />
+    <Property Name="OverTex" Type="Texture" />
+    <Property Name="SpecColor_2" Type="Color" />
+    <Property Name="SpecGlossMap2" Type="Texture" />
+    <Property Name="BumpMap2" Type="Texture" />
+    <Property Name="DetailMask2" Type="Float" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_2layer_culloff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_2layer_culloff" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="Color_2" Type="Color" />
+    <Property Name="OverTex" Type="Texture" />
+    <Property Name="SpecColor_2" Type="Color" />
+    <Property Name="SpecGlossMap2" Type="Texture" />
+    <Property Name="BumpMap2" Type="Texture" />
+    <Property Name="DetailMask2" Type="Float" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_2layer_cutout" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_2layer_cutout" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailNormalConvert" Type="Color" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="Color_2" Type="Color" />
+    <Property Name="OverTex" Type="Texture" />
+    <Property Name="SpecColor_2" Type="Color" />
+    <Property Name="SpecGlossMap2" Type="Texture" />
+    <Property Name="BumpMap2" Type="Texture" />
+    <Property Name="DetailMask2" Type="Float" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_2layer_cutout_culloff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_2layer_cutout_culloff" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailNormalConvert" Type="Color" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="Color_2" Type="Color" />
+    <Property Name="OverTex" Type="Texture" />
+    <Property Name="SpecColor_2" Type="Color" />
+    <Property Name="SpecGlossMap2" Type="Texture" />
+    <Property Name="BumpMap2" Type="Texture" />
+    <Property Name="DetailMask2" Type="Float" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_3mask" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_3mask" ShaderOptimization="False">
+    <Property Name="Colormask" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color_2" Type="Color" />
+    <Property Name="Color_3" Type="Color" />
+    <Property Name="Color_4" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecColor_2" Type="Color" />
+    <Property Name="SpecColor_3" Type="Color" />
+    <Property Name="SpecColor_4" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale_2" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap_2" Type="Texture" />
+    <Property Name="DetailNormalMapScale_3" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap_3" Type="Texture" />
+    <Property Name="DetailNormalMapScale_4" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap_4" Type="Texture" />
+    <Property Name="ColorReverse" Type="Float" Range="0,1" />
+    <Property Name="SpecReverse" Type="Float" Range="0,1" />
+    <Property Name="SmoothTuning" Type="Float" Range="0,1" />
+    <Property Name="TuningColor21or3" Type="Float" />
+    <Property Name="TuningSpec21or3" Type="Float" />
+    <Property Name="TuningSmooth21or3" Type="Float" />
+    <Property Name="GlossUseAlpha" Type="Float" />
+    <Property Name="NspecR" Type="Float" />
+    <Property Name="NColorR" Type="Float" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_3mask_alpha" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_3mask_alpha" ShaderOptimization="False">
+    <Property Name="Colormask" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color_2" Type="Color" />
+    <Property Name="Color_3" Type="Color" />
+    <Property Name="Color_4" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecColor_2" Type="Color" />
+    <Property Name="SpecColor_3" Type="Color" />
+    <Property Name="SpecColor_4" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale_2" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap_2" Type="Texture" />
+    <Property Name="DetailNormalMapScale_3" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap_3" Type="Texture" />
+    <Property Name="DetailNormalMapScale_4" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap_4" Type="Texture" />
+    <Property Name="ColorReverse" Type="Float" Range="0,1" />
+    <Property Name="SpecReverse" Type="Float" Range="0,1" />
+    <Property Name="SmoothTuning" Type="Float" Range="0,1" />
+    <Property Name="TuningColor21or3" Type="Float" />
+    <Property Name="TuningSpec21or3" Type="Float" />
+    <Property Name="TuningSmooth21or3" Type="Float" />
+    <Property Name="GlossUseAlpha" Type="Float" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_3mask_uv" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_3mask_uv" ShaderOptimization="False">
+    <Property Name="Colormask" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color_3" Type="Color" />
+    <Property Name="Color_4" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="EffectMap" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecColor_3" Type="Color" />
+    <Property Name="SpecColor_4" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="Occlusion" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale_3" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap_3" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="RimPower" Type="Float" Range="0,1" />
+    <Property Name="Refraction" Type="Float" Range="0,9" />
+    <Property Name="EffectContrast" Type="Float" Range="0,9" />
+    <Property Name="Effect2Power" Type="Float" Range="0,9" />
+    <Property Name="UVScroll" Type="Color" />
+    <Property Name="GlossUseAlpha" Type="Float" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_alpha" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_alpha" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,4" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_alpha_culloff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_alpha_culloff" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,4" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_culloff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_culloff" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_cutout_culloff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_cutout_culloff" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="BlendNormalMapScale" Type="Float" Range="0,1" />
+    <Property Name="BlendNormalMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,4" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_eye_highlight_texture" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_eye_highlight_texture" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Speclar" Type="Float" Range="0,1" />
+    <Property Name="Gloss" Type="Float" Range="0,1" />
+    <Property Name="Intensity" Type="Float" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_texture_alpha" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_pbrsp_texture_alpha" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/PBRsp_texture_alpha_culloff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_texture_alpha_culloff" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="Smoothness" Type="Float" Range="0,1" />
+  </Shader>
+
+  <Shader Name="Standard" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_standard" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
+    <Property Name="Glossiness" Type="Float" Range="0,1"/>
+    <Property Name="GlossMapScale" Type="Float" Range="0,1"/>
+    <Property Name="SmoothnessTextureChannel" Type="Float"/>
+    <Property Name="Metallic" Type="Float" Range="0,1"/>
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="SpecularHighlights" Type="Float"/>
+    <Property Name="GlossyReflections" Type="Float"/>
+    <Property Name="BumpScale" Type="Float"/>
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0.005,0.08"/>
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float"/>
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="UVSec" Type="Float"/>
+    <Property Name="Mode" Type="Float"/>
+    <Property Name="SrcBlend" Type="Float"/>
+    <Property Name="DstBlend" Type="Float"/>
+    <Property Name="ZWrite" Type="Float"/>
+  </Shader>
+  <Shader Name="Standard CustomMetallic" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_standard_custommetallic" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="GlossMapScale" Type="Float" Range="0,1" />
+    <Property Name="SmoothnessTextureChannel" Type="Float" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="SpecularHighlights" Type="Float" />
+    <Property Name="GlossyReflections" Type="Float" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0.005,0.08" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="UVSec" Type="Float" />
+    <Property Name="MetallicOffset" Type="Float" Range="-1,1" />
+  </Shader>
+  <Shader Name="Standard (Specular setup)" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_standard_specular" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
+    <Property Name="Glossiness" Type="Float" Range="0,1"/>
+    <Property Name="GlossMapScale" Type="Float" Range="0,1"/>
+    <Property Name="SmoothnessTextureChannel" Type="Float"/>
+    <Property Name="SpecColor" Type="Float" Range="0,1"/>
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="SpecularHighlights" Type="Float"/>
+    <Property Name="GlossyReflections" Type="Float"/>
+    <Property Name="BumpScale" Type="Float"/>
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0.005,0.08"/>
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1"/>
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float"/>
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="UVSec" Type="Float"/>
+    <Property Name="Mode" Type="Float"/>
+    <Property Name="SrcBlend" Type="Float"/>
+    <Property Name="DstBlend" Type="Float"/>
+    <Property Name="ZWrite" Type="Float"/>
+  </Shader>
+  <Shader Name="Standard (Specular setup)_culloff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_standard_specular_culloff" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="SpecColor" Type="Color" />
+    <Property Name="SpecGlossMap" Type="Texture" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0.005,0.08" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="UVSec" Type="Float" />
+  </Shader>
+  <Shader Name="Standard_culloff" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_standard_culloff" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="GlossMapScale" Type="Float" Range="0,1" />
+    <Property Name="SmoothnessTextureChannel" Type="Float" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="SpecularHighlights" Type="Float" />
+    <Property Name="GlossyReflections" Type="Float" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0.005,0.08" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="UVSec" Type="Float" />
+  </Shader>
+  <Shader Name="Standard_culloff_Z" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_standard_culloff_z" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="GlossMapScale" Type="Float" Range="0,1" />
+    <Property Name="SmoothnessTextureChannel" Type="Float" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="SpecularHighlights" Type="Float" />
+    <Property Name="GlossyReflections" Type="Float" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0.005,0.08" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="UVSec" Type="Float" />
+  </Shader>
+  <Shader Name="Standard_Z" AssetBundle="Resources.ph_shaders.unity3d" Asset="asset_standard_z" ShaderOptimization="False">
+    <Property Name="Color" Type="Color" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="Metallic" Type="Float" Range="0,1" />
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="BumpScale" Type="Float" />
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="Parallax" Type="Float" Range="0.005,0.08" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="OcclusionStrength" Type="Float" Range="0,1" />
+    <Property Name="OcclusionMap" Type="Texture" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="DetailAlbedoMap" Type="Texture" />
+    <Property Name="DetailNormalMapScale" Type="Float" />
+    <Property Name="DetailNormalMap" Type="Texture" />
+    <Property Name="UVSec" Type="Float" />
+  </Shader>
+</MaterialEditor>
