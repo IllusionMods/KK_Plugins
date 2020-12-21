@@ -96,12 +96,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MaterialEditor\MaterialEditor.csproj">
-      <Project>{398dcfa5-74d2-4f81-bce7-9f00813328aa}</Project>
-      <Name>MaterialEditor</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\ph_shaders.unity3d" />
   </ItemGroup>
@@ -117,6 +111,7 @@
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />
+  <Import Project="..\MaterialEditor.API\MaterialEditor.API.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" PH</PostBuildEvent>

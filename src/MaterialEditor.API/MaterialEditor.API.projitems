@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>9b568b1a-d28a-4afa-8ac7-b6e0009a9675</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>MaterialEditor.API</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)API.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfigurationManagerAttributes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CopyContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Export.Obj.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Export.UV.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Plugin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemTemplate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ListEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.VirtualList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities.cs" />
+  </ItemGroup>
+</Project>

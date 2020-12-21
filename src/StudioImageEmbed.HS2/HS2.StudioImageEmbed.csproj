@@ -110,10 +110,6 @@
       <Project>{cfb86ab8-8852-4939-b0eb-09d320a4266b}</Project>
       <Name>HS2.MaterialEditor</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MaterialEditor\MaterialEditor.csproj">
-      <Project>{398dcfa5-74d2-4f81-bce7-9f00813328aa}</Project>
-      <Name>MaterialEditor</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.3\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
