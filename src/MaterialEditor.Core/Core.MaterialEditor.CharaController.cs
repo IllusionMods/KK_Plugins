@@ -896,6 +896,9 @@ namespace KK_Plugins.MaterialEditorWrapper
 #if KK || EC
             if (Plugin.RimRemover.Value)
                 RemoveRimClothes(slot);
+#elif PH
+            //Reapply edits for other clothes since they will have been undone
+            ChaControl.StartCoroutine(LoadData(true, false, false));
 #endif
         }
 
@@ -916,6 +919,9 @@ namespace KK_Plugins.MaterialEditorWrapper
 #if KK || EC
             if (Plugin.RimRemover.Value)
                 StartCoroutine(RemoveRimHairCo(slot));
+#elif PH
+            //Reapply edits for other hairs since they will have been undone
+            ChaControl.StartCoroutine(LoadData(false, false, true));
 #endif
         }
         /// <summary>

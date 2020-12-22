@@ -143,7 +143,42 @@ namespace KK_Plugins.MaterialEditorWrapper
             return false;
         }
 
-#if !PH
+#if PH
+        [HarmonyPostfix, HarmonyPatch(typeof(WearCustomEdit), "ChangeOnWear")]
+        private static void WearCustomEdit_ChangeOnWear(WearCustomEdit __instance, Character.WEAR_TYPE wear)
+        {
+            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
+            Plugin.GetCharaController(human).ChangeCustomClothesEvent((int)wear);
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Back))]
+        private static void HairCustomEdit_ChangeHair_Back(HairCustomEdit __instance)
+        {
+            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
+            Plugin.GetCharaController(human).ChangeHairEvent((int)Character.HAIR_TYPE.BACK);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Front))]
+        private static void HairCustomEdit_ChangeHair_Front(HairCustomEdit __instance)
+        {
+            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
+            Plugin.GetCharaController(human).ChangeHairEvent((int)Character.HAIR_TYPE.FRONT);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Side))]
+        private static void HairCustomEdit_ChangeHair_Side(HairCustomEdit __instance)
+        {
+            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
+            Plugin.GetCharaController(human).ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);
+        }
+        [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Set))]
+        private static void HairCustomEdit_ChangeHair_Set(HairCustomEdit __instance)
+        {
+            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
+            var controller = Plugin.GetCharaController(human);
+            controller.ChangeHairEvent((int)Character.HAIR_TYPE.BACK);
+            controller.ChangeHairEvent((int)Character.HAIR_TYPE.FRONT);
+            controller.ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);
+        }
+#else
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
         private static void SetClothesStatePostfix(ChaControl __instance)
         {
