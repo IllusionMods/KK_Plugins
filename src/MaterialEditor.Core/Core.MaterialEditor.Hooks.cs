@@ -145,35 +145,21 @@ namespace KK_Plugins.MaterialEditorWrapper
 
 #if PH
         [HarmonyPostfix, HarmonyPatch(typeof(WearCustomEdit), "ChangeOnWear")]
-        private static void WearCustomEdit_ChangeOnWear(WearCustomEdit __instance, Character.WEAR_TYPE wear)
-        {
-            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
-            Plugin.GetCharaController(human).ChangeCustomClothesEvent((int)wear);
-        }
-
+        private static void WearCustomEdit_ChangeOnWear(Character.WEAR_TYPE wear, ChaControl ___human) => Plugin.GetCharaController(___human).ChangeCustomClothesEvent((int)wear);
+        [HarmonyPostfix, HarmonyPatch(typeof(Body), nameof(Body.RendSkinTexture))]
+        private static void Body_RendSkinTexture(ChaControl ___human) => Plugin.GetCharaController(___human).RefreshBodyEdits();
+        [HarmonyPostfix, HarmonyPatch(typeof(Head), nameof(Head.RendSkinTexture))]
+        private static void Head_RendSkinTexture(ChaControl ___human) => Plugin.GetCharaController(___human).RefreshBodyEdits();
         [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Back))]
-        private static void HairCustomEdit_ChangeHair_Back(HairCustomEdit __instance)
-        {
-            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
-            Plugin.GetCharaController(human).ChangeHairEvent((int)Character.HAIR_TYPE.BACK);
-        }
+        private static void HairCustomEdit_ChangeHair_Back(ChaControl ___human) => Plugin.GetCharaController(___human).ChangeHairEvent((int)Character.HAIR_TYPE.BACK);
         [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Front))]
-        private static void HairCustomEdit_ChangeHair_Front(HairCustomEdit __instance)
-        {
-            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
-            Plugin.GetCharaController(human).ChangeHairEvent((int)Character.HAIR_TYPE.FRONT);
-        }
+        private static void HairCustomEdit_ChangeHair_Front(ChaControl ___human) => Plugin.GetCharaController(___human).ChangeHairEvent((int)Character.HAIR_TYPE.FRONT);
         [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Side))]
-        private static void HairCustomEdit_ChangeHair_Side(HairCustomEdit __instance)
-        {
-            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
-            Plugin.GetCharaController(human).ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);
-        }
+        private static void HairCustomEdit_ChangeHair_Side(ChaControl ___human) => Plugin.GetCharaController(___human).ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);
         [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Set))]
-        private static void HairCustomEdit_ChangeHair_Set(HairCustomEdit __instance)
+        private static void HairCustomEdit_ChangeHair_Set(ChaControl ___human)
         {
-            var human = (ChaControl)Traverse.Create(__instance).Field("human").GetValue();
-            var controller = Plugin.GetCharaController(human);
+            var controller = Plugin.GetCharaController(___human);
             controller.ChangeHairEvent((int)Character.HAIR_TYPE.BACK);
             controller.ChangeHairEvent((int)Character.HAIR_TYPE.FRONT);
             controller.ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);

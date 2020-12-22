@@ -961,7 +961,14 @@ namespace KK_Plugins.MaterialEditorWrapper
                         SetTexture(ChaControl.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
             }
         }
-
+        /// <summary>
+        /// Reapply all edits to the body and face
+        /// </summary>
+        public void RefreshBodyEdits()
+        {
+            if (CharacterLoading) return;
+            StartCoroutine(LoadData(false, false, false));
+        }
         /// <summary>
         /// Copy any edits for the specified object
         /// </summary>
