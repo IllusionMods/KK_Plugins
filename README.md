@@ -37,7 +37,7 @@ v1.2.2 Fixed a patch not working<br/>
 </details>
 
 #### ReloadCharaListOnChange
-**v1.5.1 - [Download](https://github.com/DeathWeasel1337/KK_Plugins/releases/download/v91/KK_ReloadCharaListOnChange.v1.5.1.zip)** - For Koikatsu<br/>
+**v1.5.2 - [Download](https://www.patreon.com/posts/45349791)** - For Koikatsu<br/>
 
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.<br/>
 
@@ -49,6 +49,7 @@ v1.4 Studio support<br/>
 v1.4.1 Compatibility with BepisPlugins versions higher than r8<br/>
 v1.5 Koikatsu Party compatibility<br/>
 v1.5.1 Create card folders if missing to prevent errors<br/>
+v1.5.2 Prevent reloading when cards in the _autosave folder are changed<br/>
 </details>
 
 #### InvisibleBody
@@ -396,8 +397,12 @@ Note: You MUST enable this option in the plugin settings (press F1 and search th
 This plugin will save .png files from your userdata folder to the scene data so anyone else can load the scene properly without needing the same .png file.<br/>
 
 #### MakerDefaults
-**v1.0 - [Download](https://www.patreon.com/posts/39323239)** - For Koikatsu, Emotion Creators, AI Girl, and Honey Select 2<br/>
+**v1.0.1 - [Download](https://www.patreon.com/posts/39323239)** - For Koikatsu, Emotion Creators, AI Girl, and Honey Select 2<br/>
 Allows you to set default settings of the character maker so you don't have to set the same values manually every time.<br/>
+
+<details><summary>Change Log</summary>
+v1.0.1 KKAPI compatibility<br/>
+</details>
 
 #### StudioCustomMasking
 **v1.0 - [Download](https://www.patreon.com/posts/40214619)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
@@ -419,8 +424,12 @@ Allows you to adjust fade color or disable the fade in and out effect.<br/>
 **v1.0 - [Download](https://www.patreon.com/posts/43152413)** - For Koikatsu and EmotionCreators<br/>
 A big textbox in the character creator where you can write a character description.<br/>
 
+#### Autosave
+**v1.0.1 - [Download](https://www.patreon.com/posts/44708282)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select, Honey Select 2, Play Club, Play Home, and SBPR<br/>
+Automatically saves cards in the character maker and scenes in Studio every few minutes.<br/>
+
 #### EyeControl
-**v1.0 - [Download](https://www.patreon.com/posts/45075996)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
+**v1.0.1 - [Download](https://www.patreon.com/posts/45075996)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
 Allows you to set a max eye openness, setting it to zero would let you create a character with permanently closed eyes. Can also disable a character's blinking.<br/>
 
 #### InputHotkeyBlock
