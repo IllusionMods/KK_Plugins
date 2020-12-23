@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-using static MaterialEditor.MaterialEditorPluginBase;
 #if AI || HS2
 using AIChara;
 #elif KK
@@ -95,16 +94,20 @@ namespace KK_Plugins.MaterialEditorWrapper
 
 #if PH
         /// <summary>
-        /// Remove O_body_a and O_body_b (i.e. for tops) because these have their materials set automatically by the body
+        /// Remove any renderers which have materials that correspond to the body material, since these will be overriden by the body material itself
         /// </summary>
-        /// <param name="__result"></param>
-        /// <param name="gameObject"></param>
         [HarmonyPostfix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), nameof(MaterialEditor.MaterialAPI.GetRendererList))]
-        private static void MaterialAPI_GetRendererList_Postfix(ref IEnumerable<Renderer> __result)
+        private static void MaterialAPI_GetRendererList_Postfix(ref IEnumerable<Renderer> __result, GameObject gameObject)
         {
-            var renderers = __result.ToList();
-            renderers.RemoveAll(x => x.NameFormatted() == "O_body_a" || x.NameFormatted() == "O_body_b");
-            __result = renderers;
+            if (gameObject.GetComponent<ChaControl>())
+                return;
+
+            List<Renderer> newRenderers = __result.ToList();
+            newRenderers.RemoveAll(renderer => renderer.sharedMaterial == null ||
+                                   renderer.sharedMaterial.name == "Default-Material" ||
+                                   renderer.sharedMaterial.name == "cf_m_body_CustomMaterial" ||
+                                   renderer.sharedMaterial.name == "cm_m_body_CustomMaterial");
+            __result = newRenderers;
         }
 #endif
 
