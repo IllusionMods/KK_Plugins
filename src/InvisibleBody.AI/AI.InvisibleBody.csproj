@@ -38,8 +38,8 @@
     <Reference Include="0Harmony, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HarmonyX.2.3.0\lib\net45\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="AIAPI, Version=1.13.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.AIAPI.1.13.4\lib\net46\AIAPI.dll</HintPath>
+    <Reference Include="AIAPI, Version=1.14.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.AIAPI.1.14.0\lib\net46\AIAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AI_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

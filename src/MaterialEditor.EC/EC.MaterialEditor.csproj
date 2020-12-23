@@ -50,8 +50,8 @@
     <Reference Include="BepInEx, Version=5.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\BepInEx.BaseLib.5.4.4\lib\net35\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="ECAPI, Version=1.13.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.ECAPI.1.13.4\lib\net46\ECAPI.dll</HintPath>
+    <Reference Include="ECAPI, Version=1.14.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.ECAPI.1.14.0\lib\net46\ECAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="EC_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
