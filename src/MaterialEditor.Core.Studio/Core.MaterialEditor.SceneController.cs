@@ -366,7 +366,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                     foreach (var rend in GetRendererList(chaControl.gameObject))
                     {
                         //Disable the shadowcaster renderer instead of changing the shadowcasting mode
-                        if (property == RendererProperties.ShadowCastingMode && rend.name == "o_shadowcaster")
+                        if (property == RendererProperties.ShadowCastingMode && (rend.name == "o_shadowcaster" || rend.name == "o_shadowcaster_cm"))
                         {
                             if (value == "-1")
                                 MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
