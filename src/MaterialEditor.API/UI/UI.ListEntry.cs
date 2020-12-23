@@ -189,9 +189,8 @@ namespace MaterialEditor
 
                         MaterialCopyRemove.onClick.RemoveAllListeners();
                         MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
-                        Text text2 = MaterialCopyRemove.GetComponentInChildren<Text>();
-                        text2.color = Color.gray;
-                        MaterialCopyRemove.enabled = false;
+                        if (MaterialCopyRemove.gameObject.activeInHierarchy)
+                            MaterialCopyRemove.gameObject.SetActive(false);
 
                         break;
                     case ItemInfo.RowItemType.Shader:
