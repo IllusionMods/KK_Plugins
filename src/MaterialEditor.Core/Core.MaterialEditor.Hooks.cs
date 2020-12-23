@@ -93,6 +93,21 @@ namespace KK_Plugins.MaterialEditorWrapper
             return true;
         }
 
+#if PH
+        /// <summary>
+        /// Remove O_body_a and O_body_b (i.e. for tops) because these have their materials set automatically by the body
+        /// </summary>
+        /// <param name="__result"></param>
+        /// <param name="gameObject"></param>
+        [HarmonyPostfix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), nameof(MaterialEditor.MaterialAPI.GetRendererList))]
+        private static void MaterialAPI_GetRendererList_Postfix(ref IEnumerable<Renderer> __result)
+        {
+            var renderers = __result.ToList();
+            renderers.RemoveAll(x => x.NameFormatted() == "O_body_a" || x.NameFormatted() == "O_body_b");
+            __result = renderers;
+        }
+#endif
+
         [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), nameof(MaterialEditor.MaterialAPI.GetMaterials))]
         private static bool MaterialAPI_GetMaterials(ref IEnumerable<Material> __result, GameObject gameObject, Renderer renderer)
         {
