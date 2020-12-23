@@ -25,18 +25,24 @@ namespace KK_Plugins.MaterialEditorWrapper
     internal partial class Hooks
     {
         /// <summary>
-        /// Recursively iterates over game objects to create the list
+        /// Recursively iterates over game objects to create the list of body part renderers
         /// </summary>
-        private static void GetRendererList(GameObject gameObject, List<Renderer> rendList)
+        private static void GetBodyRendererList(GameObject gameObject, List<Renderer> rendList)
         {
-            if (gameObject == null) return;
+            if (gameObject == null)
+                return;
 
+            //Don't search through clothes since a renderer with the same name as the body might be found there, particularly in PH
+            if (MaterialEditorPlugin.ClothesParts.Contains(gameObject.NameFormatted()))
+                return;
+
+            //Check if the renderer is one of the specified body parts and add it to the list
             Renderer rend = gameObject.GetComponent<Renderer>();
             if (rend != null && MaterialEditorPlugin.BodyParts.Contains(rend.NameFormatted()))
                 rendList.Add(rend);
 
             for (int i = 0; i < gameObject.transform.childCount; i++)
-                GetRendererList(gameObject.transform.GetChild(i).gameObject, rendList);
+                GetBodyRendererList(gameObject.transform.GetChild(i).gameObject, rendList);
         }
 
         [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), nameof(MaterialEditor.MaterialAPI.GetRendererList))]
@@ -50,7 +56,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl)
             {
                 List<Renderer> rendList = new List<Renderer>();
-                GetRendererList(chaControl.gameObject, rendList);
+                GetBodyRendererList(chaControl.gameObject, rendList);
                 __result = rendList;
                 return false;
             }
