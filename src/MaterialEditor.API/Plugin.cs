@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml;
-using System.Xml.Linq;
 using UnityEngine;
 using XUnity.ResourceRedirector;
 using static MaterialEditor.MaterialAPI;
@@ -124,34 +123,51 @@ namespace MaterialEditor
                 if (stream != null)
                     using (XmlReader reader = XmlReader.Create(stream))
                     {
-                        XElement materialEditorElement = XDocument.Load(reader).Element("MaterialEditor");
-                        foreach (var shaderElement in materialEditorElement.Elements("Shader"))
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(stream);
+                        XmlElement materialEditorElement = doc.DocumentElement;
+
+                        var shaderElements = materialEditorElement.GetElementsByTagName("Shader");
+                        foreach (var shaderElementObj in shaderElements)
                         {
-                            string shaderName = shaderElement.Attribute("Name").Value;
-
-                            XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
-
-                            foreach (XElement element in shaderElement.Elements("Property"))
+                            if (shaderElementObj != null)
                             {
-                                string propertyName = element.Attribute("Name").Value;
-                                ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), element.Attribute("Type").Value);
-                                string defaultValue = element.Attribute("DefaultValue")?.Value;
-                                string defaultValueAB = element.Attribute("DefaultValueAssetBundle")?.Value;
-                                string range = element.Attribute("Range")?.Value;
-                                string min = null;
-                                string max = null;
-                                if (!range.IsNullOrWhiteSpace())
+                                var shaderElement = (XmlElement)shaderElementObj;
                                 {
-                                    var rangeSplit = range.Split(',');
-                                    if (rangeSplit.Length == 2)
+                                    string shaderName = shaderElement.GetAttribute("Name");
+
+                                    XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
+
+                                    var shaderPropertyElements = shaderElement.GetElementsByTagName("Property");
+                                    foreach (var shaderPropertyElementObj in shaderPropertyElements)
                                     {
-                                        min = rangeSplit[0];
-                                        max = rangeSplit[1];
+                                        if (shaderPropertyElementObj != null)
+                                        {
+                                            var shaderPropertyElement = (XmlElement)shaderPropertyElementObj;
+                                            {
+                                                string propertyName = shaderPropertyElement.GetAttribute("Name");
+                                                ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), shaderPropertyElement.GetAttribute("Type"));
+                                                string defaultValue = shaderPropertyElement.GetAttribute("DefaultValue");
+                                                string defaultValueAB = shaderPropertyElement.GetAttribute("DefaultValueAssetBundle");
+                                                string range = shaderPropertyElement.GetAttribute("Range");
+                                                string min = null;
+                                                string max = null;
+                                                if (!range.IsNullOrWhiteSpace())
+                                                {
+                                                    var rangeSplit = range.Split(',');
+                                                    if (rangeSplit.Length == 2)
+                                                    {
+                                                        min = rangeSplit[0];
+                                                        max = rangeSplit[1];
+                                                    }
+                                                }
+                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, min, max);
+
+                                                XMLShaderProperties["default"][propertyName] = shaderPropertyData;
+                                            }
+                                        }
                                     }
                                 }
-                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, min, max);
-
-                                XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                             }
                         }
                     }

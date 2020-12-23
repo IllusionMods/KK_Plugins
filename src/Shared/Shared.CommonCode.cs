@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Xml.Linq;
+using System.Xml;
 
 namespace KK_Plugins
 {
@@ -21,14 +20,16 @@ namespace KK_Plugins
                 {
                     try
                     {
-                        var dataXml = XElement.Load("UserData/setup.xml");
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load("UserData/setup.xml");
+                        XmlElement dataXml = doc.DocumentElement;
 
-                        IEnumerable<XElement> enumerable = dataXml.Elements();
-                        foreach (XElement xelement in enumerable)
+                        foreach (var elementObj in dataXml.GetElementsByTagName("Language"))
                         {
-                            if (xelement.Name.ToString() == "Language")
+                            if (elementObj != null)
                             {
-                                _language = int.Parse(xelement.Value);
+                                var element = (XmlElement)elementObj;
+                                _language = int.Parse(element.InnerText);
                                 break;
                             }
                         }
@@ -47,6 +48,7 @@ namespace KK_Plugins
                 return _language;
             }
         }
+
         /// <summary>
         /// Open explorer focused on the specified file or directory
         /// </summary>

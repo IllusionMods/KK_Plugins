@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using System.Xml.Linq;
 using UniRx;
 using UnityEngine;
 using static MaterialEditor.MaterialAPI;
@@ -209,7 +208,11 @@ namespace KK_Plugins.MaterialEditorWrapper
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.default.xml"))
                 if (stream != null)
                     using (XmlReader reader = XmlReader.Create(stream))
-                        LoadXML(XDocument.Load(reader).Element("MaterialEditor"));
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(reader);
+                        LoadXML(doc.DocumentElement);
+                    }
 
 #if PH
             var di = new DirectoryInfo("abdata/MaterialEditor");
@@ -221,8 +224,9 @@ namespace KK_Plugins.MaterialEditorWrapper
                     var fileName = files[i].FullName;
                     try
                     {
-                        XDocument doc = XDocument.Load(fileName);
-                        LoadXML(doc.Element("MaterialEditor"));
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(fileName);
+                        LoadXML(doc.DocumentElement);
                     }
                     catch (Exception ex)
                     {
@@ -235,52 +239,69 @@ namespace KK_Plugins.MaterialEditorWrapper
             var loadedManifests = Sideloader.Sideloader.Manifests;
             foreach (var manifest in loadedManifests.Values)
             {
-                LoadXML(manifest.manifestDocument?.Root?.Element(PluginNameInternal));
-                LoadXML(manifest.manifestDocument?.Root?.Element("MaterialEditor"));
+                var element = manifest.manifestDocument?.Root?.Element("MaterialEditor");
+                if (element == null)
+                    element = manifest.manifestDocument?.Root?.Element(PluginNameInternal);
+                if (element != null)
+                {
+                    //Convert XElement in to XmlElement
+                    var doc = new XmlDocument();
+                    doc.Load(element.CreateReader());
+                    LoadXML(doc.DocumentElement);
+                }
             }
 #endif
         }
 
-        private static void LoadXML(XElement materialEditorElement)
+        private static void LoadXML(XmlElement materialEditorElement)
         {
             if (materialEditorElement == null) return;
-
-            foreach (var shaderElement in materialEditorElement.Elements("Shader"))
+            var shaderElements = materialEditorElement.GetElementsByTagName("Shader");
+            foreach (var shaderElementObj in shaderElements)
             {
-                string shaderName = shaderElement.Attribute("Name").Value;
-
-                if (LoadedShaders.ContainsKey(shaderName))
+                if (shaderElementObj != null)
                 {
-                    Destroy(LoadedShaders[shaderName].Shader);
-                    LoadedShaders.Remove(shaderName);
-                }
-                var shader = LoadShader(shaderName, shaderElement.Attribute("AssetBundle")?.Value, shaderElement.Attribute("Asset")?.Value);
-                LoadedShaders[shaderName] = new ShaderData(shader, shaderName, shaderElement.Attribute("RenderQueue")?.Value, shaderElement.Attribute("ShaderOptimization")?.Value);
+                    var shaderElement = (XmlElement)shaderElementObj;
+                    string shaderName = shaderElement.GetAttribute("Name");
 
-                XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
-
-                foreach (XElement element in shaderElement.Elements("Property"))
-                {
-                    string propertyName = element.Attribute("Name").Value;
-                    ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), element.Attribute("Type").Value);
-                    string defaultValue = element.Attribute("DefaultValue")?.Value;
-                    string defaultValueAB = element.Attribute("DefaultValueAssetBundle")?.Value;
-                    string range = element.Attribute("Range")?.Value;
-                    string min = null;
-                    string max = null;
-                    if (!range.IsNullOrWhiteSpace())
+                    if (LoadedShaders.ContainsKey(shaderName))
                     {
-                        var rangeSplit = range.Split(',');
-                        if (rangeSplit.Length == 2)
+                        Destroy(LoadedShaders[shaderName].Shader);
+                        LoadedShaders.Remove(shaderName);
+                    }
+                    var shader = LoadShader(shaderName, shaderElement.GetAttribute("AssetBundle"), shaderElement.GetAttribute("Asset"));
+                    LoadedShaders[shaderName] = new ShaderData(shader, shaderName, shaderElement.GetAttribute("RenderQueue"), shaderElement.GetAttribute("ShaderOptimization"));
+
+                    XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
+                    var shaderPropertyElements = shaderElement.GetElementsByTagName("Property");
+                    foreach (var shaderPropertyElementObj in shaderPropertyElements)
+                    {
+                        if (shaderPropertyElementObj != null)
                         {
-                            min = rangeSplit[0];
-                            max = rangeSplit[1];
+                            var shaderPropertyElement = (XmlElement)shaderPropertyElementObj;
+
+                            string propertyName = shaderPropertyElement.GetAttribute("Name");
+                            ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), shaderPropertyElement.GetAttribute("Type"));
+                            string defaultValue = shaderPropertyElement.GetAttribute("DefaultValue");
+                            string defaultValueAB = shaderPropertyElement.GetAttribute("DefaultValueAssetBundle");
+                            string range = shaderPropertyElement.GetAttribute("Range");
+                            string min = null;
+                            string max = null;
+                            if (!range.IsNullOrWhiteSpace())
+                            {
+                                var rangeSplit = range.Split(',');
+                                if (rangeSplit.Length == 2)
+                                {
+                                    min = rangeSplit[0];
+                                    max = rangeSplit[1];
+                                }
+                            }
+                            ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, min, max);
+
+                            XMLShaderProperties["default"][propertyName] = shaderPropertyData;
+                            XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;
                         }
                     }
-                    ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, min, max);
-
-                    XMLShaderProperties["default"][propertyName] = shaderPropertyData;
-                    XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;
                 }
             }
         }
