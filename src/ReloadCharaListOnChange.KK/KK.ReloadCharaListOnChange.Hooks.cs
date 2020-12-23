@@ -1,5 +1,6 @@
 ﻿using ChaCustom;
 using HarmonyLib;
+using KKAPI.Maker;
 using System.IO;
 
 namespace KK_Plugins
@@ -14,7 +15,7 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(ChaFileControl), "SaveCharaFile", typeof(BinaryWriter), typeof(bool))]
             private static void SaveCharaFilePrefix()
             {
-                if (InCharaMaker && Singleton<CustomBase>.Instance.customCtrl.saveNew)
+                if (MakerAPI.InsideAndLoaded && Singleton<CustomBase>.Instance.customCtrl.saveNew)
                     EventFromCharaMaker = true;
             }
             /// <summary>
@@ -23,7 +24,7 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(ChaFileCoordinate), nameof(ChaFileCoordinate.SaveFile), typeof(string))]
             private static void SaveCoordinateFilePrefix(string path)
             {
-                if (InCharaMaker && !File.Exists(path))
+                if (MakerAPI.InsideAndLoaded && !File.Exists(path))
                     EventFromCharaMaker = true;
             }
             /// <summary>
@@ -32,7 +33,7 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCharaFile), "DeleteCharaFile")]
             private static void DeleteCharaFilePrefix()
             {
-                if (InCharaMaker)
+                if (MakerAPI.InsideAndLoaded)
                     EventFromCharaMaker = true;
             }
             /// <summary>
@@ -41,50 +42,8 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCoordinateFile), "DeleteCoordinateFile")]
             private static void DeleteCoordinateFilePrefix()
             {
-                if (InCharaMaker)
+                if (MakerAPI.InsideAndLoaded)
                     EventFromCharaMaker = true;
-            }
-            /// <summary>
-            /// Initialize the character card file watcher when the chara maker starts
-            /// </summary>
-            [HarmonyPrefix, HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
-            private static void CustomCharaFileInitializePrefix(CustomCharaFile __instance)
-            {
-                if (CharacterCardWatcher == null)
-                {
-                    CustomCharaFileInstance = __instance;
-
-                    CharacterCardWatcher = new FileSystemWatcher();
-                    CharacterCardWatcher.Path = Singleton<CustomBase>.Instance.modeSex == 0 ? CC.Paths.MaleCardPath : CC.Paths.FemaleCardPath;
-                    CharacterCardWatcher.NotifyFilter = NotifyFilters.FileName;
-                    CharacterCardWatcher.Filter = "*.png";
-                    CharacterCardWatcher.EnableRaisingEvents = true;
-                    CharacterCardWatcher.Created += (o, ee) => CardEvent(CardEventType.CharaMakerCharacter);
-                    CharacterCardWatcher.Deleted += (o, ee) => CardEvent(CardEventType.CharaMakerCharacter);
-                    CharacterCardWatcher.IncludeSubdirectories = true;
-                }
-
-                InCharaMaker = true;
-            }
-            /// <summary>
-            /// Initialize the coordinate card file watcher when the chara maker starts
-            /// </summary>
-            [HarmonyPrefix, HarmonyPatch(typeof(CustomCoordinateFile), "Initialize")]
-            private static void CustomCoordinateFileInitializePrefix(CustomCoordinateFile __instance)
-            {
-                if (CoordinateCardWatcher == null)
-                {
-                    CustomCoordinateFileInstance = __instance;
-
-                    CoordinateCardWatcher = new FileSystemWatcher();
-                    CoordinateCardWatcher.Path = CC.Paths.CoordinateCardPath;
-                    CoordinateCardWatcher.NotifyFilter = NotifyFilters.FileName;
-                    CoordinateCardWatcher.Filter = "*.png";
-                    CoordinateCardWatcher.EnableRaisingEvents = true;
-                    CoordinateCardWatcher.Created += (o, ee) => CardEvent(CardEventType.CharaMakerCoordinate);
-                    CoordinateCardWatcher.Deleted += (o, ee) => CardEvent(CardEventType.CharaMakerCoordinate);
-                    CoordinateCardWatcher.IncludeSubdirectories = true;
-                }
             }
             /// <summary>
             /// Initialize the file watcher once the list has been initiated
@@ -101,8 +60,8 @@ namespace KK_Plugins
                     StudioFemaleCardWatcher.NotifyFilter = NotifyFilters.FileName;
                     StudioFemaleCardWatcher.Filter = "*.png";
                     StudioFemaleCardWatcher.EnableRaisingEvents = true;
-                    StudioFemaleCardWatcher.Created += (o, ee) => CardEvent(CardEventType.StudioFemale);
-                    StudioFemaleCardWatcher.Deleted += (o, ee) => CardEvent(CardEventType.StudioFemale);
+                    StudioFemaleCardWatcher.Created += (o, ee) => CardEvent(ee.FullPath, CardEventType.StudioFemale);
+                    StudioFemaleCardWatcher.Deleted += (o, ee) => CardEvent(ee.FullPath, CardEventType.StudioFemale);
                     StudioFemaleCardWatcher.IncludeSubdirectories = true;
                 }
             }
@@ -121,8 +80,8 @@ namespace KK_Plugins
                     StudioMaleCardWatcher.NotifyFilter = NotifyFilters.FileName;
                     StudioMaleCardWatcher.Filter = "*.png";
                     StudioMaleCardWatcher.EnableRaisingEvents = true;
-                    StudioMaleCardWatcher.Created += (o, ee) => CardEvent(CardEventType.StudioMale);
-                    StudioMaleCardWatcher.Deleted += (o, ee) => CardEvent(CardEventType.StudioMale);
+                    StudioMaleCardWatcher.Created += (o, ee) => CardEvent(ee.FullPath, CardEventType.StudioMale);
+                    StudioMaleCardWatcher.Deleted += (o, ee) => CardEvent(ee.FullPath, CardEventType.StudioMale);
                     StudioMaleCardWatcher.IncludeSubdirectories = true;
                 }
             }
@@ -140,8 +99,8 @@ namespace KK_Plugins
                     StudioCoordinateCardWatcher.NotifyFilter = NotifyFilters.FileName;
                     StudioCoordinateCardWatcher.Filter = "*.png";
                     StudioCoordinateCardWatcher.EnableRaisingEvents = true;
-                    StudioCoordinateCardWatcher.Created += (o, ee) => CardEvent(CardEventType.StudioCoordinate);
-                    StudioCoordinateCardWatcher.Deleted += (o, ee) => CardEvent(CardEventType.StudioCoordinate);
+                    StudioCoordinateCardWatcher.Created += (o, ee) => CardEvent(ee.FullPath, CardEventType.StudioCoordinate);
+                    StudioCoordinateCardWatcher.Deleted += (o, ee) => CardEvent(ee.FullPath, CardEventType.StudioCoordinate);
                     StudioCoordinateCardWatcher.IncludeSubdirectories = true;
                 }
             }
