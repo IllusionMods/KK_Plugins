@@ -96,13 +96,13 @@ namespace KK_Plugins.MaterialEditorWrapper
 
 #if PH
             MakerAPI.AddAccessoryWindowControl(new MakerButton("Material Editor", null, this)).OnClick.AddListener(UpdateUIAccessory);
-            e.AddControl(new MakerButton("Material Editor", MakerConstants.Body.General, this)).OnClick.AddListener(() => UpdateUICharacter());
             e.AddControl(new MakerButton("Material Editor (Body)", MakerConstants.Body.General, this)).OnClick.AddListener(() => UpdateUICharacter("body"));
-            e.AddControl(new MakerButton("Material Editor (Head)", MakerConstants.Body.General, this)).OnClick.AddListener(() => UpdateUICharacter("head"));
+            e.AddControl(new MakerButton("Material Editor (All)", MakerConstants.Body.General, this)).OnClick.AddListener(() => UpdateUICharacter());
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Body.Nail, this)).OnClick.AddListener(() => UpdateUICharacter("nail"));
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Body.Lower, this)).OnClick.AddListener(() => UpdateUICharacter("mnpk"));
 
-            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.General, this)).OnClick.AddListener(() => UpdateUICharacter("head"));
+            e.AddControl(new MakerButton("Material Editor (Face)", MakerConstants.Face.General, this)).OnClick.AddListener(() => UpdateUICharacter("head,face"));
+            e.AddControl(new MakerButton("Material Editor (All)", MakerConstants.Face.General, this)).OnClick.AddListener(() => UpdateUICharacter());
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eye, this)).OnClick.AddListener(() => UpdateUICharacter("eye"));
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eyebrow, this)).OnClick.AddListener(() => UpdateUICharacter("mayuge"));
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eyelash, this)).OnClick.AddListener(() => UpdateUICharacter("matuge"));
