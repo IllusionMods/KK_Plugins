@@ -15,7 +15,7 @@ namespace MaterialEditor
         public const string MaterialCopyPostfix = ".MECopy";
 
         /// <summary>
-        /// Get a list of all the renderers. If gameObject is a ChaControl, only gets renderers of the body and face (i.e. not clothes, accessories, etc.)
+        /// Get a list of all the renderers of a GameObject
         /// </summary>
         public static IEnumerable<Renderer> GetRendererList(GameObject gameObject)
         {
@@ -385,15 +385,15 @@ namespace MaterialEditor
         {
             bool didSet = false;
             if (shaderName.IsNullOrEmpty()) return false;
-            MaterialEditorPlugin.LoadedShaders.TryGetValue(shaderName, out var shaderData);
+            MaterialEditorPluginBase.LoadedShaders.TryGetValue(shaderName, out var shaderData);
 
             if (shaderData?.Shader == null)
             {
-                MaterialEditorPlugin.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"[{MaterialEditorPlugin.PluginName}] Could not load shader:{shaderName}");
+                MaterialEditorPluginBase.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"Could not load shader:{shaderName}");
                 return false;
             }
-            if (!MaterialEditorPlugin.XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
-                shaderPropertyDataList = new Dictionary<string, MaterialEditorPlugin.ShaderPropertyData>();
+            if (!MaterialEditorPluginBase.XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
+                shaderPropertyDataList = new Dictionary<string, MaterialEditorPluginBase.ShaderPropertyData>();
 
             var materials = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < materials.Count; i++)
@@ -424,7 +424,7 @@ namespace MaterialEditor
                                 }
                                 catch
                                 {
-                                    MaterialEditorPlugin.Logger.LogWarning($"[{MaterialEditorPlugin.PluginName}] Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
+                                    MaterialEditorPluginBase.Logger.LogWarning($"Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
                                 }
                                 break;
                         }

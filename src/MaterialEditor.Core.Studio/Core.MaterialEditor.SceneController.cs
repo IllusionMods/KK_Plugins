@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using static MaterialEditor.MaterialAPI;
-using static MaterialEditor.MaterialEditorPlugin;
+using static MaterialEditor.MaterialEditorPluginBase;
 
 namespace KK_Plugins.MaterialEditorWrapper
 {
@@ -279,59 +279,59 @@ namespace KK_Plugins.MaterialEditorWrapper
 
         private void Update()
         {
-            if (Plugin.DisableShadowCastingHotkey.Value.IsDown())
+            if (MaterialEditorPlugin.DisableShadowCastingHotkey.Value.IsDown())
             {
                 int count = 0;
                 TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
                 for (int i = 0; i < selectNodes.Length; i++)
                     SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "0", ref count);
                 if (count > 0)
-                    Plugin.Logger.LogMessage($"Disabled ShadowCasting for {count} items");
+                    MaterialEditorPlugin.Logger.LogMessage($"Disabled ShadowCasting for {count} items");
             }
-            else if (Plugin.EnableShadowCastingHotkey.Value.IsDown())
+            else if (MaterialEditorPlugin.EnableShadowCastingHotkey.Value.IsDown())
             {
                 int count = 0;
                 TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
                 for (int i = 0; i < selectNodes.Length; i++)
                     SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "1", ref count);
                 if (count > 0)
-                    Plugin.Logger.LogMessage($"Enabled ShadowCasting for {count} items");
+                    MaterialEditorPlugin.Logger.LogMessage($"Enabled ShadowCasting for {count} items");
             }
-            else if (Plugin.ResetShadowCastingHotkey.Value.IsDown())
+            else if (MaterialEditorPlugin.ResetShadowCastingHotkey.Value.IsDown())
             {
                 int count = 0;
                 TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
                 for (int i = 0; i < selectNodes.Length; i++)
                     SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "-1", ref count);
                 if (count > 0)
-                    Plugin.Logger.LogMessage($"Reset ShadowCasting for {count} items");
+                    MaterialEditorPlugin.Logger.LogMessage($"Reset ShadowCasting for {count} items");
             }
-            else if (Plugin.DisableReceiveShadows.Value.IsDown())
+            else if (MaterialEditorPlugin.DisableReceiveShadows.Value.IsDown())
             {
                 int count = 0;
                 TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
                 for (int i = 0; i < selectNodes.Length; i++)
                     SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ReceiveShadows, "0", ref count);
                 if (count > 0)
-                    Plugin.Logger.LogMessage($"Disabled ReceiveShadows for {count} items");
+                    MaterialEditorPlugin.Logger.LogMessage($"Disabled ReceiveShadows for {count} items");
             }
-            else if (Plugin.EnableReceiveShadows.Value.IsDown())
+            else if (MaterialEditorPlugin.EnableReceiveShadows.Value.IsDown())
             {
                 int count = 0;
                 TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
                 for (int i = 0; i < selectNodes.Length; i++)
                     SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ReceiveShadows, "1", ref count);
                 if (count > 0)
-                    Plugin.Logger.LogMessage($"Enabled ReceiveShadows for {count} items");
+                    MaterialEditorPlugin.Logger.LogMessage($"Enabled ReceiveShadows for {count} items");
             }
-            else if (Plugin.ResetReceiveShadows.Value.IsDown())
+            else if (MaterialEditorPlugin.ResetReceiveShadows.Value.IsDown())
             {
                 int count = 0;
                 TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
                 for (int i = 0; i < selectNodes.Length; i++)
                     SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ReceiveShadows, "-1", ref count);
                 if (count > 0)
-                    Plugin.Logger.LogMessage($"Reset ReceiveShadows for {count} items");
+                    MaterialEditorPlugin.Logger.LogMessage($"Reset ReceiveShadows for {count} items");
             }
             try
             {
@@ -369,16 +369,16 @@ namespace KK_Plugins.MaterialEditorWrapper
                         if (property == RendererProperties.ShadowCastingMode && rend.name == "o_shadowcaster")
                         {
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, value, chaControl.gameObject);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, value, chaControl.gameObject);
                         }
                         else
                         {
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, chaControl.gameObject);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, chaControl.gameObject);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, chaControl.gameObject);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, chaControl.gameObject);
                         }
                     }
                     for (var i = 0; i < chaControl.objClothes.Length; i++)
@@ -386,27 +386,27 @@ namespace KK_Plugins.MaterialEditorWrapper
                         var gameObj = chaControl.objClothes[i];
                         foreach (var renderer in GetRendererList(gameObj))
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, gameObj);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, gameObj);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, value, gameObj);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, value, gameObj);
                     }
                     for (var i = 0; i < chaControl.objHair.Length; i++)
                     {
                         var gameObj = chaControl.objHair[i];
                         foreach (var renderer in GetRendererList(gameObj))
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Hair, renderer, property, gameObj);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Hair, renderer, property, gameObj);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Hair, renderer, property, value, gameObj);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Hair, renderer, property, value, gameObj);
                     }
                     for (var i = 0; i < chaControl.objAccessory.Length; i++)
                     {
                         var gameObj = chaControl.objAccessory[i];
                         foreach (var renderer in GetRendererList(gameObj))
                             if (value == "-1")
-                                Plugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, gameObj);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, gameObj);
                             else
-                                Plugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, value, gameObj);
+                                MaterialEditorPlugin.GetCharaController(ociChar.charInfo).SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, value, gameObj);
                     }
                 }
             foreach (var child in node.child)
@@ -767,7 +767,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             else
             {
                 var texBytes = File.ReadAllBytes(filePath);
-                Texture2D tex = Plugin.TextureFromBytes(texBytes);
+                Texture2D tex = MaterialEditorPlugin.TextureFromBytes(texBytes);
 
                 SetTexture(go, material.NameFormatted(), propertyName, tex);
 
@@ -793,7 +793,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             GameObject go = GetObjectByID(id);
             if (data == null) return;
 
-            Texture2D tex = Plugin.TextureFromBytes(data);
+            Texture2D tex = MaterialEditorPlugin.TextureFromBytes(data);
 
             SetTexture(go, material.NameFormatted(), propertyName, tex);
 
@@ -843,7 +843,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (textureProperty != null)
             {
                 if (displayMessage)
-                    Plugin.Logger.LogMessage("Save and reload scene to refresh textures.");
+                    MaterialEditorPlugin.Logger.LogMessage("Save and reload scene to refresh textures.");
                 textureProperty.TexID = null;
                 if (textureProperty.NullCheck())
                     MaterialTexturePropertyList.Remove(textureProperty);

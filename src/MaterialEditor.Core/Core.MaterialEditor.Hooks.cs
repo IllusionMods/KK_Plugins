@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-using static MaterialEditor.MaterialEditorPlugin;
+using static MaterialEditor.MaterialEditorPluginBase;
 #if AI || HS2
 using AIChara;
 #elif KK
@@ -33,7 +33,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (gameObject == null) return;
 
             Renderer rend = gameObject.GetComponent<Renderer>();
-            if (rend != null && Plugin.BodyParts.Contains(rend.NameFormatted()))
+            if (rend != null && MaterialEditorPlugin.BodyParts.Contains(rend.NameFormatted()))
                 rendList.Add(rend);
 
             for (int i = 0; i < gameObject.transform.childCount; i++)
@@ -113,7 +113,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         {
             //Must use sharedMaterials for character objects or it breaks body masks, etc.
 #if KK || EC
-            if (gameObject.GetComponent<ChaControl>() && !Plugin.MouthParts.Contains(renderer.NameFormatted()))
+            if (gameObject.GetComponent<ChaControl>() && !MaterialEditorPlugin.MouthParts.Contains(renderer.NameFormatted()))
 #else
             if (gameObject.GetComponent<ChaControl>())
 #endif
@@ -130,7 +130,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         {
             //Must use sharedMaterials for character objects or it breaks body masks, etc.
 #if KK || EC
-            if (gameObject.GetComponent<ChaControl>() && !Plugin.MouthParts.Contains(renderer.NameFormatted()))
+            if (gameObject.GetComponent<ChaControl>() && !MaterialEditorPlugin.MouthParts.Contains(renderer.NameFormatted()))
 #else
             if (gameObject.GetComponent<ChaControl>())
 #endif
@@ -142,16 +142,6 @@ namespace KK_Plugins.MaterialEditorWrapper
             return true;
         }
 
-#if KK || EC
-        [HarmonyPostfix, HarmonyPatch(typeof(MaterialEditor.MaterialEditorPlugin), nameof(MaterialEditor.MaterialEditorPlugin.CheckBlacklist))]
-        private static void MaterialAPI_CheckBlacklist(ref bool __result, string materialName, string propertyName)
-        {
-            if (materialName == "cf_m_body" || materialName == "cm_m_body")
-                if (propertyName == "alpha_a" || propertyName == "alpha_b" || propertyName == "AlphaMask")
-                    __result = true;
-        }
-#endif
-
         [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), "LoadShaderDefaultTexture")]
         private static bool MaterialAPI_LoadShaderDefaultTexture(ref Texture2D __result, string assetBundlePath, string assetPath)
         {
@@ -160,34 +150,22 @@ namespace KK_Plugins.MaterialEditorWrapper
         }
 
 #if PH
-        /// <summary>
-        /// Disable ShaderOptimization if the user enables it since it doesn't work properly
-        /// </summary>
-        [HarmonyPostfix, HarmonyPatch(typeof(MaterialEditor.MaterialEditorPlugin), "ShaderOptimization_SettingChanged")]
-        private static void MaterialEditorPlugin_ShaderOptimization_SettingChanged()
-        {
-            if (ShaderOptimization.Value)
-                ShaderOptimization.Value = false;
-        }
-#endif
-
-#if PH
         [HarmonyPostfix, HarmonyPatch(typeof(WearCustomEdit), "ChangeOnWear")]
-        private static void WearCustomEdit_ChangeOnWear(Character.WEAR_TYPE wear, ChaControl ___human) => Plugin.GetCharaController(___human).ChangeCustomClothesEvent((int)wear);
+        private static void WearCustomEdit_ChangeOnWear(Character.WEAR_TYPE wear, ChaControl ___human) => MaterialEditorPlugin.GetCharaController(___human).ChangeCustomClothesEvent((int)wear);
         [HarmonyPostfix, HarmonyPatch(typeof(Body), nameof(Body.RendSkinTexture))]
-        private static void Body_RendSkinTexture(ChaControl ___human) => Plugin.GetCharaController(___human).RefreshBodyEdits();
+        private static void Body_RendSkinTexture(ChaControl ___human) => MaterialEditorPlugin.GetCharaController(___human).RefreshBodyEdits();
         [HarmonyPostfix, HarmonyPatch(typeof(Head), nameof(Head.RendSkinTexture))]
-        private static void Head_RendSkinTexture(ChaControl ___human) => Plugin.GetCharaController(___human).RefreshBodyEdits();
+        private static void Head_RendSkinTexture(ChaControl ___human) => MaterialEditorPlugin.GetCharaController(___human).RefreshBodyEdits();
         [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Back))]
-        private static void HairCustomEdit_ChangeHair_Back(ChaControl ___human) => Plugin.GetCharaController(___human).ChangeHairEvent((int)Character.HAIR_TYPE.BACK);
+        private static void HairCustomEdit_ChangeHair_Back(ChaControl ___human) => MaterialEditorPlugin.GetCharaController(___human).ChangeHairEvent((int)Character.HAIR_TYPE.BACK);
         [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Front))]
-        private static void HairCustomEdit_ChangeHair_Front(ChaControl ___human) => Plugin.GetCharaController(___human).ChangeHairEvent((int)Character.HAIR_TYPE.FRONT);
+        private static void HairCustomEdit_ChangeHair_Front(ChaControl ___human) => MaterialEditorPlugin.GetCharaController(___human).ChangeHairEvent((int)Character.HAIR_TYPE.FRONT);
         [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Side))]
-        private static void HairCustomEdit_ChangeHair_Side(ChaControl ___human) => Plugin.GetCharaController(___human).ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);
+        private static void HairCustomEdit_ChangeHair_Side(ChaControl ___human) => MaterialEditorPlugin.GetCharaController(___human).ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);
         [HarmonyPostfix, HarmonyPatch(typeof(HairCustomEdit), nameof(HairCustomEdit.ChangeHair_Set))]
         private static void HairCustomEdit_ChangeHair_Set(ChaControl ___human)
         {
-            var controller = Plugin.GetCharaController(___human);
+            var controller = MaterialEditorPlugin.GetCharaController(___human);
             controller.ChangeHairEvent((int)Character.HAIR_TYPE.BACK);
             controller.ChangeHairEvent((int)Character.HAIR_TYPE.FRONT);
             controller.ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);
@@ -196,7 +174,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
         private static void SetClothesStatePostfix(ChaControl __instance)
         {
-            var controller = Plugin.GetCharaController(__instance);
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
             if (controller != null)
                 controller.ClothesStateChangeEvent();
         }
@@ -204,7 +182,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]
         private static void ChangeCustomClothes(ChaControl __instance, int kind)
         {
-            var controller = Plugin.GetCharaController(__instance);
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
             if (controller != null)
                 controller.ChangeCustomClothesEvent(kind);
         }
@@ -212,7 +190,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessory), typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool))]
         private static void ChangeAccessory(ChaControl __instance, int slotNo, int type)
         {
-            var controller = Plugin.GetCharaController(__instance);
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
             if (controller != null)
                 controller.ChangeAccessoryEvent(slotNo, type);
         }
@@ -220,7 +198,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), typeof(int), typeof(int), typeof(bool), typeof(bool))]
         private static void ChangeHair(ChaControl __instance, int kind)
         {
-            var controller = Plugin.GetCharaController(__instance);
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
             if (controller != null)
                 controller.ChangeHairEvent(kind);
         }
@@ -228,7 +206,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
         private static void CreateBodyTextureHook(ChaControl __instance)
         {
-            var controller = Plugin.GetCharaController(__instance);
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
             if (controller != null)
                 controller.RefreshBodyMainTex();
         }
@@ -236,27 +214,27 @@ namespace KK_Plugins.MaterialEditorWrapper
 #if AI || HS2
         internal static void ClothesColorChangeHook()
         {
-            var controller = Plugin.GetCharaController(MakerAPI.GetCharacterControl());
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
             controller.CustomClothesOverride = true;
             controller.RefreshClothesMainTex();
         }
 
         [HarmonyPrefix, HarmonyPatch(typeof(CharaCustom.CvsA_Copy), "CopyAccessory")]
-        private static void CopyAccessoryOverride() => Plugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+        private static void CopyAccessoryOverride() => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 #else
-        internal static void AccessoryTransferHook() => Plugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+        internal static void AccessoryTransferHook() => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 
         /// <summary>
         /// Transfer accessory hook
         /// </summary>
         [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsAccessoryChange), "CopyAcs")]
-        private static void CopyAcsHook() => Plugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
+        private static void CopyAcsHook() => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 
         //Clothing color change hooks
         [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdateCosColor))]
         private static void FuncUpdateCosColorHook()
         {
-            var controller = Plugin.GetCharaController(MakerAPI.GetCharacterControl());
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
             controller.CustomClothesOverride = true;
             controller.RefreshClothesMainTex();
         }
@@ -264,7 +242,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdatePattern01))]
         private static void FuncUpdatePattern01Hook()
         {
-            var controller = Plugin.GetCharaController(MakerAPI.GetCharacterControl());
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
             controller.CustomClothesOverride = true;
             controller.RefreshClothesMainTex();
         }
@@ -272,7 +250,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdatePattern02))]
         private static void FuncUpdatePattern02Hook()
         {
-            var controller = Plugin.GetCharaController(MakerAPI.GetCharacterControl());
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
             controller.CustomClothesOverride = true;
             controller.RefreshClothesMainTex();
         }
@@ -280,7 +258,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdatePattern03))]
         private static void FuncUpdatePattern03Hook()
         {
-            var controller = Plugin.GetCharaController(MakerAPI.GetCharacterControl());
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
             controller.CustomClothesOverride = true;
             controller.RefreshClothesMainTex();
         }
@@ -288,7 +266,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdatePattern04))]
         private static void FuncUpdatePattern04Hook()
         {
-            var controller = Plugin.GetCharaController(MakerAPI.GetCharacterControl());
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
             controller.CustomClothesOverride = true;
             controller.RefreshClothesMainTex();
         }
@@ -296,7 +274,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsClothes), nameof(ChaCustom.CvsClothes.FuncUpdateAllPtnAndColor))]
         private static void FuncUpdateAllPtnAndColorHook()
         {
-            var controller = Plugin.GetCharaController(MakerAPI.GetCharacterControl());
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
             controller.CustomClothesOverride = true;
             controller.RefreshClothesMainTex();
         }
@@ -307,7 +285,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
         private static void ChangeCoordinateTypePrefix(ChaControl __instance)
         {
-            var controller = Plugin.GetCharaController(__instance);
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
             if (controller != null)
                 controller.CoordinateChangeEvent();
         }
@@ -320,7 +298,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 if (___tglKind[i].isOn)
                     copySlots.Add(i);
 
-            var controller = Plugin.GetCharaController(MakerAPI.GetCharacterControl());
+            var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
             if (controller != null)
                 controller.ClothingCopiedEvent(___ddCoordeType[1].value, ___ddCoordeType[0].value, copySlots);
         }

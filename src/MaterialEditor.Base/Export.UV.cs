@@ -69,13 +69,13 @@ namespace MaterialEditor
                 GL.PopMatrix();
                 Graphics.SetRenderTarget(null);
 
-                var png = MaterialEditorPlugin.GetT2D(_renderTexture);
+                var png = MaterialEditorPluginBase.GetT2D(_renderTexture);
                 RenderTexture.ReleaseTemporary(_renderTexture);
 
-                string filename = Path.Combine(MaterialEditorPlugin.ExportPath, $"{rend.NameFormatted()}_{x}.png");
+                string filename = Path.Combine(MaterialEditorPluginBase.ExportPath, $"{rend.NameFormatted()}_{x}.png");
                 File.WriteAllBytes(filename, png.EncodeToPNG());
                 Object.DestroyImmediate(png);
-                MaterialEditorPlugin.Logger.LogInfo($"Exported {filename}");
+                MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
                 if (!openedFile)
                     Utilities.OpenFileInExplorer(filename);
                 openedFile = true;

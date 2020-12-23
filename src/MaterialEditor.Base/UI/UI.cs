@@ -8,7 +8,7 @@ using UILib;
 using UnityEngine;
 using UnityEngine.UI;
 using static MaterialEditor.MaterialAPI;
-using static MaterialEditor.MaterialEditorPlugin;
+using static MaterialEditor.MaterialEditorPluginBase;
 
 namespace MaterialEditor
 {
@@ -328,7 +328,7 @@ namespace MaterialEditor
                 foreach (var property in XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
                 {
                     string propertyName = property.Key;
-                    if (CheckBlacklist(materialName, propertyName)) continue;
+                    if (Instance.CheckBlacklist(materialName, propertyName)) continue;
 
                     if (property.Value.Type == ShaderPropertyType.Texture)
                     {
@@ -476,7 +476,7 @@ namespace MaterialEditor
             if (tex == null) return;
             string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{mat.NameFormatted()}_{property}.png");
             SaveTex(tex, filename);
-            MaterialEditorPlugin.Logger.LogInfo($"Exported {filename}");
+            MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
             Utilities.OpenFileInExplorer(filename);
         }
 

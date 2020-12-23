@@ -14,14 +14,14 @@ namespace MaterialEditor
         /// </summary>
         public static void ExportObj(Renderer rend)
         {
-            string filename = Path.Combine(MaterialEditorPlugin.ExportPath, $"{rend.NameFormatted()}.obj");
+            string filename = Path.Combine(MaterialEditorPluginBase.ExportPath, $"{rend.NameFormatted()}.obj");
             using (StreamWriter sw = new StreamWriter(filename))
             {
                 string mesh = MeshToObjString(rend);
                 if (!mesh.IsNullOrEmpty())
                 {
                     sw.Write(mesh);
-                    MaterialEditorPlugin.Logger.LogInfo($"Exported {filename}");
+                    MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
                     Utilities.OpenFileInExplorer(filename);
                 }
             }

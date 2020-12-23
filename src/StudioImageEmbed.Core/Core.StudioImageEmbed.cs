@@ -13,7 +13,7 @@ namespace KK_Plugins
 {
     [BepInProcess(Constants.StudioProcessName)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
-    [BepInDependency(MaterialEditorWrapper.Plugin.PluginGUID, MaterialEditorWrapper.Plugin.PluginVersion)]
+    [BepInDependency(MaterialEditorWrapper.MaterialEditorPlugin.PluginGUID, MaterialEditorWrapper.MaterialEditorPlugin.PluginVersion)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class ImageEmbed : BaseUnityPlugin
     {

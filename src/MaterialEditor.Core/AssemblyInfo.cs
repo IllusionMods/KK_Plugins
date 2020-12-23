@@ -1,6 +1,6 @@
 ﻿using KK_Plugins;
 using System.Reflection;
-using static KK_Plugins.MaterialEditorWrapper.Plugin;
+using static KK_Plugins.MaterialEditorWrapper.MaterialEditorPlugin;
 
 [assembly: AssemblyTitle(PluginNameInternal)]
 [assembly: AssemblyProduct(PluginNameInternal)]

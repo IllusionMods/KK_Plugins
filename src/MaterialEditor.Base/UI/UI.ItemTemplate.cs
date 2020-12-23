@@ -198,7 +198,7 @@ namespace MaterialEditor
                 dropdownShader.captionText.alignment = TextAnchor.MiddleLeft;
                 dropdownShader.options.Clear();
                 dropdownShader.options.Add(new Dropdown.OptionData("Reset"));
-                foreach (var shader in MaterialEditorPlugin.XMLShaderProperties)
+                foreach (var shader in MaterialEditorPluginBase.XMLShaderProperties)
                     if (shader.Key != "default")
                         dropdownShader.options.Add(new Dropdown.OptionData(shader.Key));
                 var dropdownShaderLE = dropdownShader.gameObject.AddComponent<LayoutElement>();

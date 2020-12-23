@@ -174,7 +174,7 @@ namespace MaterialEditor
                         MaterialCopyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
                         MaterialPasteButton.onClick.RemoveAllListeners();
                         MaterialPasteButton.onClick.AddListener(() => item.MaterialOnPaste.Invoke());
-                        if (MaterialEditorPlugin.CopyData.IsEmpty)
+                        if (MaterialEditorPluginBase.CopyData.IsEmpty)
                         {
                             MaterialPasteButton.enabled = false;
                             Text text = MaterialPasteButton.GetComponentInChildren<Text>();

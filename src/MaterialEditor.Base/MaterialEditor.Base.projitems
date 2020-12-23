@@ -9,13 +9,13 @@
     <Import_RootNamespace>MaterialEditor.API</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)API.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MaterialAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConfigurationManagerAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CopyContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Export.Obj.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Export.UV.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Plugin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PluginBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemTemplate.cs" />

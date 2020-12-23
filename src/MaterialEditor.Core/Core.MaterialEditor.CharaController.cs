@@ -13,7 +13,7 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using static MaterialEditor.MaterialAPI;
-using static MaterialEditor.MaterialEditorPlugin;
+using static MaterialEditor.MaterialEditorPluginBase;
 #if AI || HS2
 using AIChara;
 #endif
@@ -521,7 +521,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
-                if (Plugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
+                if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 SetFloat(go, property.MaterialName, property.Property, float.Parse(property.Value));
             }
@@ -533,7 +533,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
-                if (Plugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
+                if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 SetColor(go, property.MaterialName, property.Property, property.Value);
             }
@@ -545,7 +545,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
-                if (Plugin.CheckBlacklist(property.MaterialName, property.Property)) continue;
+                if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 if (property.TexID != null)
                     SetTexture(go, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
@@ -555,7 +555,7 @@ namespace KK_Plugins.MaterialEditorWrapper
 
 
 #if KK || EC
-            if (Plugin.RimRemover.Value)
+            if (MaterialEditorPlugin.RimRemover.Value)
                 RemoveRim();
 #endif
         }
@@ -606,7 +606,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 RemoveRimClothes(i);
             for (var i = 0; i < ChaControl.objHair.Length; i++)
                 RemoveRimHair(i);
-            foreach (var accessoryIndex in Plugin.GetAcccessoryIndices(ChaControl))
+            foreach (var accessoryIndex in MaterialEditorPlugin.GetAcccessoryIndices(ChaControl))
                 RemoveRimAccessory(accessoryIndex);
         }
         private void RemoveRimClothes(int slot)
@@ -736,7 +736,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                     MEMaker.Instance.UpdateUIAccessory();
 
 #if KK || EC
-            if (Plugin.RimRemover.Value)
+            if (MaterialEditorPlugin.RimRemover.Value)
                 RemoveRimAccessory(e.SlotIndex);
 #endif
         }
@@ -850,7 +850,7 @@ namespace KK_Plugins.MaterialEditorWrapper
 #elif KK || EC
             if (type != 120) //type 120 = no category, accessory being removed
             {
-                if (Plugin.RimRemover.Value)
+                if (MaterialEditorPlugin.RimRemover.Value)
                     RemoveRimAccessory(slot);
                 return;
             }
@@ -894,7 +894,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 MaterialEditorUI.Visible = false;
 
 #if KK || EC
-            if (Plugin.RimRemover.Value)
+            if (MaterialEditorPlugin.RimRemover.Value)
                 RemoveRimClothes(slot);
 #elif PH
             //Reapply edits for other clothes since they will have been undone
@@ -917,7 +917,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 MaterialEditorUI.Visible = false;
 
 #if KK || EC
-            if (Plugin.RimRemover.Value)
+            if (MaterialEditorPlugin.RimRemover.Value)
                 StartCoroutine(RemoveRimHairCo(slot));
 #elif PH
             //Reapply edits for other hairs since they will have been undone
@@ -934,7 +934,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             for (var i = 0; i < MaterialTexturePropertyList.Count; i++)
             {
                 var property = MaterialTexturePropertyList[i];
-                if (Plugin.CheckBlacklist(property.MaterialName, property.Property))
+                if (Instance.CheckBlacklist(property.MaterialName, property.Property))
                     continue;
 
                 if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
@@ -953,7 +953,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             for (var i = 0; i < MaterialTexturePropertyList.Count; i++)
             {
                 var property = MaterialTexturePropertyList[i];
-                if (Plugin.CheckBlacklist(property.MaterialName, property.Property))
+                if (Instance.CheckBlacklist(property.MaterialName, property.Property))
                     continue;
 
                 if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")
@@ -1283,7 +1283,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             else
             {
                 var texBytes = File.ReadAllBytes(filePath);
-                Texture2D tex = Plugin.TextureFromBytes(texBytes);
+                Texture2D tex = MaterialEditorPlugin.TextureFromBytes(texBytes);
 
                 SetTexture(go, material.NameFormatted(), propertyName, tex);
 
@@ -1306,7 +1306,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         {
             if (data == null) return;
 
-            Texture2D tex = Plugin.TextureFromBytes(data);
+            Texture2D tex = MaterialEditorPlugin.TextureFromBytes(data);
 
             SetTexture(go, material.NameFormatted(), propertyName, tex);
 
@@ -1357,7 +1357,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (textureProperty != null)
             {
                 if (displayMessage)
-                    Plugin.Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
+                    MaterialEditorPlugin.Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
                 textureProperty.TexID = null;
                 if (textureProperty.NullCheck())
                     MaterialTexturePropertyList.Remove(textureProperty);

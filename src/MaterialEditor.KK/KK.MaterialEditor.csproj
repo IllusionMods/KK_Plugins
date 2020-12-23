@@ -132,7 +132,7 @@
   <Import Project="..\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems" Label="Shared" />
   <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />
   <Import Project="..\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems" Label="Shared" />
-  <Import Project="..\MaterialEditor.API\MaterialEditor.API.projitems" Label="Shared" />
+  <Import Project="..\MaterialEditor.Base\MaterialEditor.Base.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KK</PostBuildEvent>

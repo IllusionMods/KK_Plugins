@@ -29,7 +29,7 @@ namespace KK_Plugins.MaterialEditorWrapper
     /// </summary>
     [BepInProcess(Constants.StudioProcessName)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
-    [BepInDependency(Plugin.PluginGUID, Plugin.PluginVersion)]
+    [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
@@ -38,15 +38,15 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <summary>
         /// MaterialEditor Studio plugin GUID
         /// </summary>
-        public const string GUID = Plugin.PluginGUID + ".studio";
+        public const string GUID = MaterialEditorPlugin.PluginGUID + ".studio";
         /// <summary>
         /// MaterialEditor Studio plugin PluginName
         /// </summary>
-        public const string PluginName = Plugin.PluginName + " Studio";
+        public const string PluginName = MaterialEditorPlugin.PluginName + " Studio";
         /// <summary>
         /// MaterialEditor Studio plugin Version
         /// </summary>
-        public const string Version = Plugin.PluginVersion;
+        public const string Version = MaterialEditorPlugin.PluginVersion;
         /// <summary>
         /// Instance of the plugin
         /// </summary>
@@ -58,7 +58,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         {
             Instance = this;
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
-            StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(Plugin.PluginGUID);
+            StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(MaterialEditorPlugin.PluginGUID);
         }
 
         private void InitStudioUI(string sceneName)
@@ -148,7 +148,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 if (chaControl.objHair[i] != null && chaControl.objHair[i].GetComponent<ChaCustomHairComponent>() != null)
                     ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Hair {HairIndexToString(i)}"));
 
-            var accessories = Plugin.GetAcccessoryIndices(chaControl).ToList();
+            var accessories = MaterialEditorPlugin.GetAcccessoryIndices(chaControl).ToList();
             accessories.Sort();
             for (var i = 0; i < accessories.Count; i++)
                 ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(accessories[i])}"));
@@ -317,7 +317,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                return Plugin.GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, property, go);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, property, go);
             }
             else
                 return GetSceneController().GetRendererPropertyValueOriginal((int)data, renderer, property);
@@ -328,7 +328,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).SetRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, value, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).SetRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, value, go);
             }
             else
                 GetSceneController().SetRendererProperty((int)data, renderer, property, value);
@@ -339,7 +339,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).RemoveRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, go);
             }
             else
                 GetSceneController().RemoveRendererProperty((int)data, renderer, property);
@@ -351,7 +351,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).MaterialCopyEdits(objectData.Slot, objectData.ObjectType, material, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).MaterialCopyEdits(objectData.Slot, objectData.ObjectType, material, go);
             }
             else
                 GetSceneController().MaterialCopyEdits((int)data, material);
@@ -362,7 +362,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).MaterialPasteEdits(objectData.Slot, objectData.ObjectType, material, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).MaterialPasteEdits(objectData.Slot, objectData.ObjectType, material, go);
             }
             else
                 GetSceneController().MaterialPasteEdits((int)data, material);
@@ -374,7 +374,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                return Plugin.GetCharaController(chaControl).GetMaterialShaderOriginal(objectData.Slot, objectData.ObjectType, material, go);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderOriginal(objectData.Slot, objectData.ObjectType, material, go);
             }
             else
                 return GetSceneController().GetMaterialShaderOriginal((int)data, material);
@@ -385,7 +385,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).SetMaterialShader(objectData.Slot, objectData.ObjectType, material, value, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialShader(objectData.Slot, objectData.ObjectType, material, value, go);
             }
             else
                 GetSceneController().SetMaterialShader((int)data, material, value);
@@ -396,7 +396,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).RemoveMaterialShader(objectData.Slot, objectData.ObjectType, material, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShader(objectData.Slot, objectData.ObjectType, material, go);
             }
             else
                 GetSceneController().RemoveMaterialShader((int)data, material);
@@ -408,7 +408,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                return Plugin.GetCharaController(chaControl).GetMaterialShaderRenderQueueOriginal(objectData.Slot, objectData.ObjectType, material, go);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderRenderQueueOriginal(objectData.Slot, objectData.ObjectType, material, go);
             }
             else
                 return GetSceneController().GetMaterialShaderRenderQueueOriginal((int)data, material);
@@ -419,7 +419,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).SetMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, value, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, value, go);
             }
             else
                 GetSceneController().SetMaterialShaderRenderQueue((int)data, material, value);
@@ -430,7 +430,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).RemoveMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, go);
             }
             else
                 GetSceneController().RemoveMaterialShaderRenderQueue((int)data, material);
@@ -442,7 +442,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                return Plugin.GetCharaController(chaControl).GetMaterialTextureOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 return GetSceneController().GetMaterialTextureOriginal((int)data, material, propertyName);
@@ -453,7 +453,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).SetMaterialTextureFromFile(objectData.Slot, objectData.ObjectType, material, propertyName, filePath, go, true);
+                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialTextureFromFile(objectData.Slot, objectData.ObjectType, material, propertyName, filePath, go, true);
             }
             else
                 GetSceneController().SetMaterialTextureFromFile((int)data, material, propertyName, filePath, true);
@@ -464,7 +464,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).RemoveMaterialTexture(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTexture(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 GetSceneController().RemoveMaterialTexture((int)data, material, propertyName);
@@ -476,7 +476,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                return Plugin.GetCharaController(chaControl).GetMaterialTextureOffsetOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOffsetOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 return GetSceneController().GetMaterialTextureOffsetOriginal((int)data, material, propertyName);
@@ -487,7 +487,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).SetMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
             }
             else
                 GetSceneController().SetMaterialTextureOffset((int)data, material, propertyName, value);
@@ -498,7 +498,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).RemoveMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 GetSceneController().RemoveMaterialTextureOffset((int)data, material, propertyName);
@@ -510,7 +510,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                return Plugin.GetCharaController(chaControl).GetMaterialTextureScaleOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureScaleOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 return GetSceneController().GetMaterialTextureScaleOriginal((int)data, material, propertyName);
@@ -521,7 +521,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).SetMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
             }
             else
                 GetSceneController().SetMaterialTextureScale((int)data, material, propertyName, value);
@@ -532,7 +532,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).RemoveMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 GetSceneController().RemoveMaterialTextureScale((int)data, material, propertyName);
@@ -544,7 +544,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                return Plugin.GetCharaController(chaControl).GetMaterialColorPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialColorPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 return GetSceneController().GetMaterialColorPropertyValueOriginal((int)data, material, propertyName);
@@ -555,7 +555,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).SetMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
             }
             else
                 GetSceneController().SetMaterialColorProperty((int)data, material, propertyName, value);
@@ -566,7 +566,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).RemoveMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 GetSceneController().RemoveMaterialColorProperty((int)data, material, propertyName);
@@ -578,7 +578,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                return Plugin.GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 return GetSceneController().GetMaterialFloatPropertyValueOriginal((int)data, material, propertyName);
@@ -589,7 +589,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).SetMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
             }
             else
                 GetSceneController().SetMaterialFloatProperty((int)data, material, propertyName, value);
@@ -600,7 +600,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             if (chaControl != null)
             {
                 ObjectData objectData = (ObjectData)data;
-                Plugin.GetCharaController(chaControl).RemoveMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
             }
             else
                 GetSceneController().RemoveMaterialFloatProperty((int)data, material, propertyName);

@@ -16,7 +16,6 @@ using System.Xml;
 using UniRx;
 using UnityEngine;
 using static MaterialEditor.MaterialAPI;
-using static MaterialEditor.MaterialEditorPlugin;
 #if AI || HS2
 using AIChara;
 using ChaAccessoryComponent = AIChara.CmpAccessory;
@@ -37,12 +36,11 @@ namespace KK_Plugins.MaterialEditorWrapper
     /// </summary>
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
-    [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
 #if !PH
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
 #endif
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    public partial class Plugin : BaseUnityPlugin
+    public partial class MaterialEditorPlugin : MaterialEditorPluginBase
     {
         /// <summary>
         /// MaterialEditor plugin GUID
@@ -57,7 +55,6 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// MaterialEditor plugin version
         /// </summary>
         public const string PluginVersion = "2.4.1";
-        internal static new ManualLogSource Logger;
 
 #if KK || EC
         internal static ConfigEntry<bool> RimRemover { get; private set; }
@@ -91,8 +88,6 @@ namespace KK_Plugins.MaterialEditorWrapper
 
         internal void Main()
         {
-            Logger = base.Logger;
-
             MakerAPI.MakerExiting += (s, e) => MaterialEditorUI.Visible = false;
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(PluginGUID);
 #if !PH
@@ -397,22 +392,26 @@ namespace KK_Plugins.MaterialEditorWrapper
             }
         }
 
-        internal static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
-        {
-            if (texBytes == null || texBytes.Length == 0) return null;
-
-            var tex = new Texture2D(2, 2, format, mipmaps);
-            tex.LoadImage(texBytes);
-            return tex;
-        }
-
-        internal static bool CheckBlacklist(string materialName, string propertyName)
+#if KK || EC
+        public override bool CheckBlacklist(string materialName, string propertyName)
         {
             if (materialName == "cf_m_body" || materialName == "cm_m_body")
                 if (propertyName == "alpha_a" || propertyName == "alpha_b" || propertyName == "AlphaMask")
                     return true;
             return false;
         }
+#endif
+
+#if PH
+        /// <summary>
+        /// Disable ShaderOptimization if the user enables it since it doesn't work properly
+        /// </summary>
+        internal override void ShaderOptimization_SettingChanged(object sender, EventArgs e)
+        {
+            if (ShaderOptimization.Value)
+                ShaderOptimization.Value = false;
+        }
+#endif
 
         /// <summary>
         /// Get the KKAPI character controller for MaterialEditor. Provides access to methods for getting and setting material changes.
@@ -420,34 +419,5 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <param name="chaControl"></param>
         /// <returns>KKAPI character controller</returns>
         public static MaterialEditorCharaController GetCharaController(ChaControl chaControl) => chaControl == null ? null : chaControl.gameObject.GetComponent<MaterialEditorCharaController>();
-
-        internal static Texture2D GetT2D(RenderTexture renderTexture)
-        {
-            var currentActiveRT = RenderTexture.active;
-            RenderTexture.active = renderTexture;
-            var tex = new Texture2D(renderTexture.width, renderTexture.height);
-            tex.ReadPixels(new Rect(0, 0, tex.width, tex.height), 0, 0);
-            RenderTexture.active = currentActiveRT;
-            return tex;
-        }
-
-        internal static void SaveTexR(RenderTexture renderTexture, string path)
-        {
-            var tex = GetT2D(renderTexture);
-            File.WriteAllBytes(path, tex.EncodeToPNG());
-            DestroyImmediate(tex);
-        }
-
-        internal static void SaveTex(Texture tex, string path, RenderTextureFormat rtf = RenderTextureFormat.Default, RenderTextureReadWrite cs = RenderTextureReadWrite.Default)
-        {
-            var tmp = RenderTexture.GetTemporary(tex.width, tex.height, 0, rtf, cs);
-            var currentActiveRT = RenderTexture.active;
-            RenderTexture.active = tmp;
-            GL.Clear(false, true, new Color(0, 0, 0, 0));
-            Graphics.Blit(tex, tmp);
-            SaveTexR(tmp, path);
-            RenderTexture.active = currentActiveRT;
-            RenderTexture.ReleaseTemporary(tmp);
-        }
     }
 }

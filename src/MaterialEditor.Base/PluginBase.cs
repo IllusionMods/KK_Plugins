@@ -16,22 +16,10 @@ namespace MaterialEditor
     /// MaterialEditor plugin base
     /// </summary>
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
-    [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    public partial class MaterialEditorPlugin : BaseUnityPlugin
+    public partial class MaterialEditorPluginBase : BaseUnityPlugin
     {
-        /// <summary>
-        /// MaterialEditor plugin GUID
-        /// </summary>
-        public const string PluginGUID = "MaterialEditor";
-        /// <summary>
-        /// MaterialEditor plugin name
-        /// </summary>
-        public const string PluginName = "Material Editor";
-        /// <summary>
-        /// MaterialEditor plugin version
-        /// </summary>
-        public const string PluginVersion = "1.0";
-        internal static new ManualLogSource Logger;
+        public static new ManualLogSource Logger;
+        public static MaterialEditorPluginBase Instance;
 
         internal const string FileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
         /// <summary>
@@ -52,8 +40,9 @@ namespace MaterialEditor
         public static ConfigEntry<bool> WatchTexChanges { get; set; }
         public static ConfigEntry<bool> ShaderOptimization { get; set; }
 
-        internal void Main()
+        private void Awake()
         {
+            Instance = this;
             Logger = base.Logger;
             Directory.CreateDirectory(ExportPath);
 
@@ -173,12 +162,12 @@ namespace MaterialEditor
                     }
         }
 
-        private static void WatchTexChanges_SettingChanged(object sender, EventArgs e)
+        internal virtual void WatchTexChanges_SettingChanged(object sender, EventArgs e)
         {
             if (!WatchTexChanges.Value)
                 MaterialEditorUI.TexChangeWatcher?.Dispose();
         }
-        private static void ShaderOptimization_SettingChanged(object sender, EventArgs e) { }
+        internal virtual void ShaderOptimization_SettingChanged(object sender, EventArgs e) { }
 
         internal static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
         {
@@ -190,14 +179,12 @@ namespace MaterialEditor
         }
 
         /// <summary>
-        /// Always returns false, i.e. does nothing. Use a Harmony patch to change the value to true to prevent certain properties for materials from showing in the UI.
+        /// Always returns false, i.e. does nothing. Override to prevent certain materials from showing in the UI.
         /// </summary>
         /// <param name="materialName">Name of the material</param>
         /// <param name="propertyName">Name of the property</param>
         /// <returns></returns>
-#pragma warning disable IDE0060 // Remove unused parameter
-        public static bool CheckBlacklist(string materialName, string propertyName) => false;
-#pragma warning restore IDE0060 // Remove unused parameter
+        public virtual bool CheckBlacklist(string materialName, string propertyName) => false;
 
         internal static Texture2D GetT2D(RenderTexture renderTexture)
         {
