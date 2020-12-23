@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using static MaterialEditor.MaterialEditorPlugin;
 #if AI || HS2
 using AIChara;
 #elif KK
@@ -142,6 +143,18 @@ namespace KK_Plugins.MaterialEditorWrapper
             __result = CommonLib.LoadAsset<Texture2D>(assetBundlePath, assetPath);
             return false;
         }
+
+#if PH
+        /// <summary>
+        /// Disable ShaderOptimization if the user enables it since it doesn't work properly
+        /// </summary>
+        [HarmonyPostfix, HarmonyPatch(typeof(MaterialEditor.MaterialEditorPlugin), "ShaderOptimization_SettingChanged")]
+        private static void MaterialEditorPlugin_ShaderOptimization_SettingChanged()
+        {
+            if (ShaderOptimization.Value)
+                ShaderOptimization.Value = false;
+        }
+#endif
 
 #if PH
         [HarmonyPostfix, HarmonyPatch(typeof(WearCustomEdit), "ChangeOnWear")]

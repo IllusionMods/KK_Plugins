@@ -47,14 +47,11 @@ namespace MaterialEditor
         public static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         public static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
-        internal static ConfigEntry<float> UIScale { get; private set; }
-        internal static ConfigEntry<float> UIWidth { get; private set; }
-        internal static ConfigEntry<float> UIHeight { get; private set; }
-        internal static ConfigEntry<bool> WatchTexChanges { get; private set; }
-        internal static ConfigEntry<bool> ShaderOptimization { get; private set; }
-#if KK || EC
-        internal static ConfigEntry<bool> RimRemover { get; private set; }
-#endif
+        public static ConfigEntry<float> UIScale { get; set; }
+        public static ConfigEntry<float> UIWidth { get; set; }
+        public static ConfigEntry<float> UIHeight { get; set; }
+        public static ConfigEntry<bool> WatchTexChanges { get; set; }
+        public static ConfigEntry<bool> ShaderOptimization { get; set; }
 
         internal void Main()
         {
@@ -66,10 +63,12 @@ namespace MaterialEditor
             UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 3, ShowRangeAsPercent = false }));
             WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI.", null, new ConfigurationManagerAttributes { Order = 2 }));
             ShaderOptimization = Config.Bind("Config", "Shader Optimization", true, new ConfigDescription("Replaces every loaded shader with the MaterialEditor copy of the shader. Reduces the number of copies of shaders loaded which reduces RAM usage and improves performance.", null, new ConfigurationManagerAttributes { Order = 1 }));
-            WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
+
             UIScale.SettingChanged += MaterialEditorUI.UISettingChanged;
             UIWidth.SettingChanged += MaterialEditorUI.UISettingChanged;
             UIHeight.SettingChanged += MaterialEditorUI.UISettingChanged;
+            WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
+            ShaderOptimization.SettingChanged += ShaderOptimization_SettingChanged;
 
             ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerResourceLoaded, AssetLoadedHook);
             LoadXML();
@@ -163,6 +162,7 @@ namespace MaterialEditor
             if (!WatchTexChanges.Value)
                 MaterialEditorUI.TexChangeWatcher?.Dispose();
         }
+        private static void ShaderOptimization_SettingChanged(object sender, EventArgs e) { }
 
         internal static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
         {
