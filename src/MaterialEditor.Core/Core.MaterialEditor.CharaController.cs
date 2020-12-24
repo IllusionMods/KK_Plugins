@@ -2,7 +2,7 @@
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
-using MaterialEditor;
+using MaterialEditorAPI;
 using MessagePack;
 using System;
 using System.Collections;
@@ -12,8 +12,8 @@ using System.IO;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using static MaterialEditor.MaterialAPI;
-using static MaterialEditor.MaterialEditorPluginBase;
+using static MaterialEditorAPI.MaterialAPI;
+using static MaterialEditorAPI.MaterialEditorPluginBase;
 #if AI || HS2
 using AIChara;
 #endif
@@ -22,7 +22,7 @@ using ChaFileCoordinate = Character.CustomParameter;
 using ChaControl = Human;
 #endif
 
-namespace KK_Plugins.MaterialEditorWrapper
+namespace KK_Plugins.MaterialEditor
 {
     /// <summary>
     /// KKAPI character controller that handles saving and loading character data as well as provides methods to get or set the saved data

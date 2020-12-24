@@ -8,9 +8,9 @@ using System.Reflection;
 using System.Xml;
 using UnityEngine;
 using XUnity.ResourceRedirector;
-using static MaterialEditor.MaterialAPI;
+using static MaterialEditorAPI.MaterialAPI;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     /// <summary>
     /// MaterialEditor plugin base
@@ -108,7 +108,7 @@ namespace MaterialEditor
         {
             XMLShaderProperties["default"] = new Dictionary<string, ShaderPropertyData>();
 
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(MaterialEditor)}.Resources.default.xml"))
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(MaterialEditorAPI)}.Resources.default.xml"))
                 if (stream != null)
                     using (XmlReader reader = XmlReader.Create(stream))
                     {

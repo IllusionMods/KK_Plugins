@@ -20,7 +20,7 @@ using Studio;
 using ChaControl = Human;
 #endif
 
-namespace KK_Plugins.MaterialEditorWrapper
+namespace KK_Plugins.MaterialEditor
 {
     internal partial class Hooks
     {
@@ -45,7 +45,7 @@ namespace KK_Plugins.MaterialEditorWrapper
                 GetBodyRendererList(gameObject.transform.GetChild(i).gameObject, rendList);
         }
 
-        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), nameof(MaterialEditor.MaterialAPI.GetRendererList))]
+        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditorAPI.MaterialAPI), nameof(MaterialEditorAPI.MaterialAPI.GetRendererList))]
         private static bool MaterialAPI_GetRendererList(ref IEnumerable<Renderer> __result, GameObject gameObject)
         {
             if (gameObject == null)
@@ -102,7 +102,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         /// <summary>
         /// Remove any renderers which have materials that correspond to the body material, since these will be overriden by the body material itself
         /// </summary>
-        [HarmonyPostfix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), nameof(MaterialEditor.MaterialAPI.GetRendererList))]
+        [HarmonyPostfix, HarmonyPatch(typeof(MaterialEditorAPI.MaterialAPI), nameof(MaterialEditorAPI.MaterialAPI.GetRendererList))]
         private static void MaterialAPI_GetRendererList_Postfix(ref IEnumerable<Renderer> __result, GameObject gameObject)
         {
             if (gameObject.GetComponent<ChaControl>())
@@ -117,7 +117,7 @@ namespace KK_Plugins.MaterialEditorWrapper
         }
 #endif
 
-        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), nameof(MaterialEditor.MaterialAPI.GetMaterials))]
+        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditorAPI.MaterialAPI), nameof(MaterialEditorAPI.MaterialAPI.GetMaterials))]
         private static bool MaterialAPI_GetMaterials(ref IEnumerable<Material> __result, GameObject gameObject, Renderer renderer)
         {
             //Must use sharedMaterials for character objects or it breaks body masks, etc.
@@ -134,7 +134,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             return true;
         }
 
-        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), nameof(MaterialEditor.MaterialAPI.SetMaterials))]
+        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditorAPI.MaterialAPI), nameof(MaterialEditorAPI.MaterialAPI.SetMaterials))]
         private static bool MaterialAPI_SetMaterials(GameObject gameObject, Renderer renderer, Material[] materials)
         {
             //Must use sharedMaterials for character objects or it breaks body masks, etc.
@@ -151,7 +151,7 @@ namespace KK_Plugins.MaterialEditorWrapper
             return true;
         }
 
-        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditor.MaterialAPI), "LoadShaderDefaultTexture")]
+        [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditorAPI.MaterialAPI), "LoadShaderDefaultTexture")]
         private static bool MaterialAPI_LoadShaderDefaultTexture(ref Texture2D __result, string assetBundlePath, string assetPath)
         {
             __result = CommonLib.LoadAsset<Texture2D>(assetBundlePath, assetPath);

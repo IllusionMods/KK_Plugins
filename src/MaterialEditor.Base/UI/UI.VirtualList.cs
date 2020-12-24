@@ -4,9 +4,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static MaterialEditor.MaterialEditorUI;
+using static MaterialEditorAPI.MaterialEditorUI;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     internal class VirtualList : MonoBehaviour
     {

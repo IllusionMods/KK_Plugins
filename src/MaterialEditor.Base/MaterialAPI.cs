@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     /// <summary>
     /// API for safely setting the properties of materials

@@ -4,7 +4,7 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Studio.SaveLoad;
-using MaterialEditor;
+using MaterialEditorAPI;
 using Studio;
 using System.IO;
 using System.Linq;
@@ -14,7 +14,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static MaterialEditor.MaterialAPI;
+using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
 using AIChara;
 using ChaClothesComponent = AIChara.CmpClothes;
@@ -22,7 +22,7 @@ using ChaCustomHairComponent = AIChara.CmpHair;
 using ChaAccessoryComponent = AIChara.CmpAccessory;
 #endif
 
-namespace KK_Plugins.MaterialEditorWrapper
+namespace KK_Plugins.MaterialEditor
 {
     /// <summary>
     /// Plugin responsible for handling the Studio UI and the KKAPI Studio controller

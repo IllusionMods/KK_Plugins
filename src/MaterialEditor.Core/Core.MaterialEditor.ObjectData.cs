@@ -1,4 +1,4 @@
-﻿namespace KK_Plugins.MaterialEditorWrapper
+﻿namespace KK_Plugins.MaterialEditor
 {
     internal class ObjectData
     {

@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
-using MaterialEditor;
+using MaterialEditorAPI;
 #if KK || EC
 using ChaCustom;
 #endif
 
-namespace KK_Plugins.MaterialEditorWrapper
+namespace KK_Plugins.MaterialEditor
 {
     internal static class MakerHooks
     {

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using static MaterialEditor.MaterialEditorPlugin;
+using static MaterialEditorAPI.MaterialEditorPlugin;
 
 [assembly: AssemblyTitle(PluginName)]
 [assembly: AssemblyProduct(PluginName)]

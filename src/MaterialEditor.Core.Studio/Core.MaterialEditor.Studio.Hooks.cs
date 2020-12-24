@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using MaterialEditor;
+using MaterialEditorAPI;
 using Studio;
 
-namespace KK_Plugins.MaterialEditorWrapper
+namespace KK_Plugins.MaterialEditor
 {
     internal static class StudioHooks
     {

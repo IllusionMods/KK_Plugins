@@ -7,10 +7,10 @@ using System.Linq;
 using UILib;
 using UnityEngine;
 using UnityEngine.UI;
-using static MaterialEditor.MaterialAPI;
-using static MaterialEditor.MaterialEditorPluginBase;
+using static MaterialEditorAPI.MaterialAPI;
+using static MaterialEditorAPI.MaterialEditorPluginBase;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     /// <summary>
     /// Code for the MaterialEditor UI

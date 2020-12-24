@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UILib.Extensions;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     internal class ListEntry : MonoBehaviour
     {

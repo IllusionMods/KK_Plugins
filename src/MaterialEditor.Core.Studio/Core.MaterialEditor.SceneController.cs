@@ -2,7 +2,7 @@
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
-using MaterialEditor;
+using MaterialEditorAPI;
 using MessagePack;
 using Studio;
 using System;
@@ -11,10 +11,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using static MaterialEditor.MaterialAPI;
-using static MaterialEditor.MaterialEditorPluginBase;
+using static MaterialEditorAPI.MaterialAPI;
+using static MaterialEditorAPI.MaterialEditorPluginBase;
 
-namespace KK_Plugins.MaterialEditorWrapper
+namespace KK_Plugins.MaterialEditor
 {
     /// <summary>
     /// KKAPI scene controller which provides access for getting and setting properties to be saved and loaded with the scene data

@@ -5,7 +5,7 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
-using MaterialEditor;
+using MaterialEditorAPI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ using System.Reflection;
 using System.Xml;
 using UniRx;
 using UnityEngine;
-using static MaterialEditor.MaterialAPI;
+using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
 using AIChara;
 using ChaAccessoryComponent = AIChara.CmpAccessory;
@@ -29,7 +29,7 @@ using Studio;
 using ChaControl = Human;
 #endif
 
-namespace KK_Plugins.MaterialEditorWrapper
+namespace KK_Plugins.MaterialEditor
 {
     /// <summary>
     /// MaterialEditor plugin base
@@ -40,7 +40,7 @@ namespace KK_Plugins.MaterialEditorWrapper
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
 #endif
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    public partial class MaterialEditorPlugin : MaterialEditorPluginBase
+    public partial class MaterialEditorPlugin : MaterialEditorAPI.MaterialEditorPluginBase
     {
         /// <summary>
         /// MaterialEditor plugin GUID

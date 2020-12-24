@@ -1,9 +1,9 @@
 ﻿using UILib;
 using UnityEngine;
 using UnityEngine.UI;
-using static MaterialEditor.MaterialEditorUI;
+using static MaterialEditorAPI.MaterialEditorUI;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     internal static class ItemTemplate
     {

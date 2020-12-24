@@ -3,16 +3,16 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
-using MaterialEditor;
+using MaterialEditorAPI;
 using UnityEngine;
-using static MaterialEditor.MaterialAPI;
+using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
 using AIChara;
 using ChaClothesComponent = AIChara.CmpClothes;
 using ChaCustomHairComponent = AIChara.CmpHair;
 #endif
 
-namespace KK_Plugins.MaterialEditorWrapper
+namespace KK_Plugins.MaterialEditor
 {
     /// <summary>
     /// Plugin responsible for handling events from the character maker

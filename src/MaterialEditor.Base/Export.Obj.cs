@@ -2,7 +2,7 @@
 using System.Text;
 using UnityEngine;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     /// <summary>
     /// Contains methods for exporting the renderer data in various formats

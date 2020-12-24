@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     /// <summary>
     /// Class containing material data, used to for copy and paste of material edits

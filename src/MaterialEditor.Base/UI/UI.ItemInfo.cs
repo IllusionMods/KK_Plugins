@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     internal sealed class ItemInfo
     {

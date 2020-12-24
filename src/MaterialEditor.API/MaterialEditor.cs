@@ -1,9 +1,9 @@
 ﻿using BepInEx;
 
-namespace MaterialEditor
+namespace MaterialEditorAPI
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    internal class MaterialEditorPlugin : MaterialEditorPluginBase
+    internal class MaterialEditorPlugin :  MaterialEditorPluginBase
     {
         /// <summary>
         /// MaterialEditor plugin GUID
