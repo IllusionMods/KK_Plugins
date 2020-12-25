@@ -189,8 +189,6 @@ namespace MaterialEditorAPI
 
                         MaterialCopyRemove.onClick.RemoveAllListeners();
                         MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
-                        if (MaterialCopyRemove.gameObject.activeInHierarchy)
-                            MaterialCopyRemove.gameObject.SetActive(false);
 
                         break;
                     case ItemInfo.RowItemType.Shader:
