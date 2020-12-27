@@ -110,11 +110,9 @@ namespace KK_Plugins.MaterialEditor
         {
             MakerAPI.MakerExiting += (s, e) => MaterialEditorUI.Visible = false;
             CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(PluginGUID);
-#if !PH
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
-#endif
 #if KK
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
@@ -183,6 +181,7 @@ namespace KK_Plugins.MaterialEditor
                     yield return index;
             }
         }
+#endif
 
         private static void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e)
         {
@@ -202,7 +201,6 @@ namespace KK_Plugins.MaterialEditor
             if (controller != null)
                 controller.AccessorySelectedSlotChangeEvent(sender, e);
         }
-#endif
 #if KK
         private static void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e)
         {

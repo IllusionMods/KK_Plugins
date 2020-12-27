@@ -65,7 +65,6 @@ namespace KK_Plugins
         public static GameObject GetHair(this Human human, int index) => human.hairs.objHairs[index];
         public static GameObject GetHead(this Human human) => human.head.Obj;
         public static GameObject GetAccessory(this Human human, int index) => human.accessories.objAcs[index];
-
 #else
         public static GameObject[] GetClothes(this ChaControl chaControl) => chaControl.objClothes;
         public static GameObject GetClothes(this ChaControl chaControl, int index) => chaControl.objClothes[index];

@@ -11,6 +11,5 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SceneController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Studio.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Studio.Hooks.cs" />
   </ItemGroup>
 </Project>

@@ -368,7 +368,7 @@ namespace KK_Plugins.MaterialEditor
                 else if (objectCtrlInfo is OCIChar ociChar)
                 {
                     count++;
-                    var chaControl = ociChar.charInfo;
+                    var chaControl = ociChar.GetChaControl();
                     var controller = MaterialEditorPlugin.GetCharaController(chaControl);
                     foreach (var rend in GetRendererList(chaControl.gameObject))
                     {
@@ -388,24 +388,27 @@ namespace KK_Plugins.MaterialEditor
                                 controller.SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, chaControl.gameObject);
                         }
                     }
-                    for (var i = 0; i < chaControl.objClothes.Length; i++)
+                    var clothes = chaControl.GetClothes();
+                    for (var i = 0; i < clothes.Length; i++)
                     {
-                        var gameObj = chaControl.objClothes[i];
+                        var gameObj = clothes[i];
                         foreach (var renderer in GetRendererList(gameObj))
                             if (value == "-1")
                                 controller.RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, gameObj);
                             else
                                 controller.SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, value, gameObj);
                     }
-                    for (var i = 0; i < chaControl.objHair.Length; i++)
+                    var hair = chaControl.GetHair();
+                    for (var i = 0; i < hair.Length; i++)
                     {
-                        var gameObj = chaControl.objHair[i];
+                        var gameObj = hair[i];
                         foreach (var renderer in GetRendererList(gameObj))
                             if (value == "-1")
                                 controller.RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Hair, renderer, property, gameObj);
                             else
                                 controller.SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Hair, renderer, property, value, gameObj);
                     }
+#if !PH
                     foreach (var i in MaterialEditorPlugin.GetAcccessoryIndices(chaControl))
                     {
                         var gameObj = chaControl.GetAccessory(i).gameObject;
@@ -415,28 +418,46 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 controller.SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, value, gameObj);
                     }
+#endif
                 }
             foreach (var child in node.child)
                 SetRendererPropertyRecursive(child, property, value, ref count);
         }
 
-        internal void ItemDeleteEvent(int id)
+        protected override void OnObjectDeleted(ObjectCtrlInfo objectCtrlInfo)
         {
-            RendererPropertyList.RemoveAll(x => x.ID == id);
-            MaterialFloatPropertyList.RemoveAll(x => x.ID == id);
-            MaterialColorPropertyList.RemoveAll(x => x.ID == id);
-            MaterialTexturePropertyList.RemoveAll(x => x.ID == id);
-            MaterialShaderList.RemoveAll(x => x.ID == id);
+            if (objectCtrlInfo is OCIItem item)
+            {
+                var id = item.GetSceneId();
+                RendererPropertyList.RemoveAll(x => x.ID == id);
+                MaterialFloatPropertyList.RemoveAll(x => x.ID == id);
+                MaterialColorPropertyList.RemoveAll(x => x.ID == id);
+                MaterialTexturePropertyList.RemoveAll(x => x.ID == id);
+                MaterialShaderList.RemoveAll(x => x.ID == id);
+                MaterialEditorUI.Visible = false;
+            }
+            else if (objectCtrlInfo is OCIChar)
+                MaterialEditorUI.Visible = false;
+            base.OnObjectDeleted(objectCtrlInfo);
         }
 
-        internal void ItemVisibleEvent(int id, bool visible)
+        protected override void OnObjectVisibilityToggled(ObjectCtrlInfo objectCtrlInfo, bool visible)
         {
-            if (visible)
+            if (visible && objectCtrlInfo is OCIItem item)
             {
+                var id = item.GetSceneId();
                 var property = RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == RendererProperties.Enabled);
                 if (property != null)
                     MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
             }
+            base.OnObjectVisibilityToggled(objectCtrlInfo, visible);
+        }
+
+        protected override void OnObjectsSelected(List<ObjectCtrlInfo> objectCtrlInfo)
+        {
+            if (MaterialEditorUI.Visible)
+                MEStudio.Instance.UpdateUI();
+            base.OnObjectsSelected(objectCtrlInfo);
         }
 
         /// <summary>

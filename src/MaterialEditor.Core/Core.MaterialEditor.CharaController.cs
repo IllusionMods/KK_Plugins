@@ -718,7 +718,6 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-#if !PH
         internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
         {
             if (AccessorySelectedSlotChanging) return;
@@ -800,7 +799,6 @@ namespace KK_Plugins.MaterialEditor
 
             ChaControl.StartCoroutine(LoadData(true, true, false));
         }
-#endif
 
 #if KK
         internal void AccessoriesCopiedEvent(object sender, AccessoryCopyEventArgs e)
@@ -898,7 +896,7 @@ namespace KK_Plugins.MaterialEditor
                 RemoveRimClothes(slot);
 #elif PH
             //Reapply edits for other clothes since they will have been undone
-            ChaControl.StartCoroutine(LoadData(true, false, false));
+            ChaControl.StartCoroutine(LoadData(true, true, false));
 #endif
         }
 

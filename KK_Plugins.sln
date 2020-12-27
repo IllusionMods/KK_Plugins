@@ -617,6 +617,7 @@ Global
 		src\Shared\Shared.projitems*{f9805d18-dd1b-4817-bbb0-5107873975f2}*SharedItemsImports = 4
 		src\MaterialEditor.Base\MaterialEditor.Base.projitems*{fc88b474-b516-4f2e-8c04-8250bf6ba3b2}*SharedItemsImports = 4
 		src\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems*{fc88b474-b516-4f2e-8c04-8250bf6ba3b2}*SharedItemsImports = 4
+		src\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems*{fc88b474-b516-4f2e-8c04-8250bf6ba3b2}*SharedItemsImports = 4
 		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{fc88b474-b516-4f2e-8c04-8250bf6ba3b2}*SharedItemsImports = 4
 		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{fc88b474-b516-4f2e-8c04-8250bf6ba3b2}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{fc88b474-b516-4f2e-8c04-8250bf6ba3b2}*SharedItemsImports = 4

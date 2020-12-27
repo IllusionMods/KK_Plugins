@@ -1,9 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
-using HarmonyLib;
 using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Studio.SaveLoad;
+using KKAPI.Studio;
 using MaterialEditorAPI;
 using Studio;
 using System.IO;
@@ -21,6 +21,9 @@ using ChaClothesComponent = AIChara.CmpClothes;
 using ChaCustomHairComponent = AIChara.CmpHair;
 using ChaAccessoryComponent = AIChara.CmpAccessory;
 #endif
+#if PH
+using ChaControl = Human;
+#endif
 
 namespace KK_Plugins.MaterialEditor
 {
@@ -31,7 +34,9 @@ namespace KK_Plugins.MaterialEditor
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
+#if !PH
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
+#endif
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class MEStudio : MaterialEditorUI
     {
@@ -74,13 +79,21 @@ namespace KK_Plugins.MaterialEditor
             ItemTypeDropDown.captionText.alignment = TextAnchor.MiddleLeft;
             ItemTypeDropDown.gameObject.SetActive(false);
 
+#if PH
+            RectTransform original = GameObject.Find("StudioScene").transform.Find("Canvas Object List/Image Bar/Button Folder").GetComponent<RectTransform>();
+#else
             RectTransform original = GameObject.Find("StudioScene").transform.Find("Canvas Object List/Image Bar/Button Route").GetComponent<RectTransform>();
+#endif
             Button materialEditorButton = Instantiate(original.gameObject).GetComponent<Button>();
             RectTransform materialEditorButtonRectTransform = materialEditorButton.transform as RectTransform;
             materialEditorButton.transform.SetParent(original.parent, true);
             materialEditorButton.transform.localScale = original.localScale;
             materialEditorButtonRectTransform.SetRect(original.anchorMin, original.anchorMax, original.offsetMin, original.offsetMax);
+#if PH
+            materialEditorButtonRectTransform.anchoredPosition = original.anchoredPosition + new Vector2(-40f, 0f);
+#else
             materialEditorButtonRectTransform.anchoredPosition = original.anchoredPosition + new Vector2(-48f, 0f);
+#endif
 
             Texture2D texture2D = new Texture2D(32, 32);
             texture2D.LoadImage(LoadIcon());
@@ -90,8 +103,6 @@ namespace KK_Plugins.MaterialEditor
 
             materialEditorButton.onClick = new Button.ButtonClickedEvent();
             materialEditorButton.onClick.AddListener(() => { UpdateUI(); });
-
-            Harmony.CreateAndPatchAll(typeof(StudioHooks));
         }
 
         internal byte[] LoadIcon()
@@ -123,7 +134,8 @@ namespace KK_Plugins.MaterialEditor
                     else if (objectCtrlInfo is OCIChar ociChar)
                     {
                         PopulateList(ociChar.charInfo.gameObject, new ObjectData(0, MaterialEditorCharaController.ObjectType.Character));
-                        PopulateItemTypeDropdown(ociChar.charInfo);
+                        var chaControl = ociChar.GetChaControl();
+                        PopulateItemTypeDropdown(chaControl);
                         ItemTypeDropDown.gameObject.SetActive(true);
                     }
         }
@@ -140,18 +152,30 @@ namespace KK_Plugins.MaterialEditor
             ItemTypeDropDown.Set(0);
             ItemTypeDropDown.captionText.text = "Body";
 
-            for (var i = 0; i < chaControl.objClothes.Length; i++)
-                if (chaControl.objClothes[i] != null && chaControl.objClothes[i].GetComponentInChildren<ChaClothesComponent>() != null)
+            var clothes = chaControl.GetClothes();
+            for (var i = 0; i < clothes.Length; i++)
+#if PH
+                if (clothes[i] != null)
+#else
+                if (clothes[i] != null && clothes[i].GetComponentInChildren<ChaClothesComponent>() != null)
+#endif
                     ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Clothes {ClothesIndexToString(i)}"));
 
-            for (var i = 0; i < chaControl.objHair.Length; i++)
-                if (chaControl.objHair[i] != null && chaControl.objHair[i].GetComponent<ChaCustomHairComponent>() != null)
+            var hair = chaControl.GetHair();
+            for (var i = 0; i < hair.Length; i++)
+#if PH
+                if (hair[i] != null)
+#else
+                if (hair[i] != null && chaControl.objHair[i].GetComponent<ChaCustomHairComponent>() != null)
+#endif
                     ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Hair {HairIndexToString(i)}"));
 
+#if !PH
             var accessories = MaterialEditorPlugin.GetAcccessoryIndices(chaControl).ToList();
             accessories.Sort();
             for (var i = 0; i < accessories.Count; i++)
                 ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(accessories[i])}"));
+#endif
         }
 
         private void ChangeItemType(int selectedItem, ChaControl chaControl)
@@ -171,20 +195,31 @@ namespace KK_Plugins.MaterialEditor
                     if (option.Length > 1)
                         index = ClothesStringToIndex(option[1]);
 
-                    if (index == -1 || chaControl.objClothes[index] == null || chaControl.objClothes[index].GetComponentInChildren<ChaClothesComponent>() == null)
+                    var clothes = chaControl.GetClothes(index);
+#if PH
+                    if (index == -1 || clothes == null)
+#else
+                    if (index == -1 || clothes == null || chaControl.objClothes[index].GetComponentInChildren<ChaClothesComponent>() == null)
+#endif
                         PopulateList(chaControl.gameObject, 0);
                     else
-                        PopulateList(chaControl.objClothes[index], new ObjectData(index, MaterialEditorCharaController.ObjectType.Clothing));
+                        PopulateList(clothes, new ObjectData(index, MaterialEditorCharaController.ObjectType.Clothing));
                     break;
                 case "Hair":
                     if (option.Length > 1)
                         index = HairStringToIndex(option[1]);
 
-                    if (index == -1 || chaControl.objHair[index] == null || chaControl.objHair[index].GetComponent<ChaCustomHairComponent>() == null)
+                    var hair = chaControl.GetHair(index);
+#if PH
+                    if (index == -1 || hair == null)
+#else
+                    if (index == -1 || hair == null || hair.GetComponent<ChaCustomHairComponent>() == null)
+#endif
                         PopulateList(chaControl.gameObject, 0);
                     else
-                        PopulateList(chaControl.objHair[index], new ObjectData(index, MaterialEditorCharaController.ObjectType.Hair));
+                        PopulateList(hair, new ObjectData(index, MaterialEditorCharaController.ObjectType.Hair));
                     break;
+#if !PH
                 case "Accessory":
                     if (option.Length > 1)
                         index = AccessoryStringToIndex(option[1]);
@@ -195,6 +230,7 @@ namespace KK_Plugins.MaterialEditor
                     else
                         PopulateList(accessory.gameObject, new ObjectData(index, MaterialEditorCharaController.ObjectType.Accessory));
                     break;
+#endif
             }
         }
 
@@ -210,6 +246,22 @@ namespace KK_Plugins.MaterialEditor
                     return "Bra";
                 case 3:
                     return "Underwear";
+#if PH
+                case 4:
+                    return "Swimwear";
+                case 5:
+                    return "SwimTop";
+                case 6:
+                    return "SwimBot";
+                case 7:
+                    return "Gloves";
+                case 8:
+                    return "Pantyhose";
+                case 9:
+                    return "Legwear";
+                case 10:
+                    return "Shoes";
+#else
                 case 4:
                     return "Gloves";
                 case 5:
@@ -224,6 +276,7 @@ namespace KK_Plugins.MaterialEditor
                     return "Indoor Shoes";
                 case 8:
                     return "Outdoor Shoes";
+#endif
 #endif
                 default:
                     return "";
@@ -241,6 +294,22 @@ namespace KK_Plugins.MaterialEditor
                     return 2;
                 case "Underwear":
                     return 3;
+#if PH
+                case "Swimwear":
+                    return 4;
+                case "SwimTop":
+                    return 5;
+                case "SwimBot":
+                    return 6;
+                case "Gloves":
+                    return 7;
+                case "Pantyhose":
+                    return 8;
+                case "Legwear":
+                    return 9;
+                case "Shoes":
+                    return 10;
+#else
                 case "Gloves":
                     return 4;
                 case "Pantyhose":
@@ -254,6 +323,7 @@ namespace KK_Plugins.MaterialEditor
                 case "Outdoor Shoes":
                 case "Outdoor":
                     return 8;
+#endif
                 default:
                     return -1;
             }
