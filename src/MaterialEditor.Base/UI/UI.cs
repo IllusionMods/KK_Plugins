@@ -51,8 +51,11 @@ namespace MaterialEditorAPI
         internal const float labelXWidth = 60f;
         internal const float labelYWidth = 10f;
         internal const float textBoxXYWidth = 50f;
-        internal static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
-        internal static readonly Color rowColor = new Color(1f, 1f, 1f, 1f);
+        internal static readonly RectOffset padding = new RectOffset(3, 1, 0, 1);
+        internal static readonly Color rowColor = new Color(1f, 1f, 1f, 0.4f);
+        internal static readonly Color itemColor = new Color(1f, 1f, 1f, 0f);
+        internal static readonly Color separatorItemColor = new Color(0.9f, 0.9f, 0.9f, 0.55f);
+        internal static Vector3 positionMemory;
 
         private GameObject CurrentGameObject;
         private object CurrentData;
@@ -85,11 +88,11 @@ namespace MaterialEditorAPI
             nametext.alignment = TextAnchor.MiddleCenter;
 
             FilterInputField = UIUtility.CreateInputField("Filter", DragPanel.transform, "Filter");
-            FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
+            FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 1f, 1f, 100f, -1f);
             FilterInputField.onValueChanged.AddListener(RefreshUI);
 
             var close = UIUtility.CreateButton("CloseButton", DragPanel.transform, "");
-            close.transform.SetRect(1f, 0f, 1f, 1f, -20f);
+            close.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
             close.onClick.AddListener(() => Visible = false);
 
             //X button
@@ -111,6 +114,12 @@ namespace MaterialEditorAPI
             MaterialEditorScrollableUI.viewport.offsetMax = new Vector2(scrollOffsetX, 0f);
             MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
 
+            var scrollHandleRect = MaterialEditorScrollableUI.verticalScrollbar.handleRect;
+            scrollHandleRect.offsetMin = new Vector2(-7.5f, -7.5f);
+            scrollHandleRect.offsetMax = new Vector2(7.5f, 7.5f);
+            
+            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0);
+            
             var template = ItemTemplate.CreateTemplate(MaterialEditorScrollableUI.content.transform);
 
             virtualList = MaterialEditorScrollableUI.gameObject.AddComponent<VirtualList>();
@@ -127,7 +136,14 @@ namespace MaterialEditorAPI
         /// Refresh the MaterialEditor UI using the specified filter text
         /// </summary>
         public void RefreshUI(string filterText) => PopulateList(CurrentGameObject, CurrentData, filterText);
-
+        
+        private static void SetMainRectWithMemory(float anchorLeft, float anchorBottom, float anchorRight, float anchorTop)
+        {
+            positionMemory = MaterialEditorMainPanel.transform.position;
+            MaterialEditorMainPanel.transform.SetRect(anchorLeft, anchorBottom, anchorRight, anchorTop);
+            MaterialEditorMainPanel.transform.position = positionMemory;
+        }
+        
         /// <summary>
         /// Get or set the MaterialEditor UI visibility
         /// </summary>
@@ -153,7 +169,7 @@ namespace MaterialEditorAPI
             if (MaterialEditorWindow != null)
                 MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
             if (MaterialEditorMainPanel != null)
-                MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+                SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
         }
 
         /// <summary>
@@ -166,7 +182,7 @@ namespace MaterialEditorAPI
         {
             MaterialEditorWindow.gameObject.SetActive(true);
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
-            MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+            SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
             FilterInputField.Set(filter);
 
             CurrentGameObject = go;

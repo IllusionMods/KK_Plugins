@@ -19,6 +19,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("RendererPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = separatorItemColor;
 
                 var label = UIUtility.CreateText("RendererLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -50,6 +51,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("RendererEnabledPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = itemColor;
 
                 var label = UIUtility.CreateText("RendererEnabledLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -82,6 +84,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("RendererShadowCastingModePanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = itemColor;
 
                 var label = UIUtility.CreateText("RendererShadowCastingModeLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -116,6 +119,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("RendererReceiveShadowsPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = itemColor;
 
                 var label = UIUtility.CreateText("RendererReceiveShadowsLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -148,6 +152,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("MaterialPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = separatorItemColor;
 
                 var label = UIUtility.CreateText("MaterialLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -185,6 +190,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("ShaderPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = itemColor;
 
                 var label = UIUtility.CreateText("ShaderLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -217,6 +223,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("ShaderRenderQueuePanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = itemColor;
 
                 var label = UIUtility.CreateText("ShaderRenderQueueLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -242,6 +249,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("TexturePanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = itemColor;
 
                 var label = UIUtility.CreateText("TextureLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -271,6 +279,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("OffsetScalePanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = itemColor;
 
                 var label = UIUtility.CreateText("OffsetScaleLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -343,6 +352,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("ColorPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = itemColor;
 
                 var label = UIUtility.CreateText("ColorLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -414,6 +424,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("FloatPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.color = itemColor;
 
                 var label = UIUtility.CreateText("FloatLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;

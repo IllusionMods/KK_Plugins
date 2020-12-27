@@ -69,7 +69,7 @@ namespace KK_Plugins.MaterialEditor
             InitUI();
 
             ItemTypeDropDown = UIUtility.CreateDropdown("ItemType", DragPanel.transform);
-            ItemTypeDropDown.transform.SetRect(1f, 0f, 1f, 1f, -200f, 0f, -20f);
+            ItemTypeDropDown.transform.SetRect(1f, 0f, 1f, 1f, -200f, 1f, -19f, -1f);
             ItemTypeDropDown.captionText.transform.SetRect(0.05f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
             ItemTypeDropDown.captionText.alignment = TextAnchor.MiddleLeft;
             ItemTypeDropDown.gameObject.SetActive(false);
