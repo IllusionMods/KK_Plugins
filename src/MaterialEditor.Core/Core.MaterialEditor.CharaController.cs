@@ -606,8 +606,8 @@ namespace KK_Plugins.MaterialEditor
                 RemoveRimClothes(i);
             for (var i = 0; i < ChaControl.objHair.Length; i++)
                 RemoveRimHair(i);
-            foreach (var accessoryIndex in MaterialEditorPlugin.GetAcccessoryIndices(ChaControl))
-                RemoveRimAccessory(accessoryIndex);
+            for (var i = 0; i < ChaControl.GetAccessoryObjects().Length; i++)
+                RemoveRimAccessory(i);
         }
         private void RemoveRimClothes(int slot)
         {
@@ -632,11 +632,12 @@ namespace KK_Plugins.MaterialEditor
         }
         private void RemoveRimAccessory(int slot)
         {
-            var go = ChaControl.GetAccessory(slot).gameObject;
-            foreach (var renderer in GetRendererList(go))
-                foreach (var material in GetMaterials(go, renderer))
-                    if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, ObjectType.Accessory, material, "rimV", go) == null)
-                        SetMaterialFloatProperty(slot, ObjectType.Accessory, material, "rimV", 0, go);
+            var go = ChaControl.GetAccessoryObject(slot);
+            if (go != null)
+                foreach (var renderer in GetRendererList(go))
+                    foreach (var material in GetMaterials(go, renderer))
+                        if (material.HasProperty("_rimV") && GetMaterialFloatPropertyValue(slot, ObjectType.Accessory, material, "rimV", go) == null)
+                            SetMaterialFloatProperty(slot, ObjectType.Accessory, material, "rimV", 0, go);
         }
 #endif
 
@@ -1822,9 +1823,9 @@ namespace KK_Plugins.MaterialEditor
                 return ChaControl.GetClothes(slot);
             if (objectType == ObjectType.Accessory)
             {
-                var acc = ChaControl.GetAccessory(slot);
+                var acc = ChaControl.GetAccessoryObject(slot);
                 if (acc != null)
-                    return acc.gameObject;
+                    return acc;
             }
             if (objectType == ObjectType.Hair)
             {

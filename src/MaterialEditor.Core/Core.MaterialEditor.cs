@@ -167,22 +167,6 @@ namespace KK_Plugins.MaterialEditor
                 BodyParts.Add(parts);
         }
 
-#if !PH
-        /// <summary>
-        /// Return a list of accessory indices for the character
-        /// </summary>
-        public static IEnumerable<int> GetAcccessoryIndices(ChaControl chaControl)
-        {
-            var accessories = chaControl.GetComponentsInChildren<ChaAccessoryComponent>();
-            for (int i = 0; i < accessories.Length; i++)
-            {
-                var accessory = accessories[i];
-                if (int.TryParse(accessory.gameObject.name.Replace("ca_slot", ""), out int index))
-                    yield return index;
-            }
-        }
-#endif
-
         private static void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e)
         {
             var controller = GetCharaController(MakerAPI.GetCharacterControl());

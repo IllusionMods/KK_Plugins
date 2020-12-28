@@ -216,19 +216,11 @@ namespace KK_Plugins.MaterialEditor
             if (!MakerAPI.InsideAndLoaded)
                 return;
 
-#if PH
             var accessory = MakerAPI.GetCharacterControl().GetAccessoryObject(AccessoriesApi.SelectedMakerAccSlot);
             if (accessory == null)
                 Visible = false;
             else
                 PopulateList(accessory, new ObjectData(AccessoriesApi.SelectedMakerAccSlot, MaterialEditorCharaController.ObjectType.Accessory));
-#else
-            var chaAccessoryComponent = MakerAPI.GetCharacterControl().GetAccessory(AccessoriesApi.SelectedMakerAccSlot);
-            if (chaAccessoryComponent == null)
-                Visible = false;
-            else
-                PopulateList(chaAccessoryComponent.gameObject, new ObjectData(AccessoriesApi.SelectedMakerAccSlot, MaterialEditorCharaController.ObjectType.Accessory));
-#endif
         }
 
         /// <summary>

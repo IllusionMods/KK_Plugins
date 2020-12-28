@@ -408,17 +408,17 @@ namespace KK_Plugins.MaterialEditor
                             else
                                 controller.SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Hair, renderer, property, value, gameObj);
                     }
-#if !PH
-                    foreach (var i in MaterialEditorPlugin.GetAcccessoryIndices(chaControl))
+                    var accessories = chaControl.GetAccessoryObjects();
+                    for (var i = 0; i < accessories.Length; i++)
                     {
-                        var gameObj = chaControl.GetAccessory(i).gameObject;
-                        foreach (var renderer in GetRendererList(gameObj))
-                            if (value == "-1")
-                                controller.RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, gameObj);
-                            else
-                                controller.SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, value, gameObj);
+                        var gameObj = accessories[i];
+                        if (gameObj != null)
+                            foreach (var renderer in GetRendererList(gameObj))
+                                if (value == "-1")
+                                    controller.RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, gameObj);
+                                else
+                                    controller.SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, value, gameObj);
                     }
-#endif
                 }
             foreach (var child in node.child)
                 SetRendererPropertyRecursive(child, property, value, ref count);

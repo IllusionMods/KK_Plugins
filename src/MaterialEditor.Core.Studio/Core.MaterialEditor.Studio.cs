@@ -2,8 +2,8 @@
 using BepInEx.Bootstrap;
 using KKAPI;
 using KKAPI.Maker;
-using KKAPI.Studio.SaveLoad;
 using KKAPI.Studio;
+using KKAPI.Studio.SaveLoad;
 using MaterialEditorAPI;
 using Studio;
 using System.IO;
@@ -170,12 +170,10 @@ namespace KK_Plugins.MaterialEditor
 #endif
                     ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Hair {HairIndexToString(i)}"));
 
-#if !PH
-            var accessories = MaterialEditorPlugin.GetAcccessoryIndices(chaControl).ToList();
-            accessories.Sort();
-            for (var i = 0; i < accessories.Count; i++)
-                ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(accessories[i])}"));
-#endif
+            var accessories = chaControl.GetAccessoryObjects();
+            for (var i = 0; i < accessories.Length; i++)
+                if (accessories[i] != null)
+                    ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(i)}"));
         }
 
         private void ChangeItemType(int selectedItem, ChaControl chaControl)
@@ -219,18 +217,15 @@ namespace KK_Plugins.MaterialEditor
                     else
                         PopulateList(hair, new ObjectData(index, MaterialEditorCharaController.ObjectType.Hair));
                     break;
-#if !PH
                 case "Accessory":
                     if (option.Length > 1)
                         index = AccessoryStringToIndex(option[1]);
-                    var accessory = chaControl.GetAccessory(index);
-
+                    var accessory = chaControl.GetAccessoryObject(index);
                     if (accessory == null)
                         PopulateList(chaControl.gameObject, 0);
                     else
-                        PopulateList(accessory.gameObject, new ObjectData(index, MaterialEditorCharaController.ObjectType.Accessory));
+                        PopulateList(accessory, new ObjectData(index, MaterialEditorCharaController.ObjectType.Accessory));
                     break;
-#endif
             }
         }
 
