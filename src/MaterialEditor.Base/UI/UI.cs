@@ -51,8 +51,8 @@ namespace MaterialEditorAPI
         internal const float labelXWidth = 60f;
         internal const float labelYWidth = 10f;
         internal const float textBoxXYWidth = 50f;
-        internal static readonly RectOffset padding = new RectOffset(3, 1, 0, 1);
-        internal static readonly Color rowColor = new Color(1f, 1f, 1f, 0.4f);
+        internal static readonly RectOffset padding = new RectOffset(3, 2, 0, 1);
+        internal static readonly Color rowColor = new Color(1f, 1f, 1f, 0.6f);
         internal static readonly Color itemColor = new Color(1f, 1f, 1f, 0f);
         internal static readonly Color separatorItemColor = new Color(0.9f, 0.9f, 0.9f, 0.55f);
         internal static Vector3 positionMemory;
@@ -113,13 +113,8 @@ namespace MaterialEditorAPI
             MaterialEditorScrollableUI.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(scrollOffsetX, 0f);
             MaterialEditorScrollableUI.viewport.offsetMax = new Vector2(scrollOffsetX, 0f);
             MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
+            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
 
-            var scrollHandleRect = MaterialEditorScrollableUI.verticalScrollbar.handleRect;
-            scrollHandleRect.offsetMin = new Vector2(-7.5f, -7.5f);
-            scrollHandleRect.offsetMax = new Vector2(7.5f, 7.5f);
-            
-            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0);
-            
             var template = ItemTemplate.CreateTemplate(MaterialEditorScrollableUI.content.transform);
 
             virtualList = MaterialEditorScrollableUI.gameObject.AddComponent<VirtualList>();
@@ -136,14 +131,14 @@ namespace MaterialEditorAPI
         /// Refresh the MaterialEditor UI using the specified filter text
         /// </summary>
         public void RefreshUI(string filterText) => PopulateList(CurrentGameObject, CurrentData, filterText);
-        
+
         private static void SetMainRectWithMemory(float anchorLeft, float anchorBottom, float anchorRight, float anchorTop)
         {
             positionMemory = MaterialEditorMainPanel.transform.position;
             MaterialEditorMainPanel.transform.SetRect(anchorLeft, anchorBottom, anchorRight, anchorTop);
             MaterialEditorMainPanel.transform.position = positionMemory;
         }
-        
+
         /// <summary>
         /// Get or set the MaterialEditor UI visibility
         /// </summary>
