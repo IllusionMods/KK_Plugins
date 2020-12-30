@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using ChaCustom;
 using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
@@ -57,7 +58,7 @@ namespace KK_Plugins
         {
             if (!MakerAPI.InsideAndLoaded) return;
 
-            var cvsAccessory = AccessoriesApi.GetCvsAccessory(AccessoriesApi.SelectedMakerAccSlot);
+            var cvsAccessory = AccessoriesApi.GetMakerAccessoryPageObject(AccessoriesApi.SelectedMakerAccSlot).GetComponent<CvsAccessory>();
             Traverse.Create(cvsAccessory).Field("separateColor").GetValue<GameObject>().SetActive(false);
             Traverse.Create(cvsAccessory).Field("btnAcsColor01").GetValue<Button>().transform.parent.gameObject.SetActive(false);
             Traverse.Create(cvsAccessory).Field("btnAcsColor02").GetValue<Button>().transform.parent.gameObject.SetActive(false);
@@ -71,9 +72,9 @@ namespace KK_Plugins
         internal static void ShowAccColors(bool showButton)
         {
             if (!MakerAPI.InsideAndLoaded) return;
-
-            AccessoriesApi.GetCvsAccessory(AccessoriesApi.SelectedMakerAccSlot).ChangeUseColorVisible();
-            Traverse.Create(AccessoriesApi.GetCvsAccessory(AccessoriesApi.SelectedMakerAccSlot)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(showButton);
+            CvsAccessory cvsAccessory = AccessoriesApi.GetMakerAccessoryPageObject(AccessoriesApi.SelectedMakerAccSlot).GetComponent<CvsAccessory>();
+            cvsAccessory.ChangeUseColorVisible();
+            Traverse.Create(cvsAccessory).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(showButton);
         }
         /// <summary>
         /// Sets up the visibility and values for the current slot
@@ -113,7 +114,7 @@ namespace KK_Plugins
                 OutlineColorPicker.Control.Visible.OnNext(false);
                 AccessoryColorPicker.Control.Visible.OnNext(false);
                 HairLengthSlider.Control.Visible.OnNext(false);
-                ShowAccColors(controller.ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot) != null);
+                ShowAccColors(controller.ChaControl.GetAccessoryObject(AccessoriesApi.SelectedMakerAccSlot) != null);
             }
         }
         internal static void InitCurrentSlot(HairAccessoryController controller) => InitCurrentSlot(controller, controller.IsHairAccessory(AccessoriesApi.SelectedMakerAccSlot));

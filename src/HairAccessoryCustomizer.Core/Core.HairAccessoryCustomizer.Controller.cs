@@ -281,10 +281,10 @@ namespace KK_Plugins
             {
                 try
                 {
-                    var accessory = ChaControl.GetAccessory(slot);
+                    var accessory = ChaControl.GetAccessoryObject(slot);
                     if (accessory == null)
                         return false;
-                    return accessory.gameObject.GetComponent<ChaCustomHairComponent>() != null;
+                    return accessory.GetComponent<ChaCustomHairComponent>() != null;
                 }
                 catch
                 {
@@ -296,10 +296,10 @@ namespace KK_Plugins
             /// </summary>
             public bool HasAccessoryPart()
             {
-                var accessory = ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot);
+                var accessory = ChaControl.GetAccessoryObject(AccessoriesApi.SelectedMakerAccSlot);
                 if (accessory == null)
                     return false;
-                var chaCustomHairComponent = accessory.gameObject.GetComponent<ChaCustomHairComponent>();
+                var chaCustomHairComponent = accessory.GetComponent<ChaCustomHairComponent>();
                 if (chaCustomHairComponent != null)
                     for (var i = 0; i < chaCustomHairComponent.rendAccessory.Length; i++)
                         if (chaCustomHairComponent.rendAccessory[i] != null)
@@ -311,10 +311,10 @@ namespace KK_Plugins
             /// </summary>
             public bool HasLengthTransforms()
             {
-                var accessory = ChaControl.GetAccessory(AccessoriesApi.SelectedMakerAccSlot);
+                var accessory = ChaControl.GetAccessoryObject(AccessoriesApi.SelectedMakerAccSlot);
                 if (accessory == null)
                     return false;
-                var chaCustomHairComponent = accessory.gameObject.GetComponent<ChaCustomHairComponent>();
+                var chaCustomHairComponent = accessory.GetComponent<ChaCustomHairComponent>();
                 if (chaCustomHairComponent != null)
                     for (var i = 0; i < chaCustomHairComponent.trfLength.Length; i++)
                         if (chaCustomHairComponent.trfLength[i] != null)
@@ -391,7 +391,9 @@ namespace KK_Plugins
             {
                 if (!IsHairAccessory(slot)) return;
 
-                ChaAccessoryComponent chaAccessoryComponent = ChaControl.GetAccessory(slot);
+                var acc = ChaControl.GetAccessoryObject(slot);
+                if (acc == null) return;
+                ChaAccessoryComponent chaAccessoryComponent = acc.GetComponent<ChaAccessoryComponent>();
                 if (chaAccessoryComponent == null) return;
                 ChaCustomHairComponent chaCustomHairComponent = chaAccessoryComponent.gameObject.GetComponent<ChaCustomHairComponent>();
                 if (chaCustomHairComponent.rendHair == null) return;
@@ -405,7 +407,7 @@ namespace KK_Plugins
                 {
                     if (MakerAPI.InsideAndLoaded)
                     {
-                        CvsAccessory cvsAccessory = AccessoriesApi.GetCvsAccessory(slot);
+                        CvsAccessory cvsAccessory = AccessoriesApi.GetMakerAccessoryPageObject(slot).GetComponent<CvsAccessory>();
                         cvsAccessory.UpdateAcsColor01(ChaControl.chaFile.custom.hair.parts[0].baseColor);
                         cvsAccessory.UpdateAcsColor02(ChaControl.chaFile.custom.hair.parts[0].startColor);
                         cvsAccessory.UpdateAcsColor03(ChaControl.chaFile.custom.hair.parts[0].endColor);

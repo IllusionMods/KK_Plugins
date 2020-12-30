@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using ChaCustom;
+using HarmonyLib;
 using KKAPI.Maker;
 using System.Collections;
 using UnityEngine.UI;
@@ -31,7 +32,7 @@ namespace KK_Plugins
             {
                 if (!MakerAPI.InsideAndLoaded) return;
                 if (GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && ColorMatchToggle.GetSelectedValue())
-                    Traverse.Create(AccessoriesApi.GetCvsAccessory((int)__instance.slotNo)).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+                    Traverse.Create(AccessoriesApi.GetMakerAccessoryPageObject((int)__instance.slotNo).GetComponent<CvsAccessory>()).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
             }
 #if KK
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
