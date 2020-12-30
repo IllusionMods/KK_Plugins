@@ -304,6 +304,8 @@ v2.3 Fix for tongue edits applying to other characters</br>
 v2.3.1 Fix nullref</br>
 v2.4 Dropdown for editing clothes, hair, and accessories in Studio</br>
 v2.4.1 Various bug fixes</br>
+v2.5 PH version</br>
+v2.6 Accessory and Studio support for PH</br>
 </details>
 
 #### MaleJuice
