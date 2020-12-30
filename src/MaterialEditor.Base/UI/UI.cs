@@ -55,7 +55,6 @@ namespace MaterialEditorAPI
         internal static readonly Color rowColor = new Color(1f, 1f, 1f, 0.6f);
         internal static readonly Color itemColor = new Color(1f, 1f, 1f, 0f);
         internal static readonly Color separatorItemColor = new Color(0.9f, 0.9f, 0.9f, 0.55f);
-        internal static Vector3 positionMemory;
 
         private GameObject CurrentGameObject;
         private object CurrentData;
@@ -134,9 +133,10 @@ namespace MaterialEditorAPI
 
         private static void SetMainRectWithMemory(float anchorLeft, float anchorBottom, float anchorRight, float anchorTop)
         {
-            positionMemory = MaterialEditorMainPanel.transform.position;
+            Vector3 positionMemory = MaterialEditorMainPanel.transform.position;
             MaterialEditorMainPanel.transform.SetRect(anchorLeft, anchorBottom, anchorRight, anchorTop);
-            MaterialEditorMainPanel.transform.position = positionMemory;
+            if (!Input.GetKey(KeyCode.LeftControl))
+                MaterialEditorMainPanel.transform.position = positionMemory;
         }
 
         /// <summary>
