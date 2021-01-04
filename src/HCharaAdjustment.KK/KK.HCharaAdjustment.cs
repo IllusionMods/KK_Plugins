@@ -2,14 +2,16 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Chara;
 using UnityEngine;
 
 namespace KK_Plugins
 {
     /// <summary>
-    /// Plugin for adjusting the female character in H scene independently of the male. Needs a UI.
+    /// Plugin for adjusting the female character in H scene independently of the male
     /// </summary>
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class HCharaAdjustment : BaseUnityPlugin
     {
