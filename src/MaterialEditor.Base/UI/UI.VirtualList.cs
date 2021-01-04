@@ -133,7 +133,7 @@ namespace MaterialEditorAPI
         private void PopulateEntryCache()
         {
             var viewportHeight = ScrollRect.GetComponent<RectTransform>().rect.height;
-            var visibleEntryCount = Mathf.CeilToInt(viewportHeight / panelHeight);
+            var visibleEntryCount = Mathf.CeilToInt(viewportHeight / PanelHeight);
 
             for (var i = 0; i < visibleEntryCount; i++)
             {
@@ -173,7 +173,7 @@ namespace MaterialEditorAPI
             // How many items are not visible in current view
             var offscreenItemCount = Mathf.Max(0, _items.Count - _cachedEntries.Count);
             // How many items are above current view rect and not visible
-            var itemsAboveViewRect = Mathf.FloorToInt(Mathf.Clamp(scrollPosition / panelHeight, 0, offscreenItemCount));
+            var itemsAboveViewRect = Mathf.FloorToInt(Mathf.Clamp(scrollPosition / PanelHeight, 0, offscreenItemCount));
 
             if (_lastItemsAboveViewRect == itemsAboveViewRect && !_dirty)
                 return;
@@ -222,11 +222,11 @@ namespace MaterialEditorAPI
 
         private void RecalculateOffsets(int itemsAboveViewRect)
         {
-            var topOffset = Mathf.RoundToInt(itemsAboveViewRect * panelHeight);
+            var topOffset = Mathf.RoundToInt(itemsAboveViewRect * PanelHeight);
             _verticalLayoutGroup.padding.top = _paddingTop + topOffset;
 
-            var totalHeight = _items.Count * panelHeight;
-            var cacheEntriesHeight = _cachedEntries.Count * panelHeight;
+            var totalHeight = _items.Count * PanelHeight;
+            var cacheEntriesHeight = _cachedEntries.Count * PanelHeight;
             var trailingHeight = totalHeight - cacheEntriesHeight - topOffset;
             _verticalLayoutGroup.padding.bottom = Mathf.FloorToInt(Mathf.Max(0, trailingHeight) + _paddingBot);
         }

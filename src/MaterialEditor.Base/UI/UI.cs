@@ -35,26 +35,26 @@ namespace MaterialEditorAPI
         private static InputField FilterInputField;
 
         internal static FileSystemWatcher TexChangeWatcher;
-        private VirtualList virtualList;
+        private VirtualList VirtualList;
 
-        internal const float marginSize = 5f;
-        internal const float headerSize = 20f;
-        internal const float scrollOffsetX = -15f;
-        internal const float panelHeight = 20f;
-        internal const float labelWidth = 50f;
-        internal const float buttonWidth = 100f;
-        internal const float dropdownWidth = 100f;
-        internal const float textBoxWidth = 75f;
-        internal const float colorLabelWidth = 10f;
-        internal const float resetButtonWidth = 50f;
-        internal const float sliderWidth = 150f;
-        internal const float labelXWidth = 60f;
-        internal const float labelYWidth = 10f;
-        internal const float textBoxXYWidth = 50f;
-        internal static readonly RectOffset padding = new RectOffset(3, 2, 0, 1);
-        internal static readonly Color rowColor = new Color(1f, 1f, 1f, 0.6f);
-        internal static readonly Color itemColor = new Color(1f, 1f, 1f, 0f);
-        internal static readonly Color separatorItemColor = new Color(0.9f, 0.9f, 0.9f, 0.55f);
+        internal const float MarginSize = 5f;
+        internal const float HeaderSize = 20f;
+        internal const float ScrollOffsetX = -15f;
+        internal const float PanelHeight = 20f;
+        internal const float LabelWidth = 50f;
+        internal const float ButtonWidth = 100f;
+        internal const float DropdownWidth = 100f;
+        internal const float TextBoxWidth = 75f;
+        internal const float ColorLabelWidth = 10f;
+        internal const float ResetButtonWidth = 50f;
+        internal const float SliderWidth = 150f;
+        internal const float LabelXWidth = 60f;
+        internal const float LabelYWidth = 10f;
+        internal const float TextBoxXYWidth = 50f;
+        internal static RectOffset Padding;
+        internal static readonly Color RowColor = new Color(1f, 1f, 1f, 0.6f);
+        internal static readonly Color ItemColor = new Color(1f, 1f, 1f, 0f);
+        internal static readonly Color SeparatorItemColor = new Color(0.9f, 0.9f, 0.9f, 0.55f);
 
         private GameObject CurrentGameObject;
         private object CurrentData;
@@ -65,6 +65,8 @@ namespace MaterialEditorAPI
         /// </summary>
         protected void InitUI()
         {
+            Padding = new RectOffset(3, 2, 0, 1);
+
             MaterialEditorWindow = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
             Visible = false;
@@ -78,7 +80,7 @@ namespace MaterialEditorAPI
             UIUtility.AddOutlineToObject(MaterialEditorMainPanel.transform, Color.black);
 
             DragPanel = UIUtility.CreatePanel("Draggable", MaterialEditorMainPanel.transform);
-            DragPanel.transform.SetRect(0f, 1f, 1f, 1f, 0f, -headerSize);
+            DragPanel.transform.SetRect(0f, 1f, 1f, 1f, 0f, -HeaderSize);
             DragPanel.color = Color.gray;
             UIUtility.MakeObjectDraggable(DragPanel.rectTransform, MaterialEditorMainPanel.rectTransform);
 
@@ -105,21 +107,21 @@ namespace MaterialEditorAPI
             x2.color = Color.black;
 
             MaterialEditorScrollableUI = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
-            MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, marginSize, marginSize, -marginSize, -headerSize - marginSize / 2f);
+            MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
             MaterialEditorScrollableUI.gameObject.AddComponent<Mask>();
             MaterialEditorScrollableUI.content.gameObject.AddComponent<VerticalLayoutGroup>();
             MaterialEditorScrollableUI.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(scrollOffsetX, 0f);
-            MaterialEditorScrollableUI.viewport.offsetMax = new Vector2(scrollOffsetX, 0f);
+            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(ScrollOffsetX, 0f);
+            MaterialEditorScrollableUI.viewport.offsetMax = new Vector2(ScrollOffsetX, 0f);
             MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
             MaterialEditorScrollableUI.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
 
             var template = ItemTemplate.CreateTemplate(MaterialEditorScrollableUI.content.transform);
 
-            virtualList = MaterialEditorScrollableUI.gameObject.AddComponent<VirtualList>();
-            virtualList.ScrollRect = MaterialEditorScrollableUI;
-            virtualList.EntryTemplate = template;
-            virtualList.Initialize();
+            VirtualList = MaterialEditorScrollableUI.gameObject.AddComponent<VirtualList>();
+            VirtualList.ScrollRect = MaterialEditorScrollableUI;
+            VirtualList.EntryTemplate = template;
+            VirtualList.Initialize();
         }
 
         /// <summary>
@@ -461,7 +463,7 @@ namespace MaterialEditorAPI
                 }
             }
 
-            virtualList.SetList(items);
+            VirtualList.SetList(items);
         }
         /// <summary>
         /// Hacky workaround to wait for the dropdown fade to complete before refreshing

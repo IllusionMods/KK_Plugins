@@ -48,11 +48,8 @@ namespace KK_Plugins
 #endif
         private static GameObject AutosaveCanvas;
         private static Text AutosaveText;
-#if EC || PC || SBPR
-        private static readonly bool InStudio = false;
-#else
-        private static readonly bool InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
-#endif
+        private static bool InStudio = false;
+
 #if PC
         private static CharaCustomMode CharaCustomModeInstance;
 #elif HS || SBPR
@@ -67,6 +64,9 @@ namespace KK_Plugins
 
         private void Start()
         {
+#if !EC && !PC && !SBPR
+            InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
+#endif
             Logger = base.Logger;
             Instance = this;
 

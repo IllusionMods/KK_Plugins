@@ -29,8 +29,8 @@ namespace KK_Plugins
 
         private static CustomSelectListCtrl CustomSelectListCtrlInstance;
         private static CustomSelectInfoComponent CurrentCustomSelectInfoComponent;
-        private static readonly string BlacklistDirectory = Path.Combine(UserData.Path, "save");
-        private static readonly string BlacklistFile = Path.Combine(BlacklistDirectory, "itemblacklist.xml");
+        private static string BlacklistDirectory;
+        private static string BlacklistFile;
         //GUID/Category/ID
         private static readonly Dictionary<string, Dictionary<int, HashSet<int>>> Blacklist = new Dictionary<string, Dictionary<int, HashSet<int>>>();
         private static readonly Dictionary<CustomSelectListCtrl, ListVisibilityType> ListVisibility = new Dictionary<CustomSelectListCtrl, ListVisibilityType>();
@@ -39,6 +39,10 @@ namespace KK_Plugins
 
         internal void Main()
         {
+            BlacklistDirectory = Path.Combine(UserData.Path, "save");
+            BlacklistFile = Path.Combine(BlacklistDirectory, "itemblacklist.xml");
+            Padding = new RectOffset(3, 3, 0, 1);
+
             Logger = base.Logger;
 
             Harmony.CreateAndPatchAll(typeof(Hooks));

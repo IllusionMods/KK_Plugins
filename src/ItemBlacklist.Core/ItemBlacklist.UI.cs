@@ -21,11 +21,11 @@ namespace KK_Plugins
         private readonly float UIWidth = 0.175f;
         private readonly float UIHeight = 0.1375f;
 
-        internal const float marginSize = 4f;
-        internal const float panelHeight = 35f;
-        internal const float scrollOffsetX = -15f;
-        internal static readonly Color rowColor = new Color(0, 0, 0, 0.01f);
-        internal static readonly RectOffset padding = new RectOffset(3, 3, 0, 1);
+        internal const float MarginSize = 4f;
+        internal const float PanelHeight = 35f;
+        internal const float ScrollOffsetX = -15f;
+        internal static readonly Color RowColor = new Color(0, 0, 0, 0.01f);
+        internal static RectOffset Padding;
 
         protected void InitUI()
         {
@@ -46,25 +46,25 @@ namespace KK_Plugins
             UIUtility.AddOutlineToObject(ContextMenuPanel.transform, Color.black);
 
             var scrollRect = UIUtility.CreateScrollView("ContextMenuWindow", ContextMenuPanel.transform);
-            scrollRect.transform.SetRect(0f, 0f, 1f, 1f, marginSize, marginSize, 0.5f - marginSize, -marginSize);
+            scrollRect.transform.SetRect(0f, 0f, 1f, 1f, MarginSize, MarginSize, 0.5f - MarginSize, -MarginSize);
             scrollRect.gameObject.AddComponent<Mask>();
             scrollRect.content.gameObject.AddComponent<VerticalLayoutGroup>();
             scrollRect.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            scrollRect.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(scrollOffsetX, 0f);
-            scrollRect.viewport.offsetMax = new Vector2(scrollOffsetX, 0f);
+            scrollRect.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(ScrollOffsetX, 0f);
+            scrollRect.viewport.offsetMax = new Vector2(ScrollOffsetX, 0f);
             scrollRect.movementType = ScrollRect.MovementType.Clamped;
-            scrollRect.GetComponent<Image>().color = rowColor;
+            scrollRect.GetComponent<Image>().color = RowColor;
 
             {
                 var contentItem = UIUtility.CreatePanel("BlacklistContent", scrollRect.content.transform);
-                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = panelHeight;
+                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
-                contentItem.color = rowColor;
+                contentItem.color = RowColor;
 
                 var itemPanel = UIUtility.CreatePanel("BlacklistPanel", contentItem.transform);
-                itemPanel.color = rowColor;
+                itemPanel.color = RowColor;
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
-                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
 
                 BlacklistButton = UIUtility.CreateButton("BlacklistButton", itemPanel.transform, "Hide this item");
                 BlacklistButton.gameObject.AddComponent<LayoutElement>();
@@ -75,14 +75,14 @@ namespace KK_Plugins
             }
             {
                 var contentItem = UIUtility.CreatePanel("BlacklistModContent", scrollRect.content.transform);
-                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = panelHeight;
+                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
-                contentItem.color = rowColor;
+                contentItem.color = RowColor;
 
                 var itemPanel = UIUtility.CreatePanel("BlacklistModPanel", contentItem.transform);
-                itemPanel.color = rowColor;
+                itemPanel.color = RowColor;
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
-                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
 
                 BlacklistModButton = UIUtility.CreateButton("BlacklistModButton", itemPanel.transform, "Hide all items from this mod");
                 BlacklistModButton.gameObject.AddComponent<LayoutElement>();
@@ -93,14 +93,14 @@ namespace KK_Plugins
             }
             {
                 var contentItem = UIUtility.CreatePanel("InfoContent", scrollRect.content.transform);
-                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = panelHeight;
+                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
-                contentItem.color = rowColor;
+                contentItem.color = RowColor;
 
                 var itemPanel = UIUtility.CreatePanel("InfoPanel", contentItem.transform);
-                itemPanel.color = rowColor;
+                itemPanel.color = RowColor;
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
-                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
 
                 InfoButton = UIUtility.CreateButton("InfoButton", itemPanel.transform, "Print item info");
                 InfoButton.gameObject.AddComponent<LayoutElement>();
@@ -112,14 +112,14 @@ namespace KK_Plugins
 
             {
                 var contentItem = UIUtility.CreatePanel("FilterContent", scrollRect.content.transform);
-                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = panelHeight;
+                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
-                contentItem.color = rowColor;
+                contentItem.color = RowColor;
 
                 var itemPanel = UIUtility.CreatePanel("FilterPanel", contentItem.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
-                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = padding;
-                itemPanel.color = rowColor;
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+                itemPanel.color = RowColor;
 
                 var label = UIUtility.CreateText("FilterText", itemPanel.transform, "Displaying:");
                 label.color = Color.white;
