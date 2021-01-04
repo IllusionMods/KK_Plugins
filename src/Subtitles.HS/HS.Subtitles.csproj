@@ -93,7 +93,9 @@
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" HS</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
+IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" HS
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

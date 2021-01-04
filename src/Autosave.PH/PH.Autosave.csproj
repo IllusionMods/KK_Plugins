@@ -95,7 +95,9 @@
   <Import Project="..\..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.2\build\IllusionLibs.PlayHome.UnityEngine.UI.targets')" />
   <Import Project="..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.PlayHome.Assembly-CSharp.2018.3.11.2\build\IllusionLibs.PlayHome.Assembly-CSharp.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" PH</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
+IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" PH
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" />
 </Project>
