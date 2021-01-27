@@ -11,10 +11,6 @@ namespace KK_Plugins
         public const string PluginName = "Accessory Clothes";
         public const string PluginNameInternal = Constants.Prefix + "_AccessoryClothes";
         public const string Version = "1.0";
-
-        internal static AccessoryClothes Instance;
-
-        private void Awake() => Instance = this;
     }
 
     public class ChaAccessoryClothes : MonoBehaviour
@@ -24,7 +20,7 @@ namespace KK_Plugins
         private void Awake()
         {
             //Move the armature outside of the character so these transforms are not found by certain methods that traverse the body hierarchy
-            ArmatureRoot.SetParent(AccessoryClothes.Instance.transform);
+            ArmatureRoot.SetParent(null);
         }
 
         private void Start()
