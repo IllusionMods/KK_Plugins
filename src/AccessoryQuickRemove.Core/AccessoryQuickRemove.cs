@@ -28,9 +28,10 @@ namespace KK_Plugins
             if (RemoveHotkey.Value.IsDown() && MakerAPI.InsideAndLoaded)
             {
                 var customChangeMainMenu = FindObjectOfType<CustomChangeMainMenu>();
-                if (customChangeMainMenu.items[4].tglItem.isOn)
+                if (customChangeMainMenu.items[4].tglItem.isOn) //Accessory tab is selected
                 {
                     var cvsAccessory = AccessoriesApi.GetMakerAccessoryPageObject(AccessoriesApi.SelectedMakerAccSlot).GetComponent<CvsAccessory>();
+                    //Set the Type dropdown to the "None" option which removes the accessory
                     Traverse.Create(cvsAccessory).Field("ddAcsType").GetValue<TMP_Dropdown>().value = 0;
                 }
             }
