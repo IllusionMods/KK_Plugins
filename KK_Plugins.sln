@@ -364,6 +364,10 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.AccessoryQuickRemove",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessoryQuickRemove.EC", "src\AccessoryQuickRemove.EC\AccessoryQuickRemove.EC.csproj", "{C8BD5FE6-46C1-4D45-8EDD-A222C8D043C1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DynamicBoneEditor", "DynamicBoneEditor", "{2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.DynamicBoneEditor", "src\DynamicBoneEditor.KK\KK.DynamicBoneEditor.csproj", "{EDFF8A48-692D-4D63-8DDF-8C484D1042FE}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -613,6 +617,8 @@ Global
 		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{ea82bb52-404c-416a-9bf8-a36a90f6da93}*SharedItemsImports = 13
 		src\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems*{eaddf585-d0d5-4764-8f74-630137582436}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{eaddf585-d0d5-4764-8f74-630137582436}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{edff8a48-692d-4d63-8ddf-8c484d1042fe}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{edff8a48-692d-4d63-8ddf-8c484d1042fe}*SharedItemsImports = 4
 		src\Autosave.Core\Autosave.Core.projitems*{efdbced8-840a-423b-8304-01f7e24475b0}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{efdbced8-840a-423b-8304-01f7e24475b0}*SharedItemsImports = 4
 		src\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems*{f0772d38-cabb-4e99-9c5a-336f5da499cb}*SharedItemsImports = 4
@@ -1058,6 +1064,10 @@ Global
 		{C8BD5FE6-46C1-4D45-8EDD-A222C8D043C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8BD5FE6-46C1-4D45-8EDD-A222C8D043C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8BD5FE6-46C1-4D45-8EDD-A222C8D043C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDFF8A48-692D-4D63-8DDF-8C484D1042FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDFF8A48-692D-4D63-8DDF-8C484D1042FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDFF8A48-692D-4D63-8DDF-8C484D1042FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDFF8A48-692D-4D63-8DDF-8C484D1042FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1200,6 +1210,7 @@ Global
 		{589FB078-FCF6-4096-A4F3-5FA362E5D0BF} = {3EB1E588-1FAE-4D50-940C-BF438BFD7806}
 		{6F832183-DF80-400A-9463-5058361A5797} = {3EB1E588-1FAE-4D50-940C-BF438BFD7806}
 		{C8BD5FE6-46C1-4D45-8EDD-A222C8D043C1} = {3EB1E588-1FAE-4D50-940C-BF438BFD7806}
+		{EDFF8A48-692D-4D63-8DDF-8C484D1042FE} = {2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
