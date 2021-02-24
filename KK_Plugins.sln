@@ -362,7 +362,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.AccessoryQuickRemove", "
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.AccessoryQuickRemove", "src\AccessoryQuickRemove.Core\Core.AccessoryQuickRemove.shproj", "{6F832183-DF80-400A-9463-5058361A5797}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessoryQuickRemove.EC", "src\AccessoryQuickRemove.EC\AccessoryQuickRemove.EC.csproj", "{C8BD5FE6-46C1-4D45-8EDD-A222C8D043C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.AccessoryQuickRemove", "src\AccessoryQuickRemove.EC\EC.AccessoryQuickRemove.csproj", "{C8BD5FE6-46C1-4D45-8EDD-A222C8D043C1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DynamicBoneEditor", "DynamicBoneEditor", "{2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}"
 EndProject
