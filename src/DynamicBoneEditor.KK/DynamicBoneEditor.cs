@@ -1,12 +1,16 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 
 namespace KK_Plugins.DynamicBoneEditor
 {
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class Plugin : BaseUnityPlugin
     {

@@ -2,12 +2,14 @@
 using BepInEx.Configuration;
 using ChaCustom;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Maker;
 using TMPro;
 using UnityEngine;
 
 namespace KK_Plugins
 {
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class AccessoryQuickRemove : BaseUnityPlugin
     {
