@@ -1,5 +1,6 @@
 ﻿using KKAPI.Maker;
-using System.Collections.Generic;
+using KKAPI.Maker.UI;
+using System.Linq;
 using UILib;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ namespace KK_Plugins.DynamicBoneEditor
         public static Canvas EditorWindow;
         public static Image EditorMainPanel;
         public static Image DragPanel;
+        public static MakerButton DynamicBoneEditorButton;
         private static ScrollRect EditorScrollableUI;
         internal static RectOffset Padding;
 
@@ -61,6 +63,9 @@ namespace KK_Plugins.DynamicBoneEditor
 
         public static void InitUI()
         {
+            DynamicBoneEditorButton = MakerAPI.AddAccessoryWindowControl(new MakerButton("Dynamic Bone Editor", null, PluginInstance));
+            DynamicBoneEditorButton.OnClick.AddListener(() => ShowUI(0));
+
             var windowBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
             windowBackground.SetPixel(0, 0, new Color(0f, 0f, 0f, 0f));
             windowBackground.Apply();
@@ -156,19 +161,17 @@ namespace KK_Plugins.DynamicBoneEditor
 
             var accessory = MakerAPI.GetCharacterControl().GetAccessoryObject(slot);
             if (accessory == null)
+            {
+                Visible = false;
                 return;
+            }
             else
             {
-                var dynamicBones = accessory.GetComponentsInChildren<DynamicBone>();
-                List<string> dbNames = new List<string>();
-                foreach (var db in dynamicBones)
-                {
-                    if (db.m_Root != null)
-                        dbNames.Add(db.m_Root.name);
-                }
+                var dynamicBones = accessory.GetComponentsInChildren<DynamicBone>().Where(x => x.m_Root != null).ToList();
 
-                if (dbNames.Count == 0)
+                if (dynamicBones.Count == 0)
                 {
+                    Visible = false;
                     return;
                 }
 
@@ -179,10 +182,10 @@ namespace KK_Plugins.DynamicBoneEditor
 
                 DynamicBoneDropdown.onValueChanged.RemoveAllListeners();
                 DynamicBoneDropdown.options.Clear();
-                foreach (var dbName in dbNames)
-                    DynamicBoneDropdown.options.Add(new Dropdown.OptionData(dbName));
+                foreach (var bone in dynamicBones)
+                    DynamicBoneDropdown.options.Add(new Dropdown.OptionData(bone.m_Root.name));
                 DynamicBoneDropdown.value = dynamicBoneIndex;
-                DynamicBoneDropdown.captionText.text = dbNames[dynamicBoneIndex];
+                DynamicBoneDropdown.captionText.text = dynamicBones[dynamicBoneIndex].m_Root.name;
                 DynamicBoneDropdown.onValueChanged.AddListener(value => { ShowUI(value); });
 
                 FreezeAxis.OnChange = null;
@@ -226,6 +229,27 @@ namespace KK_Plugins.DynamicBoneEditor
                 var radius = controller.GetRadius(slot, dynamicBone);
                 Radius.Value = radius == null ? Radius.ValueOriginal : (float)radius;
                 Radius.OnChange = (value) => { GetMakerCharaController().SetRadius(slot, dynamicBone, value); };
+            }
+        }
+
+        public static void ToggleButtonVisibility()
+        {
+            if (!MakerAPI.InsideAndLoaded)
+                return;
+
+            var accessory = MakerAPI.GetCharacterControl().GetAccessoryObject(AccessoriesApi.SelectedMakerAccSlot);
+            if (accessory == null)
+            {
+                DynamicBoneEditorButton.Visible.OnNext(false);
+                return;
+            }
+            else
+            {
+                var dynamicBones = accessory.GetComponentsInChildren<DynamicBone>().Where(x => x.m_Root != null);
+                if (dynamicBones.Count() == 0)
+                    DynamicBoneEditorButton.Visible.OnNext(false);
+                else
+                    DynamicBoneEditorButton.Visible.OnNext(true);
             }
         }
     }

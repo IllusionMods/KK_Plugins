@@ -14,7 +14,7 @@ namespace KK_Plugins.DynamicBoneEditor
         private Slider ValueSlider;
         private Text LabelText;
 
-        private float _Value;
+        private float _Value = -1;
         public float Value
         {
             get => _Value;

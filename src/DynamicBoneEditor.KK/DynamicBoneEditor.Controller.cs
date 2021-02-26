@@ -60,7 +60,7 @@ namespace KK_Plugins.DynamicBoneEditor
 
         protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
         {
-            var coordinateAccessoryDynamicBoneData = AccessoryDynamicBoneData.Where(x => x.Coordinate == CurrentCoordinateIndex).ToList();
+            var coordinateAccessoryDynamicBoneData = AccessoryDynamicBoneData.Where(x => x.CoordinateIndex == CurrentCoordinateIndex).ToList();
             var data = new PluginData();
             if (coordinateAccessoryDynamicBoneData.Count > 0)
             {
@@ -79,7 +79,7 @@ namespace KK_Plugins.DynamicBoneEditor
             var loadFlags = MakerAPI.GetCoordinateLoadFlags();
             if (loadFlags == null || loadFlags.Accessories)
             {
-                AccessoryDynamicBoneData.RemoveAll(x => x.Coordinate == CurrentCoordinateIndex);
+                AccessoryDynamicBoneData.RemoveAll(x => x.CoordinateIndex == CurrentCoordinateIndex);
 
                 var data = GetCoordinateExtendedData(coordinate);
                 if (data?.data != null)
@@ -101,10 +101,52 @@ namespace KK_Plugins.DynamicBoneEditor
 
         internal void AccessoryKindChangeEvent(object sender, AccessorySlotEventArgs e)
         {
-            AccessoryDynamicBoneData.RemoveAll(x => x.Coordinate == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
+            AccessoryDynamicBoneData.RemoveAll(x => x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SlotIndex);
 
             if (MakerAPI.InsideAndLoaded && UI.Visible)
                 UI.ShowUI(0);
+        }
+
+        internal void AccessoryTransferredEvent(object sender, AccessoryTransferEventArgs e)
+        {
+            AccessoryDynamicBoneData.RemoveAll(x => x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.DestinationSlotIndex);
+
+            List<DynamicBoneData> newAccessoryDynamicBoneData = new List<DynamicBoneData>();
+
+            foreach (var dbData in AccessoryDynamicBoneData.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SourceSlotIndex))
+            {
+                var newDBData = new DynamicBoneData(dbData.CoordinateIndex, e.DestinationSlotIndex, dbData.BoneName);
+                dbData.CopyTo(newDBData);
+                newAccessoryDynamicBoneData.Add(newDBData);
+            }
+            AccessoryDynamicBoneData.AddRange(newAccessoryDynamicBoneData);
+
+            if (MakerAPI.InsideAndLoaded)
+                UI.Visible = false;
+
+            StartCoroutine(ApplyData());
+        }
+
+        internal void AccessoriesCopiedEvent(object sender, AccessoryCopyEventArgs e)
+        {
+            foreach (int slot in e.CopiedSlotIndexes)
+            {
+                AccessoryDynamicBoneData.RemoveAll(x => x.CoordinateIndex == (int)e.CopyDestination && x.Slot == slot);
+
+                List<DynamicBoneData> newAccessoryDynamicBoneData = new List<DynamicBoneData>();
+
+                foreach (var dbData in AccessoryDynamicBoneData.Where(x => x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
+                {
+                    var newDBData = new DynamicBoneData((int)e.CopyDestination, slot, dbData.BoneName);
+                    dbData.CopyTo(newDBData);
+                    newAccessoryDynamicBoneData.Add(newDBData);
+                }
+                AccessoryDynamicBoneData.AddRange(newAccessoryDynamicBoneData);
+
+                if (MakerAPI.InsideAndLoaded)
+                    if ((int)e.CopyDestination == CurrentCoordinateIndex)
+                        UI.Visible = false;
+            }
         }
 
         private IEnumerator ApplyData()
@@ -120,9 +162,11 @@ namespace KK_Plugins.DynamicBoneEditor
             while (ChaControl == null || ChaControl.GetHead() == null)
                 yield return null;
 
+            UI.ToggleButtonVisibility();
+
             foreach (var dbData in AccessoryDynamicBoneData)
             {
-                if (dbData.Coordinate == CurrentCoordinateIndex)
+                if (dbData.CoordinateIndex == CurrentCoordinateIndex)
                 {
                     var accessory = ChaControl.GetAccessoryObject(dbData.Slot);
                     if (accessory != null)
@@ -184,7 +228,7 @@ namespace KK_Plugins.DynamicBoneEditor
 
         private DynamicBoneData GetDBData(int slot, string boneName)
         {
-            return AccessoryDynamicBoneData.FirstOrDefault(x => x.Coordinate == CurrentCoordinateIndex && x.Slot == slot && x.BoneName == boneName);
+            return AccessoryDynamicBoneData.FirstOrDefault(x => x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.BoneName == boneName);
         }
 
         public DynamicBone.FreezeAxis? GetFreezeAxis(int slot, DynamicBone dynamicBone)

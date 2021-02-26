@@ -7,8 +7,8 @@ namespace KK_Plugins.DynamicBoneEditor
     [MessagePackObject]
     internal class DynamicBoneData
     {
-        [Key(nameof(Coordinate))]
-        public int Coordinate;
+        [Key(nameof(CoordinateIndex))]
+        public int CoordinateIndex;
         [Key(nameof(Slot))]
         public int Slot;
         [Key(nameof(BoneName))]
@@ -44,11 +44,29 @@ namespace KK_Plugins.DynamicBoneEditor
         [Key(nameof(RadiusOriginal))]
         public float? RadiusOriginal;
 
-        public DynamicBoneData(int coordinate, int slot, string boneName)
+        public DynamicBoneData(int coordinateIndex, int slot, string boneName)
         {
-            Coordinate = coordinate;
+            CoordinateIndex = coordinateIndex;
             Slot = slot;
             BoneName = boneName;
+        }
+
+        public void CopyTo(DynamicBoneData target)
+        {
+            target.FreezeAxis = FreezeAxis;
+            target.Weight = Weight;
+            target.Damping = Damping;
+            target.Elasticity = Elasticity;
+            target.Stiffness = Stiffness;
+            target.Inertia = Inertia;
+            target.Radius = Radius;
+            target.FreezeAxisOriginal = FreezeAxisOriginal;
+            target.WeightOriginal = WeightOriginal;
+            target.DampingOriginal = DampingOriginal;
+            target.ElasticityOriginal = ElasticityOriginal;
+            target.StiffnessOriginal = StiffnessOriginal;
+            target.InertiaOriginal = InertiaOriginal;
+            target.RadiusOriginal = RadiusOriginal;
         }
 
         public DynamicBone.FreezeAxis GetFreezeAxisOriginal(DynamicBone dynamicBone)

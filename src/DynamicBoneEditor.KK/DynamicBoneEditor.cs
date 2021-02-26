@@ -5,7 +5,6 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
-using KKAPI.Maker.UI;
 
 namespace KK_Plugins.DynamicBoneEditor
 {
@@ -19,21 +18,41 @@ namespace KK_Plugins.DynamicBoneEditor
         public const string PluginNameInternal = Constants.Prefix + "_DynamicBoneEditor";
         public const string PluginVersion = "1.0";
         internal static new ManualLogSource Logger;
+        internal static Plugin PluginInstance;
 
         private void Start()
         {
             Logger = base.Logger;
+            PluginInstance = this;
+            Harmony.CreateAndPatchAll(typeof(Hooks));
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
+            MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             CharacterApi.RegisterExtraBehaviour<CharaController>(PluginGUID);
+            AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
-            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
+            AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
+            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
         }
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
             UI.InitUI();
-            MakerAPI.AddAccessoryWindowControl(new MakerButton("Dynamic Bone Editor", null, this)).OnClick.AddListener(() => UI.ShowUI(0));
+        }
+
+        private void MakerAPI_MakerFinishedLoading(object sender, System.EventArgs e)
+        {
+            UI.ToggleButtonVisibility();
+        }
+
+        private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e)
+        {
+            if (MakerAPI.InsideAndLoaded)
+            {
+                if (UI.Visible)
+                    UI.ShowUI(0);
+                UI.ToggleButtonVisibility();
+            }
         }
 
         private static void AccessoriesApi_AccessoryKindChanged(object sender, AccessorySlotEventArgs e)
@@ -41,6 +60,20 @@ namespace KK_Plugins.DynamicBoneEditor
             var controller = GetMakerCharaController();
             if (controller != null)
                 controller.AccessoryKindChangeEvent(sender, e);
+        }
+
+        private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e)
+        {
+            var controller = GetMakerCharaController();
+            if (controller != null)
+                controller.AccessoryTransferredEvent(sender, e);
+        }
+
+        private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e)
+        {
+            var controller = GetMakerCharaController();
+            if (controller != null)
+                controller.AccessoriesCopiedEvent(sender, e);
         }
 
         public static CharaController GetCharaController(ChaControl chaControl) => chaControl == null ? null : chaControl.gameObject.GetComponent<CharaController>();
