@@ -29,7 +29,7 @@ namespace KK_Plugins
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(KoiSkinOverlayX.KoiSkinOverlayMgr.GUID, "5.1")]
     [BepInPlugin(GUID, PluginName, Version)]
-    internal partial class UncensorSelector : BaseUnityPlugin
+    public partial class UncensorSelector : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
