@@ -241,7 +241,7 @@ namespace KK_Plugins.MaterialEditor
                 }
                 if (data.data.TryGetValue("MaterialColorProperty", out var colorProperties) && colorProperties != null)
                 {
-                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialFloatProperty>>((byte[])colorProperties);
+                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialColorProperty>>((byte[])colorProperties);
                     properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
@@ -258,7 +258,7 @@ namespace KK_Plugins.MaterialEditor
                 }
                 if (data.data.TryGetValue("MaterialTextureProperty", out var textureProperties) && textureProperties != null)
                 {
-                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialFloatProperty>>((byte[])textureProperties);
+                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialTextureProperty>>((byte[])textureProperties);
                     properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
@@ -275,7 +275,7 @@ namespace KK_Plugins.MaterialEditor
                 }
                 if (data.data.TryGetValue("MaterialShader", out var shaderProperties) && floatProperties != null)
                 {
-                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialFloatProperty>>((byte[])shaderProperties);
+                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialShader>>((byte[])shaderProperties);
                     properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
@@ -332,7 +332,7 @@ namespace KK_Plugins.MaterialEditor
                 }
                 if (data.data.TryGetValue("MaterialColorProperty", out var colorProperties) && colorProperties != null)
                 {
-                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialFloatProperty>>((byte[])colorProperties);
+                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialColorProperty>>((byte[])colorProperties);
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
                     {
@@ -348,7 +348,7 @@ namespace KK_Plugins.MaterialEditor
                 }
                 if (data.data.TryGetValue("MaterialTextureProperty", out var textureProperties) && textureProperties != null)
                 {
-                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialFloatProperty>>((byte[])textureProperties);
+                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialTextureProperty>>((byte[])textureProperties);
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
                     {
@@ -364,7 +364,7 @@ namespace KK_Plugins.MaterialEditor
                 }
                 if (data.data.TryGetValue("MaterialShader", out var shaderProperties) && floatProperties != null)
                 {
-                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialFloatProperty>>((byte[])shaderProperties);
+                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialShader>>((byte[])shaderProperties);
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
                     {
