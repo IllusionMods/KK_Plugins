@@ -641,10 +641,7 @@ namespace KK_Plugins
                 dst.sharedMesh = src.sharedMesh;
 
                 //Sort the bones
-                List<Transform> newBones = new List<Transform>();
-                foreach (Transform t in src.bones)
-                    newBones.Add(Array.Find(dst.bones, c => c != null && t != null && c.name == t.name));
-                dst.bones = newBones.ToArray();
+                TransferBones(src, dst);
 
                 if (copyMaterials)
                     dst.materials = src.materials;
@@ -658,6 +655,18 @@ namespace KK_Plugins
                 //Regardless of the receive shadow settings configured for the mesh it's always set to false for dick and balls, change it so shadows work correctly
                 if (PenisParts.Contains(dst.sharedMesh.name) || BallsParts.Contains(dst.sharedMesh.name))
                     dst.receiveShadows = true;
+            }
+
+            /// <summary>
+            /// Hooked by ModBoneImplantor to handle implanted bones
+            /// Can't be static since an instance reference is needed
+            /// </summary>
+            private void TransferBones(SkinnedMeshRenderer src, SkinnedMeshRenderer dst)
+            {
+                List<Transform> newBones = new List<Transform>();
+                foreach (Transform t in src.bones)
+                    newBones.Add(Array.Find(dst.bones, c => c != null && t != null && c.name == t.name));
+                dst.bones = newBones.ToArray();
             }
 
             private IEnumerator HandleUVCorrupionsCo(SkinnedMeshRenderer dst, Vector2[] uvCopy)
