@@ -273,7 +273,7 @@ namespace KK_Plugins.MaterialEditor
                     else
                         data.data["MaterialTextureProperty"] = null;
                 }
-                if (data.data.TryGetValue("MaterialShader", out var shaderProperties) && floatProperties != null)
+                if (data.data.TryGetValue("MaterialShader", out var shaderProperties) && shaderProperties != null)
                 {
                     var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialShader>>((byte[])shaderProperties);
                     properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
@@ -362,7 +362,7 @@ namespace KK_Plugins.MaterialEditor
                     else
                         data.data["MaterialTextureProperty"] = null;
                 }
-                if (data.data.TryGetValue("MaterialShader", out var shaderProperties) && floatProperties != null)
+                if (data.data.TryGetValue("MaterialShader", out var shaderProperties) && shaderProperties != null)
                 {
                     var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialShader>>((byte[])shaderProperties);
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
