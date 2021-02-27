@@ -6,7 +6,7 @@ using UniRx;
 
 namespace KK_Plugins
 {
-    internal partial class UncensorSelector
+    public partial class UncensorSelector
     {
         private const string StudioCategoryName = "Uncensor Selector";
 
