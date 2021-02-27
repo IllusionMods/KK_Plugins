@@ -20,7 +20,7 @@ using KKAPI.Studio;
 
 namespace KK_Plugins
 {
-    internal partial class UncensorSelector
+    public partial class UncensorSelector
     {
         public class UncensorSelectorController : CharaCustomFunctionController
         {
