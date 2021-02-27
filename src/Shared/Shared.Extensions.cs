@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 #if AI || HS2
 using AIChara;
@@ -67,7 +66,14 @@ namespace KK_Plugins
         public static GameObject GetAccessory(this Human human, int index) => human.accessories.objAcs[index];
 #else
         public static GameObject[] GetClothes(this ChaControl chaControl) => chaControl.objClothes;
-        public static GameObject GetClothes(this ChaControl chaControl, int index) => chaControl.objClothes[index];
+        public static GameObject GetClothes(this ChaControl chaControl, int index)
+        {
+#if EC
+            if (index > 7)
+                return null;
+#endif
+            return chaControl.objClothes[index];
+        }
         public static GameObject[] GetHair(this ChaControl chaControl) => chaControl.objHair;
         public static GameObject GetHair(this ChaControl chaControl, int index) => chaControl.objHair[index];
         public static GameObject GetHead(this ChaControl chaControl) => chaControl.objHead;
