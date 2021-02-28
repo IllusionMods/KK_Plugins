@@ -70,10 +70,10 @@ namespace KK_Plugins
             Logger = base.Logger;
             Instance = this;
 
-            AutosaveIntervalStudio = Config.Bind("Config", "Autosave Interval Studio", 10, new ConfigDescription("Minutes between autosaves in Studio", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
-            AutosaveIntervalMaker = Config.Bind("Config", "Autosave Interval Maker", 5, new ConfigDescription("Minutes between autosaves in the character maker", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
+            AutosaveIntervalStudio = Config.Bind("Config", "Autosave Interval Studio", 20, new ConfigDescription("Minutes between autosaves in Studio", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
+            AutosaveIntervalMaker = Config.Bind("Config", "Autosave Interval Maker", 20, new ConfigDescription("Minutes between autosaves in the character maker", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
             AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
-            AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
+            AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 5, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
 
@@ -208,6 +208,10 @@ namespace KK_Plugins
 
                     SetText("Saving...");
                     yield return new WaitForSeconds(1);
+
+                    //Don't save if the user is in the middle of clicking and dragging
+                    while (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
+                        yield return new WaitForSeconds(1);
 
                     //Needed so the thumbnail is correct
                     yield return new WaitForEndOfFrame();
