@@ -27,13 +27,13 @@ namespace KK_Plugins
 #if !HS && !PC && !SBPR
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
 #endif
-    [BepInPlugin(GUID, PluginName, Version)]
+    [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class Autosave : BaseUnityPlugin
     {
-        public const string GUID = "com.deathweasel.bepinex.autosave";
+        public const string PluginGUID = "com.deathweasel.bepinex.autosave";
         public const string PluginName = "Autosave";
         public const string PluginNameInternal = Constants.Prefix + "_Autosave";
-        public const string Version = "1.0.1";
+        public const string PluginVersion = "1.0.1";
         internal static new ManualLogSource Logger;
         internal static Autosave Instance;
 
@@ -49,6 +49,7 @@ namespace KK_Plugins
         private static GameObject AutosaveCanvas;
         private static Text AutosaveText;
         private static bool InStudio = false;
+        public static bool Autosaving = false;
 
 #if PC
         private static CharaCustomMode CharaCustomModeInstance;
@@ -56,7 +57,9 @@ namespace KK_Plugins
         private static CustomControl CustomControlInstance;
 #endif
         private static Coroutine MakerCoroutine;
-
+#if !EC && !PC && !SBPR
+        private static Coroutine StudioCoroutine;
+#endif
         public static ConfigEntry<int> AutosaveIntervalStudio { get; private set; }
         public static ConfigEntry<int> AutosaveIntervalMaker { get; private set; }
         public static ConfigEntry<int> AutosaveCountdown { get; private set; }
@@ -80,7 +83,7 @@ namespace KK_Plugins
             if (InStudio)
             {
 #if !EC && !PC && !SBPR
-                StartCoroutine(AutosaveStudio());
+                StudioCoroutine = StartCoroutine(AutosaveStudio());
 #endif
             }
             else
@@ -101,6 +104,13 @@ namespace KK_Plugins
                 DeleteAutosaves(AutosavePathFemale);
 #endif
             }
+
+#if KK || EC || AI || HS2 || PH
+            KKAPI.Chara.CharacterApi.RegisterExtraBehaviour<CharaController>(PluginGUID);
+#endif
+#if KK || AI || HS2 || PH
+            KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour<StudioController>(PluginGUID);
+#endif
         }
 
         private IEnumerator AutosaveMaker()
@@ -134,7 +144,7 @@ namespace KK_Plugins
                         yield return new WaitForSeconds(1);
 
                     yield return new WaitForEndOfFrame();
-
+                    Autosaving = true;
 #if HS
                     if (CustomControlInstance == null)
                     {
@@ -179,6 +189,7 @@ namespace KK_Plugins
 #endif
 
                     SetText("Saved!");
+                    Autosaving = false;
                     yield return new WaitForSeconds(2);
                     SetText("");
                 }
@@ -215,6 +226,7 @@ namespace KK_Plugins
 
                     //Needed so the thumbnail is correct
                     yield return new WaitForEndOfFrame();
+                    Autosaving = true;
 
                     //Game runs similar code
                     foreach (KeyValuePair<int, ObjectCtrlInfo> item in Studio.Studio.Instance.dicObjectCtrl)
@@ -229,6 +241,7 @@ namespace KK_Plugins
                     DeleteAutosaves(AutosavePathStudio);
 
                     SetText("Saved!");
+                    Autosaving = false;
                     yield return new WaitForSeconds(2);
                     SetText("");
                 }
@@ -266,6 +279,28 @@ namespace KK_Plugins
             SetText("");
             Instance.StopCoroutine(MakerCoroutine);
         }
+
+        /// <summary>
+        /// Reset the coroutine and restart the autosave timer
+        /// </summary>
+        public static void ResetMakerCoroutine()
+        {
+            SetText("");
+            Instance.StopCoroutine(MakerCoroutine);
+            MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
+        }
+
+#if !EC && !PC && !SBPR
+        /// <summary>
+        /// Reset the coroutine and restart the autosave timer
+        /// </summary>
+        public static void ResetStudioCoroutine()
+        {
+            SetText("");
+            Instance.StopCoroutine(StudioCoroutine);
+            StudioCoroutine = Instance.StartCoroutine(Instance.AutosaveStudio());
+        }
+#endif
 
         private static void InitGUI()
         {
