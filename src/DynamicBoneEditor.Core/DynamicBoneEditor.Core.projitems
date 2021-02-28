@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>7451d643-3634-4dfc-9e86-ba3223f1a832</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>DynamicBoneEditor.Core</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DynamicBoneEditor.Controller.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DynamicBoneEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DynamicBoneEditor.Data.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DynamicBoneEditor.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\DynamicBoneEditor.SliderSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\DynamicBoneEditor.ToggleSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\DynamicBoneEditor.UI.cs" />
+  </ItemGroup>
+</Project>

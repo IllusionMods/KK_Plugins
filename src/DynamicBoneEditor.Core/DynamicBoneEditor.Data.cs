@@ -5,7 +5,7 @@ namespace KK_Plugins.DynamicBoneEditor
 {
     [Serializable]
     [MessagePackObject]
-    internal class DynamicBoneData
+    public class DynamicBoneData
     {
         [Key(nameof(CoordinateIndex))]
         public int CoordinateIndex;

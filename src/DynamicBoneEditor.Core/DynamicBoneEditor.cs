@@ -5,6 +5,9 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
+#if AI || HS2
+using AIChara;
+#endif
 
 namespace KK_Plugins.DynamicBoneEditor
 {
@@ -32,7 +35,9 @@ namespace KK_Plugins.DynamicBoneEditor
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
+#if KK
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
+#endif
         }
 
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
@@ -69,12 +74,14 @@ namespace KK_Plugins.DynamicBoneEditor
                 controller.AccessoryTransferredEvent(sender, e);
         }
 
+#if KK
         private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e)
         {
             var controller = GetMakerCharaController();
             if (controller != null)
                 controller.AccessoriesCopiedEvent(sender, e);
         }
+#endif
 
         public static CharaController GetCharaController(ChaControl chaControl) => chaControl == null ? null : chaControl.gameObject.GetComponent<CharaController>();
         public static CharaController GetMakerCharaController() => MakerAPI.GetCharacterControl().gameObject.GetComponent<CharaController>();

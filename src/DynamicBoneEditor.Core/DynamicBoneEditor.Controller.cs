@@ -7,6 +7,9 @@ using MessagePack;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+#if AI || HS2
+using AIChara;
+#endif
 
 namespace KK_Plugins.DynamicBoneEditor
 {
@@ -14,7 +17,12 @@ namespace KK_Plugins.DynamicBoneEditor
     {
         private List<DynamicBoneData> AccessoryDynamicBoneData = new List<DynamicBoneData>();
         private static readonly HashSet<DynamicBone> DBsToUpdate = new HashSet<DynamicBone>();
+
+#if KK
         public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
+#else
+        public int CurrentCoordinateIndex => 0;
+#endif
 
         private void LateUpdate()
         {
@@ -127,6 +135,7 @@ namespace KK_Plugins.DynamicBoneEditor
             StartCoroutine(ApplyData());
         }
 
+#if KK
         internal void AccessoriesCopiedEvent(object sender, AccessoryCopyEventArgs e)
         {
             foreach (int slot in e.CopiedSlotIndexes)
@@ -148,6 +157,7 @@ namespace KK_Plugins.DynamicBoneEditor
                         UI.Visible = false;
             }
         }
+#endif
 
         private IEnumerator ApplyData()
         {
