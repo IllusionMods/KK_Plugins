@@ -237,6 +237,8 @@ namespace KK_Plugins.DynamicBoneEditor
 
         public static void ToggleButtonVisibility()
         {
+            if (!MakerAPI.InsideMaker)
+                return;
             if (DynamicBoneEditorButton == null)
                 return;
 
