@@ -64,6 +64,7 @@ namespace KK_Plugins.DynamicBoneEditor
         public static void InitUI()
         {
             DynamicBoneEditorButton = MakerAPI.AddAccessoryWindowControl(new MakerButton("Dynamic Bone Editor", null, PluginInstance));
+            DynamicBoneEditorButton.GroupingID = "Buttons";
             DynamicBoneEditorButton.OnClick.AddListener(() => ShowUI(0));
 
             var windowBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
@@ -234,7 +235,7 @@ namespace KK_Plugins.DynamicBoneEditor
 
         public static void ToggleButtonVisibility()
         {
-            if (!MakerAPI.InsideAndLoaded)
+            if (DynamicBoneEditorButton == null)
                 return;
 
             var accessory = MakerAPI.GetCharacterControl().GetAccessoryObject(AccessoriesApi.SelectedMakerAccSlot);
