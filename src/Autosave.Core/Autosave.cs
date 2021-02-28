@@ -74,9 +74,9 @@ namespace KK_Plugins
             Instance = this;
 
             AutosaveEnabled = Config.Bind("Config", "Autosave Enabled", true, new ConfigDescription("Whether to do autosaves", null, new ConfigurationManagerAttributes { Order = 11 }));
-            AutosaveInterval = Config.Bind("Config", "Autosave Interval", 20, new ConfigDescription("Minutes between autosaves", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
+            AutosaveInterval = Config.Bind("Config", "Autosave Interval", 15, new ConfigDescription("Minutes between autosaves", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
             AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
-            AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 5, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
+            AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
 
