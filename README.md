@@ -249,7 +249,7 @@ v1.2 Changes made in Studio apply to all selected characters<br/>
 </details>
 
 #### MaterialEditor
-**v2.4.1 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
+**v2.6.1 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select 2, and Play Home<br/>
 
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
@@ -306,6 +306,7 @@ v2.4 Dropdown for editing clothes, hair, and accessories in Studio</br>
 v2.4.1 Various bug fixes</br>
 v2.5 PH version</br>
 v2.6 Accessory and Studio support for PH</br>
+v2.6.1 Fix EC card import bug</br>
 </details>
 
 #### MaleJuice
@@ -437,6 +438,10 @@ Allows you to set a max eye openness, setting it to zero would let you create a 
 #### AccessoryQuickRemove
 **v1.0 - [Download](https://www.patreon.com/posts/46832511)** - For Koikatsu and EmotionCreators<br/>
 Quickly remove accessories by pressing the delete key in the character maker.<br/>
+
+#### DynamicBoneEditor
+**v1.0 - [Download](https://www.patreon.com/posts/48134621)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select 2, and Play Home<br/>
+Edit properties of Dynamic Bones for accessories in the character maker.<br/>
 
 #### InputHotkeyBlock
 Moved to the [BepInEx.Utility](https://github.com/BepInEx/BepInEx.Utility) repo.<br/>
