@@ -427,7 +427,7 @@ Allows you to adjust fade color or disable the fade in and out effect.<br/>
 A big textbox in the character creator where you can write a character description.<br/>
 
 #### Autosave
-**v1.0.1 - [Download](https://www.patreon.com/posts/44708282)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select, Honey Select 2, Play Club, Play Home, and SBPR<br/>
+**v1.1 - [Download](https://www.patreon.com/posts/44708282)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select, Honey Select 2, Play Club, Play Home, and SBPR<br/>
 Automatically saves cards in the character maker and scenes in Studio every few minutes.<br/>
 
 #### EyeControl
