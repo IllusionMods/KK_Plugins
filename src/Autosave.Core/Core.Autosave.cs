@@ -128,6 +128,11 @@ namespace KK_Plugins
 
                     SetText("Saving...");
                     yield return new WaitForSeconds(1);
+
+                    //Don't save if the user is in the middle of clicking and dragging
+                    while (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
+                        yield return new WaitForSeconds(1);
+
                     yield return new WaitForEndOfFrame();
 
 #if HS
