@@ -376,6 +376,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.DynamicBoneEditor", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.DynamicBoneEditor", "src\DynamicBoneEditor.HS2\HS2.DynamicBoneEditor.csproj", "{634955B1-E673-4A94-B89C-229359205ED6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PH.DynamicBoneEditor", "src\DynamicBoneEditor.PH\PH.DynamicBoneEditor.csproj", "{81C5BB6F-1182-4395-80A9-EAA47CF83A1C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -527,6 +529,9 @@ Global
 		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{808eedec-4707-45a1-929c-9e5506180204}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{8169b73c-be43-4ca0-87d8-db580d367d87}*SharedItemsImports = 4
 		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{8169b73c-be43-4ca0-87d8-db580d367d87}*SharedItemsImports = 4
+		src\DynamicBoneEditor.Core\DynamicBoneEditor.Core.projitems*{81c5bb6f-1182-4395-80a9-eaa47cf83a1c}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{81c5bb6f-1182-4395-80a9-eaa47cf83a1c}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{81c5bb6f-1182-4395-80a9-eaa47cf83a1c}*SharedItemsImports = 4
 		src\FKIK.Core\Core.FKIK.projitems*{81d88c3e-4094-436c-8eed-ba18a81a96a4}*SharedItemsImports = 13
 		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{81de7d3b-a8a0-43c2-ac9d-f65ac528b997}*SharedItemsImports = 13
 		src\Colliders.Core\Core.Colliders.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
@@ -1099,6 +1104,10 @@ Global
 		{634955B1-E673-4A94-B89C-229359205ED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{634955B1-E673-4A94-B89C-229359205ED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{634955B1-E673-4A94-B89C-229359205ED6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81C5BB6F-1182-4395-80A9-EAA47CF83A1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81C5BB6F-1182-4395-80A9-EAA47CF83A1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81C5BB6F-1182-4395-80A9-EAA47CF83A1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81C5BB6F-1182-4395-80A9-EAA47CF83A1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1246,6 +1255,7 @@ Global
 		{3ACAF906-19B8-430B-BCF7-10B090E8598B} = {2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}
 		{4ABBDFA8-40ED-40B7-BA8F-196980CBF959} = {2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}
 		{634955B1-E673-4A94-B89C-229359205ED6} = {2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}
+		{81C5BB6F-1182-4395-80A9-EAA47CF83A1C} = {2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

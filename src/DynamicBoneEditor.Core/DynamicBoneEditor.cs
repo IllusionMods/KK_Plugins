@@ -8,6 +8,9 @@ using KKAPI.Maker;
 #if AI || HS2
 using AIChara;
 #endif
+#if PH
+using ChaControl = Human;
+#endif
 
 namespace KK_Plugins.DynamicBoneEditor
 {

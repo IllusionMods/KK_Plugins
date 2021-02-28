@@ -10,6 +10,10 @@ using System.Linq;
 #if AI || HS2
 using AIChara;
 #endif
+#if PH
+using ChaFileCoordinate = Character.CustomParameter;
+using ChaControl = Human;
+#endif
 
 namespace KK_Plugins.DynamicBoneEditor
 {
