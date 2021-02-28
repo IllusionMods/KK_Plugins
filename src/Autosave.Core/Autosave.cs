@@ -60,8 +60,8 @@ namespace KK_Plugins
 #if !EC && !PC && !SBPR
         private static Coroutine StudioCoroutine;
 #endif
-        public static ConfigEntry<int> AutosaveIntervalStudio { get; private set; }
-        public static ConfigEntry<int> AutosaveIntervalMaker { get; private set; }
+        public static ConfigEntry<bool> AutosaveEnabled { get; private set; }
+        public static ConfigEntry<int> AutosaveInterval { get; private set; }
         public static ConfigEntry<int> AutosaveCountdown { get; private set; }
         public static ConfigEntry<int> AutosaveFileLimit { get; private set; }
 
@@ -73,8 +73,8 @@ namespace KK_Plugins
             Logger = base.Logger;
             Instance = this;
 
-            AutosaveIntervalStudio = Config.Bind("Config", "Autosave Interval Studio", 20, new ConfigDescription("Minutes between autosaves in Studio", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
-            AutosaveIntervalMaker = Config.Bind("Config", "Autosave Interval Maker", 20, new ConfigDescription("Minutes between autosaves in the character maker", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
+            AutosaveEnabled = Config.Bind("Config", "Autosave Enabled", true, new ConfigDescription("Whether to do autosaves", null, new ConfigurationManagerAttributes { Order = 11 }));
+            AutosaveInterval = Config.Bind("Config", "Autosave Interval", 20, new ConfigDescription("Minutes between autosaves", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
             AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
             AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 5, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
 
@@ -117,7 +117,7 @@ namespace KK_Plugins
         {
             while (true)
             {
-                yield return new WaitForSeconds(AutosaveIntervalMaker.Value * 60);
+                yield return new WaitForSeconds(AutosaveInterval.Value * 60);
 #if HS
                 if (CustomControlInstance == null)
                 {
@@ -126,7 +126,7 @@ namespace KK_Plugins
                 }
 #endif
 
-                if (AutosaveFileLimit.Value != 0)
+                if (AutosaveFileLimit.Value != 0 && AutosaveEnabled.Value)
                 {
                     //Display a counter before saving so that the user has a chance to stop moving the camera around
                     if (AutosaveCountdown.Value > 0)
@@ -201,13 +201,13 @@ namespace KK_Plugins
         {
             while (true)
             {
-                yield return new WaitForSeconds(AutosaveIntervalStudio.Value * 60);
+                yield return new WaitForSeconds(AutosaveInterval.Value * 60);
 
                 //Studio not loaded yet
                 if (!Studio.Studio.IsInstance())
                     continue;
 
-                if (AutosaveFileLimit.Value != 0)
+                if (AutosaveFileLimit.Value != 0 && AutosaveEnabled.Value)
                 {
                     //Display a counter before saving so that the user has a chance to stop moving the camera around
                     if (AutosaveCountdown.Value > 0)
