@@ -65,6 +65,7 @@ namespace KK_Plugins.DynamicBoneEditor
             var controller = GetMakerCharaController();
             if (controller != null)
                 controller.AccessoryKindChangeEvent(sender, e);
+            UI.ToggleButtonVisibility();
         }
 
         private void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e)
@@ -72,6 +73,7 @@ namespace KK_Plugins.DynamicBoneEditor
             var controller = GetMakerCharaController();
             if (controller != null)
                 controller.AccessoryTransferredEvent(sender, e);
+            UI.ToggleButtonVisibility();
         }
 
 #if KK
@@ -80,6 +82,7 @@ namespace KK_Plugins.DynamicBoneEditor
             var controller = GetMakerCharaController();
             if (controller != null)
                 controller.AccessoriesCopiedEvent(sender, e);
+            UI.ToggleButtonVisibility();
         }
 #endif
 
