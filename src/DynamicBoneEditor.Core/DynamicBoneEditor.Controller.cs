@@ -101,6 +101,7 @@ namespace KK_Plugins.DynamicBoneEditor
                         var loadedAccessoryDynamicBoneDataList = MessagePackSerializer.Deserialize<List<DynamicBoneData>>((byte[])loadedAccessoryDynamicBoneData);
                         foreach (var dbData in loadedAccessoryDynamicBoneDataList)
                         {
+                            dbData.CoordinateIndex = CurrentCoordinateIndex;
                             AccessoryDynamicBoneData.Add(dbData);
                         }
                     }
