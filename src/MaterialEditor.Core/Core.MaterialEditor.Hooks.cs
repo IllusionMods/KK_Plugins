@@ -90,8 +90,11 @@ namespace KK_Plugins.MaterialEditor
                     if (itemComponent.renderersSea[i] && !rendList.Contains(itemComponent.renderersSea[i]))
                         rendList.Add(itemComponent.renderersSea[i]);
 #endif
-                __result = rendList;
-                return false;
+                if (rendList.Count > 0)
+                {
+                    __result = rendList;
+                    return false;
+                }
             }
 #endif
 
