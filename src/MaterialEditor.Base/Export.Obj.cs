@@ -33,7 +33,17 @@ namespace MaterialEditorAPI
             if (rend is MeshRenderer meshRenderer)
                 mesh = meshRenderer.GetComponent<MeshFilter>().mesh;
             else if (rend is SkinnedMeshRenderer skinnedMeshRenderer)
-                mesh = skinnedMeshRenderer.sharedMesh;
+            {
+                if (MaterialEditorPluginBase.ExportBakedMesh.Value)
+                {
+                    mesh = new Mesh();
+                    skinnedMeshRenderer.BakeMesh(mesh);
+                }
+                else
+                {
+                    mesh = skinnedMeshRenderer.sharedMesh;
+                }
+            }
             else return "";
 
             StringBuilder sb = new StringBuilder();
