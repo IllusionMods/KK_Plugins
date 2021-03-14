@@ -193,25 +193,6 @@ namespace KK_Plugins.MaterialEditor
                 controller.ChangeAlphaMaskEvent();
         }
 
-#if KK || EC
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopAsync))]
-        private static void ChangeClothesTopAsyncPostfix(ChaControl __instance, ref IEnumerator __result)
-        {
-            var controller = MaterialEditorPlugin.GetCharaController(__instance);
-            if (controller != null)
-            {
-                var original = __result;
-                __result = new[] { original, Postfix() }.GetEnumerator();
-            }
-
-            IEnumerator Postfix()
-            {
-                controller.ChangeTopEvent();
-                yield break;
-            }
-        }
-#endif
-
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
         private static void SetClothesStatePostfix(ChaControl __instance)
         {
@@ -318,6 +299,33 @@ namespace KK_Plugins.MaterialEditor
             var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
             controller.CustomClothesOverride = true;
             controller.RefreshClothesMainTex();
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopAsync))]
+        private static void ChangeClothesTopAsyncPostfix(ChaControl __instance, ref IEnumerator __result)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+            {
+                var original = __result;
+                __result = new[] { original, Postfix() }.GetEnumerator();
+            }
+
+            IEnumerator Postfix()
+            {
+                controller.ChangeTopEvent();
+                yield break;
+            }
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), "UpdateSiru")]
+        private static void ChaControl_UpdateSiru_Postfix(ChaControl __instance)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+            {
+                controller.UpdateSiruEvent();
+            }
         }
 #endif
 #endif

@@ -837,6 +837,30 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
         }
+
+        internal void UpdateSiruEvent()
+        {
+            if (ChaControl.customMatFace && ChaControl.rendFace)
+            {
+                for (int i = 0; i < ChaControl.rendFace.sharedMaterials.Length; i++)
+                {
+                    var mat = ChaControl.rendFace.sharedMaterials[i];
+                    mat.SetFloat("_liquidface", ChaControl.customMatBody.GetFloat("_liquidface"));
+                }
+            }
+
+            if (ChaControl.customMatBody && ChaControl.rendBody)
+            {
+                for (int i = 0; i < ChaControl.rendBody.sharedMaterials.Length; i++)
+                {
+                    var mat = ChaControl.rendBody.sharedMaterials[i];
+                    mat.SetFloat("_liquidftop", ChaControl.customMatBody.GetFloat("_liquidftop"));
+                    mat.SetFloat("_liquidfbot", ChaControl.customMatBody.GetFloat("_liquidfbot"));
+                    mat.SetFloat("_liquidbtop", ChaControl.customMatBody.GetFloat("_liquidbtop"));
+                    mat.SetFloat("_liquidbbot", ChaControl.customMatBody.GetFloat("_liquidbbot"));
+                }
+            }
+        }
 #endif
 
         internal void CoordinateChangeEvent()
