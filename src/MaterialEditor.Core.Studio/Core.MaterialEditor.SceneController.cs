@@ -27,6 +27,7 @@ namespace KK_Plugins.MaterialEditor
         private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
         private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
         private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
+        private readonly List<MaterialCopy> MaterialCopyList = new List<MaterialCopy>();
 
         private static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
 
@@ -80,6 +81,11 @@ namespace KK_Plugins.MaterialEditor
             else
                 data.data.Add(nameof(MaterialShaderList), null);
 
+            if (MaterialCopyList.Count > 0)
+                data.data.Add(nameof(MaterialCopyList), MessagePackSerializer.Serialize(MaterialCopyList));
+            else
+                data.data.Add(nameof(MaterialCopyList), null);
+
             SetExtendedData(data);
         }
 
@@ -100,6 +106,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialTexturePropertyList.Clear();
                 MaterialShaderList.Clear();
                 TextureDictionary.Clear();
+                MaterialCopyList.Clear();
             }
 
             if (data == null) return;
@@ -115,6 +122,20 @@ namespace KK_Plugins.MaterialEditor
                 if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
                     foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
                         importDictionary[x.Key] = SetAndGetTextureID(x.Value);
+
+            if (data.data.TryGetValue(nameof(MaterialCopyList), out var materialCopyData) && materialCopyData != null)
+            {
+                var properties = MessagePackSerializer.Deserialize<List<MaterialCopy>>((byte[])materialCopyData);
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var loadedProperty = properties[i];
+                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                    {
+                        CopyMaterial(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.MaterialCopyName);
+                        MaterialCopyList.Add(new MaterialCopy(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.MaterialCopyName));
+                    }
+                }
+            }
 
             if (data.data.TryGetValue(nameof(MaterialShaderList), out var shaderProperties) && shaderProperties != null)
             {
@@ -212,11 +233,20 @@ namespace KK_Plugins.MaterialEditor
             List<MaterialColorProperty> materialColorPropertyListNew = new List<MaterialColorProperty>();
             List<MaterialTextureProperty> materialTexturePropertyListNew = new List<MaterialTextureProperty>();
             List<MaterialShader> materialShaderListNew = new List<MaterialShader>();
+            List<MaterialCopy> materialCopyListNew = new List<MaterialCopy>();
 
             foreach (var copiedItem in copiedItems)
             {
                 if (copiedItem.Value is OCIItem ociItem)
                 {
+                    for (var i = 0; i < MaterialCopyList.Count; i++)
+                    {
+                        var loadedProperty = MaterialCopyList[i];
+                        if (loadedProperty.ID == copiedItem.Key)
+                            CopyMaterial(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.MaterialCopyName);
+                        materialCopyListNew.Add(new MaterialCopy(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.MaterialCopyName));
+                    }
+
                     for (var i = 0; i < MaterialShaderList.Count; i++)
                     {
                         var loadedProperty = MaterialShaderList[i];
@@ -224,7 +254,8 @@ namespace KK_Plugins.MaterialEditor
                         {
                             bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName);
                             bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue);
-                            if (setShader || setRenderQueue) materialShaderListNew.Add(new MaterialShader(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                            if (setShader || setRenderQueue)
+                                materialShaderListNew.Add(new MaterialShader(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
                         }
                     }
 
@@ -276,6 +307,7 @@ namespace KK_Plugins.MaterialEditor
             MaterialColorPropertyList.AddRange(materialColorPropertyListNew);
             MaterialTexturePropertyList.AddRange(materialTexturePropertyListNew);
             MaterialShaderList.AddRange(materialShaderListNew);
+            MaterialCopyList.AddRange(materialCopyListNew);
         }
 
         private void Update()
@@ -434,6 +466,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialColorPropertyList.RemoveAll(x => x.ID == id);
                 MaterialTexturePropertyList.RemoveAll(x => x.ID == id);
                 MaterialShaderList.RemoveAll(x => x.ID == id);
+                MaterialCopyList.RemoveAll(x => x.ID == id);
                 MaterialEditorUI.Visible = false;
             }
             else if (objectCtrlInfo is OCIChar)
@@ -557,8 +590,40 @@ namespace KK_Plugins.MaterialEditor
         }
         public void MaterialCopyRemove(int id, Material material, GameObject go, bool setProperty = true)
         {
-            CopyMaterial(go, material.NameFormatted());
+            string matName = material.NameFormatted();
+            if (matName.Contains(MaterialCopyPostfix))
+            {
+                RemoveMaterial(go, material);
+                MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == matName);
+                MaterialFloatPropertyList.RemoveAll(x => x.ID == id && x.MaterialName == matName);
+                MaterialColorPropertyList.RemoveAll(x => x.ID == id && x.MaterialName == matName);
+                MaterialTexturePropertyList.RemoveAll(x => x.ID == id && x.MaterialName == matName);
+                MaterialCopyList.RemoveAll(x => x.ID == id && x.MaterialCopyName == matName);
+            }
+            else
+            {
+                string newMatName = CopyMaterial(go, matName);
+                MaterialCopyList.Add(new MaterialCopy(id, matName, newMatName));
 
+                List<MaterialShader> newAccessoryMaterialShaderList = new List<MaterialShader>();
+                List<MaterialFloatProperty> newAccessoryMaterialFloatPropertyList = new List<MaterialFloatProperty>();
+                List<MaterialColorProperty> newAccessoryMaterialColorPropertyList = new List<MaterialColorProperty>();
+                List<MaterialTextureProperty> newAccessoryMaterialTexturePropertyList = new List<MaterialTextureProperty>();
+
+                foreach (var property in MaterialShaderList.Where(x => x.ID == id && x.MaterialName == matName))
+                    newAccessoryMaterialShaderList.Add(new MaterialShader(id, newMatName, property.ShaderName, property.ShaderNameOriginal, property.RenderQueue, property.RenderQueueOriginal));
+                foreach (var property in MaterialFloatPropertyList.Where(x => x.ID == id && x.MaterialName == matName))
+                    newAccessoryMaterialFloatPropertyList.Add(new MaterialFloatProperty(id, newMatName, property.Property, property.Value, property.ValueOriginal));
+                foreach (var property in MaterialColorPropertyList.Where(x => x.ID == id && x.MaterialName == matName))
+                    newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(id, newMatName, property.Property, property.Value, property.ValueOriginal));
+                foreach (var property in MaterialTexturePropertyList.Where(x => x.ID == id && x.MaterialName == matName))
+                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(id, newMatName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal));
+
+                MaterialShaderList.AddRange(newAccessoryMaterialShaderList);
+                MaterialFloatPropertyList.AddRange(newAccessoryMaterialFloatPropertyList);
+                MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
+                MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
+            }
         }
 
         #region Set, Get, Remove methods
@@ -1521,6 +1586,37 @@ namespace KK_Plugins.MaterialEditor
             /// </summary>
             /// <returns></returns>
             public bool NullCheck() => ShaderName.IsNullOrEmpty() && RenderQueue == null;
+        }
+
+        /// <summary>
+        /// Data storage class for material copy info
+        /// </summary>
+        [Serializable]
+        [MessagePackObject]
+        public class MaterialCopy
+        {
+            /// <summary>
+            /// ID of the item
+            /// </summary>
+            [Key("ID")]
+            public int ID;
+            /// <summary>
+            /// Name of the material
+            /// </summary>
+            [Key("MaterialName")]
+            public string MaterialName;
+            /// <summary>
+            /// Name of the copy
+            /// </summary>
+            [Key("MaterialCopyName")]
+            public string MaterialCopyName;
+
+            public MaterialCopy(int id, string materialName, string materialCopyName)
+            {
+                ID = id;
+                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialCopyName = materialCopyName;
+            }
         }
     }
 }
