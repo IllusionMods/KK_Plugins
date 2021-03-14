@@ -723,19 +723,24 @@ namespace KK_Plugins.MaterialEditor
             ChaControl.StartCoroutine(LoadData(true, false, false));
         }
 
+#if !PH
         /// <summary>
         /// Ensure that clothing state changes are applied to all material copies
         /// </summary>
         internal void ChangeAlphaMaskEvent()
         {
-#if KK || EC
             if (ChaControl.customMatBody)
             {
-                for (int i = 0; i < ChaControl.rendBody.sharedMaterials.Length; i++)
+#if KK || EC
+                var rendBody = ChaControl.rendBody;
+#else
+                var rendBody = ChaControl.cmpBody.targetCustom.rendBody;
+#endif
+                for (int i = 0; i < rendBody.sharedMaterials.Length; i++)
                 {
-                    var mat = ChaControl.rendBody.sharedMaterials[i];
-                    mat.SetFloat(ChaShader._alpha_a, ChaControl.customMatBody.GetFloat(ChaShader._alpha_a));
-                    mat.SetFloat(ChaShader._alpha_b, ChaControl.customMatBody.GetFloat(ChaShader._alpha_b));
+                    var mat = rendBody.sharedMaterials[i];
+                    mat.SetFloat("_alpha_a", ChaControl.customMatBody.GetFloat("_alpha_a"));
+                    mat.SetFloat("_alpha_b", ChaControl.customMatBody.GetFloat("_alpha_b"));
                 }
 
                 if (ChaControl.rendBra != null)
@@ -749,14 +754,15 @@ namespace KK_Plugins.MaterialEditor
                                 var mat = ChaControl.rendBra[j].materials[i];
                                 if (mat != null)
                                 {
-                                    mat.SetFloat(ChaShader._alpha_a, ChaControl.customMatBody.GetFloat(ChaShader._alpha_a));
-                                    mat.SetFloat(ChaShader._alpha_b, ChaControl.customMatBody.GetFloat(ChaShader._alpha_b));
+                                    mat.SetFloat("_alpha_a", ChaControl.customMatBody.GetFloat("_alpha_a"));
+                                    mat.SetFloat("_alpha_b", ChaControl.customMatBody.GetFloat("_alpha_b"));
                                 }
                             }
                         }
                     }
                 }
 
+#if KK || EC
                 if (ChaControl.rendInner != null)
                 {
                     for (int j = 0; j < 2; j++)
@@ -775,16 +781,17 @@ namespace KK_Plugins.MaterialEditor
                         }
                     }
                 }
-            }
 #endif
+            }
         }
+#endif
 
+#if KK || EC
         /// <summary>
         /// Ensure that mask textures are applied to all material copies
         /// </summary>
         internal void ChangeTopEvent()
         {
-#if KK || EC
             if (ChaControl.customMatBody)
             {
                 for (int i = 0; i < ChaControl.rendBody.sharedMaterials.Length; i++)
@@ -829,8 +836,8 @@ namespace KK_Plugins.MaterialEditor
                     }
                 }
             }
-#endif
         }
+#endif
 
         internal void CoordinateChangeEvent()
         {
