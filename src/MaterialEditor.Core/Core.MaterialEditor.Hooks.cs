@@ -1,10 +1,12 @@
 ﻿using HarmonyLib;
 using KKAPI.Maker;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 #if AI || HS2
 using AIChara;
 #elif KK
@@ -190,6 +192,25 @@ namespace KK_Plugins.MaterialEditor
             if (controller != null)
                 controller.ChangeAlphaMaskEvent();
         }
+
+#if KK || EC
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopAsync))]
+        private static void ChangeClothesTopAsyncPostfix(ChaControl __instance, ref IEnumerator __result)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+            {
+                var original = __result;
+                __result = new[] { original, Postfix() }.GetEnumerator();
+            }
+
+            IEnumerator Postfix()
+            {
+                controller.ChangeTopEvent();
+                yield break;
+            }
+        }
+#endif
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
         private static void SetClothesStatePostfix(ChaControl __instance)

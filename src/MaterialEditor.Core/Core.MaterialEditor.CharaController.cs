@@ -1,4 +1,5 @@
 ﻿using ExtensibleSaveFormat;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -728,7 +729,6 @@ namespace KK_Plugins.MaterialEditor
         internal void ChangeAlphaMaskEvent()
         {
 #if KK || EC
-            var alpha_a = ChaControl.customMatBody.GetFloat(ChaShader._alpha_a);
             if (ChaControl.customMatBody)
             {
                 for (int i = 0; i < ChaControl.rendBody.sharedMaterials.Length; i++)
@@ -770,6 +770,59 @@ namespace KK_Plugins.MaterialEditor
                                 {
                                     mat.SetFloat(ChaShader._alpha_a, ChaControl.customMatBody.GetFloat(ChaShader._alpha_a));
                                     mat.SetFloat(ChaShader._alpha_b, ChaControl.customMatBody.GetFloat(ChaShader._alpha_b));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Ensure that mask textures are applied to all material copies
+        /// </summary>
+        internal void ChangeTopEvent()
+        {
+#if KK || EC
+            if (ChaControl.customMatBody)
+            {
+                for (int i = 0; i < ChaControl.rendBody.sharedMaterials.Length; i++)
+                {
+                    var mat = ChaControl.rendBody.sharedMaterials[i];
+                    mat.SetTexture(ChaShader._AlphaMask, Traverse.Create(ChaControl).Property("texBodyAlphaMask").GetValue() as Texture);
+                }
+
+                if (ChaControl.rendBra != null)
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        if (ChaControl.rendBra[j] != null)
+                        {
+                            for (int i = 0; i < ChaControl.rendBra[j].materials.Length; i++)
+                            {
+                                var mat = ChaControl.rendBra[j].materials[i];
+                                if (mat != null)
+                                {
+                                    mat.SetTexture(ChaShader._AlphaMask, Traverse.Create(ChaControl).Property("texBraAlphaMask").GetValue() as Texture);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (ChaControl.rendInner != null)
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        if (ChaControl.rendInner[j] != null)
+                        {
+                            for (int i = 0; i < ChaControl.rendInner[j].materials.Length; i++)
+                            {
+                                var mat = ChaControl.rendInner[j].materials[i];
+                                if (mat != null)
+                                {
+                                    mat.SetTexture(ChaShader._AlphaMask, ChaControl.texInnerAlphaMask);
                                 }
                             }
                         }
