@@ -187,6 +187,16 @@ namespace MaterialEditorAPI
                             text.color = Color.black;
                         }
 
+                        if (item.MaterialName.Contains(MaterialAPI.MaterialCopyPostfix))
+                        {
+                            Text text = MaterialCopyRemove.GetComponentInChildren<Text>();
+                            text.text = "Remove Material";
+                        }
+                        else
+                        {
+                            Text text = MaterialCopyRemove.GetComponentInChildren<Text>();
+                            text.text = "Copy Material";
+                        }
                         MaterialCopyRemove.onClick.RemoveAllListeners();
                         MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
 

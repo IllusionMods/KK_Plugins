@@ -182,7 +182,6 @@ namespace MaterialEditorAPI
                 var copyLE = copy.gameObject.AddComponent<LayoutElement>();
                 copyLE.preferredWidth = ButtonWidth;
                 copyLE.flexibleWidth = 0;
-                copy.gameObject.SetActive(false);
             }
 
             //Material Shader

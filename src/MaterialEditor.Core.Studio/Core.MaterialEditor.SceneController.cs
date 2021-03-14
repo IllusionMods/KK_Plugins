@@ -555,6 +555,11 @@ namespace KK_Plugins.MaterialEditor
                     SetMaterialTextureScale(id, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, setProperty);
             }
         }
+        public void MaterialCopyRemove(int id, Material material, GameObject go, bool setProperty = true)
+        {
+            CopyMaterial(go, material.NameFormatted());
+
+        }
 
         #region Set, Get, Remove methods
         /// <summary>

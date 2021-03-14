@@ -183,6 +183,14 @@ namespace KK_Plugins.MaterialEditor
             controller.ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);
         }
 #else
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAlphaMask))]
+        private static void ChangeAlphaMaskPostfix(ChaControl __instance)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+                controller.ChangeAlphaMaskEvent();
+        }
+
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
         private static void SetClothesStatePostfix(ChaControl __instance)
         {

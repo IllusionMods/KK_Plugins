@@ -298,7 +298,7 @@ namespace MaterialEditorAPI
                 };
                 materialItem.MaterialOnCopyRemove = () =>
                 {
-                    CopyMaterial(go, materialName);
+                    MaterialCopyRemove(data, mat, go);
                     PopulateList(go, data, filter);
                 };
                 items.Add(materialItem);
@@ -499,6 +499,7 @@ namespace MaterialEditorAPI
 
         public abstract void MaterialCopyEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialPasteEdits(object data, Material material, GameObject gameObject);
+        public abstract void MaterialCopyRemove(object data, Material material, GameObject gameObject);
 
         public abstract string GetMaterialShaderNameOriginal(object data, Material material, GameObject gameObject);
         public abstract void SetMaterialShaderName(object data, Material material, string value, GameObject gameObject);

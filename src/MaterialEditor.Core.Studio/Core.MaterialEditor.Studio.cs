@@ -427,6 +427,16 @@ namespace KK_Plugins.MaterialEditor
             else
                 GetSceneController().MaterialPasteEdits((int)data, material);
         }
+        public override void MaterialCopyRemove(object data, Material material, GameObject go)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = go.GetComponentInParent<ChaControl>();
+                MaterialEditorPlugin.GetCharaController(chaControl).MaterialCopyRemove(objectData.Slot, objectData.ObjectType, material, go);
+            }
+            else
+                GetSceneController().MaterialCopyRemove((int)data, material, go);
+        }
 
         public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go)
         {

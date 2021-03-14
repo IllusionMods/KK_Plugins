@@ -65,8 +65,11 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="gameObject">GameObject for which to copy materials</param>
         /// <param name="materialName">Name of the material</param>
-        public static void CopyMaterial(GameObject gameObject, string materialName)
+        /// <param name="materialCopyName">Name for the new copy, leave blank to auto generate a name</param>
+        /// <returns>Name of the new copy</returns>
+        public static string CopyMaterial(GameObject gameObject, string materialName, string materialCopyName = "")
         {
+            string newMatName = materialCopyName;
             foreach (var renderer in GetRendererList(gameObject))
             {
                 var materials = GetMaterials(gameObject, renderer);
@@ -84,6 +87,10 @@ namespace MaterialEditorAPI
                             originalMat = mat;
                             newMats.Add(mat);
                         }
+                        else if (newMatName != "" && mat.NameFormatted() == newMatName)
+                        {
+                            return newMatName;
+                        }
                         else if (originalMat != null && !copyAdded)
                         {
                             if (mat.NameFormatted().Contains(materialName + MaterialCopyPostfix))
@@ -100,7 +107,9 @@ namespace MaterialEditorAPI
                             {
                                 //Add the new copy after any other copies
                                 Material newMat = Object.Instantiate(originalMat);
-                                newMat.name = $"{materialName}{MaterialCopyPostfix}{copyCount + 1}";
+                                if (newMatName == "")
+                                    newMatName = $"{materialName}{MaterialCopyPostfix}{copyCount + 1}";
+                                newMat.name = newMatName;
                                 newMats.Add(newMat);
                                 copyAdded = true;
                             }
@@ -114,13 +123,16 @@ namespace MaterialEditorAPI
                     if (!copyAdded)
                     {
                         Material newMat = Object.Instantiate(originalMat);
-                        newMat.name = $"{materialName}{MaterialCopyPostfix}{copyCount + 1}";
+                        if (newMatName == "")
+                            newMatName = $"{materialName}{MaterialCopyPostfix}{copyCount + 1}";
+                        newMat.name = newMatName;
                         newMats.Add(newMat);
                     }
 
                     SetMaterials(gameObject, renderer, newMats.ToArray());
                 }
             }
+            return newMatName;
         }
 
         /// <summary>
@@ -138,6 +150,24 @@ namespace MaterialEditorAPI
                     List<Material> newMats = new List<Material>();
                     foreach (var mat in materials)
                         if (!mat.NameFormatted().Contains(MaterialCopyPostfix))
+                            newMats.Add(mat);
+
+                    SetMaterials(gameObject, renderer, newMats.ToArray());
+                }
+            }
+        }
+
+        public static void RemoveMaterial(GameObject gameObject, Material material)
+        {
+            foreach (var renderer in GetRendererList(gameObject))
+            {
+                var materials = GetMaterials(gameObject, renderer);
+
+                if (materials.Any(x => x != null && x.NameFormatted() == material.NameFormatted()))
+                {
+                    List<Material> newMats = new List<Material>();
+                    foreach (var mat in materials)
+                        if (mat.NameFormatted() != material.NameFormatted())
                             newMats.Add(mat);
 
                     SetMaterials(gameObject, renderer, newMats.ToArray());
