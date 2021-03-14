@@ -87,14 +87,17 @@ namespace MaterialEditorAPI
                             originalMat = mat;
                             newMats.Add(mat);
                         }
-                        else if (newMatName != "" && mat.NameFormatted() == newMatName)
+                        else if (mat.NameFormatted().StartsWith(materialName + MaterialCopyPostfix))
                         {
-                            return newMatName;
-                        }
-                        else if (originalMat != null && !copyAdded)
-                        {
-                            if (mat.NameFormatted().Contains(materialName + MaterialCopyPostfix))
+                            if (newMatName != "" && mat.NameFormatted() == newMatName)
                             {
+                                //Copy already exists
+                                newMats.Add(mat);
+                                copyAdded = true;
+                            }
+                            else
+                            {
+                                //Find the number of the other copies to avoid ID conflict
                                 string copyNumber = mat.NameFormatted().Replace(materialName + MaterialCopyPostfix, "");
 
                                 if (int.TryParse(copyNumber, out int copyNumberInt))
@@ -102,16 +105,6 @@ namespace MaterialEditorAPI
                                 else
                                     copyCount++;
                                 newMats.Add(mat);
-                            }
-                            else
-                            {
-                                //Add the new copy after any other copies
-                                Material newMat = Object.Instantiate(originalMat);
-                                if (newMatName == "")
-                                    newMatName = $"{materialName}{MaterialCopyPostfix}{copyCount + 1}";
-                                newMat.name = newMatName;
-                                newMats.Add(newMat);
-                                copyAdded = true;
                             }
                         }
                         else
