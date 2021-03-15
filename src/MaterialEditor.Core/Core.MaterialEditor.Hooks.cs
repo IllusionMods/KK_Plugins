@@ -198,18 +198,21 @@ namespace KK_Plugins.MaterialEditor
 #else
                 var rendBody = __instance.cmpBody.targetCustom.rendBody;
 #endif
-                for (int i = 0; i < rendBody.sharedMaterials.Length; i++)
+                if (rendBody.sharedMaterials.Length > 1)
                 {
-                    var mat = rendBody.sharedMaterials[i];
-                    mat.SetFloat("_alpha_a", __instance.customMatBody.GetFloat("_alpha_a"));
-                    mat.SetFloat("_alpha_b", __instance.customMatBody.GetFloat("_alpha_b"));
+                    for (int i = 0; i < rendBody.sharedMaterials.Length; i++)
+                    {
+                        var mat = rendBody.sharedMaterials[i];
+                        mat.SetFloat("_alpha_a", __instance.customMatBody.GetFloat("_alpha_a"));
+                        mat.SetFloat("_alpha_b", __instance.customMatBody.GetFloat("_alpha_b"));
+                    }
                 }
 
                 if (__instance.rendBra != null)
                 {
                     for (int j = 0; j < 2; j++)
                     {
-                        if (__instance.rendBra[j] != null)
+                        if (__instance.rendBra[j] != null && __instance.rendBra[j].materials.Length > 1)
                         {
                             for (int i = 0; i < __instance.rendBra[j].materials.Length; i++)
                             {
@@ -229,7 +232,7 @@ namespace KK_Plugins.MaterialEditor
                 {
                     for (int j = 0; j < 2; j++)
                     {
-                        if (__instance.rendInner[j] != null)
+                        if (__instance.rendInner[j] != null && __instance.rendInner[j].materials.Length > 1)
                         {
                             for (int i = 0; i < __instance.rendInner[j].materials.Length; i++)
                             {
@@ -370,45 +373,45 @@ namespace KK_Plugins.MaterialEditor
 
             IEnumerator Postfix()
             {
-                if (__instance.customMatBody)
+                if (__instance.rendBody.sharedMaterials.Length > 1)
                 {
                     for (int i = 0; i < __instance.rendBody.sharedMaterials.Length; i++)
                     {
                         var mat = __instance.rendBody.sharedMaterials[i];
                         mat.SetTexture(ChaShader._AlphaMask, Traverse.Create(__instance).Property("texBodyAlphaMask").GetValue() as Texture);
                     }
+                }
 
-                    if (__instance.rendBra != null)
+                if (__instance.rendBra != null)
+                {
+                    for (int j = 0; j < 2; j++)
                     {
-                        for (int j = 0; j < 2; j++)
+                        if (__instance.rendBra[j] != null && __instance.rendBra[j].materials.Length > 1)
                         {
-                            if (__instance.rendBra[j] != null)
+                            for (int i = 0; i < __instance.rendBra[j].materials.Length; i++)
                             {
-                                for (int i = 0; i < __instance.rendBra[j].materials.Length; i++)
+                                var mat = __instance.rendBra[j].materials[i];
+                                if (mat != null)
                                 {
-                                    var mat = __instance.rendBra[j].materials[i];
-                                    if (mat != null)
-                                    {
-                                        mat.SetTexture(ChaShader._AlphaMask, Traverse.Create(__instance).Property("texBraAlphaMask").GetValue() as Texture);
-                                    }
+                                    mat.SetTexture(ChaShader._AlphaMask, Traverse.Create(__instance).Property("texBraAlphaMask").GetValue() as Texture);
                                 }
                             }
                         }
                     }
+                }
 
-                    if (__instance.rendInner != null)
+                if (__instance.rendInner != null)
+                {
+                    for (int j = 0; j < 2; j++)
                     {
-                        for (int j = 0; j < 2; j++)
+                        if (__instance.rendInner[j] != null && __instance.rendInner[j].materials.Length > 1)
                         {
-                            if (__instance.rendInner[j] != null)
+                            for (int i = 0; i < __instance.rendInner[j].materials.Length; i++)
                             {
-                                for (int i = 0; i < __instance.rendInner[j].materials.Length; i++)
+                                var mat = __instance.rendInner[j].materials[i];
+                                if (mat != null)
                                 {
-                                    var mat = __instance.rendInner[j].materials[i];
-                                    if (mat != null)
-                                    {
-                                        mat.SetTexture(ChaShader._AlphaMask, __instance.texInnerAlphaMask);
-                                    }
+                                    mat.SetTexture(ChaShader._AlphaMask, __instance.texInnerAlphaMask);
                                 }
                             }
                         }
@@ -424,7 +427,7 @@ namespace KK_Plugins.MaterialEditor
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), "UpdateSiru")]
         private static void ChaControl_UpdateSiru_Postfix(ChaControl __instance)
         {
-            if (__instance.customMatFace && __instance.rendFace)
+            if (__instance.customMatFace && __instance.rendFace && __instance.rendFace.sharedMaterials.Length > 1)
             {
                 for (int i = 0; i < __instance.rendFace.sharedMaterials.Length; i++)
                 {
@@ -433,7 +436,7 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 
-            if (__instance.customMatBody && __instance.rendBody)
+            if (__instance.customMatBody && __instance.rendBody && __instance.rendBody.sharedMaterials.Length > 1)
             {
                 for (int i = 0; i < __instance.rendBody.sharedMaterials.Length; i++)
                 {
