@@ -185,12 +185,66 @@ namespace KK_Plugins.MaterialEditor
             controller.ChangeHairEvent((int)Character.HAIR_TYPE.SIDE);
         }
 #else
+        /// <summary>
+        /// Apply clothing state changes to all material copies
+        /// </summary>
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAlphaMask))]
         private static void ChangeAlphaMaskPostfix(ChaControl __instance)
         {
-            var controller = MaterialEditorPlugin.GetCharaController(__instance);
-            if (controller != null)
-                controller.ChangeAlphaMaskEvent();
+            if (__instance.customMatBody)
+            {
+#if KK || EC
+                var rendBody = __instance.rendBody;
+#else
+                var rendBody = __instance.cmpBody.targetCustom.rendBody;
+#endif
+                for (int i = 0; i < rendBody.sharedMaterials.Length; i++)
+                {
+                    var mat = rendBody.sharedMaterials[i];
+                    mat.SetFloat("_alpha_a", __instance.customMatBody.GetFloat("_alpha_a"));
+                    mat.SetFloat("_alpha_b", __instance.customMatBody.GetFloat("_alpha_b"));
+                }
+
+                if (__instance.rendBra != null)
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        if (__instance.rendBra[j] != null)
+                        {
+                            for (int i = 0; i < __instance.rendBra[j].materials.Length; i++)
+                            {
+                                var mat = __instance.rendBra[j].materials[i];
+                                if (mat != null)
+                                {
+                                    mat.SetFloat("_alpha_a", __instance.customMatBody.GetFloat("_alpha_a"));
+                                    mat.SetFloat("_alpha_b", __instance.customMatBody.GetFloat("_alpha_b"));
+                                }
+                            }
+                        }
+                    }
+                }
+
+#if KK || EC
+                if (__instance.rendInner != null)
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        if (__instance.rendInner[j] != null)
+                        {
+                            for (int i = 0; i < __instance.rendInner[j].materials.Length; i++)
+                            {
+                                var mat = __instance.rendInner[j].materials[i];
+                                if (mat != null)
+                                {
+                                    mat.SetFloat(ChaShader._alpha_a, __instance.customMatBody.GetFloat(ChaShader._alpha_a));
+                                    mat.SetFloat(ChaShader._alpha_b, __instance.customMatBody.GetFloat(ChaShader._alpha_b));
+                                }
+                            }
+                        }
+                    }
+                }
+#endif
+            }
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetClothesState))]
@@ -301,6 +355,9 @@ namespace KK_Plugins.MaterialEditor
             controller.RefreshClothesMainTex();
         }
 
+        /// <summary>
+        /// Apply mask textures to all material copies
+        /// </summary>
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopAsync))]
         private static void ChangeClothesTopAsyncPostfix(ChaControl __instance, ref IEnumerator __result)
         {
@@ -313,23 +370,84 @@ namespace KK_Plugins.MaterialEditor
 
             IEnumerator Postfix()
             {
-                controller.ChangeTopEvent();
+                if (__instance.customMatBody)
+                {
+                    for (int i = 0; i < __instance.rendBody.sharedMaterials.Length; i++)
+                    {
+                        var mat = __instance.rendBody.sharedMaterials[i];
+                        mat.SetTexture(ChaShader._AlphaMask, Traverse.Create(__instance).Property("texBodyAlphaMask").GetValue() as Texture);
+                    }
+
+                    if (__instance.rendBra != null)
+                    {
+                        for (int j = 0; j < 2; j++)
+                        {
+                            if (__instance.rendBra[j] != null)
+                            {
+                                for (int i = 0; i < __instance.rendBra[j].materials.Length; i++)
+                                {
+                                    var mat = __instance.rendBra[j].materials[i];
+                                    if (mat != null)
+                                    {
+                                        mat.SetTexture(ChaShader._AlphaMask, Traverse.Create(__instance).Property("texBraAlphaMask").GetValue() as Texture);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (__instance.rendInner != null)
+                    {
+                        for (int j = 0; j < 2; j++)
+                        {
+                            if (__instance.rendInner[j] != null)
+                            {
+                                for (int i = 0; i < __instance.rendInner[j].materials.Length; i++)
+                                {
+                                    var mat = __instance.rendInner[j].materials[i];
+                                    if (mat != null)
+                                    {
+                                        mat.SetTexture(ChaShader._AlphaMask, __instance.texInnerAlphaMask);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 yield break;
             }
         }
 
+        /// <summary>
+        /// Apply juice to all material copies
+        /// </summary>
         [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), "UpdateSiru")]
         private static void ChaControl_UpdateSiru_Postfix(ChaControl __instance)
         {
-            var controller = MaterialEditorPlugin.GetCharaController(__instance);
-            if (controller != null)
+            if (__instance.customMatFace && __instance.rendFace)
             {
-                controller.UpdateSiruEvent();
+                for (int i = 0; i < __instance.rendFace.sharedMaterials.Length; i++)
+                {
+                    var mat = __instance.rendFace.sharedMaterials[i];
+                    mat.SetFloat("_liquidface", __instance.customMatBody.GetFloat("_liquidface"));
+                }
+            }
+
+            if (__instance.customMatBody && __instance.rendBody)
+            {
+                for (int i = 0; i < __instance.rendBody.sharedMaterials.Length; i++)
+                {
+                    var mat = __instance.rendBody.sharedMaterials[i];
+                    mat.SetFloat("_liquidftop", __instance.customMatBody.GetFloat("_liquidftop"));
+                    mat.SetFloat("_liquidfbot", __instance.customMatBody.GetFloat("_liquidfbot"));
+                    mat.SetFloat("_liquidbtop", __instance.customMatBody.GetFloat("_liquidbtop"));
+                    mat.SetFloat("_liquidbbot", __instance.customMatBody.GetFloat("_liquidbbot"));
+                }
             }
         }
 
         /// <summary>
-        /// Set all eye materials to track properly
+        /// Apply eye tracking to all material copies
         /// </summary>
         [HarmonyPostfix, HarmonyPatch(typeof(EyeLookMaterialControll), "Update")]
         private static void EyeLookMaterialControll_Update_Postfix(EyeLookMaterialControll __instance, Material ____material)
