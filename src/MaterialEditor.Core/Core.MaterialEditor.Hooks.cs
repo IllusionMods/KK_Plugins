@@ -327,6 +327,28 @@ namespace KK_Plugins.MaterialEditor
                 controller.UpdateSiruEvent();
             }
         }
+
+        /// <summary>
+        /// Set all eye materials to track properly
+        /// </summary>
+        [HarmonyPostfix, HarmonyPatch(typeof(EyeLookMaterialControll), "Update")]
+        private static void EyeLookMaterialControll_Update_Postfix(EyeLookMaterialControll __instance, Material ____material)
+        {
+            if (__instance._renderer.sharedMaterials.Length == 1)
+                return;
+
+            for (int i = 0; i < __instance.texStates.Length; i++)
+            {
+                var texState = __instance.texStates[i];
+
+                for (int j = 0; j < __instance._renderer.sharedMaterials.Length; j++)
+                {
+                    var mat = __instance._renderer.sharedMaterials[j];
+                    mat.SetTextureOffset(texState.texID, ____material.GetTextureOffset(texState.texID));
+                    mat.SetTextureScale(texState.texID, ____material.GetTextureScale(texState.texID));
+                }
+            }
+        }
 #endif
 #endif
 
