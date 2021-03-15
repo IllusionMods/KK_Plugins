@@ -535,6 +535,10 @@ namespace KK_Plugins.MaterialEditor
                 yield return null;
 
             CorrectTongue();
+#if KK
+            if (KKAPI.Studio.StudioAPI.InsideStudio)
+                CorrectFace();
+#endif
 
             //Instantiate all material copies before applying any edits to endure edits are applied to copies
             for (var i = 0; i < MaterialCopyList.Count; i++)
@@ -654,6 +658,23 @@ namespace KK_Plugins.MaterialEditor
             }
 #endif
         }
+
+#if KK
+        /// <summary>
+        /// Force reload face textures
+        /// </summary>
+        private void CorrectFace()
+        {
+            ChaControl.ChangeSettingEyebrow();
+            ChaControl.ChangeSettingEye(true, true, true);
+            ChaControl.ChangeSettingEyeHiUp();
+            ChaControl.ChangeSettingEyeHiDown();
+            ChaControl.ChangeSettingEyelineUp();
+            ChaControl.ChangeSettingEyelineDown();
+            ChaControl.ChangeSettingWhiteOfEye(true, true);
+            ChaControl.ChangeSettingNose();
+        }
+#endif
 
 #if KK || EC
         private void RemoveRim()
