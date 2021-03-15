@@ -429,7 +429,7 @@ namespace KK_Plugins.MaterialEditor
                 for (int i = 0; i < __instance.rendFace.sharedMaterials.Length; i++)
                 {
                     var mat = __instance.rendFace.sharedMaterials[i];
-                    mat.SetFloat("_liquidface", __instance.customMatBody.GetFloat("_liquidface"));
+                    mat.SetFloat("_liquidface", __instance.customMatFace.GetFloat("_liquidface"));
                 }
             }
 
