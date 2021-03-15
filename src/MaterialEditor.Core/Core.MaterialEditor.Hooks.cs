@@ -373,16 +373,18 @@ namespace KK_Plugins.MaterialEditor
 
             IEnumerator Postfix()
             {
-                if (__instance.rendBody.sharedMaterials.Length > 1)
+                var bodyAlphaMask = Traverse.Create(__instance).Property("texBodyAlphaMask").GetValue() as Texture;
+                if (__instance.rendBody.sharedMaterials.Length > 1 && bodyAlphaMask != null)
                 {
                     for (int i = 0; i < __instance.rendBody.sharedMaterials.Length; i++)
                     {
                         var mat = __instance.rendBody.sharedMaterials[i];
-                        mat.SetTexture(ChaShader._AlphaMask, Traverse.Create(__instance).Property("texBodyAlphaMask").GetValue() as Texture);
+                        mat.SetTexture(ChaShader._AlphaMask, bodyAlphaMask);
                     }
                 }
 
-                if (__instance.rendBra != null)
+                var braAlphaMask = Traverse.Create(__instance).Property("texBraAlphaMask").GetValue() as Texture;
+                if (__instance.rendBra != null && braAlphaMask != null)
                 {
                     for (int j = 0; j < 2; j++)
                     {
@@ -393,14 +395,14 @@ namespace KK_Plugins.MaterialEditor
                                 var mat = __instance.rendBra[j].materials[i];
                                 if (mat != null)
                                 {
-                                    mat.SetTexture(ChaShader._AlphaMask, Traverse.Create(__instance).Property("texBraAlphaMask").GetValue() as Texture);
+                                    mat.SetTexture(ChaShader._AlphaMask, braAlphaMask);
                                 }
                             }
                         }
                     }
                 }
 
-                if (__instance.rendInner != null)
+                if (__instance.rendInner != null && __instance.texInnerAlphaMask != null)
                 {
                     for (int j = 0; j < 2; j++)
                     {
