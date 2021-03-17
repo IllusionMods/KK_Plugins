@@ -132,7 +132,10 @@ namespace KK_Plugins.MaterialEditor
                     if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
                     {
                         CopyMaterial(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.MaterialCopyName);
-                        MaterialCopyList.Add(new MaterialCopy(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.MaterialCopyName));
+                        var id = MEStudio.GetObjectID(objectCtrlInfo);
+                        if (MaterialCopyList.Any(x => x.ID == id && x.MaterialName == loadedProperty.MaterialName && x.MaterialCopyName == loadedProperty.MaterialCopyName))
+                            continue;
+                        MaterialCopyList.Add(new MaterialCopy(id, loadedProperty.MaterialName, loadedProperty.MaterialCopyName));
                     }
                 }
             }
@@ -243,8 +246,10 @@ namespace KK_Plugins.MaterialEditor
                     {
                         var loadedProperty = MaterialCopyList[i];
                         if (loadedProperty.ID == copiedItem.Key)
+                        {
                             CopyMaterial(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.MaterialCopyName);
-                        materialCopyListNew.Add(new MaterialCopy(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.MaterialCopyName));
+                            materialCopyListNew.Add(new MaterialCopy(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.MaterialCopyName));
+                        }
                     }
 
                     for (var i = 0; i < MaterialShaderList.Count; i++)
