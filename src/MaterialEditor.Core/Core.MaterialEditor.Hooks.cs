@@ -481,7 +481,15 @@ namespace KK_Plugins.MaterialEditor
         {
             var controller = MaterialEditorPlugin.GetCharaController(__instance);
             if (controller != null)
-                controller.CoordinateChangeEvent();
+                controller.CoordinateChanging = true;
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
+        private static void ChangeCoordinateTypePostfix(ChaControl __instance)
+        {
+            var controller = MaterialEditorPlugin.GetCharaController(__instance);
+            if (controller != null)
+                controller.CoordinateChangedEvent();
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(CvsClothesCopy), "CopyClothes")]
