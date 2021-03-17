@@ -4,6 +4,7 @@ using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using MaterialEditorAPI;
+using System.Collections;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
@@ -47,6 +48,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public static MEMaker Instance;
 
+        public static MakerButton MaterialEditorButton;
         internal static int currentHairIndex;
         internal static int currentClothesIndex;
 
@@ -55,6 +57,22 @@ namespace KK_Plugins.MaterialEditor
             Instance = this;
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
+            MakerAPI.MakerFinishedLoading += (s, e) => ToggleButtonVisibility();
+            MakerAPI.ReloadCustomInterface += (s, e) =>
+            {
+                StartCoroutine(Wait());
+                IEnumerator Wait()
+                {
+                    yield return null;
+                    ToggleButtonVisibility();
+                }
+            };
+            AccessoriesApi.SelectedMakerAccSlotChanged += (s, e) => ToggleButtonVisibility();
+            AccessoriesApi.AccessoryKindChanged += (s, e) => ToggleButtonVisibility();
+            AccessoriesApi.AccessoryTransferred += (s, e) => ToggleButtonVisibility();
+#if KK
+            AccessoriesApi.AccessoriesCopied  += (s,e)=> ToggleButtonVisibility();
+#endif
 
             Harmony.CreateAndPatchAll(typeof(MakerHooks));
         }
@@ -64,9 +82,9 @@ namespace KK_Plugins.MaterialEditor
             InitUI();
 
 #if KK || EC
-            var window = MakerAPI.AddAccessoryWindowControl(new MakerButton("Material Editor", null, this));
-            window.GroupingID = "Buttons";
-            window.OnClick.AddListener(UpdateUIAccessory);
+            MaterialEditorButton = MakerAPI.AddAccessoryWindowControl(new MakerButton("Material Editor", null, this));
+            MaterialEditorButton.GroupingID = "Buttons";
+            MaterialEditorButton.OnClick.AddListener(UpdateUIAccessory);
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Body.All, this)).OnClick.AddListener(() => UpdateUICharacter("body"));
             e.AddControl(new MakerButton("Material Editor (Body)", MakerConstants.Face.All, this)).OnClick.AddListener(() => UpdateUICharacter("body"));
             e.AddControl(new MakerButton("Material Editor (Face)", MakerConstants.Face.All, this)).OnClick.AddListener(() => UpdateUICharacter("face"));
@@ -97,7 +115,8 @@ namespace KK_Plugins.MaterialEditor
 #endif
 
 #if PH
-            MakerAPI.AddAccessoryWindowControl(new MakerButton("Material Editor", null, this)).OnClick.AddListener(UpdateUIAccessory);
+            MaterialEditorButton = MakerAPI.AddAccessoryWindowControl(new MakerButton("Material Editor", null, this));
+            MaterialEditorButton.OnClick.AddListener(UpdateUIAccessory);
             e.AddControl(new MakerButton("Material Editor (Body)", MakerConstants.Body.General, this)).OnClick.AddListener(() => UpdateUICharacter("body"));
             e.AddControl(new MakerButton("Material Editor (All)", MakerConstants.Body.General, this)).OnClick.AddListener(() => UpdateUICharacter());
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Body.Nail, this)).OnClick.AddListener(() => UpdateUICharacter("nail"));
@@ -134,9 +153,9 @@ namespace KK_Plugins.MaterialEditor
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
         {
 #if AI || HS2
-            var window = MakerAPI.AddAccessoryWindowControl(new MakerButton("Material Editor", null, this));
-            window.GroupingID = "Buttons";
-            window.OnClick.AddListener(UpdateUIAccessory);
+            MaterialEditorButton = MakerAPI.AddAccessoryWindowControl(new MakerButton("Material Editor", null, this));
+            MaterialEditorButton.GroupingID = "Buttons";
+            MaterialEditorButton.OnClick.AddListener(UpdateUIAccessory);
             e.AddControl(new MakerButton("Material Editor (Body)", MakerConstants.Body.All, this)).OnClick.AddListener(() => UpdateUICharacter("body"));
             e.AddControl(new MakerButton("Material Editor (Head)", MakerConstants.Body.All, this)).OnClick.AddListener(() => UpdateUICharacter("head"));
             e.AddControl(new MakerButton("Material Editor (All)", MakerConstants.Body.All, this)).OnClick.AddListener(() => UpdateUICharacter());
@@ -164,6 +183,22 @@ namespace KK_Plugins.MaterialEditor
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.HL, this)).OnClick.AddListener(() => UpdateUICharacter("eyebase,eyeshadow"));
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eyelashes, this)).OnClick.AddListener(() => UpdateUICharacter("eyelashes"));
 #endif
+        }
+
+        public static void ToggleButtonVisibility()
+        {
+            if (!MakerAPI.InsideMaker || MaterialEditorButton == null)
+                return;
+
+            var accessory = MakerAPI.GetCharacterControl().GetAccessoryObject(AccessoriesApi.SelectedMakerAccSlot);
+            if (accessory == null)
+            {
+                MaterialEditorButton.Visible.OnNext(false);
+            }
+            else
+            {
+                MaterialEditorButton.Visible.OnNext(true);
+            }
         }
 
         /// <summary>
