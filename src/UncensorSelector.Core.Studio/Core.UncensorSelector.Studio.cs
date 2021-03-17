@@ -122,12 +122,9 @@ namespace KK_Plugins
                     else
                     {
                         var guid = ballsList[value];
-                        if (controller.BallsData?.BallsGUID != guid)
-                        {
-                            controller.BallsGUID = guid;
-                            controller.DisplayBalls = true;
-                            controller.UpdateUncensor();
-                        }
+                        controller.BallsGUID = guid;
+                        controller.DisplayBalls = true;
+                        controller.UpdateUncensor();
                     }
                 }
             });
