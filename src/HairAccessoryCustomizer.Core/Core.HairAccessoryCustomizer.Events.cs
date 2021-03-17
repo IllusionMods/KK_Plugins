@@ -1,5 +1,6 @@
 ﻿using KKAPI.Maker;
 using KKAPI.Maker.UI;
+using System.Collections;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -115,6 +116,19 @@ namespace KK_Plugins
             {
                 controller.SetHairLength(eventArgs.NewValue, eventArgs.SlotIndex);
                 controller.UpdateAccessory(eventArgs.SlotIndex);
+            }
+        }
+
+        private void MakerAPI_MakerFinishedLoading(object sender, System.EventArgs e)
+        {
+            StartCoroutine(Wait());
+            IEnumerator Wait()
+            {
+                yield return null;
+                var controller = GetController(MakerAPI.GetCharacterControl());
+                bool hairAcc = controller.IsHairAccessory(AccessoriesApi.SelectedMakerAccSlot);
+
+                InitCurrentSlot(controller, hairAcc);
             }
         }
     }

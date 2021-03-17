@@ -42,6 +42,7 @@ namespace KK_Plugins
             CharacterApi.RegisterExtraBehaviour<HairAccessoryController>(GUID);
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
+            MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
 #if KK
@@ -51,6 +52,7 @@ namespace KK_Plugins
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
         }
+
         /// <summary>
         /// Hides the accessory color controls for the current slot
         /// </summary>
