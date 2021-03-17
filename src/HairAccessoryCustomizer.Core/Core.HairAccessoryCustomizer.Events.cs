@@ -125,10 +125,7 @@ namespace KK_Plugins
             IEnumerator Wait()
             {
                 yield return null;
-                var controller = GetController(MakerAPI.GetCharacterControl());
-                bool hairAcc = controller.IsHairAccessory(AccessoriesApi.SelectedMakerAccSlot);
-
-                InitCurrentSlot(controller, hairAcc);
+                InitCurrentSlot();
             }
         }
     }

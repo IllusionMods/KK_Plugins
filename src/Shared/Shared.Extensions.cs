@@ -65,6 +65,7 @@ namespace KK_Plugins
         public static GameObject GetHead(this Human human) => human.head.Obj;
         public static GameObject GetAccessory(this Human human, int index) => human.accessories.objAcs[index];
 #else
+        public static string GetCharacterName(this ChaControl chaControl) => chaControl.chaFile.parameter.fullname.Trim();
         public static GameObject[] GetClothes(this ChaControl chaControl) => chaControl.objClothes;
         public static GameObject GetClothes(this ChaControl chaControl, int index)
         {

@@ -325,10 +325,10 @@ namespace KK_Plugins.MaterialEditor
                         importDictionary[x.Key] = SetAndGetTextureID(x.Value);
 
                 //Debug for dumping all textures
-                //int counter = 0;
+                //int counter = 1;
                 //foreach (var tex in TextureDictionary.Values)
                 //{
-                //    string filename = Path.Combine(MaterialEditorPlugin.ExportPath, $"_Export_{ChaControl.chaFile.parameter.fullname.Trim()}_{counter}.png");
+                //    string filename = Path.Combine(MaterialEditorPlugin.ExportPath, $"_Export_{ChaControl.GetCharacterName()}_{counter}.png");
                 //    MaterialEditorPlugin.SaveTex(tex.Texture, filename);
                 //    MaterialEditorPlugin.Logger.LogInfo($"Exported {filename}");
                 //    counter++;
@@ -957,6 +957,9 @@ namespace KK_Plugins.MaterialEditor
 
         internal void ChangeAccessoryEvent(int slot, int type)
         {
+            if (MEMaker.Instance != null)
+                MEMaker.ToggleButtonVisibility();
+
 #if AI || HS2
             if (type != 350) return; //type 350 = no category, accessory being removed
 #elif KK || EC

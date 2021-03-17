@@ -34,6 +34,11 @@ namespace KK_Plugins
                 if (GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && ColorMatchToggle.GetSelectedValue())
                     Traverse.Create(AccessoriesApi.GetMakerAccessoryPageObject((int)__instance.slotNo).GetComponent<CvsAccessory>()).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
             }
+            [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessory), typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool))]
+            private static void ChangeAccessory()
+            {
+                InitCurrentSlot();
+            }
 #if KK
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
             private static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));

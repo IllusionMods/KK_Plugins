@@ -81,6 +81,16 @@ namespace KK_Plugins
         /// <summary>
         /// Sets up the visibility and values for the current slot
         /// </summary>
+        internal static void InitCurrentSlot()
+        {
+            var controller = GetController(MakerAPI.GetCharacterControl());
+            bool hairAcc = controller.IsHairAccessory(AccessoriesApi.SelectedMakerAccSlot);
+
+            InitCurrentSlot(controller, hairAcc);
+        }
+        /// <summary>
+        /// Sets up the visibility and values for the current slot
+        /// </summary>
         internal static void InitCurrentSlot(HairAccessoryController controller, bool hairAccessory)
         {
             if (!MakerAPI.InsideAndLoaded) return;
