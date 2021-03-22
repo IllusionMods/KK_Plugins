@@ -189,7 +189,7 @@ namespace KK_Plugins.DynamicBoneEditor
                         var dynamicBones = accessory.GetComponentsInChildren<DynamicBone>();
                         foreach (var dynamicBone in dynamicBones)
                         {
-                            if (dynamicBone.m_Root.name == dbData.BoneName)
+                            if (dynamicBone.m_Root != null && dynamicBone.m_Root.name == dbData.BoneName)
                             {
                                 if (dbData.FreezeAxis != null)
                                 {
