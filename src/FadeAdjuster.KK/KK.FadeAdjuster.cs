@@ -14,7 +14,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.fadeadjuster";
         public const string PluginName = "Fade Adjuster";
         public const string PluginNameInternal = "KK_FadeAdjuster";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
 
         private static bool UpdateColor;
 
@@ -40,16 +40,12 @@ namespace KK_Plugins
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(SimpleFade), "Update")]
-            private static bool SimpleFadeUpdate(SimpleFade __instance)
+            private static void SimpleFadeUpdate(SimpleFade __instance)
             {
                 if (UpdateColor)
                     __instance._Color = FadeColor.Value;
                 if (DisableFade.Value)
-                {
                     __instance.ForceEnd();
-                    return false;
-                }
-                return true;
             }
         }
     }
