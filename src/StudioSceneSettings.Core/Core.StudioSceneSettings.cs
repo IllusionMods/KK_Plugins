@@ -15,7 +15,7 @@ namespace KK_Plugins.StudioSceneSettings
         public const string GUID = "com.deathweasel.bepinex.studioscenesettings";
         public const string PluginName = "StudioSceneSettings";
         public const string PluginNameInternal = Constants.Prefix + "_StudioSceneSettings";
-        public const string Version = "1.3";
+        public const string Version = "1.3.1";
         internal static new ManualLogSource Logger;
 
 #if KK

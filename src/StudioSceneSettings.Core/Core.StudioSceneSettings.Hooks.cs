@@ -15,7 +15,10 @@ namespace KK_Plugins.StudioSceneSettings
             [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), "OnTriggerEnter")]
             private static void OnTriggerEnter(Collider other, ref List<Collider> ___listCollider)
             {
-                if (other == null) return;
+                if (other == null)
+                    return;
+                if (SceneController.MapMasking.Value == false)
+                    return;
                 if (!___listCollider.Contains(other))
                     ___listCollider.Add(other);
             }
@@ -23,7 +26,10 @@ namespace KK_Plugins.StudioSceneSettings
             [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), "OnTriggerStay")]
             private static void OnTriggerStay(Collider other, ref List<Collider> ___listCollider)
             {
-                if (other == null) return;
+                if (other == null)
+                    return;
+                if (SceneController.MapMasking.Value == false)
+                    return;
                 if (!___listCollider.Contains(other))
                     ___listCollider.Add(other);
             }

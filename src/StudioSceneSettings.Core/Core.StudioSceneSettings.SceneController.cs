@@ -19,12 +19,17 @@ namespace KK_Plugins.StudioSceneSettings
         public static SceneEffectsSliderSet FarClipPlane;
         public static SceneEffectsSliderSet ShadowDistance;
         private int CameraLayerDefault;
+        public static SceneController Instance;
 
 #if AI || HS2
         private GameObject studioCameraColliderControllerGO;
 #endif
 
-        private void Start() => SceneManager.sceneLoaded += InitStudioUI;
+        private void Start()
+        {
+            SceneManager.sceneLoaded += InitStudioUI;
+            Instance = this;
+        }
 
         /// <summary>
         /// Save the modified values to the scene extended data
