@@ -34,6 +34,7 @@ namespace MaterialEditorAPI
         public Button MaterialCopyButton;
         public Button MaterialPasteButton;
         public Button MaterialCopyRemove;
+        public Button MaterialCopyBody;
 
         public CanvasGroup ShaderPanel;
         public Text ShaderLabel;
@@ -199,6 +200,16 @@ namespace MaterialEditorAPI
                         }
                         MaterialCopyRemove.onClick.RemoveAllListeners();
                         MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
+
+                        if(item.ShaderName == "Shader Forge/main_skin")
+                        {
+                            MaterialCopyBody.onClick.RemoveAllListeners();
+                            MaterialCopyBody.onClick.AddListener(delegate { item.MaterialOnCopyBody.Invoke(); });
+                        }
+                        else
+                        {
+                            MaterialCopyBody.interactable = false;
+                        }
 
                         break;
                     case ItemInfo.RowItemType.Shader:

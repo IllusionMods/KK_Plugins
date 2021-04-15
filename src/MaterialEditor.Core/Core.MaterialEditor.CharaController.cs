@@ -1111,6 +1111,47 @@ namespace KK_Plugins.MaterialEditor
                     CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
             }
         }
+
+        public void MaterialCopyBody(int slot, ObjectType objectType, Material material, GameObject go)
+        {
+#if KK
+            var shaderData = XMLShaderProperties[material.shader.name];
+            foreach(var prop in shaderData.Values)
+            {
+                switch(prop.Type)
+                {
+                    case ShaderPropertyType.Float:
+                        SetMaterialFloatProperty(slot, objectType, material, prop.Name, ChaControl.customMatBody.GetFloat($"_{prop.Name}"), go);
+                        break;
+                    
+                    case ShaderPropertyType.Texture:
+                        var tex = ChaControl.customMatBody.GetTexture($"_{prop.Name}");
+                        if(tex != null)
+                        {
+                            var tmp = RenderTexture.GetTemporary(tex.width, tex.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default);
+                            var currentActiveRT = RenderTexture.active;
+                            RenderTexture.active = tmp;
+                            GL.Clear(false, true, new Color(0, 0, 0, 0));
+                            Graphics.Blit(tex, tmp);
+                            var tex2d = GetT2D(tmp).EncodeToPNG();
+                            RenderTexture.active = currentActiveRT;
+                            RenderTexture.ReleaseTemporary(tmp);
+                            
+                            SetMaterialTexture(slot, objectType, material, prop.Name, tex2d, go);
+                        }
+                        break;
+                    
+                    case ShaderPropertyType.Color:
+                        SetMaterialColorProperty(slot, objectType, material, prop.Name, ChaControl.customMatBody.GetColor($"_{prop.Name}"), go);
+                        break;
+                    
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+#endif
+        }
+        
         /// <summary>
         /// Paste any edits for the specified object
         /// </summary>

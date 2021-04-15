@@ -31,6 +31,7 @@ namespace MaterialEditorAPI
         public Action MaterialOnCopy { get; set; }
         public Action MaterialOnPaste { get; set; }
         public Action MaterialOnCopyRemove { get; set; }
+        public Action MaterialOnCopyBody { get; set; }
 
         public string ShaderName { get; set; }
         public string ShaderNameOriginal { get; set; }

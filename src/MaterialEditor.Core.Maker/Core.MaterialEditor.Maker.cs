@@ -320,6 +320,12 @@ namespace KK_Plugins.MaterialEditor
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialCopyRemove(objectData.Slot, objectData.ObjectType, material, go);
         }
 
+        public override void MaterialCopyBody(object data, Material material, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialCopyBody(objectData.Slot, objectData.ObjectType, material, go);
+        }
+
         public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go)
         {
             ObjectData objectData = (ObjectData)data;

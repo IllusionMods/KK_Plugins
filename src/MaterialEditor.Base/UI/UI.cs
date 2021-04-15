@@ -288,18 +288,24 @@ namespace MaterialEditorAPI
 
                 var materialItem = new ItemInfo(ItemInfo.RowItemType.Material, "Material")
                 {
+                    ShaderName = shaderName,
                     MaterialName = materialName,
                     MaterialOnCopy = () => MaterialCopyEdits(data, mat, go),
                     MaterialOnPaste = () =>
                     {
                         MaterialPasteEdits(data, mat, go);
                         PopulateList(go, data, filter);
+                    },
+                    MaterialOnCopyRemove = () =>
+                    {
+                        MaterialCopyRemove(data, mat, go);
+                        PopulateList(go, data, filter);
+                    },
+                    MaterialOnCopyBody = () =>
+                    {
+                        MaterialCopyBody(data, mat, go);
+                        PopulateList(go, data, filter);
                     }
-                };
-                materialItem.MaterialOnCopyRemove = () =>
-                {
-                    MaterialCopyRemove(data, mat, go);
-                    PopulateList(go, data, filter);
                 };
                 items.Add(materialItem);
 
@@ -500,6 +506,7 @@ namespace MaterialEditorAPI
         public abstract void MaterialCopyEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialPasteEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialCopyRemove(object data, Material material, GameObject gameObject);
+        public abstract void MaterialCopyBody(object data, Material material, GameObject gameObject);
 
         public abstract string GetMaterialShaderNameOriginal(object data, Material material, GameObject gameObject);
         public abstract void SetMaterialShaderName(object data, Material material, string value, GameObject gameObject);
