@@ -332,6 +332,7 @@ namespace KK_Plugins
             {
                 if (dynamicBone.name != "ct_clothesBot") return;
 
+                if (dynamicBone.m_Root == null) return;
                 var nameSplit = dynamicBone.m_Root.name.Split('_');
                 if (nameSplit.Length >= 4)
                     if (int.TryParse(nameSplit[3], out int idx))
