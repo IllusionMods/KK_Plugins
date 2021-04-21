@@ -171,15 +171,6 @@ namespace MaterialEditorAPI
         }
         internal virtual void ShaderOptimization_SettingChanged(object sender, EventArgs e) { }
 
-        internal static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
-        {
-            if (texBytes == null || texBytes.Length == 0) return null;
-
-            var tex = new Texture2D(2, 2, format, mipmaps);
-            tex.LoadImage(texBytes);
-            return tex;
-        }
-
         /// <summary>
         /// Always returns false, i.e. does nothing. Override to prevent certain materials from showing in the UI.
         /// </summary>

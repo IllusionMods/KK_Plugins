@@ -1439,15 +1439,15 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 var texBytes = File.ReadAllBytes(filePath);
-                Texture2D tex = MaterialEditorPlugin.TextureFromBytes(texBytes);
-
-                SetTexture(go, material.NameFormatted(), propertyName, tex);
+                var texID = SetAndGetTextureID(texBytes);
+                SetTexture(go, material.NameFormatted(), propertyName, TextureDictionary[texID].Texture);
 
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
+
                 if (textureProperty == null)
-                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, SetAndGetTextureID(texBytes)));
+                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, texID));
                 else
-                    textureProperty.TexID = SetAndGetTextureID(texBytes);
+                    textureProperty.TexID = texID;
             }
         }
         /// <summary>
@@ -1462,15 +1462,14 @@ namespace KK_Plugins.MaterialEditor
         {
             if (data == null) return;
 
-            Texture2D tex = MaterialEditorPlugin.TextureFromBytes(data);
-
-            SetTexture(go, material.NameFormatted(), propertyName, tex);
+            var texID = SetAndGetTextureID(data);
+            SetTexture(go, material.NameFormatted(), propertyName, TextureDictionary[texID].Texture);
 
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty == null)
-                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, SetAndGetTextureID(data)));
+                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, texID));
             else
-                textureProperty.TexID = SetAndGetTextureID(data);
+                textureProperty.TexID = texID;
         }
         /// <summary>
         /// Get the saved material property value or null if none is saved
