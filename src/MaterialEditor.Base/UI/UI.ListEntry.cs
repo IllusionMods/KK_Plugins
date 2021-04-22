@@ -201,15 +201,9 @@ namespace MaterialEditorAPI
                         MaterialCopyRemove.onClick.RemoveAllListeners();
                         MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
 
-                        if(item.ShaderName == "Shader Forge/main_skin")
-                        {
-                            MaterialCopyBody.onClick.RemoveAllListeners();
-                            MaterialCopyBody.onClick.AddListener(delegate { item.MaterialOnCopyBody.Invoke(); });
-                        }
-                        else
-                        {
-                            MaterialCopyBody.interactable = false;
-                        }
+                        MaterialCopyBody.onClick.RemoveAllListeners();
+                        MaterialCopyBody.onClick.AddListener(delegate { item.MaterialOnCopyBody.Invoke(); });
+                        MaterialCopyBody.interactable = item.ShaderName == "Shader Forge/main_skin";
 
                         break;
                     case ItemInfo.RowItemType.Shader:
