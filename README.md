@@ -71,7 +71,7 @@ v1.4 Changes made in Studio apply to all selected characters, keep visible state
 </details>
 
 #### UncensorSelector
-**v3.11 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, AI Girland Honey Select 2<br/>
+**v3.11.2 - [Download](https://www.patreon.com/posts/28204946)** - For Koikatsu, Emotion Creators, AI Girland Honey Select 2<br/>
 
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
 
@@ -115,6 +115,7 @@ v3.9.1 Fix error in Studio resulting from having no uncensors<br/>
 v3.9.2 Fix glossiness being lost on uncensor change, fix monochrome body showing mosaic censor<br/>
 v3.10 Add ability to exclude uncensors from random selection (Thanks Gebo)<br/>
 v3.11 Changes made in Studio apply to all selected characters<br/>
+v3.11.2 Compatibility with BetterPenetration<br/>
 </details>
 
 #### Subtitles
@@ -443,6 +444,10 @@ Quickly remove accessories by pressing the delete key in the character maker.<br
 #### DynamicBoneEditor
 **v1.0.3 - [Download](https://www.patreon.com/posts/48134621)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select 2, and Play Home<br/>
 Edit properties of Dynamic Bones for accessories in the character maker.<br/>
+
+#### AccessoryClothes
+**v1.0 - [Download](https://www.patreon.com/posts/43222792)** - For Koikatsu and EmotionCreators<br/>
+Allows clothes to function in accessory slots.<br/>
 
 #### InputHotkeyBlock
 Moved to the [BepInEx.Utility](https://github.com/BepInEx/BepInEx.Utility) repo.<br/>
