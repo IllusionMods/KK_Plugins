@@ -34,12 +34,12 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\lib\net35\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AIAPI, Version=1.16.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.AIAPI.1.16.0\lib\net46\AIAPI.dll</HintPath>
+    <Reference Include="AIAPI, Version=1.18.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.AIAPI.1.18.0\lib\net46\AIAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -50,12 +50,12 @@
       <HintPath>..\..\packages\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.2020.5.29.2\lib\net46\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BepInEx, Version=5.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.4\lib\net35\BepInEx.dll</HintPath>
+    <Reference Include="BepInEx, Version=5.4.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.8\lib\net35\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\lib\net35\BepInEx.Harmony.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -103,7 +103,7 @@
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.9.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.10.2\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\FKIK.Core\Core.FKIK.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
@@ -125,7 +125,7 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.ImageConversionModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.ImageConversionModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.ImageConversionModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.ImageConversionModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UI.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.2020.5.29.2\build\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.2020.5.29.2\build\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UniRx.2020.5.29.2\build\IllusionLibs.AIGirl.UniRx.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UniRx.2020.5.29.2\build\IllusionLibs.AIGirl.UniRx.targets')" />
@@ -133,5 +133,5 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.ImageConversionModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.ImageConversionModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.ImageConversionModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.ImageConversionModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" />
 </Project>

@@ -34,8 +34,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\lib\net35\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -46,20 +46,20 @@
       <HintPath>..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.2\lib\net46\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BepInEx, Version=5.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.4\lib\net35\BepInEx.dll</HintPath>
+    <Reference Include="BepInEx, Version=5.4.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.8\lib\net35\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\lib\net35\BepInEx.Harmony.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ECAPI, Version=1.16.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.ECAPI.1.16.0\lib\net46\ECAPI.dll</HintPath>
+    <Reference Include="ECAPI, Version=1.18.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.ECAPI.1.18.0\lib\net46\ECAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="EC_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.EmotionCreators.16.2.1\lib\net46\EC_ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\..\packages\ExtensibleSaveFormat.EmotionCreators.16.3.0\lib\net46\EC_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -92,7 +92,7 @@
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.9.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.10.2\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
@@ -111,10 +111,10 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.UniRx.2019.6.6.2\build\IllusionLibs.EmotionCreators.UniRx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.UniRx.2019.6.6.2\build\IllusionLibs.EmotionCreators.UniRx.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\..\packages\IllusionLibs.EmotionCreators.UniRx.2019.6.6.2\build\IllusionLibs.EmotionCreators.UniRx.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.UniRx.2019.6.6.2\build\IllusionLibs.EmotionCreators.UniRx.targets')" />
   <Import Project="..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" />
 </Project>

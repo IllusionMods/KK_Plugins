@@ -33,8 +33,8 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\lib\net35\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -45,36 +45,36 @@
       <HintPath>..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\lib\net35\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BepInEx, Version=5.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.4\lib\net35\BepInEx.dll</HintPath>
+    <Reference Include="BepInEx, Version=5.4.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.8\lib\net35\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\lib\net35\BepInEx.Harmony.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ConfigurationManager, Version=16.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\BepInEx.ConfigurationManager.16.1.0\lib\net35\ConfigurationManager.dll</HintPath>
+    <Reference Include="ConfigurationManager, Version=16.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\BepInEx.ConfigurationManager.16.3.0\lib\net35\ConfigurationManager.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.Koikatu.16.2.1\lib\net35\ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\..\packages\ExtensibleSaveFormat.Koikatu.16.3.0\lib\net35\ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KKAPI, Version=1.16.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.KKAPI.1.16.0\lib\net35\KKAPI.dll</HintPath>
+    <Reference Include="KKAPI, Version=1.18.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.KKAPI.1.18.0\lib\net35\KKAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KK_OverlayMods, Version=5.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OverlayMods.Koikatu.5.2.1\lib\net35\KK_OverlayMods.dll</HintPath>
+    <Reference Include="KK_OverlayMods, Version=6.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OverlayMods.Koikatu.6.0.1\lib\net35\KK_OverlayMods.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sideloader.Koikatu.16.2.1\lib\net35\Sideloader.dll</HintPath>
+      <HintPath>..\..\packages\Sideloader.Koikatu.16.3.0\lib\net35\Sideloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -83,6 +83,10 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TextMeshPro-1.0.55.56.0b12, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\lib\net35\TextMeshPro-1.0.55.56.0b12.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\lib\net35\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -97,7 +101,7 @@
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.9.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.10.2\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\UncensorSelector.Core\Core.UncensorSelector.projitems" Label="Shared" />
   <Import Project="..\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems" Label="Shared" />
@@ -116,9 +120,11 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     <Error Condition="!Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\build\IllusionLibs.Koikatu.TextMeshPro.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\build\IllusionLibs.Koikatu.TextMeshPro.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.2\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.UnityEngine.5.6.2.2\build\IllusionLibs.Koikatu.UnityEngine.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\build\IllusionLibs.Koikatu.TextMeshPro.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.2\build\IllusionLibs.Koikatu.TextMeshPro.targets')" />
 </Project>

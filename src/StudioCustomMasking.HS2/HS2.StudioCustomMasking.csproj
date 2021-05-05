@@ -33,8 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\lib\net35\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -45,20 +45,20 @@
       <HintPath>..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.2020.5.29.2\lib\net46\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BepInEx, Version=5.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.4\lib\net35\BepInEx.dll</HintPath>
+    <Reference Include="BepInEx, Version=5.4.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.8\lib\net35\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\lib\net35\BepInEx.Harmony.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HS2API, Version=1.16.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.HS2API.1.16.0\lib\net46\HS2API.dll</HintPath>
+    <Reference Include="HS2API, Version=1.18.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.HS2API.1.18.0\lib\net46\HS2API.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HS2_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.HoneySelect2.16.2.1\lib\net46\HS2_ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\..\packages\ExtensibleSaveFormat.HoneySelect2.16.3.0\lib\net46\HS2_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -129,7 +129,7 @@
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.9.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.10.2\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
@@ -156,7 +156,7 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.UIModule.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.2020.5.29.2\build\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.2020.5.29.2\build\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29.2\build\IllusionLibs.HoneySelect2.IL.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29.2\build\IllusionLibs.HoneySelect2.IL.targets')" />
@@ -168,5 +168,5 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets')" />
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.UIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11.2\build\IllusionLibs.HoneySelect2.UnityEngine.UIModule.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" />
 </Project>
