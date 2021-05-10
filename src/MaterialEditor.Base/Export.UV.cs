@@ -42,7 +42,6 @@ namespace MaterialEditorAPI
                 Graphics.SetRenderTarget(_renderTexture);
                 GL.PushMatrix();
                 GL.LoadOrtho();
-                //GL.LoadPixelMatrix(); // * 2 - 1, maps differently.
                 GL.Clear(false, true, Color.clear);
 
                 lineMaterial.SetPass(0);
@@ -51,9 +50,9 @@ namespace MaterialEditorAPI
 
                 for (var i = 0; i < tris.Length; i += 3)
                 {
-                    var v = uvs[tris[i]];
-                    var n1 = uvs[tris[i + 1]];
-                    var n2 = uvs[tris[i + 2]];
+                    Vector2 v = new Vector2(Reduce(uvs[tris[i]].x), Reduce(uvs[tris[i]].y));
+                    Vector2 n1 = new Vector2(Reduce(uvs[tris[i + 1]].x), Reduce(uvs[tris[i + 1]].y));
+                    Vector2 n2 = new Vector2(Reduce(uvs[tris[i + 2]].x), Reduce(uvs[tris[i + 2]].y));
 
                     GL.Vertex(v);
                     GL.Vertex(n1);
@@ -80,6 +79,27 @@ namespace MaterialEditorAPI
                     Utilities.OpenFileInExplorer(filename);
                 openedFile = true;
             }
+        }
+
+        /// <summary>
+        /// Trim any floats outside of 0-1 range so only the decimal place remains. For moving UVs to the main unit square if they are outside of it.
+        /// Probably a better way to do this. Probably breaks if one or two points of the tri are on a different UV square.
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        private static float Reduce(float num)
+        {
+            if (num > 1f)
+            {
+                num -= 1f;
+                return Reduce(num);
+            }
+            if (num < 0f)
+            {
+                num += 1f;
+                return Reduce(num);
+            }
+            return num;
         }
     }
 }
