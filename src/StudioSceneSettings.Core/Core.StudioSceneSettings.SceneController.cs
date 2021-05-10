@@ -148,7 +148,7 @@ namespace KK_Plugins.StudioSceneSettings
             var menu = new SceneEffectsCategory(StudioSceneSettings.PluginNameInternal);
             MapMasking = menu.AddToggleSet("Map Masking", MapMaskingSetter, false);
             NearClipPlane = menu.AddSliderSet("Near Clip Plane", NearClipSetter, NearClipDefault, 0.01f, 10f);
-            FarClipPlane = menu.AddSliderSet("Far Clip Plane", FarClipSetter, FarClipDefault, 1f, 10000f);
+            FarClipPlane = menu.AddSliderSet("Far Clip Plane", FarClipSetter, FarClipDefault, 1f, 150000f);
             ShadowDistance = menu.AddSliderSet("Shadow Distance", ShadowDistanceSetter, ShadowDistanceDefault, 1f, 1000f);
 
             NearClipPlane.EnforceSliderMaximum = false;
