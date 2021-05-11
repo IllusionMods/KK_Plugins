@@ -55,7 +55,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.0.4";
+        public const string PluginVersion = "3.0.5";
 
 #if KK || EC
         internal static ConfigEntry<bool> RimRemover { get; private set; }
