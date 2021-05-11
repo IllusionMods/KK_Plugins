@@ -250,7 +250,7 @@ v1.2 Changes made in Studio apply to all selected characters<br/>
 </details>
 
 #### MaterialEditor
-**v3.0.4 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select 2, and Play Home<br/>
+**v3.0.5 - [Download](https://www.patreon.com/posts/27881027)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select 2, and Play Home<br/>
 
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
@@ -309,6 +309,7 @@ v2.5 PH version</br>
 v2.6 Accessory and Studio support for PH</br>
 v2.6.1 Fix EC card import bug</br>
 v3.0 Added material copying</br>
+v3.0.5 Better UV Map export<br/>
 </details>
 
 #### MaleJuice
@@ -362,7 +363,7 @@ v2.0 Added a guide object instead of hotkeys for positioning<br/>
 </details>
 
 #### StudioSceneSettings
-**v1.3 - [Download](https://www.patreon.com/posts/32713423)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+**v1.3.2 - [Download](https://www.patreon.com/posts/32713423)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 Allows you to adjust a few more settings for scenes. Changes save and load with the scene data.<br/>
 
 <details><summary>Settings</summary>
@@ -375,6 +376,7 @@ Far Clip Plane<br/>
 v1.2 Map masking for AI and HS2<br/>
 v1.2.1 Fixed compatibility issues with StudioCustomMasking<br/>
 v1.3 Changes made in Studio apply to all selected characters<br/>
+v1.3.2 Increased FarClipPlane slider<br/>
 </details>
 
 #### Pushup
@@ -449,20 +451,6 @@ Edit properties of Dynamic Bones for accessories in the character maker.<br/>
 **v1.0 - [Download](https://www.patreon.com/posts/43222792)** - For Koikatsu and EmotionCreators<br/>
 Allows clothes to function in accessory slots.<br/>
 
-#### InputHotkeyBlock
-Moved to the [BepInEx.Utility](https://github.com/BepInEx/BepInEx.Utility) repo.<br/>
-
-#### TranslationSync
-#### TextResourceRedirector
-#### TextDump
-Moved to the [TranslationTools](https://github.com/IllusionMods/TranslationTools) repo.<br/>
-
-#### KK_CutsceneLockupFix
-#### KK_HeadFix
-#### KK_MiscFixes
-#### KK_PersonalityCorrector
-#### KK_SettingsFix
-Moved to the [IllusionFixes](https://github.com/IllusionMods/IllusionFixes) repo.<br/>
-
-#### GUIDMigration
-Obsolete, features merged in to Sideloader iself
+#### PoseUnlocker
+**v1.0 - [Download](https://www.patreon.com/posts/50834177)** - For Koikatsu, AI Girl, Honey Select 2<br/>
+Allows clothes to function in accessory slots.<br/>
