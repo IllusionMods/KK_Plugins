@@ -67,11 +67,7 @@ namespace KK_Plugins.MaterialEditor
                     IDsToPurge.Add(texID);
 
             for (var i = 0; i < IDsToPurge.Count; i++)
-            {
-                int texID = IDsToPurge[i];
-                if (TextureDictionary.TryGetValue(texID, out var val)) val.Dispose();
-                TextureDictionary.Remove(texID);
-            }
+                TextureDictionary.Remove(i);
 
             if (TextureDictionary.Count > 0)
                 data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
@@ -306,11 +302,15 @@ namespace KK_Plugins.MaterialEditor
                 if (MaterialTexturePropertyList.All(x => x.TexID != texID))
                     IDsToPurge.Add(texID);
 
-            for (var i = 0; i < IDsToPurge.Count; i++)
+            //Don't destroy the textures in H mode because they will still be needed
+            if (KoikatuAPI.GetCurrentGameMode() != GameMode.MainGame)
             {
-                int texID = IDsToPurge[i];
-                TextureDictionary[texID].Dispose();
-                TextureDictionary.Remove(texID);
+                for (var i = 0; i < IDsToPurge.Count; i++)
+                {
+                    int texID = IDsToPurge[i];
+                    TextureDictionary[texID].Dispose();
+                    TextureDictionary.Remove(texID);
+                }
             }
 
             CharacterLoading = true;
