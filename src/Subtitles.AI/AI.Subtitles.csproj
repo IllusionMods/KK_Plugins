@@ -23,6 +23,7 @@
     <DefineConstants>TRACE;DEBUG;AI</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -32,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>false</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -63,23 +65,23 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\lib\net46\UnityEngine.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.4\lib\net46\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\lib\net46\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.4\lib\net46\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.3\lib\net46\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.4\lib\net46\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.3\lib\net46\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\lib\net46\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.3\lib\net46\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\lib\net46\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -115,16 +117,16 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.Assembly-CSharp.2020.5.29.2\build\IllusionLibs.AIGirl.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.Assembly-CSharp.2020.5.29.2\build\IllusionLibs.AIGirl.Assembly-CSharp.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UniRx.2020.5.29.2\build\IllusionLibs.AIGirl.UniRx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UniRx.2020.5.29.2\build\IllusionLibs.AIGirl.UniRx.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UI.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UniRx.2020.5.29.2\build\IllusionLibs.AIGirl.UniRx.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UniRx.2020.5.29.2\build\IllusionLibs.AIGirl.UniRx.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.3\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.CoreModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.CoreModule.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" />
 </Project>

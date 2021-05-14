@@ -23,6 +23,7 @@
     <DefineConstants>TRACE;DEBUG;EC</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -32,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -75,15 +77,15 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\lib\net46\UnityEngine.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.4\lib\net46\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\lib\net46\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.4\lib\net46\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.3\lib\net46\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.4\lib\net46\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -114,13 +116,13 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.UniRx.2019.6.6.2\build\IllusionLibs.EmotionCreators.UniRx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.UniRx.2019.6.6.2\build\IllusionLibs.EmotionCreators.UniRx.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.2\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\..\packages\IllusionLibs.EmotionCreators.UniRx.2019.6.6.2\build\IllusionLibs.EmotionCreators.UniRx.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.UniRx.2019.6.6.2\build\IllusionLibs.EmotionCreators.UniRx.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.3\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets')" />
   <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets')" />
 </Project>
