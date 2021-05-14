@@ -5,7 +5,7 @@ namespace UILib
 {
     internal class OneTimeVerticalLayoutGroup : VerticalLayoutGroup
     {
-        protected override void OnEnable()
+        public override void OnEnable()
         {
             base.OnEnable();
             if (Application.isEditor == false || Application.isPlaying)
