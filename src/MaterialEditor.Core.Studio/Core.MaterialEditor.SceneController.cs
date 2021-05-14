@@ -317,6 +317,19 @@ namespace KK_Plugins.MaterialEditor
 
         private void Update()
         {
+            if (MaterialEditorPlugin.PasteEditsHotkey.Value.IsDown())
+            {
+                if (!CopyData.IsEmpty)
+                {
+                    int count = 0;
+                    TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                    for (int i = 0; i < selectNodes.Length; i++)
+                        PasteEditsRecursive(selectNodes[i], ref count);
+                    if (count > 0)
+                        MaterialEditorPlugin.Logger.LogMessage($"Pasted edits for {count} items");
+                }
+            }
+
             if (MaterialEditorPlugin.DisableShadowCastingHotkey.Value.IsDown())
             {
                 int count = 0;
@@ -459,6 +472,24 @@ namespace KK_Plugins.MaterialEditor
                 }
             foreach (var child in node.child)
                 SetRendererPropertyRecursive(child, property, value, ref count);
+        }
+
+        private void PasteEditsRecursive(TreeNodeObject node, ref int count)
+        {
+            if (Studio.Studio.Instance.dicInfo.TryGetValue(node, out ObjectCtrlInfo objectCtrlInfo))
+                if (objectCtrlInfo is OCIItem ociItem)
+                {
+                    count++;
+                    foreach (var rend in GetRendererList(ociItem.objectItem))
+                    {
+                        foreach (var mat in GetMaterials(ociItem.objectItem, rend))
+                        {
+                            MaterialPasteEdits(ociItem.objectInfo.dicKey, mat);
+                        }
+                    }
+                }
+            foreach (var child in node.child)
+                PasteEditsRecursive(child, ref count);
         }
 
         protected override void OnObjectDeleted(ObjectCtrlInfo objectCtrlInfo)

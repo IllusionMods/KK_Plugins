@@ -66,6 +66,7 @@ namespace KK_Plugins.MaterialEditor
         internal static ConfigEntry<KeyboardShortcut> DisableReceiveShadows { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> EnableReceiveShadows { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> ResetReceiveShadows { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> PasteEditsHotkey { get; private set; }
 
         /// <summary>
         /// Parts of the body
@@ -131,6 +132,7 @@ namespace KK_Plugins.MaterialEditor
             DisableReceiveShadows = Config.Bind("Keyboard Shortcuts", "Disable ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftControl), "Disable ReceiveShadows for all selected items and their child items in Studio");
             EnableReceiveShadows = Config.Bind("Keyboard Shortcuts", "Enable ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftAlt), "Enable ReceiveShadows for all selected items and their child items in Studio");
             ResetReceiveShadows = Config.Bind("Keyboard Shortcuts", "Reset ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftControl, KeyCode.LeftAlt), "Reset ReceiveShadows for all selected items and their child items in Studio");
+            PasteEditsHotkey = Config.Bind("Keyboard Shortcuts", "Paste Edits", new KeyboardShortcut(KeyCode.N), "Paste any copied edits for all selected items and their child items in Studio");
 #if PH
             //Disable ShaderOptimization since it doesn't work properly
             ShaderOptimization.Value = false;
