@@ -59,8 +59,6 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="currentGameMode"></param>
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
-            var data = new PluginData();
-
             List<int> IDsToPurge = new List<int>();
             foreach (int texID in TextureDictionary.Keys)
                 if (MaterialTexturePropertyList.All(x => x.TexID != texID))
@@ -69,42 +67,51 @@ namespace KK_Plugins.MaterialEditor
             for (var i = 0; i < IDsToPurge.Count; i++)
                 TextureDictionary.Remove(i);
 
-            if (TextureDictionary.Count > 0)
-                data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+            if (RendererPropertyList.Count == 0 && MaterialFloatPropertyList.Count == 0 && MaterialColorPropertyList.Count == 0 && MaterialTexturePropertyList.Count == 0 && MaterialShaderList.Count == 0 && MaterialCopyList.Count == 0)
+            {
+                SetExtendedData(null);
+            }
             else
-                data.data.Add(nameof(TextureDictionary), null);
+            {
+                var data = new PluginData();
 
-            if (RendererPropertyList.Count > 0)
-                data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
-            else
-                data.data.Add(nameof(RendererPropertyList), null);
+                if (TextureDictionary.Count > 0)
+                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+                else
+                    data.data.Add(nameof(TextureDictionary), null);
 
-            if (MaterialFloatPropertyList.Count > 0)
-                data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(MaterialFloatPropertyList));
-            else
-                data.data.Add(nameof(MaterialFloatPropertyList), null);
+                if (RendererPropertyList.Count > 0)
+                    data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
+                else
+                    data.data.Add(nameof(RendererPropertyList), null);
 
-            if (MaterialColorPropertyList.Count > 0)
-                data.data.Add(nameof(MaterialColorPropertyList), MessagePackSerializer.Serialize(MaterialColorPropertyList));
-            else
-                data.data.Add(nameof(MaterialColorPropertyList), null);
+                if (MaterialFloatPropertyList.Count > 0)
+                    data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(MaterialFloatPropertyList));
+                else
+                    data.data.Add(nameof(MaterialFloatPropertyList), null);
 
-            if (MaterialTexturePropertyList.Count > 0)
-                data.data.Add(nameof(MaterialTexturePropertyList), MessagePackSerializer.Serialize(MaterialTexturePropertyList));
-            else
-                data.data.Add(nameof(MaterialTexturePropertyList), null);
+                if (MaterialColorPropertyList.Count > 0)
+                    data.data.Add(nameof(MaterialColorPropertyList), MessagePackSerializer.Serialize(MaterialColorPropertyList));
+                else
+                    data.data.Add(nameof(MaterialColorPropertyList), null);
 
-            if (MaterialShaderList.Count > 0)
-                data.data.Add(nameof(MaterialShaderList), MessagePackSerializer.Serialize(MaterialShaderList));
-            else
-                data.data.Add(nameof(MaterialShaderList), null);
+                if (MaterialTexturePropertyList.Count > 0)
+                    data.data.Add(nameof(MaterialTexturePropertyList), MessagePackSerializer.Serialize(MaterialTexturePropertyList));
+                else
+                    data.data.Add(nameof(MaterialTexturePropertyList), null);
 
-            if (MaterialCopyList.Count > 0)
-                data.data.Add(nameof(MaterialCopyList), MessagePackSerializer.Serialize(MaterialCopyList));
-            else
-                data.data.Add(nameof(MaterialCopyList), null);
+                if (MaterialShaderList.Count > 0)
+                    data.data.Add(nameof(MaterialShaderList), MessagePackSerializer.Serialize(MaterialShaderList));
+                else
+                    data.data.Add(nameof(MaterialShaderList), null);
 
-            SetExtendedData(data);
+                if (MaterialCopyList.Count > 0)
+                    data.data.Add(nameof(MaterialCopyList), MessagePackSerializer.Serialize(MaterialCopyList));
+                else
+                    data.data.Add(nameof(MaterialCopyList), null);
+
+                SetExtendedData(data);
+            }
         }
 
         /// <summary>
@@ -161,7 +168,6 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="coordinate"></param>
         protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
         {
-            var data = new PluginData();
 
             var coordinateRendererPropertyList = RendererPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
             var coordinateMaterialFloatPropertyList = MaterialFloatPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
@@ -175,42 +181,50 @@ namespace KK_Plugins.MaterialEditor
                 if (coordinateMaterialTexturePropertyList.Any(x => x.TexID == tex.Key))
                     coordinateTextureDictionary.Add(tex.Key, tex.Value.Data);
 
-            if (coordinateTextureDictionary.Count > 0)
-                data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(coordinateTextureDictionary));
+            if (coordinateRendererPropertyList.Count == 0 && coordinateMaterialFloatPropertyList.Count == 0 && coordinateMaterialColorPropertyList.Count == 0 && coordinateMaterialTexturePropertyList.Count == 0 && coordinateMaterialShaderList.Count == 0 && coordinateMaterialCopyList.Count == 0)
+            {
+                SetCoordinateExtendedData(coordinate, null);
+            }
             else
-                data.data.Add(nameof(TextureDictionary), null);
+            {
+                var data = new PluginData();
+                if (coordinateTextureDictionary.Count > 0)
+                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(coordinateTextureDictionary));
+                else
+                    data.data.Add(nameof(TextureDictionary), null);
 
-            if (coordinateRendererPropertyList.Count > 0)
-                data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(coordinateRendererPropertyList));
-            else
-                data.data.Add(nameof(RendererPropertyList), null);
+                if (coordinateRendererPropertyList.Count > 0)
+                    data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(coordinateRendererPropertyList));
+                else
+                    data.data.Add(nameof(RendererPropertyList), null);
 
-            if (coordinateMaterialFloatPropertyList.Count > 0)
-                data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(coordinateMaterialFloatPropertyList));
-            else
-                data.data.Add(nameof(MaterialFloatPropertyList), null);
+                if (coordinateMaterialFloatPropertyList.Count > 0)
+                    data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(coordinateMaterialFloatPropertyList));
+                else
+                    data.data.Add(nameof(MaterialFloatPropertyList), null);
 
-            if (coordinateMaterialColorPropertyList.Count > 0)
-                data.data.Add(nameof(MaterialColorPropertyList), MessagePackSerializer.Serialize(coordinateMaterialColorPropertyList));
-            else
-                data.data.Add(nameof(MaterialColorPropertyList), null);
+                if (coordinateMaterialColorPropertyList.Count > 0)
+                    data.data.Add(nameof(MaterialColorPropertyList), MessagePackSerializer.Serialize(coordinateMaterialColorPropertyList));
+                else
+                    data.data.Add(nameof(MaterialColorPropertyList), null);
 
-            if (coordinateMaterialTexturePropertyList.Count > 0)
-                data.data.Add(nameof(MaterialTexturePropertyList), MessagePackSerializer.Serialize(coordinateMaterialTexturePropertyList));
-            else
-                data.data.Add(nameof(MaterialTexturePropertyList), null);
+                if (coordinateMaterialTexturePropertyList.Count > 0)
+                    data.data.Add(nameof(MaterialTexturePropertyList), MessagePackSerializer.Serialize(coordinateMaterialTexturePropertyList));
+                else
+                    data.data.Add(nameof(MaterialTexturePropertyList), null);
 
-            if (coordinateMaterialShaderList.Count > 0)
-                data.data.Add(nameof(MaterialShaderList), MessagePackSerializer.Serialize(coordinateMaterialShaderList));
-            else
-                data.data.Add(nameof(MaterialShaderList), null);
+                if (coordinateMaterialShaderList.Count > 0)
+                    data.data.Add(nameof(MaterialShaderList), MessagePackSerializer.Serialize(coordinateMaterialShaderList));
+                else
+                    data.data.Add(nameof(MaterialShaderList), null);
 
-            if (coordinateMaterialCopyList.Count > 0)
-                data.data.Add(nameof(MaterialCopyList), MessagePackSerializer.Serialize(coordinateMaterialCopyList));
-            else
-                data.data.Add(nameof(MaterialCopyList), null);
+                if (coordinateMaterialCopyList.Count > 0)
+                    data.data.Add(nameof(MaterialCopyList), MessagePackSerializer.Serialize(coordinateMaterialCopyList));
+                else
+                    data.data.Add(nameof(MaterialCopyList), null);
 
-            SetCoordinateExtendedData(coordinate, data);
+                SetCoordinateExtendedData(coordinate, data);
+            }
 
             base.OnCoordinateBeingSaved(coordinate);
         }

@@ -96,9 +96,16 @@ namespace KK_Plugins
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
-                var data = new PluginData();
-                data.data.Add("Visible", Visible);
-                SetExtendedData(data);
+                if (Visible)
+                {
+                    SetExtendedData(null);
+                }
+                else
+                {
+                    var data = new PluginData();
+                    data.data.Add("Visible", Visible);
+                    SetExtendedData(data);
+                }
             }
 
             protected override void OnReload(GameMode currentGameMode, bool maintainState)

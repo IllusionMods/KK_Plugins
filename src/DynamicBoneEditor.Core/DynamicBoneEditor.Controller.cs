@@ -45,9 +45,16 @@ namespace KK_Plugins.DynamicBoneEditor
 
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
-            var data = new PluginData();
-            data.data.Add(nameof(AccessoryDynamicBoneData), MessagePackSerializer.Serialize(AccessoryDynamicBoneData));
-            SetExtendedData(data);
+            if (AccessoryDynamicBoneData.Count == 0)
+            {
+                SetExtendedData(null);
+            }
+            else
+            {
+                var data = new PluginData();
+                data.data.Add(nameof(AccessoryDynamicBoneData), MessagePackSerializer.Serialize(AccessoryDynamicBoneData));
+                SetExtendedData(data);
+            }
         }
 
         protected override void OnReload(GameMode currentGameMode)
@@ -73,16 +80,24 @@ namespace KK_Plugins.DynamicBoneEditor
         protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
         {
             var coordinateAccessoryDynamicBoneData = AccessoryDynamicBoneData.Where(x => x.CoordinateIndex == CurrentCoordinateIndex).ToList();
-            var data = new PluginData();
-            if (coordinateAccessoryDynamicBoneData.Count > 0)
+
+            if (coordinateAccessoryDynamicBoneData.Count == 0)
             {
-                data.data.Add(nameof(AccessoryDynamicBoneData), MessagePackSerializer.Serialize(coordinateAccessoryDynamicBoneData));
+                SetCoordinateExtendedData(coordinate, null);
             }
             else
             {
-                data.data.Add(nameof(AccessoryDynamicBoneData), null);
+                var data = new PluginData();
+                if (coordinateAccessoryDynamicBoneData.Count > 0)
+                {
+                    data.data.Add(nameof(AccessoryDynamicBoneData), MessagePackSerializer.Serialize(coordinateAccessoryDynamicBoneData));
+                }
+                else
+                {
+                    data.data.Add(nameof(AccessoryDynamicBoneData), null);
+                }
+                SetCoordinateExtendedData(coordinate, data);
             }
-            SetCoordinateExtendedData(coordinate, data);
             base.OnCoordinateBeingSaved(coordinate);
         }
 

@@ -7,6 +7,7 @@ using MessagePack;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 
 namespace KK_Plugins
@@ -32,13 +33,27 @@ namespace KK_Plugins
 #endif
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
-                MapBodyInfoToChaFile(BaseData);
+                bool hasData = false;
 
-                var data = new PluginData();
-                data.data.Add(PushupConstants.Pushup_BraData, MessagePackSerializer.Serialize(BraDataDictionary));
-                data.data.Add(PushupConstants.Pushup_TopData, MessagePackSerializer.Serialize(TopDataDictionary));
-                data.data.Add(PushupConstants.Pushup_BodyData, MessagePackSerializer.Serialize(BaseData));
-                SetExtendedData(data);
+                if (BraDataDictionary.Values.Any(x => x.EnablePushup || x.UseAdvanced))
+                    hasData = true;
+                if (TopDataDictionary.Values.Any(x => x.EnablePushup || x.UseAdvanced))
+                    hasData = true;
+
+                if (!hasData)
+                {
+                    SetExtendedData(null);
+                }
+                else
+                {
+                    MapBodyInfoToChaFile(BaseData);
+
+                    var data = new PluginData();
+                    data.data.Add(PushupConstants.Pushup_BraData, MessagePackSerializer.Serialize(BraDataDictionary));
+                    data.data.Add(PushupConstants.Pushup_TopData, MessagePackSerializer.Serialize(TopDataDictionary));
+                    data.data.Add(PushupConstants.Pushup_BodyData, MessagePackSerializer.Serialize(BaseData));
+                    SetExtendedData(data);
+                }
 
                 RecalculateBody(true, true);
             }
@@ -111,10 +126,17 @@ namespace KK_Plugins
 
             protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
             {
-                var data = new PluginData();
-                data.data.Add(PushupConstants.PushupCoordinate_BraData, MessagePackSerializer.Serialize(CurrentBraData));
-                data.data.Add(PushupConstants.PushupCoordinate_TopData, MessagePackSerializer.Serialize(CurrentTopData));
-                SetCoordinateExtendedData(coordinate, data);
+                if (!CurrentBraData.EnablePushup && !CurrentTopData.EnablePushup)
+                {
+                    SetCoordinateExtendedData(coordinate, null);
+                }
+                else
+                {
+                    var data = new PluginData();
+                    data.data.Add(PushupConstants.PushupCoordinate_BraData, MessagePackSerializer.Serialize(CurrentBraData));
+                    data.data.Add(PushupConstants.PushupCoordinate_TopData, MessagePackSerializer.Serialize(CurrentTopData));
+                    SetCoordinateExtendedData(coordinate, data);
+                }
             }
 
             protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate)

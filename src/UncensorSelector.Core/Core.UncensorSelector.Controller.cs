@@ -49,14 +49,21 @@ namespace KK_Plugins
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
-                var data = new PluginData();
-                data.data.Add("BodyGUID", BodyGUID);
-                data.data.Add("PenisGUID", PenisGUID);
-                data.data.Add("BallsGUID", BallsGUID);
-                data.data.Add("DisplayPenis", DisplayPenis);
-                data.data.Add("DisplayBalls", DisplayBalls);
-                data.version = 2;
-                SetExtendedData(data);
+                if (BodyGUID == null && PenisGUID == null && BallsGUID == null && (ChaControl.sex == 0 && DisplayPenis && DisplayBalls) || (ChaControl.sex == 1 && !DisplayPenis))
+                {
+                    SetExtendedData(null);
+                }
+                else
+                {
+                    var data = new PluginData();
+                    data.data.Add("BodyGUID", BodyGUID);
+                    data.data.Add("PenisGUID", PenisGUID);
+                    data.data.Add("BallsGUID", BallsGUID);
+                    data.data.Add("DisplayPenis", DisplayPenis);
+                    data.data.Add("DisplayBalls", DisplayBalls);
+                    data.version = 2;
+                    SetExtendedData(data);
+                }
             }
 
             protected override void OnReload(GameMode currentGameMode, bool maintainState)

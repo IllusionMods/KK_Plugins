@@ -29,9 +29,16 @@ namespace KK_Plugins
 
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
-            var data = new PluginData();
-            data.data.Add(nameof(ClothingUnlocked), MessagePackSerializer.Serialize(ClothingUnlocked));
-            SetExtendedData(data);
+            if (ClothingUnlocked.Count == 0)
+            {
+                SetExtendedData(null);
+            }
+            else
+            {
+                var data = new PluginData();
+                data.data.Add(nameof(ClothingUnlocked), MessagePackSerializer.Serialize(ClothingUnlocked));
+                SetExtendedData(data);
+            }
         }
 
         protected override void OnReload(GameMode currentGameMode, bool maintainState)
@@ -48,9 +55,17 @@ namespace KK_Plugins
 
         protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
         {
-            var data = new PluginData();
-            data.data.Add(nameof(ClothingUnlocked) + "Coordinate", GetClothingUnlocked());
-            SetCoordinateExtendedData(coordinate, data);
+            var unlocked = GetClothingUnlocked();
+            if (!unlocked)
+            {
+                SetCoordinateExtendedData(coordinate, null);
+            }
+            else
+            {
+                var data = new PluginData();
+                data.data.Add(nameof(ClothingUnlocked) + "Coordinate", unlocked);
+                SetCoordinateExtendedData(coordinate, data);
+            }
         }
 
         protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate, bool maintainState)

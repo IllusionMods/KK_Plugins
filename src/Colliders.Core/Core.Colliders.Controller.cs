@@ -67,7 +67,12 @@ namespace KK_Plugins
                     SetExtendedData(data);
                 }
                 else
+                {
                     SetExtendedData(null);
+                    var extSaveData = ExtendedSave.GetAllExtendedData(ChaControl.chaFile);
+                    if (extSaveData != null)
+                        extSaveData.Remove("com.deathweasel.bepinex.studiocolliders"); //Oopsies :)
+                }
             }
 
             protected override void OnReload(GameMode currentGameMode, bool maintainState)

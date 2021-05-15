@@ -66,10 +66,17 @@ namespace KK_Plugins
 
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
-            var data = new PluginData();
-            data.data.Add("EyeOpenMax", EyeOpenMax);
-            data.data.Add("DisableBlinking", DisableBlinking);
-            SetExtendedData(data);
+            if (EyeOpenMax == 1f && DisableBlinking == false)
+            {
+                SetExtendedData(null);
+            }
+            else
+            {
+                var data = new PluginData();
+                data.data.Add("EyeOpenMax", EyeOpenMax);
+                data.data.Add("DisableBlinking", DisableBlinking);
+                SetExtendedData(data);
+            }
         }
 
         protected override void OnReload(GameMode currentGameMode, bool maintainState)

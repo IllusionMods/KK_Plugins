@@ -25,20 +25,30 @@ namespace KK_Plugins
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
-                var data = new PluginData();
-                data.data.Add("HairAccessories", MessagePackSerializer.Serialize(HairAccessories));
-                SetExtendedData(data);
+                if (HairAccessories.Count == 0)
+                {
+                    SetExtendedData(null);
+                }
+                else
+                {
+                    var data = new PluginData();
+                    data.data.Add("HairAccessories", MessagePackSerializer.Serialize(HairAccessories));
+                    SetExtendedData(data);
+                }
             }
             protected override void OnReload(GameMode currentGameMode, bool maintainState) => ChaControl.StartCoroutine(LoadData());
             protected override void OnCoordinateBeingSaved(ChaFileCoordinate coordinate)
             {
                 var data = new PluginData();
-                if (HairAccessories.TryGetValue(CurrentCoordinateIndex, out var hairAccessoryInfo))
-                    if (hairAccessoryInfo.Count > 0)
-                        data.data.Add("CoordinateHairAccessories", MessagePackSerializer.Serialize(hairAccessoryInfo));
-                    else
-                        data.data.Add("CoordinateHairAccessories", null);
-                SetCoordinateExtendedData(coordinate, data);
+                if (HairAccessories.TryGetValue(CurrentCoordinateIndex, out var hairAccessoryInfo) && hairAccessoryInfo.Count > 0)
+                {
+                    data.data.Add("CoordinateHairAccessories", MessagePackSerializer.Serialize(hairAccessoryInfo));
+                    SetCoordinateExtendedData(coordinate, data);
+                }
+                else
+                {
+                    SetCoordinateExtendedData(coordinate, null);
+                }
             }
             protected override void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate, bool maintainState) => ChaControl.StartCoroutine(LoadCoordinateData(coordinate));
             /// <summary>

@@ -7,16 +7,23 @@ namespace KK_Plugins
 {
     public class ProfileController : CharaCustomFunctionController
     {
-        string ProfileText;
+        private string ProfileText;
 
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
             if (MakerAPI.InsideAndLoaded)
                 ProfileText = Profile.ProfileTextbox.Value;
 
-            var data = new PluginData();
-            data.data.Add(nameof(ProfileText), ProfileText);
-            SetExtendedData(data);
+            if (ProfileText == "")
+            {
+                SetExtendedData(null);
+            }
+            else
+            {
+                var data = new PluginData();
+                data.data.Add(nameof(ProfileText), ProfileText);
+                SetExtendedData(data);
+            }
         }
 
         protected override void OnReload(GameMode currentGameMode, bool maintainState)
