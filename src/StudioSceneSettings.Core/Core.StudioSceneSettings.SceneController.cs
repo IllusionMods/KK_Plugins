@@ -136,9 +136,7 @@ namespace KK_Plugins.StudioSceneSettings
             collider.isTrigger = true;
             collider.direction = 2;
 
-            var cameraControllerGO = GameObject.Find("StudioScene/Camera/CameraSet/CameraController");
-            var cameraController = cameraControllerGO.GetComponent<Studio.CameraControl>();
-            Traverse.Create(cameraController).Field("viewCollider").SetValue(collider);
+            GameObject.Find("StudioScene/Camera/CameraSet/CameraController").GetComponent<Studio.CameraControl>().viewCollider = collider;
             studioCameraColliderControllerGO.transform.SetParent(mainCamera.transform);
             studioCameraColliderControllerGO.transform.localPosition = new Vector3(0f, 0f, 0f);
             studioCameraColliderControllerGO.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
@@ -163,28 +161,20 @@ namespace KK_Plugins.StudioSceneSettings
         internal void FarClipSetter(float value) => Camera.main.farClipPlane = value;
         internal void MapMaskingSetter(bool value) => Camera.main.gameObject.layer = value ? StudioSceneSettings.CameraMapMaskingLayer : CameraLayerDefault;
 #else
-        internal float NearClipDefault => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Field("lensSettings").GetValue<LensSettings>().NearClipPlane;
+        internal float NearClipDefault => Studio.Studio.Instance.cameraCtrl.lensSettings.NearClipPlane;
 
         internal void NearClipSetter(float value)
         {
-            Studio.CameraControl cameraCtrl = Studio.Studio.Instance.cameraCtrl;
-            var field = Traverse.Create(cameraCtrl).Field("lensSettings");
-            var lensSettings = field.GetValue<LensSettings>();
-            lensSettings.NearClipPlane = value;
-            field.SetValue(lensSettings);
-            cameraCtrl.fieldOfView = cameraCtrl.fieldOfView;
+            Studio.Studio.Instance.cameraCtrl.lensSettings.NearClipPlane = value;
+            Studio.Studio.Instance.cameraCtrl.fieldOfView = Studio.Studio.Instance.cameraCtrl.fieldOfView;
         }
 
-        internal float FarClipDefault => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Field("lensSettings").GetValue<LensSettings>().FarClipPlane;
+        internal float FarClipDefault => Studio.Studio.Instance.cameraCtrl.lensSettings.FarClipPlane;
 
         internal void FarClipSetter(float value)
         {
-            Studio.CameraControl cameraCtrl = Studio.Studio.Instance.cameraCtrl;
-            var field = Traverse.Create(cameraCtrl).Field("lensSettings");
-            var lensSettings = field.GetValue<LensSettings>();
-            lensSettings.FarClipPlane = value;
-            field.SetValue(lensSettings);
-            cameraCtrl.fieldOfView = cameraCtrl.fieldOfView;
+            Studio.Studio.Instance.cameraCtrl.lensSettings.FarClipPlane = value;
+            Studio.Studio.Instance.cameraCtrl.fieldOfView = Studio.Studio.Instance.cameraCtrl.fieldOfView;
         }
 
         internal void MapMaskingSetter(bool value) => studioCameraColliderControllerGO.layer = value ? StudioSceneSettings.CameraMapMaskingLayer : CameraLayerDefault;

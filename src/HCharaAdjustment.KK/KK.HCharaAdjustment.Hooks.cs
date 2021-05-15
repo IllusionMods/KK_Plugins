@@ -9,7 +9,7 @@ namespace KK_Plugins
             /// <summary>
             /// Something that happens at the end of H scene loading, good enough place to initialize stuff
             /// </summary>
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "MapSameObjectDisable")]
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.MapSameObjectDisable))]
             private static void MapSameObjectDisable(HSceneProc __instance)
             {
                 for (int i = 0; i < __instance.flags.lstHeroine.Count; i++)
@@ -24,7 +24,7 @@ namespace KK_Plugins
             /// Hide the guide objects when the H point picker scene is displayed
             /// </summary>
             /// <param name="__instance"></param>
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "GotoPointMoveScene")]
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.GotoPointMoveScene))]
             private static void GotoPointMoveScene(HSceneProc __instance)
             {
                 var heroines = __instance.flags.lstHeroine;
@@ -36,7 +36,7 @@ namespace KK_Plugins
             /// Set the new original position when changing positions via the H point picker scene
             /// </summary>
             /// <param name="__instance"></param>
-            [HarmonyPostfix, HarmonyPatch(typeof(HSceneProc), "ChangeCategory")]
+            [HarmonyPostfix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.ChangeCategory))]
             private static void ChangeCategory(HSceneProc __instance)
             {
                 var heroines = __instance.flags.lstHeroine;

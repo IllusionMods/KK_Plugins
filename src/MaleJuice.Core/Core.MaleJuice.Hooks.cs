@@ -62,7 +62,7 @@ namespace KK_Plugins
             }
 
 #if AI || HS2
-            [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), "UpdateSiru")]
+            [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateSiru))]
             private static IEnumerable<CodeInstruction> UpdateSiruTranspiler(IEnumerable<CodeInstruction> instructions)
             {
                 List<CodeInstruction> instructionsList = instructions.ToList();
@@ -77,7 +77,7 @@ namespace KK_Plugins
                 return instructionsList;
             }
 
-            [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), "UpdateClothesSiru")]
+            [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateClothesSiru))]
             private static IEnumerable<CodeInstruction> UpdateClothesSiruTranspiler(IEnumerable<CodeInstruction> instructions)
             {
                 List<CodeInstruction> instructionsList = instructions.ToList();

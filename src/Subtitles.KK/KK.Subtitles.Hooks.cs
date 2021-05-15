@@ -1,5 +1,4 @@
-﻿using ActionGame.Communication;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System;
 using UnityEngine;
 
@@ -9,7 +8,7 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
-            [HarmonyPostfix, HarmonyPatch(typeof(LoadAudioBase), "Play")]
+            [HarmonyPostfix, HarmonyPatch(typeof(LoadAudioBase), nameof(LoadAudioBase.Play))]
             private static void PlayVoice(LoadAudioBase __instance)
             {
                 if (__instance.audioSource == null || __instance.audioSource.clip == null || __instance.audioSource.loop)
@@ -23,10 +22,10 @@ namespace KK_Plugins
                     Caption.DisplaySubtitle(__instance.gameObject, text);
             }
 
-            [HarmonyPostfix, HarmonyPatch(typeof(Info), "Init")]
-            private static void InfoInit(Info __instance) => ActionGameInfoInstance = __instance;
+            [HarmonyPostfix, HarmonyPatch(typeof(ActionGame.Communication.Info), nameof(ActionGame.Communication.Info.Init))]
+            private static void InfoInit(ActionGame.Communication.Info __instance) => ActionGameInfoInstance = __instance;
 
-            [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
+            [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), nameof(HVoiceCtrl.Init))]
             private static void HVoiceCtrlInit()
             {
                 //Get the H scene type used by VR, if possible

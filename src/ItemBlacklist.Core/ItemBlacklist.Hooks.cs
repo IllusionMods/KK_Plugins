@@ -8,7 +8,7 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
-            [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), "OnPointerEnter")]
+            [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), nameof(CustomSelectListCtrl.OnPointerEnter))]
             private static void OnPointerEnterPostfix(CustomSelectListCtrl __instance, GameObject obj)
             {
                 CustomSelectListCtrlInstance = __instance;
@@ -16,10 +16,11 @@ namespace KK_Plugins
                     CurrentCustomSelectInfoComponent = obj.GetComponent<CustomSelectInfoComponent>();
                 MouseIn = true;
             }
-            [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), "OnPointerExit")]
+
+            [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), nameof(CustomSelectListCtrl.OnPointerExit))]
             private static void OnPointerExitPostfix() => MouseIn = false;
 
-            [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), "Create")]
+            [HarmonyPostfix, HarmonyPatch(typeof(CustomSelectListCtrl), nameof(CustomSelectListCtrl.Create))]
             private static void CustomSelectKindInitialize(CustomSelectListCtrl __instance) => ChangeListFilter(__instance, ListVisibilityType.Filtered);
         }
     }

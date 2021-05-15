@@ -148,12 +148,10 @@ namespace KK_Plugins
 
         public static void ChangeListFilter(CustomSelectListCtrl customSelectListCtrl, ListVisibilityType visibilityType)
         {
-            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(customSelectListCtrl).Field("lstSelectInfo").GetValue();
-
             int count = 0;
-            for (var i = 0; i < lstSelectInfo.Count; i++)
+            for (var i = 0; i < customSelectListCtrl.lstSelectInfo.Count; i++)
             {
-                CustomSelectInfo customSelectInfo = lstSelectInfo[i];
+                CustomSelectInfo customSelectInfo = customSelectListCtrl.lstSelectInfo[i];
                 if (visibilityType == ListVisibilityType.All)
                 {
                     customSelectListCtrl.DisvisibleItem(customSelectInfo.index, false);
@@ -226,9 +224,7 @@ namespace KK_Plugins
                         if (visibilityType == ListVisibilityType.Hidden)
                             customSelectListCtrl.DisvisibleItem(index, true);
 
-                    List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(customSelectListCtrl).Field("lstSelectInfo").GetValue();
-
-                    if (lstSelectInfo.All(x => x.disvisible))
+                    if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
                         changeFilter = true;
                 }
             }
@@ -240,10 +236,9 @@ namespace KK_Plugins
 
         private void BlacklistMod(string guid)
         {
-            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
-            for (var i = 0; i < lstSelectInfo.Count; i++)
+            for (var i = 0; i < CustomSelectListCtrlInstance.lstSelectInfo.Count; i++)
             {
-                CustomSelectInfo customSelectInfo = lstSelectInfo[i];
+                CustomSelectInfo customSelectInfo = CustomSelectListCtrlInstance.lstSelectInfo[i];
                 if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
                 {
                     ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
@@ -273,12 +268,10 @@ namespace KK_Plugins
         }
         private void UnblacklistMod(string guid)
         {
-            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
-
             bool changeFilter = false;
-            for (var i = 0; i < lstSelectInfo.Count; i++)
+            for (var i = 0; i < CustomSelectListCtrlInstance.lstSelectInfo.Count; i++)
             {
-                CustomSelectInfo customSelectInfo = lstSelectInfo[i];
+                CustomSelectInfo customSelectInfo = CustomSelectListCtrlInstance.lstSelectInfo[i];
                 if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
                 {
                     ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
@@ -301,9 +294,7 @@ namespace KK_Plugins
                                     if (visibilityType == ListVisibilityType.Hidden)
                                         customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
 
-                                List<CustomSelectInfo> lstSelectInfo2 = (List<CustomSelectInfo>)Traverse.Create(customSelectListCtrl).Field("lstSelectInfo").GetValue();
-
-                                if (lstSelectInfo2.All(x => x.disvisible))
+                                if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
                                     changeFilter = true;
                             }
                         }
@@ -318,8 +309,7 @@ namespace KK_Plugins
 
         private void PrintInfo(int index)
         {
-            List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
-            var customSelectInfo = lstSelectInfo.First(x => x.index == index);
+            var customSelectInfo = CustomSelectListCtrlInstance.lstSelectInfo.First(x => x.index == index);
 
             if (index >= UniversalAutoResolver.BaseSlotID)
             {

@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using HarmonyLib;
 using System;
 using System.IO;
 using UnityEngine;
@@ -53,9 +52,9 @@ namespace KK_Plugins
                 string sex = charas[counter].chaFile.parameter.sex == 0 ? "Male" : "Female";
                 string filename = $"{filenamePrefix}_{counter:00}_{sex}.png";
 #if AI || EC || HS2
-                Traverse.Create(charas[counter].chaFile).Method("SaveFile", filename, 0).GetValue();
+                charas[counter].chaFile.SaveFile(filename, 0);
 #elif KK
-                Traverse.Create(charas[counter].chaFile).Method("SaveFile", filename).GetValue();
+                charas[counter].chaFile.SaveFile(filename);
 #else
                 Logger.LogError($"Exporting not yet implemented");
 #endif

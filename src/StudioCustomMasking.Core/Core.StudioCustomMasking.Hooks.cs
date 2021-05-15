@@ -7,16 +7,16 @@ namespace KK_Plugins.StudioCustomMasking
 {
     internal static class Hooks
     {
-        [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), "OnTriggerEnter")]
+        [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), nameof(Studio.CameraControl.OnTriggerEnter))]
         private static void OnTriggerEnter(Collider other) => StudioCustomMasking.SceneControllerInstance.ColliderEnterEvent(other);
 
-        [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), "OnTriggerStay")]
+        [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), nameof(Studio.CameraControl.OnTriggerStay))]
         private static void OnTriggerStay(Collider other) => StudioCustomMasking.SceneControllerInstance.ColliderStayEvent(other);
 
-        [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), "OnTriggerExit")]
+        [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), nameof(Studio.CameraControl.OnTriggerExit))]
         private static void OnTriggerExit(Collider other) => StudioCustomMasking.SceneControllerInstance.ColliderExitEvent(other);
 
-        [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), "DeleteNodeLoop", typeof(TreeNodeObject))]
+        [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.DeleteNodeLoop), typeof(TreeNodeObject))]
         private static void DeleteNode(TreeNodeObject _node) => StudioCustomMasking.SceneControllerInstance.ItemDeleteEvent(_node);
 
         /// <summary>

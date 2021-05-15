@@ -382,13 +382,13 @@ namespace KK_Plugins
                 if (ExType(ChaControl) == 0)
                 {
                     ChaControl.updateBustSize = true;
-                    Traverse.Create(ChaControl).Method("UpdateSiru", true).GetValue();
+                    ChaControl.UpdateSiru(true);
                     SetChestNormals();
 
 #if KK || EC
-                    ChaControl.customMatBody.SetTexture(ChaShader._AlphaMask, Traverse.Create(ChaControl).Property("texBodyAlphaMask").GetValue() as Texture);
+                    ChaControl.customMatBody.SetTexture(ChaShader._AlphaMask, ChaControl.texBodyAlphaMask);
 #endif
-                    Traverse.Create(ChaControl).Property("updateAlphaMask").SetValue(true);
+                    ChaControl.updateAlphaMask = true;
                 }
 
                 UpdateSkinOverlay();
@@ -405,7 +405,7 @@ namespace KK_Plugins
                 {
                     GameObject dick = CommonLib.LoadAsset<GameObject>(PenisData.File, PenisData.Asset, true);
 
-                    var renderers = dick.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                    var renderers = dick.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                     for (var i = 0; i < renderers.Length; i++)
                     {
                         var renderer = renderers[i];
@@ -440,7 +440,7 @@ namespace KK_Plugins
                 if (BallsData != null)
                 {
                     GameObject balls = CommonLib.LoadAsset<GameObject>(BallsData.File, BallsData.Asset, true);
-                    var renderers = balls.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                    var renderers = balls.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                     for (var i = 0; i < renderers.Length; i++)
                     {
                         var renderer = renderers[i];
@@ -487,7 +487,7 @@ namespace KK_Plugins
                 //Copy any additional parts to the character
                 if (BodyData != null && bodyMesh != null && BodyData.AdditionalParts.Count > 0)
                 {
-                    var renderers = uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                    var renderers = uncensorCopy.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                     for (var i = 0; i < renderers.Length; i++)
                     {
                         var renderer = renderers[i];
@@ -529,20 +529,20 @@ namespace KK_Plugins
                 foreach (var mesh in ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                 {
                     if (BodyNames.Contains(mesh.name))
-                        UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh);
+                        UpdateMeshRenderer(uncensorCopy.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh);
                     else if (BodyParts.Contains(mesh.name))
-                        UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
+                        UpdateMeshRenderer(uncensorCopy.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
                     else if (BodyData != null)
                         foreach (var part in BodyData.ColorMatchList)
                             if (mesh.name == part.Object)
-                                UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(x => x.name == part.Object), mesh, true);
+                                UpdateMeshRenderer(uncensorCopy.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(x => x.name == part.Object), mesh, true);
 
                     //Destroy all additional parts attached to the current body that shouldn't be there
                     if (AllAdditionalParts.Contains(mesh.name))
                         if (BodyData == null || !BodyData.AdditionalParts.Contains(mesh.name))
                             Destroy(mesh);
                         else
-                            UpdateMeshRenderer(uncensorCopy.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
+                            UpdateMeshRenderer(uncensorCopy.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.name == mesh.name), mesh, true);
                 }
 
                 Destroy(uncensorCopy);
@@ -552,12 +552,7 @@ namespace KK_Plugins
             /// </summary>
             private void UpdateSkin()
             {
-                //Method changed number of parameters, check number of parameters for compatibility
-                if (!typeof(ChaControl).GetMethod("InitBaseCustomTextureBody", AccessTools.all).GetParameters().Any())
-                    Traverse.Create(ChaControl).Method("InitBaseCustomTextureBody").GetValue();
-                else
-                    Traverse.Create(ChaControl).Method("InitBaseCustomTextureBody", BodyData?.Sex ?? ChaControl.sex).GetValue();
-
+                ChaControl.InitBaseCustomTextureBody();
 #if KK || EC
                 ChaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
                 ChaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);

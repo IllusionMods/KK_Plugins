@@ -2,7 +2,6 @@
 using HarmonyLib;
 using KKAPI.Maker;
 using System.Collections;
-using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -32,7 +31,7 @@ namespace KK_Plugins
             {
                 if (!MakerAPI.InsideAndLoaded) return;
                 if (GetController(MakerAPI.GetCharacterControl()).IsHairAccessory((int)__instance.slotNo) && ColorMatchToggle.GetSelectedValue())
-                    Traverse.Create(AccessoriesApi.GetMakerAccessoryPageObject((int)__instance.slotNo).GetComponent<CvsAccessory>()).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+                    AccessoriesApi.GetMakerAccessoryPageObject((int)__instance.slotNo).GetComponent<CvsAccessory>().btnInitColor.transform.parent.gameObject.SetActive(false);
             }
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessory), typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool))]
             private static void ChangeAccessory()

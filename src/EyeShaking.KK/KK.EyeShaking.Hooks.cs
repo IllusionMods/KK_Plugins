@@ -29,14 +29,14 @@ namespace KK_Plugins
             /// <summary>
             /// Something that happens at the end of H scene loading, good enough place to hook
             /// </summary>
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "MapSameObjectDisable")]
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.MapSameObjectDisable))]
             private static void MapSameObjectDisable(HSceneProc __instance)
             {
                 SaveData.Heroine heroine = __instance.flags.lstHeroine[0];
                 GetController(heroine.chaCtrl).HSceneStart(heroine.isVirgin && heroine.isAnalVirgin);
             }
 
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "EndProc")]
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.EndProc))]
             private static void EndProc(HSceneProc __instance)
             {
                 GetController(__instance.flags.lstHeroine[0].chaCtrl).HSceneEnd();

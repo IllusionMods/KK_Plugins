@@ -1,5 +1,4 @@
 ﻿using ExtensibleSaveFormat;
-using HarmonyLib;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using MessagePack;
@@ -81,8 +80,7 @@ namespace KK_Plugins.StudioCustomMasking
             {
                 Studio.Studio.Instance.treeNodeCtrl.SetParent(ociFolder.treeNodeObject, selectedNode);
                 selectedNode.SetTreeState(TreeNodeObject.TreeState.Open);
-                var workspaceCtrl = (WorkspaceCtrl)Traverse.Create(Studio.Studio.Instance).Field("m_WorkspaceCtrl").GetValue();
-                workspaceCtrl.UpdateUI();
+                Studio.Studio.Instance.m_WorkspaceCtrl.UpdateUI();
             }
 
             if (Studio.Studio.optionSystem.autoSelect && ociFolder != null)
@@ -108,9 +106,8 @@ namespace KK_Plugins.StudioCustomMasking
 
             //Enable scale
             ociFolder.guideObject.enableScale = true;
-            GameObject[] roots = (GameObject[])Traverse.Create(ociFolder.guideObject).Field("roots").GetValue();
             //Set scale inactive
-            roots[2].SetActive(false);
+            ociFolder.guideObject.roots[2].SetActive(false);
 
             MaskingFolders[ociFolder.objectInfo.dicKey] = ociFolder;
         }

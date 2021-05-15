@@ -36,15 +36,12 @@ namespace KK_Plugins
             Logger = base.Logger;
             IsStudio = Application.productName == "CharaStudio";
 
-            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
-            harmony.Patch(typeof(CameraLightCtrl).GetNestedType("LightCalc", AccessTools.all).GetMethod("Init"), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CameraLightCtrl_LightCalc_Init), AccessTools.all)));
-            harmony.Patch(typeof(CameraLightCtrl).GetNestedType("LightCalc", AccessTools.all).GetMethod("UpdateUI"), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CameraLightCtrl_LightCalc_UpdateUI), AccessTools.all)));
-            harmony.Patch(typeof(CameraLightCtrl).GetNestedType("LightCalc", AccessTools.all).GetMethod("Reflect"), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CameraLightCtrl_LightCalc_Reflect), AccessTools.all)));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
         private static class Hooks
         {
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "OnDestroy")]
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.OnDestroy))]
             private static void HSceneProc_OnDestroy()
             {
                 if (IsStudio) return;
@@ -52,7 +49,7 @@ namespace KK_Plugins
                 Singleton<Studio.Studio>.Instance.InitScene();
             }
 
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), "Start")]
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.Start))]
             private static void HSceneProc_Start(HSceneProc __instance)
             {
                 if (IsStudio) return;
@@ -90,7 +87,7 @@ namespace KK_Plugins
                     assetBundleName = "studio/base/00.unity3d";
             }
 
-            [HarmonyPostfix, HarmonyPatch(typeof(Manager.Config), "Start")]
+            [HarmonyPostfix, HarmonyPatch(typeof(Manager.Config), nameof(Manager.Config.Start))]
             private static void Config_Start()
             {
                 if (IsStudio) return;
@@ -112,7 +109,7 @@ namespace KK_Plugins
                 //StudioScene.CreatePatternList();
             }
 
-            [HarmonyPostfix, HarmonyPatch(typeof(MapSelectMenuScene), "Start")]
+            [HarmonyPostfix, HarmonyPatch(typeof(MapSelectMenuScene), nameof(MapSelectMenuScene.Start))]
             private static void MapSelectMenuScene_Start(ref IEnumerator __result, GameObject ___nodeFrame, ReactiveProperty<MapInfo.Param> ____mapInfo)
             {
                 if (IsStudio) return;
@@ -218,7 +215,7 @@ namespace KK_Plugins
             private static bool GuideObject_SetScale() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.SetVisibleCenter))]
             private static bool GuideObject_SetVisibleCenter() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), "Awake")]
+            [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.Awake))]
             private static bool GuideObject_Awake(GuideObject __instance, ref int ___m_DicKey)
             {
                 if (IsStudio) return true;
@@ -233,7 +230,7 @@ namespace KK_Plugins
                 return false;
             }
 
-            [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), "LateUpdate")]
+            [HarmonyPrefix, HarmonyPatch(typeof(GuideObject), nameof(GuideObject.LateUpdate))]
             private static bool GuideObject_LateUpdate(GuideObject __instance, ref GameObject[] ___roots)
             {
                 if (IsStudio) return true;
@@ -277,11 +274,11 @@ namespace KK_Plugins
             private static bool OCILight_SetDrawTarget() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(MapCtrl), nameof(MapCtrl.UpdateUI))]
             private static bool MapCtrl_UpdateUI() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(MapCtrl), "Awake")]
+            [HarmonyPrefix, HarmonyPatch(typeof(MapCtrl), nameof(MapCtrl.Awake))]
             private static bool MapCtrl_Awake() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(PatternSelectListCtrl), nameof(PatternSelectListCtrl.Create))]
             private static bool PatternSelectListCtrl_Create() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(PatternSelectListCtrl), "Start")]
+            [HarmonyPrefix, HarmonyPatch(typeof(PatternSelectListCtrl), nameof(PatternSelectListCtrl.Start))]
             private static bool PatternSelectListCtrl_Start() => IsStudio;
 
             [HarmonyPrefix, HarmonyPatch(typeof(GuideObjectManager), nameof(GuideObjectManager.DeleteAll))]
@@ -310,7 +307,7 @@ namespace KK_Plugins
                 return false;
             }
 
-            [HarmonyPrefix, HarmonyPatch(typeof(GuideObjectManager), "Awake")]
+            [HarmonyPrefix, HarmonyPatch(typeof(GuideObjectManager), nameof(GuideObjectManager.Awake))]
             private static void GuideObjectManager_Awake(ref GameObject ___objectOriginal)
             {
                 if (IsStudio) return;
@@ -361,15 +358,15 @@ namespace KK_Plugins
             }
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.SelectMultiple))]
             private static bool TreeNodeCtrl_SelectMultiple() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), "RefreshHierachyLoop")]
+            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.RefreshHierachyLoop))]
             private static bool TreeNodeCtrl_RefreshHierachyLoop() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), "RefreshVisibleLoop")]
+            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.RefreshVisibleLoop))]
             private static bool TreeNodeCtrl_RefreshVisibleLoop() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), "SetSelectNode")]
+            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.SetSelectNode))]
             private static bool TreeNodeCtrl_SetSelectNode() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.OnPointerDown))]
             private static bool TreeNodeCtrl_OnPointerDown() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), "Start")]
+            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.Start))]
             private static bool TreeNodeCtrl_Start() => IsStudio;
 
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.DeleteAllNode))]
@@ -450,13 +447,13 @@ namespace KK_Plugins
             private static bool TreeNodeObject_SetTreeState() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.Select))]
             private static bool TreeNodeObject_Select() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), "SetStateVisible")]
+            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.SetStateVisible))]
             private static bool TreeNodeObject_SetStateVisible() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), "SetVisibleLoop")]
+            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.SetVisibleLoop))]
             private static bool TreeNodeObject_SetVisibleLoop() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), "SetVisibleChild")]
+            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.SetVisibleChild))]
             private static bool TreeNodeObject_SetVisibleChild() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), "RecalcSelectButtonPos")]
+            [HarmonyPrefix, HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.RecalcSelectButtonPos))]
             private static bool TreeNodeObject_RecalcSelectButtonPos() => IsStudio;
 
             [HarmonyPrefix, HarmonyPatch(typeof(Map), nameof(Map.sunType), MethodType.Setter)]
@@ -634,7 +631,7 @@ namespace KK_Plugins
 
                 return false;
             }
-            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), "Awake")]
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.Awake))]
             private static bool Studio_Awake(Studio.Studio __instance, ref Control ___xmlCtrl)
             {
                 if (IsStudio) return true;
@@ -651,10 +648,10 @@ namespace KK_Plugins
             private static bool Studio_ChangeCamera() => IsStudio;
             [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.SetSunCaster))]
             private static bool Studio_SetSunCaster() => IsStudio;
-            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), "OnApplicationQuit")]
+            [HarmonyPrefix, HarmonyPatch(typeof(Studio.Studio), nameof(Studio.Studio.OnApplicationQuit))]
             private static bool Studio_OnApplicationQuit() => IsStudio;
 
-            [HarmonyPrefix, HarmonyPatch(typeof(FreeHScene), "SetMapSprite")]
+            [HarmonyPrefix, HarmonyPatch(typeof(FreeHScene), nameof(FreeHScene.SetMapSprite))]
             private static bool FreeHScene_SetMapSprite(ref Image ___mapImageNormal, ref Image ___mapImageMasturbation, ref Image ___mapImageLesbian)
             {
                 if (IsStudio) return true;
@@ -666,6 +663,7 @@ namespace KK_Plugins
                 return false;
             }
 
+            [HarmonyPrefix, HarmonyPatch(typeof(CameraLightCtrl.LightCalc), nameof(CameraLightCtrl.LightCalc.Init))]
             internal static void CameraLightCtrl_LightCalc_Init(object __instance)
             {
                 if (IsStudio) return;
@@ -675,8 +673,10 @@ namespace KK_Plugins
                 Traverse.Create(__instance).Property("isInit").SetValue(true);
             }
 
+            [HarmonyPrefix, HarmonyPatch(typeof(CameraLightCtrl.LightCalc), nameof(CameraLightCtrl.LightCalc.UpdateUI))]
             internal static bool CameraLightCtrl_LightCalc_UpdateUI() => IsStudio;
 
+            [HarmonyPrefix, HarmonyPatch(typeof(CameraLightCtrl.LightCalc), nameof(CameraLightCtrl.LightCalc.Reflect))]
             internal static bool CameraLightCtrl_LightCalc_Reflect(Light ___light)
             {
                 if (IsStudio) return true;

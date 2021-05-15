@@ -130,8 +130,8 @@ namespace UILib
                 instance.text = value;
             else
             {
-                Traverse.Create(instance).Field("m_Text").SetValue(value);
-                Traverse.Create(instance).Method("UpdateLabel").GetValue();
+                instance.m_Text = value;
+                instance.UpdateLabel();
             }
         }
 

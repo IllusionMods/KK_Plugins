@@ -61,12 +61,12 @@ namespace KK_Plugins
             if (!MakerAPI.InsideAndLoaded) return;
 
             var cvsAccessory = AccessoriesApi.GetMakerAccessoryPageObject(AccessoriesApi.SelectedMakerAccSlot).GetComponent<CvsAccessory>();
-            Traverse.Create(cvsAccessory).Field("separateColor").GetValue<GameObject>().SetActive(false);
-            Traverse.Create(cvsAccessory).Field("btnAcsColor01").GetValue<Button>().transform.parent.gameObject.SetActive(false);
-            Traverse.Create(cvsAccessory).Field("btnAcsColor02").GetValue<Button>().transform.parent.gameObject.SetActive(false);
-            Traverse.Create(cvsAccessory).Field("btnAcsColor03").GetValue<Button>().transform.parent.gameObject.SetActive(false);
-            Traverse.Create(cvsAccessory).Field("btnAcsColor04").GetValue<Button>().transform.parent.gameObject.SetActive(false);
-            Traverse.Create(cvsAccessory).Field("btnInitColor").GetValue<Button>().transform.parent.gameObject.SetActive(false);
+            cvsAccessory.separateColor.SetActive(false);
+            cvsAccessory.btnAcsColor01.transform.parent.gameObject.SetActive(false);
+            cvsAccessory.btnAcsColor02.transform.parent.gameObject.SetActive(false);
+            cvsAccessory.btnAcsColor03.transform.parent.gameObject.SetActive(false);
+            cvsAccessory.btnAcsColor04.transform.parent.gameObject.SetActive(false);
+            cvsAccessory.btnInitColor.transform.parent.gameObject.SetActive(false);
         }
         /// <summary>
         /// Shows the accessory color controls for the current slot

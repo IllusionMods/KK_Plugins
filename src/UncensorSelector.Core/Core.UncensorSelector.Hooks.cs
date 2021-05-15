@@ -26,7 +26,7 @@ namespace KK_Plugins
         /// <summary>
         /// Postfix patch to check underwear clothing state and hide objDanTop when the clothes are on. Would be better as a transpiler.
         /// </summary>
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), "UpdateVisible")]
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateVisible))]
         private static void UpdateVisible(ChaControl __instance, bool ___drawSimple, bool ___confSon, List<bool> ___lstActive)
         {
             if (!___drawSimple && __instance.cmpBody && __instance.cmpBody.targetEtc.objDanTop)
@@ -83,7 +83,7 @@ namespace KK_Plugins
         /// <summary>
         /// Demosaic
         /// </summary>
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "LateUpdateForce")]
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LateUpdateForce))]
         private static void LateUpdateForce(ChaControl __instance) => __instance.hideMoz = true;
 
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
@@ -94,7 +94,7 @@ namespace KK_Plugins
                 UncensorSelector.CurrentBodyGUID = controller.BodyData.BodyGUID;
         }
 
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitBaseCustomTextureBody))]
         private static void InitBaseCustomTextureBodyPrefix(ChaControl __instance)
         {
             var controller = UncensorSelector.GetController(__instance);
@@ -139,7 +139,7 @@ namespace KK_Plugins
         /// <summary>
         /// Modifies the code for string replacement of mm_base, etc.
         /// </summary>
-        [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), "InitBaseCustomTextureBody")]
+        [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitBaseCustomTextureBody))]
         private static IEnumerable<CodeInstruction> InitBaseCustomTextureBodyTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> instructionsList = instructions.ToList();

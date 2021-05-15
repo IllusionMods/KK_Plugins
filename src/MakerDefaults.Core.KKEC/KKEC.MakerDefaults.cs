@@ -2,11 +2,8 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using ChaCustom;
-using HarmonyLib;
 using KKAPI.Maker;
 using System;
-using TMPro;
-using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -54,30 +51,27 @@ namespace KK_Plugins
 
         private static void MakerFinishedLoading(object sender, EventArgs e)
         {
-            var cmpDrawCtrl = Traverse.Create(CustomBase.Instance.customCtrl.cmpDrawCtrl);
-
             //Clothing state
             if (DefaultClothingState.Value != ClothingState.Automatic)
             {
-                Toggle[] tglClothesState = (Toggle[])cmpDrawCtrl.Field("tglClothesState").GetValue();
                 switch (DefaultClothingState.Value)
                 {
                     case ClothingState.Clothed:
-                        tglClothesState[1].isOn = true;
+                        CustomBase.Instance.customCtrl.cmpDrawCtrl.tglClothesState[1].isOn = true;
                         break;
                     case ClothingState.Underwear:
-                        tglClothesState[2].isOn = true;
+                        CustomBase.Instance.customCtrl.cmpDrawCtrl.tglClothesState[2].isOn = true;
                         break;
 #if KK
                     case ClothingState.Naked:
-                        tglClothesState[3].isOn = true;
+                        CustomBase.Instance.customCtrl.cmpDrawCtrl.tglClothesState[3].isOn = true;
                         break;
 #elif EC
                     case ClothingState.HalfOff:
-                        tglClothesState[3].isOn = true;
+                        CustomBase.Instance.customCtrl.cmpDrawCtrl.tglClothesState[3].isOn = true;
                         break;
                     case ClothingState.Naked:
-                        tglClothesState[4].isOn = true;
+                        CustomBase.Instance.customCtrl.cmpDrawCtrl.tglClothesState[4].isOn = true;
                         break;
 #endif
                 }
@@ -85,56 +79,52 @@ namespace KK_Plugins
 
             //Set eyebrow pattern. 0=Default, 1=Angry, etc.
             if (DefaultEyebrowPattern.Value != EyebrowPattern.Default)
-                ((TMP_Dropdown)cmpDrawCtrl.Field("ddEyesPtn").GetValue()).value = (int)DefaultEyebrowPattern.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.ddEyesPtn.value = (int)DefaultEyebrowPattern.Value;
 
             //Set eye pattern. 0=Default, 1=Closed, etc.
             if (DefaultEyePattern.Value != EyePattern.Default)
-                ((TMP_Dropdown)cmpDrawCtrl.Field("ddEyesPtn").GetValue()).value = (int)DefaultEyePattern.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.ddEyesPtn.value = (int)DefaultEyePattern.Value;
 
             //Eye openness
             if (DefaultEyeOpenness.Value != 1f)
-                ((Slider)cmpDrawCtrl.Field("sldEyesOpen").GetValue()).value = DefaultEyeOpenness.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.sldEyesOpen.value = DefaultEyeOpenness.Value;
 
             //Disable blinking
             if (DefaultDisableBlinking.Value)
-                ((Toggle)cmpDrawCtrl.Field("tglBlink").GetValue()).isOn = DefaultDisableBlinking.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.tglBlink.isOn = DefaultDisableBlinking.Value;
 
             //Set mouth pattern. 0=Default, 1=Smile, etc.
             if (DefaultMouthPattern.Value != MouthPattern.Default)
-                ((TMP_Dropdown)cmpDrawCtrl.Field("ddMouthPtn").GetValue()).value = (int)DefaultMouthPattern.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.ddMouthPtn.value = (int)DefaultMouthPattern.Value;
 
             //Mouth open
             if (DefaultMouthOpenness.Value != 0f)
-                ((Slider)cmpDrawCtrl.Field("sldMouthOpen").GetValue()).value = DefaultMouthOpenness.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.sldMouthOpen.value = DefaultMouthOpenness.Value;
 
             //Gaze Direction
             if (DefaultGazeDirection.Value != GazeDirection.AtCamera)
-                ((TMP_Dropdown)cmpDrawCtrl.Field("ddEyesLook").GetValue()).value = (int)DefaultGazeDirection.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.ddEyesLook.value = (int)DefaultGazeDirection.Value;
 
             if (DefaultGazeDirectionRate.Value != 1f)
-                ((Slider)cmpDrawCtrl.Field("sldEyesLookRate").GetValue()).value = DefaultGazeDirectionRate.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.sldEyesLookRate.value = DefaultGazeDirectionRate.Value;
 
             //Head Direction
             if (DefaultHeadDirection.Value != HeadDirection.FromAnimation)
-                ((TMP_Dropdown)cmpDrawCtrl.Field("ddNeckLook").GetValue()).value = (int)DefaultHeadDirection.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.ddNeckLook.value = (int)DefaultHeadDirection.Value;
 
             if (DefaultHeadDirectionRate.Value != 1f)
-                ((Slider)cmpDrawCtrl.Field("sldNeckLookRate").GetValue()).value = DefaultHeadDirectionRate.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.sldNeckLookRate.value = DefaultHeadDirectionRate.Value;
 
             //Pose
             if (DefaultPose.Value != 0)
             {
-                TMP_Dropdown ddPose = (TMP_Dropdown)cmpDrawCtrl.Field("ddPose").GetValue();
-                if (DefaultPose.Value < ddPose.options.Count)
-                    ddPose.value = DefaultPose.Value;
+                if (DefaultPose.Value < CustomBase.Instance.customCtrl.cmpDrawCtrl.ddPose.options.Count)
+                    CustomBase.Instance.customCtrl.cmpDrawCtrl.ddPose.value = DefaultPose.Value;
             }
 
             //Background
             if (DefaultBackground.Value != Background.Image)
-            {
-                Toggle[] tglBackType = (Toggle[])cmpDrawCtrl.Field("tglBackType").GetValue();
-                tglBackType[1].isOn = true;
-            }
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.tglBackType[1].isOn = true;
         }
 
 #if KK

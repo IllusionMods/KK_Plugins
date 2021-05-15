@@ -2,8 +2,6 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
-using ExtensionMethods;
-using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Studio;
@@ -15,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 #if AI || HS2
 using AIChara;
 #endif
@@ -427,14 +424,14 @@ namespace KK_Plugins
             /// </summary>
             private void SetEyeLook(int no)
             {
-                var temp = Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar;
-                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = OCIChar;
+                var temp = Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.ociChar;
+                Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.ociChar = OCIChar;
                 int eyesLookPtn = OCIChar.charFileStatus.eyesLookPtn;
                 OCIChar.ChangeLookEyesPtn(no);
-                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().LookAtInfo_SliderSize().interactable = false;
-                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().LookAtInfo_ButtonMode()[eyesLookPtn].image.color = Color.white;
-                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().LookAtInfo_ButtonMode()[no].image.color = Color.green;
-                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = temp;
+                Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.lookAtInfo.sliderSize.interactable = false;
+                Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.lookAtInfo.buttonMode[eyesLookPtn].image.color = Color.white;
+                Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.lookAtInfo.buttonMode[no].image.color = Color.green;
+                Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.ociChar = temp;
             }
             /// <summary>
             /// Set the neck look stuff. Most of the code comes from Studio.MPCharCtrl.NeckInfo.OnClick.
@@ -443,14 +440,14 @@ namespace KK_Plugins
             /// </summary>
             private void SetNeckLook(int no)
             {
-                var temp = Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar;
-                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = OCIChar;
+                var temp = Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.ociChar;
+                Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.ociChar = OCIChar;
                 int neckLookPtn = OCIChar.charFileStatus.neckLookPtn;
                 neckLookPtn = Array.FindIndex(patterns, v => v == neckLookPtn);
                 OCIChar.ChangeLookNeckPtn(patterns[no]);
-                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().NeckInfo_ButtonMode()[neckLookPtn].image.color = Color.white;
-                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().NeckInfo_ButtonMode()[no].image.color = Color.green;
-                Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl().ociChar = temp;
+                Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.neckInfo.buttonMode[neckLookPtn].image.color = Color.white;
+                Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.neckInfo.buttonMode[no].image.color = Color.green;
+                Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.ociChar = temp;
             }
             /// <summary>
             /// Used by SetNeckLook
@@ -516,69 +513,6 @@ namespace KK_Plugins
                     if (kvp.Value is OCIChar chara)
                         GetController(chara).LoadAnimations(kvp.Key, loadedItems);
             }
-        }
-    }
-}
-
-namespace ExtensionMethods
-{
-    public static class MPCharCtrlExtensions
-    {
-        private static MPCharCtrl _MPCharCtrl;
-        public static MPCharCtrl MPCharCtrl(this ManipulatePanelCtrl _)
-        {
-            if (_MPCharCtrl == null)
-            {
-                var charaPanelInfo = Traverse.Create(Studio.Studio.Instance.manipulatePanelCtrl).Field("charaPanelInfo").GetValue();
-                _MPCharCtrl = (MPCharCtrl)Traverse.Create(charaPanelInfo).Property("mpCharCtrl").GetValue();
-            }
-            return _MPCharCtrl;
-        }
-
-        private static object _LookAtInfo;
-        private static object LookAtInfo
-        {
-            get
-            {
-                if (_LookAtInfo == null)
-                    _LookAtInfo = Traverse.Create(Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl()).Field("lookAtInfo").GetValue();
-                return _LookAtInfo;
-            }
-        }
-
-        private static Slider _LookAtInfo_SliderSize;
-        public static Slider LookAtInfo_SliderSize(this MPCharCtrl _)
-        {
-            if (_LookAtInfo_SliderSize == null)
-                _LookAtInfo_SliderSize = (Slider)Traverse.Create(LookAtInfo).Field("sliderSize").GetValue();
-            return _LookAtInfo_SliderSize;
-        }
-
-        private static Button[] _LookAtInfo_ButtonMode;
-        public static Button[] LookAtInfo_ButtonMode(this MPCharCtrl _)
-        {
-            if (_LookAtInfo_ButtonMode == null)
-                _LookAtInfo_ButtonMode = (Button[])Traverse.Create(LookAtInfo).Field("buttonMode").GetValue();
-            return _LookAtInfo_ButtonMode;
-        }
-
-        private static object _MPCharCtrl_NeckInfo;
-        private static object MPCharCtrl_NeckInfo
-        {
-            get
-            {
-                if (_MPCharCtrl_NeckInfo == null)
-                    _MPCharCtrl_NeckInfo = Traverse.Create(Studio.Studio.Instance.manipulatePanelCtrl.MPCharCtrl()).Field("neckInfo").GetValue();
-                return _MPCharCtrl_NeckInfo;
-            }
-        }
-
-        private static Button[] _NeckInfo_ButtonMode;
-        public static Button[] NeckInfo_ButtonMode(this MPCharCtrl _)
-        {
-            if (_NeckInfo_ButtonMode == null)
-                _NeckInfo_ButtonMode = (Button[])Traverse.Create(MPCharCtrl_NeckInfo).Field("buttonMode").GetValue();
-            return _NeckInfo_ButtonMode;
         }
     }
 }

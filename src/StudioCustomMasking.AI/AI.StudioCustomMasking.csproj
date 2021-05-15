@@ -59,6 +59,10 @@
       <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Cinemachine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.AIGirl.Cinemachine.2018.2.21.4\lib\net46\Cinemachine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="MessagePack, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.2\lib\net46\MessagePack.dll</HintPath>
       <Private>False</Private>
@@ -154,6 +158,7 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.Cinemachine.2018.2.21.4\build\IllusionLibs.AIGirl.Cinemachine.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.Cinemachine.2018.2.21.4\build\IllusionLibs.AIGirl.Cinemachine.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.2\build\IllusionLibs.AIGirl.MessagePack.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.2\build\IllusionLibs.AIGirl.MessagePack.targets')" />
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UniRx.2020.5.29.2\build\IllusionLibs.AIGirl.UniRx.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UniRx.2020.5.29.2\build\IllusionLibs.AIGirl.UniRx.targets')" />
@@ -165,4 +170,5 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.TextRenderingModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" />
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.AIGirl.Cinemachine.2018.2.21.4\build\IllusionLibs.AIGirl.Cinemachine.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.Cinemachine.2018.2.21.4\build\IllusionLibs.AIGirl.Cinemachine.targets')" />
 </Project>

@@ -60,10 +60,10 @@ namespace KK_Plugins
                 SetUpButtons();
             }
 
-            internal static void UpdateUI(OCIChar _char)
+            internal static void UpdateUI(OCIChar ociChar)
             {
                 OverrideEvents = true;
-                ActiveButton.isOn = _char.oiCharInfo.enableFK && _char.oiCharInfo.enableIK;
+                ActiveButton.isOn = ociChar.oiCharInfo.enableFK && ociChar.oiCharInfo.enableIK;
 
                 tglHair.isOn = tglHairRef.isOn;
                 tglNeck.isOn = tglNeckRef.isOn;
@@ -123,7 +123,7 @@ namespace KK_Plugins
                         buttons[i].image.color = Color.white;
                     FKIKPanel.SetActive(true);
                     fkikSelectButton.image.color = Color.green;
-                    Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("kinematic").SetValue(-1);
+                    Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.kinematic = -1;
                     foreach (OCIChar ociChar in StudioAPI.GetSelectedCharacters())
                     {
                         OverrideEvents = true;
@@ -155,8 +155,8 @@ namespace KK_Plugins
 
                 GetPanelObject<Button>("Button For Anime").onClick.AddListener(() =>
                 {
-                    Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("fkInfo").Field("buttonAnime").GetValue<Button>().onClick.Invoke();
-                    Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("ikInfo").Field("buttonAnime").GetValue<Button>().onClick.Invoke();
+                    Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.fkInfo.buttonAnime.onClick.Invoke();
+                    Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.ikInfo.buttonAnime.onClick.Invoke();
                 });
 
                 SetupText("FKIK Text Hair", 0, "Hair (FK)");
@@ -208,8 +208,8 @@ namespace KK_Plugins
                 sldSize.transform.localPosition = new Vector3(sldSize.transform.localPosition.x, PositionBase + PositionOffset * 11, sldSize.transform.localPosition.z);
                 sldSize.onValueChanged.AddListener(value =>
                 {
-                    Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("fkInfo").Field("sliderSize").GetValue<Slider>().value = value;
-                    Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field("ikInfo").Field("sliderSize").GetValue<Slider>().value = value;
+                    Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.fkInfo.sliderSize.value = value;
+                    Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.ikInfo.sliderSize.value = value;
                 });
 
                 for (var i = 0; i < RemoveText.Length; i++)

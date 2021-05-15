@@ -36,9 +36,9 @@ namespace KK_Plugins.StudioSceneSettings
 #if AI || HS2
     public class StudioCameraColliderController : MonoBehaviour
     {
-        protected void OnTriggerEnter(Collider other) => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Method("OnTriggerEnter", other).GetValue();
-        protected void OnTriggerStay(Collider other) => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Method("OnTriggerStay", other).GetValue();
-        protected void OnTriggerExit(Collider other) => Traverse.Create(Studio.Studio.Instance.cameraCtrl).Method("OnTriggerExit", other).GetValue();
+        protected void OnTriggerEnter(Collider other) => Studio.Studio.Instance.cameraCtrl.OnTriggerEnter(other);
+        protected void OnTriggerStay(Collider other) => Studio.Studio.Instance.cameraCtrl.OnTriggerStay(other);
+        protected void OnTriggerExit(Collider other) => Studio.Studio.Instance.cameraCtrl.OnTriggerExit(other);
     }
 #endif
 }

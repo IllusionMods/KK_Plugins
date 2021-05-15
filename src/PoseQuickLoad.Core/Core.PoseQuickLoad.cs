@@ -28,11 +28,11 @@ namespace KK_Plugins
 
     internal static class Hooks
     {
-        [HarmonyPostfix, HarmonyPatch(typeof(PauseRegistrationList), "OnClickSelect")]
+        [HarmonyPostfix, HarmonyPatch(typeof(PauseRegistrationList), nameof(PauseRegistrationList.OnClickSelect))]
         private static void OnClickSelect(PauseRegistrationList __instance)
         {
             if (PoseQuickLoad.Enabled.Value)
-                Traverse.Create(__instance).Method("OnClickLoad").GetValue();
+                __instance.OnClickLoad();
         }
     }
 }

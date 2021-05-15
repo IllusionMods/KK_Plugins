@@ -8,7 +8,7 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
-            [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), "Init")]
+            [HarmonyPostfix, HarmonyPatch(typeof(HVoiceCtrl), nameof(HVoiceCtrl.Init))]
             private static void HVoiceCtrlInit() => HSceneInstance = FindObjectOfType<HScene>();
 
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Sound), "Play", typeof(Manager.Sound.Loader))]
@@ -21,7 +21,7 @@ namespace KK_Plugins
                     Caption.DisplaySubtitle(__result.gameObject, text);
             }
 
-            [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), "Play_Standby", typeof(AudioSource), typeof(Manager.Voice.Loader))]
+            [HarmonyPostfix, HarmonyPatch(typeof(Manager.Voice), nameof(Manager.Voice.Play_Standby), typeof(AudioSource), typeof(Manager.Voice.Loader))]
             private static void PlayStandbyPostfix(AudioSource audioSource, Manager.Voice.Loader loader)
             {
                 if (loader.asset.IsNullOrEmpty() || loader.asset.Contains("_bgm_"))
@@ -35,9 +35,7 @@ namespace KK_Plugins
 
             private static void DisplayHSubtitle(Manager.Voice.Loader loader, AudioSource audioSource)
             {
-                Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[] dicdiclstVoiceList = (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>>[])Traverse.Create(HSceneInstance.ctrlVoice).Field("dicdiclstVoiceList").GetValue();
-
-                foreach (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>> a in dicdiclstVoiceList)
+                foreach (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>> a in HSceneInstance.ctrlVoice.dicdiclstVoiceList)
                     foreach (Dictionary<int, HVoiceCtrl.VoiceList> b in a.Values)
                         foreach (HVoiceCtrl.VoiceList c in b.Values)
                             foreach (Dictionary<int, HVoiceCtrl.VoiceListInfo> d in c.dicdicVoiceList)

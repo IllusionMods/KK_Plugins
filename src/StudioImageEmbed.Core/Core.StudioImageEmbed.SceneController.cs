@@ -1,11 +1,8 @@
 ﻿using ExtensibleSaveFormat;
-using HarmonyLib;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using Studio;
 using System.IO;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -13,8 +10,8 @@ namespace KK_Plugins
     {
         public class ImageEmbedSceneController : SceneCustomFunctionController
         {
-            TextureContainer FrameTex;
-            TextureContainer BGTex;
+            private TextureContainer FrameTex;
+            private TextureContainer BGTex;
 
             protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
             {
@@ -67,21 +64,15 @@ namespace KK_Plugins
 
                     if (FrameTex != null)
                     {
-                        var imageFrame = Traverse.Create(Studio.Studio.Instance.frameCtrl).Field("imageFrame").GetValue<RawImage>();
-                        imageFrame.texture = FrameTex.Texture;
-                        imageFrame.enabled = true;
-
-                        var cameraUI = Traverse.Create(Studio.Studio.Instance.frameCtrl).Field("cameraUI").GetValue<Camera>();
-                        cameraUI.enabled = true;
+                        Studio.Studio.Instance.frameCtrl.imageFrame.texture = FrameTex.Texture;
+                        Studio.Studio.Instance.frameCtrl.imageFrame.enabled = true;
+                        Studio.Studio.Instance.frameCtrl.cameraUI.enabled = true;
                     }
 
                     if (BGTex != null)
                     {
-                        BackgroundCtrl m_BackgroundCtrl = Traverse.Create(Studio.Studio.Instance).Field("m_BackgroundCtrl").GetValue<BackgroundCtrl>();
-                        MeshRenderer meshRenderer = Traverse.Create(m_BackgroundCtrl).Field("meshRenderer").GetValue<MeshRenderer>();
-
-                        meshRenderer.material.SetTexture("_MainTex", BGTex.Texture);
-                        m_BackgroundCtrl.isVisible = true;
+                        Studio.Studio.Instance.m_BackgroundCtrl.meshRenderer.material.SetTexture("_MainTex", BGTex.Texture);
+                        Studio.Studio.Instance.m_BackgroundCtrl.isVisible = true;
                     }
                 }
             }

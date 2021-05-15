@@ -1,7 +1,6 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 
@@ -11,13 +10,12 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
-            [HarmonyPostfix, HarmonyPatch(typeof(ChaListControl), "LoadListInfoAll")]
+            [HarmonyPostfix, HarmonyPatch(typeof(ChaListControl), nameof(ChaListControl.LoadListInfoAll))]
             private static void LoadListInfoAllPostfix(ChaListControl __instance)
             {
                 if (!Directory.Exists(ListOverrideFolder)) return;
 
                 int counter = 0;
-                Dictionary<ChaListDefine.CategoryNo, Dictionary<int, ListInfoBase>> dictListInfo = Traverse.Create(__instance).Field("dictListInfo").GetValue() as Dictionary<ChaListDefine.CategoryNo, Dictionary<int, ListInfoBase>>;
 
                 var files = Directory.GetFiles(ListOverrideFolder);
                 for (var i = 0; i < files.Length; i++)
@@ -46,7 +44,7 @@ namespace KK_Plugins
                             //Don't allow people to change IDs, that's sure to break everything.
                             if (keyType == ChaListDefine.KeyType.ID) continue;
 
-                            dictListInfo[categoryNo][id].dictInfo[(int)keyType] = value;
+                            __instance.dictListInfo[categoryNo][id].dictInfo[(int)keyType] = value;
                             counter++;
                         }
                     }

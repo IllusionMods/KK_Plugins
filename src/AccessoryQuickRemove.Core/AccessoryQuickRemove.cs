@@ -1,10 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using ChaCustom;
-using HarmonyLib;
 using KKAPI;
 using KKAPI.Maker;
-using TMPro;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -31,11 +29,8 @@ namespace KK_Plugins
             {
                 var customChangeMainMenu = FindObjectOfType<CustomChangeMainMenu>();
                 if (customChangeMainMenu.items[4].tglItem.isOn) //Accessory tab is selected
-                {
-                    var cvsAccessory = AccessoriesApi.GetMakerAccessoryPageObject(AccessoriesApi.SelectedMakerAccSlot).GetComponent<CvsAccessory>();
                     //Set the Type dropdown to the "None" option which removes the accessory
-                    Traverse.Create(cvsAccessory).Field("ddAcsType").GetValue<TMP_Dropdown>().value = 0;
-                }
+                    AccessoriesApi.GetMakerAccessoryPageObject(AccessoriesApi.SelectedMakerAccSlot).GetComponent<CvsAccessory>().ddAcsType.value = 0;
             }
         }
     }

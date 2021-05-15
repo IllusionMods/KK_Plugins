@@ -298,7 +298,7 @@ namespace KK_Plugins.MaterialEditor
             controller.RefreshClothesMainTex();
         }
 
-        [HarmonyPrefix, HarmonyPatch(typeof(CharaCustom.CvsA_Copy), "CopyAccessory")]
+        [HarmonyPrefix, HarmonyPatch(typeof(CharaCustom.CvsA_Copy), nameof(CharaCustom.CvsA_Copy.CopyAccessory))]
         private static void CopyAccessoryOverride() => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 #else
         internal static void AccessoryTransferHook() => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
@@ -306,7 +306,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Transfer accessory hook
         /// </summary>
-        [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsAccessoryChange), "CopyAcs")]
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CvsAccessoryChange), nameof(ChaCustom.CvsAccessoryChange.CopyAcs))]
         private static void CopyAcsHook() => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).CustomClothesOverride = true;
 
         //Clothing color change hooks
@@ -373,18 +373,16 @@ namespace KK_Plugins.MaterialEditor
 
             IEnumerator Postfix()
             {
-                var bodyAlphaMask = Traverse.Create(__instance).Property("texBodyAlphaMask").GetValue() as Texture;
-                if (__instance.rendBody.sharedMaterials.Length > 1 && bodyAlphaMask != null)
+                if (__instance.rendBody.sharedMaterials.Length > 1 && __instance.texBodyAlphaMask != null)
                 {
                     for (int i = 0; i < __instance.rendBody.sharedMaterials.Length; i++)
                     {
                         var mat = __instance.rendBody.sharedMaterials[i];
-                        mat.SetTexture(ChaShader._AlphaMask, bodyAlphaMask);
+                        mat.SetTexture(ChaShader._AlphaMask, __instance.texBodyAlphaMask);
                     }
                 }
 
-                var braAlphaMask = Traverse.Create(__instance).Property("texBraAlphaMask").GetValue() as Texture;
-                if (__instance.rendBra != null && braAlphaMask != null)
+                if (__instance.rendBra != null && __instance.texBraAlphaMask != null)
                 {
                     for (int j = 0; j < 2; j++)
                     {
@@ -395,7 +393,7 @@ namespace KK_Plugins.MaterialEditor
                                 var mat = __instance.rendBra[j].materials[i];
                                 if (mat != null)
                                 {
-                                    mat.SetTexture(ChaShader._AlphaMask, braAlphaMask);
+                                    mat.SetTexture(ChaShader._AlphaMask, __instance.texBraAlphaMask);
                                 }
                             }
                         }
@@ -426,7 +424,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Apply juice to all material copies
         /// </summary>
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), "UpdateSiru")]
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateSiru))]
         private static void ChaControl_UpdateSiru_Postfix(ChaControl __instance)
         {
             if (__instance.customMatFace && __instance.rendFace && __instance.rendFace.sharedMaterials.Length > 1)
@@ -450,11 +448,14 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
         }
+#endif
+#endif
 
+#if KK    
         /// <summary>
         /// Apply eye tracking to all material copies
         /// </summary>
-        [HarmonyPostfix, HarmonyPatch(typeof(EyeLookMaterialControll), "Update")]
+        [HarmonyPostfix, HarmonyPatch(typeof(EyeLookMaterialControll), nameof(EyeLookMaterialControll.Update))]
         private static void EyeLookMaterialControll_Update_Postfix(EyeLookMaterialControll __instance, Material ____material)
         {
             if (__instance._renderer.sharedMaterials.Length == 1)
@@ -472,10 +473,7 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
         }
-#endif
-#endif
 
-#if KK
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
         private static void ChangeCoordinateTypePrefix(ChaControl __instance)
         {
@@ -492,7 +490,7 @@ namespace KK_Plugins.MaterialEditor
                 controller.CoordinateChangedEvent();
         }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(CvsClothesCopy), "CopyClothes")]
+        [HarmonyPostfix, HarmonyPatch(typeof(CvsClothesCopy), nameof(CvsClothesCopy.CopyClothes))]
         private static void CopyClothesPostfix(TMP_Dropdown[] ___ddCoordeType, Toggle[] ___tglKind)
         {
             List<int> copySlots = new List<int>();

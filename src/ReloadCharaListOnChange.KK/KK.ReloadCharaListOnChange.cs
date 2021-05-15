@@ -53,9 +53,7 @@ namespace KK_Plugins
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             MakerAPI.MakerExiting += MakerAPI_MakerExiting;
 
-            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
-            harmony.Patch(typeof(Studio.MPCharCtrl).GetNestedType("CostumeInfo", BindingFlags.NonPublic).GetMethod("InitFileList", AccessTools.all),
-                          new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.StudioCoordinateListPrefix), AccessTools.all)));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
         /// <summary>
         /// On a game update run the actual refresh. It must be run from an update or it causes all sorts of errors.

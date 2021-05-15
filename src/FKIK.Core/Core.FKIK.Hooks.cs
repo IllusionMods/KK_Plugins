@@ -92,6 +92,12 @@ namespace KK_Plugins
                 ChangingCharaNeckPtn = -1;
                 EnableFKIK(ociChar);
             }
+
+            [HarmonyPostfix, HarmonyPatch(typeof(MPCharCtrl.IKInfo), nameof(MPCharCtrl.IKInfo.Init))]
+            private static void IKInfo_Init() => UI.InitUI();
+
+            [HarmonyPostfix, HarmonyPatch(typeof(MPCharCtrl.IKInfo), nameof(MPCharCtrl.IKInfo.UpdateInfo))]
+            private static void IKInfo_UpdateInfo(OCIChar _char) => UI.UpdateUI(_char);
         }
     }
 }

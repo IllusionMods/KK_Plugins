@@ -168,7 +168,7 @@ namespace KK_Plugins
                     string filepath = $"{UserData.Create(folder)}{filename}";
 
 #if KK
-                    Traverse.Create(KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile).Method("SaveFile", filepath).GetValue();
+                    KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile.SaveFile(filepath);
 #elif PC
                     ((Human)Traverse.Create(CharaCustomModeInstance).Field("human").GetValue()).Custom.Save(filepath, null);
 #elif PH
@@ -178,7 +178,7 @@ namespace KK_Plugins
 #elif SBPR
                     CustomControlInstance.chabody.OverwriteCharaFile(filepath);
 #else
-                    Traverse.Create(KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile).Method("SaveFile", filepath, 0).GetValue();
+                    KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile.SaveFile(filepath, 0);
 #endif
 
 #if PC
@@ -231,8 +231,7 @@ namespace KK_Plugins
                     //Game runs similar code
                     foreach (KeyValuePair<int, ObjectCtrlInfo> item in Studio.Studio.Instance.dicObjectCtrl)
                         item.Value.OnSavePreprocessing();
-                    Studio.CameraControl m_CameraCtrl = (Studio.CameraControl)Traverse.Create(Studio.Studio.Instance).Field("m_CameraCtrl").GetValue();
-                    Studio.Studio.Instance.sceneInfo.cameraSaveData = m_CameraCtrl.Export();
+                    Studio.Studio.Instance.sceneInfo.cameraSaveData = Studio.Studio.Instance.m_CameraCtrl.Export();
                     DateTime now = DateTime.Now;
                     string str = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
                     string path = $"{UserData.Create(AutosavePathStudio)}{str}";

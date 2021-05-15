@@ -15,7 +15,7 @@ namespace KK_Plugins
             /// <summary>
             /// Increase the max value of animation speed
             /// </summary>
-            [HarmonyTranspiler, HarmonyPatch(typeof(AnimeControl), "OnEndEditSpeed")]
+            [HarmonyTranspiler, HarmonyPatch(typeof(AnimeControl), nameof(AnimeControl.OnEndEditSpeed))]
             private static IEnumerable<CodeInstruction> OnEndEditSpeedTranspiler(IEnumerable<CodeInstruction> instructions)
             {
                 List<CodeInstruction> instructionsList = instructions.ToList();
@@ -33,7 +33,7 @@ namespace KK_Plugins
             /// <summary>
             /// Expand the max value of the slider based on the entered value
             /// </summary>
-            [HarmonyPrefix, HarmonyPatch(typeof(AnimeControl), "OnEndEditSpeed")]
+            [HarmonyPrefix, HarmonyPatch(typeof(AnimeControl), nameof(AnimeControl.OnEndEditSpeed))]
             private static void OnEndEditSpeed(string _text, ref Slider ___sliderSpeed)
             {
                 float speed = float.TryParse(_text, out float num) ? num : 0f;

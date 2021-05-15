@@ -9,7 +9,7 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
-            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), "LateUpdateForce")]
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LateUpdateForce))]
             private static void LateUpdateForce(ChaControl __instance)
             {
                 if (Enabled.Value)

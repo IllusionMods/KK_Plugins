@@ -12,7 +12,7 @@ namespace KK_Plugins.StudioSceneSettings
         internal static class Hooks
         {
 #if AI || HS2
-            [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), "OnTriggerEnter")]
+            [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), nameof(Studio.CameraControl.OnTriggerEnter))]
             private static void OnTriggerEnter(Collider other, ref List<Collider> ___listCollider)
             {
                 if (other == null)
@@ -23,7 +23,7 @@ namespace KK_Plugins.StudioSceneSettings
                     ___listCollider.Add(other);
             }
 
-            [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), "OnTriggerStay")]
+            [HarmonyPostfix, HarmonyPatch(typeof(Studio.CameraControl), nameof(Studio.CameraControl.OnTriggerStay))]
             private static void OnTriggerStay(Collider other, ref List<Collider> ___listCollider)
             {
                 if (other == null)

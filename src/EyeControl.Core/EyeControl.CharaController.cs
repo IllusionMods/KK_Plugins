@@ -1,9 +1,7 @@
 ﻿using ExtensibleSaveFormat;
-using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
-using UnityEngine.UI;
 #if AI || HS2
 using AIChara;
 #endif
@@ -25,10 +23,7 @@ namespace KK_Plugins
                 _EyeOpenMax = value;
 #if KK || EC
                 if (MakerAPI.InsideAndLoaded)
-                {
-                    Slider sldEyesOpen = (Slider)Traverse.Create(ChaCustom.CustomBase.Instance.customCtrl.cmpDrawCtrl).Field("sldEyesOpen").GetValue();
-                    ChaControl.ChangeEyesOpenMax(sldEyesOpen.value);
-                }
+                    ChaControl.ChangeEyesOpenMax(ChaCustom.CustomBase.Instance.customCtrl.cmpDrawCtrl.sldEyesOpen.value);
                 else
 #endif
                 //Do not apply the change to the character in Studio. It is only applied once when the character is added to a scene.
@@ -55,10 +50,7 @@ namespace KK_Plugins
                 _DisableBlinking = value;
 #if KK || EC
                 if (MakerAPI.InsideAndLoaded)
-                {
-                    Toggle tglBlink = (Toggle)Traverse.Create(ChaCustom.CustomBase.Instance.customCtrl.cmpDrawCtrl).Field("tglBlink").GetValue();
-                    ChaControl.ChangeEyesBlinkFlag(!tglBlink.isOn);
-                }
+                    ChaControl.ChangeEyesBlinkFlag(!ChaCustom.CustomBase.Instance.customCtrl.cmpDrawCtrl.tglBlink.isOn);
                 else
 #endif
                 //Do not apply the change to the character in Studio. It is only applied once when the character is added to a scene.

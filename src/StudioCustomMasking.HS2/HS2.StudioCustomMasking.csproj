@@ -55,6 +55,10 @@
       <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Cinemachine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.Cinemachine.2018.4.11.4\lib\net46\Cinemachine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HS2API, Version=1.18.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionModdingAPI.HS2API.1.18.0\lib\net46\HS2API.dll</HintPath>
       <Private>False</Private>
@@ -159,6 +163,7 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UIModule.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.Cinemachine.2018.4.11.4\build\IllusionLibs.HoneySelect2.Cinemachine.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.Cinemachine.2018.4.11.4\build\IllusionLibs.HoneySelect2.Cinemachine.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.2020.5.29.2\build\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.2020.5.29.2\build\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29.2\build\IllusionLibs.HoneySelect2.IL.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29.2\build\IllusionLibs.HoneySelect2.IL.targets')" />
@@ -171,4 +176,5 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets')" />
   <Import Project="..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UIModule.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.HoneySelect2.Cinemachine.2018.4.11.4\build\IllusionLibs.HoneySelect2.Cinemachine.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.Cinemachine.2018.4.11.4\build\IllusionLibs.HoneySelect2.Cinemachine.targets')" />
 </Project>
