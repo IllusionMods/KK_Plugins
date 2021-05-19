@@ -200,6 +200,24 @@ namespace KK_Plugins
                 //Update the uncensor on every load or reload
                 UpdateUncensor();
             }
+
+#if HS2
+            float _updateCounter = 0f;
+            protected override void Update()
+            {
+                _updateCounter += Time.deltaTime;
+                if (_updateCounter >= 1f) // Every 1 second.
+                {
+                    _updateCounter -= 1f;
+                    // Suppress monochrome problem.
+                    // NOTE: This is not efficient way.
+                    UpdateMonochromeBody();
+                }
+
+                base.Update();
+            }
+#endif
+
             /// <summary>
             /// Reload this character's uncensor
             /// </summary>
