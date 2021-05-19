@@ -405,8 +405,8 @@ namespace KK_Plugins.MaterialEditor
                         if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
                         {
                             int? texID = null;
-                            if (loadedProperty.TexID != null)
-                                texID = importDictionary[(int)loadedProperty.TexID];
+                            if (loadedProperty.TexID != null && importDictionary.TryGetValue((int)loadedProperty.TexID, out var importTextID))
+                                texID = importTextID;
                             int coordinateIndex = loadedProperty.ObjectType == ObjectType.Character ? 0 : loadedProperty.CoordinateIndex;
                             MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
                             MaterialTexturePropertyList.Add(newTextureProperty);
