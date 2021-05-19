@@ -47,7 +47,11 @@ namespace KK_Plugins.MaterialEditor
         {
             Studio.colorPalette.Setup(title, color, onChanged, useAlpha);
 
-            _slot = ((ObjectData)data).Slot;
+            if (data is ObjectData objectData) //Character
+                _slot = objectData.Slot;
+            else //Item
+                _slot = (int)data;
+
             _materialName = materialName;
             _title = title;
             _onChanged = onChanged;
