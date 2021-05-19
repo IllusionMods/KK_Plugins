@@ -71,7 +71,9 @@ namespace MaterialEditorAPI
                 var png = MaterialEditorPluginBase.GetT2D(_renderTexture);
                 RenderTexture.ReleaseTemporary(_renderTexture);
 
-                string filename = Path.Combine(MaterialEditorPluginBase.ExportPath, $"{rend.NameFormatted()}_{x}.png");
+                var rendererName = rend.NameFormatted();
+                rendererName = string.Concat(rendererName.Split(Path.GetInvalidFileNameChars())).Trim();
+                string filename = Path.Combine(MaterialEditorPluginBase.ExportPath, $"{rendererName}_{x}.png");
                 File.WriteAllBytes(filename, png.EncodeToPNG());
                 Object.DestroyImmediate(png);
                 MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");

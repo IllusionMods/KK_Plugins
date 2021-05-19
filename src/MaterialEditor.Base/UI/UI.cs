@@ -57,7 +57,7 @@ namespace MaterialEditorAPI
         internal static readonly Color ItemColor = new Color(1f, 1f, 1f, 0f);
         internal static readonly Color SeparatorItemColor = new Color(0.9f, 0.9f, 0.9f, 0.55f);
 
-        protected private IMaterialEditorColorPalette ColorPalette;
+        private protected IMaterialEditorColorPalette ColorPalette;
 
         private GameObject CurrentGameObject;
         private object CurrentData;
@@ -492,7 +492,9 @@ namespace MaterialEditorAPI
         {
             var tex = mat.GetTexture($"_{property}");
             if (tex == null) return;
-            string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{mat.NameFormatted()}_{property}.png");
+            var matName = mat.NameFormatted();
+            matName = string.Concat(matName.Split(Path.GetInvalidFileNameChars())).Trim();
+            string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{matName}_{property}.png");
             SaveTex(tex, filename);
             MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
             Utilities.OpenFileInExplorer(filename);
