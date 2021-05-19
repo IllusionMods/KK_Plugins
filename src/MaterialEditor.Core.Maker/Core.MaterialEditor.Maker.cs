@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using HarmonyLib;
 using KKAPI;
 using KKAPI.Maker;
@@ -67,6 +68,7 @@ namespace KK_Plugins.MaterialEditor
                     ToggleButtonVisibility();
                 }
             };
+            MakerAPI.MakerExiting += (s, e) => ColorPalette = null;
             AccessoriesApi.SelectedMakerAccSlotChanged += (s, e) => ToggleButtonVisibility();
             AccessoriesApi.AccessoryKindChanged += (s, e) => ToggleButtonVisibility();
             AccessoriesApi.AccessoryTransferred += (s, e) => ToggleButtonVisibility();
@@ -148,6 +150,8 @@ namespace KK_Plugins.MaterialEditor
 #endif
             currentHairIndex = 0;
             currentClothesIndex = 0;
+
+            ColorPalette = new MakerColorPalette();
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)

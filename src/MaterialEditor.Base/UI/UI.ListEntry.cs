@@ -74,6 +74,7 @@ namespace MaterialEditorAPI
         public InputField ColorBInput;
         public InputField ColorAInput;
         public Button ColorResetButton;
+        public Button ColorEditButton;
 
         public CanvasGroup FloatPanel;
         public Text FloatLabel;
@@ -422,6 +423,8 @@ namespace MaterialEditorAPI
                         ColorBInput.text = item.ColorValue.b.ToString();
                         ColorAInput.text = item.ColorValue.a.ToString();
 
+                        ColorEditButton.image.color = item.ColorValue;
+
                         ColorRInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
@@ -437,6 +440,9 @@ namespace MaterialEditorAPI
                                 item.ColorValueOnReset();
                             else
                                 item.ColorValueOnChange(item.ColorValue);
+
+                            ColorEditButton.image.color = item.ColorValue;
+                            item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
                             SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
@@ -457,6 +463,9 @@ namespace MaterialEditorAPI
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
+                            ColorEditButton.image.color = item.ColorValue;
+                            item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
+
                             SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
 
@@ -475,6 +484,9 @@ namespace MaterialEditorAPI
                                 item.ColorValueOnReset();
                             else
                                 item.ColorValueOnChange(item.ColorValue);
+
+                            ColorEditButton.image.color = item.ColorValue;
+                            item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
                             SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
@@ -495,6 +507,9 @@ namespace MaterialEditorAPI
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
+                            ColorEditButton.image.color = item.ColorValue;
+                            item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
+
                             SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
 
@@ -508,9 +523,37 @@ namespace MaterialEditorAPI
                             ColorBInput.text = item.ColorValue.b.ToString();
                             ColorAInput.text = item.ColorValue.a.ToString();
 
+                            ColorEditButton.image.color = item.ColorValue;
+                            item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
+
                             item.ColorValueOnReset();
                             SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                         });
+
+                        ColorEditButton.onClick.RemoveAllListeners();
+                        ColorEditButton.onClick.AddListener(() =>
+                        {
+                            item.ColorValueOnEdit(item.LabelText, item.ColorValue, onChanged);
+
+                            void onChanged(Color c)
+                            {
+                                ColorEditButton.image.color = c;
+                                item.ColorValue = c;
+
+                                ColorRInput.text = c.r.ToString();
+                                ColorGInput.text = c.g.ToString();
+                                ColorBInput.text = c.b.ToString();
+                                ColorAInput.text = c.a.ToString();
+
+                                if (item.ColorValue == item.ColorValueOriginal)
+                                    item.ColorValueOnReset();
+                                else
+                                    item.ColorValueOnChange(item.ColorValue);
+
+                                SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
+                            }
+                        });
+
                         break;
                     case ItemInfo.RowItemType.FloatProperty:
                         ShowFloat();

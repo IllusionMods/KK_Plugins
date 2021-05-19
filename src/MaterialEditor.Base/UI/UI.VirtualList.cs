@@ -120,6 +120,7 @@ namespace MaterialEditorAPI
             listEntry.ColorBInput = listEntry.GetUIComponent<InputField>("ColorBInput");
             listEntry.ColorAInput = listEntry.GetUIComponent<InputField>("ColorAInput");
             listEntry.ColorResetButton = listEntry.GetUIComponent<Button>("ColorResetButton");
+            listEntry.ColorEditButton = listEntry.GetUIComponent<Button>("ColorEditButton");
 
             listEntry.FloatPanel = listEntry.GetUIComponent<CanvasGroup>("FloatPanel");
             listEntry.FloatLabel = listEntry.GetUIComponent<Text>("FloatLabel");

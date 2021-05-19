@@ -9,6 +9,7 @@
     <Import_RootNamespace>Core.MaterialEditor.Studio</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ColorPalette.Studio.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SceneController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Studio.cs" />
   </ItemGroup>

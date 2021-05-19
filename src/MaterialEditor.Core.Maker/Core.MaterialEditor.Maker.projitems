@@ -9,6 +9,7 @@
     <Import_RootNamespace>Core.MaterialEditor.Maker</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ColorPalette.Maker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Maker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Maker.Hooks.cs" />
   </ItemGroup>

@@ -6,6 +6,7 @@ using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using MaterialEditorAPI;
 using Studio;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -103,6 +104,8 @@ namespace KK_Plugins.MaterialEditor
 
             materialEditorButton.onClick = new Button.ButtonClickedEvent();
             materialEditorButton.onClick.AddListener(() => { UpdateUI(); });
+
+            ColorPalette = new StudioColorPalette();
         }
 
         internal byte[] LoadIcon()
