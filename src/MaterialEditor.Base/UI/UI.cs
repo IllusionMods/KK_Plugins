@@ -47,6 +47,7 @@ namespace MaterialEditorAPI
         internal const float TextBoxWidth = 75f;
         internal const float ColorLabelWidth = 10f;
         internal const float ResetButtonWidth = 50f;
+        internal const float ColorEditButtonWidth = 20f;
         internal const float SliderWidth = 150f;
         internal const float LabelXWidth = 60f;
         internal const float LabelYWidth = 10f;
@@ -55,6 +56,8 @@ namespace MaterialEditorAPI
         internal static readonly Color RowColor = new Color(1f, 1f, 1f, 0.6f);
         internal static readonly Color ItemColor = new Color(1f, 1f, 1f, 0f);
         internal static readonly Color SeparatorItemColor = new Color(0.9f, 0.9f, 0.9f, 0.55f);
+
+        protected private IMaterialEditorColorPalette ColorPalette;
 
         private GameObject CurrentGameObject;
         private object CurrentData;
@@ -432,7 +435,9 @@ namespace MaterialEditorAPI
                                 ColorValue = valueColor,
                                 ColorValueOriginal = valueColorOriginal,
                                 ColorValueOnChange = value => SetMaterialColorProperty(data, mat, propertyName, value, go),
-                                ColorValueOnReset = () => RemoveMaterialColorProperty(data, mat, propertyName, go)
+                                ColorValueOnReset = () => RemoveMaterialColorProperty(data, mat, propertyName, go),
+                                ColorValueOnEdit = (title, value, onChanged) => SetupColorPalette(data, mat, $"Material Editor - {title}", value, onChanged, true),
+                                ColorValueSetToPalette = (title, value) => SetColorToPalette(data, mat, $"Material Editor - {title}", value)
                             };
                             items.Add(contentItem);
                         }
@@ -528,5 +533,40 @@ namespace MaterialEditorAPI
         public abstract float? GetMaterialFloatPropertyValueOriginal(object data, Material material, string propertyName, GameObject gameObject);
         public abstract void SetMaterialFloatProperty(object data, Material material, string propertyName, float value, GameObject gameObject);
         public abstract void RemoveMaterialFloatProperty(object data, Material material, string propertyName, GameObject gameObject);
+
+        private void SetupColorPalette(object data, Material material, string title, Color value, Action<Color> onChanged, bool useAlpha)
+        {
+            var name = material.name;
+            if (ColorPalette.IsShowing(title, data, name))
+            {
+                ColorPalette.Close();
+                return;
+            }
+
+            try
+            {
+                ColorPalette.Setup(title, data, name, value, onChanged, useAlpha);
+            }
+            catch (ArgumentException)
+            {
+                MaterialEditorPluginBase.Logger.LogError($"Color value is out of range. ({value})");
+                ColorPalette.Close();
+            }
+        }
+        private void SetColorToPalette(object data, Material material, string title, Color value)
+        {
+            if (ColorPalette.IsShowing(title, data, material.name))
+            {
+                try
+                {
+                    ColorPalette.SetColor(value);
+                }
+                catch (ArgumentException)
+                {
+                    MaterialEditorPluginBase.Logger.LogError($"Color value is out of range. ({value})");
+                    ColorPalette.Close();
+                }
+            }
+        }
     }
 }

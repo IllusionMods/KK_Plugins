@@ -62,6 +62,8 @@ namespace MaterialEditorAPI
         public Color ColorValueOriginal { get; set; }
         public Action<Color> ColorValueOnChange { get; set; }
         public Action ColorValueOnReset { get; set; }
+        public Action<string, Color, Action<Color>> ColorValueOnEdit { get; set; }
+        public Action<string, Color> ColorValueSetToPalette { get; set; }
 
         public float FloatValue { get; set; }
         public float FloatValueOriginal { get; set; }

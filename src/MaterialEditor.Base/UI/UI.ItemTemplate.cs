@@ -412,6 +412,11 @@ namespace MaterialEditorAPI
                 textBoxALE.preferredWidth = TextBoxWidth;
                 textBoxALE.flexibleWidth = 0;
 
+                var edit = UIUtility.CreateButton("ColorEditButton", itemPanel.transform, "");
+                var editLE = edit.gameObject.AddComponent<LayoutElement>();
+                editLE.preferredWidth = ColorEditButtonWidth;
+                editLE.flexibleWidth = 0;
+
                 var reset = UIUtility.CreateButton($"ColorResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;

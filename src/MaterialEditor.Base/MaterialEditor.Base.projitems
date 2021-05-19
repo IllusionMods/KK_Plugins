@@ -9,6 +9,7 @@
     <Import_RootNamespace>MaterialEditor.API</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)IMaterialEditorColorPalette.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MaterialAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConfigurationManagerAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CopyContainer.cs" />
