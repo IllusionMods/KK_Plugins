@@ -49,7 +49,7 @@ namespace KK_Plugins
 
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
-                if (BodyGUID == null && PenisGUID == null && BallsGUID == null && (ChaControl.sex == 0 && DisplayPenis && DisplayBalls) || (ChaControl.sex == 1 && !DisplayPenis))
+                if (BodyGUID == null && PenisGUID == null && BallsGUID == null && ((ChaControl.sex == 0 && DisplayPenis && DisplayBalls) || (ChaControl.sex == 1 && !DisplayPenis)))
                 {
                     SetExtendedData(null);
                 }
