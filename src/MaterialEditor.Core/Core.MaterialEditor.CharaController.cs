@@ -639,8 +639,8 @@ namespace KK_Plugins.MaterialEditor
                 var go = FindGameObject(property.ObjectType, property.Slot);
                 if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
-                if (property.TexID != null)
-                    SetTexture(go, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                if (property.TexID != null && TextureDictionary.TryGetValue((int)property.TexID, out var textureContainer))
+                    SetTexture(go, property.MaterialName, property.Property, textureContainer.Texture);
                 SetTextureOffset(go, property.MaterialName, property.Property, property.Offset);
                 SetTextureScale(go, property.MaterialName, property.Property, property.Scale);
             }
