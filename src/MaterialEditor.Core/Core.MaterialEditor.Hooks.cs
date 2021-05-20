@@ -373,7 +373,7 @@ namespace KK_Plugins.MaterialEditor
 
             IEnumerator Postfix()
             {
-                if (__instance.rendBody.sharedMaterials.Length > 1 && __instance.texBodyAlphaMask != null)
+                if (__instance.rendBody.sharedMaterials.Length > 1)
                 {
                     for (int i = 0; i < __instance.rendBody.sharedMaterials.Length; i++)
                     {
