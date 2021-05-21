@@ -65,7 +65,11 @@ namespace KK_Plugins.MaterialEditor
                     IDsToPurge.Add(texID);
 
             for (var i = 0; i < IDsToPurge.Count; i++)
-                TextureDictionary.Remove(i);
+            {
+                int texID = IDsToPurge[i];
+                if (TextureDictionary.TryGetValue(texID, out var val)) val.Dispose();
+                TextureDictionary.Remove(texID);
+            }
 
             if (RendererPropertyList.Count == 0 && MaterialFloatPropertyList.Count == 0 && MaterialColorPropertyList.Count == 0 && MaterialTexturePropertyList.Count == 0 && MaterialShaderList.Count == 0 && MaterialCopyList.Count == 0)
             {
