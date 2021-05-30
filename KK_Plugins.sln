@@ -427,6 +427,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.AccessoryClothes", "src
 		{49002A35-8753-442F-9781-45E9881FD7AB} = {49002A35-8753-442F-9781-45E9881FD7AB}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Demosaic", "src\Demosaic.KKS\KKS.Demosaic.csproj", "{6DDFD009-9742-4898-98A3-FF1051C8A62F}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -573,6 +575,8 @@ Global
 		src\Shared\Shared.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 4
 		src\AnimationController.Core\Core.AnimationController.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 4
+		src\Demosaic.Core\Core.Demosaic.projitems*{6ddfd009-9742-4898-98a3-ff1051c8a62f}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{6ddfd009-9742-4898-98a3-ff1051c8a62f}*SharedItemsImports = 4
 		src\AccessoryQuickRemove.Core\AccessoryQuickRemove.Core.projitems*{6f832183-df80-400a-9463-5058361a5797}*SharedItemsImports = 13
 		src\PoseUnlocker.Core\PoseUnlocker.Core.projitems*{6f8f5f23-de07-43c0-9fb9-1cb09a4a84bd}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{6f8f5f23-de07-43c0-9fb9-1cb09a4a84bd}*SharedItemsImports = 4
@@ -1283,6 +1287,10 @@ Global
 		{6AA3AD0C-AC11-4224-81A8-8E1387DF336C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AA3AD0C-AC11-4224-81A8-8E1387DF336C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AA3AD0C-AC11-4224-81A8-8E1387DF336C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DDFD009-9742-4898-98A3-FF1051C8A62F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DDFD009-9742-4898-98A3-FF1051C8A62F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DDFD009-9742-4898-98A3-FF1051C8A62F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DDFD009-9742-4898-98A3-FF1051C8A62F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1453,6 +1461,7 @@ Global
 		{906CF257-347F-4AC7-AC8F-74082346B74A} = {74D9C2ED-06F3-41D4-88EA-EB7A664157B3}
 		{86BDC6AF-B123-4116-B0CE-6884360CF070} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 		{6AA3AD0C-AC11-4224-81A8-8E1387DF336C} = {CE50952C-C3F5-473A-8C8E-FE59B58EF7C0}
+		{6DDFD009-9742-4898-98A3-FF1051C8A62F} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
