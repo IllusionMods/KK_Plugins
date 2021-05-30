@@ -62,7 +62,7 @@ namespace KK_Plugins
                     case ClothingState.Underwear:
                         CustomBase.Instance.customCtrl.cmpDrawCtrl.tglClothesState[2].isOn = true;
                         break;
-#if KK
+#if KK || KKS
                     case ClothingState.Naked:
                         CustomBase.Instance.customCtrl.cmpDrawCtrl.tglClothesState[3].isOn = true;
                         break;
@@ -127,7 +127,7 @@ namespace KK_Plugins
                 CustomBase.Instance.customCtrl.cmpDrawCtrl.tglBackType[1].isOn = true;
         }
 
-#if KK
+#if KK || KKS
         public enum ClothingState { Automatic, Clothed, Underwear, Naked }
 #elif EC
         public enum ClothingState { Automatic, Clothed, Underwear, HalfOff, Naked }
