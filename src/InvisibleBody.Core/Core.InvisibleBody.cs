@@ -27,7 +27,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.invisiblebody";
         public const string PluginName = "Invisible Body";
-        public const string PluginNameInternal = "KK_InvisibleBody"; //Intentionally left as KK because changing it would break extended save data
+        public const string PluginNameInternal = Constants.Prefix + "_InvisibleBody";
         public const string Version = "1.4";
         internal static new ManualLogSource Logger;
 
@@ -49,7 +49,7 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
 
-            CharacterApi.RegisterExtraBehaviour<InvisibleBodyCharaController>(PluginNameInternal);
+            CharacterApi.RegisterExtraBehaviour<InvisibleBodyCharaController>("KK_InvisibleBody"); //Intentionally left as KK because changing it would break extended save data
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
