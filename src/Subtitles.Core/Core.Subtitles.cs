@@ -41,7 +41,7 @@ namespace KK_Plugins
 
         internal static Dictionary<string, string> SubtitleDictionary = new Dictionary<string, string>();
 
-#if KK || EC || HS || PC
+#if KK || EC || HS || PC || KKS
         internal const float WorldScale = 1f;
 #elif AI || HS2
         internal const float WorldScale = 10f;

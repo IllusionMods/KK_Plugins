@@ -420,6 +420,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.ReloadCharaListOnChange
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC.ReloadCharaListOnChange", "src\ReloadCharaListOnChange.EC\EC.ReloadCharaListOnChange.csproj", "{906CF257-347F-4AC7-AC8F-74082346B74A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Subtitles", "src\Subtitles.KKS\KKS.Subtitles.csproj", "{86BDC6AF-B123-4116-B0CE-6884360CF070}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -602,6 +604,8 @@ Global
 		src\AccessoryClothes.Core\AccessoryClothes.Core.projitems*{84060175-95bd-4ad7-ba46-508dc8959b32}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{84060175-95bd-4ad7-ba46-508dc8959b32}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{86bdc6af-b123-4116-b0ce-6884360cf070}*SharedItemsImports = 4
+		src\Subtitles.Core\Core.Subtitles.projitems*{86bdc6af-b123-4116-b0ce-6884360cf070}*SharedItemsImports = 4
 		src\MakerDefaults.Core.KKEC\Core.MakerDefaults.KKEC.projitems*{878bb100-7d7c-43d2-8e9d-608d93d738e4}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{878bb100-7d7c-43d2-8e9d-608d93d738e4}*SharedItemsImports = 4
 		src\CharacterExport.Core\Core.CharacterExport.projitems*{87c4f79c-3074-476b-849b-ce1498840e55}*SharedItemsImports = 4
@@ -1264,6 +1268,10 @@ Global
 		{906CF257-347F-4AC7-AC8F-74082346B74A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{906CF257-347F-4AC7-AC8F-74082346B74A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{906CF257-347F-4AC7-AC8F-74082346B74A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86BDC6AF-B123-4116-B0CE-6884360CF070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86BDC6AF-B123-4116-B0CE-6884360CF070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86BDC6AF-B123-4116-B0CE-6884360CF070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86BDC6AF-B123-4116-B0CE-6884360CF070}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1432,6 +1440,7 @@ Global
 		{F6368CED-8F10-4949-9D53-71707C111BD0} = {74D9C2ED-06F3-41D4-88EA-EB7A664157B3}
 		{4B3E58C9-E9AC-4EA6-AA0B-D5C2FB520484} = {74D9C2ED-06F3-41D4-88EA-EB7A664157B3}
 		{906CF257-347F-4AC7-AC8F-74082346B74A} = {74D9C2ED-06F3-41D4-88EA-EB7A664157B3}
+		{86BDC6AF-B123-4116-B0CE-6884360CF070} = {A17C16DF-D157-4751-94E7-686FD22E1DAC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
