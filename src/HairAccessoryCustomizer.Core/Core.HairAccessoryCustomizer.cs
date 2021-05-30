@@ -45,7 +45,7 @@ namespace KK_Plugins
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
-#if KK
+#if KK || KKS
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;

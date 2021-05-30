@@ -8,7 +8,7 @@ namespace KK_Plugins
     public partial class HairAccessoryCustomizer
     {
         private static void AccessoriesApi_AccessoryTransferred(object sender, AccessoryTransferEventArgs e) => GetController(MakerAPI.GetCharacterControl()).TransferAccessoriesHandler(e);
-#if KK
+#if KK || KKS
         private static void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e) => GetController(MakerAPI.GetCharacterControl()).CopyAccessoriesHandler(e);
 #endif
 

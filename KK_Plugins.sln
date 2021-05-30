@@ -404,6 +404,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.DynamicBoneEditor", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.EyeControl", "src\EyeControl.KKS\KKS.EyeControl.csproj", "{49FC9B8B-2B91-4FE1-9C5F-621CA4591692}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.HairAccessoryCustomizer", "src\HairAccessoryCustomizer.KKS\KKS.HairAccessoryCustomizer.csproj", "{70335FFD-BC96-4064-9BAF-619616F0835A}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -547,6 +549,8 @@ Global
 		src\AccessoryQuickRemove.Core\AccessoryQuickRemove.Core.projitems*{6f832183-df80-400a-9463-5058361a5797}*SharedItemsImports = 13
 		src\PoseUnlocker.Core\PoseUnlocker.Core.projitems*{6f8f5f23-de07-43c0-9fb9-1cb09a4a84bd}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{6f8f5f23-de07-43c0-9fb9-1cb09a4a84bd}*SharedItemsImports = 4
+		src\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.projitems*{70335ffd-bc96-4064-9baf-619616f0835a}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{70335ffd-bc96-4064-9baf-619616f0835a}*SharedItemsImports = 4
 		src\PoseFolders.Core\Core.PoseFolders.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
 		src\DynamicBoneEditor.Core\DynamicBoneEditor.Core.projitems*{7451d643-3634-4dfc-9e86-ba3223f1a832}*SharedItemsImports = 13
@@ -1202,6 +1206,10 @@ Global
 		{49FC9B8B-2B91-4FE1-9C5F-621CA4591692}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49FC9B8B-2B91-4FE1-9C5F-621CA4591692}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49FC9B8B-2B91-4FE1-9C5F-621CA4591692}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70335FFD-BC96-4064-9BAF-619616F0835A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70335FFD-BC96-4064-9BAF-619616F0835A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70335FFD-BC96-4064-9BAF-619616F0835A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70335FFD-BC96-4064-9BAF-619616F0835A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1362,6 +1370,7 @@ Global
 		{E2005A81-95C5-45AC-BEE4-BF812E027ADA} = {39BE0BD8-0A15-4BDC-AF84-34206D210891}
 		{F685F54B-D110-4816-BA9B-F982D07A56F5} = {2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}
 		{49FC9B8B-2B91-4FE1-9C5F-621CA4591692} = {D07B596D-5603-4B11-B705-F3B377BBC174}
+		{70335FFD-BC96-4064-9BAF-619616F0835A} = {6249F14A-AEBF-4683-AC7E-64458FC9F6D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

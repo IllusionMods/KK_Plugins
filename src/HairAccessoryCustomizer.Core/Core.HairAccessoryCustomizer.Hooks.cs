@@ -38,7 +38,7 @@ namespace KK_Plugins
             {
                 InitCurrentSlot();
             }
-#if KK
+#if KK || KKS
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
             private static void ChangeCoordinateType(ChaControl __instance) => __instance.StartCoroutine(ChangeCoordinateActions(__instance));
 

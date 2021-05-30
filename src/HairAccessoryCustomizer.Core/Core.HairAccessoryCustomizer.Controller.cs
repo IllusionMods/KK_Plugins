@@ -17,7 +17,7 @@ namespace KK_Plugins
         public class HairAccessoryController : CharaCustomFunctionController
         {
             private Dictionary<int, Dictionary<int, HairAccessoryInfo>> HairAccessories = new Dictionary<int, Dictionary<int, HairAccessoryInfo>>();
-#if KK
+#if KK || KKS
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
 #elif EC
             public int CurrentCoordinateIndex => 0;
@@ -331,7 +331,7 @@ namespace KK_Plugins
                             return true;
                 return false;
             }
-#if KK
+#if KK || KKS
             internal void CopyAccessoriesHandler(AccessoryCopyEventArgs e)
             {
                 if (!HairAccessories.ContainsKey((int)e.CopySource))
@@ -481,7 +481,7 @@ namespace KK_Plugins
 
             [Serializable]
             [MessagePackObject]
-            private class HairAccessoryInfo
+            public class HairAccessoryInfo
             {
                 [Key("HairGloss")]
                 public bool HairGloss = ColorMatchDefault;
