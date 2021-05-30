@@ -17,7 +17,7 @@ namespace KK_Plugins
             new ColliderData("cf_J_ArmUp02_s_R", 0.25f, 2.5f, new Vector3(0f, 0f, 0f)),
         };
         internal static readonly HashSet<string> BreastDBComments = new HashSet<string> { "Mune_L", "Mune_R" };
-#elif KK
+#elif KK || KKS
         internal static ColliderData FloorColliderData = new ColliderData("cf_j_root", 100f, 0f, new Vector3(0, -100.01f, 0f));
         internal static readonly List<ColliderData> ArmColliderDataList = new List<ColliderData>
         {

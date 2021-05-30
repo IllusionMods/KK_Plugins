@@ -1,4 +1,4 @@
-﻿#if KK
+﻿#if KK || KKS
 using HarmonyLib;
 
 namespace KK_Plugins

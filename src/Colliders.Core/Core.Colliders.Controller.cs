@@ -22,7 +22,7 @@ namespace KK_Plugins
         {
             public DynamicBoneCollider FloorCollider;
             private readonly List<DynamicBoneCollider> ArmColliders = new List<DynamicBoneCollider>();
-#if KK
+#if KK || KKS
             private readonly List<DynamicBoneCollider> LegColliders = new List<DynamicBoneCollider>();
 #endif
 
@@ -47,7 +47,7 @@ namespace KK_Plugins
                 for (var i = 0; i < ArmColliderDataList.Count; i++)
                     ArmColliders.Add(AddCollider(ArmColliderDataList[i]));
 
-#if KK
+#if KK || KKS
                 //Add the leg colliders for skirts
                 for (var i = 0; i < LegColliderDataList.Count; i++)
                     LegColliders.Add(AddCollider(LegColliderDataList[i]));
@@ -61,7 +61,7 @@ namespace KK_Plugins
                     var data = new PluginData();
                     data.data.Add(nameof(BreastCollidersEnabled), BreastCollidersEnabled);
                     data.data.Add(nameof(FloorColliderEnabled), FloorColliderEnabled);
-#if KK
+#if KK || KKS
                     data.data.Add(nameof(SkirtCollidersEnabled), SkirtCollidersEnabled);
 #endif
                     SetExtendedData(data);
@@ -85,7 +85,7 @@ namespace KK_Plugins
                         {
                             BreastCollidersEnabled = ConfigBreastColliders.Value;
                             FloorColliderEnabled = ConfigFloorCollider.Value;
-#if KK
+#if KK || KKS
                             SkirtCollidersEnabled = ConfigSkirtColliders.Value;
 #endif
                         }
@@ -101,7 +101,7 @@ namespace KK_Plugins
                                 BreastCollidersEnabled = (bool)loadedBreastCollidersEnabled;
                             if (data.data.TryGetValue(nameof(FloorColliderEnabled), out var loadedFloorColliderEnabled))
                                 FloorColliderEnabled = (bool)loadedFloorColliderEnabled;
-#if KK
+#if KK || KKS
                             if (data.data.TryGetValue(nameof(SkirtCollidersEnabled), out var loadedSkirtCollidersEnabled))
                                 SkirtCollidersEnabled = (bool)loadedSkirtCollidersEnabled;
 #endif
@@ -114,7 +114,7 @@ namespace KK_Plugins
                 {
                     BreastCollidersEnabled = ConfigBreastColliders.Value;
                     FloorColliderEnabled = ConfigFloorCollider.Value;
-#if KK
+#if KK || KKS
                     SkirtCollidersEnabled = ConfigSkirtColliders.Value;
 #endif
                 }
@@ -130,7 +130,7 @@ namespace KK_Plugins
             {
                 if (applyColliders)
                 {
-#if KK
+#if KK || KKS
                     if (applyFloorCollider || applySkirtColliders)
                     {
                         var dynamicBones = GetComponentsInChildren<DynamicBone>();
@@ -177,7 +177,7 @@ namespace KK_Plugins
                         if (StudioAPI.InsideStudio)
                             UpdateArmCollidersBreastDBAll();
 
-#if KK
+#if KK || KKS
                         if (FindObjectOfType<HSceneProc>() != null)
                             UpdateArmCollidersBreastDBAll();
 #endif
@@ -192,7 +192,7 @@ namespace KK_Plugins
             public void ApplySkirtColliders() => applyColliders = applySkirtColliders = true;
             public void ApplyFloorCollider() => applyColliders = applyFloorCollider = true;
 
-#if KK
+#if KK || KKS
             /// <summary>
             /// Applies the floor collider to the dynamic bone
             /// </summary>
@@ -280,7 +280,7 @@ namespace KK_Plugins
                 for (var index = 0; index < dynamicBone.Patterns.Count; index++)
                 {
                     var pat = dynamicBone.Patterns[index];
-#if KK
+#if KK || KKS
                     pat.Params[0].CollisionRadius = BreastCollidersEnabled ? 0.10f * BreastSize : 0;
                     pat.Params[1].CollisionRadius = BreastCollidersEnabled ? 0.08f * BreastSize : 0;
 #elif AI || HS2
@@ -329,7 +329,7 @@ namespace KK_Plugins
                 return collider;
             }
 
-#if KK
+#if KK || KKS
             /// <summary>
             /// Update the skirt dynamic bones. Locks the skirt's front dynamic bone on the X axis to reduce clipping.
             /// </summary>

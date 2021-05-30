@@ -28,7 +28,7 @@ namespace KK_Plugins
 
         public static ConfigEntry<bool> ConfigBreastColliders { get; private set; }
         public static ConfigEntry<bool> ConfigFloorCollider { get; private set; }
-#if KK
+#if KK || KKS
         public static ConfigEntry<bool> ConfigSkirtColliders { get; private set; }
 #endif
         public static ConfigEntry<DefaultStudioSettings> ConfigDefaultStudioSettings { get; private set; }
@@ -47,7 +47,7 @@ namespace KK_Plugins
             ConfigBreastColliders.SettingChanged += ConfigBreastColliders_SettingChanged;
             ConfigFloorCollider.SettingChanged += ConfigFloorCollider_SettingChanged;
 
-#if KK
+#if KK || KKS
             ConfigSkirtColliders = Config.Bind("Config", "Skirt Colliders", true, new ConfigDescription("Extra colliders for the legs to cause less skirt clipping.", null, new ConfigurationManagerAttributes { Order = 5 }));
             ConfigSkirtColliders.SettingChanged += ConfigSkirtColliders_SettingChanged;
 
@@ -94,7 +94,7 @@ namespace KK_Plugins
                 GetController(chaControl).ApplyFloorCollider();
             }
         }
-#if KK
+#if KK || KKS
         /// <summary>
         /// Apply colliders on setting change
         /// </summary>
@@ -134,7 +134,7 @@ namespace KK_Plugins
                 }
             });
 
-#if KK
+#if KK || KKS
             var skirt = new CurrentStateCategorySwitch("Skirt", ocichar => ocichar.charInfo.GetComponent<ColliderController>().SkirtCollidersEnabled);
             skirt.Value.Subscribe(value =>
             {
@@ -167,7 +167,7 @@ namespace KK_Plugins
             });
 
             StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(breast);
-#if KK
+#if KK || KKS
             StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(skirt);
 #endif
             StudioAPI.GetOrCreateCurrentStateCategory("Colliders").AddControl(floor);
