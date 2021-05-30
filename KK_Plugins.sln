@@ -392,10 +392,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Profile", "src\Profile.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.AccessoryQuickRemove", "src\AccessoryQuickRemove.KKS\KKS.AccessoryQuickRemove.csproj", "{0CD64F6F-4E15-4C9C-A990-4616A8A8EA82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Autosave", "src\Autosave.KKS\KKS.Autosave.csproj", "{09DD4F46-AAD5-4BF0-B164-6E1FF6023008}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
 		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
+		src\Autosave.Core\Autosave.Core.projitems*{09dd4f46-aad5-4bf0-b164-6e1ff6023008}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{09dd4f46-aad5-4bf0-b164-6e1ff6023008}*SharedItemsImports = 4
 		src\Autosave.Core\Autosave.Core.projitems*{0a8fcae3-903b-487a-8916-258111a8cfd4}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{0a8fcae3-903b-487a-8916-258111a8cfd4}*SharedItemsImports = 4
 		src\Pushup.Core\Pushup.Core.projitems*{0c61caa2-3c5d-47ea-85e5-6ea281fef859}*SharedItemsImports = 13
@@ -1153,6 +1157,10 @@ Global
 		{0CD64F6F-4E15-4C9C-A990-4616A8A8EA82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CD64F6F-4E15-4C9C-A990-4616A8A8EA82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CD64F6F-4E15-4C9C-A990-4616A8A8EA82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09DD4F46-AAD5-4BF0-B164-6E1FF6023008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09DD4F46-AAD5-4BF0-B164-6E1FF6023008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09DD4F46-AAD5-4BF0-B164-6E1FF6023008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09DD4F46-AAD5-4BF0-B164-6E1FF6023008}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1307,6 +1315,7 @@ Global
 		{D9A02C8D-5216-4FC8-873B-8B53B251D1AF} = {6057C91E-2C38-48EB-8698-4B3C1D99B68E}
 		{4E1E0813-FEA1-4493-ADA1-250132EF45E0} = {BD1386F5-CFAE-4BF1-8826-78DB7F21BC46}
 		{0CD64F6F-4E15-4C9C-A990-4616A8A8EA82} = {3EB1E588-1FAE-4D50-940C-BF438BFD7806}
+		{09DD4F46-AAD5-4BF0-B164-6E1FF6023008} = {08E5FA33-E6A8-45D5-8F77-7D9B7DF80A93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

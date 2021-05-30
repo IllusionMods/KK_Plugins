@@ -57,7 +57,7 @@ namespace KK_Plugins
         private static CustomControl CustomControlInstance;
 #endif
         private static Coroutine MakerCoroutine;
-#if !EC && !PC && !SBPR
+#if !EC && !PC && !SBPR && !KKS
         private static Coroutine StudioCoroutine;
 #endif
         public static ConfigEntry<bool> AutosaveEnabled { get; private set; }
@@ -67,7 +67,7 @@ namespace KK_Plugins
 
         private void Start()
         {
-#if !EC && !PC && !SBPR
+#if !EC && !PC && !SBPR && !KKS
             InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
 #endif
             Logger = base.Logger;
@@ -82,7 +82,7 @@ namespace KK_Plugins
 
             if (InStudio)
             {
-#if !EC && !PC && !SBPR
+#if !EC && !PC && !SBPR && !KKS
                 StudioCoroutine = StartCoroutine(AutosaveStudio());
 #endif
             }
@@ -105,7 +105,7 @@ namespace KK_Plugins
 #endif
             }
 
-#if KK || EC || AI || HS2 || PH
+#if KK || EC || AI || HS2 || PH || KKS
             KKAPI.Chara.CharacterApi.RegisterExtraBehaviour<CharaController>(PluginGUID);
 #endif
 #if KK || AI || HS2 || PH
@@ -167,7 +167,7 @@ namespace KK_Plugins
 #endif
                     string filepath = $"{UserData.Create(folder)}{filename}";
 
-#if KK
+#if KK || KKS
                     KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile.SaveFile(filepath);
 #elif PC
                     ((Human)Traverse.Create(CharaCustomModeInstance).Field("human").GetValue()).Custom.Save(filepath, null);
@@ -196,7 +196,7 @@ namespace KK_Plugins
             }
         }
 
-#if !EC && !PC && !SBPR
+#if !EC && !PC && !SBPR && !KKS
         private IEnumerator AutosaveStudio()
         {
             while (true)
@@ -289,7 +289,7 @@ namespace KK_Plugins
             MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
         }
 
-#if !EC && !PC && !SBPR
+#if !EC && !PC && !SBPR && !KKS
         /// <summary>
         /// Reset the coroutine and restart the autosave timer
         /// </summary>

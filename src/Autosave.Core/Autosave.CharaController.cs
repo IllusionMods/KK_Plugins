@@ -1,4 +1,4 @@
-﻿#if KK || EC || AI || HS2 || PH
+﻿#if KK || EC || AI || HS2 || PH || KKS
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -14,6 +14,7 @@ namespace KK_Plugins
                 Autosave.ResetMakerCoroutine();
             }
         }
+
         protected override void OnReload(GameMode currentGameMode)
         {
             if (MakerAPI.InsideAndLoaded && !Autosave.Autosaving)
