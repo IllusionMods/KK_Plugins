@@ -34,7 +34,7 @@ namespace KK_Plugins
             if (data != null && data.data.TryGetValue(nameof(ProfileText), out var loadedProfileText))
                 ProfileText = loadedProfileText?.ToString();
 
-            if (MakerAPI.InsideMaker)
+            if (MakerAPI.InsideMaker && Profile.ProfileTextbox != null)
                 Profile.ProfileTextbox.Value = ProfileText ?? "";
         }
     }

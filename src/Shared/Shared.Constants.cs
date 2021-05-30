@@ -31,6 +31,10 @@
         internal const string MainGameProcessNameSteam = "Koikatsu Party";
         internal const string VRProcessName = "KoikatuVR";
         internal const string VRProcessNameSteam = "Koikatsu Party VR";
+#elif KKS
+        internal const string Prefix = "KKS";
+        internal const string GameName = "Koikatsu Sunshine";
+        internal const string MainGameProcessName = "KoikatsuSunshineTrial";
 #elif PH
         internal const string Prefix = "PH";
         internal const string GameName = "Play Home";

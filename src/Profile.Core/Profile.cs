@@ -14,19 +14,21 @@ namespace KK_Plugins
 #endif
     [BepInProcess(Constants.MainGameProcessName)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
-    [BepInPlugin(GUID, PluginName, Version)]
+    [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class Profile : BaseUnityPlugin
     {
-        public const string GUID = "com.deathweasel.bepinex.profile";
+        public const string PluginGUID = "com.deathweasel.bepinex.profile";
         public const string PluginName = "Profile";
         public const string PluginNameInternal = Constants.Prefix + "_Profile";
-        public const string Version = "1.0.1";
+        public const string PluginVersion = "1.0.1";
 
         internal static MakerTextbox ProfileTextbox;
 
+        private const float ProfileTextboxHeight = 890;
+
         internal void Main()
         {
-            CharacterApi.RegisterExtraBehaviour<ProfileController>(PluginNameInternal);
+            CharacterApi.RegisterExtraBehaviour<ProfileController>("KK_Profile");
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
         }
@@ -46,7 +48,7 @@ namespace KK_Plugins
             }
 
             //Extend the background window
-            ProfileTextbox.ControlObject.GetComponent<LayoutElement>().minHeight = 910;
+            ProfileTextbox.ControlObject.GetComponent<LayoutElement>().minHeight = ProfileTextboxHeight;
 
             //Extend the textbox
             var rect = inputfield.GetComponent<RectTransform>();
