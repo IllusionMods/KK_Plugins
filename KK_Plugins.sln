@@ -394,6 +394,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.AccessoryQuickRemove", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Autosave", "src\Autosave.KKS\KKS.Autosave.csproj", "{09DD4F46-AAD5-4BF0-B164-6E1FF6023008}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.CharacterExport", "src\CharacterExport.KKS\KKS.CharacterExport.csproj", "{87C4F79C-3074-476B-849B-CE1498840E55}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -567,6 +569,8 @@ Global
 		src\Shared\Shared.projitems*{841ffff7-1940-4b7b-b21f-83e2f16333d4}*SharedItemsImports = 13
 		src\MakerDefaults.Core.KKEC\Core.MakerDefaults.KKEC.projitems*{878bb100-7d7c-43d2-8e9d-608d93d738e4}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{878bb100-7d7c-43d2-8e9d-608d93d738e4}*SharedItemsImports = 4
+		src\CharacterExport.Core\Core.CharacterExport.projitems*{87c4f79c-3074-476b-849b-ce1498840e55}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{87c4f79c-3074-476b-849b-ce1498840e55}*SharedItemsImports = 4
 		src\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
 		src\MaleJuice.Core\MaleJuice.Core.projitems*{8a811717-0cd1-4541-bd67-a0210586e4d0}*SharedItemsImports = 4
@@ -1161,6 +1165,10 @@ Global
 		{09DD4F46-AAD5-4BF0-B164-6E1FF6023008}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09DD4F46-AAD5-4BF0-B164-6E1FF6023008}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09DD4F46-AAD5-4BF0-B164-6E1FF6023008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87C4F79C-3074-476B-849B-CE1498840E55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87C4F79C-3074-476B-849B-CE1498840E55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87C4F79C-3074-476B-849B-CE1498840E55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87C4F79C-3074-476B-849B-CE1498840E55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1316,6 +1324,7 @@ Global
 		{4E1E0813-FEA1-4493-ADA1-250132EF45E0} = {BD1386F5-CFAE-4BF1-8826-78DB7F21BC46}
 		{0CD64F6F-4E15-4C9C-A990-4616A8A8EA82} = {3EB1E588-1FAE-4D50-940C-BF438BFD7806}
 		{09DD4F46-AAD5-4BF0-B164-6E1FF6023008} = {08E5FA33-E6A8-45D5-8F77-7D9B7DF80A93}
+		{87C4F79C-3074-476B-849B-CE1498840E55} = {6D137D85-8775-4AAD-AE6D-7EDC762D7075}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

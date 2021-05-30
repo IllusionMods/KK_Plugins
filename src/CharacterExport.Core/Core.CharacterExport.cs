@@ -53,7 +53,7 @@ namespace KK_Plugins
                 string filename = $"{filenamePrefix}_{counter:00}_{sex}.png";
 #if AI || EC || HS2
                 charas[counter].chaFile.SaveFile(filename, 0);
-#elif KK
+#elif KK || KKS
                 charas[counter].chaFile.SaveFile(filename);
 #else
                 Logger.LogError($"Exporting not yet implemented");
