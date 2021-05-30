@@ -23,7 +23,7 @@ namespace KK_Plugins
             private Dictionary<int, ClothData> BraDataDictionary = new Dictionary<int, ClothData>();
             private Dictionary<int, ClothData> TopDataDictionary = new Dictionary<int, ClothData>();
 
-#if KK
+#if KK || KKS
             //EC only has one outfit slot, no need to watch changes
             protected override void Start()
             {
@@ -185,7 +185,7 @@ namespace KK_Plugins
                 RecalculateBody();
             }
 
-#if KK
+#if KK || KKS
             private static void OnCoordinateChanged()
             {
                 if (MakerAPI.InsideAndLoaded)
@@ -230,7 +230,7 @@ namespace KK_Plugins
             private IEnumerator RecalculateBodyCoroutine()
             {
                 yield return null;
-                RecalculateBody(false);
+                RecalculateBody();
             }
 
             /// <summary>
@@ -488,7 +488,7 @@ namespace KK_Plugins
                                               ChaControl.fileStatus.clothesState[(int)ChaFileDefine.ClothesKind.top] == 0 &&
                                               CurrentTopData.EnablePushup;
 
-#if KK
+#if KK || KKS
             public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
 #elif EC
             //CurrentCoordinateIndex is always zero in EC

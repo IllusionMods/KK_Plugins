@@ -49,7 +49,7 @@ namespace KK_Plugins
             MakerAPI.ReloadCustomInterface += ReloadCustomInterface;
             MakerAPI.MakerExiting += MakerExiting;
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
-#if KK
+#if KK || KKS
             //No studio for EC
             RegisterStudioControls();
 #endif

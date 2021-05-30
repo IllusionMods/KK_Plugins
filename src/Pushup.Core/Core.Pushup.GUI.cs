@@ -6,7 +6,7 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
-#if KK
+#if KK || KKS
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
 using Studio;
@@ -78,7 +78,7 @@ namespace KK_Plugins
         private static void ReloadCustomInterface(object sender, EventArgs e)
         {
             ReloadPushup();
-            _pushUpController.RecalculateBody();
+            _pushUpController.RecalculateBody(coroutine: true);
         }
 
         private static void ReloadPushup()
@@ -192,7 +192,7 @@ namespace KK_Plugins
             PushNippleWidthSlider = MakeSlider(category, "Nipple Width", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleWidth], true);
             PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleDepth], true);
 
-#if KK
+#if KK || KKS
             //Only one outfit in EC
             var coordinateList = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).ToList();
             coordinateList.Add("All");
@@ -253,7 +253,7 @@ namespace KK_Plugins
             PushNippleDepthSlider.MakerSlider.SetValue(infoBase.NippleDepth);
         }
 
-#if KK
+#if KK || KKS
         private static void CopySlidersToCoordinate(int coordinateIndex, bool copyBasic, bool copyAdvanced)
         {
             if (_pushUpController.CurrentCoordinateIndex == coordinateIndex) return;
@@ -283,7 +283,7 @@ namespace KK_Plugins
             return pushUpSlider;
         }
 
-#if KK
+#if KK || KKS
         //No studio for EC
         private static void RegisterStudioControls()
         {
