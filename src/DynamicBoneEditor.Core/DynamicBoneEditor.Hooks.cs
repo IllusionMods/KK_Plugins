@@ -7,7 +7,7 @@ namespace KK_Plugins.DynamicBoneEditor
 {
     internal class Hooks
     {
-#if KK
+#if KK || KKS
         [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
         private static void ChangeCoordinateTypePrefix(ChaControl __instance)
         {

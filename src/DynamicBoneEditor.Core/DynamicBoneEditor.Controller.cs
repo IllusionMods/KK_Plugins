@@ -22,7 +22,7 @@ namespace KK_Plugins.DynamicBoneEditor
         private List<DynamicBoneData> AccessoryDynamicBoneData = new List<DynamicBoneData>();
         private static readonly HashSet<DynamicBone> DBsToUpdate = new HashSet<DynamicBone>();
 
-#if KK
+#if KK || KKS
         public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
 #else
         public int CurrentCoordinateIndex => 0;
@@ -155,7 +155,7 @@ namespace KK_Plugins.DynamicBoneEditor
             StartCoroutine(ApplyData());
         }
 
-#if KK
+#if KK || KKS
         internal void AccessoriesCopiedEvent(object sender, AccessoryCopyEventArgs e)
         {
             foreach (int slot in e.CopiedSlotIndexes)

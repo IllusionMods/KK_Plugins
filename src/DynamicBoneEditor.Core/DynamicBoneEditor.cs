@@ -38,7 +38,7 @@ namespace KK_Plugins.DynamicBoneEditor
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
-#if KK
+#if KK || KKS
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
         }
@@ -79,7 +79,7 @@ namespace KK_Plugins.DynamicBoneEditor
             UI.ToggleButtonVisibility();
         }
 
-#if KK
+#if KK || KKS
         private void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e)
         {
             var controller = GetMakerCharaController();

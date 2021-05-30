@@ -400,6 +400,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.ClothingUnlocker", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Colliders", "src\Colliders.KKS\KKS.Colliders.csproj", "{E2005A81-95C5-45AC-BEE4-BF812E027ADA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.DynamicBoneEditor", "src\DynamicBoneEditor.KKS\KKS.DynamicBoneEditor.csproj", "{F685F54B-D110-4816-BA9B-F982D07A56F5}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -695,6 +697,9 @@ Global
 		src\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems*{f32ba203-579f-413b-8f31-13ad03f5e6d5}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{f32ba203-579f-413b-8f31-13ad03f5e6d5}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{f609a9f5-e889-4729-9982-5e08febbf53e}*SharedItemsImports = 4
+		src\DynamicBoneEditor.Core\DynamicBoneEditor.Core.projitems*{f685f54b-d110-4816-ba9b-f982d07a56f5}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{f685f54b-d110-4816-ba9b-f982d07a56f5}*SharedItemsImports = 4
+		src\UIUtility\UIUtility.projitems*{f685f54b-d110-4816-ba9b-f982d07a56f5}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
 		src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
 		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{f89251cb-3fb1-439e-84d4-3cf9310fecac}*SharedItemsImports = 4
@@ -1185,6 +1190,10 @@ Global
 		{E2005A81-95C5-45AC-BEE4-BF812E027ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2005A81-95C5-45AC-BEE4-BF812E027ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2005A81-95C5-45AC-BEE4-BF812E027ADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F685F54B-D110-4816-BA9B-F982D07A56F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F685F54B-D110-4816-BA9B-F982D07A56F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F685F54B-D110-4816-BA9B-F982D07A56F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F685F54B-D110-4816-BA9B-F982D07A56F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1343,6 +1352,7 @@ Global
 		{87C4F79C-3074-476B-849B-CE1498840E55} = {6D137D85-8775-4AAD-AE6D-7EDC762D7075}
 		{A9AF37E6-80F8-4729-89CD-59EAD64B4669} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{E2005A81-95C5-45AC-BEE4-BF812E027ADA} = {39BE0BD8-0A15-4BDC-AF84-34206D210891}
+		{F685F54B-D110-4816-BA9B-F982D07A56F5} = {2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
