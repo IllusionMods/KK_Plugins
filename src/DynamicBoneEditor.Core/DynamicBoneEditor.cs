@@ -5,6 +5,8 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
+using MessagePack;
+using System.Collections.Generic;
 #if AI || HS2
 using AIChara;
 #endif
@@ -40,6 +42,10 @@ namespace KK_Plugins.DynamicBoneEditor
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
 #if KK || KKS
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
+#endif
+
+#if EC || KKS
+            ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
 #endif
         }
 
@@ -86,6 +92,35 @@ namespace KK_Plugins.DynamicBoneEditor
             if (controller != null)
                 controller.AccessoriesCopiedEvent(sender, e);
             UI.ToggleButtonVisibility();
+        }
+#endif
+
+#if EC || KKS
+        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData)
+        {
+            if (importedExtendedData.TryGetValue(PluginGUID, out var pluginData))
+            {
+                if (pluginData != null && pluginData.data.ContainsKey("AccessoryDynamicBoneData"))
+                {
+                    if (pluginData.data.TryGetValue("AccessoryDynamicBoneData", out var loadedAccessoryDynamicBoneData) && loadedAccessoryDynamicBoneData != null)
+                    {
+                        List<DynamicBoneData> accessoryDynamicBoneData = MessagePackSerializer.Deserialize<List<DynamicBoneData>>((byte[])loadedAccessoryDynamicBoneData);
+
+                        accessoryDynamicBoneData.RemoveAll(x => x.CoordinateIndex != 0);
+
+                        if (accessoryDynamicBoneData.Count == 0)
+                        {
+                            importedExtendedData.Remove(PluginGUID);
+                        }
+                        else
+                        {
+                            var data = new PluginData();
+                            data.data.Add("AccessoryDynamicBoneData", MessagePackSerializer.Serialize(accessoryDynamicBoneData));
+                            importedExtendedData[PluginGUID] = data;
+                        }
+                    }
+                }
+            }
         }
 #endif
 
