@@ -1,10 +1,13 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
+using MessagePack;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -49,6 +52,9 @@ namespace KK_Plugins
             MakerAPI.ReloadCustomInterface += ReloadCustomInterface;
             MakerAPI.MakerExiting += MakerExiting;
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
+#if EC || KKS
+            ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
+#endif
 #if KK || KKS
             //No studio for EC
             RegisterStudioControls();
@@ -93,6 +99,56 @@ namespace KK_Plugins
 #endif
             }
         }
+
+#if EC || KKS
+        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData)
+        {
+            if (importedExtendedData.TryGetValue(GUID, out var pluginData))
+            {
+                if (pluginData != null)
+                {
+                    Dictionary<int, ClothData> braDataDictionary = new Dictionary<int, ClothData>();
+                    Dictionary<int, ClothData> topDataDictionary = new Dictionary<int, ClothData>();
+                    BodyData baseData = null;
+
+                    if (pluginData != null && pluginData.data.TryGetValue(PushupConstants.Pushup_BraData, out var loadedBraData) && loadedBraData != null)
+                        braDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedBraData);
+                    if (pluginData != null && pluginData.data.TryGetValue(PushupConstants.Pushup_TopData, out var loadedTopData) && loadedTopData != null)
+                        topDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
+                    if (pluginData != null && pluginData.data.TryGetValue(PushupConstants.Pushup_BodyData, out var loadedBodyData) && loadedBodyData != null)
+                        baseData = MessagePackSerializer.Deserialize<BodyData>((byte[])loadedBodyData);
+
+                    //Remove all data except for the first outfit
+                    List<int> keysToRemove = new List<int>();
+
+                    foreach (var entry in braDataDictionary)
+                        if (entry.Key != 0)
+                            keysToRemove.Add(entry.Key);
+                    foreach (var key in keysToRemove)
+                        braDataDictionary.Remove(key);
+
+                    foreach (var entry in topDataDictionary)
+                        if (entry.Key != 0)
+                            keysToRemove.Add(entry.Key);
+                    foreach (var key in keysToRemove)
+                        topDataDictionary.Remove(key);
+
+                    if (braDataDictionary.Count == 0 && topDataDictionary.Count == 00)
+                    {
+                        importedExtendedData.Remove(GUID);
+                    }
+                    else
+                    {
+                        var data = new PluginData();
+                        data.data.Add(PushupConstants.Pushup_BraData, MessagePackSerializer.Serialize(braDataDictionary));
+                        data.data.Add(PushupConstants.Pushup_TopData, MessagePackSerializer.Serialize(topDataDictionary));
+                        data.data.Add(PushupConstants.Pushup_BodyData, MessagePackSerializer.Serialize(baseData));
+                        importedExtendedData[GUID] = data;
+                    }
+                }
+            }
+        }
+#endif
 
         public static PushupController GetCharaController(ChaControl character) => character == null ? null : character.gameObject.GetComponent<PushupController>();
 
