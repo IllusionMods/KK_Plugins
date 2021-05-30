@@ -96,19 +96,14 @@ namespace KK_Plugins
 
                 //Start a timer which will be reset every time a card is added/removed for when the user dumps in a whole bunch at once
                 //Once the timer elapses, a flag will be set to do the refresh, which will then happen on the next Update.
-                if (CardTimer == null)
-                {
-                    //First file, start timer
-                    CardTimer = new Timer(1000);
-                    CardTimer.Elapsed += (o, ee) => DoRefresh = true;
-                    CardTimer.Start();
-                }
-                else
-                {
-                    //Subsequent file, reset timer
-                    CardTimer.Stop();
-                    CardTimer.Start();
-                }
+
+                //If the time is already running, dispose of it so it can be restarted
+                if (CardTimer != null)
+                    CardTimer.Dispose();
+
+                CardTimer = new Timer(1000);
+                CardTimer.Elapsed += (o, ee) => DoRefresh = true;
+                CardTimer.Start();
             }
             catch (Exception ex)
             {
