@@ -402,6 +402,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Colliders", "src\Collid
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.DynamicBoneEditor", "src\DynamicBoneEditor.KKS\KKS.DynamicBoneEditor.csproj", "{F685F54B-D110-4816-BA9B-F982D07A56F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.EyeControl", "src\EyeControl.KKS\KKS.EyeControl.csproj", "{49FC9B8B-2B91-4FE1-9C5F-621CA4591692}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -492,6 +494,8 @@ Global
 		src\MaleJuice.Core\MaleJuice.Core.projitems*{473a64c4-230e-4e81-91c3-8be288246d86}*SharedItemsImports = 13
 		src\AccessoryClothes.Core\AccessoryClothes.Core.projitems*{49002a35-8753-442f-9781-45e9881fd7ab}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{49002a35-8753-442f-9781-45e9881fd7ab}*SharedItemsImports = 4
+		src\EyeControl.Core\EyeControl.Core.projitems*{49fc9b8b-2b91-4fe1-9c5f-621ca4591692}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{49fc9b8b-2b91-4fe1-9c5f-621ca4591692}*SharedItemsImports = 4
 		src\ItemBlacklist.Core\ItemBlacklist.Core.projitems*{4a43e778-c1ff-4057-89e8-e858aa989810}*SharedItemsImports = 13
 		src\DynamicBoneEditor.Core\DynamicBoneEditor.Core.projitems*{4abbdfa8-40ed-40b7-ba8f-196980cbf959}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{4abbdfa8-40ed-40b7-ba8f-196980cbf959}*SharedItemsImports = 4
@@ -1194,6 +1198,10 @@ Global
 		{F685F54B-D110-4816-BA9B-F982D07A56F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F685F54B-D110-4816-BA9B-F982D07A56F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F685F54B-D110-4816-BA9B-F982D07A56F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49FC9B8B-2B91-4FE1-9C5F-621CA4591692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49FC9B8B-2B91-4FE1-9C5F-621CA4591692}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49FC9B8B-2B91-4FE1-9C5F-621CA4591692}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49FC9B8B-2B91-4FE1-9C5F-621CA4591692}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1353,6 +1361,7 @@ Global
 		{A9AF37E6-80F8-4729-89CD-59EAD64B4669} = {DC6F7D25-B687-42EF-93E7-0A241E3FD905}
 		{E2005A81-95C5-45AC-BEE4-BF812E027ADA} = {39BE0BD8-0A15-4BDC-AF84-34206D210891}
 		{F685F54B-D110-4816-BA9B-F982D07A56F5} = {2A76BD3C-AFC4-4EEA-A1CF-03FBF5889E73}
+		{49FC9B8B-2B91-4FE1-9C5F-621CA4591692} = {D07B596D-5603-4B11-B705-F3B377BBC174}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

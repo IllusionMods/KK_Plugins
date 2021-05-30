@@ -21,7 +21,7 @@ namespace KK_Plugins
             set
             {
                 _EyeOpenMax = value;
-#if KK || EC
+#if KK || EC || KKS
                 if (MakerAPI.InsideAndLoaded)
                     ChaControl.ChangeEyesOpenMax(ChaCustom.CustomBase.Instance.customCtrl.cmpDrawCtrl.sldEyesOpen.value);
                 else
@@ -48,7 +48,7 @@ namespace KK_Plugins
             set
             {
                 _DisableBlinking = value;
-#if KK || EC
+#if KK || EC || KKS
                 if (MakerAPI.InsideAndLoaded)
                     ChaControl.ChangeEyesBlinkFlag(!ChaCustom.CustomBase.Instance.customCtrl.cmpDrawCtrl.tglBlink.isOn);
                 else

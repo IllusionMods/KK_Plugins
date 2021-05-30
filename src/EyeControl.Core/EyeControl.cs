@@ -59,7 +59,7 @@ namespace KK_Plugins
         /// <param name="e"></param>
         private void MakerAPI_MakerBaseLoaded(object s, RegisterCustomControlsEvent e)
         {
-#if KK || EC
+#if KK || EC || KKS
             var category = MakerConstants.Face.Eye;
 #else
             var category = MakerConstants.Face.Eyes;
