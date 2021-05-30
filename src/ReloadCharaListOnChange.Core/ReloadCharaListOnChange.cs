@@ -34,12 +34,15 @@ namespace KK_Plugins
         private static FileSystemWatcher StudioCoordinateCardWatcher;
         private static bool DoRefresh;
         private static bool EventFromCharaMaker;
-        private static Studio.CharaList StudioFemaleListInstance;
-        private static Studio.CharaList StudioMaleListInstance;
-        private static object StudioCoordinateListInstance;
         private static Timer CardTimer;
         private static CardEventType EventType;
         private static readonly ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim();
+
+#if !EC
+        private static Studio.CharaList StudioFemaleListInstance;
+        private static Studio.CharaList StudioMaleListInstance;
+        private static object StudioCoordinateListInstance;
+#endif
 
         internal void Main()
         {
@@ -140,6 +143,7 @@ namespace KK_Plugins
                             else
                                 initializeCoordinate.Invoke(FindObjectOfType<CustomCoordinateFile>(), new object[] { true, false });
                         break;
+#if !EC
                     case CardEventType.StudioFemale:
                         StudioFemaleListInstance.InitCharaList(true);
                         break;
@@ -151,6 +155,7 @@ namespace KK_Plugins
                         typeof(Studio.MPCharCtrl).GetNestedType("CostumeInfo", BindingFlags.NonPublic).GetMethod("InitList", AccessTools.all)?.Invoke(StudioCoordinateListInstance, new object[] { 100 });
                         Traverse.Create(StudioCoordinateListInstance).Field("sex").SetValue(sex);
                         break;
+#endif
                 }
             }
             catch (Exception ex)

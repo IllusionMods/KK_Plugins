@@ -82,13 +82,11 @@ namespace KK_Plugins
             private static extern void ILFree(IntPtr pidl);
         }
 
-#if !EC
         internal static class Paths
         {
             internal static readonly string FemaleCardPath = Path.Combine(UserData.Path, "chara/female/");
             internal static readonly string MaleCardPath = Path.Combine(UserData.Path, "chara/male/");
             internal static readonly string CoordinateCardPath = Path.Combine(UserData.Path, "coordinate/");
         }
-#endif
     }
 }

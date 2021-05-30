@@ -21,7 +21,11 @@ namespace KK_Plugins
             /// <summary>
             /// When saving a new coordinate card in game set a flag
             /// </summary>
+#if KK || KKS
             [HarmonyPrefix, HarmonyPatch(typeof(ChaFileCoordinate), nameof(ChaFileCoordinate.SaveFile), typeof(string))]
+#else
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaFileCoordinate), nameof(ChaFileCoordinate.SaveFile), typeof(string), typeof(int))]
+#endif
             private static void SaveCoordinateFilePrefix(string path)
             {
                 if (MakerAPI.InsideAndLoaded && !File.Exists(path))
@@ -45,6 +49,7 @@ namespace KK_Plugins
                 if (MakerAPI.InsideAndLoaded)
                     EventFromCharaMaker = true;
             }
+#if !EC
             /// <summary>
             /// Initialize the file watcher once the list has been initiated
             /// </summary>
@@ -105,6 +110,7 @@ namespace KK_Plugins
                     StudioCoordinateCardWatcher.IncludeSubdirectories = true;
                 }
             }
+#endif
         }
     }
 }
