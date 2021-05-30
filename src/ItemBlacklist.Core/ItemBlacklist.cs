@@ -318,7 +318,11 @@ namespace KK_Plugins
                 {
                     Logger.LogMessage($"Item GUID:{info.GUID} Category:{(int)info.CategoryNo}({info.CategoryNo}) ID:{info.Slot}");
 
+#if KKS
+                    Dictionary<int, ListInfoBase> dictionary = Character.chaListCtrl.GetCategoryInfo(info.CategoryNo);
+#else
                     Dictionary<int, ListInfoBase> dictionary = Singleton<Character>.Instance.chaListCtrl.GetCategoryInfo(info.CategoryNo);
+#endif
                     if (dictionary != null && dictionary.TryGetValue(customSelectInfo.index, out ListInfoBase listInfoBase))
                     {
                         string assetBundle = listInfoBase.GetInfo(ChaListDefine.KeyType.MainAB);
@@ -340,7 +344,11 @@ namespace KK_Plugins
             {
                 Logger.LogMessage($"Item Category:{CurrentCustomSelectInfoComponent.info.category}({(ChaListDefine.CategoryNo)CurrentCustomSelectInfoComponent.info.category}) ID:{CurrentCustomSelectInfoComponent.info.index}");
 
+#if KKS
+                Dictionary<int, ListInfoBase> dictionary = Character.chaListCtrl.GetCategoryInfo((ChaListDefine.CategoryNo)CurrentCustomSelectInfoComponent.info.category);
+#else
                 Dictionary<int, ListInfoBase> dictionary = Singleton<Character>.Instance.chaListCtrl.GetCategoryInfo((ChaListDefine.CategoryNo)CurrentCustomSelectInfoComponent.info.category);
+#endif
                 if (dictionary != null && dictionary.TryGetValue(customSelectInfo.index, out var listInfoBase))
                 {
                     string assetBundle = listInfoBase.GetInfo(ChaListDefine.KeyType.MainAB);
