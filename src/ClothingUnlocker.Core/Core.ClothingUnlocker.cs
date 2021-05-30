@@ -1,11 +1,14 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using HarmonyLib;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
+using MessagePack;
 using System;
+using System.Collections.Generic;
 using UniRx;
 
 namespace KK_Plugins
@@ -34,6 +37,10 @@ namespace KK_Plugins
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             MakerAPI.ReloadCustomInterface += MakerAPI_ReloadCustomInterface;
+
+#if EC || KKS
+            ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
+#endif
         }
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent ev)
@@ -64,6 +71,41 @@ namespace KK_Plugins
 
             ev.AddSubCategory(category);
         }
+
+#if EC || KKS
+        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData)
+        {
+            if (importedExtendedData.TryGetValue(GUID, out var pluginData))
+            {
+                if (pluginData != null && pluginData.data.ContainsKey("ClothingUnlocked"))
+                {
+                    if (pluginData.data.TryGetValue("ClothingUnlocked", out var loadedClothingUnlocked))
+                    {
+                        Dictionary<int, bool> clothingUnlocked = MessagePackSerializer.Deserialize<Dictionary<int, bool>>((byte[])loadedClothingUnlocked);
+
+                        //Remove all data except for the first outfit
+                        List<int> keysToRemove = new List<int>();
+                        foreach (var entry in clothingUnlocked)
+                            if (entry.Key != 0)
+                                keysToRemove.Add(entry.Key);
+                        foreach (var key in keysToRemove)
+                            clothingUnlocked.Remove(key);
+
+                        if (clothingUnlocked.Count == 0)
+                        {
+                            importedExtendedData.Remove(GUID);
+                        }
+                        else
+                        {
+                            var data = new PluginData();
+                            data.data.Add("ClothingUnlocked", MessagePackSerializer.Serialize(clothingUnlocked));
+                            importedExtendedData[GUID] = data;
+                        }
+                    }
+                }
+            }
+        }
+#endif
 
         private static void MakerAPI_MakerFinishedLoading(object sender, EventArgs e) => ClothingUnlockToggle.SetValue(GetController(MakerAPI.GetCharacterControl()).GetClothingUnlocked());
         private static void MakerAPI_ReloadCustomInterface(object sender, EventArgs e) => ClothingUnlockToggle.SetValue(GetController(MakerAPI.GetCharacterControl()).GetClothingUnlocked());
