@@ -12,13 +12,13 @@ namespace KK_Plugins
     {
         private Dictionary<int, bool> ClothingUnlocked;
 
-#if KK
+#if KK || KKS
         public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
 #elif EC
         public int CurrentCoordinateIndex => 0;
 #endif
 
-#if KK
+#if KK || KKS
         protected override void Start()
         {
             CurrentCoordinate.Subscribe(value => { OnCoordinateChanged(); });
@@ -84,7 +84,7 @@ namespace KK_Plugins
             base.OnCoordinateBeingLoaded(coordinate, maintainState);
         }
 
-#if KK
+#if KK || KKS
         private void OnCoordinateChanged()
         {
             if (MakerAPI.InsideAndLoaded)
