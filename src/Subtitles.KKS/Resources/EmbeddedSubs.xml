@@ -117,4 +117,7 @@
   <Sub Asset="csv_38_00" Text="見学に来られたのですか？　よろしければご案内しましょうか？"/>
   <Sub Asset="csv_38_01" Text="あの、もしかして私……口説かれていますか？"/>
   <Sub Asset="csv_38_02" Text="コイカツ中ですか？　ふふ、お疲れ様です"/>
+  <Sub Asset="csv_39_00" Text="何でも遠慮なく聞いてそのほうがうれしいさ"/>
+  <Sub Asset="csv_39_01" Text="さて何しようかね"/>
+  <Sub Asset="csv_39_02" Text="はいタイ！ くすくす、もうこの挨拶にも慣れた"/>
 </KKS_Subtitles>
