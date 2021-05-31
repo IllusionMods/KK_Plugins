@@ -17,6 +17,7 @@ using UnityEngine;
 using System.Reflection;
 using System.Xml;
 using static MaterialEditorAPI.MaterialAPI;
+using XUnity.ResourceRedirector;
 #if AI || HS2
 using AIChara;
 using ChaAccessoryComponent = AIChara.CmpAccessory;
@@ -106,6 +107,28 @@ namespace KK_Plugins.MaterialEditor
         /// Parts of the mouth that need special handling
         /// </summary>
         public static HashSet<string> MouthParts = new HashSet<string> { "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang" };
+#endif
+
+#if KKS
+        /// <summary>
+        /// Koikatsu shaders and their equivalent Sunshine shaders
+        /// </summary>
+        private readonly Dictionary<string, string> ShaderMapping = new Dictionary<string, string>
+        {
+            { "Shader Forge/main_hair_front", "Koikano/hair_main_sun_front" },
+            { "Shader Forge/main_hair", "Koikano/hair_main_sun" },
+            { "Shader Forge/main_item", "Koikano/main_clothes_item" },
+            { "Shader Forge/main_opaque", "Koikano/main_clothes_opaque" },
+            { "Shader Forge/main_alpha", "Koikano/main_clothes_alpha" },
+            { "Shader Forge/main_emblem", "Koikano/main_clothes_emblem" },
+            { "Shader Forge/main_emblem_clothes", "Koikano/main_clothes_emblem" },
+            { "Shader Forge/main_skin", "Koikano/main_skin" },
+            { "Shader Forge/toon_eye_lod0", "Koikano/main_eye" },
+            { "Shader Forge/toon_eyew_lod0", "Koikano/main_eyew" },
+            { "Shader Forge/toon_nose_lod0", "Koikano/main_nose" },
+            { "Shader Forge/toon_glasses_lod0", "Koikano/main_clothes_item_glasses" },
+            { "Shader Forge/toon_textureanimation", "Koikano/sub_texture_animation" },
+        };
 #endif
 
         internal void Main()
@@ -603,6 +626,59 @@ namespace KK_Plugins.MaterialEditor
         {
             if (ShaderOptimization.Value)
                 ShaderOptimization.Value = false;
+        }
+#endif
+
+#if KKS
+        protected override void AssetLoadedHook(AssetLoadedContext context)
+        {
+            if (!ShaderOptimization.Value) return;
+
+            if (context.Asset is GameObject go)
+            {
+                var renderers = go.GetComponentsInChildren<Renderer>();
+                for (var i = 0; i < renderers.Length; i++)
+                {
+                    var renderer = renderers[i];
+                    for (var j = 0; j < renderer.materials.Length; j++)
+                    {
+                        var material = renderer.materials[j];
+
+                        string shaderName = material.shader.name;
+                        if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
+                            shaderName = shaderNameNew;
+
+                        if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
+                        {
+                            int renderQueue = material.renderQueue;
+                            material.shader = shaderData.Shader;
+                            material.renderQueue = renderQueue;
+                        }
+                    }
+                }
+            }
+            else if (context.Asset is Material mat)
+            {
+                string shaderName = mat.shader.name;
+                if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
+                    shaderName = shaderNameNew;
+
+                if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
+                {
+                    int renderQueue = mat.renderQueue;
+                    mat.shader = shaderData.Shader;
+                    mat.renderQueue = renderQueue;
+                }
+            }
+            else if (context.Asset is Shader shader)
+            {
+                string shaderName = shader.name;
+                if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
+                    shaderName = shaderNameNew;
+
+                if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
+                    context.Asset = shaderData.Shader;
+            }
         }
 #endif
 

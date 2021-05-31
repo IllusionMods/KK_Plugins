@@ -68,7 +68,7 @@ namespace MaterialEditorAPI
         /// Every time an asset is loaded, swap its shader for the one loaded by MaterialEditor. This reduces the number of instances of a shader once they are cleaned up by garbage collection
         /// which reduce RAM usage, etc. Also fixes KK mods in EC by swapping them to the equivalent EC shader.
         /// </summary>
-        private static void AssetLoadedHook(AssetLoadedContext context)
+        protected virtual void AssetLoadedHook(AssetLoadedContext context)
         {
             if (!ShaderOptimization.Value) return;
 
