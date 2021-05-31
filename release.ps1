@@ -1,4 +1,4 @@
-$array = @("KK", "EC", "AI", "HS", "HS2", "PH", "PC")
+$array = @("KK", "EC", "AI", "HS", "HS2", "PH", "PC", "KKS")
 $dir = $PSScriptRoot + "/bin/"
 $copy = $dir + "/copy/BepInEx"
 
