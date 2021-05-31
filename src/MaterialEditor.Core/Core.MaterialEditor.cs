@@ -144,6 +144,8 @@ namespace KK_Plugins.MaterialEditor
 #if EC
             ExtensibleSaveFormat.ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
             ExtensibleSaveFormat.ExtendedSave.CoordinateBeingImported += ExtendedSave_CoordinateBeingImported;
+#elif KKS
+            ExtensibleSaveFormat.ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
 #endif
 
 #if KK || EC || KKS
@@ -224,7 +226,7 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-#if EC
+#if EC || KKS
         private void ExtendedSave_CardBeingImported(Dictionary<string, ExtensibleSaveFormat.PluginData> importedExtendedData)
         {
             if (importedExtendedData.TryGetValue(PluginGUID, out var data))
@@ -233,6 +235,8 @@ namespace KK_Plugins.MaterialEditor
                 {
                     var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.RendererProperty>>((byte[])rendererProperties);
                     properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
+
+#if EC
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
                     {
@@ -240,6 +244,7 @@ namespace KK_Plugins.MaterialEditor
                         if (property.Slot == 8)//Change slot index for outdoor shoes to the one used by EC
                             property.Slot = 7;
                     }
+#endif
 
                     if (properties.Count > 0)
                         data.data["RendererPropertyList"] = MessagePackSerializer.Serialize(properties);
@@ -251,6 +256,8 @@ namespace KK_Plugins.MaterialEditor
                 {
                     var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialFloatProperty>>((byte[])floatProperties);
                     properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
+
+#if EC
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
                     {
@@ -258,16 +265,19 @@ namespace KK_Plugins.MaterialEditor
                         if (property.Slot == 8)//Change slot index for outdoor shoes to the one used by EC
                             property.Slot = 7;
                     }
+#endif
 
                     if (properties.Count > 0)
                         data.data["MaterialFloatPropertyList"] = MessagePackSerializer.Serialize(properties);
                     else
                         data.data["MaterialFloatPropertyList"] = null;
                 }
-                if (data.data.TryGetValue("MaterialColorProperty", out var colorProperties) && colorProperties != null)
+                if (data.data.TryGetValue("MaterialColorPropertyList", out var colorProperties) && colorProperties != null)
                 {
                     var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialColorProperty>>((byte[])colorProperties);
                     properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
+
+#if EC
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
                     {
@@ -275,16 +285,19 @@ namespace KK_Plugins.MaterialEditor
                         if (property.Slot == 8)//Change slot index for outdoor shoes to the one used by EC
                             property.Slot = 7;
                     }
+#endif
 
                     if (properties.Count > 0)
-                        data.data["MaterialColorProperty"] = MessagePackSerializer.Serialize(properties);
+                        data.data["MaterialColorPropertyList"] = MessagePackSerializer.Serialize(properties);
                     else
-                        data.data["MaterialColorProperty"] = null;
+                        data.data["MaterialColorPropertyList"] = null;
                 }
-                if (data.data.TryGetValue("MaterialTextureProperty", out var textureProperties) && textureProperties != null)
+                if (data.data.TryGetValue("MaterialTexturePropertyList", out var textureProperties) && textureProperties != null)
                 {
                     var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialTextureProperty>>((byte[])textureProperties);
                     properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
+
+#if EC
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
                     {
@@ -292,16 +305,19 @@ namespace KK_Plugins.MaterialEditor
                         if (property.Slot == 8)//Change slot index for outdoor shoes to the one used by EC
                             property.Slot = 7;
                     }
+#endif
 
                     if (properties.Count > 0)
-                        data.data["MaterialTextureProperty"] = MessagePackSerializer.Serialize(properties);
+                        data.data["MaterialTexturePropertyList"] = MessagePackSerializer.Serialize(properties);
                     else
-                        data.data["MaterialTextureProperty"] = null;
+                        data.data["MaterialTexturePropertyList"] = null;
                 }
-                if (data.data.TryGetValue("MaterialShader", out var shaderProperties) && shaderProperties != null)
+                if (data.data.TryGetValue("MaterialShaderList", out var shaderProperties) && shaderProperties != null)
                 {
                     var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialShader>>((byte[])shaderProperties);
                     properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
+
+#if EC
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
                     for (int i = 0; i < properties.Count; i++)
                     {
@@ -309,15 +325,38 @@ namespace KK_Plugins.MaterialEditor
                         if (property.Slot == 8)//Change slot index for outdoor shoes to the one used by EC
                             property.Slot = 7;
                     }
+#endif
 
                     if (properties.Count > 0)
-                        data.data["MaterialShader"] = MessagePackSerializer.Serialize(properties);
+                        data.data["MaterialShaderList"] = MessagePackSerializer.Serialize(properties);
                     else
-                        data.data["MaterialShader"] = null;
+                        data.data["MaterialShaderList"] = null;
+                }
+                if (data.data.TryGetValue("MaterialCopyList", out var copyProperties) && copyProperties != null)
+                {
+                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialCopy>>((byte[])copyProperties);
+                    properties.RemoveAll(x => x.CoordinateIndex != 0); //Remove all but the first coordinate
+
+#if EC
+                    properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
+                    for (int i = 0; i < properties.Count; i++)
+                    {
+                        var property = properties[i];
+                        if (property.Slot == 8)//Change slot index for outdoor shoes to the one used by EC
+                            property.Slot = 7;
+                    }
+#endif
+
+                    if (properties.Count > 0)
+                        data.data["MaterialCopyList"] = MessagePackSerializer.Serialize(properties);
+                    else
+                        data.data["MaterialCopyList"] = null;
                 }
             }
         }
+#endif
 
+#if EC
         private void ExtendedSave_CoordinateBeingImported(Dictionary<string, ExtensibleSaveFormat.PluginData> importedExtendedData)
         {
             if (importedExtendedData.TryGetValue(PluginGUID, out var data))
@@ -371,7 +410,7 @@ namespace KK_Plugins.MaterialEditor
                     else
                         data.data["MaterialColorProperty"] = null;
                 }
-                if (data.data.TryGetValue("MaterialTextureProperty", out var textureProperties) && textureProperties != null)
+                if (data.data.TryGetValue("MaterialTexturePropertyList", out var textureProperties) && textureProperties != null)
                 {
                     var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialTextureProperty>>((byte[])textureProperties);
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
@@ -383,11 +422,11 @@ namespace KK_Plugins.MaterialEditor
                     }
 
                     if (properties.Count > 0)
-                        data.data["MaterialTextureProperty"] = MessagePackSerializer.Serialize(properties);
+                        data.data["MaterialTexturePropertyList"] = MessagePackSerializer.Serialize(properties);
                     else
-                        data.data["MaterialTextureProperty"] = null;
+                        data.data["MaterialTexturePropertyList"] = null;
                 }
-                if (data.data.TryGetValue("MaterialShader", out var shaderProperties) && shaderProperties != null)
+                if (data.data.TryGetValue("MaterialShaderList", out var shaderProperties) && shaderProperties != null)
                 {
                     var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialShader>>((byte[])shaderProperties);
                     properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
@@ -399,13 +438,28 @@ namespace KK_Plugins.MaterialEditor
                     }
 
                     if (properties.Count > 0)
-                        data.data["MaterialShader"] = MessagePackSerializer.Serialize(properties);
+                        data.data["MaterialShaderList"] = MessagePackSerializer.Serialize(properties);
                     else
-                        data.data["MaterialShader"] = null;
+                        data.data["MaterialShaderList"] = null;
+                }
+                if (data.data.TryGetValue("MaterialCopyList", out var copyProperties) && copyProperties != null)
+                {
+                    var properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialCopy>>((byte[])copyProperties);
+                    properties.RemoveAll(x => x.ObjectType == MaterialEditorCharaController.ObjectType.Clothing && x.Slot == 7); //Remove indoor shoes
+                    for (int i = 0; i < properties.Count; i++)
+                    {
+                        var property = properties[i];
+                        if (property.Slot == 8)//Change slot index for outdoor shoes to the one used by EC
+                            property.Slot = 7;
+                    }
+
+                    if (properties.Count > 0)
+                        data.data["MaterialCopyList"] = MessagePackSerializer.Serialize(properties);
+                    else
+                        data.data["MaterialCopyList"] = null;
                 }
             }
         }
-
 #endif
 
         private static IEnumerator LoadXML()
