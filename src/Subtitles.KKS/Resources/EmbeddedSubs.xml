@@ -1,8 +1,12 @@
 <KKS_Subtitles>
   <!--Character maker subtitles-->
+
+  <!--
+  Commented out lines do not match the Koikatsu lines and need a new transcription
+  -->
   <Sub Asset="csv_00_00" Text="私に声を掛けるなんて、見る目あるぅ"/>
   <Sub Asset="csv_00_01" Text="ここは女の子のヒミツの花園よ♡"/>
-  <Sub Asset="csv_00_02" Text="そこは敏感なの……"/>
+  <!--<Sub Asset="csv_00_02" Text="そこは敏感なの……"/>-->
   <Sub Asset="csv_01_00" Text="その……よろしくお願いしますね"/>
   <Sub Asset="csv_01_01" Text="お疲れ様です"/>
   <Sub Asset="csv_01_02" Text="もしよろしければこの後……い、いえ、なんでもありません！　失礼します！"/>
@@ -18,16 +22,16 @@
   <Sub Asset="csv_05_00" Text="宇宙にはわたしの仲間――“かれら”がいるの"/>
   <Sub Asset="csv_05_01" Text="あなたと……交信したい……"/>
   <Sub Asset="csv_05_02" Text="一緒にメッセージ、探そっか！"/>
-  <Sub Asset="csv_06_00" Text="初めまして。お噂はかねがね伺っております"/>
+  <!--<Sub Asset="csv_06_00" Text="初めまして。お噂はかねがね伺っております"/>-->
   <Sub Asset="csv_06_01" Text="その…殿方と目を合わせるのは、慣れていないもので……"/>
   <Sub Asset="csv_06_02" Text="何故か、貴方のにおいがすると、胸がドキドキして"/>
   <Sub Asset="csv_07_00" Text="いいぜ、私でよければなんでも聞けよな！"/>
   <Sub Asset="csv_07_01" Text="私ってそんなに男っぽいのか？"/>
   <Sub Asset="csv_07_02" Text="ちょっとづつ、お前のこと分かってきた気がするよ"/>
-  <Sub Asset="csv_08_00" Text="初めまして、よろしくねぇ"/>
+  <!--<Sub Asset="csv_08_00" Text="初めまして、よろしくねぇ"/>-->
   <Sub Asset="csv_08_01" Text="少しだけあなたに興味が沸いてきたみたいなの"/>
   <Sub Asset="csv_08_02" Text="手を握るのはまだダメだってば"/>
-  <Sub Asset="csv_09_00" Text="まあ、あんたとだったら一緒に勉強するのも悪くないわね"/>
+  <!--<Sub Asset="csv_09_00" Text="まあ、あんたとだったら一緒に勉強するのも悪くないわね"/>-->
   <Sub Asset="csv_09_01" Text="バカ！　嫌いなんて言ってないでしょ！"/>
   <Sub Asset="csv_09_02" Text="そんなにじろじろ見ないで。恥ずかしいじゃないの！"/>
   <Sub Asset="csv_10_00" Text="汝に興味が湧いた……"/>
@@ -35,18 +39,18 @@
   <Sub Asset="csv_10_02" Text="ちょ、ちょっとその話は、我には過激すぎるぞ"/>
   <Sub Asset="csv_11_00" Text="おマセさんねぇ"/>
   <Sub Asset="csv_11_01" Text="子供は元気が一番よね～"/>
-  <Sub Asset="csv_11_02" Text="あなたも年頃なんだもの、我慢する必要はないのよ"/>
-  <Sub Asset="csv_12_00" Text="はいはいよろしく。てか、なんか固くない？　緊張してる？"/>
+  <!--<Sub Asset="csv_11_02" Text="あなたも年頃なんだもの、我慢する必要はないのよ"/>-->
+  <!--<Sub Asset="csv_12_00" Text="はいはいよろしく。てか、なんか固くない？　緊張してる？"/>-->
   <Sub Asset="csv_12_01" Text="おーい、鼻の下伸びてるぞー"/>
-  <Sub Asset="csv_12_02" Text="男から見てあたしの体って……どう？"/>
-  <Sub Asset="csv_13_00" Text="キミとアタシでデート？　それすっごい楽しそうじゃん！"/>
+  <!--<Sub Asset="csv_12_02" Text="男から見てあたしの体って……どう？"/>-->
+  <!--<Sub Asset="csv_13_00" Text="キミとアタシでデート？　それすっごい楽しそうじゃん！"/>-->
   <Sub Asset="csv_13_01" Text="女の子に興味あるんだ？　あは、顔真っ赤だよ？"/>
   <Sub Asset="csv_13_02" Text="セクハラはダ～メ"/>
   <Sub Asset="csv_14_00" Text="いいぜ。暇つぶしに付き合ってやるよ"/>
-  <Sub Asset="csv_14_01" Text="あんま、教室で話しかけんなよ"/>
+  <!--<Sub Asset="csv_14_01" Text="あんま、教室で話しかけんなよ"/>-->
   <Sub Asset="csv_14_02" Text="その……この後とかお前予定あんのか……？"/>
   <Sub Asset="csv_15_00" Text="クンクン、クンクン。怪しいニオイが……"/>
-  <Sub Asset="csv_15_01" Text="すっごく恥ずかしいのに、なんでかいつもより興奮したぞ"/>
+  <!--<Sub Asset="csv_15_01" Text="すっごく恥ずかしいのに、なんでかいつもより興奮したぞ"/>-->
   <Sub Asset="csv_15_02" Text="ヤラしーこと考えてるにおいだぞ"/>
   <Sub Asset="csv_16_00" Text="男は低俗と聞いていたけれど、ここまで見境がないなんて"/>
   <Sub Asset="csv_16_01" Text="私は人間観察が趣味なの"/>
@@ -54,27 +58,27 @@
   <Sub Asset="csv_17_00" Text="私と話がしたい？　他をあたってもらってもいいかしら"/>
   <Sub Asset="csv_17_01" Text="あまりまじまじと見ないで"/>
   <Sub Asset="csv_17_02" Text="あなた変態ね……"/>
-  <Sub Asset="csv_18_00" Text="す、すみません。男の人とちゃんと喋るのははじめてで……"/>
-  <Sub Asset="csv_18_01" Text="私が勉強したところは絶対にテストに出ないんですよね……"/>
+  <!--<Sub Asset="csv_18_00" Text="す、すみません。男の人とちゃんと喋るのははじめてで……"/>-->
+  <!--<Sub Asset="csv_18_01" Text="私が勉強したところは絶対にテストに出ないんですよね……"/>-->
   <Sub Asset="csv_18_02" Text="不安な時は強く抱きしめて欲しいです"/>
   <Sub Asset="csv_19_00" Text="なんだか、小説の主人公になったみたい……"/>
   <Sub Asset="csv_19_01" Text="今は本を読みたいから、できれば遠慮したいかな……"/>
   <Sub Asset="csv_19_02" Text="いらっしゃい。今日はどんな物語を紡ぎましょうか……"/>
-  <Sub Asset="csv_20_00" Text="男の人と一緒に勉強したことがないので、緊張します……"/>
+  <!--<Sub Asset="csv_20_00" Text="男の人と一緒に勉強したことがないので、緊張します……"/>-->
   <Sub Asset="csv_20_01" Text="きゃっ！？　あ、あなたでしたか……"/>
   <Sub Asset="csv_20_02" Text="あなたのためにも私……もっと女の魅力……磨きますからね……"/>
-  <Sub Asset="csv_21_00" Text="あ、噂の男の子だ。はじめまして"/>
+  <!--<Sub Asset="csv_21_00" Text="あ、噂の男の子だ。はじめまして"/>-->
   <Sub Asset="csv_21_01" Text="あ、キミも気分転換？"/>
   <Sub Asset="csv_21_02" Text="あ、今エッチなこと考えてたでしょ"/>
-  <Sub Asset="csv_22_00" Text="コイカツ部、ずっと興味あったんだ！"/>
+  <!--<Sub Asset="csv_22_00" Text="コイカツ部、ずっと興味あったんだ！"/>-->
   <Sub Asset="csv_22_01" Text="ただひたすら情報収集！　これに尽きるよー"/>
   <Sub Asset="csv_22_02" Text="君とお話すると、何だかドキドキしちゃうんだ……えへへ"/>
   <Sub Asset="csv_23_00" Text="ゲームやアニメの話もまだ話したいことあるんだ"/>
   <Sub Asset="csv_23_01" Text="ネトゲはいいですぞー"/>
-  <Sub Asset="csv_23_02" Text="変わった部活動は青春の醍醐味、アニメの定番……"/>
+  <!--<Sub Asset="csv_23_02" Text="変わった部活動は青春の醍醐味、アニメの定番……"/>-->
   <Sub Asset="csv_24_00" Text="あなたを見守っていたら、すぐに一日が過ぎてしまいました"/>
   <Sub Asset="csv_24_01" Text="ずっと夢に見ていました♡"/>
-  <Sub Asset="csv_24_02" Text="もしかして、他の子とするんですか……？"/>
+  <!--<Sub Asset="csv_24_02" Text="もしかして、他の子とするんですか……？"/>-->
   <Sub Asset="csv_25_00" Text="……ダルいんで無理っす"/>
   <Sub Asset="csv_25_01" Text="その誘い方、まさかナンパっすか？"/>
   <Sub Asset="csv_25_02" Text="みんなのやる気が下がる～？　やる気は個人の問題だと思うんだけどな～"/>
@@ -84,24 +88,24 @@
   <Sub Asset="csv_27_00" Text="……な、何？　私に聞きたいことでもあるの？"/>
   <Sub Asset="csv_27_01" Text="わ～っ！　あんた馬鹿！？"/>
   <Sub Asset="csv_27_02" Text="もしかして、このままキス……だ、ダメ！　まだダメぇっ！"/>
-  <Sub Asset="csv_28_00" Text="おぉっ！　お主が噂の男子じゃな！"/>
+  <!--<Sub Asset="csv_28_00" Text="おぉっ！　お主が噂の男子じゃな！"/>-->
   <Sub Asset="csv_28_01" Text="お主にわしを楽しませることができるか見ものじゃな"/>
   <Sub Asset="csv_28_02" Text="おや、どうした？　何か用かの？"/>
   <Sub Asset="csv_29_00" Text="……そう。あなたも物好きですね"/>
   <Sub Asset="csv_29_01" Text="……なんでしょうか"/>
   <Sub Asset="csv_29_02" Text="んっ……あなたの手、温かい……"/>
-  <Sub Asset="csv_30_00" Text="へぇ……本当に男の子なのねぇ……"/>
+  <!--<Sub Asset="csv_30_00" Text="へぇ……本当に男の子なのねぇ……"/>-->
   <Sub Asset="csv_30_01" Text="なになに？　お姉さんに用かな？"/>
   <Sub Asset="csv_30_02" Text="……んー、どこ見てるのかな？"/>
   <Sub Asset="csv_31_00" Text="何をフラフラしている。時間は有限だぞ"/>
   <Sub Asset="csv_31_01" Text="どうした？　用があるなら、聞いてやるぞ"/>
-  <Sub Asset="csv_31_02" Text="ほぅ、勇気を出してお誘いか？"/>
+  <!--<Sub Asset="csv_31_02" Text="ほぅ、勇気を出してお誘いか？"/>-->
   <Sub Asset="csv_32_00" Text="何かご用でしょうか"/>
-  <Sub Asset="csv_32_01" Text="殊勝な心掛けですね"/>
-  <Sub Asset="csv_32_02" Text="……有意義な時間になればいいですが"/>
+  <!--<Sub Asset="csv_32_01" Text="殊勝な心掛けですね"/>-->
+  <!--<Sub Asset="csv_32_02" Text="……有意義な時間になればいいですが"/>-->
   <Sub Asset="csv_33_00" Text="あなた、私に興味があるの？"/>
-  <Sub Asset="csv_33_01" Text="ふふ、私の身体を見るだけじゃ満足できないでしょ？"/>
-  <Sub Asset="csv_33_02" Text="今なら誰もいないし、少しぐらいなら平気よ？"/>
+  <!--<Sub Asset="csv_33_01" Text="ふふ、私の身体を見るだけじゃ満足できないでしょ？"/>-->
+  <!--<Sub Asset="csv_33_02" Text="今なら誰もいないし、少しぐらいなら平気よ？"/>-->
   <Sub Asset="csv_34_00" Text="Ｈｕｇシマショー♪"/>
   <Sub Asset="csv_34_01" Text="Ｏｈ！　Ｎｉｎｊａさん、ココはお忍び禁止デスヨ！？"/>
   <Sub Asset="csv_34_02" Text="Ｈｉｙａ，Ｍｙ　ｓｗｅｅｔ♡"/>
@@ -114,9 +118,9 @@
   <Sub Asset="csv_37_00" Text="何故そんなに見つめるのでしょうか"/>
   <Sub Asset="csv_37_01" Text="似合いますか？"/>
   <Sub Asset="csv_37_02" Text="あ……すみません、あなたに見惚れていました"/>
-  <Sub Asset="csv_38_00" Text="見学に来られたのですか？　よろしければご案内しましょうか？"/>
+  <!--<Sub Asset="csv_38_00" Text="見学に来られたのですか？　よろしければご案内しましょうか？"/>-->
   <Sub Asset="csv_38_01" Text="あの、もしかして私……口説かれていますか？"/>
-  <Sub Asset="csv_38_02" Text="コイカツ中ですか？　ふふ、お疲れ様です"/>
+  <!--<Sub Asset="csv_38_02" Text="コイカツ中ですか？　ふふ、お疲れ様です"/>-->
   <Sub Asset="csv_39_00" Text="何でも遠慮なく聞いてそのほうがうれしいさ"/>
   <Sub Asset="csv_39_01" Text="さて何しようかね"/>
   <Sub Asset="csv_39_02" Text="はいタイ！ くすくす、もうこの挨拶にも慣れた"/>
