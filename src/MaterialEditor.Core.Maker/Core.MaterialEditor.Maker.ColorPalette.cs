@@ -1,4 +1,4 @@
-﻿#if KK || EC
+﻿#if KK || EC || KKS
 using ChaCustom;
 #elif AI || HS2
 using CharaCustom;
@@ -18,7 +18,7 @@ namespace KK_Plugins.MaterialEditor
         public void SetColor(Color value) { }
         public void Setup(string title, object data, string materialName, Color color, Action<Color> onChanged, bool useAlpha) { }
     }
-#elif KK || EC
+#elif KK || EC || KKS
     internal class MakerColorPalette : IMaterialEditorColorPalette
     {
         private int _slot = -1;

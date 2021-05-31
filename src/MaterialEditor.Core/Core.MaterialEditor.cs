@@ -57,7 +57,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public const string PluginVersion = "3.1.1";
 
-#if KK || EC
+#if KK || EC || KKS
         internal static ConfigEntry<bool> RimRemover { get; private set; }
 #endif
         internal static ConfigEntry<KeyboardShortcut> DisableShadowCastingHotkey { get; private set; }
@@ -75,7 +75,7 @@ namespace KK_Plugins.MaterialEditor
         public static HashSet<string> BodyParts = new HashSet<string> {
             "o_eyebase_L", "o_eyebase_R", "o_eyelashes", "o_eyeshadow", "o_head", "o_namida", "o_tang", "o_tooth", "o_body_cf", "o_mnpa", "o_mnpb", "cm_o_dan00", "o_tang",
             "cm_o_dan00", "o_tang", "o_silhouette_cf", "o_body_cf", "o_body_cm", "o_head" };
-#elif KK || EC
+#elif KK || EC || KKS
         public static HashSet<string> BodyParts = new HashSet<string> {
             "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang", "n_tang_silhouette",  "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_mayuge", "cf_Ohitomi_L", "cf_Ohitomi_R",
             "cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_noseline", "cf_O_namida_L", "cf_O_namida_M", "o_dankon", "o_gomu", "o_dan_f", "cf_O_namida_S", "cf_O_gag_eye_00", "cf_O_gag_eye_01",
@@ -93,7 +93,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
 #if AI || HS2
         public static HashSet<string> ClothesParts = new HashSet<string> { "ct_clothesTop", "ct_clothesBot", "ct_inner_t", "ct_inner_b", "ct_gloves", "ct_panst", "ct_socks", "ct_shoes" };
-#elif KK
+#elif KK || KKS
         public static HashSet<string> ClothesParts = new HashSet<string> { "ct_clothesTop", "ct_clothesBot", "ct_bra", "ct_shorts", "ct_gloves", "ct_panst", "ct_socks", "ct_shoes_inner", "ct_shoes_outer" };
 #elif EC
         public static HashSet<string> ClothesParts = new HashSet<string> { "ct_clothesTop", "ct_clothesBot", "ct_bra", "ct_shorts", "ct_gloves", "ct_panst", "ct_socks", "ct_shoes" };
@@ -101,7 +101,7 @@ namespace KK_Plugins.MaterialEditor
         public static HashSet<string> ClothesParts = new HashSet<string> { "Wears" };
 #endif
 
-#if KK || EC
+#if KK || EC || KKS
         /// <summary>
         /// Parts of the mouth that need special handling
         /// </summary>
@@ -115,7 +115,7 @@ namespace KK_Plugins.MaterialEditor
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
             AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
-#if KK
+#if KK || KKS
             AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
 #endif
 #if EC
@@ -123,7 +123,7 @@ namespace KK_Plugins.MaterialEditor
             ExtensibleSaveFormat.ExtendedSave.CoordinateBeingImported += ExtendedSave_CoordinateBeingImported;
 #endif
 
-#if KK || EC
+#if KK || EC || KKS
             RimRemover = Config.Bind("Config", "Remove Rim Lighting", false, new ConfigDescription("Remove rim lighting for all characters clothes, hair, accessories, etc. Will save modified values to the card.\n\nUse with caution as it cannot be undone except by manually resetting all the changes.", null, new ConfigurationManagerAttributes { Order = 0, IsAdvanced = true }));
 #endif
             DisableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Disable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl), "Disable ShadowCasting for all selected items and their child items in Studio");
@@ -140,7 +140,7 @@ namespace KK_Plugins.MaterialEditor
 
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
-#if KK || EC
+#if KK || EC || KKS
             //Hooks for transferring accessories (MoreAccessories compatibility)
             foreach (var method in typeof(ChaCustom.CvsAccessoryChange).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>m__4")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.AccessoryTransferHook), AccessTools.all)));
@@ -192,7 +192,7 @@ namespace KK_Plugins.MaterialEditor
             if (controller != null)
                 controller.AccessorySelectedSlotChangeEvent(sender, e);
         }
-#if KK
+#if KK || KKS
         private static void AccessoriesApi_AccessoriesCopied(object sender, AccessoryCopyEventArgs e)
         {
             var controller = GetCharaController(MakerAPI.GetCharacterControl());
@@ -585,7 +585,7 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-#if KK || EC
+#if KK || EC || KKS
         public override bool CheckBlacklist(string materialName, string propertyName)
         {
             if (materialName == "cf_m_body" || materialName == "cm_m_body")

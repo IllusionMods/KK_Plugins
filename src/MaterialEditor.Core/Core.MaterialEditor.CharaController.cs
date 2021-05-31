@@ -571,7 +571,7 @@ namespace KK_Plugins.MaterialEditor
                 yield return null;
 
             CorrectTongue();
-#if KK
+#if KK || KKS
             if (KKAPI.Studio.StudioAPI.InsideStudio)
                 CorrectFace();
 #endif
@@ -650,7 +650,7 @@ namespace KK_Plugins.MaterialEditor
             }
 
 
-#if KK || EC
+#if KK || EC || KKS
             if (MaterialEditorPlugin.RimRemover.Value)
                 RemoveRim();
 #endif
@@ -660,11 +660,11 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         private void CorrectTongue()
         {
-#if KK
+#if KK || KKS
             if (!ChaControl.hiPoly) return;
 #endif
 
-#if KK || EC
+#if KK || EC || KKS
             //Get the tongue material used by the head since this one is properly refreshed with every character reload
             Material tongueMat = null;
             foreach (var renderer in GetRendererList(ChaControl.objHead.gameObject))
@@ -695,7 +695,7 @@ namespace KK_Plugins.MaterialEditor
 #endif
         }
 
-#if KK
+#if KK || KKS
         /// <summary>
         /// Force reload face textures
         /// </summary>
@@ -712,7 +712,7 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-#if KK || EC
+#if KK || EC || KKS
         private void RemoveRim()
         {
             for (var i = 0; i < ChaControl.objClothes.Length; i++)
@@ -779,7 +779,7 @@ namespace KK_Plugins.MaterialEditor
             ChaControl.StartCoroutine(LoadData(true, false, false));
         }
 
-#if KK
+#if KK || KKS
         internal void CoordinateChangedEvent()
         {
             //In H if a coordinate is loaded the data will be overwritten. When switching coordinates the ExtSave data must be reloaded to restore the original.
@@ -856,7 +856,7 @@ namespace KK_Plugins.MaterialEditor
                 if (MaterialEditorUI.Visible && MEMaker.Instance != null)
                     MEMaker.Instance.UpdateUIAccessory();
 
-#if KK || EC
+#if KK || EC || KKS
             if (MaterialEditorPlugin.RimRemover.Value)
                 RemoveRimAccessory(e.SlotIndex);
 #endif
@@ -868,7 +868,7 @@ namespace KK_Plugins.MaterialEditor
 
             AccessorySelectedSlotChanging = true;
 
-#if KK || EC
+#if KK || EC || KKS
             if (MakerAPI.InsideAndLoaded)
                 if (MaterialEditorUI.Visible && MEMaker.Instance != null)
                     MEMaker.Instance.UpdateUIAccessory();
@@ -927,7 +927,7 @@ namespace KK_Plugins.MaterialEditor
             ChaControl.StartCoroutine(LoadData(true, true, false));
         }
 
-#if KK
+#if KK || KKS
         internal void AccessoriesCopiedEvent(object sender, AccessoryCopyEventArgs e)
         {
             foreach (int slot in e.CopiedSlotIndexes)
@@ -980,7 +980,7 @@ namespace KK_Plugins.MaterialEditor
 
 #if AI || HS2
             if (type != 350) return; //type 350 = no category, accessory being removed
-#elif KK || EC
+#elif KK || EC || KKS
             if (type != 120) //type 120 = no category, accessory being removed
             {
                 if (MaterialEditorPlugin.RimRemover.Value)
@@ -1028,7 +1028,7 @@ namespace KK_Plugins.MaterialEditor
             if (MakerAPI.InsideAndLoaded)
                 MaterialEditorUI.Visible = false;
 
-#if KK || EC
+#if KK || EC || KKS
             if (MaterialEditorPlugin.RimRemover.Value)
                 RemoveRimClothes(slot);
 #elif PH
@@ -1052,7 +1052,7 @@ namespace KK_Plugins.MaterialEditor
             if (MakerAPI.InsideAndLoaded)
                 MaterialEditorUI.Visible = false;
 
-#if KK || EC
+#if KK || EC || KKS
             if (MaterialEditorPlugin.RimRemover.Value)
                 StartCoroutine(RemoveRimHairCo(slot));
 #elif PH
@@ -1868,7 +1868,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         private int GetCoordinateIndex(ObjectType objectType)
         {
-#if KK
+#if KK || KKS
             if (objectType == ObjectType.Accessory || objectType == ObjectType.Clothing)
                 return CurrentCoordinateIndex;
 #endif

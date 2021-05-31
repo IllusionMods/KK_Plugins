@@ -70,7 +70,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 List<Renderer> rendList = new List<Renderer>();
 
-#if KK
+#if KK || KKS
                 for (int i = 0; i < itemComponent.rendNormal.Length; i++)
                     if (itemComponent.rendNormal[i] && !rendList.Contains(itemComponent.rendNormal[i]))
                         rendList.Add(itemComponent.rendNormal[i]);
@@ -126,7 +126,7 @@ namespace KK_Plugins.MaterialEditor
         private static bool MaterialAPI_GetMaterials(ref IEnumerable<Material> __result, GameObject gameObject, Renderer renderer)
         {
             //Must use sharedMaterials for character objects or it breaks body masks, etc.
-#if KK || EC
+#if KK || EC || KKS
             if (gameObject.GetComponent<ChaControl>() && !MaterialEditorPlugin.MouthParts.Contains(renderer.NameFormatted()))
 #else
             if (gameObject.GetComponent<ChaControl>())
@@ -193,7 +193,7 @@ namespace KK_Plugins.MaterialEditor
         {
             if (__instance.customMatBody)
             {
-#if KK || EC
+#if KK || EC || KKS
                 var rendBody = __instance.rendBody;
 #else
                 var rendBody = __instance.cmpBody.targetCustom.rendBody;
@@ -227,7 +227,7 @@ namespace KK_Plugins.MaterialEditor
                     }
                 }
 
-#if KK || EC
+#if KK || EC || KKS
                 if (__instance.rendInner != null)
                 {
                     for (int j = 0; j < 2; j++)
@@ -451,7 +451,7 @@ namespace KK_Plugins.MaterialEditor
 #endif
 #endif
 
-#if KK    
+#if KK || KKS
         /// <summary>
         /// Apply eye tracking to all material copies
         /// </summary>
@@ -489,7 +489,9 @@ namespace KK_Plugins.MaterialEditor
             if (controller != null)
                 controller.CoordinateChangedEvent();
         }
+#endif
 
+#if KK
         [HarmonyPostfix, HarmonyPatch(typeof(CvsClothesCopy), nameof(CvsClothesCopy.CopyClothes))]
         private static void CopyClothesPostfix(TMP_Dropdown[] ___ddCoordeType, Toggle[] ___tglKind)
         {

@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using MaterialEditorAPI;
-#if KK || EC
+#if KK || EC || KKS
 using ChaCustom;
 #endif
 
@@ -8,7 +8,7 @@ namespace KK_Plugins.MaterialEditor
 {
     internal static class MakerHooks
     {
-#if KK || EC
+#if KK || EC || KKS
         /// <summary>
         /// Add some events to hide or refresh the ME UI when changing between hair types
         /// </summary>

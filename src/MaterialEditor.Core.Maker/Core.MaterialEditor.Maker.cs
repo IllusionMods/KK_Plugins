@@ -72,7 +72,7 @@ namespace KK_Plugins.MaterialEditor
             AccessoriesApi.SelectedMakerAccSlotChanged += (s, e) => ToggleButtonVisibility();
             AccessoriesApi.AccessoryKindChanged += (s, e) => ToggleButtonVisibility();
             AccessoriesApi.AccessoryTransferred += (s, e) => ToggleButtonVisibility();
-#if KK
+#if KK || KKS
             AccessoriesApi.AccessoriesCopied  += (s,e)=> ToggleButtonVisibility();
 #endif
 
@@ -83,7 +83,7 @@ namespace KK_Plugins.MaterialEditor
         {
             InitUI();
 
-#if KK || EC
+#if KK || EC || KKS
             MaterialEditorButton = MakerAPI.AddAccessoryWindowControl(new MakerButton("Material Editor", null, this));
             MaterialEditorButton.GroupingID = "Buttons";
             MaterialEditorButton.OnClick.AddListener(UpdateUIAccessory);
@@ -102,7 +102,9 @@ namespace KK_Plugins.MaterialEditor
 #if KK
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Clothes.InnerShoes, this)).OnClick.AddListener(() => UpdateUIClothes(7));
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(() => UpdateUIClothes(8));
-#else
+#elif KKS
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Clothes.OuterShoes, this)).OnClick.AddListener(() => UpdateUIClothes(8));
+#elif EC
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Clothes.Shoes, this)).OnClick.AddListener(() => UpdateUIClothes(7));
 #endif
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Hair.Back, this)).OnClick.AddListener(() => UpdateUIHair(0));
@@ -227,7 +229,7 @@ namespace KK_Plugins.MaterialEditor
             if (!MakerAPI.InsideAndLoaded)
                 return;
 
-#if KK
+#if KK || KKS
             if (index > 8)
 #elif PH
             if (index > 10)
