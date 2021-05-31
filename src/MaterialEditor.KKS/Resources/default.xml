@@ -294,4 +294,419 @@
     <Property Name="texcoord" Type="Texture"/>
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
+
+  <!--EC Shaders-->
+  <Shader Name="Shader Forge/main_alpha" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_alpha" ShaderOptimization="False">
+    <Property Name="AlphaMask" Type="Texture" />
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="liquidmask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="PatternMask1" Type="Texture" />
+    <Property Name="PatternMask2" Type="Texture" />
+    <Property Name="PatternMask3" Type="Texture" />
+    <Property Name="Texture2" Type="Texture" />
+    <Property Name="Texture3" Type="Texture" />
+    <Property Name="LiquidTiling" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
+    <Property Name="DetailBLineGA" Type="Float" Range="0,1"/>
+    <Property Name="liquidbbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidbtop" Type="Float" Range="0,2"/>
+    <Property Name="liquidface" Type="Float" Range="0,2"/>
+    <Property Name="liquidfbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidftop" Type="Float" Range="0,2"/>
+    <Property Name="outline" Type="Float" Range="0,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1"/>
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="SpecularPower" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_emblem" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_emblem">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="shadowcolor" Type="Color" />
+    <Property Name="rimV" Type="Float" Range="0,1"/>
+  </Shader>
+  <Shader Name="Shader Forge/main_emblem_clothes" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_emblem_clothes">
+    <Property Name="AlphaMask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="alphamaskuv1" Type="Float" Range="0,1"/>
+  </Shader>
+  <Shader Name="Shader Forge/main_hair" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_hair">
+    <Property Name="AlphaMask" Type="Texture" />
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="HairGloss" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="LineColor" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_hair_front" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_hair_front">
+    <Property Name="AlphaMask" Type="Texture" />
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="HairGloss" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="LineColor" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_item" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_item">
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
+    <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
+    <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+    <Property Name="LineWidthS" Type="Float" Range="0,1"/>
+    <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtendAnother" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+    <Property Name="SpecularPower" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_item_ditherd" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_item_ditherd">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="node_1554" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="shadowcolor" Type="Color" />
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
+  </Shader>
+  <Shader Name="Shader Forge/main_item_emission" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_item_emission">
+    <Property Name="AnimationMask" Type="Texture" />
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
+    <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
+    <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+    <Property Name="EmissionPower" Type="Float" Range="0,1"/>
+    <Property Name="LineWidthS" Type="Float" Range="0,1"/>
+    <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtendAnother" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+    <Property Name="SpecularPower" Type="Float" Range="0,1" />
+    <Property Name="UPanner" Type="Float" Range="-1,1" />
+    <Property Name="VPanner" Type="Float" Range="-1,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_item_studio" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_item_studio">
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="PatternMask1" Type="Texture" />
+    <Property Name="PatternMask2" Type="Texture" />
+    <Property Name="PatternMask3" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color1_2" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color2_2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="Color3_2" Type="Color" />
+    <Property Name="Patternuv1" Type="Color" />
+    <Property Name="Patternuv2" Type="Color" />
+    <Property Name="Patternuv3" Type="Color" />
+    <Property Name="overcolor1" Type="Color" />
+    <Property Name="overcolor2" Type="Color" />
+    <Property Name="overcolor3" Type="Color" />
+    <Property Name="OverColor3" Type="Color" />
+    <Property Name="Shadow" Type="Color" />
+    <Property Name="Spec" Type="Color" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="paint1" Type="Color" />
+    <Property Name="refcolor" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="ambientshadowOFF" Type="Float" Range="0,1"/>
+    <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
+    <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
+    <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+    <Property Name="EmissionPower" Type="Float" Range="0,1"/>
+    <Property Name="LineWidthS" Type="Float" Range="0,1"/>
+    <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
+    <Property Name="patternclamp1" Type="Float" Range="0,1"/>
+    <Property Name="patternclamp2" Type="Float" Range="0,1"/>
+    <Property Name="patternclamp3" Type="Float" Range="0,1"/>
+    <Property Name="patternrotator1" Type="Float" Range="-1,1"/>
+    <Property Name="patternrotator2" Type="Float" Range="-1,1"/>
+    <Property Name="patternrotator3" Type="Float" Range="-1,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtendAnother" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+    <Property Name="SpecularPower" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_item_studio_add" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_item_studio_add">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="alpha" Type="Float" Range="0,1"/>
+  </Shader>
+  <Shader Name="Shader Forge/main_item_studio_alpha" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_item_studio_alpha">
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="PatternMask1" Type="Texture" />
+    <Property Name="PatternMask2" Type="Texture" />
+    <Property Name="PatternMask3" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color1_2" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color2_2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="Color3_2" Type="Color" />
+    <Property Name="Patternuv1" Type="Color" />
+    <Property Name="Patternuv2" Type="Color" />
+    <Property Name="Patternuv3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
+    <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
+    <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+    <Property Name="EmissionPower" Type="Float" Range="0,1"/>
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtendAnother" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+    <Property Name="SpecularPower" Type="Float" Range="0,1" />
+    <Property Name="alpha" Type="Float" Range="0,1"/>
+    <Property Name="ambientshadowOFF" Type="Float" Range="0,1"/>
+    <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
+    <Property Name="patternclamp1" Type="Float" Range="0,1"/>
+    <Property Name="patternclamp2" Type="Float" Range="0,1"/>
+    <Property Name="patternclamp3" Type="Float" Range="0,1"/>
+    <Property Name="patternrotator1" Type="Float" Range="-1,1"/>
+    <Property Name="patternrotator2" Type="Float" Range="-1,1"/>
+    <Property Name="patternrotator3" Type="Float" Range="-1,1"/>
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_opaque" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_opaque" ShaderOptimization="False">
+    <Property Name="AlphaMask" Type="Texture" />
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="liquidmask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="Texture2" Type="Texture" />
+    <Property Name="Texture3" Type="Texture" />
+    <Property Name="LiquidTiling" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
+    <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+    <Property Name="liquidbbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidbtop" Type="Float" Range="0,2"/>
+    <Property Name="liquidface" Type="Float" Range="0,2"/>
+    <Property Name="liquidfbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidftop" Type="Float" Range="0,2"/>
+    <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtendAnother" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+    <Property Name="SpecularPower" Type="Float" Range="0,1" />
+    <Property Name="SpecularPowerNail" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_opaque2" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_opaque2" ShaderOptimization="False">
+    <Property Name="AlphaMask" Type="Texture" />
+    <Property Name="AnotherRamp" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="liquidmask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="Texture2" Type="Texture" />
+    <Property Name="Texture3" Type="Texture" />
+    <Property Name="LiquidTiling" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="AlphaMaskuv" Type="Float" Range="0,1"/>
+    <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
+    <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+    <Property Name="liquidbbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidbtop" Type="Float" Range="0,2"/>
+    <Property Name="liquidface" Type="Float" Range="0,2"/>
+    <Property Name="liquidfbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidftop" Type="Float" Range="0,2"/>
+    <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtendAnother" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+    <Property Name="SpecularPower" Type="Float" Range="0,1" />
+    <Property Name="SpecularPowerNail" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_skin" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_skin">
+    <Property Name="AlphaMask" Type="Texture" />
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="liquidmask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="NormalMapDetail" Type="Texture" />
+    <Property Name="NormalMask" Type="Texture" />
+    <Property Name="Texture2" Type="Texture" />
+    <Property Name="Texture3" Type="Texture" />
+    <Property Name="overtex1" Type="Texture" />
+    <Property Name="overtex2" Type="Texture" />
+    <Property Name="overtex3" Type="Texture" />
+    <Property Name="LiquidTiling" Type="Color" />
+    <Property Name="overcolor1" Type="Color" />
+    <Property Name="overcolor2" Type="Color" />
+    <Property Name="overcolor3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="SpecularColor" Type="Color" />
+    <Property Name="alpha_a" Type="Float" Range="0,1"/>
+    <Property Name="alpha_b" Type="Float" Range="0,1"/>
+    <Property Name="DetailNormalMapScale" Type="Float" Range="0,1"/>
+    <Property Name="linetexon" Type="Float" Range="0,1"/>
+    <Property Name="liquidbbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidbtop" Type="Float" Range="0,2"/>
+    <Property Name="liquidface" Type="Float" Range="0,2"/>
+    <Property Name="liquidfbot" Type="Float" Range="0,2"/>
+    <Property Name="liquidftop" Type="Float" Range="0,2"/>
+    <Property Name="nip" Type="Float" Range="0,1"/>
+    <Property Name="nipsize" Type="Float" Range="0,1"/>
+    <Property Name="nip_specular" Type="Float" Range="0,1"/>
+    <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
+    <Property Name="rimpower" Type="Float" Range="0,1" />
+    <Property Name="rimV" Type="Float" Range="0,1" />
+    <Property Name="ShadowExtend" Type="Float" Range="0,1" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1" />
+    <Property Name="SpecularPower" Type="Float" Range="0,1" />
+    <Property Name="SpecularPowerNail" Type="Float" Range="0,1" />
+    <Property Name="tex1mask" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_StandardMDK_studio" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_StandardMDK_studio">
+    <Property Name="BumpMap" Type="Texture" />
+    <Property Name="EmissionMap" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="MetallicGlossMap" Type="Texture" />
+    <Property Name="ParallaxMap" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="EmissionColor" Type="Color" />
+    <Property Name="BumpScale" Type="Float" Range="-1,3" />
+    <Property Name="EmissionPower" Type="Float" Range="0,1" />
+    <Property Name="Glossiness" Type="Float" Range="0,1" />
+    <Property Name="LightCancel" Type="Float" Range="0,1" />
+    <Property Name="Parallax" Type="Float" Range="0,0.08" />
+    <Property Name="Specular" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_texture" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_texture">
+    <Property Name="DetailMask" Type="Texture" />
+    <Property Name="LineMask" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="ColorMask" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color2" Type="Color" />
+    <Property Name="Color3" Type="Color" />
+    <Property Name="ShadowColor" Type="Color" />
+    <Property Name="SpeclarHeight" Type="Float" Range="0,1"/>
+    <Property Name="ShadowExtend" Type="Float" Range="0,1"/>
+    <Property Name="ShadowExtendAnother" Type="Float" Range="0,1"/>
+    <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
+    <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
+    <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
+  </Shader>
+  <Shader Name="Shader Forge/main_texture_studio" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_texture_studio">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Patternuv1" Type="Color" />
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
+    <Property Name="CutoutClip" Type="Float" />
+    <Property Name="patternclamp1" Type="Float" Range="0,1"/>
+    <Property Name="patternrotator1" Type="Float" Range="-1,1"/>
+  </Shader>
+  <Shader Name="Shader Forge/toon_eye_lod0" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_toon_eye_lod0">
+    <Property Name="expression" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="overtex1" Type="Texture" />
+    <Property Name="overtex2" Type="Texture" />
+    <Property Name="overcolor1" Type="Color" />
+    <Property Name="overcolor2" Type="Color" />
+    <Property Name="shadowcolor" Type="Color" />
+    <Property Name="isHighLight" Type="Float" Range="0,1"/>
+    <Property Name="exppower" Type="Float" Range="0,1"/>
+    <Property Name="rotation" Type="Float" Range="0,1"/>
+  </Shader>
+  <Shader Name="Shader Forge/toon_eyew_lod0" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_toon_eyew_lod0">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="shadowcolor" Type="Color" />
+  </Shader>
+  <Shader Name="Shader Forge/toon_nose_lod0" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_toon_nose_lod0">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+  </Shader>
+  <Shader Name="Shader Forge/toon_glasses_lod0" AssetBundle="Resources.EC_Shaders.unity3d">
+    <Property Name="GlassRamp" Type="Texture" />
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="NormalMap" Type="Texture" />
+    <Property Name="Color" Type="Color" />
+    <Property Name="Color4" Type="Color" />
+    <Property Name="ColorInverse" Type="Float" Range="0,1"/>
+    <Property Name="ColorSort" Type="Float" Range="0,1"/>
+    <Property Name="RimPower" Type="Float" Range="1,9"/>
+    <Property Name="rimV" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/toon_textureanimation" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_toon_textureanimation">
+    <Property Name="MainTex" Type="Texture" />
+    <Property Name="TileAnimation" Type="Color" />
+    <Property Name="SizeSpeed" Type="Float" Range="0,1" />
+    <Property Name="SizeWidth" Type="Float" Range="0,1" />
+    <Property Name="AngleSpeed" Type="Float" Range="-1,1" />
+    <Property Name="yurayura" Type="Float" Range="0,1" />
+  </Shader>
+  <Shader Name="Shader Forge/main_color" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_color">
+    <Property Name="Color" Type="Color" />
+  </Shader>
 </MaterialEditor>
