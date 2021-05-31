@@ -454,4 +454,4 @@ Allows clothes to function in accessory slots.<br/>
 
 #### PoseUnlocker
 **v1.0 - [Download](https://www.patreon.com/posts/50834177)** - For Koikatsu, AI Girl, Honey Select 2<br/>
-Allows clothes to function in accessory slots.<br/>
+Removes the gender restriction on saved Studio poses.<br/>
