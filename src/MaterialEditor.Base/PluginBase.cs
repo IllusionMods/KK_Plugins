@@ -208,6 +208,19 @@ namespace MaterialEditorAPI
             RenderTexture.ReleaseTemporary(tmp);
         }
 
+        public static void MakeTextureReadable(ref Texture2D tex, RenderTextureFormat rtf = RenderTextureFormat.Default, RenderTextureReadWrite cs = RenderTextureReadWrite.Default)
+        {
+            var tmp = RenderTexture.GetTemporary(tex.width, tex.height, 0, rtf, cs);
+            var currentActiveRT = RenderTexture.active;
+            RenderTexture.active = tmp;
+            GL.Clear(false, true, new Color(0, 0, 0, 0));
+            Graphics.Blit(tex, tmp);
+             tex = GetT2D(tmp);
+            RenderTexture.active = currentActiveRT;
+            RenderTexture.ReleaseTemporary(tmp);
+            tex.Apply(true);
+        }
+
         public class ShaderData
         {
             public string ShaderName;

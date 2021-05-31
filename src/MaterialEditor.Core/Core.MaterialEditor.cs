@@ -61,6 +61,9 @@ namespace KK_Plugins.MaterialEditor
 #if KK || EC || KKS
         internal static ConfigEntry<bool> RimRemover { get; private set; }
 #endif
+#if EC || KKS
+        internal static ConfigEntry<bool> ConfigConvertNormalMaps { get; private set; }
+#endif
         internal static ConfigEntry<KeyboardShortcut> DisableShadowCastingHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> EnableShadowCastingHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> ResetShadowCastingHotkey { get; private set; }
@@ -109,11 +112,18 @@ namespace KK_Plugins.MaterialEditor
         public static HashSet<string> MouthParts = new HashSet<string> { "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang" };
 #endif
 
+#if EC || KKS
+        /// <summary>
+        /// Properties that are normal maps and will have their textures converted
+        /// </summary>
+        private static readonly string[] NormalMapProperties = new string[] { "_NormalMap", "_NormalMapDetail" };
+#endif
+
 #if KKS
         /// <summary>
         /// Koikatsu shaders and their equivalent Sunshine shaders
         /// </summary>
-        private readonly Dictionary<string, string> ShaderMapping = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> ShaderMapping = new Dictionary<string, string>
         {
             { "Shader Forge/main_hair_front", "Koikano/hair_main_sun_front" },
             { "Shader Forge/main_hair", "Koikano/hair_main_sun" },
@@ -129,6 +139,8 @@ namespace KK_Plugins.MaterialEditor
             { "Shader Forge/toon_glasses_lod0", "Koikano/main_clothes_item_glasses" },
             { "Shader Forge/toon_textureanimation", "Koikano/sub_texture_animation" },
         };
+#elif EC
+        private static readonly Dictionary<string, string> ShaderMapping = new Dictionary<string, string>();
 #endif
 
         internal void Main()
@@ -150,6 +162,9 @@ namespace KK_Plugins.MaterialEditor
 
 #if KK || EC || KKS
             RimRemover = Config.Bind("Config", "Remove Rim Lighting", false, new ConfigDescription("Remove rim lighting for all characters clothes, hair, accessories, etc. Will save modified values to the card.\n\nUse with caution as it cannot be undone except by manually resetting all the changes.", null, new ConfigurationManagerAttributes { Order = 0, IsAdvanced = true }));
+#endif
+#if EC || KKS
+            ConfigConvertNormalMaps = Config.Bind("Config", "Convert Normal Maps", true, new ConfigDescription("Convert grey normal maps to red normal maps for compatibility with Koikatsu mods.\n\nWarning: slow.", null, new ConfigurationManagerAttributes { Order = 1 }));
 #endif
             DisableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Disable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl), "Disable ShadowCasting for all selected items and their child items in Studio");
             EnableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Enable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftAlt), "Enable ShadowCasting for all selected items and their child items in Studio");
@@ -683,10 +698,11 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-#if KKS
+#if EC || KKS
         protected override void AssetLoadedHook(AssetLoadedContext context)
         {
-            if (!ShaderOptimization.Value) return;
+            if (!ShaderOptimization.Value && !ConfigConvertNormalMaps.Value)
+                return;
 
             if (context.Asset is GameObject go)
             {
@@ -698,40 +714,88 @@ namespace KK_Plugins.MaterialEditor
                     {
                         var material = renderer.materials[j];
 
-                        string shaderName = material.shader.name;
-                        if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
-                            shaderName = shaderNameNew;
-
-                        if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
-                        {
-                            int renderQueue = material.renderQueue;
-                            material.shader = shaderData.Shader;
-                            material.renderQueue = renderQueue;
-                        }
+                        ReplaceShaders(material);
+                        ConvertNormalMaps(material);
                     }
                 }
             }
-            else if (context.Asset is Material mat)
+            else if (context.Asset is Material material)
             {
-                string shaderName = mat.shader.name;
-                if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
-                    shaderName = shaderNameNew;
-
-                if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
-                {
-                    int renderQueue = mat.renderQueue;
-                    mat.shader = shaderData.Shader;
-                    mat.renderQueue = renderQueue;
-                }
+                ReplaceShaders(material);
+                ConvertNormalMaps(material);
             }
             else if (context.Asset is Shader shader)
             {
-                string shaderName = shader.name;
-                if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
-                    shaderName = shaderNameNew;
+                if (ShaderOptimization.Value)
+                {
+                    string shaderName = shader.name;
+                    if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
+                        shaderName = shaderNameNew;
 
-                if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
-                    context.Asset = shaderData.Shader;
+                    if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
+                        context.Asset = shaderData.Shader;
+                }
+            }
+        }
+
+        private static void ReplaceShaders(Material material)
+        {
+            if (!ShaderOptimization.Value)
+                return;
+
+            string shaderName = material.shader.name;
+            if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
+                shaderName = shaderNameNew;
+
+            if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
+            {
+                int renderQueue = material.renderQueue;
+                material.shader = shaderData.Shader;
+                material.renderQueue = renderQueue;
+            }
+        }
+
+        /// <summary>
+        /// Convert normal maps from grey to red for all normal maps on the material
+        /// </summary>
+        private static void ConvertNormalMaps(Material material)
+        {
+            if (!ConfigConvertNormalMaps.Value)
+                return;
+
+            for (int i = 0; i < NormalMapProperties.Length; i++)
+                ConvertNormalMap(material, NormalMapProperties[i]);
+        }
+
+        /// <summary>
+        /// Convert a normal map texture from grey to red by setting the entire red color channel to white
+        /// </summary>
+        private static void ConvertNormalMap(Material material, string property)
+        {
+            if (material.HasProperty(property))
+            {
+                var tex = material.GetTexture(property);
+                if (tex != null && tex is Texture2D tex2D)
+                {
+#if KKS
+                    if (!tex.isReadable)
+#endif
+                    {
+                        MakeTextureReadable(ref tex2D);
+                    }
+
+                    Color[] c = tex2D.GetPixels(0);
+                    if (c[0].r != 1f) //Sample one pixel and don't covert normal maps that are already red
+                    {
+                        //Set the entire red color channel to white
+                        for (int k = 0; k < c.Length; k++)
+                            c[k].r = 1;
+
+                        tex2D.SetPixels(c, 0);
+                        tex2D.Apply(true);
+                        material.SetTexture(property, tex2D);
+                    }
+                }
             }
         }
 #endif
