@@ -139,8 +139,6 @@ namespace KK_Plugins.MaterialEditor
             { "Shader Forge/toon_glasses_lod0", "Koikano/main_clothes_item_glasses" },
             { "Shader Forge/toon_textureanimation", "Koikano/sub_texture_animation" },
         };
-#elif EC
-        private static readonly Dictionary<string, string> ShaderMapping = new Dictionary<string, string>();
 #endif
 
         internal void Main()
@@ -729,8 +727,10 @@ namespace KK_Plugins.MaterialEditor
                 if (ShaderOptimization.Value)
                 {
                     string shaderName = shader.name;
+#if KKS
                     if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
                         shaderName = shaderNameNew;
+#endif
 
                     if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
                         context.Asset = shaderData.Shader;
@@ -744,8 +744,10 @@ namespace KK_Plugins.MaterialEditor
                 return;
 
             string shaderName = material.shader.name;
+#if KKS
             if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
                 shaderName = shaderNameNew;
+#endif
 
             if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
             {
