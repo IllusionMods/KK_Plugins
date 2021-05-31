@@ -63,11 +63,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="EC_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.EmotionCreators.16.3.0\lib\net46\EC_ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\..\packages\ExtensibleSaveFormat.EmotionCreators.16.3.1\lib\net46\EC_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="EC_Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sideloader.EmotionCreators.16.3.0\lib\net46\EC_Sideloader.dll</HintPath>
+      <HintPath>..\..\packages\Sideloader.EmotionCreators.16.3.1\lib\net46\EC_Sideloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.2.10, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
