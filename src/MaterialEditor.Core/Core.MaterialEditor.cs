@@ -123,7 +123,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Koikatsu shaders and their equivalent Sunshine shaders
         /// </summary>
-        private static readonly Dictionary<string, string> ShaderMapping = new Dictionary<string, string>
+        public static readonly Dictionary<string, string> ShaderMapping = new Dictionary<string, string>
         {
             { "Shader Forge/main_hair_front", "Koikano/hair_main_sun_front" },
             { "Shader Forge/main_hair", "Koikano/hair_main_sun" },
@@ -337,6 +337,18 @@ namespace KK_Plugins.MaterialEditor
                         var property = properties[i];
                         if (property.Slot == 8)//Change slot index for outdoor shoes to the one used by EC
                             property.Slot = 7;
+                    }
+#endif
+
+#if KKS
+                    //Map KK shaders to the new KKS shaders
+                    for (int i = 0; i < properties.Count; i++)
+                    {
+                        var property = properties[i];
+                        if (property.ShaderName != null && ShaderMapping.TryGetValue(property.ShaderName, out var newShaderName))
+                            property.ShaderName = newShaderName;
+                        if (property.ShaderNameOriginal != null && ShaderMapping.TryGetValue(property.ShaderNameOriginal, out var newShaderNameOriginal))
+                            property.ShaderNameOriginal = newShaderNameOriginal;
                     }
 #endif
 
