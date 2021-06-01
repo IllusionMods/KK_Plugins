@@ -295,7 +295,8 @@
     <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
 
-  <!--EC Shaders-->
+  <!--EC Shaders - Disabled for now so people will try the new shaders, enable when game is released-->
+  <!--
   <Shader Name="Shader Forge/main_alpha" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_alpha" ShaderOptimization="False">
     <Property Name="AlphaMask" Type="Texture" />
     <Property Name="AnotherRamp" Type="Texture" />
@@ -709,4 +710,5 @@
   <Shader Name="Shader Forge/main_color" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_color">
     <Property Name="Color" Type="Color" />
   </Shader>
+  -->
 </MaterialEditor>
