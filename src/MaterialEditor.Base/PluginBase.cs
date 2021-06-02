@@ -22,10 +22,15 @@ namespace MaterialEditorAPI
         public static MaterialEditorPluginBase Instance;
 
         internal const string FileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
+
         /// <summary>
         /// Path where textures will be exported
         /// </summary>
-        public static string ExportPath = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
+        public static string ExportPathDefault = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
+        /// <summary>
+        /// Path where textures will be exported
+        /// </summary>
+        public static string ExportPath = ExportPathDefault;
         /// <summary>
         /// Saved material edits
         /// </summary>
@@ -40,6 +45,7 @@ namespace MaterialEditorAPI
         public static ConfigEntry<bool> WatchTexChanges { get; set; }
         public static ConfigEntry<bool> ShaderOptimization { get; set; }
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
+        internal static ConfigEntry<string> ConfigExportPath { get; private set; }
 
         private void Awake()
         {
@@ -53,12 +59,15 @@ namespace MaterialEditorAPI
             WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI.", null, new ConfigurationManagerAttributes { Order = 2 }));
             ShaderOptimization = Config.Bind("Config", "Shader Optimization", true, new ConfigDescription("Replaces every loaded shader with the MaterialEditor copy of the shader. Reduces the number of copies of shaders loaded which reduces RAM usage and improves performance.", null, new ConfigurationManagerAttributes { Order = 1 }));
             ExportBakedMesh = Config.Bind("Config", "Export Baked Mesh", false, new ConfigDescription("When enabled, skinned meshes will be exported in their current state with all customization applied as well as in the current pose.", null, new ConfigurationManagerAttributes { Order = 1 }));
+            ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
 
             UIScale.SettingChanged += MaterialEditorUI.UISettingChanged;
             UIWidth.SettingChanged += MaterialEditorUI.UISettingChanged;
             UIHeight.SettingChanged += MaterialEditorUI.UISettingChanged;
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
             ShaderOptimization.SettingChanged += ShaderOptimization_SettingChanged;
+            ConfigExportPath.SettingChanged += ConfigExportPath_SettingChanged;
+            SetExportPath();
 
             ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerResourceLoaded, AssetLoadedHook);
             LoadXML();
@@ -169,7 +178,21 @@ namespace MaterialEditorAPI
             if (!WatchTexChanges.Value)
                 MaterialEditorUI.TexChangeWatcher?.Dispose();
         }
+
         internal virtual void ShaderOptimization_SettingChanged(object sender, EventArgs e) { }
+
+        internal virtual void ConfigExportPath_SettingChanged(object sender, EventArgs e)
+        {
+            SetExportPath();
+        }
+
+        private void SetExportPath()
+        {
+            if (ConfigExportPath.Value == "")
+                ExportPath = ExportPathDefault;
+            else
+                ExportPath = ConfigExportPath.Value;
+        }
 
         /// <summary>
         /// Always returns false, i.e. does nothing. Override to prevent certain materials from showing in the UI.
@@ -215,7 +238,7 @@ namespace MaterialEditorAPI
             RenderTexture.active = tmp;
             GL.Clear(false, true, new Color(0, 0, 0, 0));
             Graphics.Blit(tex, tmp);
-             tex = GetT2D(tmp);
+            tex = GetT2D(tmp);
             RenderTexture.active = currentActiveRT;
             RenderTexture.ReleaseTemporary(tmp);
             tex.Apply(true);
