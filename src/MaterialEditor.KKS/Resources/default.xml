@@ -29,10 +29,7 @@
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="AnotherRampMatcap" Type="Float" Range="0,1"/>
     <Property Name="notusetexspecular" Type="Float" Range="0,1"/>
-    <Property Name="MultyColorAlpha" Type="Float" Range="0,1"/>
     <Property Name="Dither" Type="Float" Range="0,1"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_clothes_item_glasses" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_clothes_item_glasses">
     <Property Name="Color" Type="Color"/>
@@ -47,12 +44,8 @@
     <Property Name="ColorInverse" Type="Float" Range="0,1"/>
     <Property Name="rimV" Type="Float" Range="0,1"/>
     <Property Name="rimpower" Type="Float" Range="0,1"/>
-    <Property Name="Culloff" Type="Float" Range="0,1"/>
     <Property Name="Float3" Type="Float" Range="0,1"/>
-    <Property Name="Matcap" Type="Float" Range="0,1"/>
     <Property Name="MatcapSetting" Type="Float" Range="0,1"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/hair_main_sun" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_hair_main_sun">
     <Property Name="AnotherRamp" Type="Texture"/>
@@ -62,7 +55,6 @@
     <Property Name="DetailMask" Type="Texture"/>
     <Property Name="HairGloss" Type="Texture"/>
     <Property Name="GlossColor" Type="Color"/>
-    <Property Name="GlossinShadowonoff" Type="Float" Range="0,1"/>
     <Property Name="ShadowColor" Type="Color"/>
     <Property Name="SpeclarHeight" Type="Float" Range="0,1"/>
     <Property Name="rimpower" Type="Float" Range="0,1"/>
@@ -72,14 +64,9 @@
     <Property Name="ShadowExtend" Type="Float" Range="0,1"/>
     <Property Name="Color2" Type="Color"/>
     <Property Name="Color3" Type="Color"/>
-    <Property Name="ReverseColor01" Type="Float" Range="0,1"/>
     <Property Name="Color2onoff" Type="Float" Range="0,1"/>
     <Property Name="Color3onoff" Type="Float" Range="0,1"/>
     <Property Name="LineColor" Type="Color"/>
-    <Property Name="oldhair" Type="Float" Range="0,1"/>
-    <Property Name="texcoord2" Type="Texture"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/hair_main_sun_front" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_hair_main_sun_front">
     <Property Name="AnotherRamp" Type="Texture"/>
@@ -89,7 +76,6 @@
     <Property Name="DetailMask" Type="Texture"/>
     <Property Name="HairGloss" Type="Texture"/>
     <Property Name="GlossColor" Type="Color"/>
-    <Property Name="GlossinShadowonoff" Type="Float" Range="0,1"/>
     <Property Name="ShadowColor" Type="Color"/>
     <Property Name="SpeclarHeight" Type="Float" Range="0,1"/>
     <Property Name="rimpower" Type="Float" Range="0,1"/>
@@ -99,14 +85,9 @@
     <Property Name="ShadowExtend" Type="Float" Range="0,1"/>
     <Property Name="Color2" Type="Color"/>
     <Property Name="Color3" Type="Color"/>
-    <Property Name="ReverseColor01" Type="Float" Range="0,1"/>
     <Property Name="Color2onoff" Type="Float" Range="0,1"/>
     <Property Name="Color3onoff" Type="Float" Range="0,1"/>
     <Property Name="LineColor" Type="Color"/>
-    <Property Name="oldhair" Type="Float" Range="0,1"/>
-    <Property Name="texcoord2" Type="Texture"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_eye" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_eye">
     <Property Name="isHighLight" Type="Float" Range="0,1"/>
@@ -125,23 +106,15 @@
     <Property Name="rotation1" Type="Float" Range="0,1"/>
     <Property Name="rotation2" Type="Float" Range="0,1"/>
     <Property Name="rotation3" Type="Float" Range="0,1"/>
-    <Property Name="texcoord2" Type="Texture"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="texcoord3" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_eyew" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_eyew">
     <Property Name="MainTex" Type="Texture"/>
     <Property Name="Color" Type="Color"/>
     <Property Name="shadowcolor" Type="Color"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_nose" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_nose">
     <Property Name="Color" Type="Color"/>
     <Property Name="MainTex" Type="Texture"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_skin" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_skin">
     <Property Name="alpha_a" Type="Float" Range="0,1"/>
@@ -182,11 +155,6 @@
     <Property Name="liquidbbot" Type="Float" Range="0,2"/>
     <Property Name="liquidface" Type="Float" Range="0,2"/>
     <Property Name="RimScale" Type="Float" Range="0,10"/>
-    <Property Name="texcoord3" Type="Texture"/>
-    <Property Name="texcoord4" Type="Texture"/>
-    <Property Name="texcoord2" Type="Texture"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_clothes_alpha" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_clothes_alpha">
     <Property Name="AnotherRamp" Type="Texture"/>
@@ -218,9 +186,6 @@
     <Property Name="liquidface" Type="Float" Range="0,2"/>
     <Property Name="alpha" Type="Float" Range="0,1"/>
     <Property Name="LineWidthS" Type="Float" Range="0,1"/>
-    <Property Name="texcoord2" Type="Texture"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_clothes_opaque" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_clothes_opaque">
     <Property Name="AnotherRamp" Type="Texture"/>
@@ -257,9 +222,6 @@
     <Property Name="liquidface" Type="Float" Range="0,2"/>
     <Property Name="AnotherRampMatcap" Type="Float" Range="0,1"/>
     <Property Name="ColorMaskUse" Type="Float" Range="0,1"/>
-    <Property Name="texcoord2" Type="Texture"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_clothes_emblem" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_clothes_emblem">
     <Property Name="Color" Type="Color"/>
@@ -272,9 +234,6 @@
     <Property Name="AlphaMaskuv" Type="Float" Range="0,1"/>
     <Property Name="alpha_a1" Type="Float" Range="0,1"/>
     <Property Name="alpha_b1" Type="Float" Range="0,1"/>
-    <Property Name="texcoord2" Type="Texture"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Custom/Silhouette" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_silhouette">
     <Property Name="Color" Type="Color"/>
@@ -291,8 +250,6 @@
     <Property Name="SizeWidth" Type="Float" Range="0,1"/>
     <Property Name="AngleSpeed" Type="Float" Range="-1,1"/>
     <Property Name="yurayura" Type="Float" Range="0,1"/>
-    <Property Name="texcoord" Type="Texture"/>
-    <Property Name="_dirty" Type="Float" Range="0,1"/>
   </Shader>
 
   <!--EC Shaders - Disabled for now so people will try the new shaders, enable when game is released-->
