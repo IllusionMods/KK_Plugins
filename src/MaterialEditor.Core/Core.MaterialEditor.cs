@@ -112,11 +112,11 @@ namespace KK_Plugins.MaterialEditor
         public static HashSet<string> MouthParts = new HashSet<string> { "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang" };
 #endif
 
-#if EC || KKS
+#if KK || EC || KKS
         /// <summary>
         /// Properties that are normal maps and will have their textures converted
         /// </summary>
-        private static readonly string[] NormalMapProperties = new string[] { "_NormalMap", "_NormalMapDetail" };
+        public static readonly string[] NormalMapProperties = new string[] { "NormalMap", "NormalMapDetail" };
 #endif
 
 #if KKS
@@ -784,35 +784,59 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Convert a normal map texture from grey to red by setting the entire red color channel to white
         /// </summary>
-        private static void ConvertNormalMap(Material material, string property)
+        private static void ConvertNormalMap(Material material, string propertyName)
         {
-            if (material.HasProperty(property))
+            if (!NormalMapProperties.Contains(propertyName))
+                return;
+
+            if (material.HasProperty($"_{propertyName}"))
             {
-                var tex = material.GetTexture(property);
+                var tex = material.GetTexture($"_{propertyName}");
                 if (tex != null && tex is Texture2D tex2D)
                 {
 #if KKS
-                    if (!tex.isReadable)
+                    if (ConvertNormalMap(ref tex2D, propertyName, tex.isReadable))
+#else
+                    if (ConvertNormalMap(ref tex2D, propertyName, false))
 #endif
                     {
-                        MakeTextureReadable(ref tex2D);
-                    }
-
-                    Color[] c = tex2D.GetPixels(0);
-                    if (c[0].r != 1f) //Sample one pixel and don't covert normal maps that are already red
-                    {
-                        //Set the entire red color channel to white
-                        for (int k = 0; k < c.Length; k++)
-                            c[k].r = 1;
-
-                        tex2D.SetPixels(c, 0);
-                        tex2D.Apply(true);
-                        material.SetTexture(property, tex2D);
+                        material.SetTexture($"_{propertyName}", tex2D);
                     }
                 }
             }
         }
 #endif
+
+        /// <summary>
+        /// Convert a normal map texture from grey to red by setting the entire red color channel to white
+        /// </summary>
+        /// <param name="tex"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="texIsReadable">Whether the texture is readable</param>
+        /// <returns>True if the texture was converted</returns>
+        public static bool ConvertNormalMap(ref Texture2D tex, string propertyName, bool texIsReadable)
+        {
+#if KK || EC || KKS
+            if (!NormalMapProperties.Contains(propertyName))
+                return false;
+
+            if (!texIsReadable)
+                MakeTextureReadable(ref tex);
+
+            Color[] c = tex.GetPixels(0);
+            if (c[0].r != 1f) //Sample one pixel and don't covert normal maps that are already red
+            {
+                //Set the entire red color channel to white
+                for (int k = 0; k < c.Length; k++)
+                    c[k].r = 1;
+
+                tex.SetPixels(c, 0);
+                tex.Apply(true);
+                return true;
+            }
+#endif
+            return false;
+        }
 
         /// <summary>
         /// Get the KKAPI character controller for MaterialEditor. Provides access to methods for getting and setting material changes.

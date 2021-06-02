@@ -652,7 +652,11 @@ namespace KK_Plugins.MaterialEditor
                 if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
                 if (property.TexID != null && TextureDictionary.TryGetValue((int)property.TexID, out var textureContainer))
-                    SetTexture(go, property.MaterialName, property.Property, textureContainer.Texture);
+                {
+                    var tex = textureContainer.Texture;
+                    MaterialEditorPlugin.ConvertNormalMap(ref tex, property.Property, true);
+                    SetTexture(go, property.MaterialName, property.Property, tex);
+                }
                 SetTextureOffset(go, property.MaterialName, property.Property, property.Offset);
                 SetTextureScale(go, property.MaterialName, property.Property, property.Scale);
             }
@@ -1083,7 +1087,11 @@ namespace KK_Plugins.MaterialEditor
 
                 if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
                     if (property.TexID != null)
-                        SetTexture(FindGameObject(ObjectType.Clothing, property.Slot), property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                    {
+                        var tex = TextureDictionary[(int)property.TexID].Texture;
+                        MaterialEditorPlugin.ConvertNormalMap(ref tex, property.Property, true);
+                        SetTexture(FindGameObject(ObjectType.Clothing, property.Slot), property.MaterialName, property.Property, tex);
+                    }
             }
         }
         /// <summary>
@@ -1102,7 +1110,11 @@ namespace KK_Plugins.MaterialEditor
 
                 if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")
                     if (property.TexID != null)
-                        SetTexture(ChaControl.gameObject, property.MaterialName, property.Property, TextureDictionary[(int)property.TexID].Texture);
+                    {
+                        var tex = TextureDictionary[(int)property.TexID].Texture;
+                        MaterialEditorPlugin.ConvertNormalMap(ref tex, property.Property, true);
+                        SetTexture(ChaControl.gameObject, property.MaterialName, property.Property, tex);
+                    }
             }
         }
         /// <summary>
@@ -1466,7 +1478,10 @@ namespace KK_Plugins.MaterialEditor
             {
                 var texBytes = File.ReadAllBytes(filePath);
                 var texID = SetAndGetTextureID(texBytes);
-                SetTexture(go, material.NameFormatted(), propertyName, TextureDictionary[texID].Texture);
+
+                var tex = TextureDictionary[texID].Texture;
+                MaterialEditorPlugin.ConvertNormalMap(ref tex, propertyName, true);
+                SetTexture(go, material.NameFormatted(), propertyName, tex);
 
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
 
@@ -1489,7 +1504,9 @@ namespace KK_Plugins.MaterialEditor
             if (data == null) return;
 
             var texID = SetAndGetTextureID(data);
-            SetTexture(go, material.NameFormatted(), propertyName, TextureDictionary[texID].Texture);
+            var tex = TextureDictionary[texID].Texture;
+            MaterialEditorPlugin.ConvertNormalMap(ref tex, propertyName, true);
+            SetTexture(go, material.NameFormatted(), propertyName, tex);
 
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty == null)
