@@ -33,11 +33,17 @@ namespace KK_Plugins
         internal static AccessoryControlWrapper<MakerColor, Color> OutlineColorPicker;
         internal static AccessoryControlWrapper<MakerColor, Color> AccessoryColorPicker;
         internal static AccessoryControlWrapper<MakerSlider, float> HairLengthSlider;
+#if KKS
+        internal static AccessoryControlWrapper<MakerColor, Color> GlossColorPicker;
+#endif
         private static readonly bool ColorMatchDefault = true;
         private static readonly bool HairGlossDefault = true;
         private static readonly Color OutlineColorDefault = Color.black;
         private static readonly Color AccessoryColorDefault = Color.red;
         private static readonly float HairLengthDefault = 0;
+#if KKS
+        private static readonly Color GlossColorDefault = new Color(0.8490566f, 0.8490566f, 0.8490566f, 1f);
+#endif
 
         private void Start()
         {
@@ -108,12 +114,18 @@ namespace KK_Plugins
                 OutlineColorPicker.SetSelectedValue(controller.GetOutlineColor(), false);
                 AccessoryColorPicker.SetSelectedValue(controller.GetAccessoryColor(), false);
                 HairLengthSlider.SetSelectedValue(controller.GetHairLength(), false);
+#if KKS
+                GlossColorPicker.SetSelectedValue(controller.GetGlossColor(), false);
+#endif
 
                 ColorMatchToggle.Control.Visible.OnNext(true);
                 HairGlossToggle.Control.Visible.OnNext(true);
                 OutlineColorPicker.Control.Visible.OnNext(!controller.GetColorMatch());
                 AccessoryColorPicker.Control.Visible.OnNext(controller.HasAccessoryPart());
                 HairLengthSlider.Control.Visible.OnNext(controller.HasLengthTransforms());
+#if KKS
+                GlossColorPicker.Control.Visible.OnNext(!controller.GetColorMatch());
+#endif
 
                 if (controller.GetColorMatch(AccessoriesApi.SelectedMakerAccSlot))
                     HideAccColors();
@@ -126,12 +138,19 @@ namespace KK_Plugins
                 HairGlossToggle.SetSelectedValue(HairGlossDefault, false);
                 OutlineColorPicker.SetSelectedValue(OutlineColorDefault, false);
                 AccessoryColorPicker.SetSelectedValue(AccessoryColorDefault, false);
+#if KKS
+                GlossColorPicker.SetSelectedValue(OutlineColorDefault, false);
+#endif
 
                 HairGlossToggle.Control.Visible.OnNext(false);
                 ColorMatchToggle.Control.Visible.OnNext(false);
                 OutlineColorPicker.Control.Visible.OnNext(false);
                 AccessoryColorPicker.Control.Visible.OnNext(false);
                 HairLengthSlider.Control.Visible.OnNext(false);
+#if KKS
+                GlossColorPicker.Control.Visible.OnNext(false);
+#endif
+
                 ShowAccColors(controller.ChaControl.GetAccessoryObject(AccessoriesApi.SelectedMakerAccSlot) != null);
             }
         }

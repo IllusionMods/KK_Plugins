@@ -67,6 +67,10 @@ namespace KK_Plugins
                 ReloadingChara = false;
             }
 #endif
+#if KKS
+            [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeSettingHairGlossColor))]
+            private static void ChangeSettingHairGlossColor(ChaControl __instance) => GetController(__instance).UpdateAccessories(!ReloadingChara);
+#endif
         }
     }
 }

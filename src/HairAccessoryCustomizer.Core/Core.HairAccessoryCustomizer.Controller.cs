@@ -191,6 +191,23 @@ namespace KK_Plugins
             /// Get hair length data for the current accessory or default if the accessory does not exist or is not a hair accessory
             /// </summary>
             public float GetHairLength() => GetHairLength(AccessoriesApi.SelectedMakerAccSlot);
+#if KKS
+            /// <summary>
+            /// Get gloss color data for the specified accessory or default if the accessory does not exist or is not a hair accessory
+            /// </summary>
+            public Color GetGlossColor(int slot)
+            {
+                if (HairAccessories.ContainsKey(CurrentCoordinateIndex) && HairAccessories[CurrentCoordinateIndex].TryGetValue(slot, out var hairAccessoryInfo))
+                    return hairAccessoryInfo.GlossColor;
+
+                return GlossColorDefault;
+            }
+            /// <summary>
+            /// Get gloss color data for the current accessory or default if the accessory does not exist or is not a hair accessory
+            /// </summary>
+            public Color GetGlossColor() => GetGlossColor(AccessoriesApi.SelectedMakerAccSlot);
+#endif
+
             /// <summary>
             /// Initializes the HairAccessoryInfo for the slot if it is a hair accessory, or removes it if it is not.
             /// </summary>
@@ -267,6 +284,10 @@ namespace KK_Plugins
             /// <summary>
             /// Set accessory color for the current accessory
             /// </summary>
+            public void SetAccessoryColor(Color value) => SetAccessoryColor(value, AccessoriesApi.SelectedMakerAccSlot);
+            /// <summary>
+            /// Set hair length for the current accessory
+            /// </summary>
             public void SetHairLength(float value) => SetHairLength(value, AccessoriesApi.SelectedMakerAccSlot);
             /// <summary>
             /// Set hair length for the specified accessory
@@ -276,10 +297,21 @@ namespace KK_Plugins
                 if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(CurrentCoordinateIndex) && IsHairAccessory(slot))
                     HairAccessories[CurrentCoordinateIndex][slot].HairLength = value;
             }
+#if KKS
             /// <summary>
-            /// Set hair length for the current accessory
+            /// Set accessory color for the specified accessory
             /// </summary>
-            public void SetAccessoryColor(Color value) => SetAccessoryColor(value, AccessoriesApi.SelectedMakerAccSlot);
+            public void SetGlossColor(Color value, int slot)
+            {
+                if (MakerAPI.InsideAndLoaded && HairAccessories.ContainsKey(CurrentCoordinateIndex) && IsHairAccessory(slot))
+                    HairAccessories[CurrentCoordinateIndex][slot].GlossColor = value;
+            }
+            /// <summary>
+            /// Set accessory color for the current accessory
+            /// </summary>
+            public void SetGlossColor(Color value) => SetGlossColor(value, AccessoriesApi.SelectedMakerAccSlot);
+#endif
+
             /// <summary>
             /// Checks if the specified accessory is a hair accessory
             /// </summary>
@@ -350,6 +382,9 @@ namespace KK_Plugins
                         newHairAccessoryInfo.OutlineColor = hairAccessoryInfo.OutlineColor;
                         newHairAccessoryInfo.AccessoryColor = hairAccessoryInfo.AccessoryColor;
                         newHairAccessoryInfo.HairLength = hairAccessoryInfo.HairLength;
+#if KKS
+                        newHairAccessoryInfo.GlossColor = hairAccessoryInfo.GlossColor;
+#endif
                         HairAccessories[(int)e.CopyDestination][x] = newHairAccessoryInfo;
                     }
                     else
@@ -371,6 +406,9 @@ namespace KK_Plugins
                     newHairAccessoryInfo.OutlineColor = hairAccessoryInfo.OutlineColor;
                     newHairAccessoryInfo.AccessoryColor = hairAccessoryInfo.AccessoryColor;
                     newHairAccessoryInfo.HairLength = hairAccessoryInfo.HairLength;
+#if KKS
+                    newHairAccessoryInfo.GlossColor = hairAccessoryInfo.GlossColor;
+#endif
                     HairAccessories[CurrentCoordinateIndex][e.DestinationSlotIndex] = newHairAccessoryInfo;
 
                     if (AccessoriesApi.SelectedMakerAccSlot == e.DestinationSlotIndex)
@@ -423,6 +461,10 @@ namespace KK_Plugins
                         cvsAccessory.UpdateAcsColor03(ChaControl.chaFile.custom.hair.parts[0].endColor);
                         OutlineColorPicker.SetValue(slot, ChaControl.chaFile.custom.hair.parts[0].outlineColor, false);
                         hairAccessoryInfo.OutlineColor = ChaControl.chaFile.custom.hair.parts[0].outlineColor;
+#if KKS
+                        GlossColorPicker.SetValue(slot, ChaControl.chaFile.custom.hair.parts[0].glossColor, false);
+                        hairAccessoryInfo.GlossColor = ChaControl.chaFile.custom.hair.parts[0].glossColor;
+#endif
                     }
                     else
                     {
@@ -461,6 +503,14 @@ namespace KK_Plugins
                             renderer.sharedMaterial.SetColor(ChaShader._LineColor, ChaControl.chaFile.custom.hair.parts[0].outlineColor);
                         else
                             renderer.sharedMaterial.SetColor(ChaShader._LineColor, hairAccessoryInfo.OutlineColor);
+
+#if KKS
+                    if (renderer.sharedMaterial.HasProperty(ChaShader._GlossColor))
+                        if (hairAccessoryInfo.ColorMatch)
+                            renderer.sharedMaterial.SetColor(ChaShader._GlossColor, ChaControl.chaFile.custom.hair.parts[0].glossColor);
+                        else
+                            renderer.sharedMaterial.SetColor(ChaShader._GlossColor, hairAccessoryInfo.GlossColor);
+#endif
                 }
 
                 for (var i = 0; i < chaCustomHairComponent.rendAccessory.Length; i++)
@@ -493,6 +543,10 @@ namespace KK_Plugins
                 public Color AccessoryColor = AccessoryColorDefault;
                 [Key("HairLength")]
                 public float HairLength = HairLengthDefault;
+#if KKS
+                [Key("GlossColor")]
+                public Color GlossColor = GlossColorDefault;
+#endif
             }
         }
     }

@@ -61,8 +61,11 @@ namespace KK_Plugins
             ColorMatchToggle = new AccessoryControlWrapper<MakerToggle, bool>(MakerAPI.AddAccessoryWindowControl(new MakerToggle(null, "Match Color With Hair", ColorMatchDefault, this)));
             HairGlossToggle = new AccessoryControlWrapper<MakerToggle, bool>(MakerAPI.AddAccessoryWindowControl(new MakerToggle(null, "Use Hair Gloss", ColorMatchDefault, this)));
             OutlineColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Outline Color", false, null, OutlineColorDefault, this)));
-            AccessoryColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Accessory Color", false, null, OutlineColorDefault, this)));
             HairLengthSlider = new AccessoryControlWrapper<MakerSlider, float>(MakerAPI.AddAccessoryWindowControl(new MakerSlider(null, "Length", 0, 1, HairLengthDefault, this)));
+            AccessoryColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Accessory Color", false, null, OutlineColorDefault, this)));
+#if KKS
+            GlossColorPicker = new AccessoryControlWrapper<MakerColor, Color>(MakerAPI.AddAccessoryWindowControl(new MakerColor("Gloss Color", false, null, GlossColorDefault, this)));
+#endif
 
             //Color Match
             ColorMatchToggle.Control.Visible.OnNext(false);
@@ -71,6 +74,9 @@ namespace KK_Plugins
             {
                 controller.SetColorMatch(eventArgs.NewValue, eventArgs.SlotIndex);
                 OutlineColorPicker.Control.Visible.OnNext(!eventArgs.NewValue);
+#if KKS
+                GlossColorPicker.Control.Visible.OnNext(!eventArgs.NewValue);
+#endif
 
                 if (eventArgs.NewValue)
                     HideAccColors();
@@ -117,6 +123,18 @@ namespace KK_Plugins
                 controller.SetHairLength(eventArgs.NewValue, eventArgs.SlotIndex);
                 controller.UpdateAccessory(eventArgs.SlotIndex);
             }
+
+#if KKS
+            //GlossColor
+            GlossColorPicker.Control.ColorBoxWidth = 230;
+            GlossColorPicker.Control.Visible.OnNext(false);
+            GlossColorPicker.ValueChanged += GlossColorPicker_ValueChanged;
+            void GlossColorPicker_ValueChanged(object sender, AccessoryWindowControlValueChangedEventArgs<Color> eventArgs)
+            {
+                controller.SetGlossColor(eventArgs.NewValue, eventArgs.SlotIndex);
+                controller.UpdateAccessory(eventArgs.SlotIndex);
+            }
+#endif
         }
 
         private void MakerAPI_MakerFinishedLoading(object sender, System.EventArgs e)
