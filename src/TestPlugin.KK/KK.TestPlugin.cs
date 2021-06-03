@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace KK_Plugins
@@ -20,7 +21,16 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
 
-            SceneManager.sceneLoaded += (s, lsm) => Logger.LogInfo($"Scene loaded: {s.name}");
+            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+        }
+
+        private void SceneManager_sceneLoaded(Scene s, LoadSceneMode lsm)
+        {
+            foreach (var light in FindObjectsOfType<Light>())
+            {
+                light.shadowCustomResolution = 10000;
+                light.shadowBias = 0.0075f;
+            }
         }
     }
 }
