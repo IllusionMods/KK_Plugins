@@ -65,7 +65,7 @@ namespace KK_Plugins
         public const string DefaultPenisGUID = "Default.Penis";
         public const string DefaultBallsGUID = "Default.Balls";
 
-#if KK
+#if KK || KKS
         public static ConfigEntry<bool> _GenderBender { get; private set; }
         public static bool GenderBender => _GenderBender.Value;
 #else
@@ -94,7 +94,7 @@ namespace KK_Plugins
 
             PopulateUncensorLists();
 
-#if KK
+#if KK || KKS
             _GenderBender = Config.Bind("Config", "Genderbender Allowed", true, new ConfigDescription("Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.", null, new ConfigurationManagerAttributes { Order = 29 }));
 #endif
             InitUncensorConfigs("Male", "Body", BodyDictionary, GetConfigBodyList(), 19, out var defaultConf, out var excludeConf);
@@ -139,6 +139,7 @@ namespace KK_Plugins
             foreach (var settingsGUI in SettingsGUIs.Where(g => g.Visible))
                 settingsGUI.DoOnGUI();
         }
+
         internal static void UpdateGuidSet(string entry, HashSet<string> set)
         {
             set.Clear();
@@ -234,7 +235,7 @@ namespace KK_Plugins
 
             PenisList.Add("Default");
             PenisListDisplay.Add("Default");
-#if KK
+#if KK || KKS
             PenisList.Add("None");
             PenisListDisplay.Add("None");
 #endif
@@ -245,7 +246,7 @@ namespace KK_Plugins
                 PenisListDisplay.Add(penis.DisplayName);
             }
 
-#if KK
+#if KK || KKS
             PenisDropdown = e.AddControl(new MakerDropdown("Penis", PenisListDisplay.ToArray(), MakerConstants.Body.All, characterSex == 0 ? 0 : 1, this));
 #else
             PenisDropdown = e.AddControl(new MakerDropdown("Penis", PenisListDisplay.ToArray(), MakerConstants.Body.All, 0, this));
@@ -257,7 +258,7 @@ namespace KK_Plugins
                     return;
 
                 var controller = GetController(MakerAPI.GetCharacterControl());
-#if KK
+#if KK || KKS
                 controller.PenisGUID = ID == 0 || ID == 1 ? null : PenisList[ID];
                 controller.DisplayPenis = ID != 1;
 #elif AI || HS2
@@ -329,7 +330,7 @@ namespace KK_Plugins
                 if (controller.PenisGUID != null && PenisList.IndexOf(controller.PenisGUID) != -1)
                     PenisDropdown?.SetValue(PenisList.IndexOf(controller.PenisGUID), false);
                 else if (controller.PenisGUID == null)
-#if KK
+#if KK || KKS
                     PenisDropdown?.SetValue(controller.DisplayPenis ? 0 : 1, false);
 #else
                     PenisDropdown.SetValue(0, false);
@@ -376,7 +377,7 @@ namespace KK_Plugins
             //Add the default body options
             BodyConfigListFull["Random"] = "Random";
 
-#if KK || EC
+#if KK || EC || KKS
             BodyData DefaultMale = new BodyData(0, DefaultBodyMaleGUID, "Default Body M");
             BodyDictionary[DefaultMale.BodyGUID] = DefaultMale;
             BodyConfigListFull[$"[{(DefaultMale.Sex == 0 ? "Male" : "Female")}] {DefaultMale.DisplayName}"] = DefaultMale.BodyGUID;

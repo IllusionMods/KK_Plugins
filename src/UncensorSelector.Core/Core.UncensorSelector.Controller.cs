@@ -1,7 +1,4 @@
-﻿#if AI || HS2
-using AIChara;
-#endif
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +13,9 @@ using UnityEngine;
 using Random = System.Random;
 #if KK || AI || HS2
 using KKAPI.Studio;
+#endif
+#if AI || HS2
+using AIChara;
 #endif
 
 namespace KK_Plugins
@@ -71,7 +71,7 @@ namespace KK_Plugins
                 BodyGUID = null;
                 PenisGUID = null;
                 BallsGUID = null;
-#if KK || EC
+#if KK || EC || KKS
                 DisplayPenis = ChaControl.sex == 0;
 #endif
                 DisplayBalls = ChaControl.sex == 0 || DefaultFemaleDisplayBalls.Value;
@@ -93,7 +93,7 @@ namespace KK_Plugins
                                 BodyGUID = migrationData.BodyGUID;
                                 PenisGUID = migrationData.PenisGUID;
                                 BallsGUID = migrationData.BallsGUID;
-#if KK || EC
+#if KK || EC || KKS
                                 if (PenisGUID != null)
                                     DisplayPenis = true;
 #endif
@@ -110,7 +110,7 @@ namespace KK_Plugins
 
                         if (data.data.TryGetValue("BallsGUID", out var loadedBallsGUID) && loadedBallsGUID != null)
                             BallsGUID = loadedBallsGUID.ToString();
-#if KK || EC
+#if KK || EC || KKS
                         if (data.data.TryGetValue("DisplayPenis", out var loadedDisplayPenis))
                             DisplayPenis = (bool)loadedDisplayPenis;
 #endif
@@ -147,7 +147,7 @@ namespace KK_Plugins
 
                             if (PenisGUID == null || PenisList?.IndexOf(PenisGUID) == -1)
                             {
-#if KK
+#if KK || KKS
                                 PenisDropdown?.SetValue(DisplayPenis ? 0 : 1, false);
 #else
                                 PenisDropdown?.SetValue(0, false);
@@ -174,7 +174,7 @@ namespace KK_Plugins
                     {
                         //Set the uncensor stuff to whatever is set in the maker
                         BodyGUID = BodyDropdown.Value == 0 ? null : BodyList[BodyDropdown.Value];
-#if KK
+#if KK || KKS
                         PenisGUID = PenisDropdown?.Value == 0 || PenisDropdown?.Value == 1 || PenisDropdown == null ? null : PenisList[PenisDropdown.Value];
                         DisplayPenis = PenisDropdown?.Value != 1;
 #else
@@ -188,6 +188,7 @@ namespace KK_Plugins
 #endif
                 }
 
+                //TODO: Fix on KKS Studio release
 #if KK
                 //Correct characters if gender bender is not permitted, except in Studio where it may be required for scene compatibility
                 if (GenderBender == false && !StudioAPI.InsideStudio)
@@ -234,7 +235,8 @@ namespace KK_Plugins
 
                     if (BodyGUID != null && BodyDictionary.TryGetValue(BodyGUID, out var body))
                         bodyData = body;
-#if !EC
+                    //TODO: Fix on KKS Studio release
+#if !EC && !KKS
                     if (!StudioAPI.InsideStudio && bodyData != null && GenderBender == false && ChaControl.sex != bodyData.Sex)
                         bodyData = null;
 #endif
@@ -392,7 +394,7 @@ namespace KK_Plugins
                     ChaControl.UpdateSiru(true);
                     SetChestNormals();
 
-#if KK || EC
+#if KK || EC || KKS
                     ChaControl.customMatBody.SetTexture(ChaShader._AlphaMask, ChaControl.texBodyAlphaMask);
 #endif
                     ChaControl.updateAlphaMask = true;
@@ -434,7 +436,7 @@ namespace KK_Plugins
 
                     Destroy(dick);
                 }
-
+                //TODO: Fix on KKS Studio release
 #if KK || AI || HS2
                 ChaControl.fileStatus.visibleSonAlways = StudioAPI.InsideStudio ? temp : DisplayPenis;
 #endif
@@ -483,7 +485,7 @@ namespace KK_Plugins
             {
                 string OOBase = BodyData?.OOBase ?? Defaults.OOBase;
                 string Asset = BodyData?.Asset ?? (ChaControl.sex == 0 ? Defaults.AssetMale : Defaults.AssetFemale);
-#if KK
+#if KK || KKS
                 if (ChaControl.hiPoly == false)
                     Asset += "_low";
 #endif
@@ -565,7 +567,7 @@ namespace KK_Plugins
                 else
                     Traverse.Create(ChaControl).Method("InitBaseCustomTextureBody", BodyData?.Sex ?? ChaControl.sex).GetValue();
 
-#if KK || EC
+#if KK || EC || KKS
                 ChaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
                 ChaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
 #else
@@ -730,7 +732,7 @@ namespace KK_Plugins
             /// </summary>
             private void SetChestNormals()
             {
-#if KK || EC
+#if KK || EC || KKS
                 if (ChaControl.dictBustNormal.TryGetValue(ChaControl.BustNormalKind.NmlBody, out BustNormal bustNormal))
                     bustNormal.Release();
 
@@ -840,7 +842,7 @@ namespace KK_Plugins
 
             private void SetLineVisibility(ColorMatchPart colorMatchPart)
             {
-#if KK || EC
+#if KK || EC || KKS
                 FindAssist findAssist = new FindAssist();
                 findAssist.Initialize(ChaControl.objBody.transform);
                 GameObject go = findAssist.GetObjectFromName(colorMatchPart.Object);
@@ -866,7 +868,7 @@ namespace KK_Plugins
 
             private void SetSkinGloss(ColorMatchPart colorMatchPart)
             {
-#if KK || EC
+#if KK || EC || KKS
                 FindAssist findAssist = new FindAssist();
                 findAssist.Initialize(ChaControl.objBody.transform);
                 GameObject go = findAssist.GetObjectFromName(colorMatchPart.Object);

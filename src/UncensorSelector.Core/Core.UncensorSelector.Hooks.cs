@@ -56,7 +56,7 @@ namespace KK_Plugins
 #endif
 
 
-#if KK || EC
+#if KK || EC || KKS
         /// <summary>
         /// LineMask texture assigned to the material, toggled on and off for any color matching parts along with the body
         /// </summary>

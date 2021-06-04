@@ -431,6 +431,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Demosaic", "src\Demosai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.MaterialEditor", "src\MaterialEditor.KKS\KKS.MaterialEditor.csproj", "{A6D41927-0F12-485C-AFD5-5158439E48D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.UncensorSelector", "src\UncensorSelector.KKS\KKS.UncensorSelector.csproj", "{921E986B-A721-4E4C-8E4F-0ABBFC960AFB}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -634,6 +636,9 @@ Global
 		src\Shared\Shared.projitems*{906cf257-347f-4ac7-ac8f-74082346b74a}*SharedItemsImports = 4
 		src\FKIK.Core\Core.FKIK.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{90d733a9-3148-428d-ad87-e633a2a3a28b}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{921e986b-a721-4e4c-8e4f-0abbfc960afb}*SharedItemsImports = 4
+		src\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems*{921e986b-a721-4e4c-8e4f-0abbfc960afb}*SharedItemsImports = 4
+		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{921e986b-a721-4e4c-8e4f-0abbfc960afb}*SharedItemsImports = 4
 		src\Demosaic.Core\Core.Demosaic.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{93a50359-a48f-4a3f-bdb8-86d2a320a99e}*SharedItemsImports = 4
 		src\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems*{93bda08c-f6d2-44bb-b872-ba0f0a16d46b}*SharedItemsImports = 13
@@ -1303,6 +1308,10 @@ Global
 		{A6D41927-0F12-485C-AFD5-5158439E48D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6D41927-0F12-485C-AFD5-5158439E48D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6D41927-0F12-485C-AFD5-5158439E48D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{921E986B-A721-4E4C-8E4F-0ABBFC960AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{921E986B-A721-4E4C-8E4F-0ABBFC960AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{921E986B-A721-4E4C-8E4F-0ABBFC960AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{921E986B-A721-4E4C-8E4F-0ABBFC960AFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1475,6 +1484,7 @@ Global
 		{6AA3AD0C-AC11-4224-81A8-8E1387DF336C} = {CE50952C-C3F5-473A-8C8E-FE59B58EF7C0}
 		{6DDFD009-9742-4898-98A3-FF1051C8A62F} = {2C7A7F55-0590-4BB9-AF5A-7AB3F02BF319}
 		{A6D41927-0F12-485C-AFD5-5158439E48D0} = {2D958E84-D5C4-4F57-A430-BA0CB5F3DF13}
+		{921E986B-A721-4E4C-8E4F-0ABBFC960AFB} = {74A0EB97-BF27-453D-B01D-DC0CDC60BC19}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
