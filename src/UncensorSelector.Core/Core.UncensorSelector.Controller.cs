@@ -559,7 +559,12 @@ namespace KK_Plugins
             /// </summary>
             private void UpdateSkin()
             {
-                ChaControl.InitBaseCustomTextureBody();
+                //Method changed number of parameters, check number of parameters for compatibility with game versions prior to Darkness (KK)
+                if (!typeof(ChaControl).GetMethod("InitBaseCustomTextureBody", AccessTools.all).GetParameters().Any())
+                    Traverse.Create(ChaControl).Method("InitBaseCustomTextureBody").GetValue();
+                else
+                    Traverse.Create(ChaControl).Method("InitBaseCustomTextureBody", BodyData?.Sex ?? ChaControl.sex).GetValue();
+
 #if KK || EC
                 ChaControl.AddUpdateCMBodyTexFlags(true, true, true, true, true);
                 ChaControl.AddUpdateCMBodyColorFlags(true, true, true, true, true, true);
