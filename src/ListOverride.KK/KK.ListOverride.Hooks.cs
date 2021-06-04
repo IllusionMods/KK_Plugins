@@ -42,10 +42,14 @@ namespace KK_Plugins
                             string value = overrideElement.Attribute("Value").Value;
 
                             //Don't allow people to change IDs, that's sure to break everything.
-                            if (keyType == ChaListDefine.KeyType.ID) continue;
+                            if (keyType == ChaListDefine.KeyType.ID)
+                                continue;
 
-                            __instance.dictListInfo[categoryNo][id].dictInfo[(int)keyType] = value;
-                            counter++;
+                            if (__instance.dictListInfo[categoryNo].ContainsKey(id))
+                            {
+                                __instance.dictListInfo[categoryNo][id].dictInfo[(int)keyType] = value;
+                                counter++;
+                            }
                         }
                     }
                     catch (Exception ex)
