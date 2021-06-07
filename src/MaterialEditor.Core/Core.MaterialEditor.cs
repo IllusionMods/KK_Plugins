@@ -758,7 +758,11 @@ namespace KK_Plugins.MaterialEditor
             string shaderName = material.shader.name;
 #if KKS
             if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
+            {
                 shaderName = shaderNameNew;
+                if (shaderNameNew == "Koikano/hair_main_sun_front" || shaderNameNew == "Koikano/hair_main_sun")
+                    material.EnableKeyword("_OLDHAIR_ON");
+            }
 #endif
 
             if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
