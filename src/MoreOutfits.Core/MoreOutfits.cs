@@ -5,6 +5,7 @@ using KKAPI.Maker;
 using MessagePack;
 using System;
 using System.Collections.Generic;
+using ChaCustom;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -41,27 +42,43 @@ namespace KK_Plugins
                 newCoordinate[newCoordinate.Length - 1] = new ChaFileCoordinate();
                 chaControl.chaFile.coordinate = newCoordinate;
 
-                //Add dropdown option for the additional coodinate
-                var cc = FindObjectOfType<ChaCustom.CustomControl>();
-
-                cc.ddCoordinate.m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {newCoordinate.Length - OriginalCoordinateLength}"));
+                SetUpDropDowns();
             }
         }
 
         private void MakerAPI_ReloadCustomInterface(object sender, EventArgs e)
         {
+            SetUpDropDowns();
+        }
+
+        private void SetUpDropDowns()
+        {
             var chaControl = MakerAPI.GetCharacterControl();
 
             //Remove extras
-            var cc = FindObjectOfType<ChaCustom.CustomControl>();
-            cc.ddCoordinate.m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
+            var customControl = FindObjectOfType<CustomControl>();
+            customControl.ddCoordinate.m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
+                        
+            var cvsCopy = CustomBase.Instance.GetComponentInChildren<CvsClothesCopy>(true);
+            cvsCopy.ddCoordeType[0].m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
+            cvsCopy.ddCoordeType[1].m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
+
+            var cvsAccessoryCopy = CustomBase.Instance.GetComponentInChildren<CvsAccessoryCopy>(true);
+            cvsAccessoryCopy.ddCoordeType[0].m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
+            cvsAccessoryCopy.ddCoordeType[1].m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
 
             if (chaControl.chaFile.coordinate.Length <= OriginalCoordinateLength)
                 return;
 
             //Add dropdown options for each additional coodinate
             for (int i = 0; i < (chaControl.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
-                cc.ddCoordinate.m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+            {
+                customControl.ddCoordinate.m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                cvsCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                cvsCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                cvsAccessoryCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                cvsAccessoryCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+            }
         }
     }
 
@@ -85,6 +102,35 @@ namespace KK_Plugins
                 __instance.coordinate[i].LoadBytes(list[i], ver);
 
             return false;
+        }
+
+        /// <summary>
+        /// Prevent index out of range exceptions
+        /// </summary>
+        /// <param name="__instance"></param>
+        [HarmonyPrefix, HarmonyPatch(typeof(CvsAccessoryCopy), nameof(CvsAccessoryCopy.ChangeDstDD))]
+        private static void CvsAccessoryCopy_ChangeDstDD(CvsAccessoryCopy __instance)
+        {
+            if (__instance.ddCoordeType[0].value >= __instance.chaCtrl.chaFile.coordinate.Length)
+                __instance.ddCoordeType[0].value = 0;
+        }
+        [HarmonyPrefix, HarmonyPatch(typeof(CvsAccessoryCopy), nameof(CvsAccessoryCopy.ChangeSrcDD))]
+        private static void CvsAccessoryCopy_ChangeSrcDD(CvsAccessoryCopy __instance)
+        {
+            if (__instance.ddCoordeType[1].value >= __instance.chaCtrl.chaFile.coordinate.Length)
+                __instance.ddCoordeType[1].value = 0;
+        }
+        [HarmonyPrefix, HarmonyPatch(typeof(CvsClothesCopy), nameof(CvsClothesCopy.ChangeDstDD))]
+        private static void CvsClothesCopy_ChangeDstDD(CvsAccessoryCopy __instance)
+        {
+            if (__instance.ddCoordeType[0].value >= __instance.chaCtrl.chaFile.coordinate.Length)
+                __instance.ddCoordeType[0].value = 0;
+        }
+        [HarmonyPrefix, HarmonyPatch(typeof(CvsClothesCopy), nameof(CvsClothesCopy.ChangeSrcDD))]
+        private static void CvsClothesCopy_ChangeSrcDD(CvsAccessoryCopy __instance)
+        {
+            if (__instance.ddCoordeType[1].value >= __instance.chaCtrl.chaFile.coordinate.Length)
+                __instance.ddCoordeType[1].value = 0;
         }
     }
 }
