@@ -89,6 +89,10 @@ namespace KK_Plugins
                 cvsAccessoryCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
                 cvsAccessoryCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
             }
+
+            //Change outfits if the dropdown no longer contains the selected value
+            if (customControl.ddCoordinate.value >= chaControl.chaFile.coordinate.Length)
+                customControl.ddCoordinate.value = 0;
         }
     }
 
