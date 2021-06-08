@@ -654,7 +654,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.TexID != null && TextureDictionary.TryGetValue((int)property.TexID, out var textureContainer))
                 {
                     var tex = textureContainer.Texture;
-                    MaterialEditorPlugin.ConvertNormalMap(ref tex, property.Property, true);
+                    MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, property.Property);
                     SetTexture(go, property.MaterialName, property.Property, tex);
                 }
                 SetTextureOffset(go, property.MaterialName, property.Property, property.Offset);
@@ -701,7 +701,7 @@ namespace KK_Plugins.MaterialEditor
                     else if (property.Value.Type == ShaderPropertyType.Float)
                         SetFloat(ChaControl.gameObject, materialName, property.Key, tongueMat.GetFloat("_" + property.Key));
                     else if (property.Value.Type == ShaderPropertyType.Texture)
-                        SetTexture(ChaControl.gameObject, materialName, property.Key, (Texture2D)tongueMat.GetTexture("_" + property.Key));
+                        SetTexture(ChaControl.gameObject, materialName, property.Key, tongueMat.GetTexture("_" + property.Key));
                 }
             }
 #endif
@@ -1089,7 +1089,7 @@ namespace KK_Plugins.MaterialEditor
                     if (property.TexID != null)
                     {
                         var tex = TextureDictionary[(int)property.TexID].Texture;
-                        MaterialEditorPlugin.ConvertNormalMap(ref tex, property.Property, true);
+                        MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, property.Property);
                         SetTexture(FindGameObject(ObjectType.Clothing, property.Slot), property.MaterialName, property.Property, tex);
                     }
             }
@@ -1112,7 +1112,7 @@ namespace KK_Plugins.MaterialEditor
                     if (property.TexID != null)
                     {
                         var tex = TextureDictionary[(int)property.TexID].Texture;
-                        MaterialEditorPlugin.ConvertNormalMap(ref tex, property.Property, true);
+                        Instance.ConvertNormalMap(ref tex, property.Property);
                         SetTexture(ChaControl.gameObject, property.MaterialName, property.Property, tex);
                     }
             }
@@ -1480,7 +1480,7 @@ namespace KK_Plugins.MaterialEditor
                 var texID = SetAndGetTextureID(texBytes);
 
                 var tex = TextureDictionary[texID].Texture;
-                MaterialEditorPlugin.ConvertNormalMap(ref tex, propertyName, true);
+                Instance.ConvertNormalMap(ref tex, propertyName);
                 SetTexture(go, material.NameFormatted(), propertyName, tex);
 
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
@@ -1505,7 +1505,7 @@ namespace KK_Plugins.MaterialEditor
 
             var texID = SetAndGetTextureID(data);
             var tex = TextureDictionary[texID].Texture;
-            MaterialEditorPlugin.ConvertNormalMap(ref tex, propertyName, true);
+            MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, propertyName);
             SetTexture(go, material.NameFormatted(), propertyName, tex);
 
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
@@ -1522,7 +1522,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="go">GameObject the material belongs to</param>
         /// <returns>Saved material property value or null if none is saved</returns>
-        public Texture2D GetMaterialTexture(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
+        public Texture GetMaterialTexture(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
         {
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty?.TexID != null)

@@ -945,7 +945,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <returns>Saved material property value or null if none is saved</returns>
-        public Texture2D GetMaterialTexture(int id, Material material, string propertyName)
+        public Texture GetMaterialTexture(int id, Material material, string propertyName)
         {
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName);
             if (textureProperty?.TexID != null)

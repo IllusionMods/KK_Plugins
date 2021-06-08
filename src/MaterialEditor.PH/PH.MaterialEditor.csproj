@@ -87,6 +87,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\ph_shaders.unity3d" />
+    <None Include="Resources\normal_convert.unity3d" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />

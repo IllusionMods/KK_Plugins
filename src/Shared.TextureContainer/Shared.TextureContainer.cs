@@ -10,7 +10,7 @@ namespace KK_Plugins
     public sealed class TextureContainer : IDisposable
     {
         private byte[] _data;
-        private Texture2D _texture;
+        private Texture _texture;
 
         /// <summary>
         /// Load a byte array containing texture data.
@@ -47,7 +47,7 @@ namespace KK_Plugins
         /// <summary>
         /// Texture data. Created from the Data byte array when accessed.
         /// </summary>
-        public Texture2D Texture
+        public Texture Texture
         {
             get
             {
@@ -88,15 +88,20 @@ namespace KK_Plugins
         /// <param name="format">TextureFormat</param>
         /// <param name="mipmaps">Whether to generate mipmaps</param>
         /// <returns></returns>
-        private static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
+        private static Texture TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
         {
             if (texBytes == null || texBytes.Length == 0) return null;
 
             //LoadImage automatically resizes the texture so the texture size doesn't matter here
             var tex = new Texture2D(2, 2, format, mipmaps);
-
             tex.LoadImage(texBytes);
-            return tex;
+
+            RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
+            rt.useMipMap = mipmaps;
+            RenderTexture.active = rt;
+            Graphics.Blit(tex, rt);
+
+            return rt;
         }
     }
 }

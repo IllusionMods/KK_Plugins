@@ -326,7 +326,7 @@ namespace MaterialEditorAPI
         /// <param name="propertyName">Property of the material being set</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
-        public static bool SetTexture(GameObject gameObject, string materialName, string propertyName, Texture2D value)
+        public static bool SetTexture(GameObject gameObject, string materialName, string propertyName, Texture value)
         {
             bool didSet = false;
             var materials = GetObjectMaterials(gameObject, materialName);

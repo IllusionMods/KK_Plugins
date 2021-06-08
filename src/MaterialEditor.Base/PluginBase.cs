@@ -39,6 +39,11 @@ namespace MaterialEditorAPI
         public static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
         public static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
+        /// <summary>
+        /// Properties that are normal maps and will have their textures converted
+        /// </summary>
+        public static readonly List<string> NormalMapProperties = new List<string>();
+
         public static ConfigEntry<float> UIScale { get; set; }
         public static ConfigEntry<float> UIWidth { get; set; }
         public static ConfigEntry<float> UIHeight { get; set; }
@@ -231,7 +236,7 @@ namespace MaterialEditorAPI
             RenderTexture.ReleaseTemporary(tmp);
         }
 
-        public static void MakeTextureReadable(ref Texture2D tex, RenderTextureFormat rtf = RenderTextureFormat.Default, RenderTextureReadWrite cs = RenderTextureReadWrite.Default)
+        private static void MakeTextureReadable(ref Texture2D tex, RenderTextureFormat rtf = RenderTextureFormat.Default, RenderTextureReadWrite cs = RenderTextureReadWrite.Default)
         {
             var tmp = RenderTexture.GetTemporary(tex.width, tex.height, 0, rtf, cs);
             var currentActiveRT = RenderTexture.active;
@@ -242,6 +247,42 @@ namespace MaterialEditorAPI
             RenderTexture.active = currentActiveRT;
             RenderTexture.ReleaseTemporary(tmp);
             tex.Apply(true);
+        }
+
+        /// <summary>
+        /// Convert a normal map texture from grey to red by setting the entire red color channel to white
+        /// </summary>
+        /// <param name="tex">Texture to convert</param>
+        /// <param name="propertyName">Name of the property. Checks against the NormalMapProperties list and will not convert unless it matches.</param>
+        /// <returns>True if the texture was converted</returns>
+        public virtual bool ConvertNormalMap(ref Texture tex, string propertyName)
+        {
+            if (!NormalMapProperties.Contains(propertyName))
+                return false;
+
+            Texture2D tex2D = (Texture2D)tex;
+
+            MakeTextureReadable(ref tex2D);
+
+            Color[] c = tex2D.GetPixels(0);
+            if (c[0].r != 1f) //Sample one pixel and don't covert normal maps that are already red
+            {
+                //Set the entire red color channel to white
+                for (int k = 0; k < c.Length; k++)
+                    c[k].r = 1;
+
+                tex2D.SetPixels(c, 0);
+                tex2D.Apply(true);
+
+                RenderTexture rt = new RenderTexture(tex2D.width, tex2D.height, 0);
+                rt.useMipMap = true;
+                RenderTexture.active = rt;
+                Graphics.Blit(tex2D, rt);
+                tex = rt;
+
+                return true;
+            }
+            return false;
         }
 
         public class ShaderData

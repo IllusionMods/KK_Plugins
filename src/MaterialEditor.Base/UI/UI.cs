@@ -495,6 +495,7 @@ namespace MaterialEditorAPI
             var matName = mat.NameFormatted();
             matName = string.Concat(matName.Split(Path.GetInvalidFileNameChars())).Trim();
             string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{matName}_{property}.png");
+            Instance.ConvertNormalMap(ref tex, property);
             SaveTex(tex, filename);
             MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
             Utilities.OpenFileInExplorer(filename);

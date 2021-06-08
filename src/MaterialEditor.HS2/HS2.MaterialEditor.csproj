@@ -129,6 +129,7 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\AI_Shaders.unity3d" />
     <EmbeddedResource Include="Resources\EC_Shaders.unity3d" />
+    <EmbeddedResource Include="Resources\normal_convert.unity3d" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

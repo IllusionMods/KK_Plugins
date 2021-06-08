@@ -58,6 +58,11 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public const string PluginVersion = "3.1.1";
 
+        /// <summary>
+        /// Material which is used in normal map conversion
+        /// </summary>
+        private static Material NormalMapConvertMaterial;
+
 #if KK || EC || KKS
         internal static ConfigEntry<bool> RimRemover { get; private set; }
 #endif
@@ -112,13 +117,6 @@ namespace KK_Plugins.MaterialEditor
         public static HashSet<string> MouthParts = new HashSet<string> { "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang" };
 #endif
 
-#if KK || EC || KKS
-        /// <summary>
-        /// Properties that are normal maps and will have their textures converted
-        /// </summary>
-        public static readonly string[] NormalMapProperties = new string[] { "NormalMap", "NormalMapDetail" };
-#endif
-
 #if KKS
         /// <summary>
         /// Koikatsu shaders and their equivalent Sunshine shaders
@@ -162,7 +160,7 @@ namespace KK_Plugins.MaterialEditor
             RimRemover = Config.Bind("Config", "Remove Rim Lighting", false, new ConfigDescription("Remove rim lighting for all characters clothes, hair, accessories, etc. Will save modified values to the card.\n\nUse with caution as it cannot be undone except by manually resetting all the changes.", null, new ConfigurationManagerAttributes { Order = 0, IsAdvanced = true }));
 #endif
 #if EC || KKS
-            ConfigConvertNormalMaps = Config.Bind("Config", "Convert Normal Maps", true, new ConfigDescription("Convert grey normal maps to red normal maps for compatibility with Koikatsu mods.\n\nWarning: slow.", null, new ConfigurationManagerAttributes { Order = 1 }));
+            ConfigConvertNormalMaps = Config.Bind("Config", "Convert Normal Maps", true, new ConfigDescription("Convert grey normal maps to red normal maps for compatibility with Koikatsu mods.", null, new ConfigurationManagerAttributes { Order = 1 }));
 #endif
             DisableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Disable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl), "Disable ShadowCasting for all selected items and their child items in Studio");
             EnableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Enable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftAlt), "Enable ShadowCasting for all selected items and their child items in Studio");
@@ -193,6 +191,13 @@ namespace KK_Plugins.MaterialEditor
 #endif
             StartCoroutine(LoadXML());
             StartCoroutine(GetUncensorSelectorParts());
+
+#if KK || EC || KKS
+            NormalMapProperties.Add("NormalMap");
+            NormalMapProperties.Add("NormalMapDetail");
+            NormalMapProperties.Add("BumpMap");
+#endif
+            LoadNormalMapConverter();
         }
 
         /// <summary>
@@ -708,6 +713,13 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
+        private void LoadNormalMapConverter()
+        {
+            AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_Plugins)}.Resources.normal_convert.unity3d"));
+            var shader = bundle.LoadAsset<Shader>("normal_convert");
+            NormalMapConvertMaterial = new Material(shader);
+        }
+
 #if EC || KKS
         protected override void AssetLoadedHook(AssetLoadedContext context)
         {
@@ -781,7 +793,7 @@ namespace KK_Plugins.MaterialEditor
             if (!ConfigConvertNormalMaps.Value)
                 return;
 
-            for (int i = 0; i < NormalMapProperties.Length; i++)
+            for (int i = 0; i < NormalMapProperties.Count; i++)
                 ConvertNormalMap(material, NormalMapProperties[i]);
         }
 
@@ -796,17 +808,9 @@ namespace KK_Plugins.MaterialEditor
             if (material.HasProperty($"_{propertyName}"))
             {
                 var tex = material.GetTexture($"_{propertyName}");
-                if (tex != null && tex is Texture2D tex2D)
-                {
-#if KKS
-                    if (ConvertNormalMap(ref tex2D, propertyName, tex.isReadable))
-#else
-                    if (ConvertNormalMap(ref tex2D, propertyName, false))
-#endif
-                    {
-                        material.SetTexture($"_{propertyName}", tex2D);
-                    }
-                }
+                if (tex != null)
+                    if (Instance.ConvertNormalMap(ref tex, propertyName))
+                        material.SetTexture($"_{propertyName}", tex);
             }
         }
 #endif
@@ -814,32 +818,21 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Convert a normal map texture from grey to red by setting the entire red color channel to white
         /// </summary>
-        /// <param name="tex"></param>
-        /// <param name="propertyName"></param>
-        /// <param name="texIsReadable">Whether the texture is readable</param>
+        /// <param name="tex">Texture to convert</param>
+        /// <param name="propertyName">Name of the property. Checks against the NormalMapProperties list and will not convert unless it matches.</param>
         /// <returns>True if the texture was converted</returns>
-        public static bool ConvertNormalMap(ref Texture2D tex, string propertyName, bool texIsReadable)
+        public override bool ConvertNormalMap(ref Texture tex, string propertyName)
         {
-#if KK || EC || KKS
             if (!NormalMapProperties.Contains(propertyName))
                 return false;
 
-            if (!texIsReadable)
-                MakeTextureReadable(ref tex);
+            RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
+            rt.useMipMap = true;
+            rt.autoGenerateMips = true;
+            Graphics.Blit(tex, rt, NormalMapConvertMaterial);
+            tex = rt;
 
-            Color[] c = tex.GetPixels(0);
-            if (c[0].r != 1f) //Sample one pixel and don't covert normal maps that are already red
-            {
-                //Set the entire red color channel to white
-                for (int k = 0; k < c.Length; k++)
-                    c[k].r = 1;
-
-                tex.SetPixels(c, 0);
-                tex.Apply(true);
-                return true;
-            }
-#endif
-            return false;
+            return true;
         }
 
         /// <summary>
