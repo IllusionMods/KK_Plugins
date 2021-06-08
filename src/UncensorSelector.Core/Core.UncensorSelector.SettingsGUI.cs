@@ -34,7 +34,7 @@ namespace KK_Plugins
 
             private ConfigEntry<string> Setting;
 
-            internal SettingsGUI(IDictionary<string, T> uncensors, byte sex, string part)
+            internal SettingsGUI(IDictionary<string, T> uncensors, byte sex, string part, bool studio=false)
             {
                 WindowID = $"{GUID}.{nameof(SettingsGUI<T>)}.{sex}.{part}".GetHashCode();
                 //Deal with duplicate display names (it happens)
@@ -48,7 +48,7 @@ namespace KK_Plugins
                 AllValues = uncensors.Where(x => x.Value.AllowRandom).Select(x => new Entry(x.Key, GetDisplayName(x.Value))).OrderBy(x => x.Name).ToList();
                 var msg = $"uncensors to exclude for {(sex == 0 ? "Male" : "Female")} {part}";
                 ButtonText = $"Configure {msg}";
-                TitleText = msg.ToTitleCase();
+                TitleText = $"{msg} for {(studio ? "studio" : "game")}".ToTitleCase();
                 Setting = null;
                 Initialized = true;
             }
