@@ -77,17 +77,17 @@ namespace KK_Plugins
             cvsAccessoryCopy.ddCoordeType[0].m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
             cvsAccessoryCopy.ddCoordeType[1].m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
 
-            if (chaControl.chaFile.coordinate.Length <= OriginalCoordinateLength)
-                return;
-
             //Add dropdown options for each additional coodinate
-            for (int i = 0; i < (chaControl.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
+            if (chaControl.chaFile.coordinate.Length > OriginalCoordinateLength)
             {
-                customControl.ddCoordinate.m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
-                cvsCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
-                cvsCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
-                cvsAccessoryCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
-                cvsAccessoryCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                for (int i = 0; i < (chaControl.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
+                {
+                    customControl.ddCoordinate.m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                    cvsCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                    cvsCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                    cvsAccessoryCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                    cvsAccessoryCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                }
             }
 
             //Change outfits if the dropdown no longer contains the selected value
