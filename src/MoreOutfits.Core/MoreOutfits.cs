@@ -1,12 +1,12 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using ChaCustom;
 using HarmonyLib;
 using KKAPI.Maker;
+using KKAPI.Maker.UI;
 using MessagePack;
 using System;
 using System.Collections.Generic;
-using ChaCustom;
-using UnityEngine;
 
 namespace KK_Plugins
 {
@@ -25,25 +25,9 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
             MakerAPI.ReloadCustomInterface += MakerAPI_ReloadCustomInterface;
+            MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                var chaControl = MakerAPI.GetCharacterControl();
-
-                //Initialize a new bigger array, copy the contents of the old
-                var newCoordinate = new ChaFileCoordinate[chaControl.chaFile.coordinate.Length + 1];
-                for (int i = 0; i < chaControl.chaFile.coordinate.Length; i++)
-                    newCoordinate[i] = chaControl.chaFile.coordinate[i];
-                newCoordinate[newCoordinate.Length - 1] = new ChaFileCoordinate();
-                chaControl.chaFile.coordinate = newCoordinate;
-
-                SetUpDropDowns();
-            }
         }
 
         private void MakerAPI_ReloadCustomInterface(object sender, EventArgs e)
@@ -51,14 +35,40 @@ namespace KK_Plugins
             SetUpDropDowns();
         }
 
+        private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent ev)
+        {
+            MakerCategory category = new MakerCategory("03_ClothesTop", "tglSettings", MakerConstants.Clothes.Copy.Position + 1, "Settings");
+
+            var addCoordinateButton = new MakerButton("Add additional clothing slot", category, this);
+            ev.AddControl(addCoordinateButton);
+            addCoordinateButton.OnClick.AddListener(() => { AddCoordinateSlot(MakerAPI.GetCharacterControl()); });
+
+            ev.AddSubCategory(category);
+        }
+
+        public void AddCoordinateSlot(ChaControl chaControl)
+        {
+            //Initialize a new bigger array, copy the contents of the old
+            var newCoordinate = new ChaFileCoordinate[chaControl.chaFile.coordinate.Length + 1];
+            for (int i = 0; i < chaControl.chaFile.coordinate.Length; i++)
+                newCoordinate[i] = chaControl.chaFile.coordinate[i];
+            newCoordinate[newCoordinate.Length - 1] = new ChaFileCoordinate();
+            chaControl.chaFile.coordinate = newCoordinate;
+
+            SetUpDropDowns();
+        }
+
         private void SetUpDropDowns()
         {
+            if (!MakerAPI.InsideMaker)
+                return;
+
             var chaControl = MakerAPI.GetCharacterControl();
 
             //Remove extras
             var customControl = FindObjectOfType<CustomControl>();
             customControl.ddCoordinate.m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
-                        
+
             var cvsCopy = CustomBase.Instance.GetComponentInChildren<CvsClothesCopy>(true);
             cvsCopy.ddCoordeType[0].m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
             cvsCopy.ddCoordeType[1].m_Options.m_Options.RemoveAll(x => x.text.StartsWith("Extra"));
