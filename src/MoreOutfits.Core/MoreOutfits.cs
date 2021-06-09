@@ -7,10 +7,13 @@ using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
+using Studio;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UniRx;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace KK_Plugins
@@ -29,6 +32,11 @@ namespace KK_Plugins
         private MakerText RenameCoordinateText;
         private MakerDropdown RenameCoordinateDropdown;
         private MakerTextbox RenameCoordinateTextbox;
+        private static CurrentStateCategoryDropdown StudioCoordinateCurrentStateCategoryDropdown;
+        private static Dropdown StudioCoordinateDropdown;
+        private static bool StudioUIInitialized = false;
+
+        private static readonly List<string> CoordinateNames = new List<string> { "学生服（校内）", "学生服（下校）", "体操着", "水着", "部活", "私服", "お泊り" };
 
         private void Awake()
         {
@@ -98,23 +106,21 @@ namespace KK_Plugins
         {
             if (!StudioAPI.InsideStudio) return;
 
-            var coordinateDropdown = new CurrentStateCategoryDropdown("Coordinate", Enum.GetNames(typeof(ChaFileDefine.CoordinateType)), c => CoordinateIndex());
-            coordinateDropdown.Value.Subscribe(value =>
+            StudioCoordinateCurrentStateCategoryDropdown = new CurrentStateCategoryDropdown("Coordinate", CoordinateNames.ToArray(), c => CoordinateIndex());
+            StudioCoordinateCurrentStateCategoryDropdown.Value.Subscribe(value =>
             {
-                var mpCharCtrol = FindObjectOfType<Studio.MPCharCtrl>();
-                if (coordinateDropdown.RootGameObject != null)
+                var mpCharCtrol = FindObjectOfType<MPCharCtrl>();
+                if (StudioCoordinateDropdown != null)
                 {
-                    var dd = coordinateDropdown.RootGameObject.GetComponentInChildren<Dropdown>();
-
                     var character = StudioAPI.GetSelectedCharacters().First();
                     var controller = GetController(character.charInfo);
 
                     //Remove extras
-                    if (dd.options.Count > OriginalCoordinateLength)
-                        dd.options.RemoveRange(OriginalCoordinateLength, dd.options.Count - OriginalCoordinateLength);
+                    if (StudioCoordinateDropdown.options.Count > OriginalCoordinateLength)
+                        StudioCoordinateDropdown.options.RemoveRange(OriginalCoordinateLength, StudioCoordinateDropdown.options.Count - OriginalCoordinateLength);
 
                     //Add dropdown options for each additional coodinate
-                    if (dd.options.Count < character.charInfo.chaFile.coordinate.Length)
+                    if (StudioCoordinateDropdown.options.Count < character.charInfo.chaFile.coordinate.Length)
                     {
                         for (int i = 0; i < (character.charInfo.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
                         {
@@ -124,9 +130,9 @@ namespace KK_Plugins
                                 name = TextboxDefault.Replace("#", $"{slot + 1}");
                             else
                                 name = controller.GetCoodinateName(slot);
-                            dd.options.Add(new Dropdown.OptionData(name));
+                            StudioCoordinateDropdown.options.Add(new Dropdown.OptionData(name));
                         }
-                        dd.captionText.text = dd.options[dd.value].text;
+                        StudioCoordinateDropdown.captionText.text = StudioCoordinateDropdown.options[StudioCoordinateDropdown.value].text;
                     }
                 }
 
@@ -140,7 +146,61 @@ namespace KK_Plugins
                 return character.charInfo.fileStatus.coordinateType;
             }
 
-            StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(coordinateDropdown);
+            StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(StudioCoordinateCurrentStateCategoryDropdown);
+        }
+
+        internal static void InitializeStudioUI(MPCharCtrl mpCharCtrol)
+        {
+            if (StudioUIInitialized)
+                return;
+            StudioUIInitialized = true;
+
+            //Disable the coordinate buttons and replace them with a dropdown
+            var button0 = mpCharCtrol.stateInfo.stateCosType.buttons[0];
+            var parentTransform = button0.transform.parent;
+            StudioCoordinateDropdown = StudioCoordinateCurrentStateCategoryDropdown.RootGameObject.GetComponentInChildren<Dropdown>();
+            StudioCoordinateDropdown.transform.SetParent(parentTransform);
+            StudioCoordinateDropdown.transform.localPosition = button0.transform.localPosition;
+            foreach (var button in mpCharCtrol.stateInfo.stateCosType.buttons)
+                button.gameObject.SetActive(false);
+            StudioCoordinateCurrentStateCategoryDropdown.RootGameObject.SetActive(false);
+            var rectTransform = StudioCoordinateDropdown.gameObject.GetComponent<RectTransform>();
+            var offset = rectTransform.offsetMin;
+            rectTransform.offsetMin = new Vector2(offset.x - 50, offset.y);
+
+
+            //Rearange the UI to fill the gap left by the buttons
+            foreach (var button in mpCharCtrol.stateInfo.stateShoesType.buttons)
+            {
+                var position = button.transform.localPosition;
+                button.transform.localPosition = new UnityEngine.Vector3(position.x, position.y + 25, position.z);
+            }
+
+            foreach (var button in mpCharCtrol.stateInfo.buttonCosState)
+            {
+                var position = button.transform.localPosition;
+                button.transform.localPosition = new UnityEngine.Vector3(position.x, position.y + 25, position.z);
+            }
+
+            var shoesText = parentTransform.Find("Text Shoes");
+            if (shoesText != null)
+            {
+                var position = shoesText.transform.localPosition;
+                shoesText.transform.localPosition = new UnityEngine.Vector3(position.x, position.y + 25, position.z);
+            }
+
+            var setText = parentTransform.Find("Text Set");
+            if (setText != null)
+            {
+                var position = setText.transform.localPosition;
+                setText.transform.localPosition = new UnityEngine.Vector3(position.x, position.y + 25, position.z);
+            }
+
+            var layoutElement = parentTransform.GetComponent<LayoutElement>();
+            if (layoutElement != null)
+            {
+                layoutElement.preferredHeight -= 20f;
+            }
         }
 
         /// <summary>

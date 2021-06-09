@@ -1,6 +1,7 @@
 ﻿using ChaCustom;
 using HarmonyLib;
 using MessagePack;
+using Studio;
 using System;
 using System.Collections.Generic;
 
@@ -55,6 +56,12 @@ namespace KK_Plugins
         {
             if (__instance.ddCoordeType[1].value >= __instance.chaCtrl.chaFile.coordinate.Length)
                 __instance.ddCoordeType[1].value = 0;
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(MPCharCtrl), nameof(MPCharCtrl.OnClickRoot))]
+        private static void MPCharCtrl_OnClickRoot(MPCharCtrl __instance)
+        {
+            MoreOutfits.InitializeStudioUI(__instance);
         }
     }
 }
