@@ -4,9 +4,24 @@ using ChaCustom;
 using HarmonyLib;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
+using KKAPI.Studio;
+using KKAPI.Studio.UI;
+using System.Collections.Generic;
+using System.Linq;
+using UniRx;
 using MessagePack;
 using System;
 using System.Collections.Generic;
+using Illusion;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using TMPro;
+using UniRx;
+using UniRx.Triggers;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -19,13 +34,14 @@ namespace KK_Plugins
         public const string PluginVersion = "1.0";
         internal static new ManualLogSource Logger;
 
-        private readonly int OriginalCoordinateLength = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).Length;
+        private static readonly int OriginalCoordinateLength = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).Length;
 
         private void Awake()
         {
             Logger = base.Logger;
             MakerAPI.ReloadCustomInterface += MakerAPI_ReloadCustomInterface;
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
+            RegisterStudioControls();
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
         }
@@ -44,6 +60,40 @@ namespace KK_Plugins
             addCoordinateButton.OnClick.AddListener(() => { AddCoordinateSlot(MakerAPI.GetCharacterControl()); });
 
             ev.AddSubCategory(category);
+        }
+
+        private static void RegisterStudioControls()
+        {
+            if (!StudioAPI.InsideStudio) return;
+
+            var coordinateDropdown = new CurrentStateCategoryDropdown("Coordinate", Enum.GetNames(typeof(ChaFileDefine.CoordinateType)), c => CoordinateIndex());
+            coordinateDropdown.Value.Subscribe(value =>
+            {
+                var mpCharCtrol = FindObjectOfType<Studio.MPCharCtrl>();
+                if (coordinateDropdown.RootGameObject != null)
+                {
+                    var dd = coordinateDropdown.RootGameObject.GetComponentInChildren<Dropdown>();
+
+                    var character = StudioAPI.GetSelectedCharacters().First();
+                    dd.options.RemoveAll(x=>x.text.StartsWith("Extra"));
+                    if (dd.options.Count < character.charInfo.chaFile.coordinate.Length)
+                    {
+                        for (int i = 0; i < (character.charInfo.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
+                            dd.options.Add(new Dropdown.OptionData($"Extra {i + 1}"));
+                    }
+                }
+
+                if (mpCharCtrol != null)
+                    mpCharCtrol.stateInfo.OnClickCosType(value);
+            });
+
+            int CoordinateIndex()
+            {
+                var character = StudioAPI.GetSelectedCharacters().First();
+                return character.charInfo.fileStatus.coordinateType;
+            }
+
+            StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(coordinateDropdown);
         }
 
         public void AddCoordinateSlot(ChaControl chaControl)
@@ -82,11 +132,11 @@ namespace KK_Plugins
             {
                 for (int i = 0; i < (chaControl.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
                 {
-                    customControl.ddCoordinate.m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
-                    cvsCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
-                    cvsCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
-                    cvsAccessoryCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
-                    cvsAccessoryCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMPro.TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                    customControl.ddCoordinate.m_Options.m_Options.Add(new TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                    cvsCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                    cvsCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                    cvsAccessoryCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMP_Dropdown.OptionData($"Extra {i + 1}"));
+                    cvsAccessoryCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMP_Dropdown.OptionData($"Extra {i + 1}"));
                 }
             }
 
