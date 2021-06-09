@@ -6,21 +6,12 @@ using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
-using System.Collections.Generic;
-using System.Linq;
-using UniRx;
 using MessagePack;
 using System;
 using System.Collections.Generic;
-using Illusion;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using TMPro;
 using UniRx;
-using UniRx.Triggers;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace KK_Plugins
@@ -59,6 +50,10 @@ namespace KK_Plugins
             ev.AddControl(addCoordinateButton);
             addCoordinateButton.OnClick.AddListener(() => { AddCoordinateSlot(MakerAPI.GetCharacterControl()); });
 
+            var removeCoordinateButton = new MakerButton("Remove last additional clothing slot", category, this);
+            ev.AddControl(removeCoordinateButton);
+            removeCoordinateButton.OnClick.AddListener(() => { RemoveCoordinateSlot(MakerAPI.GetCharacterControl()); });
+
             ev.AddSubCategory(category);
         }
 
@@ -75,7 +70,7 @@ namespace KK_Plugins
                     var dd = coordinateDropdown.RootGameObject.GetComponentInChildren<Dropdown>();
 
                     var character = StudioAPI.GetSelectedCharacters().First();
-                    dd.options.RemoveAll(x=>x.text.StartsWith("Extra"));
+                    dd.options.RemoveAll(x => x.text.StartsWith("Extra"));
                     if (dd.options.Count < character.charInfo.chaFile.coordinate.Length)
                     {
                         for (int i = 0; i < (character.charInfo.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
@@ -96,6 +91,10 @@ namespace KK_Plugins
             StudioAPI.GetOrCreateCurrentStateCategory("").AddControl(coordinateDropdown);
         }
 
+        /// <summary>
+        /// Add another coordinate slot for the specified character
+        /// </summary>
+        /// <param name="chaControl">The character being modified</param>
         public void AddCoordinateSlot(ChaControl chaControl)
         {
             //Initialize a new bigger array, copy the contents of the old
@@ -108,6 +107,27 @@ namespace KK_Plugins
             SetUpDropDowns();
         }
 
+        /// <summary>
+        /// Remove the last added coordinate slot for the specified character
+        /// </summary>
+        /// <param name="chaControl">The character being modified</param>
+        public void RemoveCoordinateSlot(ChaControl chaControl)
+        {
+            //Initialize a new smaller array, copy the contents of the old
+            if (chaControl.chaFile.coordinate.Length <= OriginalCoordinateLength)
+                return;
+
+            var newCoordinate = new ChaFileCoordinate[chaControl.chaFile.coordinate.Length - 1];
+            for (int i = 0; i < newCoordinate.Length; i++)
+                newCoordinate[i] = chaControl.chaFile.coordinate[i];
+            chaControl.chaFile.coordinate = newCoordinate;
+
+            SetUpDropDowns();
+        }
+
+        /// <summary>
+        /// Expand the dropdowns in character maker to include the additional coordinates, or remove them if necessary
+        /// </summary>
         private void SetUpDropDowns()
         {
             if (!MakerAPI.InsideMaker)
