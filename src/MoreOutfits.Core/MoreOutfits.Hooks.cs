@@ -5,7 +5,7 @@ using Studio;
 using System;
 using System.Collections.Generic;
 
-namespace KK_Plugins
+namespace KK_Plugins.MoreOutfits
 {
     public class Hooks
     {
@@ -61,7 +61,19 @@ namespace KK_Plugins
         [HarmonyPostfix, HarmonyPatch(typeof(MPCharCtrl), nameof(MPCharCtrl.OnClickRoot))]
         private static void MPCharCtrl_OnClickRoot(MPCharCtrl __instance)
         {
-            MoreOutfits.InitializeStudioUI(__instance);
+            StudioUI.InitializeStudioUI(__instance);
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.Start))]
+        private static void HSceneProc_MapSameObjectDisable()
+        {
+            HSceneUI.HSceneUIInitialized = false;
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(HSprite), nameof(HSprite.OnMainMenu))]
+        private static void HSprite_OnMainMenu()
+        {
+            HSceneUI.InitializeHSceneUI();
         }
     }
 }

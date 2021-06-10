@@ -13,5 +13,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)MoreOutfits.CharaController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MoreOutfits.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MoreOutfits.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MoreOutfits.UI.HScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MoreOutfits.UI.Maker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MoreOutfits.UI.Studio.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\ListTemplate.png" />
   </ItemGroup>
 </Project>

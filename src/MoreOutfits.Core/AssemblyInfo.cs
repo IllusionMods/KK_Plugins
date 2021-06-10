@@ -1,6 +1,6 @@
 ﻿using KK_Plugins;
 using System.Reflection;
-using static KK_Plugins.MoreOutfits;
+using static KK_Plugins.MoreOutfits.Plugin;
 
 [assembly: AssemblyTitle(PluginNameInternal)]
 [assembly: AssemblyProduct(PluginNameInternal)]

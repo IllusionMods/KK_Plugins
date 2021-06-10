@@ -4,7 +4,7 @@ using KKAPI.Chara;
 using MessagePack;
 using System.Collections.Generic;
 
-namespace KK_Plugins
+namespace KK_Plugins.MoreOutfits
 {
     public class MoreOutfitsController : CharaCustomFunctionController
     {
