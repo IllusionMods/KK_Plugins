@@ -30,9 +30,7 @@ namespace KK_Plugins.MoreOutfits
             addCoordinateButton.OnClick.AddListener(() =>
             {
                 var chaControl = MakerAPI.GetCharacterControl();
-                var controller = GetController(chaControl);
-                if (controller != null)
-                    controller.SetCoordinateName(chaControl.chaFile.coordinate.Length, coordinateNameTextbox.Value);
+                SetCoordinateName(chaControl, chaControl.chaFile.coordinate.Length, coordinateNameTextbox.Value);
                 AddCoordinateSlot(chaControl);
             });
 
@@ -52,9 +50,7 @@ namespace KK_Plugins.MoreOutfits
                 if (value != TextboxDefault)
                 {
                     var chaControl = MakerAPI.GetCharacterControl();
-                    var controller = GetController(chaControl);
-                    if (controller != null)
-                        controller.SetCoordinateName(OriginalCoordinateLength + RenameCoordinateDropdown.Value, value);
+                    SetCoordinateName(chaControl, OriginalCoordinateLength + RenameCoordinateDropdown.Value, coordinateNameTextbox.Value);
                     UpdateMakerUI();
                 }
             });
@@ -78,7 +74,6 @@ namespace KK_Plugins.MoreOutfits
                 return;
 
             var chaControl = MakerAPI.GetCharacterControl();
-            var controller = GetController(chaControl);
 
             //Remove extras
             var customControl = GameObject.FindObjectOfType<CustomControl>();
@@ -110,12 +105,7 @@ namespace KK_Plugins.MoreOutfits
                 //Add dropdown options for each additional coodinate
                 for (int i = 0; i < (chaControl.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
                 {
-                    int slot = OriginalCoordinateLength + i;
-                    string name;
-                    if (controller == null)
-                        name = TextboxDefault.Replace("#", $"{slot + 1}");
-                    else
-                        name = controller.GetCoodinateName(slot);
+                    string name = GetCoodinateName(chaControl, OriginalCoordinateLength + i);
                     customControl.ddCoordinate.m_Options.m_Options.Add(new TMP_Dropdown.OptionData(name));
                     cvsCopy.ddCoordeType[0].m_Options.m_Options.Add(new TMP_Dropdown.OptionData(name));
                     cvsCopy.ddCoordeType[1].m_Options.m_Options.Add(new TMP_Dropdown.OptionData(name));

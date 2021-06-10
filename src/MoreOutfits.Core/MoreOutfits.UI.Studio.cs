@@ -1,6 +1,7 @@
 ﻿using KKAPI.Studio;
 using KKAPI.Studio.UI;
 using Studio;
+using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace KK_Plugins.MoreOutfits
         private static Dropdown StudioCoordinateDropdown;
         private static bool StudioUIInitialized = false;
 
+        private static readonly List<string> CoordinateNames = new List<string> { "学生服（校内）", "学生服（下校）", "体操着", "水着", "部活", "私服", "お泊り" };
+
         public static void RegisterStudioControls()
         {
             if (!StudioAPI.InsideStudio) return;
@@ -26,7 +29,6 @@ namespace KK_Plugins.MoreOutfits
                 if (StudioCoordinateDropdown != null)
                 {
                     var character = StudioAPI.GetSelectedCharacters().First();
-                    var controller = GetController(character.charInfo);
 
                     //Remove extras
                     if (StudioCoordinateDropdown.options.Count > OriginalCoordinateLength)
@@ -37,13 +39,7 @@ namespace KK_Plugins.MoreOutfits
                     {
                         for (int i = 0; i < (character.charInfo.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
                         {
-                            int slot = OriginalCoordinateLength + i;
-                            string name;
-                            if (controller == null)
-                                name = TextboxDefault.Replace("#", $"{slot + 1}");
-                            else
-                                name = controller.GetCoodinateName(slot);
-                            StudioCoordinateDropdown.options.Add(new Dropdown.OptionData(name));
+                            StudioCoordinateDropdown.options.Add(new Dropdown.OptionData(GetCoodinateName(character.charInfo, OriginalCoordinateLength + i)));
                         }
                         StudioCoordinateDropdown.captionText.text = StudioCoordinateDropdown.options[StudioCoordinateDropdown.value].text;
                     }

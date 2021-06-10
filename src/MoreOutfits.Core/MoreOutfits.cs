@@ -4,7 +4,6 @@ using HarmonyLib;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using System;
-using System.Collections.Generic;
 
 namespace KK_Plugins.MoreOutfits
 {
@@ -19,9 +18,7 @@ namespace KK_Plugins.MoreOutfits
         internal static new ManualLogSource Logger;
         internal static Plugin Instance;
         public const string TextboxDefault = "Outfit #";
-
         public static readonly int OriginalCoordinateLength = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).Length;
-        public static readonly List<string> CoordinateNames = new List<string> { "学生服（校内）", "学生服（下校）", "体操着", "水着", "部活", "私服", "お泊り" };
 
         private void Awake()
         {
@@ -70,6 +67,38 @@ namespace KK_Plugins.MoreOutfits
             MakerUI.UpdateMakerUI();
         }
 
-        public static MoreOutfitsController GetController(ChaControl character) => character == null || character.gameObject == null ? null : character.gameObject.GetComponent<MoreOutfitsController>();
+        /// <summary>
+        /// Set the name of a coordinate for a character
+        /// </summary>
+        /// <param name="chaControl">Character</param>
+        /// <param name="index">Index of the coordinate</param>
+        /// <param name="name">Name of the coordinate</param>
+        public static void SetCoordinateName(ChaControl chaControl, int index, string name)
+        {
+            var controller = GetController(chaControl);
+            if (chaControl != null)
+                controller.SetCoordinateName(index, name);
+        }
+
+        /// <summary>
+        /// Get the name of a coordinate for a character
+        /// </summary>
+        /// <param name="chaControl">Character</param>
+        /// <param name="index">Index of the coordinate</param>
+        /// <returns>Name of the coordinate</returns>
+        public static string GetCoodinateName(ChaControl chaControl, int index)
+        {
+            var controller = GetController(chaControl);
+            if (chaControl != null)
+                return controller.GetCoodinateName(index);
+            return $"Outfit {index + 1}";
+        }
+
+        /// <summary>
+        /// Get the KKAPI CharaCustomFunctionController for the character
+        /// </summary>
+        /// <param name="chaControl">Character</param>
+        /// <returns>KKAPI CharaCustomFunctionController</returns>
+        public static MoreOutfitsController GetController(ChaControl chaControl) => chaControl == null || chaControl.gameObject == null ? null : chaControl.gameObject.GetComponent<MoreOutfitsController>();
     }
 }

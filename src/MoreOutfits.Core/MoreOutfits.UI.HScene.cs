@@ -47,7 +47,6 @@ namespace KK_Plugins.MoreOutfits
         private static void SetUpList(HSceneProc hSceneProc, Transform parent, int femaleIndex)
         {
             var chaControl = hSceneProc.flags.lstHeroine[femaleIndex].chaCtrl;
-            var controller = GetController(chaControl);
 
             var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
             go.transform.SetParent(parent.transform, false);
@@ -95,7 +94,7 @@ namespace KK_Plugins.MoreOutfits
                 var textContainer = new GameObject("CoordinateText");
                 textContainer.transform.SetParent(newButton.transform);
                 var buttonText = textContainer.gameObject.GetOrAddComponent<Text>();
-                buttonText.text = controller.GetCoodinateName(coordinateIndex);
+                buttonText.text = GetCoodinateName(chaControl, coordinateIndex);
 
                 buttonText.transform.localScale = new Vector3(1, 1, 1);
                 buttonText.rectTransform.anchorMin = new Vector2(0, 0);
