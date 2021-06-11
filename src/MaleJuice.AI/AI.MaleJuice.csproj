@@ -39,10 +39,6 @@
       <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AIAPI, Version=1.20.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.AIAPI.1.20.0\lib\net46\AIAPI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="AI_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ExtensibleSaveFormat.AIGirl.16.3.1\lib\net46\AI_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>

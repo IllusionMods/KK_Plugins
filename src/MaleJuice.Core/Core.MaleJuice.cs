@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using KKAPI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,20 +8,18 @@ using UnityEngine;
 using AIChara;
 #endif
 
-namespace KK_Plugins
+namespace KK_Plugins.MaleJuice
 {
     /// <summary>
     /// Enables juice textures for male characters
     /// </summary>
-    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
-    [BepInPlugin(GUID, PluginName, Version)]
-    public partial class MaleJuice : BaseUnityPlugin
+    [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    public partial class Plugin : BaseUnityPlugin
     {
-        public const string GUID = "com.deathweasel.bepinex.malejuice";
+        public const string PluginGUID = "com.deathweasel.bepinex.malejuice";
         public const string PluginName = "Male Juice";
         public const string PluginNameInternal = Constants.Prefix + "_MaleJuice";
-        public const string Version = "1.2.2";
-        public static MaleJuice Instance;
+        public const string PluginVersion = "1.3";
 
 #if KK
         private static Texture LiquidMask;
@@ -35,7 +32,6 @@ namespace KK_Plugins
         internal void Main()
         {
             Logger = base.Logger;
-            Instance = this;
 
             StartCoroutine(LoadJuice());
         }

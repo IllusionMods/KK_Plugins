@@ -51,10 +51,6 @@
       <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HS2API, Version=1.20.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.HS2API.1.20.0\lib\net46\HS2API.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="HS2_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ExtensibleSaveFormat.HoneySelect2.16.3.1\lib\net46\HS2_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
