@@ -47,9 +47,13 @@ namespace KK_Plugins
                     if (first && controller.BodyData?.BodyGUID == guid)
                         break;
 
+                    if (controller.BodyData?.BodyGUID != guid)
+                    {
+                        controller.BodyGUID = guid;
+                        controller.UpdateUncensor();
+                    }
+
                     first = false;
-                    controller.BodyGUID = guid;
-                    controller.UpdateUncensor();
                 }
             });
 
@@ -72,14 +76,22 @@ namespace KK_Plugins
             var penisDropdown = new CurrentStateCategoryDropdown("Penis", penisListDisplay.ToArray(), c => PenisIndex());
             penisDropdown.Value.Subscribe(value =>
             {
+                bool first = true;
                 foreach (var controller in StudioAPI.GetSelectedControllers<UncensorSelectorController>())
                 {
                     var guid = penisList[value];
+
+                    //Prevent changing other characters when the value did not actually change
+                    if (first && controller.PenisData?.PenisGUID == guid)
+                        break;
+
                     if (controller.PenisData?.PenisGUID != guid)
                     {
                         controller.PenisGUID = guid;
                         controller.UpdateUncensor();
                     }
+
+                    first = false;
                 }
             });
 
@@ -108,11 +120,16 @@ namespace KK_Plugins
             var ballsDropdown = new CurrentStateCategoryDropdown("Balls", ballsListDisplay.ToArray(), c => BallsIndex());
             ballsDropdown.Value.Subscribe(value =>
             {
+                bool first = true;
                 foreach (var controller in StudioAPI.GetSelectedControllers<UncensorSelectorController>())
                 {
                     if (value == 0)//"None"
                     {
-                        if (controller.BallsGUID != null)
+                        //Prevent changing other characters when the value did not actually change
+                        if (first && controller.DisplayBalls == false)
+                            break;
+
+                        if (controller.BallsData?.BallsGUID != null)
                         {
                             controller.BallsGUID = null;
                             controller.DisplayBalls = false;
@@ -122,10 +139,20 @@ namespace KK_Plugins
                     else
                     {
                         var guid = ballsList[value];
-                        controller.BallsGUID = guid;
-                        controller.DisplayBalls = true;
-                        controller.UpdateUncensor();
+
+                        //Prevent changing other characters when the value did not actually change
+                        if (first && controller.BallsData?.BallsGUID == guid)
+                            break;
+
+                        if (controller.BallsData?.BallsGUID != guid)
+                        {
+                            controller.BallsGUID = guid;
+                            controller.DisplayBalls = true;
+                            controller.UpdateUncensor();
+                        }
                     }
+
+                    first = false;
                 }
             });
 
