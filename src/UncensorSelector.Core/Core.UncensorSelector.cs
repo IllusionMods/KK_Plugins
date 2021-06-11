@@ -78,6 +78,9 @@ namespace KK_Plugins
         public static ConfigEntry<string> DefaultFemalePenis { get; private set; }
         public static ConfigEntry<string> DefaultFemaleBalls { get; private set; }
         public static ConfigEntry<bool> DefaultFemaleDisplayBalls { get; private set; }
+#if !EC
+        public static ConfigEntry<bool> SeparateStudioExclusions { get; private set; }
+#endif
         public static ConfigEntry<string> RandomExcludedMaleBody { get; private set; }
         public static ConfigEntry<string> RandomExcludedMalePenis { get; private set; }
         public static ConfigEntry<string> RandomExcludedMaleBalls { get; private set; }
@@ -96,6 +99,10 @@ namespace KK_Plugins
 
 #if KK || KKS
             _GenderBender = Config.Bind("Config", "Genderbender Allowed", true, new ConfigDescription("Whether or not genderbender characters are allowed. When disabled, girls will always have a female body with no penis, boys will always have a male body and a penis. Genderbender characters will still load in Studio for scene compatibility.", null, new ConfigurationManagerAttributes { Order = 29 }));
+#endif
+#if !EC
+            SeparateStudioExclusions = Config.Bind("Config", "Use separate exclusions for studio", false, new ConfigDescription("Whether separate exclusion lists will be used for studio (requires restart)", null, new ConfigurationManagerAttributes { Order = 0 }));
+            SeparateStudioExclusions.SettingChanged += (s, e) => Logger.LogMessage("Restart required for updated setting to take effect.");
 #endif
             InitUncensorConfigs("Male", "Body", BodyDictionary, GetConfigBodyList(), 19, out var defaultConf, out var excludeConf);
             DefaultMaleBody = defaultConf;
@@ -163,9 +170,26 @@ namespace KK_Plugins
 
             var settingsGUI = new SettingsGUI<T>(uncensorDictionary, sexValue, part);
             SettingsGUIs.Add(settingsGUI);
+
             var excludedDescAttrs = new ConfigurationManagerAttributes { HideDefaultButton = true, CustomDrawer = settingsGUI.DrawSettingsGUI, Order = order };
             var excludedDesc = new ConfigDescription($"{part} uncensors to exclude from random selection for {sex.ToLower()}s", null, excludedDescAttrs);
-            excludeConf = Config.Bind("Random Excluded", $"{sex} {part}", string.Empty, excludedDesc);
+
+            var mainExcludeConf = excludeConf = Config.Bind("Random Excluded", $"{sex} {part}", string.Empty, excludedDesc);
+
+#if !EC
+            if (SeparateStudioExclusions.Value)
+            {
+                var studioSettingsGUI = new SettingsGUI<T>(uncensorDictionary, sexValue, part, true);
+                SettingsGUIs.Add(studioSettingsGUI);
+
+                var studioExcludedDescAttrs = new ConfigurationManagerAttributes {HideDefaultButton = true, CustomDrawer = studioSettingsGUI.DrawSettingsGUI, Order = order};
+                var studioExcludedDesc = new ConfigDescription($"{part} uncensors to exclude from random selection for {sex.ToLower()}s in studio", null, studioExcludedDescAttrs);
+                // default value is main config so the first time it's enabled current settings are copied over
+                var studioExcludeConf = Config.Bind("Random Excluded for Studio", $"{sex} {part}", mainExcludeConf.Value, studioExcludedDesc);
+                // set excludeConf to the active config
+                excludeConf = KKAPI.Studio.StudioAPI.InsideStudio ? studioExcludeConf : mainExcludeConf;
+            }
+#endif
 
             //Apply initial config file value now
             UpdateGuidSet(excludeConf.Value, partExcluded);
