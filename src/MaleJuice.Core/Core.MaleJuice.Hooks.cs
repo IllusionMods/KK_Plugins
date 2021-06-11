@@ -61,6 +61,12 @@ namespace KK_Plugins
 #endif
             }
 
+            [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetBodyBaseMaterial))]
+            private static void ChaControl_SetBodyBaseMaterial(ChaControl __instance)
+            {
+                SetJuice(__instance);
+            }
+
 #if AI || HS2
             [HarmonyTranspiler, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateSiru))]
             private static IEnumerable<CodeInstruction> UpdateSiruTranspiler(IEnumerable<CodeInstruction> instructions)

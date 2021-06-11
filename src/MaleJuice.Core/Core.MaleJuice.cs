@@ -2,7 +2,6 @@
 using BepInEx.Logging;
 using HarmonyLib;
 using KKAPI;
-using KKAPI.Chara;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +22,7 @@ namespace KK_Plugins
         public const string PluginName = "Male Juice";
         public const string PluginNameInternal = Constants.Prefix + "_MaleJuice";
         public const string Version = "1.2.2";
+        public static MaleJuice Instance;
 
 #if KK
         private static Texture LiquidMask;
@@ -35,6 +35,7 @@ namespace KK_Plugins
         internal void Main()
         {
             Logger = base.Logger;
+            Instance = this;
 
             StartCoroutine(LoadJuice());
         }
@@ -71,46 +72,32 @@ namespace KK_Plugins
             if (LiquidMat == null) yield break;
 #endif
 
-            CharacterApi.RegisterExtraBehaviour<MaleJuiceCharaController>(GUID);
             Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
-        public class MaleJuiceCharaController : CharaCustomFunctionController
+        /// <summary>
+        /// Sets the juice textures for any character lacking them, typically males
+        /// </summary>
+        public static void SetJuice(ChaControl chaControl)
         {
-            protected override void OnReload(GameMode currentGameMode, bool maintainState)
-            {
-                SetJuice();
-
-                base.OnReload(currentGameMode, maintainState);
-            }
-            protected override void OnCardBeingSaved(GameMode currentGameMode) { }
-            /// <summary>
-            /// Sets the juice textures for any character lacking them, typically males
-            /// </summary>
-            public void SetJuice() => ChaControl.StartCoroutine(_SetJuice());
-            private IEnumerator _SetJuice()
-            {
-                yield return null;
-
 #if KK
-                if (ChaControl.customMatBody.GetTexture("_liquidmask") == null)
-                    ChaControl.customMatBody.SetTexture("_liquidmask", LiquidMask);
+            if (chaControl.customMatBody.GetTexture("_liquidmask") == null)
+                chaControl.customMatBody.SetTexture("_liquidmask", LiquidMask);
 #else
-                if (ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials.Length == 1)
-                {
-                    List<Material> newMats = new List<Material>();
-                    newMats.Add(ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[0]);
-                    newMats.Add(Instantiate(LiquidMat));
-                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials = newMats.ToArray();
+            if (chaControl.cmpBody.targetCustom.rendBody.sharedMaterials.Length == 1)
+            {
+                List<Material> newMats = new List<Material>();
+                newMats.Add(chaControl.cmpBody.targetCustom.rendBody.sharedMaterials[0]);
+                newMats.Add(Instantiate(LiquidMat));
+                chaControl.cmpBody.targetCustom.rendBody.sharedMaterials = newMats.ToArray();
 
-                    //Needed for loading scenes in Studio
-                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruFrontTop, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontTop) / 2);
-                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruFrontBot, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontBot) / 2);
-                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruBackTop, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackTop) / 2);
-                    ChaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruBackBot, ChaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackBot) / 2);
-                }
-#endif
+                //Needed for loading scenes in Studio
+                chaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruFrontTop, chaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontTop) / 2);
+                chaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruFrontBot, chaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruFrontBot) / 2);
+                chaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruBackTop, chaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackTop) / 2);
+                chaControl.cmpBody.targetCustom.rendBody.sharedMaterials[1].SetFloat(ChaShader.siruBackBot, chaControl.GetSiruFlag(ChaFileDefine.SiruParts.SiruBackBot) / 2);
             }
+#endif
         }
     }
 }
