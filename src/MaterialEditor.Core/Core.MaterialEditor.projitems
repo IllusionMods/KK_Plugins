@@ -16,6 +16,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.ObjectData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)normal_convert.shader" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\MaterialEditorIcon.png" />
   </ItemGroup>
 </Project>

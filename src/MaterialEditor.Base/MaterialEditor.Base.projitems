@@ -24,4 +24,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.VirtualList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)normal_convert.shader" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\normal_convert.unity3d">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

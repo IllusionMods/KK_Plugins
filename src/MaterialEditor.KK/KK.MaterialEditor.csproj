@@ -101,14 +101,10 @@
     <EmbeddedResource Include="Resources\default.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\MaterialEditorIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\KK_Shaders.unity3d" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\normal_convert.unity3d" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

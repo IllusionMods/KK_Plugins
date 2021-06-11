@@ -126,7 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\normal_convert.unity3d" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

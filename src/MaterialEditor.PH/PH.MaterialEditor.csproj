@@ -87,13 +87,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\ph_shaders.unity3d" />
-    <EmbeddedResource Include="Resources\normal_convert.unity3d" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\MaterialEditorIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />

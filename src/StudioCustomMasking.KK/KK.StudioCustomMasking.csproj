@@ -84,10 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\colorontop.unity3d" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\CustomMaskingIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

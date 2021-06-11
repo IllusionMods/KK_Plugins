@@ -15,4 +15,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.StudioCustomMasking.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.StudioCustomMasking.SceneController.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\colorontop.unity3d" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\CustomMaskingIcon.png" />
+  </ItemGroup>
 </Project>

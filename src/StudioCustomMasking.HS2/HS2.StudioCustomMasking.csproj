@@ -125,10 +125,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\colorontop.unity3d" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\CustomMaskingIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StudioSceneSettings.HS2\HS2.StudioSceneSettings.csproj">
