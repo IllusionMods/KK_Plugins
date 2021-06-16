@@ -1,5 +1,5 @@
 <MaterialEditor>
-  <Shader Name="Shader Forge/main_alpha" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_alpha" ShaderOptimization="False">
+  <Shader Name="Shader Forge/main_alpha" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_alpha">
     <Property Name="AlphaMask" Type="Texture" />
     <Property Name="AnotherRamp" Type="Texture" />
     <Property Name="DetailMask" Type="Texture" />
@@ -228,7 +228,7 @@
     <Property Name="rimV" Type="Float" Range="0,1" />
     <Property Name="rimpower" Type="Float" Range="0,1" />
   </Shader>
-  <Shader Name="Shader Forge/main_opaque" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_opaque" ShaderOptimization="False">
+  <Shader Name="Shader Forge/main_opaque" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_opaque">
     <Property Name="AlphaMask" Type="Texture" />
     <Property Name="AnotherRamp" Type="Texture" />
     <Property Name="DetailMask" Type="Texture" />
@@ -257,7 +257,7 @@
     <Property Name="SpecularPower" Type="Float" Range="0,1" />
     <Property Name="SpecularPowerNail" Type="Float" Range="0,1" />
   </Shader>
-  <Shader Name="Shader Forge/main_opaque2" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_opaque2" ShaderOptimization="False">
+  <Shader Name="Shader Forge/main_opaque2" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_opaque2">
     <Property Name="AlphaMask" Type="Texture" />
     <Property Name="AnotherRamp" Type="Texture" />
     <Property Name="DetailMask" Type="Texture" />
