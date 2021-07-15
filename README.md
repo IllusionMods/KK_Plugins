@@ -1,33 +1,40 @@
-Support me on Patreon!<br/>
-https://www.patreon.com/DeathWeasel
-
 # KK_Plugins
+
 Plugins for Koikatsu, EmotionCreators, and AI Girl
 
 ## Installation
+
 1. Install [BepInEx v5.3](https://github.com/BepInEx/BepInEx/releases)
 2. Install [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases)
 3. Install [IllusionModdingAPI](https://github.com/IllusionMods/IllusionModdingAPI)
 4. Extract the plugin .zip file to your game folder
 
 #### CharaMakerLoadedSound
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip)** - For Koikatsu<br/>
+
+- [KK_CharaMakerLoadedSound]
+
 
 Plays a sound when the Chara Maker finishes loading. Useful if you spend the load time alt-tabbed.
 
 #### StudioSceneLoadedSound
-**v1.3 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v132/)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
-Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.<br/>
+- [AI_StudioSceneLoadedSound]
+- [HS2_StudioSceneLoadedSound]
+- [KK_StudioSceneLoadedSound]
+
+
+Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.
 
 <details><summary>Change Log</summary>
 v1.1 Config options, AI version (thanks GeBo!)<br/>
 </details>
 
 #### ForceHighPoly
-**v1.2.2 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v150/KK_ForceHighPoly.v1.2.2.zip)** - For Koikatsu<br/>
 
-Forces all characters to load in high poly mode, even in the school exploration mode.<br/>
+- [KK_ForceHighPoly]
+
+
+Forces all characters to load in high poly mode, even in the school exploration mode.
 
 <details><summary>Change Log</summary>
 v1.1 Fixed locking up the game after special H scenes. Added config option to disable high poly mode.<br/>
@@ -37,9 +44,11 @@ v1.2.2 Fixed a patch not working<br/>
 </details>
 
 #### ReloadCharaListOnChange
-**v1.5.2 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v91/KK_ReloadCharaListOnChange.v1.5.1.zip)** - For Koikatsu<br/>
 
-Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.<br/>
+- [KK_ReloadCharaListOnChange]
+
+
+Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.
 
 <details><summary>Change Log</summary>
 v1.1 Fixed new coordinates saved from within the game not being handled correctly<br/>
@@ -53,13 +62,18 @@ v1.5.2 Prevent reloading when cards in the _autosave folder are changed<br/>
 </details>
 
 #### InvisibleBody
-**v1.4 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v184/)** - For Koikatsu, Emotion Creators, AI Girl, and Honey Select 2<br/>
 
-Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.<br/>
+- [AI_InvisibleBody]
+- [EC_InvisibleBody]
+- [HS2_InvisibleBody]
+- [KK_InvisibleBody]
 
-Select characters in the Studio workspace and Anim->Current State->Invisible Body to toggle them between invisible and visible. Any worn clothes or accessories and any attached studio items will remain visible. Invisible state saves and loads with the scene. <br/>
 
-<details><summary>Change Log</summary> 
+Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.
+
+Select characters in the Studio workspace and Anim->Current State->Invisible Body to toggle them between invisible and visible. Any worn clothes or accessories and any attached studio items will remain visible. Invisible state saves and loads with the scene. 
+
+<details><summary>Change Log</summary>
 v1.1 Fixed studio items becoming visible when they were toggled off in the workspace<br/>
 v1.2 Added a character maker toggle, EmotionCreators port<br/>
 v1.2.1 Fixed an incompatibility with UncensorSelector<br/>
@@ -71,18 +85,23 @@ v1.4 Changes made in Studio apply to all selected characters, keep visible state
 </details>
 
 #### UncensorSelector
-**v3.11.2 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v196)** - For Koikatsu, Emotion Creators, AI Girl and Honey Select 2<br/>
 
-Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.<br/>
+- [AI_UncensorSelector]
+- [EC_UncensorSelector]
+- [HS2_UncensorSelector]
+- [KK_UncensorSelector]
+
+
+Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.
 
 Requirements:
 * Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases)
 * Marco's [Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods/releases)
 * [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat and Sideloader.
 
-For makers of uncensors, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/src/UncensorSelector.Core/Template.xml) for how to configure your uncensor for UncensorSelector compatibility.<br/>
+For makers of uncensors, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/src/UncensorSelector.Core/Template.xml) for how to configure your uncensor for UncensorSelector compatibility.
 
-Make sure to remove any sideloader uncensors and replace your oo_base with a clean, unmodified one to prevent incompatibilities!<br/>
+Make sure to remove any sideloader uncensors and replace your oo_base with a clean, unmodified one to prevent incompatibilities!
 
 <details><summary>Change Log</summary>
 v2.0 Complete rewrite, now supports changing uncensors inside the character maker, configuring uncensor metadata in manifest.xml, demosaic, etc.<br/>
@@ -119,10 +138,17 @@ v3.11.2 Compatibility with BetterPenetration<br/>
 </details>
 
 #### Subtitles
-**v2.2 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v188/)** - For Koikatsu, AI Girl, Honey Select, Honey Select 2, and Play Club<br/>
 
-For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.<br/>
-For AI Girl trial version, adds subtitles for the character maker.<br/>
+- [AI_Subtitles]
+- [HS2_Subtitles]
+- [HS_Subtitles]
+- [KK_Subtitles]
+- [PC_Subtitles]
+
+
+For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.
+
+For AI Girl trial version, adds subtitles for the character maker.
 
 <details><summary>Change Log</summary>
 v1.1 Fixed H subs not working for some people<br/>
@@ -141,14 +167,18 @@ v2.2 Play Club version
 </details>
 
 #### AnimationController
-**v2.2 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v123/)** - For Koikatsu, AI Girl, and [Honey Select 2](https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_AnimationController.v2.2.zip)<br/>
+
+- [AI_AnimationController]
+- [HS2_AnimationController]
+- [KK_AnimationController]
+
 *Koikatsu version: Mostly obsolete. [NodeConstraints](https://www.patreon.com/posts/26357789) does what this plugin does but better.*
 
-Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.<br/>
+Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.
 
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat.<br/>
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat.
 
-Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro  
+Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro
 
 <details><summary>Change Log</summary>
 v1.1 Gimmicks can now rotate hands and feet properly<br/>
@@ -159,9 +189,12 @@ v2.2 AI version, window position adjustment<br/>
 </details>
 
 #### ClothingUnlocker
-**v2.0.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v159/)** - For Koikatsu and EmotionCreators<br/>
 
-Allows gender restricted clothing to be used on all characters. Also allows you to unlock bras or skirts with any top on a per-character, per-ourfit basis. This setting saves and loads with the character card or coordinate card to ensure compatibility.<br/>
+- [EC_ClothingUnlocker]
+- [KK_ClothingUnlocker]
+
+
+Allows gender restricted clothing to be used on all characters. Also allows you to unlock bras or skirts with any top on a per-character, per-ourfit basis. This setting saves and loads with the character card or coordinate card to ensure compatibility.
 
 <details><summary>Change Log</summary>
 v1.1 Added clothing unlocking for bras/skirts with any top<br/>
@@ -170,9 +203,11 @@ v2.0.1 Fixed unlock state not saving and loading to coordinates properly<br/>
 </details>
 
 #### EyeShaking
-**v1.2 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_EyeShaking.v1.2.zip)** - For Koikatsu<br/>
 
-Virgins in H scenes will appear to have slightly shaking eye highlights.<br/>
+- [KK_EyeShaking]
+
+
+Virgins in H scenes will appear to have slightly shaking eye highlights.
 
 <details><summary>Change Log</summary>
 v1.1 VR support, added toggle to Studio<br/>
@@ -180,34 +215,45 @@ v1.2 Changes made in Studio apply to all selected characters<br/>
 </details>
 
 #### RandomCharacterGenerator
-**v2.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v177/KK_RandomCharacterGenerator.v2.0.zip)** - For Koikatsu<br/>
 
-Generates random characters in the character maker.<br/>
+- [KK_RandomCharacterGenerator]
+
+
+Generates random characters in the character maker.
 
 <details><summary>Change Log</summary>
 v2.0 Merged changes from https://github.com/AUTOMATIC1111/KoikatsuMods<br/>
 </details>
 
 #### PoseFolders
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v120/)** - For Koikatsu, AI Girl, and [Honey Select 2](https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseFolders.v1.0.zip)<br/>
 
-Create new folders in userdata/studio/pose and place the pose data inside them. Folders will show up in your list of poses in Studio.<br/>
+- [AI_PoseFolders]
+- [HS2_PoseFolders]
+- [KK_PoseFolders]
 
-Ported from Essu's NEOpose List Folders plugin for Honey Select.<br/>
+
+Create new folders in userdata/studio/pose and place the pose data inside them. Folders will show up in your list of poses in Studio.
+
+Ported from Essu's NEOpose List Folders plugin for Honey Select.
 
 #### ListOverride
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip)** - For Koikatsu<br/>
 
-Allows you to override vanilla list files. Comes with some overrides that enable half off state for some vanilla pantyhose.<br/>
+- [KK_ListOverride]
 
-Overriding list files can allow you to do things like enable bras with some shirts which don't normally allow it, or skirts with some tops, etc. Any part of of the list can be changed except for ID.<br/>
+
+Allows you to override vanilla list files. Comes with some overrides that enable half off state for some vanilla pantyhose.
+
+Overriding list files can allow you to do things like enable bras with some shirts which don't normally allow it, or skirts with some tops, etc. Any part of of the list can be changed except for ID.
 
 #### HairAccessoryCustomizer
-**v1.1.5 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v158/)** - For Koikatsu and Emotion Creators<br/>
 
-Adds configuration options for hair accessories to the character maker. Hair accessories can be set to match color with the hair, enable hair gloss, modify outline color, and has a separate color picker for the hair tie part. Hairs that support a length slider can also have their length adjusted, just like vanilla front hairs. Saves and loads to cards and coordinates.<br/>
+- [EC_HairAccessoryCustomizer]
+- [KK_HairAccessoryCustomizer]
 
-Note for modders: These options will only show up for hair accessories that are properly configured. For accessories to work the accessory must have a ChaCustomHairComponent MonoBehavior in addition to the ChaAccessoryComponent MonoBehavior. Hair accessory color will display if the ChaCustomHairComponent rendAccessory array has meshes configured. The length slider will appear if the ChaCustomHairComponent trfLength array has bones configured. Hair color will only match to meshes configured in the ChaCustomHairComponent rendHair array. Also check out [this guide](https://github.com/IllusionMods/KK_Plugins/wiki/Hair-Accessory-Guide) for how to create hair accessories.<br/>
+
+Adds configuration options for hair accessories to the character maker. Hair accessories can be set to match color with the hair, enable hair gloss, modify outline color, and has a separate color picker for the hair tie part. Hairs that support a length slider can also have their length adjusted, just like vanilla front hairs. Saves and loads to cards and coordinates.
+
+**Note for modders**: These options will only show up for hair accessories that are properly configured. For accessories to work the accessory must have a		`ChaCustomHairComponent` MonoBehavior in addition to the `ChaAccessoryComponent` MonoBehavior. Hair accessory color will display if the ChaCustomHairComponent rendAccessory array has meshes configured. The length slider will appear if the `ChaCustomHairComponent.trfLength` array has bones configured. Hair color will only match to meshes configured in the `ChaCustomHairComponent.rendHair` array. Also check out [this guide](https://github.com/IllusionMods/KK_Plugins/wiki/Hair-Accessory-Guide) for how to create hair accessories.
 
 <details><summary>Change Log</summary>
 v1.1 Fixed a bug with changing coordinates outside of Studio not applying color matching. Fixed a bug where changing hair color in the maker would not apply color matching to other outfit slots.<br/>
@@ -219,18 +265,22 @@ v1.1.5 Support for coordinate load flags<br/>
 </details>
 
 #### Demosaic
-**v1.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v73/EC_Demosaic.v1.1.zip)** - For EmotionCreators<br/>
-Note: Not required when using UncensorSelector<br/>
 
-Removes the mosaic from female characters. Based on the demosaic for Koikatsu by [AUTOMATIC1111](https://github.com/AUTOMATIC1111/KoikatsuMods), compiled for EC and BepInEx 5.<br/>
+- [EC_Demosaic]
+
+Note: Not required when using UncensorSelector
+
+Removes the mosaic from female characters. Based on the demosaic for Koikatsu by [AUTOMATIC1111](https://github.com/AUTOMATIC1111/KoikatsuMods), compiled for EC and BepInEx 5.
 
 <details><summary>Change Log</summary>
 v1.1 Added a config option to disable the plugin<br/>
 </details>
 
 #### FreeHRandom
-**v1.2 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v172/KK_FreeHRandom.v1.2.zip)** - For Koikatsu<br/>
-Adds buttons to Free H selection screen to get random characters for your H session.<br/>
+
+- [KK_FreeHRandom]
+
+Adds buttons to Free H selection screen to get random characters for your H session.
 
 <details><summary>Change Log</summary>
 v1.1 Added UI, KK Party support<br/>
@@ -239,9 +289,13 @@ v1.2 VR support<br/>
 </details>
 
 #### Colliders
-**v1.2 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v184/)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
-Adds floor, breast, hand, and skirt colliders. Colliders can be toggled on and off in Studio and their state saves with the scene.<br/>
+- [AI_Colliders]
+- [HS2_Colliders]
+- [KK_Colliders]
+
+
+Adds floor, breast, hand, and skirt colliders. Colliders can be toggled on and off in Studio and their state saves with the scene.
 
 <details><summary>Change Log</summary>
 v1.1 Major rewrite, many new features<br/>
@@ -250,7 +304,13 @@ v1.2 Changes made in Studio apply to all selected characters<br/>
 </details>
 
 #### MaterialEditor
-**v3.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v199/)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select 2, and Play Home<br/>
+
+- [AI_MaterialEditor]
+- [EC_MaterialEditor]
+- [HS2_MaterialEditor]
+- [KK_MaterialEditor]
+- [PH_MaterialEditor]
+
 
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
@@ -314,9 +374,13 @@ v3.1 Color picker thanks to ame225, bulk paste edits in Studio<br/>
 </details>
 
 #### MaleJuice
-**v1.3 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v200)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
-Enables juice textures for males in H scenes and Studio.<br/>
+- [AI_MaleJuice]
+- [HS2_MaleJuice]
+- [KK_MaleJuice]
+
+
+Enables juice textures for males in H scenes and Studio.
 
 <details><summary>Change Log</summary>
 v1.1 Fixed compatibility issues with UncensorSelector using male body type on female characters<br/>
@@ -327,14 +391,22 @@ v1.3 Better UncensorSelector compatibility<br/>
 </details>
 
 #### StudioObjectMoveHotkeys
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v122)** - For Koikatsu, AI Girl, and [Honey Select 2](https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_StudioObjectMoveHotkeys.v1.0.zip)<br/>
 
-Allows you to move objects in studio using hotkeys. Press Y/U/I to move along the X/Y/Z axes. You can also use these keys for rotating and scaling, and when scaling you can also press T to scale all axes at once. Hotkeys can be configured in plugin settings.<br/>
+- [AI_StudioObjectMoveHotkeys]
+- [HS2_StudioObjectMoveHotkeys]
+- [KK_StudioObjectMoveHotkeys]
+
+
+Allows you to move objects in studio using hotkeys. Press Y/U/I to move along the X/Y/Z axes. You can also use these keys for rotating and scaling, and when scaling you can also press T to scale all axes at once. Hotkeys can be configured in plugin settings.
 
 #### FKIK
-**v1.1.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v180/)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
 
-Enables FK and IK at the same time. Pose characters in IK mode while still being able to adjust skirts, hair, and hands as if they were in FK mode.<br/>
+- [AI_FKIK]
+- [HS2_FKIK]
+- [KK_FKIK]
+
+
+Enables FK and IK at the same time. Pose characters in IK mode while still being able to adjust skirts, hair, and hands as if they were in FK mode.
 
 <details><summary>Change Log</summary>
 v1.1 Fix toggles going out of sync, FK being disabled when switching between characters<br/>
@@ -342,22 +414,33 @@ v1.1.1 Fix neck look pattern not loading properly<br/>
 </details>
 
 #### AnimationOverdrive
-**v1.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v124/)** - For Koikatsu, AI Girl, and [Honey Select 2](https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_AnimationOverdrive.v1.1.zip)<br/>
 
-Type in to the animation speed box in Studio for gimmicks and character animations to go past the normal limit of 3.<br/>
+- [AI_AnimationOverdrive]
+- [HS2_AnimationOverdrive]
+- [KK_AnimationOverdrive]
+
+
+Type in to the animation speed box in Studio for gimmicks and character animations to go past the normal limit of 3.
 
 <details><summary>Change Log</summary>
 v1.1 AI Girl port, capped animation speed at 1000 to prevent animations breaking<br/>
 </details>
 
 #### CharacterExport
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v131/)** - For Koikatsu, EmotionCreators, AI Girl, and [Honey Select 2](https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_CharacterExport.v1.0.zip)<br/>
 
-Press Ctrl+E (configurable) to export all loaded character. Used for exporting characters from Studio scenes and such.<br/>
+- [AI_CharacterExport]
+- [EC_CharacterExport]
+- [HS2_CharacterExport]
+- [KK_CharacterExport]
+
+
+Press Ctrl+E (configurable) to export all loaded character. Used for exporting characters from Studio scenes and such.
 
 #### HCharaAdjustment
-**v2.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v135/KK_HCharaAdjustment.v2.0.zip)** - For Koikatsu<br/>
-Adjust the position of the female character in H scene by pressing some hotkeys, which are configurable in the plugin settings.<br/>
+
+- [KK_HCharaAdjustment]
+
+Adjust the position of the female character in H scene by pressing some hotkeys, which are configurable in the plugin settings.
 
 <details><summary>Change Log</summary>
 v1.0.1 Made the hotkeys configurable<br/>
@@ -365,8 +448,12 @@ v2.0 Added a guide object instead of hotkeys for positioning<br/>
 </details>
 
 #### StudioSceneSettings
-**v1.3.2 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v197/)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
-Allows you to adjust a few more settings for scenes. Changes save and load with the scene data.<br/>
+
+- [AI_StudioSceneSettings]
+- [HS2_StudioSceneSettings]
+- [KK_StudioSceneSettings]
+
+Allows you to adjust a few more settings for scenes. Changes save and load with the scene data.
 
 <details><summary>Settings</summary>
 Map Masking<br/>
@@ -382,8 +469,11 @@ v1.3.2 Increased FarClipPlane slider<br/>
 </details>
 
 #### Pushup
-**v1.3 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v184/)** - For Koikatsu and EmotionCreators<br/>
-Provides sliders and setting to shape the breasts of characters when bras or tops are worn. The basic set of sliders will modify the shape of the breasts if the breast sliders if they are below the specified threshhold. Advanced mode lets you fully customize the shape of the breasts.<br/>
+
+- [EC_Pushup]
+- [KK_Pushup]
+
+Provides sliders and setting to shape the breasts of characters when bras or tops are worn. The basic set of sliders will modify the shape of the breasts if the breast sliders if they are below the specified threshhold. Advanced mode lets you fully customize the shape of the breasts.
 
 <details><summary>Change Log</summary>
 v1.0.1 Fixed an incompatibility with a MakerOptimizations plugin setting<br/>
@@ -396,63 +486,226 @@ v1.3 Changes made in Studio apply to all selected characters<br/>
 </details>
 
 #### PoseQuickLoad
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v148/)** - For Koikatsu, AI Girl, and [Honey Select 2](https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseQuickLoad.v1.0.zip)<br/>
-A plugin that lets you load saved poses in Studio just by clicking on the pose. Vanilla behavior requires you to select the pose and then press the load button which can be pretty tedious if you have a lot of poses, especially since saved poses have no preview image.<br/>
 
-Note: You MUST enable this option in the plugin settings (press F1 and search the plugin). This plugin is disabled by default so people don't accidentally load poses when they don't intend to, overwriting all their posing work. Use with caution.<br/>
+- [AI_PoseQuickLoad]
+- [HS2_PoseQuickLoad]
+- [KK_PoseQuickLoad]
+
+A plugin that lets you load saved poses in Studio just by clicking on the pose. Vanilla behavior requires you to select the pose and then press the load button which can be pretty tedious if you have a lot of poses, especially since saved poses have no preview image.
+
+Note: You MUST enable this option in the plugin settings (press F1 and search the plugin). This plugin is disabled by default so people don't accidentally load poses when they don't intend to, overwriting all their posing work. Use with caution.
 
 #### StudioImageEmbed
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v169/)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
-This plugin will save .png files from your userdata folder to the scene data so anyone else can load the scene properly without needing the same .png file.<br/>
+
+- [AI_StudioImageEmbed]
+- [HS2_StudioImageEmbed]
+- [KK_StudioImageEmbed]
+
+This plugin will save .png files from your userdata folder to the scene data so anyone else can load the scene properly without needing the same .png file.
 
 #### MakerDefaults
-**v1.0.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v179/)** - For Koikatsu, Emotion Creators, AI Girl, and Honey Select 2<br/>
-Allows you to set default settings of the character maker so you don't have to set the same values manually every time.<br/>
+
+- [AI_MakerDefaults]
+- [EC_MakerDefaults]
+- [HS2_MakerDefaults]
+- [KK_MakerDefaults]
+
+Allows you to set default settings of the character maker so you don't have to set the same values manually every time.
 
 <details><summary>Change Log</summary>
 v1.0.1 KKAPI compatibility<br/>
 </details>
 
 #### StudioCustomMasking
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v173/)** - For Koikatsu, AI Girl, and Honey Select 2<br/>
+
+- [AI_StudioCustomMasking]
+- [HS2_StudioCustomMasking]
+- [KK_StudioCustomMasking]
+
 Allows you to add map masking functionality for maps made out of items in Studio.<br/>
 
 #### ItemBlacklist
-**v1.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v176/)** - For Koikatsu and EmotionCreators<br/>
-Right click an item in the character maker to hide it from your lists<br/>
+
+- [EC_ItemBlacklist]
+- [KK_ItemBlacklist]
+
+Right click an item in the character maker to hide it from your lists.
 
 <details><summary>Change Log</summary>
 v1.1 Item info shows Asset and AssetBundle, better UI<br/>
 </details>
 
 #### FadeAdjuster
-**v1.0.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/download/v195/KK_FadeAdjuster.v1.0.1.zip)** - For Koikatsu<br/>
-Allows you to adjust fade color or disable the fade in and out effect.<br/>
+
+- [KK_FadeAdjuster]
+
+Allows you to adjust fade color or disable the fade in and out effect.
 
 #### Profile
-**v1.0.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v183/)** - For Koikatsu and EmotionCreators<br/>
-A big textbox in the character creator where you can write a character description.<br/>
+
+- [EC_Profile]
+- [KK_Profile]
+
+A big textbox in the character creator where you can write a character description.
 
 #### Autosave
-**v1.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v192/)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select, Honey Select 2, Play Club, Play Home, and SBPR<br/>
-Automatically saves cards in the character maker and scenes in Studio every few minutes.<br/>
+
+- [AI_Autosave]
+- [EC_Autosave]
+- [HS2_Autosave]
+- [HS_Autosave]
+- [KK_Autosave]
+- [PC_Autosave]
+- [PH_Autosave]
+
+Automatically saves cards in the character maker and scenes in Studio every few minutes.
 
 #### EyeControl
-**v1.0.1 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v189/)** - For Koikatsu, EmotionCreators, AI Girl, and Honey Select 2<br/>
-Allows you to set a max eye openness, setting it to zero would let you create a character with permanently closed eyes. Can also disable a character's blinking.<br/>
+
+- [AI_EyeControl]
+- [EC_EyeControl]
+- [HS2_EyeControl]
+- [KK_EyeControl]
+
+Allows you to set a max eye openness, setting it to zero would let you create a character with permanently closed eyes. Can also disable a character's blinking.
 
 #### AccessoryQuickRemove
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v191/)** - For Koikatsu and EmotionCreators<br/>
-Quickly remove accessories by pressing the delete key in the character maker.<br/>
+
+- [EC_AccessoryQuickRemove]
+- [KK_AccessoryQuickRemove]
+
+Quickly remove accessories by pressing the delete key in the character maker.
 
 #### DynamicBoneEditor
-**v1.0.3 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v195/)** - For Koikatsu, EmotionCreators, AI Girl, Honey Select 2, and Play Home<br/>
-Edit properties of Dynamic Bones for accessories in the character maker.<br/>
+
+- [AI_DynamicBoneEditor]
+- [EC_DynamicBoneEditor]
+- [HS2_DynamicBoneEditor]
+- [KK_DynamicBoneEditor]
+- [PH_DynamicBoneEditor]
+
+Edit properties of Dynamic Bones for accessories in the character maker.
 
 #### AccessoryClothes
-**v1.0 - [Download](https://www.patreon.com/posts/43222792)** - For Koikatsu and EmotionCreators<br/>
-Allows clothes to function in accessory slots.<br/>
+
+- [EC_AccessoryClothes]
+- [KK_AccessoryClothes]
+
+Allows clothes to function in accessory slots.
 
 #### PoseUnlocker
-**v1.0 - [Download](https://github.com/IllusionMods/KK_Plugins/releases/v197/)** - For Koikatsu, AI Girl, Honey Select 2<br/>
-Removes the gender restriction on saved Studio poses.<br/>
+
+- [AI_PoseUnlocker]
+- [HS2_PoseUnlocker]
+- [KK_PoseUnlocker]
+
+Removes the gender restriction on saved Studio poses.
+
+[//]: # (## Latest Links)
+
+[KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"
+[AI_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v132/AI_StudioSceneLoadedSound.v1.1.zip "v1.1"
+[HS2_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_StudioSceneLoadedSound.v1.1.zip "v1.1"
+[KK_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v132/KK_StudioSceneLoadedSound.v1.1.zip "v1.1"
+[KK_ForceHighPoly]: https://github.com/IllusionMods/KK_Plugins/releases/download/v150/KK_ForceHighPoly.v1.2.2.zip "v1.2.2"
+[KK_ReloadCharaListOnChange]: https://github.com/IllusionMods/KK_Plugins/releases/download/v189/KK_ReloadCharaListOnChange.v1.5.2.zip "v1.5.2"
+[AI_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/AI_InvisibleBody.v1.4.zip "v1.4"
+[EC_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/EC_InvisibleBody.v1.4.zip "v1.4"
+[HS2_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_InvisibleBody.v1.4.zip "v1.4"
+[KK_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_InvisibleBody.v1.4.zip "v1.4"
+[AI_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v196/AI_UncensorSelector.v3.11.2.zip "v3.11.2"
+[EC_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v196/EC_UncensorSelector.v3.11.2.zip "v3.11.2"
+[HS2_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v196/HS2_UncensorSelector.v3.11.2.zip "v3.11.2"
+[KK_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v196/KK_UncensorSelector.v3.11.2.zip "v3.11.2"
+[AI_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/AI_Subtitles.v2.2.zip "v2.2"
+[HS2_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/HS2_Subtitles.v2.2.zip "v2.2"
+[HS_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/HS_Subtitles.v2.2.zip "v2.2"
+[KK_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/KK_Subtitles.v2.2.zip "v2.2"
+[PC_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/PC_Subtitles.v2.2.zip "v2.2"
+[AI_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v123/AI_AnimationController.v2.2.zip "v2.2"
+[HS2_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_AnimationController.v2.2.zip "v2.2"
+[KK_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v123/KK_AnimationController.v2.2.zip "v2.2"
+[EC_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v159/EC_ClothingUnlocker.v2.0.1.zip "v2.0.1"
+[KK_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v159/KK_ClothingUnlocker.v2.0.1.zip "v2.0.1"
+[KK_EyeShaking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_EyeShaking.v1.2.zip "v1.2"
+[KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v177/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
+[AI_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v120/AI_PoseFolders.v1.0.zip "v1.0"
+[HS2_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseFolders.v1.0.zip "v1.0"
+[KK_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v120/KK_PoseFolders.v1.0.zip "v1.0"
+[KK_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip "v1.0"
+[EC_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v158/EC_HairAccessoryCustomizer.v1.1.5.zip "v1.1.5"
+[KK_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v158/KK_HairAccessoryCustomizer.v1.1.5.zip "v1.1.5"
+[EC_Demosaic]: https://github.com/IllusionMods/KK_Plugins/releases/download/v73/EC_Demosaic.v1.1.zip "v1.1"
+[KK_FreeHRandom]: https://github.com/IllusionMods/KK_Plugins/releases/download/v172/KK_FreeHRandom.v1.2.zip "v1.2"
+[AI_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/AI_Colliders.v1.2.zip "v1.2"
+[HS2_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_Colliders.v1.2.zip "v1.2"
+[KK_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_Colliders.v1.2.zip "v1.2"
+[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v199/AI_MaterialEditor.v3.1.1.zip "v3.1.1"
+[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v199/EC_MaterialEditor.v3.1.1.zip "v3.1.1"
+[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v199/HS2_MaterialEditor.v3.1.1.zip "v3.1.1"
+[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v199/KK_MaterialEditor.v3.1.1.zip "v3.1.1"
+[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v199/PH_MaterialEditor.v3.1.1.zip "v3.1.1"
+[AI_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/AI_MaleJuice.v1.3.zip "v1.3"
+[HS2_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/HS2_MaleJuice.v1.3.zip "v1.3"
+[KK_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/KK_MaleJuice.v1.3.zip "v1.3"
+[AI_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v122/AI_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
+[HS2_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
+[KK_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v122/KK_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
+[AI_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v180/AI_FKIK.v1.1.1.zip "v1.1.1"
+[HS2_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v180/HS2_FKIK.v1.1.1.zip "v1.1.1"
+[KK_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v180/KK_FKIK.v1.1.1.zip "v1.1.1"
+[AI_AnimationOverdrive]: https://github.com/IllusionMods/KK_Plugins/releases/download/v124/AI_AnimationOverdrive.v1.1.zip "v1.1"
+[HS2_AnimationOverdrive]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_AnimationOverdrive.v1.1.zip "v1.1"
+[KK_AnimationOverdrive]: https://github.com/IllusionMods/KK_Plugins/releases/download/v124/KK_AnimationOverdrive.v1.1.zip "v1.1"
+[AI_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/AI_CharacterExport.v1.0.zip "v1.0"
+[EC_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/EC_CharacterExport.v1.0.zip "v1.0"
+[HS2_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_CharacterExport.v1.0.zip "v1.0"
+[KK_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/KK_CharacterExport.v1.0.zip "v1.0"
+[KK_HCharaAdjustment]: https://github.com/IllusionMods/KK_Plugins/releases/download/v135/KK_HCharaAdjustment.v2.0.zip "v2.0"
+[AI_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/AI_StudioSceneSettings.v1.3.2.zip "v1.3.2"
+[HS2_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_StudioSceneSettings.v1.3.2.zip "v1.3.2"
+[KK_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_StudioSceneSettings.v1.3.2.zip "v1.3.2"
+[EC_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/EC_Pushup.v1.3.zip "v1.3"
+[KK_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_Pushup.v1.3.zip "v1.3"
+[AI_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/AI_PoseQuickLoad.v1.0.zip "v1.0"
+[HS2_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseQuickLoad.v1.0.zip "v1.0"
+[KK_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/KK_PoseQuickLoad.v1.0.zip "v1.0"
+[AI_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v169/AI_StudioImageEmbed.v1.0.zip "v1.0"
+[HS2_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v169/HS2_StudioImageEmbed.v1.0.zip "v1.0"
+[KK_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v169/KK_StudioImageEmbed.v1.0.zip "v1.0"
+[AI_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v179/AI_MakerDefaults.v1.0.zip "v1.0"
+[EC_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v179/EC_MakerDefaults.v1.0.zip "v1.0"
+[HS2_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v179/HS2_MakerDefaults.v1.0.zip "v1.0"
+[KK_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v179/KK_MakerDefaults.v1.0.zip "v1.0"
+[AI_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v173/AI_StudioCustomMasking.v1.0.zip "v1.0"
+[HS2_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v173/HS2_StudioCustomMasking.v1.0.zip "v1.0"
+[KK_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v173/KK_StudioCustomMasking.v1.0.zip "v1.0"
+[EC_ItemBlacklist]: https://github.com/IllusionMods/KK_Plugins/releases/download/v176/EC_ItemBlacklist.v1.1.zip "v1.1"
+[KK_ItemBlacklist]: https://github.com/IllusionMods/KK_Plugins/releases/download/v176/KK_ItemBlacklist.v1.1.zip "v1.1"
+[KK_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/KK_FadeAdjuster.v1.0.1.zip "v1.0.1"
+[EC_Profile]: https://github.com/IllusionMods/KK_Plugins/releases/download/v183/EC_Profile.v1.0.1.zip "v1.0.1"
+[KK_Profile]: https://github.com/IllusionMods/KK_Plugins/releases/download/v183/KK_Profile.v1.0.1.zip "v1.0.1"
+[AI_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/AI_Autosave.v1.1.zip "v1.1"
+[EC_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/EC_Autosave.v1.1.zip "v1.1"
+[HS2_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/HS2_Autosave.v1.1.zip "v1.1"
+[HS_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/HS_Autosave.v1.1.zip "v1.1"
+[KK_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/KK_Autosave.v1.1.zip "v1.1"
+[PC_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/PC_Autosave.v1.1.zip "v1.1"
+[PH_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/PH_Autosave.v1.1.zip "v1.1"
+[AI_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v189/AI_EyeControl.v1.0.zip "v1.0"
+[EC_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v189/EC_EyeControl.v1.0.zip "v1.0"
+[HS2_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v189/HS2_EyeControl.v1.0.zip "v1.0"
+[KK_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v189/KK_EyeControl.v1.0.zip "v1.0"
+[EC_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v191/EC_AccessoryQuickRemove.v1.0.zip "v1.0"
+[KK_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v191/KK_AccessoryQuickRemove.v1.0.zip "v1.0"
+[AI_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/AI_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
+[EC_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/EC_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
+[HS2_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/HS2_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
+[KK_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/KK_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
+[PH_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/PH_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
+[EC_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/EC_AccessoryClothes.v1.0.zip "v1.0"
+[KK_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_AccessoryClothes.v1.0.zip "v1.0"
+[AI_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/AI_PoseUnlocker.v1.0.zip "v1.0"
+[HS2_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_PoseUnlocker.v1.0.zip "v1.0"
+[KK_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_PoseUnlocker.v1.0.zip "v1.0"
+

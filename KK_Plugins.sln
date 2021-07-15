@@ -441,6 +441,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.MoreOutfits", "src\MoreO
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MoreOutfits", "src\MoreOutfits.Core\Core.MoreOutfits.shproj", "{FACA35FB-AACB-42AD-B364-6142FDC41130}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0Solution Items", "0Solution Items", "{ABF81409-9E50-48BE-B11F-8D97CCE183BE}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		release.ps1 = release.ps1
+		update_READMEs.ps1 = update_READMEs.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
