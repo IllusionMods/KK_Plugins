@@ -164,7 +164,7 @@ namespace KK_Plugins
                 fsize = (int)(fsize < 0 ? (fsize * Screen.height / -100.0) : fsize);
 
                 GameObject subtitle = new GameObject("SubtitleText");
-                subtitle.transform.SetParent(Pane.transform);
+                subtitle.transform.SetParent(Pane.transform, false);
 
                 var rect = subtitle.GetOrAddComponent<RectTransform>();
                 rect.pivot = new Vector2(0.5f, 0);
