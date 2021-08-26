@@ -34,7 +34,7 @@
 #elif KKS
         internal const string Prefix = "KKS";
         internal const string GameName = "Koikatsu Sunshine";
-        internal const string MainGameProcessName = "KoikatsuSunshineTrial";
+        internal const string MainGameProcessName = "KoikatsuSunshine";
 #elif PH
         internal const string Prefix = "PH";
         internal const string GameName = "Play Home";
