@@ -2,12 +2,14 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using ChaCustom;
+using KKAPI;
 using KKAPI.Maker;
 using System;
 
 namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class MakerDefaults : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.makerdefaults";

@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
@@ -14,6 +15,7 @@ using UniRx;
 namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public partial class ClothingUnlocker : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.clothingunlocker";

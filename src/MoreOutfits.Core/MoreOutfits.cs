@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using System;
@@ -8,6 +9,7 @@ using System;
 namespace KK_Plugins.MoreOutfits
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class Plugin : BaseUnityPlugin
     {
         public const string PluginGUID = "com.deathweasel.bepinex.moreoutfits";

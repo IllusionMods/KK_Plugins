@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using CharaCustom;
+using KKAPI;
 using KKAPI.Maker;
 using System;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ using UnityEngine.UI;
 namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class MakerDefaults : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.makerdefaults";
