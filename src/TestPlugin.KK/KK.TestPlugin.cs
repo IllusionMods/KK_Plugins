@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace KK_Plugins
@@ -26,13 +25,7 @@ namespace KK_Plugins
 
         private void SceneManager_sceneLoaded(Scene s, LoadSceneMode lsm)
         {
-            foreach (var light in FindObjectsOfType<Light>())
-            {
-                light.shadowCustomResolution = 10000;
-                light.shadowBias = 0.0075f;
-                if (light.name == "Directional Chara") //Studio shadow strength is different from main game for some reason
-                    light.shadowStrength = 1;
-            }
+            Logger.LogInfo($"Scene:{s.name}");
         }
     }
 }
