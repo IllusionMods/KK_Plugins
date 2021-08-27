@@ -58,6 +58,8 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public const string PluginVersion = "3.1.2";
 
+        private static bool FinishedLoadingShaders = false;
+
         /// <summary>
         /// Material which is used in normal map conversion
         /// </summary>
@@ -123,8 +125,8 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public static readonly Dictionary<string, string> ShaderMapping = new Dictionary<string, string>
         {
-            { "Shader Forge/main_hair_front", "Koikano/hair_main_sun_front" },
-            { "Shader Forge/main_hair", "Koikano/hair_main_sun" },
+            //{ "Shader Forge/main_hair_front", "Koikano/hair_main_sun_front" },
+            //{ "Shader Forge/main_hair", "Koikano/hair_main_sun" },
             { "Shader Forge/main_item", "Koikano/main_clothes_item" },
             { "Shader Forge/main_opaque", "Koikano/main_clothes_opaque" },
             { "Shader Forge/main_alpha", "Koikano/main_clothes_alpha" },
@@ -546,6 +548,8 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 #endif
+
+            FinishedLoadingShaders = true;
         }
 
         private static void LoadXML(XmlElement materialEditorElement)
@@ -752,7 +756,7 @@ namespace KK_Plugins.MaterialEditor
                 {
                     string shaderName = shader.name;
 #if KKS
-                    if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
+                    if (FinishedLoadingShaders && ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
                         shaderName = shaderNameNew;
 #endif
 
@@ -769,7 +773,7 @@ namespace KK_Plugins.MaterialEditor
 
             string shaderName = material.shader.name;
 #if KKS
-            if (ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
+            if (FinishedLoadingShaders && ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
             {
                 shaderName = shaderNameNew;
                 if (shaderNameNew == "Koikano/hair_main_sun_front" || shaderNameNew == "Koikano/hair_main_sun")
