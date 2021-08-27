@@ -58,8 +58,6 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public const string PluginVersion = "3.1.2";
 
-        private static bool FinishedLoadingShaders = false;
-
         /// <summary>
         /// Material which is used in normal map conversion
         /// </summary>
@@ -117,28 +115,6 @@ namespace KK_Plugins.MaterialEditor
         /// Parts of the mouth that need special handling
         /// </summary>
         public static HashSet<string> MouthParts = new HashSet<string> { "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang" };
-#endif
-
-#if KKS
-        /// <summary>
-        /// Koikatsu shaders and their equivalent Sunshine shaders
-        /// </summary>
-        public static readonly Dictionary<string, string> ShaderMapping = new Dictionary<string, string>
-        {
-            //{ "Shader Forge/main_hair_front", "Koikano/hair_main_sun_front" },
-            //{ "Shader Forge/main_hair", "Koikano/hair_main_sun" },
-            { "Shader Forge/main_item", "Koikano/main_clothes_item" },
-            { "Shader Forge/main_opaque", "Koikano/main_clothes_opaque" },
-            { "Shader Forge/main_alpha", "Koikano/main_clothes_alpha" },
-            { "Shader Forge/main_emblem", "Koikano/main_clothes_emblem" },
-            { "Shader Forge/main_emblem_clothes", "Koikano/main_clothes_emblem" },
-            { "Shader Forge/main_skin", "Koikano/main_skin" },
-            { "Shader Forge/toon_eye_lod0", "Koikano/main_eye" },
-            { "Shader Forge/toon_eyew_lod0", "Koikano/main_eyew" },
-            { "Shader Forge/toon_nose_lod0", "Koikano/main_nose" },
-            { "Shader Forge/toon_glasses_lod0", "Koikano/main_clothes_item_glasses" },
-            { "Shader Forge/toon_textureanimation", "Koikano/sub_texture_animation" },
-        };
 #endif
 
         internal void Main()
@@ -347,18 +323,6 @@ namespace KK_Plugins.MaterialEditor
                     }
 #endif
 
-#if KKS
-                    //Map KK shaders to the new KKS shaders
-                    for (int i = 0; i < properties.Count; i++)
-                    {
-                        var property = properties[i];
-                        if (property.ShaderName != null && ShaderMapping.TryGetValue(property.ShaderName, out var newShaderName))
-                            property.ShaderName = newShaderName;
-                        if (property.ShaderNameOriginal != null && ShaderMapping.TryGetValue(property.ShaderNameOriginal, out var newShaderNameOriginal))
-                            property.ShaderNameOriginal = newShaderNameOriginal;
-                    }
-#endif
-
                     if (properties.Count > 0)
                         data.data["MaterialShaderList"] = MessagePackSerializer.Serialize(properties);
                     else
@@ -548,8 +512,6 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 #endif
-
-            FinishedLoadingShaders = true;
         }
 
         private static void LoadXML(XmlElement materialEditorElement)
@@ -755,10 +717,6 @@ namespace KK_Plugins.MaterialEditor
                 if (ShaderOptimization.Value)
                 {
                     string shaderName = shader.name;
-#if KKS
-                    if (FinishedLoadingShaders && ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
-                        shaderName = shaderNameNew;
-#endif
 
                     if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
                         context.Asset = shaderData.Shader;
@@ -772,14 +730,6 @@ namespace KK_Plugins.MaterialEditor
                 return;
 
             string shaderName = material.shader.name;
-#if KKS
-            if (FinishedLoadingShaders && ShaderMapping.TryGetValue(shaderName, out var shaderNameNew))
-            {
-                shaderName = shaderNameNew;
-                if (shaderNameNew == "Koikano/hair_main_sun_front" || shaderNameNew == "Koikano/hair_main_sun")
-                    material.EnableKeyword("_OLDHAIR_ON");
-            }
-#endif
 
             if (LoadedShaders.TryGetValue(shaderName, out var shaderData) && shaderData.Shader != null && shaderData.ShaderOptimization)
             {

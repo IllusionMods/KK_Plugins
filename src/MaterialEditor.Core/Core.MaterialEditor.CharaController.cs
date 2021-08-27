@@ -488,14 +488,6 @@ namespace KK_Plugins.MaterialEditor
                     for (var i = 0; i < properties.Count; i++)
                     {
                         var loadedProperty = properties[i];
-
-#if KKS
-                        if (loadedProperty.ShaderName != null && MaterialEditorPlugin.ShaderMapping.TryGetValue(loadedProperty.ShaderName, out var newShaderName))
-                            loadedProperty.ShaderName = newShaderName;
-                        if (loadedProperty.ShaderNameOriginal != null && MaterialEditorPlugin.ShaderMapping.TryGetValue(loadedProperty.ShaderNameOriginal, out var newShaderNameOriginal))
-                            loadedProperty.ShaderNameOriginal = newShaderNameOriginal;
-#endif
-
                         if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
                             MaterialShaderList.Add(new MaterialShader(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
                     }
