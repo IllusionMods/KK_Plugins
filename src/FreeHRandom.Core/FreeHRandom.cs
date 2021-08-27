@@ -42,9 +42,14 @@ namespace KK_Plugins
                 CreateRandomButton("FreeHScene/Canvas/Panel/Masturbation/FemaleSelectButton", CharacterType.Heroine);
                 CreateRandomButton("FreeHScene/Canvas/Panel/Lesbian/FemaleSelectButton", CharacterType.Heroine);
                 CreateRandomButton("FreeHScene/Canvas/Panel/Lesbian/PartnerSelectButton", CharacterType.Partner);
+#if KK
                 CreateRandomButton("FreeHScene/Canvas/Panel/3P/FemaleSelectButton", CharacterType.Female3P);
                 CreateRandomButton("FreeHScene/Canvas/Panel/3P/MaleSelectButton", CharacterType.Player);
                 CreateRandomButton("FreeHScene/Canvas/Panel/Dark/MaleSelectButton", CharacterType.Player);
+#elif KKS
+                CreateRandomButton("FreeHScene/Canvas/Panel/3P/main/FemaleSelectButton", CharacterType.Female3P);
+                CreateRandomButton("FreeHScene/Canvas/Panel/3P/main/MaleSelectButton", CharacterType.Player);
+#endif
             }
             else if (sceneName == "VRCharaSelect")
             {
@@ -148,7 +153,11 @@ namespace KK_Plugins
                         resultPartner.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
                         break;
                     case CharacterType.Female3P:
+#if KK
                         if (GameObject.Find("Panel/3P/Stage1").activeInHierarchy)
+#elif KKS
+                        if (GameObject.Find("Panel/3P/main/Stage1").activeInHierarchy)
+#endif
                         {
                             ReactiveProperty<SaveData.Heroine> heroine3P = (ReactiveProperty<SaveData.Heroine>)Traverse.Create(member).Field("resultHeroine").GetValue();
                             heroine3P.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
