@@ -47,7 +47,7 @@ namespace KK_Plugins
         internal const float WorldScale = 10f;
 #endif
 
-#if KK
+#if KK || KKS
         internal static ActionGame.Communication.Info ActionGameInfoInstance;
         internal static Type HSceneType;
         internal static UnityEngine.Object HSceneInstance;

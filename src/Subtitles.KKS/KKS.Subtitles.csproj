@@ -101,6 +101,7 @@
     <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.11.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KKS.Subtitles.Caption.cs" />
     <Compile Include="KKS.Subtitles.Hooks.cs" />
   </ItemGroup>
   <ItemGroup>
