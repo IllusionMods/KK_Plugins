@@ -9,8 +9,8 @@ namespace KK_Plugins
             /// <summary>
             /// Something that happens at the end of H scene loading, good enough place to initialize stuff
             /// </summary>
-            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.MapSameObjectDisable))]
-            private static void MapSameObjectDisable(HSceneProc __instance)
+            [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.SetShortcutKey))]
+            private static void HSceneProc_SetShortcutKey(HSceneProc __instance)
             {
                 for (int i = 0; i < __instance.flags.lstHeroine.Count; i++)
                     if (i == 0)
