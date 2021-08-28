@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using HarmonyLib;
 using Illusion.Extensions;
 using System;
@@ -24,6 +25,11 @@ namespace KK_Plugins
 
         private enum CharacterType { Heroine, Partner, Female3P, Player }
 
+#if KKS
+        internal static ConfigEntry<bool> IncludeDefaultMales { get; private set; }
+        internal static ConfigEntry<bool> IncludeDefaultFemales { get; private set; }
+#endif
+
         internal void Main()
         {
             //KK Party may not have these directories when first run, create them to avoid errors
@@ -32,6 +38,9 @@ namespace KK_Plugins
 #if KKS
             Directory.CreateDirectory(CC.Paths.DefaultFemaleCardPath);
             Directory.CreateDirectory(CC.Paths.DefaultMaleCardPath);
+
+            IncludeDefaultMales = Config.Bind("Config", "Include default males", true, "Whether default male cards are included in random selection");
+            IncludeDefaultFemales = Config.Bind("Config", "Include default females", true, "Whether default female cards are included in random selection");
 #endif
 
             SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
@@ -108,14 +117,16 @@ namespace KK_Plugins
             {
                 folderAssist.CreateFolderInfoEx(CC.Paths.MaleCardPath, new[] { "*.png" });
 #if KKS
-                folderAssist.CreateFolderInfoEx(CC.Paths.DefaultMaleCardPath, new[] { "*.png" }, false);
+                if (IncludeDefaultMales.Value)
+                    folderAssist.CreateFolderInfoEx(CC.Paths.DefaultMaleCardPath, new[] { "*.png" }, false);
 #endif
             }
             else
             {
                 folderAssist.CreateFolderInfoEx(CC.Paths.FemaleCardPath, new[] { "*.png" });
 #if KKS
-                folderAssist.CreateFolderInfoEx(CC.Paths.DefaultFemaleCardPath, new[] { "*.png" }, false);
+                if (IncludeDefaultFemales.Value)
+                    folderAssist.CreateFolderInfoEx(CC.Paths.DefaultFemaleCardPath, new[] { "*.png" }, false);
 #endif
             }
 
