@@ -87,6 +87,10 @@ namespace KK_Plugins
             internal static readonly string FemaleCardPath = Path.Combine(UserData.Path, "chara/female/");
             internal static readonly string MaleCardPath = Path.Combine(UserData.Path, "chara/male/");
             internal static readonly string CoordinateCardPath = Path.Combine(UserData.Path, "coordinate/");
+#if KKS
+            internal static readonly string DefaultFemaleCardPath = Path.Combine(Localize.Translate.Manager.DefaultData.PATH, "chara/female/");
+            internal static readonly string DefaultMaleCardPath = Path.Combine(Localize.Translate.Manager.DefaultData.PATH, "chara/male/");
+#endif
         }
     }
 }

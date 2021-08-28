@@ -29,6 +29,10 @@ namespace KK_Plugins
             //KK Party may not have these directories when first run, create them to avoid errors
             Directory.CreateDirectory(CC.Paths.FemaleCardPath);
             Directory.CreateDirectory(CC.Paths.MaleCardPath);
+#if KKS
+            Directory.CreateDirectory(CC.Paths.DefaultFemaleCardPath);
+            Directory.CreateDirectory(CC.Paths.DefaultMaleCardPath);
+#endif
 
             SceneManager.sceneLoaded += (s, lsm) => InitUI(s.name);
         }
@@ -101,9 +105,19 @@ namespace KK_Plugins
 
             //Get some random cards
             if (characterType == CharacterType.Player)
+            {
                 folderAssist.CreateFolderInfoEx(CC.Paths.MaleCardPath, new[] { "*.png" });
+#if KKS
+                folderAssist.CreateFolderInfoEx(CC.Paths.DefaultMaleCardPath, new[] { "*.png" }, false);
+#endif
+            }
             else
+            {
                 folderAssist.CreateFolderInfoEx(CC.Paths.FemaleCardPath, new[] { "*.png" });
+#if KKS
+                folderAssist.CreateFolderInfoEx(CC.Paths.DefaultFemaleCardPath, new[] { "*.png" }, false);
+#endif
+            }
 
             //Different fields for different versions of the game, get the correct one
             var listFileObj = folderAssist.GetType().GetField("_lstFile", AccessTools.all)?.GetValue(folderAssist);
