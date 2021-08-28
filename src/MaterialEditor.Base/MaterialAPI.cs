@@ -335,9 +335,14 @@ namespace MaterialEditorAPI
                 var material = materials[i];
                 if (material.HasProperty($"_{propertyName}"))
                 {
-                    var tex = material.GetTexture($"_{propertyName}");
-                    if (tex != null && value != null)
-                        value.wrapMode = tex.wrapMode;
+                    if (value != null)
+                    {
+                        var tex = material.GetTexture($"_{propertyName}");
+                        if (tex == null)
+                            value.wrapMode = TextureWrapMode.Repeat;
+                        else
+                            value.wrapMode = tex.wrapMode;
+                    }
                     material.SetTexture($"_{propertyName}", value);
                     didSet = true;
                 }
