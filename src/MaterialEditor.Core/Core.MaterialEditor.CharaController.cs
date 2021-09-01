@@ -41,7 +41,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Index of the currently worn coordinate. Always 0 except for in Koikatsu
         /// </summary>
-#if KK
+#if KK || KKS
         public int CurrentCoordinateIndex => ChaControl.fileStatus.coordinateType;
 #else
         public int CurrentCoordinateIndex => 0;
