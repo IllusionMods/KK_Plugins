@@ -505,5 +505,14 @@ namespace KK_Plugins.MaterialEditor
                 controller.ClothingCopiedEvent(___ddCoordeType[1].value, ___ddCoordeType[0].value, copySlots);
         }
 #endif
+
+#if EC || KKS
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeTexture), typeof(Material), typeof(ChaListDefine.CategoryNo), typeof(int), typeof(ChaListDefine.KeyType), typeof(ChaListDefine.KeyType), typeof(int), typeof(string))]
+        private static void ChaControl_ChangeTexture(Material mat, ChaListDefine.KeyType assetKey)
+        {
+            if (assetKey == ChaListDefine.KeyType.NormallMapDetail)
+                MaterialEditorPlugin.ConvertNormalMap(mat, "NormalMapDetail");
+        }
+#endif
     }
 }

@@ -748,13 +748,14 @@ namespace KK_Plugins.MaterialEditor
                 return;
 
             for (int i = 0; i < NormalMapProperties.Count; i++)
-                ConvertNormalMap(material, NormalMapProperties[i]);
+                if (material.HasProperty($"_{NormalMapProperties[i]}"))
+                    ConvertNormalMap(material, NormalMapProperties[i]);
         }
 
         /// <summary>
         /// Convert a normal map texture from grey to red by setting the entire red color channel to white
         /// </summary>
-        private static void ConvertNormalMap(Material material, string propertyName)
+        internal static void ConvertNormalMap(Material material, string propertyName)
         {
             if (!NormalMapProperties.Contains(propertyName))
                 return;
