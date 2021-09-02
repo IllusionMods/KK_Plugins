@@ -384,6 +384,7 @@ v3.0 Added material copying<br/>
 v3.0.5 Better UV Map export<br/>
 v3.1 Color picker thanks to ame225, bulk paste edits in Studio<br/>
 v3.1.2 Convert grey normal maps to red for compatibility across Unity versions<br/>
+v3.1.3 Fix using wrong coordinate index in KKS, convert NormalMapDetail normal maps<br/>
 </details>
 
 #### MaleJuice
@@ -681,12 +682,12 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 [HS2_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_Colliders.v1.2.zip "v1.2"
 [KK_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_Colliders.v1.2.zip "v1.2"
 [KKS_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Colliders.v1.2.zip "v1.2"
-[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/AI_MaterialEditor.v3.1.2.zip "v3.1.2"
-[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/EC_MaterialEditor.v3.1.2.zip "v3.1.2"
-[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/HS2_MaterialEditor.v3.1.2.zip "v3.1.2"
-[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KK_MaterialEditor.v3.1.2.zip "v3.1.2"
-[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_MaterialEditor.v3.1.2.zip "v3.1.2"
-[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/PH_MaterialEditor.v3.1.2.zip "v3.1.2"
+[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/AI_MaterialEditor.v3.1.3.zip "v3.1.3"
+[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/EC_MaterialEditor.v3.1.3.zip "v3.1.3"
+[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/HS2_MaterialEditor.v3.1.3.zip "v3.1.3"
+[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/KK_MaterialEditor.v3.1.3.zip "v3.1.3"
+[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/KKS_MaterialEditor.v3.1.3.zip "v3.1.3"
+[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/PH_MaterialEditor.v3.1.3.zip "v3.1.3"
 [AI_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/AI_MaleJuice.v1.3.zip "v1.3"
 [HS2_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/HS2_MaleJuice.v1.3.zip "v1.3"
 [KK_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/KK_MaleJuice.v1.3.zip "v1.3"
@@ -715,9 +716,9 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 [AI_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/AI_PoseQuickLoad.v1.0.zip "v1.0"
 [HS2_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseQuickLoad.v1.0.zip "v1.0"
 [KK_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/KK_PoseQuickLoad.v1.0.zip "v1.0"
-[AI_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v169/AI_StudioImageEmbed.v1.0.zip "v1.0"
-[HS2_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v169/HS2_StudioImageEmbed.v1.0.zip "v1.0"
-[KK_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v169/KK_StudioImageEmbed.v1.0.zip "v1.0"
+[AI_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/AI_StudioImageEmbed.v1.0.1.zip "v1.0.1"
+[HS2_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/HS2_StudioImageEmbed.v1.0.1.zip "v1.0.1"
+[KK_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/KK_StudioImageEmbed.v1.0.1.zip "v1.0.1"
 [AI_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/AI_MakerDefaults.v1.0.1.zip "v1.0.1"
 [EC_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/EC_MakerDefaults.v1.0.1.zip "v1.0.1"
 [HS2_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/HS2_MakerDefaults.v1.0.1.zip "v1.0.1"
