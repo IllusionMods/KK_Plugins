@@ -95,9 +95,10 @@ namespace KK_Plugins.DynamicBoneEditor
         }
 #endif
 
-#if EC || KKS
+#if EC
         private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData)
         {
+
             if (importedExtendedData.TryGetValue(PluginGUID, out var pluginData))
             {
                 if (pluginData != null && pluginData.data.ContainsKey("AccessoryDynamicBoneData"))
@@ -122,8 +123,42 @@ namespace KK_Plugins.DynamicBoneEditor
                 }
             }
         }
-#endif
+#elif KKS
+        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData, Dictionary<int, int?> coordinateMapping)
+        {
 
+            if (importedExtendedData.TryGetValue(PluginGUID, out var pluginData))
+            {
+                if (pluginData != null && pluginData.data.ContainsKey("AccessoryDynamicBoneData"))
+                {
+                    if (pluginData.data.TryGetValue("AccessoryDynamicBoneData", out var loadedAccessoryDynamicBoneData) && loadedAccessoryDynamicBoneData != null)
+                    {
+                        List<DynamicBoneData> accessoryDynamicBoneData = MessagePackSerializer.Deserialize<List<DynamicBoneData>>((byte[])loadedAccessoryDynamicBoneData);
+                        List<DynamicBoneData> accessoryDynamicBoneDataNew = new List<DynamicBoneData>();
+
+                        foreach (var entry in accessoryDynamicBoneData)
+                        {
+                            if (coordinateMapping.TryGetValue(entry.CoordinateIndex, out int? newIndex) && newIndex != null)
+                            {
+                                accessoryDynamicBoneDataNew.Add(entry);
+                            }
+                        }
+
+                        if (accessoryDynamicBoneDataNew.Count == 0)
+                        {
+                            importedExtendedData.Remove(PluginGUID);
+                        }
+                        else
+                        {
+                            var data = new PluginData();
+                            data.data.Add("AccessoryDynamicBoneData", MessagePackSerializer.Serialize(accessoryDynamicBoneDataNew));
+                            importedExtendedData[PluginGUID] = data;
+                        }
+                    }
+                }
+            }
+        }
+#endif
         public static CharaController GetCharaController(ChaControl chaControl) => chaControl == null ? null : chaControl.gameObject.GetComponent<CharaController>();
         public static CharaController GetMakerCharaController() => MakerAPI.GetCharacterControl().gameObject.GetComponent<CharaController>();
     }

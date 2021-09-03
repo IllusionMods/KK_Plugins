@@ -7,8 +7,6 @@ using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
-using MessagePack;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -154,38 +152,6 @@ namespace KK_Plugins
                 ShowAccColors(controller.ChaControl.GetAccessoryObject(AccessoriesApi.SelectedMakerAccSlot) != null);
             }
         }
-
-#if EC || KKS
-        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData)
-        {
-            if (importedExtendedData.TryGetValue(GUID, out var pluginData))
-            {
-                if (pluginData != null && pluginData.data.TryGetValue("HairAccessories", out var loadedHairAccessories) && loadedHairAccessories != null)
-                {
-                    var hairAccessories = MessagePackSerializer.Deserialize<Dictionary<int, Dictionary<int, HairAccessoryController.HairAccessoryInfo>>>((byte[])loadedHairAccessories);
-
-                    //Remove all data except for the first outfit
-                    List<int> keysToRemove = new List<int>();
-                    foreach (var entry in hairAccessories)
-                        if (entry.Key != 0)
-                            keysToRemove.Add(entry.Key);
-                    foreach (var key in keysToRemove)
-                        hairAccessories.Remove(key);
-
-                    if (hairAccessories.Count == 0)
-                    {
-                        importedExtendedData.Remove(GUID);
-                    }
-                    else
-                    {
-                        var data = new PluginData();
-                        data.data.Add("HairAccessories", MessagePackSerializer.Serialize(hairAccessories));
-                        importedExtendedData[GUID] = data;
-                    }
-                }
-            }
-        }
-#endif
 
         internal static void InitCurrentSlot(HairAccessoryController controller) => InitCurrentSlot(controller, controller.IsHairAccessory(AccessoriesApi.SelectedMakerAccSlot));
 

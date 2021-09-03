@@ -74,8 +74,8 @@ namespace KK_Plugins
             ev.AddSubCategory(category);
         }
 
-#if EC || KKS
-        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData)
+#if EC
+        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData )
         {
             if (importedExtendedData.TryGetValue(GUID, out var pluginData))
             {
@@ -101,6 +101,40 @@ namespace KK_Plugins
                         {
                             var data = new PluginData();
                             data.data.Add("ClothingUnlocked", MessagePackSerializer.Serialize(clothingUnlocked));
+                            importedExtendedData[GUID] = data;
+                        }
+                    }
+                }
+            }
+        }
+#elif KKS
+        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData, Dictionary<int, int?> coordinateMapping)
+        {
+            if (importedExtendedData.TryGetValue(GUID, out var pluginData))
+            {
+                if (pluginData != null && pluginData.data.ContainsKey("ClothingUnlocked"))
+                {
+                    if (pluginData.data.TryGetValue("ClothingUnlocked", out var loadedClothingUnlocked))
+                    {
+                        Dictionary<int, bool> clothingUnlocked = MessagePackSerializer.Deserialize<Dictionary<int, bool>>((byte[])loadedClothingUnlocked);
+                        Dictionary<int, bool> clothingUnlockedNew = new Dictionary<int, bool>();
+
+                        foreach (var entry in clothingUnlocked)
+                        {
+                            if (coordinateMapping.TryGetValue(entry.Key, out int? newIndex) && newIndex != null)
+                            {
+                                clothingUnlockedNew[(int)newIndex] = entry.Value;
+                            }
+                        }
+
+                        if (clothingUnlockedNew.Count == 0)
+                        {
+                            importedExtendedData.Remove(GUID);
+                        }
+                        else
+                        {
+                            var data = new PluginData();
+                            data.data.Add("ClothingUnlocked", MessagePackSerializer.Serialize(clothingUnlockedNew));
                             importedExtendedData[GUID] = data;
                         }
                     }

@@ -100,7 +100,7 @@ namespace KK_Plugins
             }
         }
 
-#if EC || KKS
+#if EC
         private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData)
         {
             if (importedExtendedData.TryGetValue(GUID, out var pluginData))
@@ -142,6 +142,58 @@ namespace KK_Plugins
                         var data = new PluginData();
                         data.data.Add(PushupConstants.Pushup_BraData, MessagePackSerializer.Serialize(braDataDictionary));
                         data.data.Add(PushupConstants.Pushup_TopData, MessagePackSerializer.Serialize(topDataDictionary));
+                        data.data.Add(PushupConstants.Pushup_BodyData, MessagePackSerializer.Serialize(baseData));
+                        importedExtendedData[GUID] = data;
+                    }
+                }
+            }
+        }
+#elif KKS
+        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData, Dictionary<int, int?> coordinateMapping)
+        {
+            if (importedExtendedData.TryGetValue(GUID, out var pluginData))
+            {
+                if (pluginData != null)
+                {
+                    Dictionary<int, ClothData> braDataDictionary = new Dictionary<int, ClothData>();
+                    Dictionary<int, ClothData> topDataDictionary = new Dictionary<int, ClothData>();
+                    Dictionary<int, ClothData> braDataDictionaryNew = new Dictionary<int, ClothData>();
+                    Dictionary<int, ClothData> topDataDictionaryNew = new Dictionary<int, ClothData>();
+
+                    BodyData baseData = null;
+
+                    if (pluginData != null && pluginData.data.TryGetValue(PushupConstants.Pushup_BraData, out var loadedBraData) && loadedBraData != null)
+                        braDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedBraData);
+                    if (pluginData != null && pluginData.data.TryGetValue(PushupConstants.Pushup_TopData, out var loadedTopData) && loadedTopData != null)
+                        topDataDictionary = MessagePackSerializer.Deserialize<Dictionary<int, ClothData>>((byte[])loadedTopData);
+                    if (pluginData != null && pluginData.data.TryGetValue(PushupConstants.Pushup_BodyData, out var loadedBodyData) && loadedBodyData != null)
+                        baseData = MessagePackSerializer.Deserialize<BodyData>((byte[])loadedBodyData);
+
+                    foreach (var entry in braDataDictionary)
+                    {
+                        if (coordinateMapping.TryGetValue(entry.Key, out int? newIndex) && newIndex != null)
+                        {
+                            braDataDictionaryNew[(int)newIndex] = entry.Value;
+                        }
+                    }
+
+                    foreach (var entry in topDataDictionary)
+                    {
+                        if (coordinateMapping.TryGetValue(entry.Key, out int? newIndex) && newIndex != null)
+                        {
+                            topDataDictionaryNew[(int)newIndex] = entry.Value;
+                        }
+                    }
+
+                    if (braDataDictionaryNew.Count == 0 && topDataDictionaryNew.Count == 00)
+                    {
+                        importedExtendedData.Remove(GUID);
+                    }
+                    else
+                    {
+                        var data = new PluginData();
+                        data.data.Add(PushupConstants.Pushup_BraData, MessagePackSerializer.Serialize(braDataDictionaryNew));
+                        data.data.Add(PushupConstants.Pushup_TopData, MessagePackSerializer.Serialize(topDataDictionaryNew));
                         data.data.Add(PushupConstants.Pushup_BodyData, MessagePackSerializer.Serialize(baseData));
                         importedExtendedData[GUID] = data;
                     }
