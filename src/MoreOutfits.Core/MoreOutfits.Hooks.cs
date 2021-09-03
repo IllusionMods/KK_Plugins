@@ -75,5 +75,24 @@ namespace KK_Plugins.MoreOutfits
         {
             HSceneUI.InitializeHSceneUI();
         }
+
+#if KKS
+        private static bool DoingImport = true;
+
+        [HarmonyPostfix, HarmonyPatch(typeof(ConvertChaFileScene), nameof(ConvertChaFileScene.OnDestroy))]
+        private static void ConvertChaFileSceneEnd() => DoingImport = false;
+
+        /// <summary>
+        /// Don't allow outfits to be replaced by defaults
+        /// </summary>
+        /// <returns></returns>
+        [HarmonyPrefix, HarmonyPatch(typeof(ChaFile), nameof(ChaFile.AssignCoordinate))]
+        private static bool ChaFile_AssignCoordinate()
+        {
+            if (DoingImport)
+                return false;
+            return true;
+        }
+#endif
     }
 }
