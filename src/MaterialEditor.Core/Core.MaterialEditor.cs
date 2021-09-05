@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
@@ -12,12 +13,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UniRx;
-using UnityEngine;
 using System.Reflection;
 using System.Xml;
-using static MaterialEditorAPI.MaterialAPI;
+using UniRx;
+using UnityEngine;
 using XUnity.ResourceRedirector;
+using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
 using AIChara;
 using ChaAccessoryComponent = AIChara.CmpAccessory;
@@ -38,6 +39,7 @@ namespace KK_Plugins.MaterialEditor
     /// </summary>
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
+    [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
 #if !PH
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
 #endif

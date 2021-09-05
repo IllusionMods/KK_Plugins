@@ -16,6 +16,7 @@ namespace KK_Plugins
     /// Individual customization of hair accessories for adding hair gloss, color matching, etc.
     /// </summary>
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class HairAccessoryCustomizer : BaseUnityPlugin
     {

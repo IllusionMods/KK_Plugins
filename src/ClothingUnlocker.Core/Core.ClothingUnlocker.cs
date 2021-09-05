@@ -16,6 +16,7 @@ namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
     public partial class ClothingUnlocker : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.clothingunlocker";
@@ -75,7 +76,7 @@ namespace KK_Plugins
         }
 
 #if EC
-        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData )
+        private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData)
         {
             if (importedExtendedData.TryGetValue(GUID, out var pluginData))
             {
