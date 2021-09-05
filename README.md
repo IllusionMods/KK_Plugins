@@ -633,6 +633,13 @@ Removes the gender restriction on saved Studio poses.
 
 Increase shadow resolution for better quality and fix a shadow strength mismatch between main game and Studio.
 
+#### MoreOutfits
+
+- [KK_MoreOutfits]
+- [KKS_MoreOutfits]
+
+Allows characters to have more than the default number of outfit slots.
+
 [//]: # (## Latest Links)
 
 [KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"
@@ -663,8 +670,8 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 [AI_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v123/AI_AnimationController.v2.2.zip "v2.2"
 [HS2_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_AnimationController.v2.2.zip "v2.2"
 [KK_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v123/KK_AnimationController.v2.2.zip "v2.2"
-[EC_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v159/EC_ClothingUnlocker.v2.0.1.zip "v2.0.1"
-[KK_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v159/KK_ClothingUnlocker.v2.0.1.zip "v2.0.1"
+[EC_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_ClothingUnlocker.v2.0.2.zip "v2.0.2"
+[KK_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_ClothingUnlocker.v2.0.2.zip "v2.0.2"
 [KK_EyeShaking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_EyeShaking.v1.2.zip "v1.2"
 [KKS_EyeShaking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_EyeShaking.v1.2.zip "v1.2"
 [KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v177/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
@@ -672,9 +679,9 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 [HS2_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseFolders.v1.0.zip "v1.0"
 [KK_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v120/KK_PoseFolders.v1.0.zip "v1.0"
 [KK_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip "v1.0"
-[EC_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v158/EC_HairAccessoryCustomizer.v1.1.5.zip "v1.1.5"
-[KK_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v158/KK_HairAccessoryCustomizer.v1.1.5.zip "v1.1.5"
-[KKS_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_HairAccessoryCustomizer.v1.1.5.zip "v1.1.5"
+[EC_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_HairAccessoryCustomizer.v1.1.6.zip "v1.1.6"
+[KK_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_HairAccessoryCustomizer.v1.1.6.zip "v1.1.6"
+[KKS_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_HairAccessoryCustomizer.v1.1.6.zip "v1.1.6"
 [EC_Demosaic]: https://github.com/IllusionMods/KK_Plugins/releases/download/v73/EC_Demosaic.v1.1.zip "v1.1"
 [KK_FreeHRandom]: https://github.com/IllusionMods/KK_Plugins/releases/download/v172/KK_FreeHRandom.v1.2.zip "v1.2"
 [KKS_FreeHRandom]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_FreeHRandom.v1.2.zip "v1.2"
@@ -682,12 +689,12 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 [HS2_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_Colliders.v1.2.zip "v1.2"
 [KK_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_Colliders.v1.2.zip "v1.2"
 [KKS_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Colliders.v1.2.zip "v1.2"
-[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/AI_MaterialEditor.v3.1.3.zip "v3.1.3"
-[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/EC_MaterialEditor.v3.1.3.zip "v3.1.3"
-[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/HS2_MaterialEditor.v3.1.3.zip "v3.1.3"
-[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/KK_MaterialEditor.v3.1.3.zip "v3.1.3"
-[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/KKS_MaterialEditor.v3.1.3.zip "v3.1.3"
-[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/PH_MaterialEditor.v3.1.3.zip "v3.1.3"
+[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/AI_MaterialEditor.v3.1.4.zip "v3.1.4"
+[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_MaterialEditor.v3.1.4.zip "v3.1.4"
+[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/HS2_MaterialEditor.v3.1.4.zip "v3.1.4"
+[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_MaterialEditor.v3.1.4.zip "v3.1.4"
+[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_MaterialEditor.v3.1.4.zip "v3.1.4"
+[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/PH_MaterialEditor.v3.1.4.zip "v3.1.4"
 [AI_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/AI_MaleJuice.v1.3.zip "v1.3"
 [HS2_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/HS2_MaleJuice.v1.3.zip "v1.3"
 [KK_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/KK_MaleJuice.v1.3.zip "v1.3"
@@ -710,9 +717,9 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 [AI_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/AI_StudioSceneSettings.v1.3.2.zip "v1.3.2"
 [HS2_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_StudioSceneSettings.v1.3.2.zip "v1.3.2"
 [KK_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_StudioSceneSettings.v1.3.2.zip "v1.3.2"
-[EC_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/EC_Pushup.v1.3.zip "v1.3"
-[KK_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_Pushup.v1.3.zip "v1.3"
-[KKS_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Pushup.v1.3.zip "v1.3"
+[EC_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_Pushup.v1.3.1.zip "v1.3.1"
+[KK_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_Pushup.v1.3.1.zip "v1.3.1"
+[KKS_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_Pushup.v1.3.1.zip "v1.3.1"
 [AI_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/AI_PoseQuickLoad.v1.0.zip "v1.0"
 [HS2_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseQuickLoad.v1.0.zip "v1.0"
 [KK_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/KK_PoseQuickLoad.v1.0.zip "v1.0"
@@ -750,12 +757,12 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 [EC_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v191/EC_AccessoryQuickRemove.v1.0.zip "v1.0"
 [KK_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v191/KK_AccessoryQuickRemove.v1.0.zip "v1.0"
 [KKS_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_AccessoryQuickRemove.v1.0.zip "v1.0"
-[AI_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/AI_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
-[EC_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/EC_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
-[HS2_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/HS2_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
-[KK_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/KK_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
-[KKS_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
-[PH_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/PH_DynamicBoneEditor.v1.0.3.zip "v1.0.3"
+[AI_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/AI_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[EC_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[HS2_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/HS2_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[KK_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[KKS_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[PH_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/PH_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
 [EC_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/EC_AccessoryClothes.v1.0.zip "v1.0"
 [KK_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_AccessoryClothes.v1.0.zip "v1.0"
 [KKS_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_AccessoryClothes.v1.0.zip "v1.0"
@@ -764,4 +771,6 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 [KK_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_PoseUnlocker.v1.0.zip "v1.0"
 [KK_LightingTweaks]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KK_LightingTweaks.v1.0.zip "v1.0"
 [KKS_LightingTweaks]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_LightingTweaks.v1.0.zip "v1.0"
+[KK_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_MoreOutfits.v1.0.zip "v1.0"
+[KKS_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_MoreOutfits.v1.0.zip "v1.0"
 
