@@ -50,7 +50,7 @@ namespace KK_Plugins.MoreOutfits
                 if (value != TextboxDefault)
                 {
                     var chaControl = MakerAPI.GetCharacterControl();
-                    SetCoordinateName(chaControl, OriginalCoordinateLength + RenameCoordinateDropdown.Value, coordinateNameTextbox.Value);
+                    SetCoordinateName(chaControl, OriginalCoordinateLength + RenameCoordinateDropdown.Value, RenameCoordinateTextbox.Value);
                     UpdateMakerUI();
                 }
             });
