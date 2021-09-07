@@ -140,6 +140,7 @@ v3.9.2 Fix glossiness being lost on uncensor change, fix monochrome body showing
 v3.10 Add ability to exclude uncensors from random selection (Thanks Gebo)<br/>
 v3.11 Changes made in Studio apply to all selected characters<br/>
 v3.11.2 Compatibility with BetterPenetration<br/>
+v3.11.3 Compatibility with MaterialEditor<br/>
 </details>
 
 #### Subtitles
@@ -273,18 +274,6 @@ v1.1.4 Fixed hair accessories turning invisible with an edited MainTex.<br/>
 v1.1.5 Support for coordinate load flags<br/>
 </details>
 
-#### Demosaic
-
-- [EC_Demosaic]
-
-Note: Not required when using UncensorSelector
-
-Removes the mosaic from female characters. Based on the demosaic for Koikatsu by [AUTOMATIC1111](https://github.com/AUTOMATIC1111/KoikatsuMods), compiled for EC and BepInEx 5.
-
-<details><summary>Change Log</summary>
-v1.1 Added a config option to disable the plugin<br/>
-</details>
-
 #### FreeHRandom
 
 - [KK_FreeHRandom]
@@ -385,6 +374,8 @@ v3.0.5 Better UV Map export<br/>
 v3.1 Color picker thanks to ame225, bulk paste edits in Studio<br/>
 v3.1.2 Convert grey normal maps to red for compatibility across Unity versions<br/>
 v3.1.3 Fix using wrong coordinate index in KKS, convert NormalMapDetail normal maps<br/>
+v3.1.4 Compatibility with ExtSave changes<br/>
+v3.1.5 Compatibility with UncensorSelector<br/>
 </details>
 
 #### MaleJuice
@@ -656,11 +647,11 @@ Allows characters to have more than the default number of outfit slots.
 [HS2_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_InvisibleBody.v1.4.zip "v1.4"
 [KK_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_InvisibleBody.v1.4.zip "v1.4"
 [KKS_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_InvisibleBody.v1.4.zip "v1.4"
-[AI_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v196/AI_UncensorSelector.v3.11.2.zip "v3.11.2"
-[EC_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v196/EC_UncensorSelector.v3.11.2.zip "v3.11.2"
-[HS2_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v196/HS2_UncensorSelector.v3.11.2.zip "v3.11.2"
-[KK_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v196/KK_UncensorSelector.v3.11.2.zip "v3.11.2"
-[KKS_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_UncensorSelector.v3.11.2.zip "v3.11.2"
+[AI_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/AI_UncensorSelector.v3.11.3.zip "v3.11.3"
+[EC_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/EC_UncensorSelector.v3.11.3.zip "v3.11.3"
+[HS2_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/HS2_UncensorSelector.v3.11.3.zip "v3.11.3"
+[KK_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/KK_UncensorSelector.v3.11.3.zip "v3.11.3"
+[KKS_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/KKS_UncensorSelector.v3.11.3.zip "v3.11.3"
 [AI_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/AI_Subtitles.v2.2.zip "v2.2"
 [HS2_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/HS2_Subtitles.v2.2.zip "v2.2"
 [HS_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/HS_Subtitles.v2.2.zip "v2.2"
@@ -689,12 +680,12 @@ Allows characters to have more than the default number of outfit slots.
 [HS2_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_Colliders.v1.2.zip "v1.2"
 [KK_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_Colliders.v1.2.zip "v1.2"
 [KKS_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Colliders.v1.2.zip "v1.2"
-[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/AI_MaterialEditor.v3.1.4.zip "v3.1.4"
-[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_MaterialEditor.v3.1.4.zip "v3.1.4"
-[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/HS2_MaterialEditor.v3.1.4.zip "v3.1.4"
-[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_MaterialEditor.v3.1.4.zip "v3.1.4"
-[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_MaterialEditor.v3.1.4.zip "v3.1.4"
-[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/PH_MaterialEditor.v3.1.4.zip "v3.1.4"
+[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/AI_MaterialEditor.v3.1.5.zip "v3.1.5"
+[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/EC_MaterialEditor.v3.1.5.zip "v3.1.5"
+[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/HS2_MaterialEditor.v3.1.5.zip "v3.1.5"
+[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/KK_MaterialEditor.v3.1.5.zip "v3.1.5"
+[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/KKS_MaterialEditor.v3.1.5.zip "v3.1.5"
+[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/PH_MaterialEditor.v3.1.5.zip "v3.1.5"
 [AI_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/AI_MaleJuice.v1.3.zip "v1.3"
 [HS2_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/HS2_MaleJuice.v1.3.zip "v1.3"
 [KK_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/KK_MaleJuice.v1.3.zip "v1.3"
