@@ -3,6 +3,9 @@ using KKAPI.Studio.UI;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
+#if AI || HS2
+using AIChara;
+#endif
 
 namespace KK_Plugins
 {
@@ -48,10 +51,7 @@ namespace KK_Plugins
                         break;
 
                     if (controller.BodyData?.BodyGUID != guid)
-                    {
-                        controller.BodyGUID = guid;
-                        controller.UpdateUncensor();
-                    }
+                        BodyDropdownChangedStudio(controller.ChaControl, guid);
 
                     first = false;
                 }
@@ -86,10 +86,7 @@ namespace KK_Plugins
                         break;
 
                     if (controller.PenisData?.PenisGUID != guid)
-                    {
-                        controller.PenisGUID = guid;
-                        controller.UpdateUncensor();
-                    }
+                        PenisDropdownChangedStudio(controller.ChaControl, guid);
 
                     first = false;
                 }
@@ -130,11 +127,7 @@ namespace KK_Plugins
                             break;
 
                         if (controller.BallsData?.BallsGUID != null)
-                        {
-                            controller.BallsGUID = null;
-                            controller.DisplayBalls = false;
-                            controller.UpdateUncensor();
-                        }
+                            BallsDropdownChangedStudio(controller.ChaControl, null, false);
                     }
                     else
                     {
@@ -145,11 +138,7 @@ namespace KK_Plugins
                             break;
 
                         if (controller.BallsData?.BallsGUID != guid)
-                        {
-                            controller.BallsGUID = guid;
-                            controller.DisplayBalls = true;
-                            controller.UpdateUncensor();
-                        }
+                            BallsDropdownChangedStudio(controller.ChaControl, guid, true);
                     }
 
                     first = false;
@@ -166,6 +155,27 @@ namespace KK_Plugins
                 return ballsList.IndexOf(controller.BallsData?.BallsGUID);
             }
             StudioAPI.GetOrCreateCurrentStateCategory(StudioCategoryName).AddControl(ballsDropdown);
+        }
+
+        //Separate methods so other plugins can hook and reapply their changes if necessary
+        private static void BodyDropdownChangedStudio(ChaControl chaControl, string guid)
+        {
+            var controller = GetController(chaControl);
+            controller.BodyGUID = guid;
+            controller.UpdateUncensor();
+        }
+        private static void PenisDropdownChangedStudio(ChaControl chaControl, string guid)
+        {
+            var controller = GetController(chaControl);
+            controller.PenisGUID = guid;
+            controller.UpdateUncensor();
+        }
+        private static void BallsDropdownChangedStudio(ChaControl chaControl, string guid, bool displayBalls)
+        {
+            var controller = GetController(chaControl);
+            controller.BallsGUID = guid;
+            controller.DisplayBalls = displayBalls;
+            controller.UpdateUncensor();
         }
     }
 }

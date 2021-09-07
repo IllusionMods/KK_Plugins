@@ -514,5 +514,18 @@ namespace KK_Plugins.MaterialEditor
                 MaterialEditorPlugin.ConvertNormalMap(mat, "NormalMapDetail");
         }
 #endif
+
+        internal static void UncensorSelectorHook()
+        {
+            if (MakerAPI.InsideAndLoaded)
+            {
+                var chaControl = MakerAPI.GetCharacterControl();
+                chaControl.StartCoroutine(MaterialEditorPlugin.GetCharaController(chaControl).LoadData(false, false, false));
+            }
+        }
+        internal static void UncensorSelectorHookStudio(ChaControl chaControl)
+        {
+            chaControl.StartCoroutine(MaterialEditorPlugin.GetCharaController(chaControl).LoadData(false, false, false));
+        }
     }
 }

@@ -557,7 +557,7 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        private IEnumerator LoadData(bool clothes, bool accessories, bool hair)
+        public IEnumerator LoadData(bool clothes, bool accessories, bool hair)
         {
             yield return null;
 #if !EC

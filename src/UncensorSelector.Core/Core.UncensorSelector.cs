@@ -34,7 +34,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "3.11.2";
+        public const string Version = "3.11.3";
         internal static new ManualLogSource Logger;
         private static readonly HashSet<string> AllAdditionalParts = new HashSet<string>();
         public static readonly Dictionary<string, BodyData> BodyDictionary = new Dictionary<string, BodyData>();
@@ -182,7 +182,7 @@ namespace KK_Plugins
                 var studioSettingsGUI = new SettingsGUI<T>(uncensorDictionary, sexValue, part, true);
                 SettingsGUIs.Add(studioSettingsGUI);
 
-                var studioExcludedDescAttrs = new ConfigurationManagerAttributes {HideDefaultButton = true, CustomDrawer = studioSettingsGUI.DrawSettingsGUI, Order = order};
+                var studioExcludedDescAttrs = new ConfigurationManagerAttributes { HideDefaultButton = true, CustomDrawer = studioSettingsGUI.DrawSettingsGUI, Order = order };
                 var studioExcludedDesc = new ConfigDescription($"{part} uncensors to exclude from random selection for {sex.ToLower()}s in studio", null, studioExcludedDescAttrs);
                 // default value is main config so the first time it's enabled current settings are copied over
                 var studioExcludeConf = Config.Bind("Random Excluded for Studio", $"{sex} {part}", mainExcludeConf.Value, studioExcludedDesc);
@@ -243,16 +243,12 @@ namespace KK_Plugins
             }
 
             BodyDropdown = e.AddControl(new MakerDropdown("Body", BodyListDisplay.ToArray(), MakerConstants.Body.All, 0, this));
-            BodyDropdown.ValueChanged.Subscribe(BodyDropdownChanged);
-            void BodyDropdownChanged(int ID)
+            BodyDropdown.ValueChanged.Subscribe(value =>
             {
-                if (DoDropdownEvents == false)
+                if (!DoDropdownEvents)
                     return;
-
-                var controller = GetController(MakerAPI.GetCharacterControl());
-                controller.BodyGUID = ID == 0 ? null : BodyList[ID];
-                controller.UpdateUncensor();
-            }
+                BodyDropdownChanged(value);
+            });
 
             PenisList.Clear();
             PenisListDisplay.Clear();
@@ -275,24 +271,12 @@ namespace KK_Plugins
 #else
             PenisDropdown = e.AddControl(new MakerDropdown("Penis", PenisListDisplay.ToArray(), MakerConstants.Body.All, 0, this));
 #endif
-            PenisDropdown.ValueChanged.Subscribe(PenisDropdownChanged);
-            void PenisDropdownChanged(int ID)
+            PenisDropdown.ValueChanged.Subscribe(value =>
             {
-                if (DoDropdownEvents == false)
+                if (!DoDropdownEvents)
                     return;
-
-                var controller = GetController(MakerAPI.GetCharacterControl());
-#if KK || KKS
-                controller.PenisGUID = ID == 0 || ID == 1 ? null : PenisList[ID];
-                controller.DisplayPenis = ID != 1;
-#elif AI || HS2
-                controller.PenisGUID = ID == 0 ? null : PenisList[ID];
-#else
-                controller.PenisGUID = ID == 0 ? null : PenisList[ID];
-                controller.DisplayPenis = characterSex == 0;
-#endif
-                controller.UpdateUncensor();
-            }
+                PenisDropdownChanged(value);
+            });
 
             BallsList.Clear();
             BallsListDisplay.Clear();
@@ -310,17 +294,12 @@ namespace KK_Plugins
 
             int ballsInitialValue = characterSex == 0 ? 0 : DefaultFemaleDisplayBalls.Value ? 0 : 1;
             BallsDropdown = e.AddControl(new MakerDropdown("Balls", BallsListDisplay.ToArray(), MakerConstants.Body.All, ballsInitialValue, this));
-            BallsDropdown.ValueChanged.Subscribe(BallsDropdownChanged);
-            void BallsDropdownChanged(int ID)
+            BallsDropdown.ValueChanged.Subscribe(value =>
             {
-                if (DoDropdownEvents == false)
+                if (!DoDropdownEvents)
                     return;
-
-                var controller = GetController(MakerAPI.GetCharacterControl());
-                controller.BallsGUID = ID == 0 || ID == 1 ? null : BallsList[ID];
-                controller.DisplayBalls = ID != 1;
-                controller.UpdateUncensor();
-            }
+                BallsDropdownChanged(value);
+            });
 
 #if EC
             if (characterSex == 1)
@@ -339,6 +318,38 @@ namespace KK_Plugins
 
             DoDropdownEvents = true;
         }
+
+        //Separate methods so other plugins can hook and reapply their changes if necessary
+        private void BodyDropdownChanged(int ID)
+        {
+            var controller = GetController(MakerAPI.GetCharacterControl());
+            controller.BodyGUID = ID == 0 ? null : BodyList[ID];
+            controller.UpdateUncensor();
+        }
+
+        private void PenisDropdownChanged(int ID)
+        {
+            var controller = GetController(MakerAPI.GetCharacterControl());
+#if KK || KKS
+            controller.PenisGUID = ID == 0 || ID == 1 ? null : PenisList[ID];
+            controller.DisplayPenis = ID != 1;
+#elif AI || HS2
+            controller.PenisGUID = ID == 0 ? null : PenisList[ID];
+#else
+            controller.PenisGUID = ID == 0 ? null : PenisList[ID];
+            controller.DisplayPenis = MakerAPI.GetMakerSex() == 0;
+#endif
+            controller.UpdateUncensor();
+        }
+
+        private void BallsDropdownChanged(int ID)
+        {
+            var controller = GetController(MakerAPI.GetCharacterControl());
+            controller.BallsGUID = ID == 0 || ID == 1 ? null : BallsList[ID];
+            controller.DisplayBalls = ID != 1;
+            controller.UpdateUncensor();
+        }
+
         /// <summary>
         /// Set initial values for the loaded character and enable dropdown events
         /// </summary>

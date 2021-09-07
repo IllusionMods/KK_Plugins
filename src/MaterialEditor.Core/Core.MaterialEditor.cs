@@ -58,7 +58,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.1.4";
+        public const string PluginVersion = "3.1.5";
 
         /// <summary>
         /// Material which is used in normal map conversion
@@ -169,6 +169,32 @@ namespace KK_Plugins.MaterialEditor
             foreach (var method in typeof(CharaCustom.CustomClothesColorSet).GetMethods(AccessTools.all).Where(x => x.Name.StartsWith("<Initialize>")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ClothesColorChangeHook), AccessTools.all)));
 #endif
+
+            //Hooks for changing uncensors in maker and studio
+            var uncensorSelectorType = Type.GetType($"KK_Plugins.UncensorSelector, {Constants.Prefix}_UncensorSelector");
+            if (uncensorSelectorType != null)
+            {
+                var method = uncensorSelectorType.GetMethod("BodyDropdownChanged", AccessTools.all);
+                if (method != null)
+                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHook), AccessTools.all)));
+                method = uncensorSelectorType.GetMethod("PenisDropdownChanged", AccessTools.all);
+                if (method != null)
+                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHook), AccessTools.all)));
+                method = uncensorSelectorType.GetMethod("BallsDropdownChanged", AccessTools.all);
+                if (method != null)
+                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHook), AccessTools.all)));
+
+                method = uncensorSelectorType.GetMethod("BodyDropdownChangedStudio", AccessTools.all);
+                if (method != null)
+                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHookStudio), AccessTools.all)));
+                method = uncensorSelectorType.GetMethod("PenisDropdownChangedStudio", AccessTools.all);
+                if (method != null)
+                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHookStudio), AccessTools.all)));
+                method = uncensorSelectorType.GetMethod("BallsDropdownChangedStudio", AccessTools.all);
+                if (method != null)
+                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHookStudio), AccessTools.all)));
+            }
+
             StartCoroutine(LoadXML());
             StartCoroutine(GetUncensorSelectorParts());
 
