@@ -12,8 +12,9 @@ namespace KK_Plugins
             {
                 if (loader.asset.IsNullOrEmpty())
                     return;
-
-                if (HSceneInstance != null)
+                if (SubtitleDictionary.TryGetValue(loader.asset, out string text))
+                    Caption.DisplaySubtitle(audioSource.gameObject, text);
+                else if (HSceneInstance != null)
                     Caption.DisplayHSubtitle(loader.asset, loader.bundle, audioSource.gameObject);
                 else if (ActionGameInfoInstance != null && GameObject.Find("ActionScene/ADVScene") == null)
                     Caption.DisplayDialogueSubtitle(loader.asset, loader.bundle, audioSource.gameObject);
