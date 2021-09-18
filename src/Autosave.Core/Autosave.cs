@@ -231,7 +231,7 @@ namespace KK_Plugins
                     //Game runs similar code
                     foreach (KeyValuePair<int, ObjectCtrlInfo> item in Studio.Studio.Instance.dicObjectCtrl)
                         item.Value.OnSavePreprocessing();
-                    Studio.Studio.Instance.sceneInfo.cameraSaveData = Studio.Studio.Instance.m_CameraCtrl.Export();
+                    Studio.Studio.Instance.sceneInfo.cameraSaveData = Studio.Studio.Instance.cameraCtrl.Export();
                     DateTime now = DateTime.Now;
                     string str = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
                     string path = $"{UserData.Create(AutosavePathStudio)}{str}";
