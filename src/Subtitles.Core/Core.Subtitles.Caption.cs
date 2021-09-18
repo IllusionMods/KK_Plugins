@@ -192,19 +192,29 @@ namespace KK_Plugins
 
                 var anim = subtitle.GetComponent<TypefaceAnimatorEx>();
                 anim.playOnAwake = false;
-                anim.Play();
+                if (FadeType.Value.HasFlag(FadeCanvas.Fade.In))
+                    anim.Play();
+                else
+                    anim.Stop();
 
                 onDestroy(() =>
                 {
-                    // Fade out effect
-                    anim.alphaFrom = 1;
-                    anim.alphaTo = 0;
-                    System.Collections.IEnumerator DelayedDestroy()
+                    if (FadeType.Value.HasFlag(FadeCanvas.Fade.Out))
                     {
-                        yield return new WaitWhile(() => anim.isPlaying);
+                        // Fade out effect
+                        anim.alphaFrom = 1;
+                        anim.alphaTo = 0;
+                        System.Collections.IEnumerator DelayedDestroy()
+                        {
+                            yield return new WaitWhile(() => anim.isPlaying);
+                            Destroy(subtitle);
+                        }
+                        anim.StartCoroutineEx(new[] { anim.WaitPlay(), DelayedDestroy() }.GetEnumerator());
+                    }
+                    else
+                    {
                         Destroy(subtitle);
                     }
-                    anim.StartCoroutineEx(new[] { anim.WaitPlay(), DelayedDestroy() }.GetEnumerator());
                 });
 #else
                 Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
