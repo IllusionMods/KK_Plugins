@@ -1,6 +1,10 @@
 <KKS_Subtitles>
-  <!--Character maker subtitles-->
 
+  <!-- Movie subtitles -->
+  <!-- Hikari's First Phrase -->
+  <Sub Asset="movie_-13_003" Text="はいタイ！ ようこそいらっしゃいました。"/>
+
+  <!--Character maker subtitles-->
   <!--
   Commented out lines do not match the Koikatsu lines and need a new transcription
   -->

@@ -11,6 +11,20 @@ namespace KK_Plugins
     {
         public partial class Caption
         {
+
+            private static string PrepareSubtitle(string text)
+            {
+                if (ADV.SceneParameter.advScene == null || ADV.SceneParameter.advScene.Scenario == null) return text;
+                try
+                {
+                    return ADV.SceneParameter.advScene.Scenario.ReplaceText(text, true);
+                }
+                catch
+                {
+                    return text;
+                }
+            }
+
             internal static void DisplayDialogueSubtitle(string asset, string bundle, GameObject voiceObject)
             {
                 foreach (var a in ActionGameInfoInstance.dicTalkInfo)
@@ -42,7 +56,8 @@ namespace KK_Plugins
                             var text = c.Value.Where(x => x.Value.pathAsset == bundle && x.Value.nameFile == asset).Select(x => x.Value.word).FirstOrDefault();
                             if (!text.IsNullOrEmpty())
                             {
-                                DisplaySubtitle(voiceObject, text);
+                                // try to replace name tags in subtitle ([P], etc.) before displaying
+                                DisplaySubtitle(voiceObject, PrepareSubtitle(text));
                                 return;
                             }
                         }
