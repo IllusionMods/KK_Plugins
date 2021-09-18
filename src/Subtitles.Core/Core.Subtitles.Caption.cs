@@ -179,10 +179,13 @@ namespace KK_Plugins
                 //subtitleText.verticalOverflow = VerticalWrapMode.Overflow;
                 subtitleText.color = textColor;
 
-                var subOutline = subtitle.GetOrAddComponent<Outline>();
+                var effectDistance = new Vector2(OutlineThickness.Value, -OutlineThickness.Value);
+                var subOutline = subtitle.GetComponent<Outline>();
                 subOutline.effectColor = outlineColor;
-
-                subOutline.effectDistance = new Vector2(OutlineThickness.Value, OutlineThickness.Value);
+                subOutline.effectDistance = effectDistance;
+                var subShadow = subtitle.GetComponent<Shadow>();
+                subShadow.effectColor = outlineColor;
+                subShadow.effectDistance = effectDistance;
 
                 subtitleText.text = text;
                 Logger.LogDebug(text);
@@ -224,10 +227,13 @@ namespace KK_Plugins
                 subtitleText.verticalOverflow = VerticalWrapMode.Overflow;
                 subtitleText.color = textColor;
 
+                var effectDistance = new Vector2(OutlineThickness.Value, -OutlineThickness.Value);
                 var subOutline = subtitle.GetOrAddComponent<Outline>();
                 subOutline.effectColor = outlineColor;
-
-                subOutline.effectDistance = new Vector2(OutlineThickness.Value, OutlineThickness.Value);
+                subOutline.effectDistance = effectDistance;
+                var subShadow = subtitle.GetOrAddComponent<Shadow>();
+                subShadow.effectColor = outlineColor;
+                subShadow.effectDistance = effectDistance;
 
                 subtitleText.text = text;
                 Logger.LogDebug(text);
