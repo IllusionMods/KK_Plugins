@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,19 +38,19 @@ namespace KK_Plugins
             public static void DisplaySubtitle(AudioSource audioSource, string text, string assetName)
             {
                 if (!ShowSubtitles.Value || text.IsNullOrWhiteSpace()) return;
-                DisplaySubtitle(text, GetTextColor(assetName), DefaultOutlineColor, subtitle => Instance.StartCoroutine(MonitorAudioSource(subtitle, audioSource)));
+                DisplaySubtitle(text, GetTextColor(assetName), DefaultOutlineColor, onDestroy => Instance.StartCoroutine(MonitorAudioSource(onDestroy, audioSource)));
             }
 
             private static Color GetTextColor(string assetName) => TextColors.TryGetValue(assetName.Substring(0, 3), out var color) ? color : DefaultTextColor;
 
-            private static IEnumerator MonitorAudioSource(GameObject subtitle, AudioSource audioSource)
+            private static IEnumerator MonitorAudioSource(Action onDestroy, AudioSource audioSource)
             {
                 var audioClip = audioSource.clip;
                 while (audioSource.isPlaying && audioSource.clip == audioClip)
                     yield return null;
 
                 yield return SubtitleRemovalDelay;
-                Destroy(subtitle);
+                onDestroy();
             }
         }
     }

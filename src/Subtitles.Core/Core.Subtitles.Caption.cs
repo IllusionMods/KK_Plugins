@@ -152,13 +152,73 @@ namespace KK_Plugins
             /// <param name="text">Text to display</param>
             /// <param name="textColor">Text color</param>
             /// <param name="outlineColor">Text outline color</param>
-            /// <param name="watcher">Callback that which must call Destroy(subtitle) when text should be removed.</param>
-            public static void DisplaySubtitle(string text, Color textColor, Color outlineColor, Action<GameObject> watcher)
+            /// <param name="onDestroy">Callback that which must call Destroy(subtitle) when text should be removed.</param>
+            public static void DisplaySubtitle(string text, Color textColor, Color outlineColor, Action<Action> onDestroy)
             {
                 if (!ShowSubtitles.Value) return;
                 if (text.IsNullOrWhiteSpace()) return;
                 InitGUI();
 
+#if KKS
+                int fsize = FontSize.Value;
+                fsize = (int)(fsize < 0 ? (fsize * Screen.height / -100.0) : fsize);
+
+                // Grab the preview ADV text from config to get the original font and effects
+                var orig = GameObject.Find("ConfigScene(Clone)/Canvas/imgWindow/ScrollView/Content/Node ADV/Text/_SampleWindowBG/SampleWindow/FemaleText");
+                var subtitle = GameObject.Instantiate(orig, Pane.transform, false);
+
+                var rect = subtitle.GetComponent<RectTransform>();
+                rect.pivot = new Vector2(0.5f, 0);
+                rect.sizeDelta = new Vector2(Screen.width * 0.990f, fsize + (fsize * 0.05f));
+
+                var subtitleText = subtitle.GetComponent<Text>();
+                subtitleText.fontSize = fsize;
+                subtitleText.fontStyle = subtitleText.font.dynamic ? FontStyle.Value : UnityEngine.FontStyle.Normal;
+                subtitleText.alignment = TextAlign.Value;
+                //subtitleText.horizontalOverflow = HorizontalWrapMode.Wrap;
+                //subtitleText.verticalOverflow = VerticalWrapMode.Overflow;
+                subtitleText.color = textColor;
+
+                var effectDistance = new Vector2(OutlineThickness.Value, -OutlineThickness.Value);
+                var subOutline = subtitle.GetComponent<Outline>();
+                subOutline.effectColor = outlineColor;
+                subOutline.effectDistance = effectDistance;
+                var subShadow = subtitle.GetComponent<Shadow>();
+                subShadow.effectColor = outlineColor;
+                subShadow.effectDistance = effectDistance;
+
+                subtitleText.text = text;
+                Logger.LogDebug(text);
+
+                var anim = subtitle.GetComponent<TypefaceAnimatorEx>();
+                anim.playOnAwake = false;
+                if (!FadeType.Value.HasFlag(FadeCanvas.Fade.In))
+                {
+                    anim.alphaFrom = 1;
+                    anim.alphaTo = 1;
+                }
+                anim.Play();
+
+                onDestroy(() =>
+                {
+                    if (FadeType.Value.HasFlag(FadeCanvas.Fade.Out))
+                    {
+                        // Fade out effect
+                        anim.alphaFrom = 1;
+                        anim.alphaTo = 0;
+                        System.Collections.IEnumerator DelayedDestroy()
+                        {
+                            yield return new WaitWhile(() => anim.isPlaying);
+                            Destroy(subtitle);
+                        }
+                        anim.StartCoroutineEx(new[] { anim.WaitPlay(), DelayedDestroy() }.GetEnumerator());
+                    }
+                    else
+                    {
+                        Destroy(subtitle);
+                    }
+                });
+#else
                 Font fontFace = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
                 int fsize = FontSize.Value;
                 fsize = (int)(fsize < 0 ? (fsize * Screen.height / -100.0) : fsize);
@@ -179,15 +239,19 @@ namespace KK_Plugins
                 subtitleText.verticalOverflow = VerticalWrapMode.Overflow;
                 subtitleText.color = textColor;
 
+                var effectDistance = new Vector2(OutlineThickness.Value, -OutlineThickness.Value);
                 var subOutline = subtitle.GetOrAddComponent<Outline>();
                 subOutline.effectColor = outlineColor;
-
-                subOutline.effectDistance = new Vector2(OutlineThickness.Value, OutlineThickness.Value);
+                subOutline.effectDistance = effectDistance;
+                var subShadow = subtitle.GetOrAddComponent<Shadow>();
+                subShadow.effectColor = outlineColor;
+                subShadow.effectDistance = effectDistance;
 
                 subtitleText.text = text;
                 Logger.LogDebug(text);
 
-                watcher(subtitle);
+                onDestroy(() => Destroy(subtitle));
+#endif
             }
 
 #if !PC
@@ -198,7 +262,7 @@ namespace KK_Plugins
             /// <param name="text">Text to display</param>
             public static void DisplaySubtitle(GameObject voice, string text)
             {
-                DisplaySubtitle(text, TextColor.Value, OutlineColor.Value, subtitle => voice.OnDestroyAsObservable().Subscribe(obj => Destroy(subtitle)));
+                DisplaySubtitle(text, TextColor.Value, OutlineColor.Value, onDestroy => voice.OnDestroyAsObservable().Subscribe(obj => onDestroy()));
             }
 #endif
 

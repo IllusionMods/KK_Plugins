@@ -33,7 +33,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
-        public const string Version = "2.2";
+        public const string Version = "2.3";
         public const string PluginNameInternal = Constants.Prefix + "_Subtitles";
 
         internal static Subtitles Instance;
@@ -62,8 +62,11 @@ namespace KK_Plugins
         public static ConfigEntry<TextAnchor> TextAlign { get; private set; }
         public static ConfigEntry<int> TextVerticalOffset { get; private set; }
         public static ConfigEntry<int> TextHorizontalOffset { get; private set; }
-        public static ConfigEntry<int> OutlineThickness { get; private set; }
+        public static ConfigEntry<float> OutlineThickness { get; private set; }
         public static ConfigEntry<string> SubtitleDirectory { get; private set; }
+#if KKS
+        public static ConfigEntry<FadeCanvas.Fade> FadeType { get; private set; }
+#endif
 #if !PC
         public static ConfigEntry<Color> TextColor { get; private set; }
         public static ConfigEntry<Color> OutlineColor { get; private set; }
@@ -77,17 +80,28 @@ namespace KK_Plugins
             Logger = base.Logger;
             Instance = this;
 
-            ShowSubtitles = Config.Bind("Config", "Show Subtitles", true, new ConfigDescription("Enable or disable showing subtitles.", null, new ConfigurationManagerAttributes { Order = 11 }));
-            SubtitleDirectory = Config.Bind("Config", "Subtitle Directory", $"Translation\\{PluginNameInternal}", new ConfigDescription("Directory containing subtitle xml info, relative to the BepInEx folder.", null, new ConfigurationManagerAttributes { Order = 10 }));
-            FontSize = Config.Bind("Config", "Font Size", -5, new ConfigDescription("Font size of subtitles.", null, new ConfigurationManagerAttributes { Order = 9 }));
-            FontStyle = Config.Bind("Config", "Font Style", UnityEngine.FontStyle.Bold, new ConfigDescription("Font style of subtitles, i.e. bold, italic, etc.", null, new ConfigurationManagerAttributes { Order = 8 }));
-            TextAlign = Config.Bind("Config", "Text Align", TextAnchor.LowerCenter, new ConfigDescription("Text alignment of subtitles.", null, new ConfigurationManagerAttributes { Order = 7 }));
-            TextVerticalOffset = Config.Bind("Config", "Text Vertical Offset", 10, new ConfigDescription("Distance from top and bottom edges of the screen.", null, new ConfigurationManagerAttributes { Order = 5 }));
-            TextHorizontalOffset = Config.Bind("Config", "Text Horizontal Offset", 10, new ConfigDescription("Distance from left and right edges of the screen.", null, new ConfigurationManagerAttributes { Order = 6 }));
-            OutlineThickness = Config.Bind("Config", "Outline Thickness", 2, new ConfigDescription("Outline thickness for subtitle text.", null, new ConfigurationManagerAttributes { Order = 4 }));
+            ShowSubtitles = Config.Bind("Config", "Show Subtitles", true, new ConfigDescription("Enable or disable showing subtitles.", null, new ConfigurationManagerAttributes { Order = 12 }));
+            SubtitleDirectory = Config.Bind("Config", "Subtitle Directory", $"Translation\\{PluginNameInternal}", new ConfigDescription("Directory containing subtitle xml info, relative to the BepInEx folder.", null, new ConfigurationManagerAttributes { Order = 11 }));
+            FontSize = Config.Bind("Config", "Font Size", -5, new ConfigDescription("Font size of subtitles.", null, new ConfigurationManagerAttributes { Order = 10 }));
+            FontStyle = Config.Bind("Config", "Font Style",
+#if KKS
+                UnityEngine.FontStyle.Normal,
+#else
+                UnityEngine.FontStyle.Bold,
+#endif
+                new ConfigDescription("Font style of subtitles, i.e. bold, italic, etc.", null, new ConfigurationManagerAttributes { Order = 9 }));
+            TextAlign = Config.Bind("Config", "Text Align", TextAnchor.LowerCenter, new ConfigDescription("Text alignment of subtitles.", null, new ConfigurationManagerAttributes { Order = 8 }));
+            TextVerticalOffset = Config.Bind("Config", "Text Vertical Offset", 10, new ConfigDescription("Distance from top and bottom edges of the screen.", null, new ConfigurationManagerAttributes { Order = 6 }));
+            TextHorizontalOffset = Config.Bind("Config", "Text Horizontal Offset", 10, new ConfigDescription("Distance from left and right edges of the screen.", null, new ConfigurationManagerAttributes { Order = 7 }));
+            OutlineThickness = Config.Bind("Config", "Outline Thickness", 1.5f, new ConfigDescription("Outline thickness for subtitle text.", null, new ConfigurationManagerAttributes { Order = 5 }));
+
+#if KKS
+            FadeType = Config.Bind("Config", "Fade In/Out", FadeCanvas.Fade.None, new ConfigDescription("Adds a gradual fade effect to the subtitles like the one when talking to someone. You can control the speed by setting the global ADV text fade speed setting in game settings.", null, new ConfigurationManagerAttributes { Order = 4 }));
+#endif
+
 #if !PC
             TextColor = Config.Bind("Config", "Text Color", UnityEngine.ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, new ConfigDescription("Subtitle text color.", null, new ConfigurationManagerAttributes { Order = 3 }));
-            OutlineColor = Config.Bind("Config", "Outline Color", Color.black, new ConfigDescription("Subtitle text outline color.", null, new ConfigurationManagerAttributes { Order = 2 }));
+            OutlineColor = Config.Bind("Config", "Outline Color", new Color(0, 0, 0, 1f), new ConfigDescription("Subtitle text outline color.", null, new ConfigurationManagerAttributes { Order = 2 }));
             VRTextOffset = Config.Bind("VR", "VR Text Offset", new Vector3(-0.1f * WorldScale, -0.1f * WorldScale, 0.5f * WorldScale), new ConfigDescription("Subtitle text position in VR.", null, new ConfigurationManagerAttributes { Order = 1 }));
             VRText2Offset = Config.Bind("VR", "VR Text 2 Offset", new Vector3(0.1f * WorldScale, -0.2f * WorldScale, 0.5f * WorldScale), new ConfigDescription("Subtitle text position in VR. For 3P when two subtitles may be displayed at once.", null, new ConfigurationManagerAttributes { Order = 0 }));
 #endif
