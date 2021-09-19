@@ -69,31 +69,15 @@ namespace KK_Plugins
         [HarmonyPostfix, HarmonyPatch(typeof(SystemButtonCtrl), nameof(SystemButtonCtrl.Init))]
         private static void SystemButtonCtrlInitHook()
         {
-            GameObject InsertDuplicateElement(GameObject go, GameObject prevSibling)
-            {
-                var newGo = Instantiate(go, go.transform.parent, false);
-                newGo.transform.SetSiblingIndex(prevSibling.transform.GetSiblingIndex() + 1);
-                return newGo;
-            }
-
-            void OffsetRectTransformY(RectTransform rt, float offset)
-            {
-                var offMin = rt.offsetMin;
-                offMin.y += offset;
-                rt.offsetMin = offMin;
-
-                var offMax = rt.offsetMax;
-                offMax.y += offset;
-                rt.offsetMax = offMax;
-            }
-
-            var amplifyColorEffectInfo = Studio.Studio.Instance.systemButtonCtrl.amplifyColorEffectInfo;
+            var studioInstance = Studio.Studio.Instance;
+            var amplifyColorEffectInfo = studioInstance.systemButtonCtrl.amplifyColorEffectInfo;
 
             var oldDropdown = amplifyColorEffectInfo.dropdownLut;
             var container = oldDropdown.transform.parent;
-            container.GetComponent<LayoutElement>().preferredHeight += 25; //80; //45, todo: += 25
+            container.GetComponent<LayoutElement>().preferredHeight += 25;
             _newDropdown = InsertDuplicateElement(oldDropdown.gameObject, oldDropdown.gameObject).GetComponent<Dropdown>();
             OffsetRectTransformY(_newDropdown.GetComponent<RectTransform>(), -50);
+            _newDropdown.template.sizeDelta = new Vector2(0, 950); // Expand the dropdown in case the fix is applied after we copy the dropdown
 
             var label = container.Find("TextMeshPro Lut").gameObject;
             var newLabel = InsertDuplicateElement(label, _newDropdown.gameObject);
@@ -112,9 +96,43 @@ namespace KK_Plugins
                 CurrentLut2LocalSlot = loadCommonInfo.Key;
             });
 
-            // todo left right buttons
-            // StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/02_Kinematic/06_Hand/Left Hand/Button Prev
-            //Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.handInfo.piLeftHand.buttons
+            var arrowButtons = studioInstance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.handInfo.piLeftHand.buttons;
+            AddLeftRightDropdownButtons(oldDropdown, arrowButtons);
+            AddLeftRightDropdownButtons(_newDropdown, arrowButtons);
+        }
+
+        private static GameObject InsertDuplicateElement(GameObject go, GameObject prevSibling)
+        {
+            var newGo = Instantiate(go, prevSibling.transform.parent, false);
+            newGo.transform.SetSiblingIndex(prevSibling.transform.GetSiblingIndex() + 1);
+            return newGo;
+        }
+
+        private static void OffsetRectTransformY(RectTransform rt, float offset)
+        {
+            var offMin = rt.offsetMin;
+            offMin.y += offset;
+            rt.offsetMin = offMin;
+
+            var offMax = rt.offsetMax;
+            offMax.y += offset;
+            rt.offsetMax = offMax;
+        }
+
+        private static void AddLeftRightDropdownButtons(Dropdown targetDropdown, Button[] originalArrowButtons)
+        {
+            var oldRt = targetDropdown.GetComponent<RectTransform>();
+
+            var leftBtn = InsertDuplicateElement(originalArrowButtons[0].gameObject, oldRt.gameObject).GetComponent<Button>();
+            // y -1 because the actual button images don't line up with each other for some reason
+            leftBtn.transform.localPosition = new Vector3(oldRt.localPosition.x + oldRt.rect.width + 6, oldRt.localPosition.y - 1, 0);
+            leftBtn.onClick.ActuallyRemoveAllListeners();
+            leftBtn.onClick.AddListener(() => targetDropdown.value = Mathf.Clamp(targetDropdown.value - 1, 0, _cachedDicFilterLoadInfo.Length - 1));
+
+            var rightBtn = InsertDuplicateElement(originalArrowButtons[1].gameObject, oldRt.gameObject).GetComponent<Button>();
+            rightBtn.transform.localPosition = new Vector3(oldRt.localPosition.x + oldRt.rect.width + 30, oldRt.localPosition.y, 0);
+            rightBtn.onClick.ActuallyRemoveAllListeners();
+            rightBtn.onClick.AddListener(() => targetDropdown.value = Mathf.Clamp(targetDropdown.value + 1, 0, _cachedDicFilterLoadInfo.Length - 1));
         }
 
         private class TwoLutController : SceneCustomFunctionController
