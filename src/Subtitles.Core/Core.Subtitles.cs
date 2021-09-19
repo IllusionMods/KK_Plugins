@@ -33,7 +33,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
-        public const string Version = "2.2";
+        public const string Version = "2.3";
         public const string PluginNameInternal = Constants.Prefix + "_Subtitles";
 
         internal static Subtitles Instance;
