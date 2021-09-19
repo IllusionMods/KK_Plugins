@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
@@ -26,116 +27,156 @@ namespace KK_Plugins
 
         internal static new ManualLogSource Logger;
 
-        private static Dropdown newDD;
+        private static Dropdown _newDropdown;
+        private static KeyValuePair<int, Info.LoadCommonInfo>[] _cachedDicFilterLoadInfo;
+        private static AmplifyColorEffect _amplifyColorEffect;
 
-        private static int[] dicFilterLoadInfoKeys;
-
-        private static StudioResolveInfo _secondLutResolveInfo;
-        internal static StudioResolveInfo SecondLutResolveInfo
+        private static int _currentLut2LocalSlot;
+        public static int CurrentLut2LocalSlot
         {
-            get => _secondLutResolveInfo;
+            get => _currentLut2LocalSlot;
             set
             {
-                _secondLutResolveInfo = value;
-                int ind;
-                if (_secondLutResolveInfo == null || (ind = Array.IndexOf(dicFilterLoadInfoKeys, _secondLutResolveInfo.LocalSlot)) == -1) newDD.value = 0;
-                else newDD.value = ind;
+                if (_currentLut2LocalSlot == value) return;
+
+                _currentLut2LocalSlot = value;
+
+                int listIndex = Array.FindIndex(_cachedDicFilterLoadInfo, pair => pair.Key == _currentLut2LocalSlot);
+                if (listIndex == -1)
+                {
+                    _currentLut2LocalSlot = 0;
+                    _newDropdown.value = 0;
+                }
+                else
+                {
+                    _newDropdown.value = listIndex;
+                }
+
+                var loadCommonInfo = _cachedDicFilterLoadInfo[listIndex];
+                Logger.LogDebug($"Loading lut2: id={listIndex} bundlePath={loadCommonInfo.Value.bundlePath}");
+                var lutTexture = CommonLib.LoadAsset<Texture>(loadCommonInfo.Value.bundlePath, loadCommonInfo.Value.fileName, false, string.Empty);
+                _amplifyColorEffect.LutBlendTexture = lutTexture;
             }
         }
 
-        private static void OffsetRectTransform(RectTransform rt, Vector2 offset)
-        {
-            var offMin = rt.offsetMin;
-            offMin.y += offset.y;
-            rt.offsetMin = offMin;
-
-            var offMax = rt.offsetMax;
-            offMax.y += offset.y;
-            rt.offsetMax = offMax;
-        }
-
-        private static GameObject InsertDuplicateElement(GameObject go, GameObject prevSibling)
-        {
-            var newGo = Instantiate(go);
-            newGo.transform.SetParent(go.transform.parent, false);
-            newGo.transform.SetSiblingIndex(prevSibling.transform.GetSiblingIndex() + 1);
-            return newGo;
-        }
-
-        private Harmony hi = Harmony.CreateAndPatchAll(typeof(TwoLutPlugin), nameof(TwoLutPlugin));
-
-        void Start()
+        private void Start()
         {
             Logger = base.Logger;
-
-            StudioSaveLoadApi.RegisterExtraBehaviour<kkapi_saveload>(nameof(TwoLutPlugin));
+            Harmony.CreateAndPatchAll(typeof(TwoLutPlugin), nameof(TwoLutPlugin));
+            StudioSaveLoadApi.RegisterExtraBehaviour<TwoLutController>(nameof(TwoLutPlugin));
         }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(SystemButtonCtrl), "Init")]
-        public static void Init()
+        [HarmonyPostfix, HarmonyPatch(typeof(SystemButtonCtrl), nameof(SystemButtonCtrl.Init))]
+        private static void SystemButtonCtrlInitHook()
         {
-            var acei = Traverse.Create(Studio.Studio.Instance.systemButtonCtrl).Field("amplifyColorEffectInfo").GetValue();
-            var oldDD = Traverse.Create(acei).Field<Dropdown>("dropdownLut").Value;
+            GameObject InsertDuplicateElement(GameObject go, GameObject prevSibling)
+            {
+                var newGo = Instantiate(go, go.transform.parent, false);
+                newGo.transform.SetSiblingIndex(prevSibling.transform.GetSiblingIndex() + 1);
+                return newGo;
+            }
 
-            var container = oldDD.transform.parent;
+            void OffsetRectTransformY(RectTransform rt, float offset)
+            {
+                var offMin = rt.offsetMin;
+                offMin.y += offset;
+                rt.offsetMin = offMin;
 
-            container.GetComponent<LayoutElement>().preferredHeight = 80; //45, todo: += 25
-            newDD = InsertDuplicateElement(oldDD.gameObject, oldDD.gameObject).GetComponent<Dropdown>();
+                var offMax = rt.offsetMax;
+                offMax.y += offset;
+                rt.offsetMax = offMax;
+            }
 
-            var offset = new Vector2(0, -55);
-            OffsetRectTransform(newDD.GetComponent<RectTransform>(), offset);
+            var amplifyColorEffectInfo = Studio.Studio.Instance.systemButtonCtrl.amplifyColorEffectInfo;
+
+            var oldDropdown = amplifyColorEffectInfo.dropdownLut;
+            var container = oldDropdown.transform.parent;
+            container.GetComponent<LayoutElement>().preferredHeight += 25; //80; //45, todo: += 25
+            _newDropdown = InsertDuplicateElement(oldDropdown.gameObject, oldDropdown.gameObject).GetComponent<Dropdown>();
+            OffsetRectTransformY(_newDropdown.GetComponent<RectTransform>(), -50);
 
             var label = container.Find("TextMeshPro Lut").gameObject;
-            var newLabel = InsertDuplicateElement(label, newDD.gameObject);
-            OffsetRectTransform(newLabel.GetComponent<RectTransform>(), offset);
+            var newLabel = InsertDuplicateElement(label, _newDropdown.gameObject);
+            OffsetRectTransformY(newLabel.GetComponent<RectTransform>(), -50);
+            newLabel.GetComponent<TextMeshProUGUI>().text = "色味２";
 
-            newLabel.GetComponent<TextMeshProUGUI>().text = "Shade 2";
+            _amplifyColorEffect = amplifyColorEffectInfo.ace;
+            _cachedDicFilterLoadInfo = Singleton<Info>.Instance.dicFilterLoadInfo.ToArray();
 
-            dicFilterLoadInfoKeys = Singleton<Info>.Instance.dicFilterLoadInfo.Keys.ToArray();
-            var vals = Singleton<Info>.Instance.dicFilterLoadInfo.Values.ToArray();
-
-            var ace = Traverse.Create(acei).Property<AmplifyColorEffect>("ace").Value;
-            var dd = newDD.GetComponent<Dropdown>();
+            var dd = _newDropdown.GetComponent<Dropdown>();
+            dd.onValueChanged.RemoveAllListeners();
             dd.value = 0;
-            dd.onValueChanged.AddListener(_no =>
+            dd.onValueChanged.AddListener(listIndex =>
             {
-                var loadCommonInfo = vals[_no]; //Well, this is stupid.
-                _secondLutResolveInfo = UniversalAutoResolver.LoadedStudioResolutionInfo.FirstOrDefault(x => x.ResolveItem && x.LocalSlot == dicFilterLoadInfoKeys[_no]);
-                var lutTexture = CommonLib.LoadAsset<Texture>(loadCommonInfo.bundlePath, loadCommonInfo.fileName, false, string.Empty);
-                ace.LutBlendTexture = lutTexture;
+                var loadCommonInfo = _cachedDicFilterLoadInfo[listIndex];
+                CurrentLut2LocalSlot = loadCommonInfo.Key;
             });
-        }
-    }
 
-    public class kkapi_saveload : SceneCustomFunctionController
-    {
-        protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
-        {
-            var ext = GetExtendedData();
-
-            object guid;
-            object slot;
-
-            if (operation == SceneOperationKind.Clear || ext == null || !ext.data.TryGetValue("guid", out guid) || !ext.data.TryGetValue("slot", out slot))
-            {
-                TwoLutPlugin.SecondLutResolveInfo = null;
-            }
-            else if (operation == SceneOperationKind.Load)
-            {
-                TwoLutPlugin.SecondLutResolveInfo = UniversalAutoResolver.LoadedStudioResolutionInfo.FirstOrDefault(x => x.ResolveItem && x.GUID == (string)guid && x.Slot == (int)slot);
-            }
+            // todo left right buttons
+            // StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/02_Kinematic/06_Hand/Left Hand/Button Prev
+            //Studio.Studio.Instance.manipulatePanelCtrl.charaPanelInfo.mpCharCtrl.handInfo.piLeftHand.buttons
         }
 
-        protected override void OnSceneSave()
+        private class TwoLutController : SceneCustomFunctionController
         {
-            if (TwoLutPlugin.SecondLutResolveInfo == null) return;
-            SetExtendedData(new PluginData
+            private const string DataKeyGuid = "guid";
+            private const string DataKeySlot = "slot";
+
+            protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
             {
-                data = {
-                { "guid", TwoLutPlugin.SecondLutResolveInfo.GUID },
-                { "slot", TwoLutPlugin.SecondLutResolveInfo.Slot },
+                var ext = GetExtendedData();
+
+                switch (operation)
+                {
+                    case SceneOperationKind.Load:
+                        if (ext == null)
+                            goto case SceneOperationKind.Clear;
+                        // If slot info is invalid, reset to game default
+                        if (!ext.data.TryGetValue(DataKeySlot, out var slot) || !(slot is int slotInt))
+                            goto case SceneOperationKind.Clear;
+                        // If there's no guid it's a non-zipmod item, use ID directly to get it
+                        if (!ext.data.TryGetValue(DataKeyGuid, out var guid) || !(guid is string guidStr))
+                        {
+                            CurrentLut2LocalSlot = slotInt;
+                            break;
+                        }
+                        var resolveInfo = UniversalAutoResolver.LoadedStudioResolutionInfo.FirstOrDefault(x => x.ResolveItem && x.GUID == guidStr && x.Slot == slotInt);
+                        // If resolve info is not found (mod missing), try falling back to using the slot as it is
+                        CurrentLut2LocalSlot = resolveInfo?.LocalSlot ?? slotInt;
+                        break;
+                    case SceneOperationKind.Clear:
+                        // Game default / midday
+                        CurrentLut2LocalSlot = 0;
+                        break;
+                    case SceneOperationKind.Import:
+                        // Importing doesn't copy lut settings
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(operation), operation, null);
+                }
             }
-            });
+
+            protected override void OnSceneSave()
+            {
+                PluginData pluginData = null;
+                if (CurrentLut2LocalSlot > 0)
+                {
+                    pluginData = new PluginData();
+
+                    var resolveInfo = UniversalAutoResolver.LoadedStudioResolutionInfo.FirstOrDefault(x => x.ResolveItem && x.LocalSlot == CurrentLut2LocalSlot);
+                    if (resolveInfo != null)
+                    {
+                        pluginData.data[DataKeyGuid] = resolveInfo.GUID;
+                        pluginData.data[DataKeySlot] = resolveInfo.Slot;
+                    }
+                    else
+                    {
+                        // For hardmods and stock items use the local slot ID directly since it never changes
+                        pluginData.data[DataKeySlot] = CurrentLut2LocalSlot;
+                    }
+                }
+                SetExtendedData(pluginData);
+            }
         }
     }
 }
