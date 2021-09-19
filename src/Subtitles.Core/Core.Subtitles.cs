@@ -93,7 +93,7 @@ namespace KK_Plugins
             TextAlign = Config.Bind("Config", "Text Align", TextAnchor.LowerCenter, new ConfigDescription("Text alignment of subtitles.", null, new ConfigurationManagerAttributes { Order = 8 }));
             TextVerticalOffset = Config.Bind("Config", "Text Vertical Offset", 10, new ConfigDescription("Distance from top and bottom edges of the screen.", null, new ConfigurationManagerAttributes { Order = 6 }));
             TextHorizontalOffset = Config.Bind("Config", "Text Horizontal Offset", 10, new ConfigDescription("Distance from left and right edges of the screen.", null, new ConfigurationManagerAttributes { Order = 7 }));
-            OutlineThickness = Config.Bind("Config", "Outline Thickness", 1.9f, new ConfigDescription("Outline thickness for subtitle text.", null, new ConfigurationManagerAttributes { Order = 5 }));
+            OutlineThickness = Config.Bind("Config", "Outline Thickness", 1.5f, new ConfigDescription("Outline thickness for subtitle text.", null, new ConfigurationManagerAttributes { Order = 5 }));
 
 #if KKS
             FadeType = Config.Bind("Config", "Fade In/Out", FadeCanvas.Fade.None, new ConfigDescription("Adds a gradual fade effect to the subtitles like the one when talking to someone. You can control the speed by setting the global ADV text fade speed setting in game settings.", null, new ConfigurationManagerAttributes { Order = 4 }));
@@ -101,7 +101,7 @@ namespace KK_Plugins
 
 #if !PC
             TextColor = Config.Bind("Config", "Text Color", UnityEngine.ColorUtility.TryParseHtmlString("#FFCCFFFF", out Color color) ? color : Color.magenta, new ConfigDescription("Subtitle text color.", null, new ConfigurationManagerAttributes { Order = 3 }));
-            OutlineColor = Config.Bind("Config", "Outline Color", new Color(0, 0, 0, 0.7f), new ConfigDescription("Subtitle text outline color.", null, new ConfigurationManagerAttributes { Order = 2 }));
+            OutlineColor = Config.Bind("Config", "Outline Color", new Color(0, 0, 0, 1f), new ConfigDescription("Subtitle text outline color.", null, new ConfigurationManagerAttributes { Order = 2 }));
             VRTextOffset = Config.Bind("VR", "VR Text Offset", new Vector3(-0.1f * WorldScale, -0.1f * WorldScale, 0.5f * WorldScale), new ConfigDescription("Subtitle text position in VR.", null, new ConfigurationManagerAttributes { Order = 1 }));
             VRText2Offset = Config.Bind("VR", "VR Text 2 Offset", new Vector3(0.1f * WorldScale, -0.2f * WorldScale, 0.5f * WorldScale), new ConfigDescription("Subtitle text position in VR. For 3P when two subtitles may be displayed at once.", null, new ConfigurationManagerAttributes { Order = 0 }));
 #endif

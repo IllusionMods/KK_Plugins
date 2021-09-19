@@ -192,10 +192,12 @@ namespace KK_Plugins
 
                 var anim = subtitle.GetComponent<TypefaceAnimatorEx>();
                 anim.playOnAwake = false;
-                if (FadeType.Value.HasFlag(FadeCanvas.Fade.In))
-                    anim.Play();
-                else
-                    anim.Stop();
+                if (!FadeType.Value.HasFlag(FadeCanvas.Fade.In))
+                {
+                    anim.alphaFrom = 1;
+                    anim.alphaTo = 1;
+                }
+                anim.Play();
 
                 onDestroy(() =>
                 {
