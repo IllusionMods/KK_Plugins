@@ -175,4 +175,9 @@
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.PhysicsModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.PhysicsModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.PhysicsModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.PhysicsModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.2019.4.9\build\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.2019.4.9\build\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
+IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KKS
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

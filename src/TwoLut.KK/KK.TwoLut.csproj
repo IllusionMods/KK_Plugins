@@ -118,4 +118,9 @@
   <Import Project="..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp.2019.4.27.4\build\IllusionLibs.Koikatu.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp.2019.4.27.4\build\IllusionLibs.Koikatu.Assembly-CSharp.targets')" />
   <Import Project="..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.4\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.2019.4.27.4\build\IllusionLibs.Koikatu.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.4\build\IllusionLibs.Koikatu.TextMeshPro.targets" Condition="Exists('..\..\packages\IllusionLibs.Koikatu.TextMeshPro.2019.4.27.4\build\IllusionLibs.Koikatu.TextMeshPro.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
+IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KK
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
