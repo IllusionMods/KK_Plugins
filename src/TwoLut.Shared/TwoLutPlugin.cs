@@ -44,13 +44,11 @@ namespace KK_Plugins
                 int listIndex = Array.FindIndex(_cachedDicFilterLoadInfo, pair => pair.Key == _currentLut2LocalSlot);
                 if (listIndex == -1)
                 {
+                    Logger.LogWarning($"Could not find lut with _currentLut2LocalSlot={_currentLut2LocalSlot}");
                     _currentLut2LocalSlot = 0;
-                    _newDropdown.value = 0;
+                    listIndex = 0;
                 }
-                else
-                {
-                    _newDropdown.value = listIndex;
-                }
+                _newDropdown.value = listIndex;
 
                 var loadCommonInfo = _cachedDicFilterLoadInfo[listIndex];
                 Logger.LogDebug($"Loading lut2: id={listIndex} bundlePath={loadCommonInfo.Value.bundlePath}");
