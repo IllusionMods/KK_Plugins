@@ -103,6 +103,7 @@
   <ItemGroup>
     <Compile Include="KKS.Subtitles.Caption.cs" />
     <Compile Include="KKS.Subtitles.Hooks.cs" />
+    <Compile Include="KKS.Subtitles.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\EmbeddedSubs.xml" />
