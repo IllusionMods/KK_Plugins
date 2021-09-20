@@ -74,14 +74,22 @@ namespace KK_Plugins
 
             var oldDropdown = amplifyColorEffectInfo.dropdownLut;
             var container = oldDropdown.transform.parent;
+
             container.GetComponent<LayoutElement>().preferredHeight += 25;
+
+            // Move the blend controls down one position to make space for the second lut dropdown
+            OffsetRectTransformY(amplifyColorEffectInfo.icBlend.slider.GetComponent<RectTransform>(), -25);
+            OffsetRectTransformY(amplifyColorEffectInfo.icBlend.input.GetComponent<RectTransform>(), -25);
+            OffsetRectTransformY(amplifyColorEffectInfo.icBlend.buttonDefault.GetComponent<RectTransform>(), -25);
+            OffsetRectTransformY(container.Find("TextMeshPro Blend").GetComponent<RectTransform>(), -25);
+
             _newDropdown = InsertDuplicateElement(oldDropdown.gameObject, oldDropdown.gameObject).GetComponent<Dropdown>();
-            OffsetRectTransformY(_newDropdown.GetComponent<RectTransform>(), -50);
+            OffsetRectTransformY(_newDropdown.GetComponent<RectTransform>(), -25);
             _newDropdown.template.sizeDelta = new Vector2(0, 950); // Expand the dropdown in case the fix is applied after we copy the dropdown
 
             var label = container.Find("TextMeshPro Lut").gameObject;
             var newLabel = InsertDuplicateElement(label, _newDropdown.gameObject);
-            OffsetRectTransformY(newLabel.GetComponent<RectTransform>(), -50);
+            OffsetRectTransformY(newLabel.GetComponent<RectTransform>(), -25);
             newLabel.GetComponent<TextMeshProUGUI>().text = "色味２";
 
             _amplifyColorEffect = amplifyColorEffectInfo.ace;
