@@ -35,6 +35,8 @@
         internal const string Prefix = "KKS";
         internal const string GameName = "Koikatsu Sunshine";
         internal const string MainGameProcessName = "KoikatsuSunshine";
+        internal const string StudioProcessName = "CharaStudio";
+        internal const string VRProcessName = "KoikatsuSunshine_VR";
 #elif PH
         internal const string Prefix = "PH";
         internal const string GameName = "Play Home";
