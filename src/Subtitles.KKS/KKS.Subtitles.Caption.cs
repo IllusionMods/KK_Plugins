@@ -1,5 +1,6 @@
 ﻿using ActionGame.Communication;
 using HarmonyLib;
+using Manager;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -61,6 +62,24 @@ namespace KK_Plugins
                                 return;
                             }
                         }
+            }
+
+            internal static void DisplayEstheticSubtitle(string asset, string bundle, GameObject voiceObject)
+            {
+                var mgr = Singleton<EstheticManager>.Instance;
+                if (mgr == null) return;
+                foreach (var a in mgr.VoiceCtrl.infoVoiceTable)
+                    foreach (var b in a.Value.infos)
+                    {
+                        var text = b.Value.voiceAssets.Where(x => x.asset == asset && x.bundle == bundle).Select(x => x.voice).FirstOrDefault();
+                        if (!text.IsNullOrEmpty())
+                        {
+                            // try to replace name tags in subtitle ([P], etc.) before displaying
+                            DisplaySubtitle(voiceObject, PrepareSubtitle(text));
+                            return;
+                        }
+                    }
+
             }
         }
     }

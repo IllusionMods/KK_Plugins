@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using Esthetic;
+using HarmonyLib;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -16,8 +17,11 @@ namespace KK_Plugins
                     Caption.DisplaySubtitle(audioSource.gameObject, text);
                 else if (HSceneInstance != null)
                     Caption.DisplayHSubtitle(loader.asset, loader.bundle, audioSource.gameObject);
+                else if (EstheticProcInstance != null)
+                    Caption.DisplayEstheticSubtitle(loader.asset, loader.bundle, audioSource.gameObject);
                 else if (ActionGameInfoInstance != null && GameObject.Find("ActionScene/ADVScene") == null)
                     Caption.DisplayDialogueSubtitle(loader.asset, loader.bundle, audioSource.gameObject);
+
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Sound), nameof(Manager.Sound.Play_Standby), typeof(AudioSource), typeof(Manager.Sound.Loader))]
@@ -40,6 +44,12 @@ namespace KK_Plugins
             private static void HVoiceCtrlInit()
             {
                 HSceneInstance = FindObjectOfType(typeof(HSceneProc));
+}
+
+            [HarmonyPostfix, HarmonyPatch(typeof(EstheticProc), nameof(EstheticProc.Init))]
+            private static void EstheticProcInit(EstheticProc __instance)
+            {
+                EstheticProcInstance = __instance;
             }
         }
     }
