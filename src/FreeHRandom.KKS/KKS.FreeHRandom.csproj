@@ -41,7 +41,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.8.27.2\lib\net46\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\lib\net46\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx, Version=5.4.15.0, Culture=neutral, processorArchitecture=MSIL">
@@ -61,7 +61,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UniRx, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.8.27.2\lib\net46\UniRx.dll</HintPath>
+      <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\lib\net46\UniRx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -119,14 +119,14 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.8.27.2\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.8.27.2\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.8.27.2\build\IllusionLibs.KoikatsuSunshine.UniRx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.8.27.2\build\IllusionLibs.KoikatsuSunshine.UniRx.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.2019.4.9\build\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.2019.4.9\build\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
@@ -134,12 +134,12 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
 </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.8.27.2\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.8.27.2\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.8.27.2\build\IllusionLibs.KoikatsuSunshine.UniRx.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.8.27.2\build\IllusionLibs.KoikatsuSunshine.UniRx.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.2019.4.9\build\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.2019.4.9\build\IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets')" />
 </Project>
