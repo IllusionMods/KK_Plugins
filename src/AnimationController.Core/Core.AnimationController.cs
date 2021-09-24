@@ -70,38 +70,26 @@ namespace KK_Plugins
         /// </summary>
         private void LinkCharacterToObject()
         {
-            ObjectCtrlInfo SelectedObject = null;
-            ObjectCtrlInfo SelectedCharacter = null;
-            TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+            var gr = StudioAPI.GetSelectedObjects().GroupBy(x => x is OCIChar).ToList();
 
-            if (selectNodes.Length != 2)
+            var selectedCharacters = gr.Single(x => x.Key).Cast<OCIChar>().ToList();
+            var selectedObjects = gr.Single(x => !x.Key).Where(x => x is OCIItem || x is OCIFolder || x is OCIRoute).ToList();
+
+            if (selectedCharacters.Count == 0 || selectedObjects.Count == 0)
             {
-                Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "Select both the character and object to link.");
-                return;
+                Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "Select both the characters and the object to link.");
             }
-
-            for (int i = 0; i < selectNodes.Length; i++)
+            else if (selectedObjects.Count > 1)
             {
-                if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
-                {
-                    switch (objectCtrlInfo)
-                    {
-                        case OCIChar _:
-                            SelectedCharacter = objectCtrlInfo;
-                            break;
-                        case OCIItem _:
-                        case OCIFolder _:
-                        case OCIRoute _:
-                            SelectedObject = objectCtrlInfo;
-                            break;
-                    }
-                }
+                Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "You can only select one object.");
             }
-
-            if (SelectedObject != null && SelectedCharacter != null)
-                GetController(SelectedCharacter as OCIChar).AddLink(IKGuideObjects[SelectedGuideObject], SelectedObject);
             else
-                Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "Select both the character and object to link.");
+            {
+                var selectedGuideObject = IKGuideObjects[SelectedGuideObject];
+                var selectedObject = selectedObjects.Single();
+                foreach (var selectedCharacter in selectedCharacters)
+                    GetController(selectedCharacter).AddLink(selectedGuideObject, selectedObject);
+            }
         }
         /// <summary>
         /// Called by GUI button click. Unlinks the selected node.
