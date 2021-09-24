@@ -119,7 +119,10 @@ namespace KK_Plugins
         internal void OnGUI()
         {
             if (GUIVisible)
-                GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
+            {
+                AnimGUI = GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
+                IMGUIUtils.DrawSolidBox(AnimGUI);
+            }
         }
         /// <summary>
         /// The AnimationController GUI
