@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using KKAPI.Studio.UI;
+using MessagePack.Formatters;
 using UnityEngine;
 #if AI || HS2
 using AIChara;
@@ -95,8 +96,8 @@ namespace KK_Plugins
         {
             var gr = StudioAPI.GetSelectedObjects().GroupBy(x => x is OCIChar).ToList();
 
-            var selectedCharacters = gr.Single(x => x.Key).Cast<OCIChar>().ToList();
-            var selectedObjects = gr.Single(x => !x.Key).Where(x => x is OCIItem || x is OCIFolder || x is OCIRoute).ToList();
+            var selectedCharacters = (gr.SingleOrDefault(x => x.Key) ?? Enumerable.Empty<ObjectCtrlInfo>()).Cast<OCIChar>().ToList();
+            var selectedObjects = (gr.SingleOrDefault(x => !x.Key) ?? Enumerable.Empty<ObjectCtrlInfo>()).Where(x => x is OCIItem || x is OCIFolder || x is OCIRoute).ToList();
 
             if (selectedCharacters.Count == 0 || selectedObjects.Count == 0)
             {
