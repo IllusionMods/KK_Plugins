@@ -14,4 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.FKIK.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.FKIK.UI.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Panel.png" />
+  </ItemGroup>
 </Project>

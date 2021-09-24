@@ -5,6 +5,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using KKAPI.Utilities;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -135,10 +136,8 @@ namespace KK_Plugins
 
             private static void CreatePanel()
             {
-                Texture2D tex = new Texture2D(152, 272);
-                tex.LoadImage(LoadPanel());
                 Image backingPanel = FKIKPanel.GetComponent<Image>();
-                Sprite replacement = Sprite.Create(tex, backingPanel.sprite.rect, backingPanel.sprite.pivot);
+                Sprite replacement = ResourceUtils.GetEmbeddedResource("Panel.png").LoadTexture().ToSprite();
                 backingPanel.sprite = replacement;
                 backingPanel.name = "FK & IK";
             }
@@ -264,18 +263,6 @@ namespace KK_Plugins
 
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(() => Traverse.Create(FindObjectOfType<MPCharCtrl>()).Field(fieldname1).Field(fieldname2).GetValue<Button[]>()[index].onClick.Invoke());
-            }
-
-            private static byte[] LoadPanel()
-            {
-                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("KK_Plugins.Resources.Panel.png"))
-                    if (stream != null)
-                    {
-                        byte[] bytesInStream = new byte[stream.Length];
-                        stream.Read(bytesInStream, 0, bytesInStream.Length);
-                        return bytesInStream;
-                    }
-                return null;
             }
 
             private static T GetPanelObject<T>(string name) where T : Component => FKIKPanel.GetComponentsInChildren<RectTransform>(true).First(x => x.name == name).GetComponent<T>();
