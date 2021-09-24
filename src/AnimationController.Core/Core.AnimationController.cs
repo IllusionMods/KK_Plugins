@@ -356,6 +356,8 @@ namespace KK_Plugins
                     AddNeckLink(selectedObject);
                 else
                 {
+                    if (!OCIChar.finalIK.enabled)
+                        Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "IK is disabled on this character! You have to enable anim\\Kinematics\\IK for the link to work.");
                     OCIChar.IKInfo ikInfo = OCIChar.listIKTarget.First(x => x.boneObject.name == selectedGuideObject);
                     GuideObjectLinks[ikInfo] = selectedObject;
                 }
