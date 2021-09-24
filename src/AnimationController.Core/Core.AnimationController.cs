@@ -96,21 +96,18 @@ namespace KK_Plugins
         /// </summary>
         private void UnlinkCharacterToObject()
         {
-            TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
             bool DidUnlink = false;
-            for (int i = 0; i < selectNodes.Length; i++)
+
+            foreach (var ociChar in StudioAPI.GetSelectedCharacters())
             {
-                if (Singleton<Studio.Studio>.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
-                {
-                    if (objectCtrlInfo is OCIChar ociChar)
-                    {
-                        GetController(ociChar).RemoveLink(IKGuideObjects[SelectedGuideObject]);
-                        DidUnlink = true;
-                    }
-                }
+                var success = GetController(ociChar).RemoveLink(IKGuideObjects[SelectedGuideObject]);
+                if (success) Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "Link removed successfully.");
+                else Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "No links to remove.");
+                DidUnlink = true;
             }
+
             if (!DidUnlink)
-                Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "Select a character.");
+                Logger.Log(BepInEx.Logging.LogLevel.Info | BepInEx.Logging.LogLevel.Message, "No characters selected. Select which characters to unlink.");
         }
 
         /// <summary>
@@ -365,18 +362,16 @@ namespace KK_Plugins
             /// Remove a link between the selected guide object and any object it is currently linked to.
             /// </summary>
             /// <param name="selectedGuideObject">Name of the bone associated with the guide object.</param>
-            public void RemoveLink(string selectedGuideObject)
+            public bool RemoveLink(string selectedGuideObject)
             {
                 if (selectedGuideObject == "eyes")
-                    RemoveEyeLink();
-                else if (selectedGuideObject == "neck")
-                    RemoveNeckLink();
-                else
-                {
-                    OCIChar.IKInfo ikInfo = OCIChar.listIKTarget.First(x => x.boneObject.name == selectedGuideObject);
-                    GuideObjectLinksV1.Remove(ikInfo);
-                    GuideObjectLinks.Remove(ikInfo);
-                }
+                    return RemoveEyeLink();
+                if (selectedGuideObject == "neck")
+                    return RemoveNeckLink();
+                OCIChar.IKInfo ikInfo = OCIChar.listIKTarget.First(x => x.boneObject.name == selectedGuideObject);
+                var a = GuideObjectLinksV1.Remove(ikInfo);
+                var b = GuideObjectLinks.Remove(ikInfo);
+                return a || b;
             }
             /// <summary>
             /// Remove a link between the selected guide object and any object it is currently linked to.
@@ -389,24 +384,28 @@ namespace KK_Plugins
             /// <summary>
             /// Remove a link between the eyes and any object it is currently linked to.
             /// </summary>
-            public void RemoveEyeLink()
+            public bool RemoveEyeLink()
             {
+                var wasEngaged = EyeLinkEngaged;
                 ChaControl.eyeLookCtrl.target = Camera.main.transform;
                 //Set the eye control to "Front"
                 SetEyeLook(0);
                 EyeLink = null;
                 EyeLinkEngaged = false;
+                return wasEngaged;
             }
             /// <summary>
             /// Remove a link between the neck and any object it is currently linked to.
             /// </summary>
-            public void RemoveNeckLink()
+            public bool RemoveNeckLink()
             {
+                var wasEngaged = NeckLinkEngaged;
                 ChaControl.neckLookCtrl.target = Camera.main.transform;
                 //Set the neck control to "Anim"
                 SetNeckLook(2);
                 NeckLink = null;
                 NeckLinkEngaged = false;
+                return wasEngaged;
             }
             /// <summary>
             /// Set the eye look stuff. Most of the code comes from Studio.MPCharCtrl.LookAtInfo.OnClick.
