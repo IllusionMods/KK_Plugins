@@ -16,7 +16,11 @@ namespace KK_Plugins.MoreOutfits
         private static Dropdown StudioCoordinateDropdown;
         private static bool StudioUIInitialized = false;
 
-        private static readonly List<string> CoordinateNames = new List<string> { "学生服（校内）", "学生服（下校）", "体操着", "水着", "部活", "私服", "お泊り" };
+#if KK
+        private static readonly List<string> CoordinateNames = new List<string> { "学生服（校内）", "学生服（下校）", "体操着", "水着", "部活", "私服", "お泊り" };      
+#elif KKS
+        private static readonly List<string> CoordinateNames = new List<string> { "私服", "水着", "寝間着", "風呂場", "お風呂" };
+#endif
 
         public static void RegisterStudioControls()
         {
@@ -77,7 +81,8 @@ namespace KK_Plugins.MoreOutfits
             var offset = rectTransform.offsetMin;
             rectTransform.offsetMin = new Vector2(offset.x - 50, offset.y);
 
-            //Rearange the UI to fill the gap left by the buttons
+#if KK
+            //Rearange the UI to fill the gap left by the buttons (not needed in KKS)
             foreach (var button in mpCharCtrol.stateInfo.stateShoesType.buttons)
             {
                 var position = button.transform.localPosition;
@@ -109,6 +114,7 @@ namespace KK_Plugins.MoreOutfits
             {
                 layoutElement.preferredHeight -= 20f;
             }
+#endif
         }
     }
 }
