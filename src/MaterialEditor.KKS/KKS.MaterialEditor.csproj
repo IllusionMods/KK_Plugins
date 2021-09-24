@@ -191,6 +191,7 @@
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />
   <Import Project="..\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems" Label="Shared" />
+  <Import Project="..\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

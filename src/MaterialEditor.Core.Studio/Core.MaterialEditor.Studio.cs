@@ -266,7 +266,7 @@ namespace KK_Plugins.MaterialEditor
                     return "Pantyhose";
                 case 6:
                     return "Legwear";
-#if !KK
+#if !KK && !KKS
                 case 7:
                     return "Shoes";
 #else
