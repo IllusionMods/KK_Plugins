@@ -8,6 +8,7 @@ using KKAPI.Studio.SaveLoad;
 using System;
 using System.IO;
 using System.Reflection;
+using KKAPI.Utilities;
 using UILib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,7 +35,7 @@ namespace KK_Plugins.StudioCustomMasking
         /// </summary>
         public static bool HideLines = false;
 
-#if KK
+#if KK || KKS
         internal const int ColliderLayer = 11;
 #elif HS2 || AI
         internal const int ColliderLayer = 19;
@@ -63,7 +64,7 @@ namespace KK_Plugins.StudioCustomMasking
 
             if (ScreencapType != null)
             {
-#if KK
+#if KK || KKS
                 harmony.Patch(ScreencapType.GetMethod("TakeCharScreenshot", AccessTools.all), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ScreencapHook), AccessTools.all)));
 #else
                 harmony.Patch(ScreencapType.GetMethod("CaptureAndWrite", AccessTools.all), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ScreencapHook), AccessTools.all)));
@@ -115,16 +116,7 @@ namespace KK_Plugins.StudioCustomMasking
         /// </summary>
         private static byte[] LoadIcon()
         {
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.CustomMaskingIcon.png"))
-            {
-                if (stream != null)
-                {
-                    byte[] bytesInStream = new byte[stream.Length];
-                    stream.Read(bytesInStream, 0, bytesInStream.Length);
-                    return bytesInStream;
-                }
-            }
-            return null;
+            return ResourceUtils.GetEmbeddedResource("CustomMaskingIcon.png");
         }
 
         private static SceneController _SceneControllerInstance;

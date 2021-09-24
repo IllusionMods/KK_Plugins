@@ -115,7 +115,7 @@ namespace KK_Plugins.StudioSceneSettings
             if (s.name != "Studio") return;
             SceneManager.sceneLoaded -= InitStudioUI;
 
-#if KK
+#if KK || KKS
             CameraLayerDefault = Camera.main.gameObject.layer;
 #else 
             CameraLayerDefault = 1;
@@ -154,7 +154,7 @@ namespace KK_Plugins.StudioSceneSettings
             ShadowDistance.EnforceSliderMaximum = false;
         }
 
-#if KK
+#if KK || KKS
         internal float NearClipDefault => Camera.main.nearClipPlane;
         internal void NearClipSetter(float value) => Camera.main.nearClipPlane = value;
         internal float FarClipDefault => Camera.main.farClipPlane;

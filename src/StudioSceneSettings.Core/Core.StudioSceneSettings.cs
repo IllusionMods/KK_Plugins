@@ -18,7 +18,7 @@ namespace KK_Plugins.StudioSceneSettings
         public const string Version = "1.3.2";
         internal static new ManualLogSource Logger;
 
-#if KK
+#if KK || KKS
         internal const int CameraMapMaskingLayer = 26;
 #else
         internal const int CameraMapMaskingLayer = 22;
