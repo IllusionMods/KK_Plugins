@@ -12,6 +12,7 @@ using Studio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KKAPI.Studio.UI;
 using UnityEngine;
 #if AI || HS2
 using AIChara;
@@ -33,7 +34,19 @@ namespace KK_Plugins
         public const string Version = "2.2";
         internal static new ManualLogSource Logger;
 
-        private bool GUIVisible;
+        private bool GUIVisible
+        {
+            get => _guiVisible;
+            set
+            {
+                _guiVisible = value;
+                _toolbarToggle.Value = value;
+            }
+        }
+        private bool _guiVisible;
+        private ToolbarToggle _toolbarToggle;
+        private Texture2D _windowBackground; // This needs to be in a field or it will get destroyed on scene load
+        private GUIStyle _bgStyle;
         private int SelectedGuideObject;
         private Rect AnimGUI = new Rect(70, 190, 200, 400);
 
@@ -52,6 +65,16 @@ namespace KK_Plugins
             AnimationControllerHotkey = Config.Bind("Keyboard Shortcuts", "Toggle Animation Controller Window", new KeyboardShortcut(KeyCode.Minus), "Show or hide the Animation Controller window in Studio");
             CharacterApi.RegisterExtraBehaviour<AnimationControllerCharaController>(GUID);
             StudioSaveLoadApi.RegisterExtraBehaviour<AnimationControllerSceneController>(GUID);
+
+            var buttonTex = ResourceUtils.GetEmbeddedResource("studio_icon.png", typeof(AnimationController).Assembly).LoadTexture();
+            _toolbarToggle = CustomToolbarButtons.AddLeftToolbarToggle(buttonTex, false, b => GUIVisible = b);
+
+            // todo get rid of this and use the kkapi version after it's fixed in studio
+            _windowBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+            _windowBackground.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
+            _windowBackground.Apply();
+            DontDestroyOnLoad(_windowBackground);
+            _bgStyle = new GUIStyle { normal = new GUIStyleState { background = _windowBackground } };
 
             //Change window location for different resolutions. Probably a better way to do this, but I don't care.
             if (Screen.height == 900)
@@ -118,7 +141,7 @@ namespace KK_Plugins
             if (GUIVisible)
             {
                 AnimGUI = GUILayout.Window(23423475, AnimGUI, AnimWindow, PluginName);
-                IMGUIUtils.DrawSolidBox(AnimGUI);
+                GUI.Box(AnimGUI, GUIContent.none, _bgStyle);
             }
         }
         /// <summary>
