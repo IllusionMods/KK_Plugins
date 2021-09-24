@@ -106,7 +106,12 @@ namespace KK_Plugins.StudioCustomMasking
             icon.color = Color.white;
 
             colliderFolderButton.onClick = new Button.ButtonClickedEvent();
-            colliderFolderButton.onClick.AddListener(() => { SceneControllerInstance.CreateMaskingFolder(); });
+            colliderFolderButton.onClick.AddListener(() =>
+            {
+                SceneControllerInstance.CreateMaskingFolder();
+                if (!StudioSceneSettings.SceneController.MapMasking.Value)
+                    Logger.LogMessage("The mask will not work until you turn on [system\\Scene Effects\\Map Masking]!");
+            });
 
             Camera.main.gameObject.AddComponent<DrawColliderLines>();
         }
