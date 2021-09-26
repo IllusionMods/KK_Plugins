@@ -20,7 +20,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.studioimageembed";
         public const string PluginName = "Image Embed";
         public const string PluginNameInternal = Constants.Prefix + "_ImageEmbed";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<bool> SavePattern { get; private set; }

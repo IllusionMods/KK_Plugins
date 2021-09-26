@@ -87,7 +87,7 @@ namespace KK_Plugins
     {
         public static string GetPatternPath(this Studio.OCIItem ociItem, int index)
         {
-#if KK
+#if KK || KKS
             return ociItem.itemInfo.pattern[index].filePath;
 #elif AI || HS2
             return ociItem.itemInfo.colors[index].pattern.filePath;
@@ -98,7 +98,7 @@ namespace KK_Plugins
 
         public static void SetPatternPath(this Studio.OCIItem ociItem, int index, string filePath)
         {
-#if KK
+#if KK || KKS
             ociItem.itemInfo.pattern[index].filePath = filePath;
 #elif AI || HS2
             ociItem.itemInfo.colors[index].pattern.filePath = filePath;
