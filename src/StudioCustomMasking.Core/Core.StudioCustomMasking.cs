@@ -25,7 +25,7 @@ namespace KK_Plugins.StudioCustomMasking
         public const string GUID = "com.deathweasel.bepinex.studiocustommasking";
         public const string PluginName = "Studio Custom Masking";
         public const string PluginNameInternal = Constants.Prefix + "_StudioCustomMasking";
-        public const string Version = "1.1";
+        public const string Version = "1.1.1";
 
         internal static new ManualLogSource Logger;
         public static StudioCustomMasking Instance;

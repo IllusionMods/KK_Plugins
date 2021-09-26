@@ -95,10 +95,12 @@ namespace KK_Plugins.StudioCustomMasking
         {
             ociFolder.objectItem.name = "FolderCollider";
             var collider = ociFolder.objectItem.AddComponent<BoxCollider>();
-#if KK
+#if KK || KKS
             collider.size = new Vector3(1f, 1f, 1f);
 #elif AI || HS2
             collider.size = new Vector3(10f, 10f, 10f);
+#else
+            this ain't right
 #endif
             ociFolder.objectItem.layer = StudioCustomMasking.ColliderLayer;
             ociFolder.objectItem.transform.parent = ociFolder.objectItem.transform;
