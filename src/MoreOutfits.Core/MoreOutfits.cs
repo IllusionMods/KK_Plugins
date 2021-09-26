@@ -15,7 +15,7 @@ namespace KK_Plugins.MoreOutfits
         public const string PluginGUID = "com.deathweasel.bepinex.moreoutfits";
         public const string PluginName = "More Outfit Slots";
         public const string PluginNameInternal = Constants.Prefix + "_MoreOutfits";
-        public const string PluginVersion = "1.0";
+        public const string PluginVersion = "1.0.1";
 
         internal static new ManualLogSource Logger;
         internal static Plugin Instance;

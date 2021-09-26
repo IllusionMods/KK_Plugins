@@ -631,6 +631,12 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 
 Allows characters to have more than the default number of outfit slots.
 
+#### TwoLut
+
+- [KK_TwoLut]
+
+Allows you to freely mix two studio shades (luts), instead of one always being set to Midday (based on plugin by essu). Also adds next/previous lut buttons next to the dropdown.
+
 [//]: # (## Latest Links)
 
 [KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"

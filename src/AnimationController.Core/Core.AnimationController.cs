@@ -32,7 +32,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.animationcontroller";
         public const string PluginName = "Animation Controller";
         public const string PluginNameInternal = Constants.Prefix + "_AnimationController";
-        public const string Version = "2.2";
+        public const string Version = "2.3";
         internal static new ManualLogSource Logger;
 
         private bool GUIVisible
