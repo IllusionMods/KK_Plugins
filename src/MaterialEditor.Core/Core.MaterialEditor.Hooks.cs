@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 #if AI || HS2
 using AIChara;
-#elif KK
+#elif KK || KKS
 using ChaCustom;
 using TMPro;
 #endif
@@ -143,7 +143,7 @@ namespace KK_Plugins.MaterialEditor
         private static bool MaterialAPI_SetMaterials(GameObject gameObject, Renderer renderer, Material[] materials)
         {
             //Must use sharedMaterials for character objects or it breaks body masks, etc.
-#if KK || EC
+#if KK || EC || KKS
             if (gameObject.GetComponent<ChaControl>() && !MaterialEditorPlugin.MouthParts.Contains(renderer.NameFormatted()))
 #else
             if (gameObject.GetComponent<ChaControl>())
@@ -491,7 +491,7 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-#if KK
+#if KK || KKS
         [HarmonyPostfix, HarmonyPatch(typeof(CvsClothesCopy), nameof(CvsClothesCopy.CopyClothes))]
         private static void CopyClothesPostfix(TMP_Dropdown[] ___ddCoordeType, Toggle[] ___tglKind)
         {
