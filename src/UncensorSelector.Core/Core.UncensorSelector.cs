@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using KKAPI.Utilities;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,7 +35,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "3.11.3";
+        public const string Version = "3.11.4";
         internal static new ManualLogSource Logger;
         private static readonly HashSet<string> AllAdditionalParts = new HashSet<string>();
         public static readonly Dictionary<string, BodyData> BodyDictionary = new Dictionary<string, BodyData>();
@@ -138,6 +139,10 @@ namespace KK_Plugins
             Type loadAsyncIterator = typeof(ChaControl).GetNestedTypes(AccessTools.all).First(x => x.Name.StartsWith("<LoadAsync>c__Iterator"));
             MethodInfo loadAsyncIteratorMoveNext = loadAsyncIterator.GetMethod("MoveNext");
             harmony.Patch(loadAsyncIteratorMoveNext, null, null, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.LoadAsyncTranspiler), AccessTools.all)));
+#elif KKS
+            var tpl = new HarmonyMethod(typeof(Hooks), nameof(Hooks.LoadAsyncTranspiler));
+            harmony.PatchMoveNext(AccessTools.Method(typeof(ChaControl), nameof(ChaControl.LoadAsync)), transpiler: tpl);
+            harmony.Patch(AccessTools.Method(typeof(ChaControl), nameof(ChaControl.LoadNoAsync)), transpiler: tpl);
 #endif
         }
 
