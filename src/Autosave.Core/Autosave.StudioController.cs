@@ -1,4 +1,4 @@
-﻿#if KK || AI || HS2 || PH
+﻿#if KK || AI || HS2 || PH || KKS
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using Studio;

@@ -33,7 +33,7 @@ namespace KK_Plugins
         public const string PluginGUID = "com.deathweasel.bepinex.autosave";
         public const string PluginName = "Autosave";
         public const string PluginNameInternal = Constants.Prefix + "_Autosave";
-        public const string PluginVersion = "1.1";
+        public const string PluginVersion = "1.1.1";
         internal static new ManualLogSource Logger;
         internal static Autosave Instance;
 
@@ -57,7 +57,7 @@ namespace KK_Plugins
         private static CustomControl CustomControlInstance;
 #endif
         private static Coroutine MakerCoroutine;
-#if !EC && !PC && !SBPR && !KKS
+#if !EC && !PC && !SBPR
         private static Coroutine StudioCoroutine;
 #endif
         public static ConfigEntry<bool> AutosaveEnabled { get; private set; }
@@ -82,7 +82,7 @@ namespace KK_Plugins
 
             if (InStudio)
             {
-#if !EC && !PC && !SBPR && !KKS
+#if !EC && !PC && !SBPR
                 StudioCoroutine = StartCoroutine(AutosaveStudio());
 #endif
             }
@@ -108,7 +108,7 @@ namespace KK_Plugins
 #if KK || EC || AI || HS2 || PH || KKS
             KKAPI.Chara.CharacterApi.RegisterExtraBehaviour<CharaController>(PluginGUID);
 #endif
-#if KK || AI || HS2 || PH
+#if KK || AI || HS2 || PH || KKS
             KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour<StudioController>(PluginGUID);
 #endif
         }
@@ -196,7 +196,7 @@ namespace KK_Plugins
             }
         }
 
-#if !EC && !PC && !SBPR && !KKS
+#if !EC && !PC && !SBPR
         private IEnumerator AutosaveStudio()
         {
             while (true)
@@ -289,7 +289,7 @@ namespace KK_Plugins
             MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
         }
 
-#if !EC && !PC && !SBPR && !KKS
+#if !EC && !PC && !SBPR
         /// <summary>
         /// Reset the coroutine and restart the autosave timer
         /// </summary>
