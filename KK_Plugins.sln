@@ -423,9 +423,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Subtitles", "src\Subtitles.KKS\KKS.Subtitles.csproj", "{86BDC6AF-B123-4116-B0CE-6884360CF070}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.AccessoryClothes", "src\AccessoryClothes.KKS\KKS.AccessoryClothes.csproj", "{6AA3AD0C-AC11-4224-81A8-8E1387DF336C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{49002A35-8753-442F-9781-45E9881FD7AB} = {49002A35-8753-442F-9781-45E9881FD7AB}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.Demosaic", "src\Demosaic.KKS\KKS.Demosaic.csproj", "{6DDFD009-9742-4898-98A3-FF1051C8A62F}"
 EndProject

@@ -9,9 +9,14 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.accessoryclothes";
         public const string PluginName = "Accessory Clothes";
         public const string PluginNameInternal = Constants.Prefix + "_AccessoryClothes";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
     }
 
+    /// <summary>
+    /// This component is added to the accessory object in order to run all of the necessary logic.
+    /// This plugin doesn't do anything other than load this type so that unity can find it when loading accessories.
+    /// Assembly name must be the same between games and never change because it's used by unity to figure out where the component attached to the accessory is coming from.
+    /// </summary>
     public class ChaAccessoryClothes : MonoBehaviour
     {
         public Transform ArmatureRoot;
