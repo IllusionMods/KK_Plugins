@@ -24,7 +24,7 @@ namespace KK_Plugins
     [BepInProcess(Constants.MainGameProcessNameSteam)]
     [BepInProcess(Constants.VRProcessName)]
     [BepInProcess(Constants.VRProcessNameSteam)]
-#elif HS2
+#elif HS2 || KKS
     [BepInProcess(Constants.VRProcessName)]
 #endif
     [BepInProcess(Constants.MainGameProcessName)]
@@ -33,7 +33,7 @@ namespace KK_Plugins
     {
         public const string GUID = "com.deathweasel.bepinex.subtitles";
         public const string PluginName = "Subtitles";
-        public const string Version = "2.3";
+        public const string Version = "2.3.1";
         public const string PluginNameInternal = Constants.Prefix + "_Subtitles";
 
         internal static Subtitles Instance;
