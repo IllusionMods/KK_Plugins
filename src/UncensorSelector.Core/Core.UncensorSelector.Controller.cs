@@ -11,7 +11,7 @@ using KoiSkinOverlayX;
 using Manager;
 using UnityEngine;
 using Random = System.Random;
-#if KK || AI || HS2
+#if KK || AI || HS2 || KKS
 using KKAPI.Studio;
 #endif
 #if AI || HS2
@@ -188,8 +188,7 @@ namespace KK_Plugins
 #endif
                 }
 
-                //TODO: Fix on KKS Studio release
-#if KK
+#if KK || KKS
                 //Correct characters if gender bender is not permitted, except in Studio where it may be required for scene compatibility
                 if (GenderBender == false && !StudioAPI.InsideStudio)
                 {
