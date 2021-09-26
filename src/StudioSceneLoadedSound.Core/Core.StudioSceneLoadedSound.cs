@@ -39,7 +39,7 @@ namespace KK_Plugins
 
 #if AI
         private static void PlayAlertSound() => Singleton<Manager.Resources>.Instance.SoundPack.Play(AIProject.SoundPack.SystemSE.OK_S);
-#elif HS2
+#elif HS2 || KKS
         private static void PlayAlertSound() => Utils.Sound.Play(SystemSE.ok_s);
 #elif KK
         private static void PlayAlertSound() => Utils.Sound.Play(SystemSE.result_single);
