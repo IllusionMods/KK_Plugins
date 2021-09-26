@@ -9,10 +9,15 @@ Plugins for Koikatsu, EmotionCreators, and AI Girl
 3. Install [IllusionModdingAPI](https://github.com/IllusionMods/IllusionModdingAPI)
 4. Extract the plugin .zip file to your game folder
 
+## Plugin descriptions and downloads
+
+Make sure you download the version for your game (the first part before _ is the initials of the game, e.g. HS2 = HoneySelect2).
+
+If a plugin is listed but it's not a link, then it's either experimental or obsolete. You will need to compile it from source yourself, and you will not get any support.
+
 #### CharaMakerLoadedSound
 
 - [KK_CharaMakerLoadedSound]
-
 
 Plays a sound when the Chara Maker finishes loading. Useful if you spend the load time alt-tabbed.
 
@@ -21,7 +26,7 @@ Plays a sound when the Chara Maker finishes loading. Useful if you spend the loa
 - [AI_StudioSceneLoadedSound]
 - [HS2_StudioSceneLoadedSound]
 - [KK_StudioSceneLoadedSound]
-
+- [KKS_StudioSceneLoadedSound]
 
 Plays a sound when a Studio scene finishes loading or importing. Useful if you spend the load time for large scenes alt-tabbed.
 
@@ -33,7 +38,6 @@ v1.1 Config options, AI version (thanks GeBo!)<br/>
 
 - [KK_ForceHighPoly]
 - [KKS_ForceHighPoly]
-
 
 Forces all characters to load in high poly mode, even in the school exploration mode.
 
@@ -49,7 +53,6 @@ v1.2.2 Fixed a patch not working<br/>
 - [EC_ReloadCharaListOnChange]
 - [KK_ReloadCharaListOnChange]
 - [KKS_ReloadCharaListOnChange]
-
 
 Reloads the list of characters and coordinates in the character maker when any card is added or removed from the folders. Supports adding and removing large numbers of cards at once.
 
@@ -71,7 +74,6 @@ v1.5.2 Prevent reloading when cards in the _autosave folder are changed<br/>
 - [HS2_InvisibleBody]
 - [KK_InvisibleBody]
 - [KKS_InvisibleBody]
-
 
 Set the Invisible Body toggle for a character in the character maker to hide the body. Any worn clothes or accessories will remain visible.
 
@@ -95,7 +97,6 @@ v1.4 Changes made in Studio apply to all selected characters, keep visible state
 - [HS2_UncensorSelector]
 - [KK_UncensorSelector]
 - [KKS_UncensorSelector]
-
 
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.
 
@@ -146,12 +147,11 @@ v3.11.3 Compatibility with MaterialEditor<br/>
 #### Subtitles
 
 - [AI_Subtitles]
-- [HS2_Subtitles]
 - [HS_Subtitles]
+- [HS2_Subtitles]
 - [KK_Subtitles]
 - [KKS_Subtitles]
 - [PC_Subtitles]
-
 
 For Koikatsu, adds subtitles for H scenes, spoken text in dialogues, and character maker.
 
@@ -178,6 +178,7 @@ v2.2 Play Club version
 - [AI_AnimationController]
 - [HS2_AnimationController]
 - [KK_AnimationController]
+- [KKS_AnimationController]
 
 *Koikatsu version: Mostly obsolete. [NodeConstraints](https://www.patreon.com/posts/26357789) does what this plugin does but better.*
 
@@ -201,7 +202,6 @@ v2.2 AI version, window position adjustment<br/>
 - [KK_ClothingUnlocker]
 - [KKS_ClothingUnlocker]
 
-
 Allows gender restricted clothing to be used on all characters. Also allows you to unlock bras or skirts with any top on a per-character, per-ourfit basis. This setting saves and loads with the character card or coordinate card to ensure compatibility.
 
 <details><summary>Change Log</summary>
@@ -215,7 +215,6 @@ v2.0.1 Fixed unlock state not saving and loading to coordinates properly<br/>
 - [KK_EyeShaking]
 - [KKS_EyeShaking]
 
-
 Virgins in H scenes will appear to have slightly shaking eye highlights.
 
 <details><summary>Change Log</summary>
@@ -226,7 +225,6 @@ v1.2 Changes made in Studio apply to all selected characters<br/>
 #### RandomCharacterGenerator
 
 - [KK_RandomCharacterGenerator]
-
 
 Generates random characters in the character maker.
 
@@ -239,7 +237,7 @@ v2.0 Merged changes from https://github.com/AUTOMATIC1111/KoikatsuMods<br/>
 - [AI_PoseFolders]
 - [HS2_PoseFolders]
 - [KK_PoseFolders]
-
+- [KKS_PoseFolders]
 
 Create new folders in userdata/studio/pose and place the pose data inside them. Folders will show up in your list of poses in Studio.
 
@@ -248,7 +246,6 @@ Ported from Essu's NEOpose List Folders plugin for Honey Select.
 #### ListOverride
 
 - [KK_ListOverride]
-
 
 Allows you to override vanilla list files. Comes with some overrides that enable half off state for some vanilla pantyhose.
 
@@ -259,7 +256,6 @@ Overriding list files can allow you to do things like enable bras with some shir
 - [EC_HairAccessoryCustomizer]
 - [KK_HairAccessoryCustomizer]
 - [KKS_HairAccessoryCustomizer]
-
 
 Adds configuration options for hair accessories to the character maker. Hair accessories can be set to match color with the hair, enable hair gloss, modify outline color, and has a separate color picker for the hair tie part. Hairs that support a length slider can also have their length adjusted, just like vanilla front hairs. Saves and loads to cards and coordinates.
 
@@ -294,7 +290,6 @@ v1.2 VR support<br/>
 - [KK_Colliders]
 - [KKS_Colliders]
 
-
 Adds floor, breast, hand, and skirt colliders. Colliders can be toggled on and off in Studio and their state saves with the scene.
 
 <details><summary>Change Log</summary>
@@ -311,7 +306,6 @@ v1.2 Changes made in Studio apply to all selected characters<br/>
 - [KK_MaterialEditor]
 - [KKS_MaterialEditor]
 - [PH_MaterialEditor]
-
 
 MaterialEditor is a plugin that allows you to edit many properties of objects that aren't usually accessible in game. Much like [Marco's clothing overlays](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) you can replace the texture of an item, however with MaterialEditor you can edit much more than clothes. Edit clothes, accessories, hair, and even Studio items.
 
@@ -384,7 +378,6 @@ v3.1.5 Compatibility with UncensorSelector<br/>
 - [HS2_MaleJuice]
 - [KK_MaleJuice]
 
-
 Enables juice textures for males in H scenes and Studio.
 
 <details><summary>Change Log</summary>
@@ -400,7 +393,7 @@ v1.3 Better UncensorSelector compatibility<br/>
 - [AI_StudioObjectMoveHotkeys]
 - [HS2_StudioObjectMoveHotkeys]
 - [KK_StudioObjectMoveHotkeys]
-
+- [KKS_StudioObjectMoveHotkeys]
 
 Allows you to move objects in studio using hotkeys. Press Y/U/I to move along the X/Y/Z axes. You can also use these keys for rotating and scaling, and when scaling you can also press T to scale all axes at once. Hotkeys can be configured in plugin settings.
 
@@ -409,7 +402,7 @@ Allows you to move objects in studio using hotkeys. Press Y/U/I to move along th
 - [AI_FKIK]
 - [HS2_FKIK]
 - [KK_FKIK]
-
+- [KKS_FKIK]
 
 Enables FK and IK at the same time. Pose characters in IK mode while still being able to adjust skirts, hair, and hands as if they were in FK mode.
 
@@ -423,7 +416,7 @@ v1.1.1 Fix neck look pattern not loading properly<br/>
 - [AI_AnimationOverdrive]
 - [HS2_AnimationOverdrive]
 - [KK_AnimationOverdrive]
-
+- [KKS_AnimationOverdrive]
 
 Type in to the animation speed box in Studio for gimmicks and character animations to go past the normal limit of 3.
 
@@ -438,7 +431,6 @@ v1.1 AI Girl port, capped animation speed at 1000 to prevent animations breaking
 - [HS2_CharacterExport]
 - [KK_CharacterExport]
 - [KKS_CharacterExport]
-
 
 Press Ctrl+E (configurable) to export all loaded character. Used for exporting characters from Studio scenes and such.
 
@@ -459,6 +451,7 @@ v2.0 Added a guide object instead of hotkeys for positioning<br/>
 - [AI_StudioSceneSettings]
 - [HS2_StudioSceneSettings]
 - [KK_StudioSceneSettings]
+- [KKS_StudioSceneSettings]
 
 Allows you to adjust a few more settings for scenes. Changes save and load with the scene data.
 
@@ -498,6 +491,7 @@ v1.3 Changes made in Studio apply to all selected characters<br/>
 - [AI_PoseQuickLoad]
 - [HS2_PoseQuickLoad]
 - [KK_PoseQuickLoad]
+- [KKS_PoseQuickLoad]
 
 A plugin that lets you load saved poses in Studio just by clicking on the pose. Vanilla behavior requires you to select the pose and then press the load button which can be pretty tedious if you have a lot of poses, especially since saved poses have no preview image.
 
@@ -508,6 +502,7 @@ Note: You MUST enable this option in the plugin settings (press F1 and search th
 - [AI_StudioImageEmbed]
 - [HS2_StudioImageEmbed]
 - [KK_StudioImageEmbed]
+- [KKS_StudioImageEmbed]
 
 This plugin will save .png files from your userdata folder to the scene data so anyone else can load the scene properly without needing the same .png file.
 
@@ -530,6 +525,7 @@ v1.0.1 KKAPI compatibility<br/>
 - [AI_StudioCustomMasking]
 - [HS2_StudioCustomMasking]
 - [KK_StudioCustomMasking]
+- [KKS_StudioCustomMasking]
 
 Allows you to add map masking functionality for maps made out of items in Studio.<br/>
 
@@ -563,12 +559,13 @@ A big textbox in the character creator where you can write a character descripti
 
 - [AI_Autosave]
 - [EC_Autosave]
-- [HS2_Autosave]
 - [HS_Autosave]
+- [HS2_Autosave]
 - [KK_Autosave]
 - [KKS_Autosave]
 - [PC_Autosave]
 - [PH_Autosave]
+- [SBPR_Autosave]
 
 Automatically saves cards in the character maker and scenes in Studio every few minutes.
 
@@ -614,6 +611,7 @@ Allows clothes to function in accessory slots.
 - [AI_PoseUnlocker]
 - [HS2_PoseUnlocker]
 - [KK_PoseUnlocker]
+- [KKS_PoseUnlocker]
 
 Removes the gender restriction on saved Studio poses.
 
@@ -634,140 +632,173 @@ Allows characters to have more than the default number of outfit slots.
 #### TwoLut
 
 - [KK_TwoLut]
+- [KKS_TwoLut]
 
 Allows you to freely mix two studio shades (luts), instead of one always being set to Midday (based on plugin by essu). Also adds next/previous lut buttons next to the dropdown.
 
+#### Demosaic
+
+- [AI_Demosaic]
+- [EC_Demosaic]
+- [HS2_Demosaic]
+- [KK_Demosaic]
+- [KKS_Demosaic]
+
+Removes mosaics from the character models. **This is replaced by UncensorSelector and not needed** unless there is no UncensorSelector port available for a game.
+
+#### FreeHStudioSceneLoader
+
+- [KK_FreeHStudioSceneLoader]
+
+Allows you to use studio scenes as H mode maps in main game. **Experimental! Expect issues, no support will be given.**
+
 [//]: # (## Latest Links)
 
-[KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"
-[AI_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v132/AI_StudioSceneLoadedSound.v1.1.zip "v1.1"
-[HS2_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_StudioSceneLoadedSound.v1.1.zip "v1.1"
-[KK_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v132/KK_StudioSceneLoadedSound.v1.1.zip "v1.1"
-[KK_ForceHighPoly]: https://github.com/IllusionMods/KK_Plugins/releases/download/v150/KK_ForceHighPoly.v1.2.2.zip "v1.2.2"
-[KKS_ForceHighPoly]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_ForceHighPoly.v1.2.2.zip "v1.2.2"
-[EC_ReloadCharaListOnChange]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/EC_ReloadCharaListOnChange.v1.5.2.zip "v1.5.2"
-[KK_ReloadCharaListOnChange]: https://github.com/IllusionMods/KK_Plugins/releases/download/v189/KK_ReloadCharaListOnChange.v1.5.2.zip "v1.5.2"
-[KKS_ReloadCharaListOnChange]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_ReloadCharaListOnChange.v1.5.2.zip "v1.5.2"
-[AI_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/AI_InvisibleBody.v1.4.zip "v1.4"
-[EC_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/EC_InvisibleBody.v1.4.zip "v1.4"
-[HS2_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_InvisibleBody.v1.4.zip "v1.4"
-[KK_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_InvisibleBody.v1.4.zip "v1.4"
-[KKS_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_InvisibleBody.v1.4.zip "v1.4"
-[AI_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/AI_UncensorSelector.v3.11.3.zip "v3.11.3"
-[EC_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/EC_UncensorSelector.v3.11.3.zip "v3.11.3"
-[HS2_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/HS2_UncensorSelector.v3.11.3.zip "v3.11.3"
-[KK_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/KK_UncensorSelector.v3.11.3.zip "v3.11.3"
-[KKS_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/KKS_UncensorSelector.v3.11.3.zip "v3.11.3"
-[AI_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/AI_Subtitles.v2.3.zip "v2.3"
-[HS2_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/HS2_Subtitles.v2.3.zip "v2.3"
-[HS_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/HS_Subtitles.v2.3.zip "v2.3"
-[KK_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KK_Subtitles.v2.3.zip "v2.3"
-[KKS_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KKS_Subtitles.v2.3.zip "v2.3"
-[PC_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/PC_Subtitles.v2.2.zip "v2.2"
-[AI_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v123/AI_AnimationController.v2.2.zip "v2.2"
-[HS2_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_AnimationController.v2.2.zip "v2.2"
-[KK_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v123/KK_AnimationController.v2.2.zip "v2.2"
-[EC_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_ClothingUnlocker.v2.0.2.zip "v2.0.2"
-[KK_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_ClothingUnlocker.v2.0.2.zip "v2.0.2"
-[KK_EyeShaking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_EyeShaking.v1.2.zip "v1.2"
-[KKS_EyeShaking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_EyeShaking.v1.2.zip "v1.2"
-[KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v177/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
-[AI_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v120/AI_PoseFolders.v1.0.zip "v1.0"
-[HS2_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseFolders.v1.0.zip "v1.0"
-[KK_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v120/KK_PoseFolders.v1.0.zip "v1.0"
-[KK_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip "v1.0"
-[EC_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_HairAccessoryCustomizer.v1.1.6.zip "v1.1.6"
-[KK_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_HairAccessoryCustomizer.v1.1.6.zip "v1.1.6"
-[KKS_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_HairAccessoryCustomizer.v1.1.6.zip "v1.1.6"
-[EC_Demosaic]: https://github.com/IllusionMods/KK_Plugins/releases/download/v73/EC_Demosaic.v1.1.zip "v1.1"
-[KK_FreeHRandom]: https://github.com/IllusionMods/KK_Plugins/releases/download/v172/KK_FreeHRandom.v1.2.zip "v1.2"
-[KKS_FreeHRandom]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_FreeHRandom.v1.2.zip "v1.2"
-[AI_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/AI_Colliders.v1.2.zip "v1.2"
-[HS2_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_Colliders.v1.2.zip "v1.2"
-[KK_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_Colliders.v1.2.zip "v1.2"
-[KKS_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Colliders.v1.2.zip "v1.2"
-[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/AI_MaterialEditor.v3.1.6.zip "v3.1.6"
-[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/EC_MaterialEditor.v3.1.6.zip "v3.1.6"
-[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/HS2_MaterialEditor.v3.1.6.zip "v3.1.6"
-[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KK_MaterialEditor.v3.1.6.zip "v3.1.6"
-[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KKS_MaterialEditor.v3.1.6.zip "v3.1.6"
-[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/PH_MaterialEditor.v3.1.6.zip "v3.1.6"
-[AI_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/AI_MaleJuice.v1.3.zip "v1.3"
-[HS2_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/HS2_MaleJuice.v1.3.zip "v1.3"
-[KK_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/KK_MaleJuice.v1.3.zip "v1.3"
-[AI_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v122/AI_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
-[HS2_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
-[KK_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v122/KK_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
-[AI_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v180/AI_FKIK.v1.1.1.zip "v1.1.1"
-[HS2_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v180/HS2_FKIK.v1.1.1.zip "v1.1.1"
-[KK_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v180/KK_FKIK.v1.1.1.zip "v1.1.1"
-[AI_AnimationOverdrive]: https://github.com/IllusionMods/KK_Plugins/releases/download/v124/AI_AnimationOverdrive.v1.1.zip "v1.1"
-[HS2_AnimationOverdrive]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_AnimationOverdrive.v1.1.zip "v1.1"
+[KKS_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_AnimationController.v2.3.zip "v2.3"
+[KK_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KK_AnimationController.v2.3.zip "v2.3"
+[HS2_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/HS2_AnimationController.v2.3.zip "v2.3"
+[AI_AnimationController]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/AI_AnimationController.v2.3.zip "v2.3"
+[KKS_AnimationOverdrive]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_AnimationOverdrive.v1.1.zip "v1.1"
 [KK_AnimationOverdrive]: https://github.com/IllusionMods/KK_Plugins/releases/download/v124/KK_AnimationOverdrive.v1.1.zip "v1.1"
-[AI_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/AI_CharacterExport.v1.0.zip "v1.0"
-[EC_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/EC_CharacterExport.v1.0.zip "v1.0"
-[HS2_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_CharacterExport.v1.0.zip "v1.0"
-[KK_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/KK_CharacterExport.v1.0.zip "v1.0"
-[KKS_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_CharacterExport.v1.0.zip "v1.0"
-[KK_HCharaAdjustment]: https://github.com/IllusionMods/KK_Plugins/releases/download/v135/KK_HCharaAdjustment.v2.0.zip "v2.0"
-[KKS_HCharaAdjustment]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_HCharaAdjustment.v2.0.zip "v2.0"
-[AI_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/AI_StudioSceneSettings.v1.3.2.zip "v1.3.2"
-[HS2_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_StudioSceneSettings.v1.3.2.zip "v1.3.2"
-[KK_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_StudioSceneSettings.v1.3.2.zip "v1.3.2"
-[EC_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_Pushup.v1.3.1.zip "v1.3.1"
-[KK_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_Pushup.v1.3.1.zip "v1.3.1"
-[KKS_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_Pushup.v1.3.1.zip "v1.3.1"
-[AI_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/AI_PoseQuickLoad.v1.0.zip "v1.0"
-[HS2_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseQuickLoad.v1.0.zip "v1.0"
-[KK_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/KK_PoseQuickLoad.v1.0.zip "v1.0"
-[AI_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/AI_StudioImageEmbed.v1.0.1.zip "v1.0.1"
-[HS2_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/HS2_StudioImageEmbed.v1.0.1.zip "v1.0.1"
-[KK_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/KK_StudioImageEmbed.v1.0.1.zip "v1.0.1"
-[AI_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/AI_MakerDefaults.v1.0.1.zip "v1.0.1"
-[EC_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/EC_MakerDefaults.v1.0.1.zip "v1.0.1"
-[HS2_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/HS2_MakerDefaults.v1.0.1.zip "v1.0.1"
-[KK_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/KK_MakerDefaults.v1.0.1.zip "v1.0.1"
-[KKS_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_MakerDefaults.v1.0.1.zip "v1.0.1"
-[AI_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v173/AI_StudioCustomMasking.v1.0.zip "v1.0"
-[HS2_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v173/HS2_StudioCustomMasking.v1.0.zip "v1.0"
-[KK_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v173/KK_StudioCustomMasking.v1.0.zip "v1.0"
-[EC_ItemBlacklist]: https://github.com/IllusionMods/KK_Plugins/releases/download/v176/EC_ItemBlacklist.v1.1.zip "v1.1"
-[KK_ItemBlacklist]: https://github.com/IllusionMods/KK_Plugins/releases/download/v176/KK_ItemBlacklist.v1.1.zip "v1.1"
-[KKS_ItemBlacklist]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_ItemBlacklist.v1.1.zip "v1.1"
-[KK_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/KK_FadeAdjuster.v1.0.1.zip "v1.0.1"
-[EC_Profile]: https://github.com/IllusionMods/KK_Plugins/releases/download/v183/EC_Profile.v1.0.1.zip "v1.0.1"
-[KK_Profile]: https://github.com/IllusionMods/KK_Plugins/releases/download/v183/KK_Profile.v1.0.1.zip "v1.0.1"
-[KKS_Profile]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Profile.v1.0.1.zip "v1.0.1"
-[AI_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/AI_Autosave.v1.1.zip "v1.1"
-[EC_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/EC_Autosave.v1.1.zip "v1.1"
+[HS2_AnimationOverdrive]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_AnimationOverdrive.v1.1.zip "v1.1"
+[AI_AnimationOverdrive]: https://github.com/IllusionMods/KK_Plugins/releases/download/v124/AI_AnimationOverdrive.v1.1.zip "v1.1"
+[PH_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/PH_Autosave.v1.1.zip "v1.1"
+[PC_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/PC_Autosave.v1.1.zip "v1.1"
+[KKS_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Autosave.v1.1.zip "v1.1"
+[KK_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/KK_Autosave.v1.1.zip "v1.1"
 [HS2_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/HS2_Autosave.v1.1.zip "v1.1"
 [HS_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/HS_Autosave.v1.1.zip "v1.1"
-[KK_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/KK_Autosave.v1.1.zip "v1.1"
-[KKS_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Autosave.v1.1.zip "v1.1"
-[PC_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/PC_Autosave.v1.1.zip "v1.1"
-[PH_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/PH_Autosave.v1.1.zip "v1.1"
-[AI_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/AI_EyeControl.v1.0.1.zip "v1.0.1"
-[EC_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/EC_EyeControl.v1.0.1.zip "v1.0.1"
-[HS2_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/HS2_EyeControl.v1.0.1.zip "v1.0.1"
-[KK_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/KK_EyeControl.v1.0.1.zip "v1.0.1"
-[KKS_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_EyeControl.v1.0.1.zip "v1.0.1"
-[EC_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v191/EC_AccessoryQuickRemove.v1.0.zip "v1.0"
-[KK_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v191/KK_AccessoryQuickRemove.v1.0.zip "v1.0"
-[KKS_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_AccessoryQuickRemove.v1.0.zip "v1.0"
-[AI_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/AI_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
-[EC_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
-[HS2_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/HS2_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
-[KK_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
-[KKS_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[EC_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/EC_Autosave.v1.1.zip "v1.1"
+[AI_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v192/AI_Autosave.v1.1.zip "v1.1"
+[KKS_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_CharacterExport.v1.0.zip "v1.0"
+[KK_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/KK_CharacterExport.v1.0.zip "v1.0"
+[HS2_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_CharacterExport.v1.0.zip "v1.0"
+[EC_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/EC_CharacterExport.v1.0.zip "v1.0"
+[AI_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/AI_CharacterExport.v1.0.zip "v1.0"
+[KKS_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Colliders.v1.2.zip "v1.2"
+[KK_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_Colliders.v1.2.zip "v1.2"
+[HS2_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_Colliders.v1.2.zip "v1.2"
+[AI_Colliders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/AI_Colliders.v1.2.zip "v1.2"
+[KKS_Demosaic]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Demosaic.v1.1.zip "v1.1"
+[HS2_Demosaic]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_Demosaic.v1.1.zip "v1.1"
+[EC_Demosaic]: https://github.com/IllusionMods/KK_Plugins/releases/download/v73/EC_Demosaic.v1.1.zip "v1.1"
+[AI_Demosaic]: https://github.com/IllusionMods/KK_Plugins/releases/download/v116/AI_Demosaic.v1.1.zip "v1.1"
 [PH_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/PH_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
-[EC_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/EC_AccessoryClothes.v1.0.zip "v1.0"
-[KK_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_AccessoryClothes.v1.0.zip "v1.0"
-[KKS_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_AccessoryClothes.v1.0.zip "v1.0"
-[AI_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/AI_PoseUnlocker.v1.0.zip "v1.0"
-[HS2_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_PoseUnlocker.v1.0.zip "v1.0"
+[KKS_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[KK_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[HS2_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/HS2_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[EC_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[AI_DynamicBoneEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/AI_DynamicBoneEditor.v1.0.4.zip "v1.0.4"
+[KKS_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_EyeControl.v1.0.1.zip "v1.0.1"
+[KK_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/KK_EyeControl.v1.0.1.zip "v1.0.1"
+[HS2_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/HS2_EyeControl.v1.0.1.zip "v1.0.1"
+[EC_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/EC_EyeControl.v1.0.1.zip "v1.0.1"
+[AI_EyeControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/AI_EyeControl.v1.0.1.zip "v1.0.1"
+[KKS_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_FKIK.v1.1.2.zip "v1.1.2"
+[KK_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KK_FKIK.v1.1.2.zip "v1.1.2"
+[HS2_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/HS2_FKIK.v1.1.2.zip "v1.1.2"
+[AI_FKIK]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/AI_FKIK.v1.1.2.zip "v1.1.2"
+[KKS_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_InvisibleBody.v1.4.zip "v1.4"
+[KK_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_InvisibleBody.v1.4.zip "v1.4"
+[HS2_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_InvisibleBody.v1.4.zip "v1.4"
+[EC_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/EC_InvisibleBody.v1.4.zip "v1.4"
+[AI_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/AI_InvisibleBody.v1.4.zip "v1.4"
+[KKS_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_MakerDefaults.v1.0.1.zip "v1.0.1"
+[KK_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/KK_MakerDefaults.v1.0.1.zip "v1.0.1"
+[HS2_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/HS2_MakerDefaults.v1.0.1.zip "v1.0.1"
+[EC_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/EC_MakerDefaults.v1.0.1.zip "v1.0.1"
+[AI_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v190/AI_MakerDefaults.v1.0.1.zip "v1.0.1"
+[KK_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/KK_MaleJuice.v1.3.zip "v1.3"
+[HS2_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/HS2_MaleJuice.v1.3.zip "v1.3"
+[AI_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/AI_MaleJuice.v1.3.zip "v1.3"
+[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/PH_MaterialEditor.v3.1.8.zip "v3.1.8"
+[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_MaterialEditor.v3.1.8.zip "v3.1.8"
+[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KK_MaterialEditor.v3.1.8.zip "v3.1.8"
+[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/HS2_MaterialEditor.v3.1.8.zip "v3.1.8"
+[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/EC_MaterialEditor.v3.1.8.zip "v3.1.8"
+[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/AI_MaterialEditor.v3.1.8.zip "v3.1.8"
+[KKS_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_PoseFolders.v1.0.zip "v1.0"
+[KK_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v120/KK_PoseFolders.v1.0.zip "v1.0"
+[HS2_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseFolders.v1.0.zip "v1.0"
+[AI_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v120/AI_PoseFolders.v1.0.zip "v1.0"
+[KKS_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_PoseQuickLoad.v1.0.zip "v1.0"
+[KK_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/KK_PoseQuickLoad.v1.0.zip "v1.0"
+[HS2_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseQuickLoad.v1.0.zip "v1.0"
+[AI_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/AI_PoseQuickLoad.v1.0.zip "v1.0"
+[KKS_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_PoseUnlocker.v1.0.zip "v1.0"
 [KK_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_PoseUnlocker.v1.0.zip "v1.0"
-[KK_LightingTweaks]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KK_LightingTweaks.v1.0.zip "v1.0"
+[HS2_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_PoseUnlocker.v1.0.zip "v1.0"
+[AI_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/AI_PoseUnlocker.v1.0.zip "v1.0"
+[KKS_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_StudioCustomMasking.v1.1.zip "v1.1"
+[KK_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KK_StudioCustomMasking.v1.1.zip "v1.1"
+[HS2_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/HS2_StudioCustomMasking.v1.1.zip "v1.1"
+[AI_StudioCustomMasking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/AI_StudioCustomMasking.v1.1.zip "v1.1"
+[KKS_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_StudioImageEmbed.v1.0.1.zip "v1.0.1"
+[KK_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/KK_StudioImageEmbed.v1.0.1.zip "v1.0.1"
+[HS2_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/HS2_StudioImageEmbed.v1.0.1.zip "v1.0.1"
+[AI_StudioImageEmbed]: https://github.com/IllusionMods/KK_Plugins/releases/download/v202/AI_StudioImageEmbed.v1.0.1.zip "v1.0.1"
+[KKS_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
+[KK_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v122/KK_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
+[HS2_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
+[AI_StudioObjectMoveHotkeys]: https://github.com/IllusionMods/KK_Plugins/releases/download/v122/AI_StudioObjectMoveHotkeys.v1.0.zip "v1.0"
+[KKS_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_StudioSceneLoadedSound.v1.1.zip "v1.1"
+[KK_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v132/KK_StudioSceneLoadedSound.v1.1.zip "v1.1"
+[HS2_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_StudioSceneLoadedSound.v1.1.zip "v1.1"
+[AI_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v132/AI_StudioSceneLoadedSound.v1.1.zip "v1.1"
+[KKS_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_StudioSceneSettings.v1.3.2.zip "v1.3.2"
+[KK_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_StudioSceneSettings.v1.3.2.zip "v1.3.2"
+[HS2_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_StudioSceneSettings.v1.3.2.zip "v1.3.2"
+[AI_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/AI_StudioSceneSettings.v1.3.2.zip "v1.3.2"
+[PC_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v188/PC_Subtitles.v2.2.zip "v2.2"
+[KKS_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KKS_Subtitles.v2.3.zip "v2.3"
+[KK_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KK_Subtitles.v2.3.zip "v2.3"
+[HS2_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/HS2_Subtitles.v2.3.zip "v2.3"
+[HS_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/HS_Subtitles.v2.3.zip "v2.3"
+[AI_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/AI_Subtitles.v2.3.zip "v2.3"
+[KKS_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/KKS_UncensorSelector.v3.11.3.zip "v3.11.3"
+[KK_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/KK_UncensorSelector.v3.11.3.zip "v3.11.3"
+[HS2_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/HS2_UncensorSelector.v3.11.3.zip "v3.11.3"
+[EC_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/EC_UncensorSelector.v3.11.3.zip "v3.11.3"
+[AI_UncensorSelector]: https://github.com/IllusionMods/KK_Plugins/releases/download/v204/AI_UncensorSelector.v3.11.3.zip "v3.11.3"
+[KKS_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_AccessoryClothes.v1.0.1.zip "v1.0.1"
+[KK_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KK_AccessoryClothes.v1.0.1.zip "v1.0.1"
+[EC_AccessoryClothes]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/EC_AccessoryClothes.v1.0.1.zip "v1.0.1"
+[KKS_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_AccessoryQuickRemove.v1.0.zip "v1.0"
+[KK_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v191/KK_AccessoryQuickRemove.v1.0.zip "v1.0"
+[EC_AccessoryQuickRemove]: https://github.com/IllusionMods/KK_Plugins/releases/download/v191/EC_AccessoryQuickRemove.v1.0.zip "v1.0"
+[KKS_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_ClothingUnlocker.v2.0.2.zip "v2.0.2"
+[KK_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_ClothingUnlocker.v2.0.2.zip "v2.0.2"
+[EC_ClothingUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_ClothingUnlocker.v2.0.2.zip "v2.0.2"
+[KKS_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_HairAccessoryCustomizer.v1.1.6.zip "v1.1.6"
+[KK_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_HairAccessoryCustomizer.v1.1.6.zip "v1.1.6"
+[EC_HairAccessoryCustomizer]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_HairAccessoryCustomizer.v1.1.6.zip "v1.1.6"
+[KKS_ItemBlacklist]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_ItemBlacklist.v1.1.zip "v1.1"
+[KK_ItemBlacklist]: https://github.com/IllusionMods/KK_Plugins/releases/download/v176/KK_ItemBlacklist.v1.1.zip "v1.1"
+[EC_ItemBlacklist]: https://github.com/IllusionMods/KK_Plugins/releases/download/v176/EC_ItemBlacklist.v1.1.zip "v1.1"
+[KKS_Profile]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_Profile.v1.0.1.zip "v1.0.1"
+[KK_Profile]: https://github.com/IllusionMods/KK_Plugins/releases/download/v183/KK_Profile.v1.0.1.zip "v1.0.1"
+[EC_Profile]: https://github.com/IllusionMods/KK_Plugins/releases/download/v183/EC_Profile.v1.0.1.zip "v1.0.1"
+[KKS_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_Pushup.v1.3.1.zip "v1.3.1"
+[KK_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_Pushup.v1.3.1.zip "v1.3.1"
+[EC_Pushup]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/EC_Pushup.v1.3.1.zip "v1.3.1"
+[KKS_ReloadCharaListOnChange]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_ReloadCharaListOnChange.v1.5.2.zip "v1.5.2"
+[KK_ReloadCharaListOnChange]: https://github.com/IllusionMods/KK_Plugins/releases/download/v189/KK_ReloadCharaListOnChange.v1.5.2.zip "v1.5.2"
+[EC_ReloadCharaListOnChange]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/EC_ReloadCharaListOnChange.v1.5.2.zip "v1.5.2"
+[KKS_EyeShaking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_EyeShaking.v1.2.zip "v1.2"
+[KK_EyeShaking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/KK_EyeShaking.v1.2.zip "v1.2"
+[KKS_ForceHighPoly]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_ForceHighPoly.v1.2.2.zip "v1.2.2"
+[KK_ForceHighPoly]: https://github.com/IllusionMods/KK_Plugins/releases/download/v150/KK_ForceHighPoly.v1.2.2.zip "v1.2.2"
+[KKS_FreeHRandom]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_FreeHRandom.v1.2.zip "v1.2"
+[KK_FreeHRandom]: https://github.com/IllusionMods/KK_Plugins/releases/download/v172/KK_FreeHRandom.v1.2.zip "v1.2"
+[KKS_HCharaAdjustment]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_HCharaAdjustment.v2.0.zip "v2.0"
+[KK_HCharaAdjustment]: https://github.com/IllusionMods/KK_Plugins/releases/download/v135/KK_HCharaAdjustment.v2.0.zip "v2.0"
 [KKS_LightingTweaks]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_LightingTweaks.v1.0.zip "v1.0"
-[KK_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KK_MoreOutfits.v1.0.zip "v1.0"
-[KKS_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v203/KKS_MoreOutfits.v1.0.zip "v1.0"
-
+[KK_LightingTweaks]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KK_LightingTweaks.v1.0.zip "v1.0"
+[KKS_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_MoreOutfits.v1.0.1.zip "v1.0.1"
+[KK_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KK_MoreOutfits.v1.0.1.zip "v1.0.1"
+[KKS_TwoLut]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KKS_TwoLut.v1.0.zip "v1.0"
+[KK_TwoLut]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KK_TwoLut.v1.0.zip "v1.0"
+[KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"
+[KK_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/KK_FadeAdjuster.v1.0.1.zip "v1.0.1"
+[KK_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip "v1.0"
+[KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v177/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
