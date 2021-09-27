@@ -28,10 +28,20 @@ namespace KK_Plugins
         {
             foreach (var light in FindObjectsOfType<Light>())
             {
-                light.shadowCustomResolution = 10000;
-                light.shadowBias = 0.0075f;
-                if (light.name == "Directional Chara") //Studio shadow strength is different from main game for some reason
-                    light.shadowStrength = 1;
+                if (StudioAPI.InsideStudio)
+                {
+                    if (light.name == "Directional Chara")
+                    {
+                        light.shadowCustomResolution = 10000;
+                        light.shadowBias = 0.0075f;
+                        light.shadowStrength = 1; //Studio shadow strength is different from main game for some reason
+                    }
+                }
+                else
+                {
+                    light.shadowCustomResolution = 10000;
+                    light.shadowBias = 0.0075f;
+                }
             }
         }
 
