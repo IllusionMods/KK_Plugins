@@ -67,7 +67,7 @@ namespace KK_Plugins
 
         private void Start()
         {
-#if !EC && !PC && !SBPR && !KKS
+#if !EC && !PC && !SBPR
             InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
 #endif
             Logger = base.Logger;
