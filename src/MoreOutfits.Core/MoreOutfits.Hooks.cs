@@ -77,7 +77,10 @@ namespace KK_Plugins.MoreOutfits
         }
 
 #if KKS
-        private static bool DoingImport = true;
+        private static bool DoingImport;
+        
+        [HarmonyPostfix, HarmonyPatch(typeof(ConvertChaFileScene), nameof(ConvertChaFileScene.Start))]
+        private static void ConvertChaFileSceneStart() => DoingImport = true;
 
         [HarmonyPostfix, HarmonyPatch(typeof(ConvertChaFileScene), nameof(ConvertChaFileScene.OnDestroy))]
         private static void ConvertChaFileSceneEnd() => DoingImport = false;
