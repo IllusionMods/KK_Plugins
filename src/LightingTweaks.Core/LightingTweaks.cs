@@ -13,7 +13,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.lightingtweaks";
         public const string PluginName = "Lighting Tweaks";
         public const string PluginNameInternal = "KK_LightingTweaks";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
         internal static new ManualLogSource Logger;
 
         internal void Main()
