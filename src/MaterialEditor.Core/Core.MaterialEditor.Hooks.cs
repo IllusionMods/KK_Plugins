@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using KKAPI.Utilities;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -274,7 +275,12 @@ namespace KK_Plugins.MaterialEditor
                 controller.ChangeAccessoryEvent(slotNo, type);
         }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), typeof(int), typeof(int), typeof(bool), typeof(bool))]
+        [HarmonyPostfix]
+        // bug? async postfix doesn't actually run after method finishes but before
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), typeof(int), typeof(int), typeof(bool), typeof(bool))]
+#if KKS
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairNoAsync), typeof(int), typeof(int), typeof(bool))]
+#endif
         private static void ChangeHair(ChaControl __instance, int kind)
         {
             var controller = MaterialEditorPlugin.GetCharaController(__instance);
@@ -361,63 +367,66 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Apply mask textures to all material copies
         /// </summary>
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopAsync))]
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopAsync))]
         private static void ChangeClothesTopAsyncPostfix(ChaControl __instance, ref IEnumerator __result)
         {
             var controller = MaterialEditorPlugin.GetCharaController(__instance);
             if (controller != null)
             {
                 var original = __result;
-                __result = new[] { original, Postfix() }.GetEnumerator();
+                __result = original.AppendCo(() => ChangeClothesTopPostfix(__instance));
+            }
+        }
+
+#if KKS
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopNoAsync))]
+#endif
+        private static void ChangeClothesTopPostfix(ChaControl __instance)
+        {
+            if (__instance.rendBody.sharedMaterials.Length > 1)
+            {
+                for (int i = 0; i < __instance.rendBody.sharedMaterials.Length; i++)
+                {
+                    var mat = __instance.rendBody.sharedMaterials[i];
+                    mat.SetTexture(ChaShader._AlphaMask, __instance.texBodyAlphaMask);
+                }
             }
 
-            IEnumerator Postfix()
+            if (__instance.rendBra != null && __instance.texBraAlphaMask != null)
             {
-                if (__instance.rendBody.sharedMaterials.Length > 1)
+                for (int j = 0; j < 2; j++)
                 {
-                    for (int i = 0; i < __instance.rendBody.sharedMaterials.Length; i++)
+                    if (__instance.rendBra[j] != null && __instance.rendBra[j].materials.Length > 1)
                     {
-                        var mat = __instance.rendBody.sharedMaterials[i];
-                        mat.SetTexture(ChaShader._AlphaMask, __instance.texBodyAlphaMask);
-                    }
-                }
-
-                if (__instance.rendBra != null && __instance.texBraAlphaMask != null)
-                {
-                    for (int j = 0; j < 2; j++)
-                    {
-                        if (__instance.rendBra[j] != null && __instance.rendBra[j].materials.Length > 1)
+                        for (int i = 0; i < __instance.rendBra[j].materials.Length; i++)
                         {
-                            for (int i = 0; i < __instance.rendBra[j].materials.Length; i++)
+                            var mat = __instance.rendBra[j].materials[i];
+                            if (mat != null)
                             {
-                                var mat = __instance.rendBra[j].materials[i];
-                                if (mat != null)
-                                {
-                                    mat.SetTexture(ChaShader._AlphaMask, __instance.texBraAlphaMask);
-                                }
+                                mat.SetTexture(ChaShader._AlphaMask, __instance.texBraAlphaMask);
                             }
                         }
                     }
                 }
+            }
 
-                if (__instance.rendInner != null && __instance.texInnerAlphaMask != null)
+            if (__instance.rendInner != null && __instance.texInnerAlphaMask != null)
+            {
+                for (int j = 0; j < 2; j++)
                 {
-                    for (int j = 0; j < 2; j++)
+                    if (__instance.rendInner[j] != null && __instance.rendInner[j].materials.Length > 1)
                     {
-                        if (__instance.rendInner[j] != null && __instance.rendInner[j].materials.Length > 1)
+                        for (int i = 0; i < __instance.rendInner[j].materials.Length; i++)
                         {
-                            for (int i = 0; i < __instance.rendInner[j].materials.Length; i++)
+                            var mat = __instance.rendInner[j].materials[i];
+                            if (mat != null)
                             {
-                                var mat = __instance.rendInner[j].materials[i];
-                                if (mat != null)
-                                {
-                                    mat.SetTexture(ChaShader._AlphaMask, __instance.texInnerAlphaMask);
-                                }
+                                mat.SetTexture(ChaShader._AlphaMask, __instance.texInnerAlphaMask);
                             }
                         }
                     }
                 }
-                yield break;
             }
         }
 
