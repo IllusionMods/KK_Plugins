@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using KKAPI.Utilities;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -12,7 +13,6 @@ namespace KK_Plugins.MoreOutfits
     internal static class HSceneUI
     {
         internal static bool HSceneUIInitialized = false;
-        private static Sprite ListTemplate;
 
         internal static void InitializeHSceneUI()
         {
@@ -20,7 +20,9 @@ namespace KK_Plugins.MoreOutfits
                 return;
             HSceneUIInitialized = true;
 
+#if KK // Not needed in KKS
             LoadListTemplate();
+#endif
 
             var hSceneProc = Object.FindObjectOfType<HSceneProc>();
 
@@ -101,7 +103,7 @@ namespace KK_Plugins.MoreOutfits
             {
                 int coordinateIndex = OriginalCoordinateLength + i;
                 var newButton = Object.Instantiate(buttons[0], buttons[0].transform.parent);
-                newButton.onClick.RemoveAllListeners();
+                newButton.onClick.ActuallyRemoveAllListeners();
                 newButton.onClick.AddListener(() => hSceneProc.sprite.OnClickCoordinateChange(femaleIndex, coordinateIndex));
 
 #if KK
@@ -155,6 +157,8 @@ namespace KK_Plugins.MoreOutfits
             return dst;
         }
 
+#if KK // Not needed in KKS
+        private static Sprite ListTemplate;
         internal static void LoadListTemplate()
         {
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"KK_Plugins.Resources.ListTemplate.png"))
@@ -167,6 +171,7 @@ namespace KK_Plugins.MoreOutfits
                 ListTemplate = Sprite.Create(texture2D, new Rect(0f, 0f, 112, 24), new Vector2(112, 24));
             }
         }
+#endif
     }
 
     internal static class Extensions
