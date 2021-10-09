@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,11 +28,19 @@ namespace KK_Plugins.MoreOutfits
             {
                 foreach (var button in hSceneProc.sprite.categoryDress.lstButton)
                 {
+#if KK
                     if (button != null && button.gameObject.name == "ChangeCoordinatType")
                     {
                         var parent = button.transform.Find("CoordinatGroup/CoordinatCategory");
                         SetUpList(hSceneProc, parent, 0);
                     }
+#elif KKS
+                    if (button != null && button.gameObject.transform.parent.name == "ChangeCoordinatType")
+                    {
+                        var parent = button.transform.parent.Find("CoordinatGroup/CoordinatCategory");
+                        SetUpList(hSceneProc, parent, 0);
+                    }
+#endif
                 }
             }
             else //Multi girl H
@@ -62,12 +71,21 @@ namespace KK_Plugins.MoreOutfits
             var viewportPos = scroll.viewport.localPosition;
             scroll.viewport.localPosition = new Vector3(0f, viewportPos.y, viewportPos.z);
 
+#if KK
             var copyTarget = GameObject.Find("Canvas").transform.Find("clothesFileWindow/Window/WinRect/ListArea/Scroll View/Scrollbar Vertical").gameObject;
+#elif KKS
+            var copyTarget = Object.FindObjectOfType<HSprite>().transform.Find("clothesFileWindow/Window/WinRect/ListArea/Scroll View/Scrollbar Vertical").gameObject;
+#endif
+
             var newScrollbar = Object.Instantiate(copyTarget, go.transform);
             scroll.verticalScrollbar = newScrollbar.GetComponent<Scrollbar>();
             newScrollbar.transform.SetRect(1f, 0f, 1f, 1f, 0f, 0f, 18f);
             var newScrollbarPos = newScrollbar.transform.localPosition;
+#if KK
             newScrollbar.transform.localPosition = new Vector3(135f, newScrollbarPos.y, newScrollbarPos.z);
+#elif KKS
+            newScrollbar.transform.localPosition = new Vector3(170f, newScrollbarPos.y, newScrollbarPos.z);
+#endif
 
             var vlg = parent.GetComponent<VerticalLayoutGroup>();
             var csf = parent.GetComponent<ContentSizeFitter>();
@@ -86,6 +104,7 @@ namespace KK_Plugins.MoreOutfits
                 newButton.onClick.RemoveAllListeners();
                 newButton.onClick.AddListener(() => hSceneProc.sprite.OnClickCoordinateChange(femaleIndex, coordinateIndex));
 
+#if KK
                 //Set the sprite to one without text
                 var buttonImage = newButton.GetComponent<Image>();
                 buttonImage.sprite = ListTemplate;
@@ -109,6 +128,10 @@ namespace KK_Plugins.MoreOutfits
                 buttonText.horizontalOverflow = HorizontalWrapMode.Wrap;
                 buttonText.verticalOverflow = VerticalWrapMode.Overflow;
                 buttonText.color = Color.black;
+#elif KKS
+                var textContainer = newButton.GetComponentInChildren<TextMeshProUGUI>();
+                textContainer.text = GetCoodinateName(chaControl, coordinateIndex);
+#endif
             }
         }
 
