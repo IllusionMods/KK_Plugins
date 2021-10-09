@@ -367,8 +367,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Apply mask textures to all material copies
         /// </summary>
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopAsync))]
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopAsync))]
         private static void ChangeClothesTopAsyncPostfix(ChaControl __instance, ref IEnumerator __result)
         {
             var controller = MaterialEditorPlugin.GetCharaController(__instance);
@@ -380,7 +379,7 @@ namespace KK_Plugins.MaterialEditor
         }
 
 #if KKS
-        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopNoAsync))]
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeClothesTopNoAsync))]
 #endif
         private static void ChangeClothesTopPostfix(ChaControl __instance)
         {
