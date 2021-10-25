@@ -9,6 +9,8 @@ namespace KK_Plugins
     /// </summary>
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInPlugin(GUID, PluginName, Version)]
+    [BepInProcess(KoikatuAPI.GameProcessName)]
+    [BepInProcess(KoikatuAPI.GameProcessNameSteam)]
     public class CharaMakerLoadedSound : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.charamakerloadedsound";
