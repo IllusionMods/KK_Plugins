@@ -499,6 +499,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioSceneLoadedSound"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.PoseQuickLoad", "src\PoseQuickLoad.KKS\KKS.PoseQuickLoad.csproj", "{35366D0F-99F5-47A4-BC14-DB50B58E7EF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.CharaMakerLoadedSound", "src\CharaMakerLoadedSound.KKS\KKS.CharaMakerLoadedSound.csproj", "{EAB8EF2C-0401-4A16-850B-E3F6A12B7881}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -865,6 +867,7 @@ Global
 		src\Shared\Shared.projitems*{e528bd96-46a2-4671-ba1f-315a036bc2b0}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{e6ef7a17-9328-4821-af19-bc2c175bf4dd}*SharedItemsImports = 13
 		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{ea82bb52-404c-416a-9bf8-a36a90f6da93}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{eab8ef2c-0401-4a16-850b-e3f6a12b7881}*SharedItemsImports = 4
 		src\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems*{eaddf585-d0d5-4764-8f74-630137582436}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{eaddf585-d0d5-4764-8f74-630137582436}*SharedItemsImports = 4
 		src\DynamicBoneEditor.Core\DynamicBoneEditor.Core.projitems*{edff8a48-692d-4d63-8ddf-8c484d1042fe}*SharedItemsImports = 4
@@ -1518,6 +1521,10 @@ Global
 		{35366D0F-99F5-47A4-BC14-DB50B58E7EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35366D0F-99F5-47A4-BC14-DB50B58E7EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35366D0F-99F5-47A4-BC14-DB50B58E7EF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAB8EF2C-0401-4A16-850B-E3F6A12B7881}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAB8EF2C-0401-4A16-850B-E3F6A12B7881}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAB8EF2C-0401-4A16-850B-E3F6A12B7881}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAB8EF2C-0401-4A16-850B-E3F6A12B7881}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1719,6 +1726,7 @@ Global
 		{C19287F1-61AF-442C-BC91-54139D6FE9B9} = {5890839F-EACD-4DE3-89CB-A75CFC94BA85}
 		{D23B9FEA-2AD1-4404-AF10-69AF37EF1C34} = {92DF1BEE-7CB1-449B-873A-21988E061EFB}
 		{35366D0F-99F5-47A4-BC14-DB50B58E7EF7} = {6B49D5D9-B6B1-4636-BE4F-561369C67722}
+		{EAB8EF2C-0401-4A16-850B-E3F6A12B7881} = {28131092-2FE4-4763-A925-F0A315905AA8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
