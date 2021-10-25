@@ -18,6 +18,7 @@ If a plugin is listed but it's not a link, then it's either experimental or obso
 #### CharaMakerLoadedSound
 
 - [KK_CharaMakerLoadedSound]
+- [KKS_CharaMakerLoadedSound]
 
 Plays a sound when the Chara Maker finishes loading. Useful if you spend the load time alt-tabbed.
 
@@ -798,7 +799,8 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KK_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v209/KK_MoreOutfits.v1.1.zip "v1.1"
 [KKS_TwoLut]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KKS_TwoLut.v1.0.zip "v1.0"
 [KK_TwoLut]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KK_TwoLut.v1.0.zip "v1.0"
-[KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v1/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"
+[KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v210/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"
+[KKS_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v210/KKS_CharaMakerLoadedSound.v1.0.zip "v1.0"
 [KK_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/KK_FadeAdjuster.v1.0.1.zip "v1.0.1"
 [KK_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip "v1.0"
 [KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v177/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
