@@ -92,7 +92,7 @@
     <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.11.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\ListTemplate.png" />
+    <EmbeddedResource Include="Resources\ListTemplate.png" />
   </ItemGroup>
   <Import Project="..\MoreOutfits.Core\MoreOutfits.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
