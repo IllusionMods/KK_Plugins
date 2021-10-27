@@ -55,18 +55,6 @@ namespace KK_Plugins
         {
             ReloadPushup();
             _pushUpController.RecalculateBody(coroutine: true);
-
-            GameObject bodyTopButton = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/01_BodyTop");
-            var bodyTopButtonTrigger = bodyTopButton.GetOrAddComponent<EventTrigger>();
-            var bodyTopButtonPointerEnter = new EventTrigger.Entry();
-            bodyTopButtonPointerEnter.eventID = EventTriggerType.PointerEnter;
-            bodyTopButtonPointerEnter.callback.AddListener(x => SliderManager.SlidersActive = true);
-            bodyTopButtonTrigger.triggers.Add(bodyTopButtonPointerEnter);
-
-            var bodyTopButtonPointerExit = new EventTrigger.Entry();
-            bodyTopButtonPointerExit.eventID = EventTriggerType.PointerExit;
-            bodyTopButtonPointerExit.callback.AddListener(x => SliderManager.SlidersActive = true);
-            bodyTopButtonTrigger.triggers.Add(bodyTopButtonPointerExit);
         }
 
         private static void MakerExiting(object sender, EventArgs e)

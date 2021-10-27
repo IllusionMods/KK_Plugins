@@ -211,20 +211,19 @@ namespace KK_Plugins
                     return;
                 }
 
-                if (MakerAPI.InsideMaker && !MakerAPI.InsideAndLoaded) return;
-
-                //Set all the sliders to the base body values
-                SliderManager.SlidersActive = true;
-                MapBodyInfoToChaFile(BaseData);
+                if (MakerAPI.InsideMaker && !MakerAPI.InsideAndLoaded)
+                    return;
 
                 Wearing nowWearing = CurrentlyWearing;
-                if (nowWearing != Wearing.None)
+                if (nowWearing == Wearing.None)
                 {
-                    SliderManager.SlidersActive = false;
+                    MapBodyInfoToChaFile(BaseData);
+                }
+                else
+                {
                     CalculatePush(nowWearing);
                     MapBodyInfoToChaFile(CurrentPushupData);
                 }
-                SliderManager.SlidersActive = true;
             }
 
             private IEnumerator RecalculateBodyCoroutine()

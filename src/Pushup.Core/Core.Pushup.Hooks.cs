@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using KKAPI.Maker;
-using System.Collections;
 
 namespace KK_Plugins
 {
@@ -34,22 +33,25 @@ namespace KK_Plugins
             }
 
             /// <summary>
-            /// When the Breast tab of the character maker is set active. disable the sliders because the game will try to set them to the current body values.
+            /// When the Breast tab of the character maker is set active, disable Pushup because the game will try to set the sliders to the current body values.
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(ChaCustom.CustomBase), nameof(ChaCustom.CustomBase.updateCvsBreast), MethodType.Setter)]
             private static void UpdateCvsBreastPrefix()
             {
-                SliderManager.SlidersActive = false;
+                var controller = GetCharaController(MakerAPI.GetCharacterControl());
+                if (controller != null)
+                    controller.MapBodyInfoToChaFile(controller.BaseData);
+            }
 
-                //Set the sliders active again after a delay, just in case they aren't set active by the user mouse entering the slider area (for example on slow computers where switching tabs locks the game)
-                ChaCustom.CustomBase.Instance.StartCoroutine(SetSlidersActive());
-                IEnumerator SetSlidersActive()
-                {
-                    yield return null;
-                    yield return null;
-                    yield return null;
-                    SliderManager.SlidersActive = true;
-                }
+            /// <summary>
+            /// Re-enable Pushup
+            /// </summary>
+            [HarmonyPostfix, HarmonyPatch(typeof(ChaCustom.CustomBase), nameof(ChaCustom.CustomBase.updateCvsBreast), MethodType.Setter)]
+            private static void UpdateCvsBreastPostfix()
+            {
+                var controller = GetCharaController(MakerAPI.GetCharacterControl());
+                if (controller != null)
+                    controller.RecalculateBody();
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]
