@@ -234,8 +234,7 @@ namespace KK_Plugins
 
                     if (BodyGUID != null && BodyDictionary.TryGetValue(BodyGUID, out var body))
                         bodyData = body;
-                    //TODO: Fix on KKS Studio release
-#if !EC && !KKS
+#if !EC
                     if (!StudioAPI.InsideStudio && bodyData != null && GenderBender == false && ChaControl.sex != bodyData.Sex)
                         bodyData = null;
 #endif
@@ -435,8 +434,8 @@ namespace KK_Plugins
 
                     Destroy(dick);
                 }
-                //TODO: Fix on KKS Studio release
-#if KK || AI || HS2
+
+#if KK || AI || HS2 || KKS
                 ChaControl.fileStatus.visibleSonAlways = StudioAPI.InsideStudio ? temp : DisplayPenis;
 #endif
             }
