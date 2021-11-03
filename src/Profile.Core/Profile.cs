@@ -31,6 +31,7 @@ namespace KK_Plugins
             CharacterApi.RegisterExtraBehaviour<ProfileController>("KK_Profile");
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
+            MakerAPI.MakerExiting += MakerAPI_MakerExiting;
         }
 
         private void MakerAPI_MakerFinishedLoading(object sender, System.EventArgs e)
@@ -69,6 +70,11 @@ namespace KK_Plugins
 
             //Starts throwing errors at some point after 30,000 characters
             ProfileTextbox.CharacterLimit = 30000;
+        }
+
+        private void MakerAPI_MakerExiting(object sender, System.EventArgs e)
+        {
+            ProfileTextbox = null;
         }
     }
 }
