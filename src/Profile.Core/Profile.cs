@@ -20,7 +20,7 @@ namespace KK_Plugins
         public const string PluginGUID = "com.deathweasel.bepinex.profile";
         public const string PluginName = "Profile";
         public const string PluginNameInternal = Constants.Prefix + "_Profile";
-        public const string PluginVersion = "1.0.1";
+        public const string PluginVersion = "1.0.2";
 
         internal static MakerTextbox ProfileTextbox;
 
