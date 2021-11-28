@@ -475,7 +475,7 @@ v1.3.2 Increased FarClipPlane slider<br/>
 - [KK_Pushup]
 - [KKS_Pushup]
 
-Provides sliders and setting to shape the breasts of characters when bras or tops are worn. The basic set of sliders will modify the shape of the breasts if the breast sliders if they are below the specified threshhold. Advanced mode lets you fully customize the shape of the breasts.
+Provides sliders and setting to shape the breasts of characters when bras or tops are worn. The basic set of sliders will modify the shape of the breasts if the breast sliders are below the specified threshhold. Advanced mode lets you fully customize the shape of the breasts.
 
 <details><summary>Change Log</summary>
 v1.0.1 Fixed an incompatibility with a MakerOptimizations plugin setting<br/>
@@ -671,6 +671,7 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [HS_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v207/HS_Autosave.v1.1.1.zip "v1.1.1"
 [EC_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v207/EC_Autosave.v1.1.1.zip "v1.1.1"
 [AI_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v207/AI_Autosave.v1.1.1.zip "v1.1.1"
+[SBPR_Autosave]: https://github.com/IllusionMods/KK_Plugins/releases/download/v207/SBPR_Autosave.v1.1.1.zip "v1.1.1"
 [KKS_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_CharacterExport.v1.0.zip "v1.0"
 [KK_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v131/KK_CharacterExport.v1.0.zip "v1.0"
 [HS2_CharacterExport]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_CharacterExport.v1.0.zip "v1.0"
