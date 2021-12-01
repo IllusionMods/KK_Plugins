@@ -29,32 +29,50 @@ namespace KK_Plugins
             /// Enable simultaneous kinematics on character load. Pass the FK/IK state to the postfix
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(AddObjectFemale), nameof(AddObjectFemale.Add), typeof(ChaControl), typeof(OICharInfo), typeof(ObjectCtrlInfo), typeof(TreeNodeObject), typeof(bool), typeof(int))]
-            private static void AddObjectFemalePrefix(OICharInfo _info, ref bool __state) => __state = _info.enableFK && _info.enableIK;
+            private static void AddObjectFemalePrefix(OICharInfo _info, ref bool[] __state)
+            {
+                __state = new bool[2];
+                __state[0] = _info.enableFK && _info.enableIK;
+                __state[1] = _info.activeFK[6];
+            }
 
             /// <summary>
             /// FK/IK state has been overwritten, check against the FK/IK state from prefix
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(AddObjectFemale), nameof(AddObjectFemale.Add), typeof(ChaControl), typeof(OICharInfo), typeof(ObjectCtrlInfo), typeof(TreeNodeObject), typeof(bool), typeof(int))]
-            private static void AddObjectFemalePostfix(ChaControl _female, ref bool __state)
+            private static void AddObjectFemalePostfix(OICharInfo _info, ChaControl _female, ref bool[] __state)
             {
-                if (__state)
+                if (__state[0])
+                {
                     EnableFKIK(_female);
+                    if (__state[1])
+                        _info.activeFK[6] = true;
+                }
             }
 
             /// <summary>
             /// Enable simultaneous kinematics on character load. Pass the FK/IK state to the postfix
             /// </summary>
             [HarmonyPrefix, HarmonyPatch(typeof(AddObjectMale), nameof(AddObjectMale.Add), typeof(ChaControl), typeof(OICharInfo), typeof(ObjectCtrlInfo), typeof(TreeNodeObject), typeof(bool), typeof(int))]
-            private static void AddObjectMalePrefix(OICharInfo _info, ref bool __state) => __state = _info.enableFK && _info.enableIK;
+            private static void AddObjectMalePrefix(OICharInfo _info, ref bool[] __state)
+            {
+                __state = new bool[2];
+                __state[0] = _info.enableFK && _info.enableIK;
+                __state[1] = _info.activeFK[6];
+            }
 
             /// <summary>
             /// FK/IK state has been overwritten, check against the FK/IK state from prefix
             /// </summary>
             [HarmonyPostfix, HarmonyPatch(typeof(AddObjectMale), nameof(AddObjectMale.Add), typeof(ChaControl), typeof(OICharInfo), typeof(ObjectCtrlInfo), typeof(TreeNodeObject), typeof(bool), typeof(int))]
-            private static void AddObjectMalePostfix(ChaControl _male, ref bool __state)
+            private static void AddObjectMalePostfix(OICharInfo _info, ChaControl _male, ref bool[] __state)
             {
-                if (__state)
+                if (__state[0])
+                {
                     EnableFKIK(_male);
+                    if (__state[1])
+                        _info.activeFK[6] = true;
+                }
             }
 
             /// <summary>
