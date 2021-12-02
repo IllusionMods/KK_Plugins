@@ -127,7 +127,7 @@ namespace KK_Plugins.MaterialEditor
         private static bool MaterialAPI_GetMaterials(ref IEnumerable<Material> __result, GameObject gameObject, Renderer renderer)
         {
             //Must use sharedMaterials for character objects or it breaks body masks, etc.
-#if KK || EC || KKS
+#if KK || EC || KKS || AI || HS2
             if (gameObject.GetComponent<ChaControl>() && !MaterialEditorPlugin.MouthParts.Contains(renderer.NameFormatted()))
 #else
             if (gameObject.GetComponent<ChaControl>())
@@ -144,7 +144,7 @@ namespace KK_Plugins.MaterialEditor
         private static bool MaterialAPI_SetMaterials(GameObject gameObject, Renderer renderer, Material[] materials)
         {
             //Must use sharedMaterials for character objects or it breaks body masks, etc.
-#if KK || EC || KKS
+#if KK || EC || KKS || AI || HS2
             if (gameObject.GetComponent<ChaControl>() && !MaterialEditorPlugin.MouthParts.Contains(renderer.NameFormatted()))
 #else
             if (gameObject.GetComponent<ChaControl>())

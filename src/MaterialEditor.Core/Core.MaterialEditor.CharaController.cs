@@ -668,7 +668,7 @@ namespace KK_Plugins.MaterialEditor
             if (!ChaControl.hiPoly) return;
 #endif
 
-#if KK || EC || KKS
+#if KK || EC || KKS || AI || HS2
             //Get the tongue material used by the head since this one is properly refreshed with every character reload
             Material tongueMat = null;
             foreach (var renderer in GetRendererList(ChaControl.objHead.gameObject))
