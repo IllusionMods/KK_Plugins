@@ -52,7 +52,7 @@ namespace MaterialEditorAPI
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
 
-        private void Awake()
+        public virtual void Awake()
         {
             Instance = this;
             Logger = base.Logger;

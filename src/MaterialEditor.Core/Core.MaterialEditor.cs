@@ -124,22 +124,9 @@ namespace KK_Plugins.MaterialEditor
         public static HashSet<string> MouthParts = new HashSet<string> { "o_tooth", "o_tang" };
 #endif
 
-        internal void Main()
+        public override void Awake()
         {
-            MakerAPI.MakerExiting += (s, e) => MaterialEditorUI.Visible = false;
-            CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(PluginGUID);
-            AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
-            AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
-            AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
-#if KK || KKS
-            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
-#endif
-#if EC
-            ExtensibleSaveFormat.ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
-            ExtensibleSaveFormat.ExtendedSave.CoordinateBeingImported += ExtendedSave_CoordinateBeingImported;
-#elif KKS
-            ExtensibleSaveFormat.ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
-#endif
+            base.Awake();
 
 #if KK || EC || KKS
             RimRemover = Config.Bind("Config", "Remove Rim Lighting", false, new ConfigDescription("Remove rim lighting for all characters clothes, hair, accessories, etc. Will save modified values to the card.\n\nUse with caution as it cannot be undone except by manually resetting all the changes.", null, new ConfigurationManagerAttributes { Order = 0, IsAdvanced = true }));
@@ -158,7 +145,24 @@ namespace KK_Plugins.MaterialEditor
             //Disable ShaderOptimization since it doesn't work properly
             ShaderOptimization.Value = false;
 #endif
+        }
 
+        internal void Main()
+        {
+            MakerAPI.MakerExiting += (s, e) => MaterialEditorUI.Visible = false;
+            CharacterApi.RegisterExtraBehaviour<MaterialEditorCharaController>(PluginGUID);
+            AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
+            AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
+            AccessoriesApi.AccessoryTransferred += AccessoriesApi_AccessoryTransferred;
+#if KK || KKS
+            AccessoriesApi.AccessoriesCopied += AccessoriesApi_AccessoriesCopied;
+#endif
+#if EC
+            ExtensibleSaveFormat.ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
+            ExtensibleSaveFormat.ExtendedSave.CoordinateBeingImported += ExtendedSave_CoordinateBeingImported;
+#elif KKS
+            ExtensibleSaveFormat.ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
+#endif
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
 #if KK || EC || KKS
