@@ -58,7 +58,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.1.11";
+        public const string PluginVersion = "3.1.12";
 
         /// <summary>
         /// Material which is used in normal map conversion
@@ -970,11 +970,13 @@ namespace KK_Plugins.MaterialEditor
             if (!NormalMapProperties.Contains(propertyName))
                 return false;
 
+            var wrapMode = tex.wrapMode;
             RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
             rt.useMipMap = true;
             rt.autoGenerateMips = true;
             Graphics.Blit(tex, rt, NormalMapConvertMaterial);
             tex = rt;
+            tex.wrapMode = wrapMode;
 
             return true;
         }
