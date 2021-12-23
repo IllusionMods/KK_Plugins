@@ -16,14 +16,24 @@ namespace KK_Plugins.MoreOutfits
         private static bool SetCoordinateBytes(ChaFile __instance, byte[] data, Version ver)
         {
             List<byte[]> list = MessagePackSerializer.Deserialize<List<byte[]>>(data);
+            int coordinateCount = list.Count;
+
+            //Ensure the card doesn't have too few coordinates (typically happens converting a KKS card to KK)
+#if KK
+            if (coordinateCount < 7)
+                coordinateCount = 7;
+#elif KKS
+            if (coordinateCount < 4)
+                coordinateCount = 4;
+#endif
 
             //Reinitialize the array with the new length
-            __instance.coordinate = new ChaFileCoordinate[list.Count];
-            for (int i = 0; i < list.Count; i++)
+            __instance.coordinate = new ChaFileCoordinate[coordinateCount];
+            for (int i = 0; i < coordinateCount; i++)
                 __instance.coordinate[i] = new ChaFileCoordinate();
 
             //Load all the coordinates
-            for (int i = 0; i < __instance.coordinate.Length; i++)
+            for (int i = 0; i < list.Count; i++)
                 __instance.coordinate[i].LoadBytes(list[i], ver);
 
             return false;
@@ -78,7 +88,7 @@ namespace KK_Plugins.MoreOutfits
 
 #if KKS
         private static bool DoingImport;
-        
+
         [HarmonyPrefix, HarmonyPatch(typeof(ConvertChaFileScene), nameof(ConvertChaFileScene.Start))]
         private static void ConvertChaFileSceneStart() => DoingImport = true;
 
