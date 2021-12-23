@@ -291,7 +291,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.ItemBlacklist", "src\I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FadeAdjuster", "FadeAdjuster", "{7E7FAD27-BC88-4BD1-A5C6-BDB87BA433F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_FadeAdjuster", "src\FadeAdjuster.KK\KK_FadeAdjuster.csproj", "{D8FA2078-DB11-44D0-A09F-6016B47CCE66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.FadeAdjuster", "src\FadeAdjuster.KK\KK.FadeAdjuster.csproj", "{D8FA2078-DB11-44D0-A09F-6016B47CCE66}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FreeHStudioSceneLoader", "FreeHStudioSceneLoader", "{B1C72B63-DC8B-4D34-B414-EC7DB92DB56B}"
 EndProject
@@ -501,6 +501,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.PoseQuickLoad", "src\Po
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.CharaMakerLoadedSound", "src\CharaMakerLoadedSound.KKS\KKS.CharaMakerLoadedSound.csproj", "{EAB8EF2C-0401-4A16-850B-E3F6A12B7881}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.FadeAdjuster", "src\FadeAdjuster.Core\Core.FadeAdjuster.shproj", "{36E9F31D-A68D-4BD2-B2E9-EA11CE8CE54F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.FadeAdjuster", "src\FadeAdjuster.KKS\KKS.FadeAdjuster.csproj", "{88EFE9CF-459C-4ABF-A59F-5F8FB53A7E79}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -577,6 +581,7 @@ Global
 		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{36247dab-4f43-4007-9856-03971a475d8f}*SharedItemsImports = 4
+		src\FadeAdjuster.Core\FadeAdjuster.Core.projitems*{36e9f31d-a68d-4bd2-b2e9-ea11ce8ce54f}*SharedItemsImports = 13
 		src\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems*{38f1d681-5c66-4cee-b3be-87cc445dbe6a}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{38f1d681-5c66-4cee-b3be-87cc445dbe6a}*SharedItemsImports = 4
 		src\MaterialEditor.Base\MaterialEditor.Base.projitems*{398dcfa5-74d2-4f81-bce7-9f00813328aa}*SharedItemsImports = 4
@@ -731,6 +736,8 @@ Global
 		src\Shared\Shared.projitems*{878bb100-7d7c-43d2-8e9d-608d93d738e4}*SharedItemsImports = 4
 		src\CharacterExport.Core\Core.CharacterExport.projitems*{87c4f79c-3074-476b-849b-ce1498840e55}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{87c4f79c-3074-476b-849b-ce1498840e55}*SharedItemsImports = 4
+		src\FadeAdjuster.Core\FadeAdjuster.Core.projitems*{88efe9cf-459c-4abf-a59f-5f8fb53a7e79}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{88efe9cf-459c-4abf-a59f-5f8fb53a7e79}*SharedItemsImports = 4
 		src\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{89fe73cd-0973-4e53-a29a-634c5926d7a1}*SharedItemsImports = 4
 		src\MaleJuice.Core\MaleJuice.Core.projitems*{8a811717-0cd1-4541-bd67-a0210586e4d0}*SharedItemsImports = 4
@@ -849,6 +856,7 @@ Global
 		src\Shared\Shared.projitems*{d7fabe27-7568-49b1-a81a-cdce5708970f}*SharedItemsImports = 4
 		src\Autosave.Core\Autosave.Core.projitems*{d88e5332-ba52-4f80-b2f7-97ef1bccacfe}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{d88e5332-ba52-4f80-b2f7-97ef1bccacfe}*SharedItemsImports = 4
+		src\FadeAdjuster.Core\FadeAdjuster.Core.projitems*{d8fa2078-db11-44d0-a09f-6016b47cce66}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{d8fa2078-db11-44d0-a09f-6016b47cce66}*SharedItemsImports = 4
 		src\PoseUnlocker.Core\PoseUnlocker.Core.projitems*{d9a02c8d-5216-4fc8-873b-8b53b251d1af}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{d9a02c8d-5216-4fc8-873b-8b53b251d1af}*SharedItemsImports = 4
@@ -1525,6 +1533,10 @@ Global
 		{EAB8EF2C-0401-4A16-850B-E3F6A12B7881}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAB8EF2C-0401-4A16-850B-E3F6A12B7881}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAB8EF2C-0401-4A16-850B-E3F6A12B7881}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88EFE9CF-459C-4ABF-A59F-5F8FB53A7E79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88EFE9CF-459C-4ABF-A59F-5F8FB53A7E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88EFE9CF-459C-4ABF-A59F-5F8FB53A7E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88EFE9CF-459C-4ABF-A59F-5F8FB53A7E79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1727,6 +1739,8 @@ Global
 		{D23B9FEA-2AD1-4404-AF10-69AF37EF1C34} = {92DF1BEE-7CB1-449B-873A-21988E061EFB}
 		{35366D0F-99F5-47A4-BC14-DB50B58E7EF7} = {6B49D5D9-B6B1-4636-BE4F-561369C67722}
 		{EAB8EF2C-0401-4A16-850B-E3F6A12B7881} = {28131092-2FE4-4763-A925-F0A315905AA8}
+		{36E9F31D-A68D-4BD2-B2E9-EA11CE8CE54F} = {7E7FAD27-BC88-4BD1-A5C6-BDB87BA433F1}
+		{88EFE9CF-459C-4ABF-A59F-5F8FB53A7E79} = {7E7FAD27-BC88-4BD1-A5C6-BDB87BA433F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
