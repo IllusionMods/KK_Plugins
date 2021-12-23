@@ -15,7 +15,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.makerdefaults";
         public const string PluginName = "Maker Defaults";
         public const string PluginNameInternal = Constants.Prefix + "_MakerDefaults";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<ClothingState> DefaultClothingState { get; private set; }
@@ -81,7 +81,7 @@ namespace KK_Plugins
 
             //Set eyebrow pattern. 0=Default, 1=Angry, etc.
             if (DefaultEyebrowPattern.Value != EyebrowPattern.Default)
-                CustomBase.Instance.customCtrl.cmpDrawCtrl.ddEyesPtn.value = (int)DefaultEyebrowPattern.Value;
+                CustomBase.Instance.customCtrl.cmpDrawCtrl.ddEyebrowPtn.value = (int)DefaultEyebrowPattern.Value;
 
             //Set eye pattern. 0=Default, 1=Closed, etc.
             if (DefaultEyePattern.Value != EyePattern.Default)
