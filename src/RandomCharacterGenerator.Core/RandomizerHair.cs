@@ -10,7 +10,11 @@ namespace KK_Plugins
         {
             public static void RandomizeType()
             {
+#if KK
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
+#elif KKS
+                var chaListCtrl = Character.chaListCtrl;
+#endif
                 var hair = Custom.hair;
 
                 var categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.bo_hair_b);
@@ -67,7 +71,11 @@ namespace KK_Plugins
 
             public static void RandomizeEtc()
             {
+#if KK
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
+#elif KKS
+                var chaListCtrl = Character.chaListCtrl;
+#endif
                 var hair = Custom.hair;
                 for (var i = 0; i < 4; i++)
                 {

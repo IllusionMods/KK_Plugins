@@ -13,7 +13,11 @@ namespace KK_Plugins
 
             public static void RandomizeEyes()
             {
+#if KK
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
+#elif KKS
+                var chaListCtrl = Character.chaListCtrl;
+#endif
                 var face = Custom.face;
 
                 Dictionary<int, ListInfoBase> categoryInfo;
@@ -54,7 +58,11 @@ namespace KK_Plugins
 
             public static void RandomizeEtc()
             {
+#if KK
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
+#elif KKS
+                var chaListCtrl = Character.chaListCtrl;
+#endif
                 var face = Custom.face;
 
                 var categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.bo_head);

@@ -13,7 +13,11 @@ namespace KK_Plugins
 
             public static void RandomizeBody()
             {
+#if KK
                 var chaListCtrl = Singleton<Character>.Instance.chaListCtrl;
+#elif KKS
+                var chaListCtrl = Character.chaListCtrl;
+#endif
                 var body = Custom.body;
 
                 var categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.mt_body_detail);

@@ -82,13 +82,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KK.RandomCharacterGenerator.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomizerBody.cs" />
-    <Compile Include="RandomizerFace.cs" />
-    <Compile Include="RandomizerHair.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +90,11 @@
     <Analyzer Include="..\..\packages\KoikatuCompatibilityAnalyzer.1.0.1\analyzers\dotnet\cs\KoikatuCompatibilityAnalyzer.dll" />
     <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.11.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+  <Import Project="..\RandomCharacterGenerator.Core\RandomCharacterGenerator.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
