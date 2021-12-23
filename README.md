@@ -226,6 +226,7 @@ v1.2 Changes made in Studio apply to all selected characters<br/>
 #### RandomCharacterGenerator
 
 - [KK_RandomCharacterGenerator]
+- [KKS_RandomCharacterGenerator]
 
 Generates random characters in the character maker.
 
@@ -247,6 +248,7 @@ Ported from Essu's NEOpose List Folders plugin for Honey Select.
 #### ListOverride
 
 - [KK_ListOverride]
+- [KKS_ListOverride]
 
 Allows you to override vanilla list files. Comes with some overrides that enable half off state for some vanilla pantyhose.
 
@@ -545,6 +547,7 @@ v1.1 Item info shows Asset and AssetBundle, better UI<br/>
 #### FadeAdjuster
 
 - [KK_FadeAdjuster]
+- [KKS_FadeAdjuster]
 
 Allows you to adjust fade color or disable the fade in and out effect.
 
@@ -802,6 +805,9 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KK_TwoLut]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KK_TwoLut.v1.0.zip "v1.0"
 [KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v210/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"
 [KKS_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v210/KKS_CharaMakerLoadedSound.v1.0.zip "v1.0"
-[KK_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v195/KK_FadeAdjuster.v1.0.1.zip "v1.0.1"
-[KK_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v65/KK_ListOverride.v1.0.zip "v1.0"
-[KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v177/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
+[KK_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KK_FadeAdjuster.v1.0.1.zip "v1.0.1"
+[KKS_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KK_FadeAdjuster.v1.0.1.zip "v1.0.1"
+[KK_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_ListOverride.v1.0.zip "v1.0"
+[KKS_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_ListOverride.v1.0.zip "v1.0"
+[KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
+[KKS_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_RandomCharacterGenerator.v2.0.zip "v2.0"
