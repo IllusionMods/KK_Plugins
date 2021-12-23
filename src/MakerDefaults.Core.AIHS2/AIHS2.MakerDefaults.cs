@@ -16,7 +16,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.makerdefaults";
         public const string PluginName = "Maker Defaults";
         public const string PluginNameInternal = Constants.Prefix + "_MakerDefaults";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<GazeDirection> DefaultGazeDirection { get; private set; }
