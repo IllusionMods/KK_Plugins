@@ -723,6 +723,9 @@ namespace KK_Plugins.MaterialEditor
                     LoadedShaders[shaderName] = new ShaderData(shader, shaderName, shaderElement.GetAttribute("RenderQueue"), shaderElement.GetAttribute("ShaderOptimization"));
 
                     XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
+                    if (shader != null && shader.name != shaderName)
+                        XMLShaderProperties[shader.name] = new Dictionary<string, ShaderPropertyData>();
+
                     var shaderPropertyElements = shaderElement.GetElementsByTagName("Property");
                     foreach (var shaderPropertyElementObj in shaderPropertyElements)
                     {
@@ -750,6 +753,8 @@ namespace KK_Plugins.MaterialEditor
 
                             XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                             XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;
+                            if (shader != null && shader.name != shaderName)
+                                XMLShaderProperties[shader.name][propertyName] = shaderPropertyData;
                         }
                     }
                 }
