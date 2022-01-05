@@ -1,6 +1,7 @@
 ﻿using ExtensibleSaveFormat;
 using KKAPI;
 using KKAPI.Chara;
+using KKAPI.Maker;
 using MessagePack;
 using System.Collections.Generic;
 
@@ -29,14 +30,18 @@ namespace KK_Plugins.MoreOutfits
             if (maintainState)
                 return;
 
-            CoordinateNames.Clear();
-
-            var data = GetExtendedData();
-            if (data != null)
+            var loadFlags = MakerAPI.GetCharacterLoadFlags();
+            if (loadFlags == null || loadFlags.Clothes)
             {
-                if (data.data.TryGetValue(nameof(CoordinateNames), out var loadedCoordinateNames) && loadedCoordinateNames != null)
+                CoordinateNames.Clear();
+
+                var data = GetExtendedData();
+                if (data != null)
                 {
-                    CoordinateNames = MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])loadedCoordinateNames);
+                    if (data.data.TryGetValue(nameof(CoordinateNames), out var loadedCoordinateNames) && loadedCoordinateNames != null)
+                    {
+                        CoordinateNames = MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])loadedCoordinateNames);
+                    }
                 }
             }
         }
