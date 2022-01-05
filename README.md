@@ -633,6 +633,10 @@ Increase shadow resolution for better quality and fix a shadow strength mismatch
 
 Allows characters to have more than the default number of outfit slots.
 
+<details><summary>Change Log</summary>
+v1.1.2 Fix loading outfit names when outfits aren't loaded, change outfit in Studio when replacing characters if the new character has less outfits<br/>
+</details>
+
 #### TwoLut
 
 - [KK_TwoLut]
@@ -799,8 +803,8 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KK_HCharaAdjustment]: https://github.com/IllusionMods/KK_Plugins/releases/download/v135/KK_HCharaAdjustment.v2.0.zip "v2.0"
 [KKS_LightingTweaks]: https://github.com/IllusionMods/KK_Plugins/releases/download/v207/KKS_LightingTweaks.v1.0.1.zip "v1.0.1"
 [KK_LightingTweaks]: https://github.com/IllusionMods/KK_Plugins/releases/download/v207/KK_LightingTweaks.v1.0.1.zip "v1.0.1"
-[KKS_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v215/KKS_MoreOutfits.v1.1.1.zip "v1.1.1"
-[KK_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v215/KK_MoreOutfits.v1.1.1.zip "v1.1.1"
+[KKS_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v217/KKS_MoreOutfits.v1.1.2.zip "v1.1.2"
+[KK_MoreOutfits]: https://github.com/IllusionMods/KK_Plugins/releases/download/v217/KK_MoreOutfits.v1.1.2.zip "v1.1.2"
 [KKS_TwoLut]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KKS_TwoLut.v1.0.zip "v1.0"
 [KK_TwoLut]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KK_TwoLut.v1.0.zip "v1.0"
 [KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v210/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"
