@@ -2,6 +2,7 @@
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
+using KKAPI.Studio;
 using MessagePack;
 using System.Collections.Generic;
 
@@ -29,6 +30,12 @@ namespace KK_Plugins.MoreOutfits
         {
             if (maintainState)
                 return;
+
+            if (StudioAPI.InsideStudio && ChaControl.fileStatus.coordinateType >= ChaControl.chaFile.coordinate.Length)
+            {
+                var ociChar = ChaControl.GetOCIChar();
+                ociChar.SetCoordinateInfo(0);
+            }
 
             var loadFlags = MakerAPI.GetCharacterLoadFlags();
             if (loadFlags == null || loadFlags.Clothes)

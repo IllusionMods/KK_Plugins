@@ -17,7 +17,7 @@ namespace KK_Plugins.MoreOutfits
         private static bool StudioUIInitialized = false;
 
 #if KK
-        private static readonly List<string> CoordinateNames = new List<string> { "学生服（校内）", "学生服（下校）", "体操着", "水着", "部活", "私服", "お泊り" };      
+        private static readonly List<string> CoordinateNames = new List<string> { "学生服（校内）", "学生服（下校）", "体操着", "水着", "部活", "私服", "お泊り" };
 #elif KKS
         private static readonly List<string> CoordinateNames = new List<string> { "私服", "水着", "寝間着", "風呂場", "お風呂" };
 #endif
@@ -29,7 +29,7 @@ namespace KK_Plugins.MoreOutfits
             StudioCoordinateCurrentStateCategoryDropdown = new CurrentStateCategoryDropdown("Coordinate", CoordinateNames.ToArray(), c => CoordinateIndex());
             StudioCoordinateCurrentStateCategoryDropdown.Value.Subscribe(value =>
             {
-                var mpCharCtrol = UnityEngine.Object.FindObjectOfType<MPCharCtrl>();
+                var mpCharCtrol = Object.FindObjectOfType<MPCharCtrl>();
                 if (StudioCoordinateDropdown != null)
                 {
                     var character = StudioAPI.GetSelectedCharacters().First();
@@ -45,7 +45,7 @@ namespace KK_Plugins.MoreOutfits
                         {
                             StudioCoordinateDropdown.options.Add(new Dropdown.OptionData(GetCoodinateName(character.charInfo, OriginalCoordinateLength + i)));
                         }
-                        StudioCoordinateDropdown.captionText.text = StudioCoordinateDropdown.options[StudioCoordinateDropdown.value].text;
+                        StudioCoordinateDropdown.captionText.text = StudioCoordinateDropdown.options[value].text;
                     }
                 }
 
