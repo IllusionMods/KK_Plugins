@@ -521,6 +521,7 @@ Allows you to set default settings of the character maker so you don't have to s
 
 <details><summary>Change Log</summary>
 v1.0.1 KKAPI compatibility<br/>
+v1.1 Settings for preset cards and coordinates, personality in character list<br/>
 </details>
 
 #### StudioCustomMasking
@@ -712,11 +713,11 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [HS2_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/HS2_InvisibleBody.v1.4.zip "v1.4"
 [EC_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/EC_InvisibleBody.v1.4.zip "v1.4"
 [AI_InvisibleBody]: https://github.com/IllusionMods/KK_Plugins/releases/download/v184/AI_InvisibleBody.v1.4.zip "v1.4"
-[KKS_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v215/KKS_MakerDefaults.v1.0.2.zip "v1.0.2"
-[KK_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v215/KK_MakerDefaults.v1.0.2.zip "v1.0.2"
-[HS2_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v215/HS2_MakerDefaults.v1.0.2.zip "v1.0.2"
-[EC_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v215/EC_MakerDefaults.v1.0.2.zip "v1.0.2"
-[AI_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v215/AI_MakerDefaults.v1.0.2.zip "v1.0.2"
+[KKS_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v218/KKS_MakerDefaults.v1.1.zip "v1.1"
+[KK_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v218/KK_MakerDefaults.v1.1.zip "v1.1"
+[HS2_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v218/HS2_MakerDefaults.v1.1.zip "v1.1"
+[EC_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v218/EC_MakerDefaults.v1.1.zip "v1.1"
+[AI_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v218/AI_MakerDefaults.v1.1.zip "v1.1"
 [KK_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/KK_MaleJuice.v1.3.zip "v1.3"
 [HS2_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/HS2_MaleJuice.v1.3.zip "v1.3"
 [AI_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/AI_MaleJuice.v1.3.zip "v1.3"
