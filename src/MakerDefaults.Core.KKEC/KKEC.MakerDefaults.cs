@@ -2,9 +2,12 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using ChaCustom;
+using HarmonyLib;
 using KKAPI;
 using KKAPI.Maker;
 using System;
+using System.Linq;
+using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -15,7 +18,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.makerdefaults";
         public const string PluginName = "Maker Defaults";
         public const string PluginNameInternal = Constants.Prefix + "_MakerDefaults";
-        public const string Version = "1.0.2";
+        public const string Version = "1.1";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<ClothingState> DefaultClothingState { get; private set; }
@@ -31,24 +34,36 @@ namespace KK_Plugins
         public static ConfigEntry<float> DefaultHeadDirectionRate { get; private set; }
         public static ConfigEntry<Background> DefaultBackground { get; private set; }
         public static ConfigEntry<int> DefaultPose { get; private set; }
+#if KKS
+        public static ConfigEntry<bool> DefaultAdditionalInfo { get; private set; }
+        public static ConfigEntry<bool> DefaultPresetCharacters { get; private set; }
+        public static ConfigEntry<bool> DefaultPresetCoordinates { get; private set; }
+#endif
 
         internal void Main()
         {
             Logger = base.Logger;
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
-            DefaultClothingState = Config.Bind("Settings", "Default Clothing State", ClothingState.Automatic, new ConfigDescription("Default clothing state", null, new ConfigurationManagerAttributes { Order = 13 }));
-            DefaultEyebrowPattern = Config.Bind("Settings", "Default Eyebrow Pattern", EyebrowPattern.Default, new ConfigDescription("Default eyebrow pattern", null, new ConfigurationManagerAttributes { Order = 12 }));
-            DefaultEyePattern = Config.Bind("Settings", "Default Eye Pattern", EyePattern.Default, new ConfigDescription("Default eye pattern", null, new ConfigurationManagerAttributes { Order = 11 }));
-            DefaultEyeOpenness = Config.Bind("Settings", "Default Eye Openness", 1f, new ConfigDescription("Default eye openness", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 10 }));
-            DefaultDisableBlinking = Config.Bind("Settings", "Default Disable Blinking", false, new ConfigDescription("Default disable blinking state", null, new ConfigurationManagerAttributes { Order = 9 }));
-            DefaultMouthPattern = Config.Bind("Settings", "Default Mouth Pattern", MouthPattern.Default, new ConfigDescription("Default mouth pattern", null, new ConfigurationManagerAttributes { Order = 8 }));
-            DefaultMouthOpenness = Config.Bind("Settings", "Default Mouth Openness", 0f, new ConfigDescription("Default mouth openness", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 7 }));
-            DefaultGazeDirection = Config.Bind("Settings", "Default Gaze Direction", GazeDirection.AtCamera, new ConfigDescription("Default gaze direction", null, new ConfigurationManagerAttributes { Order = 6 }));
-            DefaultGazeDirectionRate = Config.Bind("Settings", "Default Gaze Direction Rate", 1f, new ConfigDescription("Default gaze direction rate", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 5 }));
-            DefaultHeadDirection = Config.Bind("Settings", "Default Head Direction", HeadDirection.FromAnimation, new ConfigDescription("Default head direction", null, new ConfigurationManagerAttributes { Order = 4 }));
-            DefaultHeadDirectionRate = Config.Bind("Settings", "Default Head Direction Rate", 1f, new ConfigDescription("Default head direction", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 3 }));
-            DefaultPose = Config.Bind("Settings", "Default Pose", 0, new ConfigDescription("Default pose, number corresponds to the index of the pose in the dropdown list", new AcceptableValueRange<int>(0, 1000), new ConfigurationManagerAttributes { Order = 2 }));
-            DefaultBackground = Config.Bind("Settings", "Default Background", Background.Image, new ConfigDescription("Default background type", null, new ConfigurationManagerAttributes { Order = 1 }));
+            DefaultClothingState = Config.Bind("Settings", "Default Clothing State", ClothingState.Automatic, new ConfigDescription("Default clothing state", null, new ConfigurationManagerAttributes { Order = 16 }));
+            DefaultEyebrowPattern = Config.Bind("Settings", "Default Eyebrow Pattern", EyebrowPattern.Default, new ConfigDescription("Default eyebrow pattern", null, new ConfigurationManagerAttributes { Order = 15 }));
+            DefaultEyePattern = Config.Bind("Settings", "Default Eye Pattern", EyePattern.Default, new ConfigDescription("Default eye pattern", null, new ConfigurationManagerAttributes { Order = 14 }));
+            DefaultEyeOpenness = Config.Bind("Settings", "Default Eye Openness", 1f, new ConfigDescription("Default eye openness", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 13 }));
+            DefaultDisableBlinking = Config.Bind("Settings", "Default Disable Blinking", false, new ConfigDescription("Default disable blinking state", null, new ConfigurationManagerAttributes { Order = 12 }));
+            DefaultMouthPattern = Config.Bind("Settings", "Default Mouth Pattern", MouthPattern.Default, new ConfigDescription("Default mouth pattern", null, new ConfigurationManagerAttributes { Order = 11 }));
+            DefaultMouthOpenness = Config.Bind("Settings", "Default Mouth Openness", 0f, new ConfigDescription("Default mouth openness", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 10 }));
+            DefaultGazeDirection = Config.Bind("Settings", "Default Gaze Direction", GazeDirection.AtCamera, new ConfigDescription("Default gaze direction", null, new ConfigurationManagerAttributes { Order = 9 }));
+            DefaultGazeDirectionRate = Config.Bind("Settings", "Default Gaze Direction Rate", 1f, new ConfigDescription("Default gaze direction rate", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 8 }));
+            DefaultHeadDirection = Config.Bind("Settings", "Default Head Direction", HeadDirection.FromAnimation, new ConfigDescription("Default head direction", null, new ConfigurationManagerAttributes { Order = 7 }));
+            DefaultHeadDirectionRate = Config.Bind("Settings", "Default Head Direction Rate", 1f, new ConfigDescription("Default head direction", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 6 }));
+            DefaultPose = Config.Bind("Settings", "Default Pose", 0, new ConfigDescription("Default pose, number corresponds to the index of the pose in the dropdown list", new AcceptableValueRange<int>(0, 1000), new ConfigurationManagerAttributes { Order = 5 }));
+            DefaultBackground = Config.Bind("Settings", "Default Background", Background.Image, new ConfigDescription("Default background type", null, new ConfigurationManagerAttributes { Order = 4 }));
+#if KKS
+            DefaultAdditionalInfo = Config.Bind("Settings", "Default Additional Info", true, new ConfigDescription("Default additional info in character list", null, new ConfigurationManagerAttributes { Order = 3 }));
+            DefaultPresetCharacters = Config.Bind("Settings", "Default Preset Characters", true, new ConfigDescription("Default preset characters in character list", null, new ConfigurationManagerAttributes { Order = 2 }));
+            DefaultPresetCoordinates = Config.Bind("Settings", "Default Preset Coordinates", true, new ConfigDescription("Default preset coordinates in character list", null, new ConfigurationManagerAttributes { Order = 1 }));
+#endif
+
+            Harmony.CreateAndPatchAll(typeof(Hooks));
         }
 
         private static void MakerFinishedLoading(object sender, EventArgs e)
@@ -127,6 +142,23 @@ namespace KK_Plugins
             //Background
             if (DefaultBackground.Value != Background.Image)
                 CustomBase.Instance.customCtrl.cmpDrawCtrl.tglBackType[1].isOn = true;
+
+#if KKS
+            if (!DefaultPresetCharacters.Value)
+            {
+                var a = CustomBase.Instance.transform.Find("FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/charaFileControl/charaFileWindow/WinRect/Categoryies/tglCategory");
+                var tgls = a.GetComponentsInChildren<Toggle>().ToArray();
+                tgls[2].isOn = DefaultPresetCharacters.Value;
+            }
+
+            if (!DefaultPresetCoordinates.Value)
+            {
+                var b = CustomBase.Instance.transform.Find("FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/cosFileControl/charaFileWindow/WinRect/Categoryies/tglCategory");
+                var tgls2 = b.GetComponentsInChildren<Toggle>().ToArray();
+                tgls2[1].isOn = DefaultPresetCoordinates.Value;
+            }
+
+#endif
         }
 
 #if KK || KKS
@@ -140,5 +172,17 @@ namespace KK_Plugins
         public enum GazeDirection { AtCamera, Upward, RightAndUp, Right, DownAndRight, Downward, DownAndLeft, Left, UpAndLeft, AvertGaze }
         public enum HeadDirection { FromAnimation, AtCamera, Upward, RightAndUp, Right, DownAndRight, Downward, DownAndLeft, Left, UpAndLeft, AvertGaze }
         public enum Background { Image, Color }
+
+        private static class Hooks
+        {
+#if KKS
+            [HarmonyPostfix, HarmonyPatch(typeof(CustomFileListCtrl), nameof(CustomFileListCtrl.Start))]
+            private static void CustomFileListCtrl_Start(CustomFileListCtrl __instance)
+            {
+                if (!DefaultAdditionalInfo.Value)
+                    __instance.tglAddInfo.isOn = DefaultAdditionalInfo.Value;
+            }
+#endif
+        }
     }
 }
