@@ -58,7 +58,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.1.12";
+        public const string PluginVersion = "3.1.13";
 
         /// <summary>
         /// Material which is used in normal map conversion
