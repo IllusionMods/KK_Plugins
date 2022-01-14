@@ -581,7 +581,7 @@ namespace MaterialEditorAPI
                             }
                             item.FloatValue = input;
 
-                            FloatSlider.Set(item.FloatValue);
+                            FloatSlider.Set(item.FloatValue, sendCallback: false);
 
                             if (item.FloatValue == item.FloatValueOriginal)
                                 item.FloatValueOnReset();
