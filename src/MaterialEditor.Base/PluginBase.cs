@@ -50,6 +50,7 @@ namespace MaterialEditorAPI
         public static ConfigEntry<bool> WatchTexChanges { get; set; }
         public static ConfigEntry<bool> ShaderOptimization { get; set; }
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
+        public static ConfigEntry<bool> ExportBakedWorldPosition { get; set; }
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
 
         public virtual void Awake()
@@ -64,6 +65,7 @@ namespace MaterialEditorAPI
             WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI.", null, new ConfigurationManagerAttributes { Order = 2 }));
             ShaderOptimization = Config.Bind("Config", "Shader Optimization", true, new ConfigDescription("Replaces every loaded shader with the MaterialEditor copy of the shader. Reduces the number of copies of shaders loaded which reduces RAM usage and improves performance.", null, new ConfigurationManagerAttributes { Order = 1 }));
             ExportBakedMesh = Config.Bind("Config", "Export Baked Mesh", false, new ConfigDescription("When enabled, skinned meshes will be exported in their current state with all customization applied as well as in the current pose.", null, new ConfigurationManagerAttributes { Order = 1 }));
+            ExportBakedWorldPosition = Config.Bind("Config", "Export Baked World Position", false, new ConfigDescription("When enabled, objects will be exported with their position changes intact so that, i.e. when exporting two objects they retain their position relative to each other.\nOnly works when Export Baked Mesh is also enabled.", null, new ConfigurationManagerAttributes { Order = 1 }));
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
 
             UIScale.SettingChanged += MaterialEditorUI.UISettingChanged;

@@ -57,6 +57,8 @@ namespace MaterialEditorAPI
                 for (var i = 0; i < subMesh.vertices.Length; i++)
                 {
                     Vector3 v = subMesh.vertices[i];
+                    if (MaterialEditorPluginBase.ExportBakedMesh.Value && MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
+                        v = rend.transform.TransformPoint(v);
                     sb.AppendLine($"v {-v.x} {v.y} {v.z}");
                 }
 
