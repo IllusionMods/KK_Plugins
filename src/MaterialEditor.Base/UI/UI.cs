@@ -62,6 +62,8 @@ namespace MaterialEditorAPI
         private GameObject CurrentGameObject;
         private object CurrentData;
         private string CurrentFilter = "";
+        private bool DoObjExport = false;
+        private Renderer ObjRenderer;
 
         /// <summary>
         /// Initialize the MaterialEditor UI
@@ -237,7 +239,11 @@ namespace MaterialEditorAPI
                 {
                     RendererName = rend.NameFormatted(),
                     ExportUVOnClick = () => Export.ExportUVMaps(rend),
-                    ExportObjOnClick = () => Export.ExportObj(rend)
+                    ExportObjOnClick = () =>
+                    {
+                        ObjRenderer = rend;
+                        DoObjExport = true;
+                    }
                 };
                 items.Add(rendererItem);
 
@@ -470,6 +476,20 @@ namespace MaterialEditorAPI
 
             VirtualList.SetList(items);
         }
+
+        /// <summary>
+        /// Obj export should be done in OnGUI or something similarly late so that finger rotation is exported properly
+        /// </summary>
+        private void OnGUI()
+        {
+            if (DoObjExport)
+            {
+                DoObjExport = false;
+                Export.ExportObj(ObjRenderer);
+                ObjRenderer = null;
+            }
+        }
+
         /// <summary>
         /// Hacky workaround to wait for the dropdown fade to complete before refreshing
         /// </summary>
