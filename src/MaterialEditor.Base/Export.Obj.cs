@@ -46,6 +46,9 @@ namespace MaterialEditorAPI
             }
             else return "";
 
+            var scale = rend.transform.lossyScale;
+            var inverseScale = Matrix4x4.Scale(scale).inverse;
+
             StringBuilder sb = new StringBuilder();
 
             for (int x = 0; x < mesh.subMeshCount; x++)
@@ -58,7 +61,7 @@ namespace MaterialEditorAPI
                 {
                     Vector3 v = subMesh.vertices[i];
                     if (MaterialEditorPluginBase.ExportBakedMesh.Value && MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
-                        v = rend.transform.TransformPoint(v);
+                        v = rend.transform.TransformPoint(inverseScale.MultiplyPoint(v));
                     sb.AppendLine($"v {-v.x} {v.y} {v.z}");
                 }
 
