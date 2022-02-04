@@ -329,6 +329,7 @@
     <Property Name="tex1mask" Type="Float" Range="0,1" />
   </Shader>
   <Shader Name="Shader Forge/main_StandardMDK_studio" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_StandardMDK_studio">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="BumpMap" Type="Texture" />
     <Property Name="EmissionMap" Type="Texture" />
     <Property Name="MainTex" Type="Texture" />

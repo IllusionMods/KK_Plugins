@@ -329,6 +329,7 @@
     <Property Name="tex1mask" Type="Float" Range="0,1" />
   </Shader>
   <Shader Name="Shader Forge/main_StandardMDK_studio" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_StandardMDK_studio">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="BumpMap" Type="Texture" />
     <Property Name="EmissionMap" Type="Texture" />
     <Property Name="MainTex" Type="Texture" />
@@ -359,15 +360,6 @@
     <Property Name="AnotherRampFull" Type="Float" Range="0,1"/>
     <Property Name="DetailBLineG" Type="Float" Range="0,1"/>
     <Property Name="DetailRLineR" Type="Float" Range="0,1"/>
-  </Shader>
-  <Shader Name="Shader Forge/main_texture_studio" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_main_texture_studio">
-    <Property Name="MainTex" Type="Texture" />
-    <Property Name="Color" Type="Color" />
-    <Property Name="Patternuv1" Type="Color" />
-    <Property Name="Cutoff" Type="Float" Range="0,1"/>
-    <Property Name="CutoutClip" Type="Float" />
-    <Property Name="patternclamp1" Type="Float" Range="0,1"/>
-    <Property Name="patternrotator1" Type="Float" Range="-1,1"/>
   </Shader>
   <Shader Name="Shader Forge/mnpb" AssetBundle="Resources.KK_Shaders.unity3d" Asset="asset_mnpb">
     <Property Name="WhiteOff" Type="Float" Range="0,1"/>

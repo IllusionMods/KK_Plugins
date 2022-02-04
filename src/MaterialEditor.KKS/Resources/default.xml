@@ -1,5 +1,6 @@
 <MaterialEditor>
   <Shader Name="Koikano/main_clothes_item" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_clothes_item">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="AnotherRamp" Type="Texture"/>
     <Property Name="ColorMask" Type="Texture"/>
     <Property Name="MainTex" Type="Texture"/>
@@ -108,6 +109,7 @@
     <Property Name="rotation3" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_eyew" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_eyew">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="MainTex" Type="Texture"/>
     <Property Name="Color" Type="Color"/>
     <Property Name="shadowcolor" Type="Color"/>
@@ -157,6 +159,7 @@
     <Property Name="RimScale" Type="Float" Range="0,10"/>
   </Shader>
   <Shader Name="Koikano/main_clothes_alpha" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_clothes_alpha">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="AnotherRamp" Type="Texture"/>
     <Property Name="MainTex" Type="Texture"/>
     <Property Name="NormalMap" Type="Texture"/>
@@ -188,6 +191,7 @@
     <Property Name="LineWidthS" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_clothes_opaque" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_clothes_opaque">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="AnotherRamp" Type="Texture"/>
     <Property Name="ColorMask" Type="Texture"/>
     <Property Name="MainTex" Type="Texture"/>
@@ -224,6 +228,7 @@
     <Property Name="ColorMaskUse" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Koikano/main_clothes_emblem" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_clothes_emblem">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="Color" Type="Color"/>
     <Property Name="ShadowColor" Type="Color"/>
     <Property Name="MainTex" Type="Texture"/>
@@ -244,6 +249,7 @@
   <Shader Name="Shader Forge/shadowcast" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_shadowcast">
   </Shader>
   <Shader Name="Koikano/sub_texture_animation" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_sub_texture_animation">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="MainTex" Type="Texture"/>
     <Property Name="TileAnimation" Type="Color"/>
     <Property Name="SizeSpeed" Type="Float" Range="0,1"/>
@@ -301,6 +307,7 @@
     <Property Name="EmissionBoost" Type="Float" Range="0,1"/>
   </Shader>
   <Shader Name="Shader Forge/main_item_ditherd" AssetBundle="Resources.KKS_Shaders.unity3d" Asset="asset_main_item_ditherd">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="MainTex" Type="Texture" />
     <Property Name="node_1554" Type="Texture" />
     <Property Name="Color" Type="Color" />
@@ -607,6 +614,7 @@
     <Property Name="tex1mask" Type="Float" Range="0,1" />
   </Shader>
   <Shader Name="Shader Forge/main_StandardMDK_studio" AssetBundle="Resources.EC_Shaders.unity3d" Asset="asset_main_StandardMDK_studio">
+    <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="BumpMap" Type="Texture" />
     <Property Name="EmissionMap" Type="Texture" />
     <Property Name="MainTex" Type="Texture" />
