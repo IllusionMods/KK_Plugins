@@ -28,14 +28,18 @@ namespace KK_Plugins
 
         protected override void OnReload(GameMode currentGameMode, bool maintainState)
         {
-            ProfileText = null;
+            var loadFlags = MakerAPI.GetCharacterLoadFlags();
+            if (loadFlags == null || loadFlags.Parameters)
+            {
+                ProfileText = null;
 
-            var data = GetExtendedData();
-            if (data != null && data.data.TryGetValue(nameof(ProfileText), out var loadedProfileText))
-                ProfileText = loadedProfileText?.ToString();
+                var data = GetExtendedData();
+                if (data != null && data.data.TryGetValue(nameof(ProfileText), out var loadedProfileText))
+                    ProfileText = loadedProfileText?.ToString();
 
-            if (MakerAPI.InsideMaker && Profile.ProfileTextbox != null)
-                Profile.ProfileTextbox.Value = ProfileText ?? "";
+                if (MakerAPI.InsideMaker && Profile.ProfileTextbox != null)
+                    Profile.ProfileTextbox.Value = ProfileText ?? "";
+            }
         }
     }
 }
