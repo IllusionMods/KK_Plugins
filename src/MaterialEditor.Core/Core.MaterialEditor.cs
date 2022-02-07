@@ -58,7 +58,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.1.15";
+        public const string PluginVersion = "3.1.16";
 
         /// <summary>
         /// Material which is used in normal map conversion
@@ -117,6 +117,8 @@ namespace KK_Plugins.MaterialEditor
         /// Parts of the mouth that need special handling
         /// </summary>
         public static HashSet<string> MouthParts = new HashSet<string> { "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang" };
+        public static HashSet<string> EyeMaterials = new HashSet<string> { "cf_m_eyeline_00_up", "cf_m_eyeline_kage", "cf_m_eyeline_down", "cf_m_sirome_00", "cf_m_hitomi_00", "cf_m_mayuge_00" };
+
 #elif AI || HS2
         /// <summary>
         /// Parts of the mouth that need special handling

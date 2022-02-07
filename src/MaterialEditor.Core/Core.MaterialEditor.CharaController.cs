@@ -596,7 +596,16 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
 
-                SetShader(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.ShaderName);
+#if KK || EC || KKS
+                if (property.ObjectType == ObjectType.Character && MaterialEditorPlugin.EyeMaterials.Contains(property.MaterialName))
+                {
+                    SetShader(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.ShaderName, true);
+                }
+                else
+#endif
+                {
+                    SetShader(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.ShaderName);
+                }
                 SetRenderQueue(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.RenderQueue);
             }
             for (var i = 0; i < RendererPropertyList.Count; i++)
@@ -1749,8 +1758,17 @@ namespace KK_Plugins.MaterialEditor
 
             if (setProperty)
             {
-                RemoveMaterialShaderRenderQueue(slot, objectType, material, go, false);
-                SetShader(go, material.NameFormatted(), shaderName);
+#if KK || EC || KKS
+                if (objectType == ObjectType.Character && MaterialEditorPlugin.EyeMaterials.Contains(material.NameFormatted()))
+                {
+                    SetShader(go, material.NameFormatted(), shaderName, true);
+                }
+                else
+#endif
+                {
+                    RemoveMaterialShaderRenderQueue(slot, objectType, material, go, false);
+                    SetShader(go, material.NameFormatted(), shaderName);
+                }
             }
         }
 
@@ -1790,7 +1808,19 @@ namespace KK_Plugins.MaterialEditor
             {
                 var original = GetMaterialShaderOriginal(slot, objectType, material, go);
                 if (!original.IsNullOrEmpty())
-                    SetShader(go, material.NameFormatted(), original);
+                {
+#if KK || EC || KKS
+                    if (objectType == ObjectType.Character && MaterialEditorPlugin.EyeMaterials.Contains(material.NameFormatted()))
+                    {
+                        SetShader(go, material.NameFormatted(), original, true);
+
+                    }
+                    else
+#endif
+                    {
+                        SetShader(go, material.NameFormatted(), original);
+                    }
+                }
             }
 
             foreach (var materialProperty in MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.MaterialName == material.NameFormatted()))

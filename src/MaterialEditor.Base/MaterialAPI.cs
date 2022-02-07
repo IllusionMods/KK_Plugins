@@ -409,7 +409,7 @@ namespace MaterialEditorAPI
         /// <param name="materialName">Name of the material being modified</param>
         /// <param name="shaderName">Name of the shader to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
-        public static bool SetShader(GameObject gameObject, string materialName, string shaderName)
+        public static bool SetShader(GameObject gameObject, string materialName, string shaderName, bool preserveRenderQueue = false)
         {
             bool didSet = false;
             if (shaderName.IsNullOrEmpty()) return false;
@@ -427,10 +427,13 @@ namespace MaterialEditorAPI
             for (var i = 0; i < materials.Count; i++)
             {
                 var material = materials[i];
+                int renderQueue = material.renderQueue;
                 material.shader = shaderData.Shader;
 
                 if (shaderData.RenderQueue != null)
                     material.renderQueue = (int)shaderData.RenderQueue;
+                else if (preserveRenderQueue)
+                    material.renderQueue = renderQueue;
 
                 foreach (var shaderPropertyData in shaderPropertyDataList.Values)
                     if (!shaderPropertyData.DefaultValue.IsNullOrEmpty())

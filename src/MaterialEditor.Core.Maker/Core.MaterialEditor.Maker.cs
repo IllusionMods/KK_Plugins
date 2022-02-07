@@ -1,5 +1,4 @@
-﻿using System;
-using BepInEx;
+﻿using BepInEx;
 using HarmonyLib;
 using KKAPI;
 using KKAPI.Maker;
@@ -73,7 +72,7 @@ namespace KK_Plugins.MaterialEditor
             AccessoriesApi.AccessoryKindChanged += (s, e) => ToggleButtonVisibility();
             AccessoriesApi.AccessoryTransferred += (s, e) => ToggleButtonVisibility();
 #if KK || KKS
-            AccessoriesApi.AccessoriesCopied  += (s,e)=> ToggleButtonVisibility();
+            AccessoriesApi.AccessoriesCopied += (s, e) => ToggleButtonVisibility();
 #endif
 
             Harmony.CreateAndPatchAll(typeof(MakerHooks));
@@ -113,9 +112,13 @@ namespace KK_Plugins.MaterialEditor
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Hair.Extension, this)).OnClick.AddListener(() => UpdateUIHair(3));
 
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eyebrow, this)).OnClick.AddListener(() => UpdateUICharacter("mayuge"));
-            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eye, this)).OnClick.AddListener(() => UpdateUICharacter("eyeline,hitomi"));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eye, this)).OnClick.AddListener(() => UpdateUICharacter("eyeline,hitomi,sirome"));
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Nose, this)).OnClick.AddListener(() => UpdateUICharacter("nose"));
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Mouth, this)).OnClick.AddListener(() => UpdateUICharacter("tang,tooth,canine"));
+#if KKS
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Iris, this)).OnClick.AddListener(() => UpdateUICharacter("eyeline,hitomi,sirome"));
+
+#endif
 #endif
 
 #if PH
