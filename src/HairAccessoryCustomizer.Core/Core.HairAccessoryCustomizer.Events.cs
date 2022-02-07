@@ -51,7 +51,6 @@ namespace KK_Plugins
                 }
 
                 InitCurrentSlot(controller, true);
-                controller.UpdateAccessory(e.SlotIndex);
             }
             else
                 InitCurrentSlot(controller, false);
