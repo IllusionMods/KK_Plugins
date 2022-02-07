@@ -1850,7 +1850,13 @@ namespace KK_Plugins.MaterialEditor
             }
             else
             {
-                if (renderQueue == materialProperty.RenderQueueOriginal)
+                int renderQueueOriginal;
+                if (materialProperty.RenderQueueOriginal == null)
+                    renderQueueOriginal = material.renderQueue;
+                else
+                    renderQueueOriginal = (int)materialProperty.RenderQueueOriginal;
+
+                if (renderQueue == renderQueueOriginal)
                     RemoveMaterialShaderRenderQueue(slot, objectType, material, go, false);
                 else
                 {
