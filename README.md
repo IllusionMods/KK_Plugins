@@ -655,6 +655,13 @@ Allows you to freely mix two studio shades (luts), instead of one always being s
 
 Removes mosaics from the character models. **This is replaced by UncensorSelector and not needed** unless there is no UncensorSelector port available for a game.
 
+#### ShaderSwapper
+
+- [KK_ShaderSwapper]
+- [KKS_ShaderSwapper]
+
+Swap all shaders to the equivalent Vanilla Plus shader in the character maker by pressing right ctrl + P
+
 #### FreeHStudioSceneLoader
 
 - [KK_FreeHStudioSceneLoader]
@@ -816,3 +823,5 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KKS_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_ListOverride.v1.0.zip "v1.0"
 [KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
 [KKS_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_RandomCharacterGenerator.v2.0.zip "v2.0"
+[KK_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v222/KK_ShaderSwapper.v1.0.zip "v1.0"
+[KKS_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v222/KKS_ShaderSwapper.v1.0.zip "v1.0"
