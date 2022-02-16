@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.HCharaAdjustment", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.RandomCharacterGenerator", "src\RandomCharacterGenerator.KK\KK.RandomCharacterGenerator.csproj", "{7E21E1CC-356E-41BB-ABDD-BD0F99710361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.PoseFolders", "src\PoseFolders.KK\KK.PoseFolders.csproj", "{4F27E216-A311-469C-891A-8E57F330A68F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.PoseTools", "src\PoseTools.KK\KK.PoseTools.csproj", "{4F27E216-A311-469C-891A-8E57F330A68F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ListOverride", "src\ListOverride.KK\KK.ListOverride.csproj", "{F609A9F5-E889-4729-9982-5E08FEBBF53E}"
 EndProject
@@ -109,11 +109,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.InvisibleBody", "src\Inv
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.InvisibleBody.Studio", "src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.shproj", "{81DE7D3B-A8A0-43C2-AC9D-F65AC528B997}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PoseFolders", "PoseFolders", "{6F0DF0B5-3EC0-40D1-8874-6960D8377E6D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PoseTools", "PoseTools", "{6F0DF0B5-3EC0-40D1-8874-6960D8377E6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.PoseFolders", "src\PoseFolders.AI\AI.PoseFolders.csproj", "{7162D8CC-6EFC-411A-87B3-656BADA98468}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.PoseTools", "src\PoseTools.AI\AI.PoseTools.csproj", "{7162D8CC-6EFC-411A-87B3-656BADA98468}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.PoseFolders", "src\PoseFolders.Core\Core.PoseFolders.shproj", "{FDA2A8D5-C989-4A94-9A61-E6B60746D4B8}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.PoseTools", "src\PoseTools.Core\Core.PoseTools.shproj", "{FDA2A8D5-C989-4A94-9A61-E6B60746D4B8}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MaterialEditor.Studio", "src\MaterialEditor.Core.Studio\Core.MaterialEditor.Studio.shproj", "{CAB936A6-622D-4498-BB82-A6CAB53541E4}"
 EndProject
@@ -225,7 +225,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.AnimationOverdrive", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.CharacterExport", "src\CharacterExport.HS2\HS2.CharacterExport.csproj", "{1606DE1B-EF26-4FFC-8CC9-E93C3F222796}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.PoseFolders", "src\PoseFolders.HS2\HS2.PoseFolders.csproj", "{9C19B785-E8E3-4FF0-9E3F-8254355B1CE7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.PoseTools", "src\PoseTools.HS2\HS2.PoseTools.csproj", "{9C19B785-E8E3-4FF0-9E3F-8254355B1CE7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.PoseQuickLoad", "src\PoseQuickLoad.HS2\HS2.PoseQuickLoad.csproj", "{129F09E0-0A3D-4D12-B724-2B3A64F81DAF}"
 EndProject
@@ -479,7 +479,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.TwoLut", "src\TwoLut.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.AnimationController", "src\AnimationController.KKS\KKS.AnimationController.csproj", "{159A1DA4-4960-481F-A71F-AF4C167F0508}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.PoseFolders", "src\PoseFolders.KKS\KKS.PoseFolders.csproj", "{B9FBFE19-9460-409C-8E41-9F4405933045}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.PoseTools", "src\PoseTools.KKS\KKS.PoseTools.csproj", "{B9FBFE19-9460-409C-8E41-9F4405933045}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.AnimationOverdrive", "src\AnimationOverdrive.KKS\KKS.AnimationOverdrive.csproj", "{72796F34-A1F3-4638-A0F0-B2228BD81804}"
 EndProject
@@ -654,7 +654,7 @@ Global
 		src\Profile.Core\Profile.Core.projitems*{4e1e0813-fea1-4493-ada1-250132ef45e0}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{4e1e0813-fea1-4493-ada1-250132ef45e0}*SharedItemsImports = 4
 		src\AnimationController.Core\Core.AnimationController.projitems*{4e6812c6-5d1d-425b-9f58-629ef35004fd}*SharedItemsImports = 13
-		src\PoseFolders.Core\Core.PoseFolders.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
+		src\PoseTools.Core\Core.PoseTools.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{4f27e216-a311-469c-891a-8e57f330a68f}*SharedItemsImports = 4
 		src\MakerDefaults.Core.AIHS2\MakerDefaults.Core.projitems*{4f51b6ec-b8d9-4b62-a565-ae35ade88304}*SharedItemsImports = 13
 		src\FKIK.Core\Core.FKIK.projitems*{4f666b41-9d22-4cdd-b02c-47e407aab0c2}*SharedItemsImports = 4
@@ -709,7 +709,7 @@ Global
 		src\Shared\Shared.projitems*{6f8f5f23-de07-43c0-9fb9-1cb09a4a84bd}*SharedItemsImports = 4
 		src\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.projitems*{70335ffd-bc96-4064-9baf-619616f0835a}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{70335ffd-bc96-4064-9baf-619616f0835a}*SharedItemsImports = 4
-		src\PoseFolders.Core\Core.PoseFolders.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
+		src\PoseTools.Core\Core.PoseTools.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{7162d8cc-6efc-411a-87b3-656bada98468}*SharedItemsImports = 4
 		src\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems*{72796f34-a1f3-4638-a0f0-b2228bd81804}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{72796f34-a1f3-4638-a0f0-b2228bd81804}*SharedItemsImports = 4
@@ -783,7 +783,7 @@ Global
 		src\Subtitles.Core\Core.Subtitles.projitems*{94b26581-49ee-4645-aa63-46077f65b223}*SharedItemsImports = 4
 		src\Subtitles.Core\Core.Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
 		src\MaterialEditor.Base\MaterialEditor.Base.projitems*{9b568b1a-d28a-4afa-8ac7-b6e0009a9675}*SharedItemsImports = 13
-		src\PoseFolders.Core\Core.PoseFolders.projitems*{9c19b785-e8e3-4ff0-9e3f-8254355b1ce7}*SharedItemsImports = 4
+		src\PoseTools.Core\Core.PoseTools.projitems*{9c19b785-e8e3-4ff0-9e3f-8254355b1ce7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{9c19b785-e8e3-4ff0-9e3f-8254355b1ce7}*SharedItemsImports = 4
 		src\AccessoryClothes.Core\AccessoryClothes.Core.projitems*{9c636011-35a4-4201-8f81-81564f1edafc}*SharedItemsImports = 13
 		src\LightingTweaks.Core\LightingTweaks.Core.projitems*{a0316a46-4852-4e57-8528-ec935011d8d1}*SharedItemsImports = 4
@@ -833,7 +833,7 @@ Global
 		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{b97e2fc3-c1c6-4d07-80c7-2e3e2cfe3749}*SharedItemsImports = 4
 		src\InvisibleBody.Core\Core.InvisibleBody.projitems*{b97e2fc3-c1c6-4d07-80c7-2e3e2cfe3749}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{b97e2fc3-c1c6-4d07-80c7-2e3e2cfe3749}*SharedItemsImports = 4
-		src\PoseFolders.Core\Core.PoseFolders.projitems*{b9fbfe19-9460-409c-8e41-9f4405933045}*SharedItemsImports = 4
+		src\PoseTools.Core\Core.PoseTools.projitems*{b9fbfe19-9460-409c-8e41-9f4405933045}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{b9fbfe19-9460-409c-8e41-9f4405933045}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{baa2d7c3-88f1-440d-a620-e0e4bc3accec}*SharedItemsImports = 4
@@ -939,7 +939,7 @@ Global
 		src\Shared.TextureContainer\Shared.TextureContainer.projitems*{fc88b474-b516-4f2e-8c04-8250bf6ba3b2}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{fc88b474-b516-4f2e-8c04-8250bf6ba3b2}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{fc88b474-b516-4f2e-8c04-8250bf6ba3b2}*SharedItemsImports = 4
-		src\PoseFolders.Core\Core.PoseFolders.projitems*{fda2a8d5-c989-4a94-9a61-e6b60746d4b8}*SharedItemsImports = 13
+		src\PoseTools.Core\Core.PoseTools.projitems*{fda2a8d5-c989-4a94-9a61-e6b60746d4b8}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

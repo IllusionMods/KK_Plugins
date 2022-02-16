@@ -102,7 +102,6 @@ namespace KK_Plugins.PoseTools
 
             if (!loadSkirtFK)
             {
-                Logger.LogInfo($"Disable");
                 //Disable skirt FK if there was none to load since it's worthless to have enabled
                 StartCoroutine(DisableSkirtFK(ociChar));
                 ociChar.ActiveFK(OIBoneInfo.BoneGroup.Skirt, false);

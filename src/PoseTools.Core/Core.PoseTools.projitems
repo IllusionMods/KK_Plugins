@@ -6,12 +6,12 @@
     <SharedGUID>fda2a8d5-c989-4a94-9a61-e6b60746d4b8</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Core.PoseFolders</Import_RootNamespace>
+    <Import_RootNamespace>Core.PoseTools</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.PoseFolders.Constants.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.PoseFolders.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core.PoseFolders.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.PoseTools.Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.PoseTools.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.PoseTools.Hooks.cs" />
   </ItemGroup>
 </Project>
