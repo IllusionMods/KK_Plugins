@@ -13,6 +13,7 @@
         public const string EyeOpenData = "EyeOpenData";
         public const string MouthOpenData = "MouthOpenData";
         public const string SkirtFKData = "SkirtFKData";
+        public const string JointCorrectionData = "JointCorrectionData";
 
         public const int SkirtFKIndex = 6;
     }

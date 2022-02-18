@@ -22,7 +22,7 @@ namespace KK_Plugins.PoseTools
         public const string PluginGUID = "com.deathweasel.bepinex.posefolders";
         public const string PluginName = "Pose Tools";
         public const string PluginNameInternal = Constants.Prefix + "_PoseTools";
-        public const string PluginVersion = "1.0";
+        public const string PluginVersion = "1.1";
 
         internal static readonly int UserdataRoot = new DirectoryInfo(UserdataFolder).FullName.Length + 1;  //+1 for slash
         internal static DirectoryInfo CurrentDirectory = new DirectoryInfo(UserdataFolder + "/" + PoseFolder);
@@ -74,7 +74,7 @@ namespace KK_Plugins.PoseTools
                     if ((string)gameData == "AI" || (string)gameData == "HS2")
                         loadExpression = true;
 #endif
-
+                //Facial expression
                 if (loadExpression && ConfigLoadExpression.Value)
                 {
                     if (data.data.TryGetValue(EyebrowPatternData, out var eyebrowPatternData))
@@ -89,6 +89,7 @@ namespace KK_Plugins.PoseTools
                         ociChar.ChangeMouthOpen((float)mouthOpenData);
                 }
 
+                //Skirt FK
                 if (ConfigLoadSkirtFK.Value && data.data.TryGetValue(SkirtFKData, out var skirtFKData) && skirtFKData != null)
                 {
                     loadSkirtFK = true;
@@ -96,6 +97,17 @@ namespace KK_Plugins.PoseTools
                     foreach (KeyValuePair<int, Vector3> item in skirtFK)
                     {
                         ociChar.oiCharInfo.bones[item.Key].changeAmount.rot = item.Value;
+                    }
+                }
+
+                //Joint correction
+                if (data.data.TryGetValue(JointCorrectionData, out var jointCorrectionData) && jointCorrectionData != null)
+                {
+                    bool[] expression = MessagePackSerializer.Deserialize<bool[]>((byte[])jointCorrectionData);
+                    //Skip the first 4 since those are handled by vanilla code
+                    for (int i = 4; i < expression.Length; i++)
+                    {
+                        ociChar.EnableExpressionCategory(i, expression[i]);
                     }
                 }
             }
@@ -118,12 +130,15 @@ namespace KK_Plugins.PoseTools
         {
             var data = new PluginData();
             data.data.Add(GameData, Constants.Prefix);
+
+            //Facial expression
             data.data.Add(EyebrowPatternData, ociChar.charFileStatus.eyebrowPtn);
             data.data.Add(EyesPatternData, ociChar.charFileStatus.eyesPtn);
             data.data.Add(MouthPatternData, ociChar.charFileStatus.mouthPtn);
             data.data.Add(EyeOpenData, ociChar.charFileStatus.eyesOpenMax);
             data.data.Add(MouthOpenData, ociChar.oiCharInfo.mouthOpen);
 
+            //Only save skirt FK if enabled
             if (ociChar.oiCharInfo.activeFK[SkirtFKIndex])
             {
                 Dictionary<int, Vector3> skirtFK = new Dictionary<int, Vector3>();
@@ -131,6 +146,9 @@ namespace KK_Plugins.PoseTools
                     skirtFK.Add(item2.Key, item2.Value.changeAmount.rot);
                 data.data.Add(SkirtFKData, MessagePackSerializer.Serialize(skirtFK));
             }
+
+            //Joint correction
+            data.data.Add(JointCorrectionData, MessagePackSerializer.Serialize(ociChar.oiCharInfo.expression));
 
             ExtendedSave.SetPoseExtendedDataById(PoseToolsData, data);
         }
