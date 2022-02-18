@@ -105,6 +105,11 @@ namespace KK_Plugins.PoseTools
                 using (var binaryWriter = new BinaryWriter(fileStream))
                 {
                     var buffer = Studio.Studio.Instance.gameScreenShot.CreatePngScreen(320, 180);
+
+                    Texture2D screenshot = TextureFromBytes(buffer, mipmaps: false);
+                    screenshot = OverwriteTexture(screenshot, Watermark, 0, screenshot.height - Watermark.height);
+                    buffer = screenshot.EncodeToPNG();
+
                     binaryWriter.Write(buffer);
                     binaryWriter.Write(PauseCtrl.saveIdentifyingCode);
                     binaryWriter.Write(PauseCtrl.saveVersion);

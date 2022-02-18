@@ -14,4 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.PoseTools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.PoseTools.Hooks.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\watermark.png" />
+  </ItemGroup>
 </Project>

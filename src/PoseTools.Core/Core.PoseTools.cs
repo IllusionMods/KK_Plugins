@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Events;
 using static KK_Plugins.PoseTools.PoseToolsConstants;
@@ -43,7 +44,7 @@ namespace KK_Plugins.PoseTools
             Logger = base.Logger;
 
             ConfigOrderBy = Config.Bind("Config", "Order by", OrderBy.Filename, "How to order the pose list.");
-            ConfigSavePng = Config.Bind("Config", "Save pose data as png", false, "When enabled, pose data will be saved as a small .png with embedded pose data.");
+            ConfigSavePng = Config.Bind("Config", "Save pose data as png", true, "When enabled, pose data will be saved as a small .png with embedded pose data.");
             ConfigPoseNamePrefix = Config.Bind("Config", "Save pose as filename prefix", true, "When enabled, the filename will be saved with the name of the pose followed by the date.");
             ConfigLoadExpression = Config.Bind("Config", "Load Expression", true, "When loading a pose, facial expression will be changed to the one saved with the pose data, if any.");
             ConfigLoadSkirtFK = Config.Bind("Config", "Load Skirt FK", true, "When loading a pose, skirt FK will be loaded from the pose data, if any.");
@@ -56,26 +57,25 @@ namespace KK_Plugins.PoseTools
             ExtendedSave.PoseBeingSaved += ExtendedSave_PoseBeingSaved;
         }
 
-        private void ExtendedSave_PoseBeingLoaded(string poseName, PauseCtrl.FileInfo fileInfo, OCIChar ociChar)
+        private void ExtendedSave_PoseBeingLoaded(string poseName, PauseCtrl.FileInfo fileInfo, OCIChar ociChar, ExtendedSave.GameNames gameName)
         {
             bool loadSkirtFK = false;
             PluginData data = ExtendedSave.GetPoseExtendedDataById(PoseToolsData);
             if (data != null)
             {
-                bool loadExpression = false;
+                bool sameGame = false;
 
                 //Only load expression data for the game this pose was created on, eye etc. patterns wouldn't match otherwise
 #if KK || KKS
-                if (data.data.TryGetValue(GameData, out var gameData))
-                    if ((string)gameData == "KK" || (string)gameData == "KKS")
-                        loadExpression = true;
+                if (gameName == ExtendedSave.GameNames.Koikatsu || gameName == ExtendedSave.GameNames.KoikatsuSunshine)
+                    sameGame = true;
 #elif AI || HS2
-                if (data.data.TryGetValue(GameData, out var gameData))
-                    if ((string)gameData == "AI" || (string)gameData == "HS2")
-                        loadExpression = true;
+                if (gameName == ExtendedSave.GameNames.AIGirl || gameName == ExtendedSave.GameNames.HoneySelect2)
+                    sameGame = true;
 #endif
+
                 //Facial expression
-                if (loadExpression && ConfigLoadExpression.Value)
+                if (sameGame && ConfigLoadExpression.Value)
                 {
                     if (data.data.TryGetValue(EyebrowPatternData, out var eyebrowPatternData))
                         ociChar.charInfo.ChangeEyebrowPtn((int)eyebrowPatternData);
@@ -90,7 +90,7 @@ namespace KK_Plugins.PoseTools
                 }
 
                 //Skirt FK
-                if (ConfigLoadSkirtFK.Value && data.data.TryGetValue(SkirtFKData, out var skirtFKData) && skirtFKData != null)
+                if (sameGame && ConfigLoadSkirtFK.Value && data.data.TryGetValue(SkirtFKData, out var skirtFKData) && skirtFKData != null)
                 {
                     loadSkirtFK = true;
                     Dictionary<int, Vector3> skirtFK = MessagePackSerializer.Deserialize<Dictionary<int, Vector3>>((byte[])skirtFKData);
@@ -126,10 +126,9 @@ namespace KK_Plugins.PoseTools
             ociChar.ActiveFK(OIBoneInfo.BoneGroup.Skirt, false);
         }
 
-        private void ExtendedSave_PoseBeingSaved(string poseName, PauseCtrl.FileInfo fileInfo, OCIChar ociChar)
+        private void ExtendedSave_PoseBeingSaved(string poseName, PauseCtrl.FileInfo fileInfo, OCIChar ociChar, ExtendedSave.GameNames gameName)
         {
             var data = new PluginData();
-            data.data.Add(GameData, Constants.Prefix);
 
             //Facial expression
             data.data.Add(EyebrowPatternData, ociChar.charFileStatus.eyebrowPtn);
@@ -169,6 +168,87 @@ namespace KK_Plugins.PoseTools
             component.text = text;
 
             return prefabNode.transform;
+        }
+
+        public static Texture2D OverwriteTexture(Texture2D background, Texture2D watermark, int startX, int startY)
+        {
+            Texture2D newTex = new Texture2D(background.width, background.height, background.format, false);
+            for (int x = 0; x < background.width; x++)
+            {
+                for (int y = 0; y < background.height; y++)
+                {
+                    if (x >= startX && y >= startY && x - startX < watermark.width && y - startY < watermark.height)
+                    {
+                        Color bgColor = background.GetPixel(x, y);
+                        Color wmColor = watermark.GetPixel(x - startX, y - startY);
+
+                        Color final_color = Color.Lerp(bgColor, wmColor, wmColor.a);
+                        final_color.a = bgColor.a + wmColor.a;
+
+                        newTex.SetPixel(x, y, final_color);
+                    }
+                    else
+                    {
+                        newTex.SetPixel(x, y, background.GetPixel(x, y));
+                    }
+                }
+            }
+
+            newTex.Apply();
+            return newTex;
+        }
+
+        internal static Texture2D GetT2D(RenderTexture renderTexture)
+        {
+            var currentActiveRT = RenderTexture.active;
+            RenderTexture.active = renderTexture;
+            var tex = new Texture2D(renderTexture.width, renderTexture.height);
+            tex.ReadPixels(new Rect(0, 0, tex.width, tex.height), 0, 0);
+            RenderTexture.active = currentActiveRT;
+            return tex;
+        }
+
+        internal static Texture2D TextureFromBytes(byte[] texBytes, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
+        {
+            if (texBytes == null || texBytes.Length == 0) return null;
+
+            //LoadImage automatically resizes the texture so the texture size doesn't matter here
+            var tex = new Texture2D(2, 2, format, mipmaps);
+            tex.LoadImage(texBytes);
+
+            RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
+            rt.useMipMap = mipmaps;
+            RenderTexture.active = rt;
+            Graphics.Blit(tex, rt);
+
+            return GetT2D(rt);
+        }
+
+        internal static void LoadWatermark()
+        {
+            foreach (var x in Assembly.GetExecutingAssembly().GetManifestResourceNames())
+                Logger.LogInfo(x);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.watermark.png"))
+            {
+                byte[] bytesInStream = new byte[stream.Length];
+                stream.Read(bytesInStream, 0, bytesInStream.Length);
+                Watermark = TextureFromBytes(bytesInStream, mipmaps: false);
+            }
+        }
+
+        private static Texture2D _watermark;
+        internal static Texture2D Watermark
+        {
+            get
+            {
+                if (_watermark == null)
+                    LoadWatermark();
+                return _watermark;
+            }
+            set
+            {
+                _watermark = value;
+            }
         }
 
         public enum OrderBy { Date, Filename }
