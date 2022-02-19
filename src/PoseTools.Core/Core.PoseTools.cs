@@ -226,8 +226,6 @@ namespace KK_Plugins.PoseTools
 
         internal static void LoadWatermark()
         {
-            foreach (var x in Assembly.GetExecutingAssembly().GetManifestResourceNames())
-                Logger.LogInfo(x);
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(KK_Plugins)}.Resources.watermark.png"))
             {
                 byte[] bytesInStream = new byte[stream.Length];

@@ -56,20 +56,20 @@
       <HintPath>..\..\packages\BepInEx.ConfigurationManager.16.4.0\lib\net35\ConfigurationManager.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KKSAPI, Version=1.28.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.KKSAPI.1.28.0\lib\net46\KKSAPI.dll</HintPath>
+    <Reference Include="KKSAPI, Version=1.31.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.KKSAPI.1.31.2\lib\net46\KKSAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KKS_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.16.9.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.17.0.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KKS_OverlayMods, Version=6.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OverlayMods.KoikatsuSunshine.6.0.4\lib\net46\KKS_OverlayMods.dll</HintPath>
+    <Reference Include="KKS_OverlayMods, Version=6.0.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OverlayMods.KoikatsuSunshine.6.0.7\lib\net46\KKS_OverlayMods.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KKS_Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sideloader.KoikatsuSunshine.16.9.0\lib\net46\KKS_Sideloader.dll</HintPath>
+      <HintPath>..\..\packages\Sideloader.KoikatsuSunshine.16.9.2\lib\net46\KKS_Sideloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MonoMod.RuntimeDetour, Version=21.8.5.1, Culture=neutral, processorArchitecture=MSIL">
@@ -144,6 +144,10 @@
       <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\lib\net46\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\lib\net46\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -180,6 +184,7 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UniTask.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UniTask.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniTask.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule.targets')" />
@@ -193,4 +198,5 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UniTask.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniTask.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UniTask.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniTask.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets')" />
 </Project>

@@ -52,12 +52,12 @@
       <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.15\lib\net35\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KKSAPI, Version=1.28.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.KKSAPI.1.28.0\lib\net46\KKSAPI.dll</HintPath>
+    <Reference Include="KKSAPI, Version=1.31.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.KKSAPI.1.31.2\lib\net46\KKSAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KKS_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.16.9.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.17.0.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MonoMod.RuntimeDetour, Version=21.8.5.1, Culture=neutral, processorArchitecture=MSIL">
@@ -132,6 +132,10 @@
       <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\lib\net46\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\lib\net46\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -159,6 +163,7 @@
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.PhysicsModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.PhysicsModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.PhysicsModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.PhysicsModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.BepInEx.MonoMod.21.8.5.1\build\IllusionLibs.BepInEx.MonoMod.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.MonoMod.21.8.5.1\build\IllusionLibs.BepInEx.MonoMod.targets')" />
   <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp-firstpass.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp-firstpass.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp-firstpass.targets')" />
@@ -175,4 +180,5 @@
     <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
 IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KKS</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule.targets')" />
 </Project>
