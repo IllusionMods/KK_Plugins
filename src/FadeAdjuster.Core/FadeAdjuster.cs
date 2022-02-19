@@ -1,7 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace KK_Plugins
 {
@@ -14,7 +16,9 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.fadeadjuster";
         public const string PluginName = "Fade Adjuster";
         public const string PluginNameInternal = "KK_FadeAdjuster";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
+
+        internal static new ManualLogSource Logger;
 
 #if KK
         private static bool UpdateColor;
@@ -25,7 +29,7 @@ namespace KK_Plugins
 
         private void Awake()
         {
-            Logger.LogInfo($"Awake");
+            Logger = base.Logger;
             DisableFade = Config.Bind("Config", "Disable Fade", false, "Disables fade on loading screens");
             FadeColor = Config.Bind("Config", "Fade Color", Color.white, "Color of loading screens");
 #if KK
@@ -69,6 +73,10 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(FadeCanvas), nameof(FadeCanvas.StartAysnc))]
             private static void SceneFadeCanvasSetColor(ref float duration)
             {
+                Scene scene = SceneManager.GetActiveScene();
+                if (scene.buildIndex == -1)
+                    return;
+
                 if (DisableFade.Value)
                     duration = 0f;
             }
