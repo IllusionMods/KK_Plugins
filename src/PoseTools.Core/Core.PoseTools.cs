@@ -17,6 +17,7 @@ using static KK_Plugins.PoseTools.PoseToolsConstants;
 namespace KK_Plugins.PoseTools
 {
     [BepInProcess(Constants.StudioProcessName)]
+    [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class Plugin : BaseUnityPlugin
     {
@@ -72,13 +73,18 @@ namespace KK_Plugins.PoseTools
 #elif AI || HS2
                 if (gameName == ExtendedSave.GameNames.AIGirl || gameName == ExtendedSave.GameNames.HoneySelect2)
                     sameGame = true;
+#elif PH
+                if (gameName == ExtendedSave.GameNames.PlayHome)
+                    sameGame = true;
 #endif
 
                 //Facial expression
                 if (sameGame && ConfigLoadExpression.Value)
                 {
+#if !PH
                     if (data.data.TryGetValue(EyebrowPatternData, out var eyebrowPatternData))
                         ociChar.charInfo.ChangeEyebrowPtn((int)eyebrowPatternData);
+#endif
                     if (data.data.TryGetValue(EyesPatternData, out var eyesPatternData))
                         ociChar.charInfo.ChangeEyesPtn((int)eyesPatternData);
                     if (data.data.TryGetValue(MouthPatternData, out var mouthPatternData))
@@ -131,11 +137,18 @@ namespace KK_Plugins.PoseTools
             var data = new PluginData();
 
             //Facial expression
+#if PH
+            data.data.Add(EyesPatternData, ociChar.charStatus.eyesPtn);
+            data.data.Add(MouthPatternData, ociChar.charStatus.mouthPtn);
+            data.data.Add(EyeOpenData, ociChar.charStatus.eyesOpenMax);
+            data.data.Add(MouthOpenData, ociChar.oiCharInfo.mouthOpen);
+#else
             data.data.Add(EyebrowPatternData, ociChar.charFileStatus.eyebrowPtn);
             data.data.Add(EyesPatternData, ociChar.charFileStatus.eyesPtn);
             data.data.Add(MouthPatternData, ociChar.charFileStatus.mouthPtn);
             data.data.Add(EyeOpenData, ociChar.charFileStatus.eyesOpenMax);
             data.data.Add(MouthOpenData, ociChar.oiCharInfo.mouthOpen);
+#endif
 
             //Only save skirt FK if enabled
             if (ociChar.oiCharInfo.activeFK[SkirtFKIndex])

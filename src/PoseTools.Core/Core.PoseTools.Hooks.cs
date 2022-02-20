@@ -85,6 +85,7 @@ namespace KK_Plugins.PoseTools
         /// <summary>
         /// Replace the Save method
         /// </summary>
+        [HarmonyAfter(ExtensibleSaveFormat.ExtendedSave.GUID)]
         [HarmonyPrefix, HarmonyPatch(typeof(PauseCtrl), nameof(PauseCtrl.Save))]
         private static bool PoseSavePatch(OCIChar _ociChar, ref string _name)
         {
@@ -104,7 +105,11 @@ namespace KK_Plugins.PoseTools
                 using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
                 using (var binaryWriter = new BinaryWriter(fileStream))
                 {
+#if PH
+                    var buffer = Studio.Studio.Instance.sceneInfo.CreatePngScreen(320, 180);
+#else
                     var buffer = Studio.Studio.Instance.gameScreenShot.CreatePngScreen(320, 180);
+#endif
 
                     Texture2D screenshot = TextureFromBytes(buffer, mipmaps: false);
                     screenshot = OverwriteTexture(screenshot, Watermark, 0, screenshot.height - Watermark.height);
@@ -131,6 +136,7 @@ namespace KK_Plugins.PoseTools
         /// <summary>
         /// Patch with added PngFile.SkipPng
         /// </summary>
+        [HarmonyAfter(ExtensibleSaveFormat.ExtendedSave.GUID)]
         [HarmonyPrefix, HarmonyPatch(typeof(PauseCtrl), nameof(PauseCtrl.Load))]
         private static bool PauseCtrl_Load(OCIChar _ociChar, ref string _path, ref bool __result)
         {
