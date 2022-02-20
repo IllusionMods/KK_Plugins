@@ -234,14 +234,15 @@ Generates random characters in the character maker.
 v2.0 Merged changes from https://github.com/AUTOMATIC1111/KoikatsuMods<br/>
 </details>
 
-#### PoseFolders
+#### PoseTools
 
-- [AI_PoseFolders]
-- [HS2_PoseFolders]
-- [KK_PoseFolders]
-- [KKS_PoseFolders]
+- [AI_PoseTools]
+- [HS2_PoseTools]
+- [KK_PoseTools]
+- [KKS_PoseTools]
+- [PH_PoseTools]
 
-Create new folders in userdata/studio/pose and place the pose data inside them. Folders will show up in your list of poses in Studio.
+This plugin is aimed at increasing the usability of poses. You can reate new folders in userdata/studio/pose and place the pose data inside them and those folders will show up in your list of poses in Studio. It also saves poses as .png files instead of .dat so you see can see what the content of the pose is. The list of poses is ordered by filename and the pose name is added to the file name so the list will be ordered alphabetically. It also saves skirt FK and facial expressions, though these can be disabled in plugin settings if you prefer.
 
 Ported from Essu's NEOpose List Folders plugin for Honey Select.
 
@@ -734,14 +735,15 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v223/HS2_MaterialEditor.v3.1.16.zip "v3.1.16"
 [EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v223/EC_MaterialEditor.v3.1.16.zip "v3.1.16"
 [AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v223/AI_MaterialEditor.v3.1.16.zip "v3.1.16"
-[KKS_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_PoseFolders.v1.0.zip "v1.0"
-[KK_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v120/KK_PoseFolders.v1.0.zip "v1.0"
-[HS2_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseFolders.v1.0.zip "v1.0"
-[AI_PoseFolders]: https://github.com/IllusionMods/KK_Plugins/releases/download/v120/AI_PoseFolders.v1.0.zip "v1.0"
-[KKS_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_PoseQuickLoad.v1.0.zip "v1.0"
-[KK_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/KK_PoseQuickLoad.v1.0.zip "v1.0"
-[HS2_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_PoseQuickLoad.v1.0.zip "v1.0"
-[AI_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v148/AI_PoseQuickLoad.v1.0.zip "v1.0"
+[KKS_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/KKS_PoseTools.v1.1.1.zip "v1.1.1"
+[KK_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/KK_PoseTools.v1.1.1.zip "v1.1.1"
+[HS2_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/HS2_PoseTools.v1.1.1.zip "v1.1.1"
+[AI_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/AI_PoseTools.v1.1.1.zip "v1.1.1"
+[PH_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/PH_PoseTools.v1.1.1.zip "v1.1.1"
+[KKS_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v224/KKS_PoseQuickLoad.v1.1.zip "v1.1"
+[KK_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v224/KK_PoseQuickLoad.v1.1.zip "v1.1"
+[HS2_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v224/HS2_PoseQuickLoad.v1.1.zip "v1.1"
+[AI_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v224/AI_PoseQuickLoad.v1.1.zip "v1.1"
 [KKS_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_PoseUnlocker.v1.0.zip "v1.0"
 [KK_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_PoseUnlocker.v1.0.zip "v1.0"
 [HS2_PoseUnlocker]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_PoseUnlocker.v1.0.zip "v1.0"
@@ -817,8 +819,8 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KK_TwoLut]: https://github.com/IllusionMods/KK_Plugins/releases/download/v205/KK_TwoLut.v1.0.zip "v1.0"
 [KK_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v210/KK_CharaMakerLoadedSound.v1.0.zip "v1.0"
 [KKS_CharaMakerLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v210/KKS_CharaMakerLoadedSound.v1.0.zip "v1.0"
-[KK_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KK_FadeAdjuster.v1.0.1.zip "v1.0.1"
-[KKS_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_FadeAdjuster.v1.0.1.zip "v1.0.1"
+[KK_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v224/KK_FadeAdjuster.v1.0.2.zip "v1.0.2"
+[KKS_FadeAdjuster]: https://github.com/IllusionMods/KK_Plugins/releases/download/v224/KKS_FadeAdjuster.v1.0.2.zip "v1.0.2"
 [KK_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KK_ListOverride.v1.0.zip "v1.0"
 [KKS_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_ListOverride.v1.0.zip "v1.0"
 [KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
