@@ -64,6 +64,16 @@ namespace KK_Plugins
                 CreateRandomButton("FreeHScene/Canvas/Panel/3P/main/MaleSelectButton", CharacterType.Player);
 #endif
             }
+            else if (sceneName == "VRFreeHSelect")
+            {
+                CreateRandomButton("Canvas/Panel/Normal/FemaleSelectButton", CharacterType.Heroine);
+                CreateRandomButton("Canvas/Panel/Normal/MaleSelectButton", CharacterType.Player);
+                CreateRandomButton("Canvas/Panel/Masturbation/FemaleSelectButton", CharacterType.Heroine);
+                CreateRandomButton("Canvas/Panel/Lesbian/FemaleSelectButton", CharacterType.Heroine);
+                CreateRandomButton("Canvas/Panel/Lesbian/PartnerSelectButton", CharacterType.Partner);
+                CreateRandomButton("Canvas/Panel/3P/main/FemaleSelectButton", CharacterType.Female3P);
+                CreateRandomButton("Canvas/Panel/3P/main/MaleSelectButton", CharacterType.Player);
+            }
             else if (sceneName == "VRCharaSelect")
             {
                 CreateRandomButton("MainCanvas/Panel/Normal/FemaleSelectButton", CharacterType.Heroine);
@@ -84,6 +94,7 @@ namespace KK_Plugins
             var buttonObject = GameObject.Find(buttonObjectPath);
             if (buttonObject == null)
                 return;
+
             RectTransform buttonToCopy = buttonObject.GetComponent<RectTransform>();
             if (buttonToCopy == null)
                 return;
@@ -96,6 +107,9 @@ namespace KK_Plugins
             randomButtonTransform.SetParent(buttonToCopy.parent, true);
             randomButtonTransform.localScale = buttonToCopy.localScale;
             randomButtonTransform.localPosition = buttonToCopy.localPosition;
+#if KKS
+            randomButtonTransform.localEulerAngles = Vector3.zero;
+#endif
             testButtonRectTransform.SetRect(buttonToCopy.anchorMin, buttonToCopy.anchorMax, buttonToCopy.offsetMin, buttonToCopy.offsetMax);
             testButtonRectTransform.anchoredPosition = buttonToCopy.anchoredPosition + new Vector2(0f, -50f);
             randomButton.onClick = new Button.ButtonClickedEvent();
@@ -160,7 +174,11 @@ namespace KK_Plugins
                 if (Singleton<FreeHScene>.Instance == null)
                 {
                     //Use reflection to get the VR version of the character select screen
+#if KK
                     Type VRHSceneType = Type.GetType("VRCharaSelectScene, Assembly-CSharp");
+#elif KKS
+                    Type VRHSceneType = Type.GetType("VRFreeHSelect, Assembly-CSharp");
+#endif
                     var HSceneObject = FindObjectOfType(VRHSceneType);
                     member = HSceneObject.GetType().GetField("member", AccessTools.all).GetValue(HSceneObject);
                 }
