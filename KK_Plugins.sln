@@ -523,6 +523,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ShaderSwapper", "src\Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PH.PoseTools", "src\PoseTools.PH\PH.PoseTools.csproj", "{125B3166-DA35-4CDA-B71A-B5C3F0645062}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioWindowResize", "StudioWindowResize", "{5ACE49BE-BD8A-49E9-8E54-541A154C87BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioWindowResize", "src\KKS.StudioWindowResize\KKS.StudioWindowResize.csproj", "{589EA7E6-340D-4273-8F58-1FD7D6A7D594}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -669,6 +673,7 @@ Global
 		src\Shared\Shared.projitems*{54bc2804-b04c-4741-9c00-37ad75f8f437}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
 		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{589ea7e6-340d-4273-8f58-1fd7d6a7d594}*SharedItemsImports = 4
 		src\AccessoryQuickRemove.Core\AccessoryQuickRemove.Core.projitems*{589fb078-fcf6-4096-a4f3-5fa362e5d0bf}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{589fb078-fcf6-4096-a4f3-5fa362e5d0bf}*SharedItemsImports = 4
 		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{5a8fdb27-ffca-4a77-ab0f-afdef9a034ed}*SharedItemsImports = 13
@@ -1590,6 +1595,10 @@ Global
 		{125B3166-DA35-4CDA-B71A-B5C3F0645062}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{125B3166-DA35-4CDA-B71A-B5C3F0645062}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{125B3166-DA35-4CDA-B71A-B5C3F0645062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{589EA7E6-340D-4273-8F58-1FD7D6A7D594}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{589EA7E6-340D-4273-8F58-1FD7D6A7D594}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{589EA7E6-340D-4273-8F58-1FD7D6A7D594}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{589EA7E6-340D-4273-8F58-1FD7D6A7D594}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1802,6 +1811,7 @@ Global
 		{4BC03618-F408-4BAC-8187-8DC998275BC2} = {546FB98F-02D6-4C04-AE4C-F86E9A1CA88A}
 		{030250AC-329E-4244-A59F-F5B242DF9AC5} = {546FB98F-02D6-4C04-AE4C-F86E9A1CA88A}
 		{125B3166-DA35-4CDA-B71A-B5C3F0645062} = {6F0DF0B5-3EC0-40D1-8874-6960D8377E6D}
+		{589EA7E6-340D-4273-8F58-1FD7D6A7D594} = {5ACE49BE-BD8A-49E9-8E54-541A154C87BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
