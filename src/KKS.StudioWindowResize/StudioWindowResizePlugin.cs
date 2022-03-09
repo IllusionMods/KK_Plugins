@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using BepInEx;
+using BepInEx.Configuration;
 using KKAPI;
 using KKAPI.Studio;
 using UnityEngine;
@@ -24,7 +25,10 @@ namespace KK_Plugins
         // the Y offset is entirely arbitrary, not sure if it plays nice across aspect ratios or resize, probably not
         // allowing the user to configure it wouldn't be too involved.
         // it would just be a case of separating sprite operations from resize operations, not a big deal
-        private const float resizeY = -973;
+        private static float resizeY = -973;
+        private const float resizeYmin = -300;
+        private const float resizeYdefault = -950;//-973;
+        private const float resizeYmax = -1400;
 
         private IEnumerator Start()
         {
@@ -44,6 +48,16 @@ namespace KK_Plugins
             //var guideInput = studioScene.Find("Canvas Guide Input/Guide Input").GetComponent<RectTransform>();
             //var guideInputHeight = guideInput.sizeDelta.y;  //80
             //var guideInputMargin = guideInput.offsetMax.y - guideInputHeight;   //88 - 80 -> 8
+
+            // Use a relatively low number by default to not change how the UI looks too drastically while still providing most of the benefit
+            var defaultRatio = 0.3f; //(resizeYdefault - resizeYmin) / (resizeYmax - resizeYmin);
+
+            var userRatio = Config.Bind("Expand", "Amount of height expansion", defaultRatio,
+                new ConfigDescription("How much to expand the lists by. Arbitrary units. 0 is roughly the same as default. 0.5 fills almost the entire screen under default UI scale. only use values above 0.5 if you change UI scale with another plugin. Needs a studio restart to apply.",
+                    new AcceptableValueRange<float>(0, 1))).Value;
+
+            resizeY = Mathf.Lerp(resizeYmin, resizeYmax, userRatio);
+
 
             // Sprite border values
             // extending it for new images is straightforward
@@ -163,6 +177,7 @@ namespace KK_Plugins
             var sr = t.GetComponent<ScrollRect>();
             var rt = sr.GetComponent<RectTransform>();
             var offsetMin = rt.offsetMin;
+            Console.WriteLine(offsetMin.y);
             offsetMin.y = resizeY;
             rt.offsetMin = offsetMin;
             SliceTexture(sr.GetComponent<Image>(), slice);
