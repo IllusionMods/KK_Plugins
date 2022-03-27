@@ -523,6 +523,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.ShaderSwapper", "src\Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PH.PoseTools", "src\PoseTools.PH\PH.PoseTools.csproj", "{125B3166-DA35-4CDA-B71A-B5C3F0645062}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.ClothesToAccessories", "src\ClothesToAccessories.KKS\KKS.ClothesToAccessories.csproj", "{255B5BF8-80FF-49EA-B4FB-7B535E8C6062}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -1590,6 +1592,10 @@ Global
 		{125B3166-DA35-4CDA-B71A-B5C3F0645062}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{125B3166-DA35-4CDA-B71A-B5C3F0645062}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{125B3166-DA35-4CDA-B71A-B5C3F0645062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{255B5BF8-80FF-49EA-B4FB-7B535E8C6062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{255B5BF8-80FF-49EA-B4FB-7B535E8C6062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{255B5BF8-80FF-49EA-B4FB-7B535E8C6062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{255B5BF8-80FF-49EA-B4FB-7B535E8C6062}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
