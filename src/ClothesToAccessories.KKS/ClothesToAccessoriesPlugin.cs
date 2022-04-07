@@ -3,27 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx;
 using BepInEx.Logging;
 using ChaCustom;
 using HarmonyLib;
-using Illusion.Extensions;
 using Illusion.Game.Array;
+using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Utilities;
 using Manager;
-using StrayTech;
 using TMPro;
 using UniRx;
 using UnityEngine;
-using Character = Manager.Character;
 
 namespace ClothesToAccessories
 {
-    //todo try catch all custom code with proper errors
+    // TODO:
+    // - try catch all custom code with proper errors
+    // - bra masks from top accessories only affect normal bras, not accessory bras
+    // - The clothing states don't get limited to only the states that actually work (so only 0 1 and 3 for example), so you can get some weird unused states
     [BepInPlugin(GUID, PluginName, Version)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class ClothesToAccessoriesPlugin : BaseUnityPlugin
     {
         public const string GUID = "ClothesToAccessories";
@@ -55,18 +56,25 @@ namespace ClothesToAccessories
                            p[0].ParameterType == typeof(int) &&
                            mi.Name.StartsWith("<Start>");
                 }),
-                prefix: new HarmonyMethod(typeof(ClothesToAccessoriesPlugin), nameof(ClothesToAccessoriesPlugin.ConvertDropdownIndexToRelativeTypeIndex)));
-            MakeWindows();
+                prefix: new HarmonyMethod(typeof(ClothesToAccessoriesPlugin), nameof(ConvertDropdownIndexToRelativeTypeIndex)));
+
+#if DEBUG
+            InitializeMakerWindows();
+#else
+            MakerAPI.MakerFinishedLoading += (s, e) => InitializeMakerWindows();
+#endif
         }
 
+#if DEBUG
         private void OnDestroy()
         {
             foreach (var disposable in CleanupList)
             {
                 try { disposable.Dispose(); }
-                catch (Exception ex) { Console.WriteLine(ex); }
+                catch (Exception ex) { UnityEngine.Debug.LogException(ex); }
             }
         }
+#endif
 
         #region add clothes to acc categories
 
@@ -95,17 +103,17 @@ namespace ClothesToAccessories
         // list id equals dropdown id, stock list items are marked as ao_none
         private static List<ChaListDefine.CategoryNo> _typeIndexLookup;
 
-
-        private void MakeWindows()
+        private void InitializeMakerWindows()
         {
             var sw = Stopwatch.StartNew();
 
-            var slot = GameObject.FindObjectOfType<CustomAcsChangeSlot>();
+            var slot = FindObjectOfType<CustomAcsChangeSlot>();
             var donor = slot.customAcsSelectKind.First().gameObject;
 
-            //cleanup
-            var orig = slot.customAcsSelectKind;
             var cac = slot.cvsAccessory.First();
+
+#if DEBUG // reload cleanup
+            var orig = slot.customAcsSelectKind;
             var orig2 = cac.cgAccessoryWin;
             var orig3 = cac.customAccessory;
             CleanupList.Add(Disposable.Create(() =>
@@ -118,16 +126,20 @@ namespace ClothesToAccessories
                     if (orig3 != null) cvsAccessory.customAccessory = orig3;
                 }
             }));
+#endif
 
             _typeIndexLookup = Enumerable.Repeat(ChaListDefine.CategoryNo.ao_none, cac.ddAcsType.options.Count).ToList();
 
+            var customWindows = new List<CustomAcsSelectKind>();
+
             foreach (var typeToAdd in _AcceptableCustomTypes)
             {
-                var copy = GameObject.Instantiate(donor, donor.transform.parent, false);
+                var copy = Instantiate(donor, donor.transform.parent, false);
                 copy.name = $"winAcsCustomKind_{typeToAdd}";
 
-                //cleanup
-                CleanupList.Add(Disposable.Create(() => GameObject.Destroy(copy)));
+#if DEBUG // reload cleanup
+                CleanupList.Add(Disposable.Create(() => Destroy(copy)));
+#endif
 
                 var copyCmp = copy.GetComponent<CustomAcsSelectKind>();
                 copyCmp.cate = typeToAdd;
@@ -146,25 +158,57 @@ namespace ClothesToAccessories
 
                 slot.customAcsSelectKind = slot.customAcsSelectKind.AddToArray(copyCmp);
 
-                foreach (var cvsAccessory in slot.cvsAccessory)
-                {
-                    cvsAccessory.ddAcsType.options.Add(new TMP_Dropdown.OptionData(copyCmp.cate.ToString()));
-                    cvsAccessory.cgAccessoryWin = cvsAccessory.cgAccessoryWin.AddToArray(copyCmp.GetComponent<CanvasGroup>());
-                    cvsAccessory.customAccessory = cvsAccessory.customAccessory.AddToArray(copyCmp);
-                }
+                customWindows.Add(copyCmp);
 
                 _typeIndexLookup.Add(typeToAdd);
             }
 
-            foreach (var cvsAccessory in slot.cvsAccessory)
+            void AddNewAccKindsToSlot(CvsAccessory cvsAcc)
             {
-                var template = cvsAccessory.ddAcsType.template;
+                cvsAcc.ddAcsType.options.AddRange(customWindows.Select(x => new TMP_Dropdown.OptionData(x.cate.ToString())));
+                //cvsAcc.ddAcsType.AddOptions(customWindows.Select(x => new TMP_Dropdown.OptionData(x.cate.ToString())).ToList());
+                cvsAcc.cgAccessoryWin = cvsAcc.cgAccessoryWin.Concat(customWindows.Select(x => x.GetComponent<CanvasGroup>())).ToArray();
+                cvsAcc.customAccessory = cvsAcc.customAccessory.Concat(customWindows).ToArray();
+
+                var template = cvsAcc.ddAcsType.template;
                 var origSize = template.sizeDelta;
+#if DEBUG // reload cleanup
                 CleanupList.Add(Disposable.Create(() => template.sizeDelta = origSize));
-                template.sizeDelta = new Vector2(origSize.x, origSize.y + 480);
+#endif
+                // Need to hardcode the offsets instead of changing sizeDelta because they get messed up on slots added by moreaccs
+                template.anchorMin = Vector2.zero;
+                template.anchorMax = new Vector2(1, 0);
+                template.offsetMin = new Vector2(0, -678);
+                template.offsetMax = new Vector2(0, 2);
+                //template.sizeDelta = new Vector2(origSize.x, origSize.y + 480);
             }
 
-            Console.WriteLine("MakeWindows finish in ms " + sw.ElapsedMilliseconds);
+            foreach (var cvsAccessory in slot.cvsAccessory) AddNewAccKindsToSlot(cvsAccessory);
+
+            void OnAccSlotAdded(object sender, AccessorySlotEventArgs args)
+            {
+                //Logger.LogDebug("Adding clothing accessory kinds to dropdown in new acc slot id=" + args.SlotIndex);
+                var cvsAccessory = slot.cvsAccessory[args.SlotIndex];
+                // Necessary in case the dropdown items added to an existing slot got copied
+                // todo a more reliable method?
+                cvsAccessory.ddAcsType.options.RemoveAll(data => _AcceptableCustomTypes.Any(a => a.ToString() == data.text));
+                AddNewAccKindsToSlot(cvsAccessory);
+            }
+            AccessoriesApi.MakerAccSlotAdded += OnAccSlotAdded;
+#if DEBUG // reload cleanup
+            CleanupList.Add(Disposable.Create(() => AccessoriesApi.MakerAccSlotAdded -= OnAccSlotAdded));
+#endif
+
+            Logger.LogDebug($"InitializeMakerWindows finish in {sw.ElapsedMilliseconds}ms");
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ActivateHDropDown), nameof(ActivateHDropDown.Start))]
+        private static bool PleaseDontClearTheDropdown()
+        {
+            // This class overwrites the dropdown options based on whether the r18 patch is installed or not.
+            // Only r18 games are moddable so there's no point in keeping this, especially when it prevents the dropdown items from being changed reliably (by default all items are shown)
+            return false;
         }
 
         private static void ConvertDropdownIndexToRelativeTypeIndex(ref int idx)
@@ -172,7 +216,7 @@ namespace ClothesToAccessories
             if (idx == 0 || _typeIndexLookup == null) return;
             if (idx < 0 || idx >= _typeIndexLookup.Count)
             {
-                Console.WriteLine($"oops idx {idx}\n{new StackTrace()}");
+                //Console.WriteLine($"oops idx {idx}\n{new StackTrace()}");
                 idx = 0;
                 return;
             }
@@ -185,7 +229,7 @@ namespace ClothesToAccessories
             // Custom categories added by this plugin are added to the dropdown in sequendial indexes, but that does not work out when converting them by simply adding 120
             // instead their list index has to be adjusted so that when idx + 120 the result is equal to the correct CategoryNo
             var newIndex = customType - ChaListDefine.CategoryNo.ao_none;
-            Console.WriteLine($"adjust {idx} into {newIndex}");
+            //Console.WriteLine($"adjust {idx} into {newIndex}");
             idx = newIndex;
         }
 
@@ -198,7 +242,7 @@ namespace ClothesToAccessories
                     new CodeMatch(OpCodes.Ldloc_1),
                     new CodeMatch(OpCodes.Callvirt, AccessTools.PropertySetter(typeof(TMP_Dropdown), nameof(TMP_Dropdown.value))))
                 .ThrowIfInvalid("set_value not found")
-                .Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(ClothesToAccessoriesPlugin.ConvertTypeToDropdownIndex)) ?? throw new Exception("ConvertTypeToDropdownIndex")))
+                .Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(ConvertTypeToDropdownIndex)) ?? throw new Exception("ConvertTypeToDropdownIndex")))
                 .Instructions();
         }
 
@@ -216,7 +260,7 @@ namespace ClothesToAccessories
         [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryType))]
         private static IEnumerable<CodeInstruction> UnlockTypesTpl(IEnumerable<CodeInstruction> instructions)
         {
-            var replacement = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(ClothesToAccessoriesPlugin.CustomGetDefault)) ?? throw new Exception("CustomGetDefault");
+            var replacement = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(CustomGetDefault)) ?? throw new Exception("CustomGetDefault");
             return new CodeMatcher(instructions)
                 .MatchForward(true,
                     new CodeMatch(OpCodes.Ldfld),
@@ -257,7 +301,7 @@ namespace ClothesToAccessories
         [HarmonyTranspiler]
         //todo needs new harmony ver [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryAsync), typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool), typeof(bool))]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryNoAsync))]
-        private static IEnumerable<CodeInstruction> UnlockAccessoryItemTypesTpl(IEnumerable<CodeInstruction> instructions/*, MethodInfo __originalMethod*/)
+        private static IEnumerable<CodeInstruction> UnlockAccessoryItemTypesTpl(IEnumerable<CodeInstruction> instructions)
         {
 
             var cm = new CodeMatcher(instructions);
@@ -284,7 +328,7 @@ namespace ClothesToAccessories
             cm.End()
                 .MatchBack(false, new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(ChaControl), nameof(ChaControl.UpdateAccessoryMoveFromInfo)) ?? throw new Exception("UpdateAccessoryMoveFromInfo")))
                 .ThrowIfInvalid("UpdateAccessoryMoveFromInfo not found")
-                .Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(UpdateAccessoryMoveFromInfoAndStuff)));
+                .Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(UpdateAccessoryMoveFromInfoAndReassignBones)));
 
             var replacement2 = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(GetParentOverride)) ?? throw new Exception("GetParentOverride");
             cm.Start()
@@ -310,11 +354,9 @@ namespace ClothesToAccessories
                         case ChaListDefine.CategoryNo.bo_hair_f:
                         //break;
                         case ChaListDefine.CategoryNo.bo_hair_s:
-                            Console.WriteLine("GetParentOverride 1");
                             // headside is center of head, all normal hair seem to be using this
                             return ChaAccessoryDefine.AccessoryParentKey.a_n_headside.ToString();
                         case ChaListDefine.CategoryNo.bo_hair_o:
-                            Console.WriteLine("GetParentOverride 2");
                             // Ahoges act like hats
                             return ChaAccessoryDefine.AccessoryParentKey.a_n_headtop.ToString();
 
@@ -332,12 +374,11 @@ namespace ClothesToAccessories
                         case ChaListDefine.CategoryNo.cpo_jacket_a:
                         case ChaListDefine.CategoryNo.cpo_jacket_b:
                         case ChaListDefine.CategoryNo.cpo_jacket_c:
-                            Console.WriteLine("GetParentOverride 3");
                             // this key doesn't actually matter since the bones get merged, but something is needed or the accessory won't be spawned properly
                             return ChaAccessoryDefine.AccessoryParentKey.a_n_waist.ToString();
                     }
                 }
-                Console.WriteLine($"GetParentOverride unhandled cat: {category}  value: {instance.GetInfo(type)}");
+                Logger.LogWarning($"GetParentOverride unhandled category={category}  value={instance.GetInfo(type)}");
             }
 
             var origInfo = instance.GetInfo(type);
@@ -374,14 +415,12 @@ namespace ClothesToAccessories
 
         private static void CovertToChaAccessoryComponent(GameObject instance, ListInfoBase listInfoBase, ChaControl chaControl, ChaListDefine.CategoryNo category)
         {
-            Console.WriteLine("CovertToChaAccessoryComponent");
             var cac = instance.GetComponent<ChaAccessoryComponent>();
             if (cac != null) return;
 
             var ccc = instance.GetComponent<ChaClothesComponent>();
             if (ccc != null)
             {
-                Console.WriteLine("CovertToChaAccessoryComponent cloth");
                 cac = instance.AddComponent<ChaAccessoryComponent>();
                 cac.defColor01 = ccc.defMainColor01;
                 cac.defColor02 = ccc.defMainColor02;
@@ -407,7 +446,6 @@ namespace ClothesToAccessories
             var chc = instance.GetComponent<ChaCustomHairComponent>();
             if (chc != null)
             {
-                Console.WriteLine("CovertToChaAccessoryComponent hair");
                 cac = instance.AddComponent<ChaAccessoryComponent>();
 
                 cac.initialize = chc.initialize;
@@ -445,15 +483,15 @@ namespace ClothesToAccessories
                 }).Distinct().ToArray();
                 if (positions.Length >= 1) positions[0].name = "N_move";
                 if (positions.Length >= 2) positions[1].name = "N_move2";
-                if (positions.Length >= 3) Console.WriteLine("more than 2 move transforms found! " + string.Join(", ", positions.Select(x => x.name)));
+                if (positions.Length >= 3) Logger.LogWarning($"More than 2 move transforms found! id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category} transforms={string.Join(", ", positions.Select(x => x.name))}");
 
                 return;
             }
 
-            Console.WriteLine("CovertToChaAccessoryComponent failed");
+            Logger.LogWarning($"CovertToChaAccessoryComponent failed for id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category}");
         }
 
-        private static bool UpdateAccessoryMoveFromInfoAndStuff(ChaControl instance, int slotNo)
+        private static bool UpdateAccessoryMoveFromInfoAndReassignBones(ChaControl instance, int slotNo)
         {
             var result = instance.UpdateAccessoryMoveFromInfo(slotNo);
 
@@ -467,7 +505,7 @@ namespace ClothesToAccessories
 
                     // Make dynamic bones on the instantiated clothing operate on the main body bones instead (since the renderers will be using these instead)
                     var componentsInChildren = accObj.GetComponentsInChildren<DynamicBone>(true);
-                    if (!componentsInChildren.IsNullOrEmpty<DynamicBone>())
+                    if (!componentsInChildren.IsNullOrEmpty())
                     {
                         var componentsInChildren2 = instance.objBodyBone.GetComponentsInChildren<DynamicBoneCollider>(true);
                         var dictBone = instance.aaWeightsBody.dictBone;
@@ -634,7 +672,7 @@ namespace ClothesToAccessories
             var visibleSon = true;
             var visibleBody = true;
             var visibleSimple = false;
-            if (Scene.NowSceneNames.Any((string s) => s == "H"))
+            if (Scene.NowSceneNames.Any(s => s == "H"))
             {
                 visibleSon = __instance.sex != 0 || Manager.Config.HData.VisibleSon;
                 visibleBody = __instance.sex != 0 || Manager.Config.HData.VisibleBody;
@@ -666,7 +704,7 @@ namespace ClothesToAccessories
             DrawOption(accClothes[0], ChaFileDefine.ClothesKind.top);
 
             //todo sleeves __instance.DrawSode();
-            
+
             flags[0] = __instance.visibleAll;
             flags[1] = !__instance.notBot;
             flags[2] = visibleBody;
@@ -744,7 +782,7 @@ namespace ClothesToAccessories
             //if (__instance.objHideKokan != null)
             //    if (__instance.notShorts && __instance.notBra && __instance.visibleAll && !visibleSimple && __instance.fileStatus.visibleBodyAlways)
             //        __instance.objHideKokan.SetActiveIfDifferent(true);
-            
+
             flags[0] = __instance.visibleAll;
             flags[1] = __instance.fileStatus.clothesState[4] == 0;
             flags[2] = visibleBody;
@@ -786,7 +824,7 @@ namespace ClothesToAccessories
             if (SetActiveControls(accClothes[7], 0, flags.Any(6))) __instance.updateShape = true;
 
             DrawOption(accClothes[7], ChaFileDefine.ClothesKind.shoes_inner);
-            
+
             // If there are any top clothes in accessories and there are no normal clothes selected then pull masks from the accessory clothes
             if (accClothes[0].Count > 0)
             {
@@ -802,7 +840,7 @@ namespace ClothesToAccessories
                                 break;
                         }
                     }
-                    
+
                     if (_lastTopState != topClothesState)
                     {
                         __instance.ChangeAlphaMask(ChaFileDefine.alphaState[topClothesState, 0], ChaFileDefine.alphaState[topClothesState, 1]);
@@ -822,512 +860,8 @@ namespace ClothesToAccessories
                 var ctaa = __instance.cusAcsCmp[slotNo].GetComponent<ClothesToAccessoriesAdapter>();
                 if (ctaa != null)
                 {
-                    ctaa.ChangeCustomClothes();
+                    ctaa.UpdateClothesColorAndStuff();
                 }
-            }
-        }
-
-        public class ClothesToAccessoriesAdapter : MonoBehaviour
-        {
-            public ChaClothesComponent ClothesComponent { get; private set; }
-            public ChaAccessoryComponent AccessoryComponent { get; private set; }
-            public ChaControl Owner { get; private set; }
-            public ChaReference Reference { get; private set; }
-
-            public static readonly Dictionary<ChaControl, List<ClothesToAccessoriesAdapter>[]> AllInstances;
-
-            static ClothesToAccessoriesAdapter()
-            {
-                AllInstances = new Dictionary<ChaControl, List<ClothesToAccessoriesAdapter>[]>();
-            }
-
-            public void Initialize(ChaControl owner, ChaClothesComponent clothesComponent, ChaAccessoryComponent accessoryComponent, ListInfoBase listInfoBase, ChaListDefine.CategoryNo kind)
-            {
-                if (owner == null) throw new ArgumentNullException(nameof(owner));
-                if (clothesComponent == null) throw new ArgumentNullException(nameof(clothesComponent));
-                if (accessoryComponent == null) throw new ArgumentNullException(nameof(accessoryComponent));
-                if (listInfoBase == null) throw new ArgumentNullException(nameof(listInfoBase));
-                ClothesComponent = clothesComponent;
-                AccessoryComponent = accessoryComponent;
-                Owner = owner;
-                _listInfoBase = listInfoBase;
-                _kind = kind;
-
-                // Treat top parts as normal tops
-                if (kind >= ChaListDefine.CategoryNo.cpo_sailor_a)
-                    _clothingKind = 0;
-                else
-                    _clothingKind = kind - ChaListDefine.CategoryNo.co_top;
-
-                AllInstances.TryGetValue(owner, out var instances);
-                if (instances == null)
-                {
-                    instances = Enumerable.Range(0, 8).Select(i => new List<ClothesToAccessoriesAdapter>()).ToArray();
-                    AllInstances[Owner] = instances;
-                }
-                instances[_clothingKind].Add(this);
-
-                Reference = gameObject.AddComponent<ChaReference>();
-                Reference.CreateReferenceInfo((ulong)(_clothingKind + 5), gameObject);
-
-                if (_kind == ChaListDefine.CategoryNo.co_gloves || _kind == ChaListDefine.CategoryNo.co_shoes || _kind == ChaListDefine.CategoryNo.co_socks)
-                    AllObjects = AccessoryComponent.rendNormal.Select(x => x.transform.parent.gameObject).Distinct().ToArray();
-
-                _colorRend = AccessoryComponent.rendNormal.FirstOrDefault(x => x != null) ?? AccessoryComponent.rendAlpha.FirstOrDefault(x => x != null) ?? AccessoryComponent.rendHair.FirstOrDefault(x => x != null);
-                InitBaseCustomTextureClothes();
-                
-                // bug: if multipe clothes with skirt dynamic bones are spawned then their dynamic bone components all work at the same time on the same body bones, which can cause some weird physics effects
-            }
-
-            public GameObject[] AllObjects { get; private set; }
-
-            private void OnDestroy()
-            {
-                var list = AllInstances[Owner];
-                list[_clothingKind].Remove(this);
-                if (list.Length == 0) AllInstances.Remove(Owner);
-
-                if (Owner)
-                {
-                    // If character is using masks from this instance, force top clothes refresh to repopulate the masks (if they end up null it will be handled later)
-                    if (_appliedBodyMask == Owner.texBodyAlphaMask || _appliedBraMask == Owner.texBraAlphaMask)
-                    {
-                        var fileClothes = Owner.nowCoordinate.clothes;
-                        Owner.ChangeClothesTopNoAsync(fileClothes.parts[0].id, fileClothes.subPartsId[0], fileClothes.subPartsId[1], fileClothes.subPartsId[2], true, true);
-                    }
-                }
-
-                // DO NOT DESTROY
-                //Destroy(_appliedBodyMask);
-                //Destroy(_appliedBraMask);
-            }
-            
-            private ChaListDefine.CategoryNo _kind;
-            private int _clothingKind;
-            private ListInfoBase _listInfoBase;
-            readonly CustomTextureCreate[] _ctcArr = new CustomTextureCreate[3];
-            private Renderer _colorRend;
-            private Texture _appliedBodyMask;
-            private Texture _appliedBraMask;
-            
-            private bool InitBaseCustomTextureClothes()
-            {
-                var lib = _listInfoBase;
-                var mainManifest = lib.GetInfo(ChaListDefine.KeyType.MainManifest);
-                var mainTexAb = lib.GetInfo(ChaListDefine.KeyType.MainTexAB);
-                if ("0" == mainTexAb) mainTexAb = lib.GetInfo(ChaListDefine.KeyType.MainAB);
-                var mainTex = lib.GetInfo(ChaListDefine.KeyType.MainTex);
-                var info3 = lib.GetInfo(ChaListDefine.KeyType.MainManifest);
-                var info4 = lib.GetInfo(ChaListDefine.KeyType.MainTex02AB);
-                if ("0" == info4) info4 = lib.GetInfo(ChaListDefine.KeyType.MainAB);
-                var text2 = lib.GetInfo(ChaListDefine.KeyType.MainTex02);
-                var info5 = lib.GetInfo(ChaListDefine.KeyType.MainManifest);
-                var info6 = lib.GetInfo(ChaListDefine.KeyType.MainTex03AB);
-                if ("0" == info6) info6 = lib.GetInfo(ChaListDefine.KeyType.MainAB);
-                var info7 = lib.GetInfo(ChaListDefine.KeyType.MainTex03);
-                var info8 = lib.GetInfo(ChaListDefine.KeyType.MainManifest);
-                var info9 = lib.GetInfo(ChaListDefine.KeyType.ColorMaskAB);
-                if ("0" == info9) info9 = lib.GetInfo(ChaListDefine.KeyType.MainAB);
-                var text3 = lib.GetInfo(ChaListDefine.KeyType.ColorMaskTex);
-                var info10 = lib.GetInfo(ChaListDefine.KeyType.MainManifest);
-                var info11 = lib.GetInfo(ChaListDefine.KeyType.ColorMask02AB);
-                if ("0" == info11) info11 = lib.GetInfo(ChaListDefine.KeyType.MainAB);
-                var text4 = lib.GetInfo(ChaListDefine.KeyType.ColorMask02Tex);
-                var info12 = lib.GetInfo(ChaListDefine.KeyType.MainManifest);
-                var info13 = lib.GetInfo(ChaListDefine.KeyType.ColorMask03AB);
-                if ("0" == info13) info13 = lib.GetInfo(ChaListDefine.KeyType.MainAB);
-                var info14 = lib.GetInfo(ChaListDefine.KeyType.ColorMask03Tex);
-                if ("0" == mainTexAb || "0" == mainTex) return false;
-                // if (!base.hiPoly) text += "_low";
-                var texture2D = CommonLib.LoadAsset<Texture2D>(mainTexAb, mainTex, false, mainManifest, true);
-                if (null == texture2D) return false;
-                if ("0" == info9 || "0" == text3)
-                {
-                    Resources.UnloadAsset(texture2D);
-                    return false;
-                }
-                // if (!base.hiPoly) text3 += "_low";
-                var texture2D2 = CommonLib.LoadAsset<Texture2D>(info9, text3, false, info8, true);
-                if (null == texture2D2)
-                {
-                    Resources.UnloadAsset(texture2D);
-                    return false;
-                }
-                Texture2D texture2D3 = null;
-                if ("0" != info4 && "0" != text2)
-                {
-                    // if (!base.hiPoly) text2 += "_low";
-                    texture2D3 = CommonLib.LoadAsset<Texture2D>(info4, text2, false, info3, true);
-                }
-                Texture2D texture2D4 = null;
-                if ("0" != info11 && "0" != text4)
-                {
-                    // if (!base.hiPoly)text4 += "_low";
-                    texture2D4 = CommonLib.LoadAsset<Texture2D>(info11, text4, false, info10, true);
-                }
-                Texture2D texture2D5 = null;
-                if ("0" != info6 && "0" != info7)
-                {
-                    texture2D5 = CommonLib.LoadAsset<Texture2D>(info6, info7, false, info5, true);
-                }
-                Texture2D texture2D6 = null;
-                if ("0" != info13 && "0" != info14)
-                {
-                    texture2D6 = CommonLib.LoadAsset<Texture2D>(info13, info14, false, info12, true);
-                }
-                const string createMatABName = "chara/mm_base.unity3d";
-                const string createMatName = "cf_m_clothesN_create";
-                for (var i = 0; i < 3; i++)
-                {
-                    CustomTextureCreate customTextureCreate = null;
-                    Texture2D texture2D7;
-                    Texture2D tex;
-                    if (i == 0)
-                    {
-                        texture2D7 = texture2D;
-                        tex = texture2D2;
-                    }
-                    else if (1 == i)
-                    {
-                        texture2D7 = texture2D3;
-                        tex = texture2D4;
-                    }
-                    else
-                    {
-                        texture2D7 = texture2D5;
-                        tex = texture2D6;
-                    }
-                    if (null != texture2D7)
-                    {
-                        customTextureCreate = new CustomTextureCreate(Owner.objRoot.transform);
-                        var width = texture2D7.width;
-                        var height = texture2D7.height;
-                        customTextureCreate.Initialize(createMatABName, createMatName, "", width, height, RenderTextureFormat.ARGB32);
-                        customTextureCreate.SetMainTexture(texture2D7);
-                        customTextureCreate.SetTexture(ChaShader._ColorMask, tex);
-                    }
-
-                    _ctcArr[i] = customTextureCreate;
-                }
-                return true;
-            }
-
-            public bool ChangeCustomClothes(/*bool main, int kind, bool updateColor, bool updateTex01, bool updateTex02, bool updateTex03, bool updateTex04*/)
-            {
-                Console.WriteLine("ChangeCustomClothes triggered");
-                bool main = true, updateColor = true, updateTex01 = true, updateTex02 = true, updateTex03 = true, updateTex04 = true;
-                var kind = 0;
-                //     CustomTextureCreate[] array = new CustomTextureCreate[]
-                //     {
-                // main ? base.ctCreateClothes[kind, 0] : base.ctCreateClothesSub[kind, 0],
-                // main ? base.ctCreateClothes[kind, 1] : base.ctCreateClothesSub[kind, 1],
-                // main ? base.ctCreateClothes[kind, 2] : base.ctCreateClothesSub[kind, 2]
-                //     };
-                var array = _ctcArr;
-                if (array[0] == null)
-                {
-                    return false;
-                }
-
-                var chaClothesComponent = ClothesComponent; //(main ? base.GetCustomClothesComponent(kind) : base.GetCustomClothesSubComponent(kind));
-                if (null == chaClothesComponent)
-                {
-                    return false;
-                }
-
-                //ChaFileClothes.PartsInfo partsInfo = (main ? this.nowCoordinate.clothes.parts[kind] : this.nowCoordinate.clothes.parts[0]);
-                var partsInfo = new ChaFileClothes.PartsInfo();
-                partsInfo.colorInfo[0].baseColor = _colorRend.material.GetColor(ChaShader._Color);   //colors[0];//
-                partsInfo.colorInfo[1].baseColor = _colorRend.material.GetColor(ChaShader._Color2);  //colors[1];//
-                partsInfo.colorInfo[2].baseColor = _colorRend.material.GetColor(ChaShader._Color3);  //colors[2];//
-                //partsInfo.colorInfo[3].baseColor = _colorRend.material.GetColor(ChaShader._Color4);
-
-
-                if (main)
-                {
-                    if (!updateColor && !updateTex01 && !updateTex02 && !updateTex03)
-                    {
-                        return false;
-                    }
-                }
-                else if (!updateColor && !updateTex01 && !updateTex02 && !updateTex03 && !updateTex04)
-                {
-                    return false;
-                }
-                var result = true;
-                var array2 = new int[]
-                {
-            ChaShader._PatternMask1,
-            ChaShader._PatternMask2,
-            ChaShader._PatternMask3,
-            ChaShader._PatternMask1
-                };
-                var array3 = new bool[] { updateTex01, updateTex02, updateTex03, updateTex04 };
-                var num = ((!main && 2 == kind) ? 4 : 3);
-                for (var i = 0; i < num; i++)
-                {
-                    if (array3[i])
-                    {
-                        Texture2D tex = null;
-                        string text;
-                        string text2;
-                        Owner.lstCtrl.GetFilePath(ChaListDefine.CategoryNo.mt_pattern, partsInfo.colorInfo[i].pattern, ChaListDefine.KeyType.MainTexAB, ChaListDefine.KeyType.MainTex, out text, out text2);
-                        if ("0" != text && "0" != text2)
-                        {
-                            //if (!base.hiPoly)
-                            //{
-                            //    text2 += "_low";
-                            //}
-                            tex = CommonLib.LoadAsset<Texture2D>(text, text2, false, "", true);
-                            Character.AddLoadAssetBundle(text, "");
-                        }
-                        foreach (var customTextureCreate in array)
-                        {
-                            if (customTextureCreate != null)
-                            {
-                                customTextureCreate.SetTexture(array2[i], tex);
-                            }
-                        }
-                    }
-                }
-                if (updateColor)
-                {
-                    foreach (var customTextureCreate2 in array)
-                    {
-                        if (customTextureCreate2 != null)
-                        {
-                            if (!main && 2 == kind)
-                            {
-                                customTextureCreate2.SetColor(ChaShader._Color, partsInfo.colorInfo[3].baseColor);
-                                customTextureCreate2.SetColor(ChaShader._Color1_2, partsInfo.colorInfo[3].patternColor);
-                                customTextureCreate2.SetFloat(ChaShader._PatternScale1u, partsInfo.colorInfo[3].tiling.x);
-                                customTextureCreate2.SetFloat(ChaShader._PatternScale1v, partsInfo.colorInfo[3].tiling.y);
-                                customTextureCreate2.SetFloat(ChaShader._PatternOffset1u, partsInfo.colorInfo[3].offset.x);
-                                customTextureCreate2.SetFloat(ChaShader._PatternOffset1v, partsInfo.colorInfo[3].offset.y);
-                                customTextureCreate2.SetFloat(ChaShader._PatternRotator1, partsInfo.colorInfo[3].rotate);
-                            }
-                            else
-                            {
-                                customTextureCreate2.SetColor(ChaShader._Color, partsInfo.colorInfo[0].baseColor);
-                                customTextureCreate2.SetColor(ChaShader._Color1_2, partsInfo.colorInfo[0].patternColor);
-                                customTextureCreate2.SetFloat(ChaShader._PatternScale1u, partsInfo.colorInfo[0].tiling.x);
-                                customTextureCreate2.SetFloat(ChaShader._PatternScale1v, partsInfo.colorInfo[0].tiling.y);
-                                customTextureCreate2.SetFloat(ChaShader._PatternOffset1u, partsInfo.colorInfo[0].offset.x);
-                                customTextureCreate2.SetFloat(ChaShader._PatternOffset1v, partsInfo.colorInfo[0].offset.y);
-                                customTextureCreate2.SetFloat(ChaShader._PatternRotator1, partsInfo.colorInfo[0].rotate);
-                            }
-                            customTextureCreate2.SetColor(ChaShader._Color2, partsInfo.colorInfo[1].baseColor);
-                            customTextureCreate2.SetColor(ChaShader._Color2_2, partsInfo.colorInfo[1].patternColor);
-                            customTextureCreate2.SetFloat(ChaShader._PatternScale2u, partsInfo.colorInfo[1].tiling.x);
-                            customTextureCreate2.SetFloat(ChaShader._PatternScale2v, partsInfo.colorInfo[1].tiling.y);
-                            customTextureCreate2.SetColor(ChaShader._Color3, partsInfo.colorInfo[2].baseColor);
-                            customTextureCreate2.SetColor(ChaShader._Color3_2, partsInfo.colorInfo[2].patternColor);
-                            customTextureCreate2.SetFloat(ChaShader._PatternScale3u, partsInfo.colorInfo[2].tiling.x);
-                            customTextureCreate2.SetFloat(ChaShader._PatternScale3v, partsInfo.colorInfo[2].tiling.y);
-                            customTextureCreate2.SetFloat(ChaShader._PatternOffset2u, partsInfo.colorInfo[1].offset.x);
-                            customTextureCreate2.SetFloat(ChaShader._PatternOffset2v, partsInfo.colorInfo[1].offset.y);
-                            customTextureCreate2.SetFloat(ChaShader._PatternRotator2, partsInfo.colorInfo[1].rotate);
-                            customTextureCreate2.SetFloat(ChaShader._PatternOffset3u, partsInfo.colorInfo[2].offset.x);
-                            customTextureCreate2.SetFloat(ChaShader._PatternOffset3v, partsInfo.colorInfo[2].offset.y);
-                            customTextureCreate2.SetFloat(ChaShader._PatternRotator3, partsInfo.colorInfo[2].rotate);
-                        }
-                    }
-                }
-                var flag = chaClothesComponent.rendNormal01 != null && chaClothesComponent.rendNormal01.Length != 0;
-                var flag2 = chaClothesComponent.rendAlpha01 != null && chaClothesComponent.rendAlpha01.Length != 0;
-                if (flag || flag2)
-                {
-                    var texture = array[0].RebuildTextureAndSetMaterial();
-                    if (null != texture)
-                    {
-                        if (flag)
-                        {
-                            for (var k = 0; k < chaClothesComponent.rendNormal01.Length; k++)
-                            {
-                                if (chaClothesComponent.rendNormal01[k])
-                                {
-                                    chaClothesComponent.rendNormal01[k].material.SetTexture(ChaShader._MainTex, texture);
-                                }
-                                else
-                                {
-                                    result = false;
-                                }
-                            }
-                        }
-                        if (flag2)
-                        {
-                            for (var l = 0; l < chaClothesComponent.rendAlpha01.Length; l++)
-                            {
-                                if (chaClothesComponent.rendAlpha01[l])
-                                {
-                                    chaClothesComponent.rendAlpha01[l].material.SetTexture(ChaShader._MainTex, texture);
-                                }
-                                else
-                                {
-                                    result = false;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                else
-                {
-                    result = false;
-                }
-                if (chaClothesComponent.rendNormal02 != null && chaClothesComponent.rendNormal02.Length != 0 && array[1] != null)
-                {
-                    var texture2 = array[1].RebuildTextureAndSetMaterial();
-                    if (null != texture2)
-                    {
-                        for (var m = 0; m < chaClothesComponent.rendNormal02.Length; m++)
-                        {
-                            if (chaClothesComponent.rendNormal02[m])
-                            {
-                                chaClothesComponent.rendNormal02[m].material.SetTexture(ChaShader._MainTex, texture2);
-                            }
-                            else
-                            {
-                                result = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                if (chaClothesComponent.rendNormal03 != null && chaClothesComponent.rendNormal03.Length != 0 && array[2] != null)
-                {
-                    var texture3 = array[2].RebuildTextureAndSetMaterial();
-                    if (null != texture3)
-                    {
-                        for (var n = 0; n < chaClothesComponent.rendNormal03.Length; n++)
-                        {
-                            if (chaClothesComponent.rendNormal03[n])
-                            {
-                                chaClothesComponent.rendNormal03[n].material.SetTexture(ChaShader._MainTex, texture3);
-                            }
-                            else
-                            {
-                                result = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                if (null != chaClothesComponent.rendAccessory && array[0] != null)
-                {
-                    var texture4 = array[0].RebuildTextureAndSetMaterial();
-                    if (null != texture4)
-                    {
-                        if (chaClothesComponent.rendAccessory)
-                        {
-                            chaClothesComponent.rendAccessory.material.SetTexture(ChaShader._MainTex, texture4);
-                        }
-                        else
-                        {
-                            result = false;
-                        }
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                return result;
-            }
-
-
-
-            public void ApplyMasks()
-            {
-                //Owner.AddClothesStateKind(kindNo, _listInfoBase.GetInfo(ChaListDefine.KeyType.StateType));
-                Console.WriteLine("2");
-                if (Owner.texBodyAlphaMask == null)
-                {
-                    if (_appliedBodyMask == null)
-                    {
-                        Console.WriteLine("2a");
-
-                        Owner.LoadAlphaMaskTexture(_listInfoBase.GetInfo(ChaListDefine.KeyType.OverBodyMaskAB), _listInfoBase.GetInfo(ChaListDefine.KeyType.OverBodyMask), 0);
-                        _appliedBodyMask = Owner.texBodyAlphaMask;
-                    }
-                    else
-                    {
-                        Console.WriteLine("2b");
-                        Owner.texBodyAlphaMask = _appliedBodyMask;
-                    }
-
-                    if (Owner.customMatBody)
-                    {
-                        Owner.customMatBody.SetTexture(ChaShader._AlphaMask, Owner.texBodyAlphaMask);
-                    }
-                }
-
-                if (Owner.texBraAlphaMask == null)
-                {
-                    Console.WriteLine("3");
-                    if (_appliedBraMask == null)
-                    {
-                        Console.WriteLine("3a");
-                        Owner.LoadAlphaMaskTexture(_listInfoBase.GetInfo(ChaListDefine.KeyType.OverBraMaskAB), _listInfoBase.GetInfo(ChaListDefine.KeyType.OverBraMask), 1);
-                        _appliedBraMask = Owner.texBraAlphaMask;
-                    }
-                    else
-                    {
-                        Console.WriteLine("3b");
-                        Owner.texBraAlphaMask = _appliedBraMask;
-                    }
-
-                    if (Owner.rendBra != null)
-                    {
-                        Console.WriteLine("3c");
-                        var listInfoBase2 = Owner.infoClothes[2];
-                        if (listInfoBase2 != null)
-                        {
-                            var num2 = ((2 == listInfoBase2.GetInfoInt(ChaListDefine.KeyType.Coordinate)) ? 1 : 0);
-                            string b;
-                            if (listInfoBase2.dictInfo.TryGetValue(105, out b))
-                            {
-                                num2 = (("1" == b) ? 1 : 0);
-                            }
-
-                            if (Owner.rendBra[0] != null)
-                            {
-                                Owner.rendBra[0].material.SetTexture(ChaShader._AlphaMask, Owner.texBraAlphaMask);
-                                Owner.rendBra[0].material.SetTextureOffset(ChaShader._AlphaMask, ChaListDefine.braOffset[num2]);
-                                Owner.rendBra[0].material.SetTextureScale(ChaShader._AlphaMask, ChaListDefine.braTiling[num2]);
-                            }
-
-                            if (Owner.rendBra[1] != null)
-                            {
-                                Owner.rendBra[1].material.SetTexture(ChaShader._AlphaMask, Owner.texBraAlphaMask);
-                                Owner.rendBra[1].material.SetTextureOffset(ChaShader._AlphaMask, ChaListDefine.braOffset[num2]);
-                                Owner.rendBra[1].material.SetTextureScale(ChaShader._AlphaMask, ChaListDefine.braTiling[num2]);
-                            }
-                        }
-                    }
-                }
-
-                //todo
-                //string info = _listInfoBase.GetInfo(ChaListDefine.KeyType.NormalData);
-                //if ("0" != info)
-                //{
-                //	BustNormal bustNormal2 = null;
-                //	if (!Owner.dictBustNormal.TryGetValue(ChaControl.BustNormalKind.NmlTop, out bustNormal2))
-                //	{
-                //		bustNormal2 = new BustNormal();
-                //	}
-                //	bustNormal2.Init(Owner.objClothes[_clothingKind], _listInfoBase.GetInfo(ChaListDefine.KeyType.MainAB), info, _listInfoBase.GetInfo(ChaListDefine.KeyType.MainManifest));
-                //	Owner.dictBustNormal[ChaControl.BustNormalKind.NmlTop] = bustNormal2;
-                //}
             }
         }
 
