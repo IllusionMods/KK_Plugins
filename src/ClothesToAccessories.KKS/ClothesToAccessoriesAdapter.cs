@@ -4,7 +4,7 @@ using System.Linq;
 using Manager;
 using UnityEngine;
 
-namespace ClothesToAccessories
+namespace KK_Plugins
 {
     /// <summary>
     /// Object attached to clothes used as accessories to let them act like normal accessories

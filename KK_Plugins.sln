@@ -581,6 +581,7 @@ Global
 		src\MaleJuice.Core\MaleJuice.Core.projitems*{24305054-ee76-4abb-b5a0-12b16d52c03d}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{24305054-ee76-4abb-b5a0-12b16d52c03d}*SharedItemsImports = 4
 		src\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems*{25352133-33b7-41e0-867a-d07c613ac3e9}*SharedItemsImports = 13
+		src\Shared\Shared.projitems*{255b5bf8-80ff-49ea-b4fb-7b535e8c6062}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{2566acd4-b07d-4feb-aa9c-4cd1751e97fc}*SharedItemsImports = 4
 		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{2566acd4-b07d-4feb-aa9c-4cd1751e97fc}*SharedItemsImports = 4
 		src\MaterialEditor.Base\MaterialEditor.Base.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4

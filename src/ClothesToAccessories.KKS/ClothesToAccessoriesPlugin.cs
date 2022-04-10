@@ -17,17 +17,16 @@ using TMPro;
 using UniRx;
 using UnityEngine;
 
-namespace ClothesToAccessories
+namespace KK_Plugins
 {
-    // TODO:
-    // - try catch all custom code with proper errors
     [BepInPlugin(GUID, PluginName, Version)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class ClothesToAccessoriesPlugin : BaseUnityPlugin
     {
         public const string GUID = "ClothesToAccessories";
         public const string PluginName = "Clothes To Accessories";
-        public const string Version = "0.1";
+        public const string PluginNameInternal = "KKS_ClothesToAccessories";
+        public const string Version = "1.0";
 
         internal static new ManualLogSource Logger;
 
@@ -131,8 +130,8 @@ namespace ClothesToAccessories
 
 #if DEBUG // reload cleanup
             var orig = slot.customAcsSelectKind;
-            var orig2 = cac.cgAccessoryWin;
-            var orig3 = cac.customAccessory;
+            var orig2 = acc01.cgAccessoryWin;
+            var orig3 = acc01.customAccessory;
             CleanupList.Add(Disposable.Create(() =>
             {
                 slot.customAcsSelectKind = orig;
