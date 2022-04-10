@@ -21,8 +21,6 @@ namespace ClothesToAccessories
 {
     // TODO:
     // - try catch all custom code with proper errors
-    // - bra masks from top accessories only affect normal bras, not accessory bras
-    // - The clothing states don't get limited to only the states that actually work (so only 0 1 and 3 for example), so you can get some weird unused states
     [BepInPlugin(GUID, PluginName, Version)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class ClothesToAccessoriesPlugin : BaseUnityPlugin
@@ -33,39 +31,58 @@ namespace ClothesToAccessories
 
         internal static new ManualLogSource Logger;
 
+#if DEBUG // reload cleanup
         internal static List<IDisposable> CleanupList = new List<IDisposable>();
+#endif
 
         private void Start()
         {
             Logger = base.Logger;
 
-            var hi = new Harmony(Guid.NewGuid().ToString());
-            CleanupList.Add(Disposable.Create(() => hi.UnpatchSelf()));
+            ApplyHooks();
 
-            hi.PatchAll(typeof(ClothesToAccessoriesPlugin));
-
-            hi.PatchMoveNext(
-                original: AccessTools.Method(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryAsync), new[] { typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool), typeof(bool) }),
-                transpiler: new HarmonyMethod(typeof(ClothesToAccessoriesPlugin), nameof(UnlockAccessoryItemTypesTpl)));
-
-            hi.Patch(
-                original: typeof(CvsAccessory).GetMethods(AccessTools.allDeclared).Single(mi =>
-                {
-                    var p = mi.GetParameters();
-                    return p.Length == 1 &&
-                           p[0].ParameterType == typeof(int) &&
-                           mi.Name.StartsWith("<Start>");
-                }),
-                prefix: new HarmonyMethod(typeof(ClothesToAccessoriesPlugin), nameof(ConvertDropdownIndexToRelativeTypeIndex)));
-
-#if DEBUG
+#if DEBUG // apply instantly since we should be running inside maker already
             InitializeMakerWindows();
 #else
             MakerAPI.MakerFinishedLoading += (s, e) => InitializeMakerWindows();
 #endif
         }
 
-#if DEBUG
+        private static void ApplyHooks()
+        {
+            var hi = new Harmony(GUID);
+#if DEBUG // reload cleanup
+            CleanupList.Add(Disposable.Create(() => hi.UnpatchSelf()));
+#endif
+            try
+            {
+                hi.PatchAll(typeof(ClothesToAccessoriesPlugin));
+
+                hi.PatchMoveNext(
+                    original: AccessTools.Method(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryAsync),
+                        new[] { typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool), typeof(bool) }),
+                    transpiler: new HarmonyMethod(typeof(ClothesToAccessoriesPlugin), nameof(UnlockAccessoryItemTypesTpl)));
+
+                hi.Patch(
+                    original: typeof(CvsAccessory).GetMethods(AccessTools.allDeclared).Single(mi =>
+                    {
+                        // find the dropdown value changed subscribtion lambda
+                        var p = mi.GetParameters();
+                        return p.Length == 1 &&
+                               p[0].ParameterType == typeof(int) &&
+                               mi.Name.StartsWith("<Start>");
+                    }),
+                    prefix: new HarmonyMethod(typeof(ClothesToAccessoriesPlugin), nameof(ConvertDropdownIndexToRelativeTypeIndex)));
+            }
+            catch
+            {
+                Logger.LogError("Failed to apply hooks");
+                hi.UnpatchSelf();
+                throw;
+            }
+        }
+
+#if DEBUG // reload cleanup
         private void OnDestroy()
         {
             foreach (var disposable in CleanupList)
@@ -76,7 +93,7 @@ namespace ClothesToAccessories
         }
 #endif
 
-        #region add clothes to acc categories
+        #region add custom accessory categories
 
         private static readonly ChaListDefine.CategoryNo[] _AcceptableCustomTypes =
         {
@@ -103,14 +120,14 @@ namespace ClothesToAccessories
         // list id equals dropdown id, stock list items are marked as ao_none
         private static List<ChaListDefine.CategoryNo> _typeIndexLookup;
 
-        private void InitializeMakerWindows()
+        private static void InitializeMakerWindows()
         {
             var sw = Stopwatch.StartNew();
 
             var slot = FindObjectOfType<CustomAcsChangeSlot>();
             var donor = slot.customAcsSelectKind.First().gameObject;
 
-            var cac = slot.cvsAccessory.First();
+            var acc01 = slot.cvsAccessory.First();
 
 #if DEBUG // reload cleanup
             var orig = slot.customAcsSelectKind;
@@ -128,7 +145,8 @@ namespace ClothesToAccessories
             }));
 #endif
 
-            _typeIndexLookup = Enumerable.Repeat(ChaListDefine.CategoryNo.ao_none, cac.ddAcsType.options.Count).ToList();
+            var originalOptionCount = acc01.GetComponentInParent<ActivateHDropDown>().targetList.Count; //cac.ddAcsType.options.Count;
+            _typeIndexLookup = Enumerable.Repeat(ChaListDefine.CategoryNo.ao_none, originalOptionCount).ToList();
 
             var customWindows = new List<CustomAcsSelectKind>();
 
@@ -165,15 +183,28 @@ namespace ClothesToAccessories
 
             void AddNewAccKindsToSlot(CvsAccessory cvsAcc)
             {
+                var hCheck = cvsAcc.GetComponentInParent<ActivateHDropDown>();
+                // This overwrites the options so need to do this before we modify it
+                hCheck.Set(cvsAcc.ddAcsType);
+                // Disable the component in case it didn't apply by itself yet
+                hCheck._dropdownTMP = null;
+                hCheck._dropdown = null;
+
                 cvsAcc.ddAcsType.options.AddRange(customWindows.Select(x => new TMP_Dropdown.OptionData(x.cate.ToString())));
+
                 //cvsAcc.ddAcsType.AddOptions(customWindows.Select(x => new TMP_Dropdown.OptionData(x.cate.ToString())).ToList());
-                cvsAcc.cgAccessoryWin = cvsAcc.cgAccessoryWin.Concat(customWindows.Select(x => x.GetComponent<CanvasGroup>())).ToArray();
-                cvsAcc.customAccessory = cvsAcc.customAccessory.Concat(customWindows).ToArray();
+                // Take(originalOptionCount - 1) because copied slots will most likely already have customWindows added, so they would get duplicated. -1 to account for ao_none
+                cvsAcc.cgAccessoryWin = cvsAcc.cgAccessoryWin.Take(originalOptionCount - 1).Concat(customWindows.Select(x => x.GetComponent<CanvasGroup>())).ToArray();
+                cvsAcc.customAccessory = cvsAcc.customAccessory.Take(originalOptionCount - 1).Concat(customWindows).ToArray();
 
                 var template = cvsAcc.ddAcsType.template;
-                var origSize = template.sizeDelta;
+                //var origSize = template.sizeDelta;
 #if DEBUG // reload cleanup
-                CleanupList.Add(Disposable.Create(() => template.sizeDelta = origSize));
+                CleanupList.Add(Disposable.Create(() =>
+                {
+                    //template.sizeDelta = origSize;
+                    hCheck._dropdownTMP = cvsAcc.ddAcsType;
+                }));
 #endif
                 // Need to hardcode the offsets instead of changing sizeDelta because they get messed up on slots added by moreaccs
                 template.anchorMin = Vector2.zero;
@@ -191,7 +222,7 @@ namespace ClothesToAccessories
                 var cvsAccessory = slot.cvsAccessory[args.SlotIndex];
                 // Necessary in case the dropdown items added to an existing slot got copied
                 // todo a more reliable method?
-                cvsAccessory.ddAcsType.options.RemoveAll(data => _AcceptableCustomTypes.Any(a => a.ToString() == data.text));
+                //cvsAccessory.ddAcsType.options.RemoveAll(data => _AcceptableCustomTypes.Any(a => a.ToString() == data.text));
                 AddNewAccKindsToSlot(cvsAccessory);
             }
             AccessoriesApi.MakerAccSlotAdded += OnAccSlotAdded;
@@ -199,16 +230,11 @@ namespace ClothesToAccessories
             CleanupList.Add(Disposable.Create(() => AccessoriesApi.MakerAccSlotAdded -= OnAccSlotAdded));
 #endif
 
-            Logger.LogDebug($"InitializeMakerWindows finish in {sw.ElapsedMilliseconds}ms");
-        }
+            // Needed for class maker when editing a character that has 1st accessory using an acc type this plugin adds (UI is in broken state since its updated before hooks are applied)
+            if (_AcceptableCustomTypes.Contains((ChaListDefine.CategoryNo)acc01.accessory.parts[0].type))
+                acc01.UpdateCustomUI();
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(ActivateHDropDown), nameof(ActivateHDropDown.Start))]
-        private static bool PleaseDontClearTheDropdown()
-        {
-            // This class overwrites the dropdown options based on whether the r18 patch is installed or not.
-            // Only r18 games are moddable so there's no point in keeping this, especially when it prevents the dropdown items from being changed reliably (by default all items are shown)
-            return false;
+            Logger.LogDebug($"InitializeMakerWindows finish in {sw.ElapsedMilliseconds}ms");
         }
 
         private static void ConvertDropdownIndexToRelativeTypeIndex(ref int idx)
@@ -275,6 +301,7 @@ namespace ClothesToAccessories
             // index is type - 120
             if (index >= 0 && index < defaultAcsId.Length) return defaultAcsId[index];
 
+            // Top clothes index 1 and 2 are not usable
             var isTop = index + 120 == (int)ChaListDefine.CategoryNo.co_top;
             return isTop ? 3 : 1;
         }
@@ -288,7 +315,6 @@ namespace ClothesToAccessories
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryParent))]
         private static IEnumerable<CodeInstruction> GetAccessoryParentOverrideTpl(IEnumerable<CodeInstruction> instructions)
         {
-            // Needed to
             return new CodeMatcher(instructions)
                 .MatchForward(true,
                     new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)0x36),
@@ -340,51 +366,6 @@ namespace ClothesToAccessories
             return cm.Instructions();
         }
 
-        private static string GetParentOverride(ListInfoBase instance, ChaListDefine.KeyType type)
-        {
-            if (type == ChaListDefine.KeyType.Parent)
-            {
-                var category = (ChaListDefine.CategoryNo)instance.Category;
-                if (category != ChaListDefine.CategoryNo.ao_none && _AcceptableCustomTypes.Contains(category))
-                {
-                    switch (category)
-                    {
-                        case ChaListDefine.CategoryNo.bo_hair_b:
-                        //break;
-                        case ChaListDefine.CategoryNo.bo_hair_f:
-                        //break;
-                        case ChaListDefine.CategoryNo.bo_hair_s:
-                            // headside is center of head, all normal hair seem to be using this
-                            return ChaAccessoryDefine.AccessoryParentKey.a_n_headside.ToString();
-                        case ChaListDefine.CategoryNo.bo_hair_o:
-                            // Ahoges act like hats
-                            return ChaAccessoryDefine.AccessoryParentKey.a_n_headtop.ToString();
-
-                        case ChaListDefine.CategoryNo.co_top:
-                        case ChaListDefine.CategoryNo.co_bot:
-                        case ChaListDefine.CategoryNo.co_bra:
-                        case ChaListDefine.CategoryNo.co_shorts:
-                        case ChaListDefine.CategoryNo.co_gloves:
-                        case ChaListDefine.CategoryNo.co_panst:
-                        case ChaListDefine.CategoryNo.co_socks:
-                        case ChaListDefine.CategoryNo.co_shoes:
-                        case ChaListDefine.CategoryNo.cpo_sailor_a:
-                        case ChaListDefine.CategoryNo.cpo_sailor_b:
-                        case ChaListDefine.CategoryNo.cpo_sailor_c:
-                        case ChaListDefine.CategoryNo.cpo_jacket_a:
-                        case ChaListDefine.CategoryNo.cpo_jacket_b:
-                        case ChaListDefine.CategoryNo.cpo_jacket_c:
-                            // this key doesn't actually matter since the bones get merged, but something is needed or the accessory won't be spawned properly
-                            return ChaAccessoryDefine.AccessoryParentKey.a_n_waist.ToString();
-                    }
-                }
-                Logger.LogWarning($"GetParentOverride unhandled category={category}  value={instance.GetInfo(type)}");
-            }
-
-            var origInfo = instance.GetInfo(type);
-            return origInfo;
-        }
-
         private static bool CustomAccessoryTypeCheck(int min, int n, int max)
         {
             if (min != 121 || n >= min && n <= max) return MathfEx.RangeEqualOn(min, n, max);
@@ -397,9 +378,9 @@ namespace ClothesToAccessories
         {
             ListInfoBase spawnedLib = null;
             var newActList = new Action<ListInfoBase>(lib => spawnedLib = lib);
-            var result = instance.LoadCharaFbxData(actListInfo + newActList, _hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, worldPositionStays);
-            CovertToChaAccessoryComponent(result, spawnedLib, instance, (ChaListDefine.CategoryNo)category);
-            return result;
+            var spawnedObject = instance.LoadCharaFbxData(actListInfo + newActList, _hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, worldPositionStays);
+            CovertToChaAccessoryComponent(spawnedObject, spawnedLib, instance, (ChaListDefine.CategoryNo)category);
+            return spawnedObject;
         }
 
         private static IEnumerator LoadCharaFbxDataAsyncLeech(ChaControl instance, Action<GameObject> actObj, Action<ListInfoBase> actListInfo, bool _hiPoly, int category,
@@ -439,7 +420,6 @@ namespace ClothesToAccessories
 
                 var adapter = instance.AddComponent<ClothesToAccessoriesAdapter>();
                 adapter.Initialize(chaControl, ccc, cac, listInfoBase, category);
-
                 return;
             }
 
@@ -577,6 +557,12 @@ namespace ClothesToAccessories
                         if (rend)
                             instance.aaWeightsBody.AssignedWeightsAndSetBounds(rend.gameObject, "cf_j_root", instance.bounds, objRootBone.transform);
                     }
+
+                    FixConflictingBoneNames(accObj);
+                }
+                else if (accObj.GetComponent<ChaCustomHairComponent>())
+                {
+                    FixConflictingBoneNames(accObj);
                 }
             }
             catch (Exception e)
@@ -585,18 +571,86 @@ namespace ClothesToAccessories
             }
 
             return result;
+
+            // If bones are left as they are, there's a good chance they will cause issues because of having same names as character body bones, so
+            // game/plugin code can find these spawned bones instead of the body bones it expects
+            // TODO Remove the unused bones instead? Still need them for hair?UpdateCustomUI
+            void FixConflictingBoneNames(GameObject accObj)
+            {
+                foreach (var child in accObj.GetComponentsInChildren<Transform>(true))
+                {
+                    if (child != accObj.transform && !child.name.StartsWith("N_move"))
+                        child.gameObject.name = "CTA_" + child.gameObject.name + "_"; // guard against StartsWith and EndsWith
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get accessory attach point for custom accessory types, otherwise call the original method
+        /// </summary>
+        private static string GetParentOverride(ListInfoBase instance, ChaListDefine.KeyType type)
+        {
+            if (type == ChaListDefine.KeyType.Parent)
+            {
+                var category = (ChaListDefine.CategoryNo)instance.Category;
+                if (category != ChaListDefine.CategoryNo.ao_none && _AcceptableCustomTypes.Contains(category))
+                {
+                    switch (category)
+                    {
+                        case ChaListDefine.CategoryNo.bo_hair_b:
+                        //break;
+                        case ChaListDefine.CategoryNo.bo_hair_f:
+                        //break;
+                        case ChaListDefine.CategoryNo.bo_hair_s:
+                            // headside is center of head, all normal hair seem to be using this
+                            return ChaAccessoryDefine.AccessoryParentKey.a_n_headside.ToString();
+                        case ChaListDefine.CategoryNo.bo_hair_o:
+                            // Ahoges act like hats
+                            return ChaAccessoryDefine.AccessoryParentKey.a_n_headtop.ToString();
+
+                        case ChaListDefine.CategoryNo.co_top:
+                        case ChaListDefine.CategoryNo.co_bot:
+                        case ChaListDefine.CategoryNo.co_bra:
+                        case ChaListDefine.CategoryNo.co_shorts:
+                        case ChaListDefine.CategoryNo.co_gloves:
+                        case ChaListDefine.CategoryNo.co_panst:
+                        case ChaListDefine.CategoryNo.co_socks:
+                        case ChaListDefine.CategoryNo.co_shoes:
+                        case ChaListDefine.CategoryNo.cpo_sailor_a:
+                        case ChaListDefine.CategoryNo.cpo_sailor_b:
+                        case ChaListDefine.CategoryNo.cpo_sailor_c:
+                        case ChaListDefine.CategoryNo.cpo_jacket_a:
+                        case ChaListDefine.CategoryNo.cpo_jacket_b:
+                        case ChaListDefine.CategoryNo.cpo_jacket_c:
+                            // this key doesn't actually matter since the bones get merged, but something is needed or the accessory won't be spawned properly
+                            return ChaAccessoryDefine.AccessoryParentKey.a_n_waist.ToString();
+
+                        default:
+                            Logger.LogWarning($"GetParentOverride unhandled category={category}  value={instance.GetInfo(type)}");
+                            break;
+                    }
+                }
+            }
+
+            var origInfo = instance.GetInfo(type);
+            return origInfo;
         }
 
         #endregion
 
         #region handle clothes state and texture
 
-        private static byte _lastTopState;
+        internal static Dictionary<ChaControl, byte> LastTopState = new Dictionary<ChaControl, byte>();
 
         [HarmonyPostfix]
+        [HarmonyWrapSafe]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateVisible))]
-        private static void Koroshitekure(ChaControl __instance)
+        private static void UpdateVisibleAccessoryClothes(ChaControl __instance)
         {
+            // Don't run on disabled characters
+            if (!__instance.objTop || !__instance.objTop.activeSelf) return;
+
+            // Only run this if any acc clothes are used
             ClothesToAccessoriesAdapter.AllInstances.TryGetValue(__instance, out var accClothes);
             if (accClothes == null) return;
 
@@ -825,6 +879,7 @@ namespace ClothesToAccessories
 
             DrawOption(accClothes[7], ChaFileDefine.ClothesKind.shoes_inner);
 
+            var topstate = anyTopVisible && accClothes[0].Any(x => x.gameObject.activeSelf) ? topClothesState : (byte)3;
             // If there are any top clothes in accessories and there are no normal clothes selected then pull masks from the accessory clothes
             if (accClothes[0].Count > 0)
             {
@@ -832,26 +887,57 @@ namespace ClothesToAccessories
                 {
                     if (__instance.texBodyAlphaMask == null || __instance.texBraAlphaMask == null)
                     {
-                        Console.WriteLine("1");
                         foreach (var adapter in accClothes[0])
                         {
-                            adapter.ApplyMasks();
+                            adapter.ApplyMasksToChaControl();
                             if (__instance.texBodyAlphaMask != null && __instance.texBraAlphaMask != null)
+                            {
+                                // Force ChangeAlphaMask to run
+                                LastTopState[__instance] = 255;
                                 break;
+                            }
                         }
                     }
 
-                    if (_lastTopState != topClothesState)
+                    if (LastTopState.TryGetValue(__instance, out var lts) && lts != topstate)
                     {
-                        __instance.ChangeAlphaMask(ChaFileDefine.alphaState[topClothesState, 0], ChaFileDefine.alphaState[topClothesState, 1]);
+                        __instance.ChangeAlphaMask(ChaFileDefine.alphaState[topstate, 0], ChaFileDefine.alphaState[topstate, 1]);
                         __instance.updateAlphaMask = false;
                     }
                 }
             }
-            _lastTopState = topClothesState;
+
+            for (int i = 0; i < accClothes.Length; i++)
+            {
+                var list = accClothes[i];
+                var any = list.Count > 0;
+                if (any != __instance.dictStateType.ContainsKey(i))
+                {
+                    if (any)
+                    {
+                        foreach (var adapter in list)
+                        {
+                            var stateTypeStr = adapter.InfoBase.GetInfo(ChaListDefine.KeyType.StateType);
+                            if (byte.TryParse(stateTypeStr, out var stateTypeB))
+                            {
+                                __instance.AddClothesStateKindSub(i, stateTypeB);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (__instance.objClothes[i] == null)
+                            __instance.RemoveClothesStateKind(i);
+                    }
+                }
+            }
+
+            LastTopState[__instance] = topstate;
         }
 
         [HarmonyPostfix]
+        [HarmonyWrapSafe]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryColor))]
         private static void OnAccColorChanged(ChaControl __instance, bool __result, int slotNo)
         {
@@ -865,6 +951,58 @@ namespace ClothesToAccessories
             }
         }
 
+        [HarmonyPostfix]
+        [HarmonyWrapSafe]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAlphaMask))]
+        private static void ChangeAlphaMaskPost(ChaControl __instance, byte state0, byte state1)
+        {
+            ClothesToAccessoriesAdapter.AllInstances.TryGetValue(__instance, out var accClothes);
+            if (accClothes == null) return;
+
+            foreach (var adapter in accClothes[2])
+            {
+                adapter.ChangeAlphaMask(state0, state1);
+            }
+        }
+
+        // todo unnecessary patch?
+        [HarmonyPostfix]
+        [HarmonyWrapSafe]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.IsClothes))]
+        private static void IsClothesPost(ChaControl __instance, int clothesKind, ref bool __result)
+        {
+            if (__result) return;
+
+            ClothesToAccessoriesAdapter.AllInstances.TryGetValue(__instance, out var accClothes);
+            if (accClothes == null) return;
+
+            clothesKind = Mathf.Clamp(clothesKind, 0, accClothes.Length - 1);
+            __result = accClothes[clothesKind].Count > 0;
+        }
+
+        // todo unnecessary patch?
+        [HarmonyPostfix]
+        [HarmonyWrapSafe]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.IsKokanHide))]
+        private static void IsKokanHidePost(ChaControl __instance, ref bool __result)
+        {
+            if (__result) return;
+
+            ClothesToAccessoriesAdapter.AllInstances.TryGetValue(__instance, out var accClothes);
+            if (accClothes == null) return;
+
+            int[] clothId = { 0, 1, 2, 3 };
+            int[] stateId = { 1, 1, 3, 3 };
+            for (int i = 0; i < clothId.Length; i++)
+            {
+                if (accClothes[clothId[i]].Any(x => (i != 0 && i != 2 || x.InfoBase.GetInfo(ChaListDefine.KeyType.Coordinate) == "2") && "1" == x.InfoBase.GetInfo(ChaListDefine.KeyType.KokanHide))
+                    && __instance.fileStatus.clothesState[stateId[i]] == 0)
+                {
+                    __result = true;
+                    break;
+                }
+            }
+        }
         #endregion
     }
 }

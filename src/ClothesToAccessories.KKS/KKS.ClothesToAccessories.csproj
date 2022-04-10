@@ -28,7 +28,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>embedded</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>F:\Games\KKS\BepInEx\scripts\</OutputPath>
+    <OutputPath>F:\Games\KKS\BepInEx\plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
