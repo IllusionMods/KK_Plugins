@@ -98,7 +98,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\KoikatuCompatibilityAnalyzer.1.0.1\analyzers\dotnet\cs\KoikatuCompatibilityAnalyzer.dll" />
+    <Analyzer Include="..\..\packages\KoikatuCompatibilityAnalyzer.1.1.0\analyzers\dotnet\cs\KoikatuCompatibilityAnalyzer.dll" />
   </ItemGroup>
   <Import Project="..\TwoLut.Shared\TwoLut.Shared.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
