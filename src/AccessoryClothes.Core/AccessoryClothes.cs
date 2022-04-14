@@ -31,7 +31,14 @@ namespace KK_Plugins
         {
             ChaAccessoryComponent chaAccessory = gameObject.GetComponent<ChaAccessoryComponent>();
             var chaControl = gameObject.GetComponentInParent<ChaControl>();
-            var objRootBone = chaControl.GetReferenceInfo(ChaReference.RefObjKey.A_ROOTBONE);
+
+#if KK
+            // KK darnkess has different enum values for the same names than games without it, so it needs to be obtained dynamically
+            var rootBoneKey = (ChaReference.RefObjKey)System.Enum.Parse(typeof(ChaReference.RefObjKey), "A_ROOTBONE");
+#else
+            var rootBoneKey = ChaReference.RefObjKey.A_ROOTBONE;
+#endif
+            var objRootBone = chaControl.GetReferenceInfo(rootBoneKey);
 
             //AssignedWeightsAndSetBounds replaces the bones of an object with the body bones
             for (var index = 0; index < chaAccessory.rendNormal.Length; index++)
