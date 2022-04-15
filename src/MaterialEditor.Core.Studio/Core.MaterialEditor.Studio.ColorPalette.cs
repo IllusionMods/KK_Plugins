@@ -31,8 +31,8 @@ namespace KK_Plugins.MaterialEditor
         public bool IsShowing(string title, object data, string materialName)
         {
             return Studio.colorPalette.Check(title)
-                && _slot == ((ObjectData)data).Slot
-                && _materialName == materialName;
+                   && _slot == DataToSlot(data)
+                   && _materialName == materialName;
         }
 
         public void SetColor(Color value)
@@ -47,15 +47,20 @@ namespace KK_Plugins.MaterialEditor
         {
             Studio.colorPalette.Setup(title, color, onChanged, useAlpha);
 
-            if (data is ObjectData objectData) //Character
-                _slot = objectData.Slot;
-            else //Item
-                _slot = (int)data;
+            _slot = DataToSlot(data);
 
             _materialName = materialName;
             _title = title;
             _onChanged = onChanged;
             _useAlpha = useAlpha;
+        }
+
+        private static int DataToSlot(object data)
+        {
+            if (data is ObjectData objectData) //Character
+                return objectData.Slot;
+            else //Item
+                return (int)data;
         }
     }
 #endif
