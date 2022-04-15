@@ -20,13 +20,13 @@ namespace KK_Plugins
 
                 var exType = Traverse.Create(__instance).Property("exType");
                 var exTypeExists = exType.PropertyExists();
-
                 var coordinate = __instance.chaFile.coordinate;
                 for (var i = 0; i < coordinate.Length; i++)
                 {
                     var clothParts = coordinate[i].clothes.parts;
                     for (var j = 0; j < clothParts.Length; j++)
                     {
+                        if (clothParts[j].id < 10000000) continue;
                         var category = 105;
                         switch (j)
                         {
@@ -73,7 +73,7 @@ namespace KK_Plugins
 #elif KKS
                         Manager.Character.AddLoadAssetBundle(assetBundleName, manifestName);
 #endif
-                        if (!CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, lib.GetInfo(ChaListDefine.KeyType.MainData) + "_low", false, manifestName) && CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, highAssetName, false, manifestName))
+                        if (!CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, highAssetName + "_low", false, manifestName) && CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, highAssetName, false, manifestName))
                         {
                             __instance.hiPoly = true;
                             return;
