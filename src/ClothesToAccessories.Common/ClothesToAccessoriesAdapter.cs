@@ -99,7 +99,11 @@ namespace KK_Plugins
                 {
                     var fileClothes = Owner.nowCoordinate.clothes;
                     // No need to catch exceptions since this is the last line and we're inside OnDestroy
+#if KK
                     Owner.ChangeClothesTopAsync(fileClothes.parts[0].id, fileClothes.subPartsId[0], fileClothes.subPartsId[1], fileClothes.subPartsId[2], true, false);
+#else
+                    Owner.ChangeClothesTopNoAsync(fileClothes.parts[0].id, fileClothes.subPartsId[0], fileClothes.subPartsId[1], fileClothes.subPartsId[2], true, true);
+#endif
                 }
             }
         }
@@ -146,21 +150,23 @@ namespace KK_Plugins
             Texture2D t2dColorMask02 = null;
             if ("0" != colorMask02Ab && "0" != colorMask02Tex) t2dColorMask02 = CommonLib.LoadAsset<Texture2D>(colorMask02Ab, colorMask02Tex, false, mainManifest);
 
-            //var mainTex03Ab = lib.GetInfo(ChaListDefine.KeyType.MainTex03AB);
-            //if ("0" == mainTex03Ab) mainTex03Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
-            //var mainTex03 = lib.GetInfo(ChaListDefine.KeyType.MainTex03);
-            //
-            //Texture2D t2dMainTex03 = null;
-            //if ("0" != mainTex03Ab && "0" != mainTex03) t2dMainTex03 = CommonLib.LoadAsset<Texture2D>(mainTex03Ab, mainTex03, false, mainManifest, true);
+#if KKS
+            var mainTex03Ab = lib.GetInfo(ChaListDefine.KeyType.MainTex03AB);
+            if ("0" == mainTex03Ab) mainTex03Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
+            var mainTex03 = lib.GetInfo(ChaListDefine.KeyType.MainTex03);
 
-            //var colorMask03Tex = lib.GetInfo(ChaListDefine.KeyType.ColorMask03Tex);
-            //var colorMask03Ab = lib.GetInfo(ChaListDefine.KeyType.ColorMask03AB);
-            //if ("0" == colorMask03Ab) colorMask03Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
-            //Texture2D t2dColorMask03 = null;
-            //if ("0" != colorMask03Ab && "0" != colorMask03Tex)
-            //{
-            //    t2dColorMask03 = CommonLib.LoadAsset<Texture2D>(colorMask03Ab, colorMask03Tex, false, mainManifest, true);
-            //}
+            Texture2D t2dMainTex03 = null;
+            if ("0" != mainTex03Ab && "0" != mainTex03) t2dMainTex03 = CommonLib.LoadAsset<Texture2D>(mainTex03Ab, mainTex03, false, mainManifest, true);
+
+            var colorMask03Tex = lib.GetInfo(ChaListDefine.KeyType.ColorMask03Tex);
+            var colorMask03Ab = lib.GetInfo(ChaListDefine.KeyType.ColorMask03AB);
+            if ("0" == colorMask03Ab) colorMask03Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
+            Texture2D t2dColorMask03 = null;
+            if ("0" != colorMask03Ab && "0" != colorMask03Tex)
+            {
+                t2dColorMask03 = CommonLib.LoadAsset<Texture2D>(colorMask03Ab, colorMask03Tex, false, mainManifest, true);
+            }
+#endif
 
             for (var i = 0; i < 3; i++)
             {
@@ -179,8 +185,10 @@ namespace KK_Plugins
                 }
                 else
                 {
-                    //main = t2dMainTex03;
-                    //color = t2dColorMask03;
+#if KKS
+                    main = t2dMainTex03;
+                    color = t2dColorMask03;
+#endif
                 }
                 if (null != main)
                 {
@@ -218,17 +226,23 @@ namespace KK_Plugins
             {
                 Texture2D tex = null;
 
-                //Owner.lstCtrl.GetFilePath(ChaListDefine.CategoryNo.mt_pattern, partsInfo.colorInfo[i].pattern,
-                //    ChaListDefine.KeyType.MainTexAB, ChaListDefine.KeyType.MainTex, out var abName, out var assetName);
-
+#if KKS
+                Owner.lstCtrl.GetFilePath(ChaListDefine.CategoryNo.mt_pattern, partsInfo.colorInfo[i].pattern,
+                    ChaListDefine.KeyType.MainTexAB, ChaListDefine.KeyType.MainTex, out var abName, out var assetName);
+#elif KK
                 var listInfo = Owner.lstCtrl.GetListInfo(ChaListDefine.CategoryNo.mt_pattern, partsInfo.colorInfo[i].pattern);
                 var abName = listInfo.GetInfo(ChaListDefine.KeyType.MainTexAB);
                 var assetName = listInfo.GetInfo(ChaListDefine.KeyType.MainTex);
+#endif
 
                 if (abName != "0" && assetName != "0")
                 {
                     tex = CommonLib.LoadAsset<Texture2D>(abName, assetName, false, "");
+#if KK
                     Character.Instance.AddLoadAssetBundle(abName, "");
+#else
+                    Character.AddLoadAssetBundle(abName, "");
+#endif
                 }
 
                 foreach (var ctc in _ctcArr)
@@ -245,10 +259,11 @@ namespace KK_Plugins
                     ctc.SetColor(ChaShader._Color1_2, partsInfo.colorInfo[0].patternColor);
                     ctc.SetFloat(ChaShader._PatternScale1u, partsInfo.colorInfo[0].tiling.x);
                     ctc.SetFloat(ChaShader._PatternScale1v, partsInfo.colorInfo[0].tiling.y);
-                    //ctc.SetFloat(ChaShader._PatternOffset1u, partsInfo.colorInfo[0].offset.x);
-                    //ctc.SetFloat(ChaShader._PatternOffset1v, partsInfo.colorInfo[0].offset.y);
-                    //ctc.SetFloat(ChaShader._PatternRotator1, partsInfo.colorInfo[0].rotate);
-
+#if KKS
+                    ctc.SetFloat(ChaShader._PatternOffset1u, partsInfo.colorInfo[0].offset.x);
+                    ctc.SetFloat(ChaShader._PatternOffset1v, partsInfo.colorInfo[0].offset.y);
+                    ctc.SetFloat(ChaShader._PatternRotator1, partsInfo.colorInfo[0].rotate);
+#endif
                     ctc.SetColor(ChaShader._Color2, partsInfo.colorInfo[1].baseColor);
                     ctc.SetColor(ChaShader._Color2_2, partsInfo.colorInfo[1].patternColor);
                     ctc.SetFloat(ChaShader._PatternScale2u, partsInfo.colorInfo[1].tiling.x);
@@ -257,12 +272,14 @@ namespace KK_Plugins
                     ctc.SetColor(ChaShader._Color3_2, partsInfo.colorInfo[2].patternColor);
                     ctc.SetFloat(ChaShader._PatternScale3u, partsInfo.colorInfo[2].tiling.x);
                     ctc.SetFloat(ChaShader._PatternScale3v, partsInfo.colorInfo[2].tiling.y);
-                    //ctc.SetFloat(ChaShader._PatternOffset2u, partsInfo.colorInfo[1].offset.x);
-                    //ctc.SetFloat(ChaShader._PatternOffset2v, partsInfo.colorInfo[1].offset.y);
-                    //ctc.SetFloat(ChaShader._PatternRotator2, partsInfo.colorInfo[1].rotate);
-                    //ctc.SetFloat(ChaShader._PatternOffset3u, partsInfo.colorInfo[2].offset.x);
-                    //ctc.SetFloat(ChaShader._PatternOffset3v, partsInfo.colorInfo[2].offset.y);
-                    //ctc.SetFloat(ChaShader._PatternRotator3, partsInfo.colorInfo[2].rotate);
+#if KKS
+                    ctc.SetFloat(ChaShader._PatternOffset2u, partsInfo.colorInfo[1].offset.x);
+                    ctc.SetFloat(ChaShader._PatternOffset2v, partsInfo.colorInfo[1].offset.y);
+                    ctc.SetFloat(ChaShader._PatternRotator2, partsInfo.colorInfo[1].rotate);
+                    ctc.SetFloat(ChaShader._PatternOffset3u, partsInfo.colorInfo[2].offset.x);
+                    ctc.SetFloat(ChaShader._PatternOffset3v, partsInfo.colorInfo[2].offset.y);
+                    ctc.SetFloat(ChaShader._PatternRotator3, partsInfo.colorInfo[2].rotate);
+#endif
                 }
             }
 
@@ -323,31 +340,31 @@ namespace KK_Plugins
                     result = false;
                 }
             }
-
-            //var hasRendNormal03 = ClothesComponent.rendNormal03 != null && ClothesComponent.rendNormal03.Length != 0;
-            //if (hasRendNormal03 && _ctcArr[2] != null)
-            //{
-            //    var tex = _ctcArr[2].RebuildTextureAndSetMaterial();
-            //    if (tex != null)
-            //    {
-            //        for (var n = 0; n < ClothesComponent.rendNormal03.Length; n++)
-            //        {
-            //            if (ClothesComponent.rendNormal03[n])
-            //            {
-            //                ClothesComponent.rendNormal03[n].material.SetTexture(ChaShader._MainTex, tex);
-            //            }
-            //            else
-            //            {
-            //                result = false;
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        result = false;
-            //    }
-            //}
-
+#if KKS
+            var hasRendNormal03 = ClothesComponent.rendNormal03 != null && ClothesComponent.rendNormal03.Length != 0;
+            if (hasRendNormal03 && _ctcArr[2] != null)
+            {
+                var tex = _ctcArr[2].RebuildTextureAndSetMaterial();
+                if (tex != null)
+                {
+                    for (var n = 0; n < ClothesComponent.rendNormal03.Length; n++)
+                    {
+                        if (ClothesComponent.rendNormal03[n])
+                        {
+                            ClothesComponent.rendNormal03[n].material.SetTexture(ChaShader._MainTex, tex);
+                        }
+                        else
+                        {
+                            result = false;
+                        }
+                    }
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+#endif
             var hasRendAccessory = ClothesComponent.rendAccessory != null;
             if (hasRendAccessory && _ctcArr[0] != null)
             {
@@ -370,16 +387,19 @@ namespace KK_Plugins
 
         private Texture _lastAppliedMask = null;
 
-        static Vector2[] braOffset = new Vector2[]
-        {
-            new Vector2(0f, 0f),
-            new Vector2(0f, -1f)
-        };
-        static Vector2[] braTiling = new Vector2[]
-        {
-            new Vector2(1f, 1f),
-            new Vector2(1f, 2f)
-        };
+        static Vector2[] braOffset =
+#if KKS
+        ChaListDefine.braOffset;
+#elif KK
+        new Vector2[] { new Vector2(0f, 0f), new Vector2(0f, -1f) };
+#endif
+
+        static Vector2[] braTiling =
+#if KKS
+        ChaListDefine.braTiling;
+#elif KK
+        new Vector2[] { new Vector2(1f, 1f), new Vector2(1f, 2f) };
+#endif
 
         private void ApplyChaControlMasksToThis()
         {
@@ -421,7 +441,7 @@ namespace KK_Plugins
         {
             if (_kind != ChaListDefine.CategoryNo.co_top) throw new Exception("tried running ApplyMasksToChaControl on type " + _kind);
 
-            Console.WriteLine("ApplyMasksToChaControl");
+            //Console.WriteLine("ApplyMasksToChaControl");
 
             //Owner.AddClothesStateKind(kindNo, _listInfoBase.GetInfo(ChaListDefine.KeyType.StateType));
             if (Owner.texBodyAlphaMask == null)

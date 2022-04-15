@@ -1,18 +1,18 @@
-﻿using System;
+﻿using BepInEx;
+using BepInEx.Logging;
+using ChaCustom;
+using HarmonyLib;
+using Illusion.Extensions;
+using KKAPI;
+using KKAPI.Maker;
+using KKAPI.Utilities;
+using Manager;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
-using BepInEx;
-using BepInEx.Logging;
-using ChaCustom;
-using HarmonyLib;
-using Illusion.Game.Array;
-using KKAPI;
-using KKAPI.Maker;
-using KKAPI.Utilities;
-using Manager;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -20,8 +20,8 @@ using UnityEngine;
 namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
-    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
-    public class ClothesToAccessoriesPlugin : BaseUnityPlugin
+    [BepInDependency(KoikatuAPI.GUID, "1.30")]
+    public partial class ClothesToAccessoriesPlugin : BaseUnityPlugin
     {
         public const string GUID = "ClothesToAccessories";
         public const string PluginName = "Clothes To Accessories";
@@ -32,6 +32,13 @@ namespace KK_Plugins
 
 #if DEBUG // reload cleanup
         internal static List<IDisposable> CleanupList = new List<IDisposable>();
+#endif
+
+        public static byte[,] alphaState =
+#if KKS
+        ChaFileDefine.alphaState;
+#elif KK
+        { { 1, 1 }, { 0, 1 }, { 0, 1 }, { 0, 0 } };
 #endif
 
         private void Start()
@@ -94,26 +101,40 @@ namespace KK_Plugins
 
         #region add custom accessory categories
 
-        private static readonly ChaListDefine.CategoryNo[] _AcceptableCustomTypes =
+        private struct CustomWindowType
         {
-            ChaListDefine.CategoryNo.bo_hair_b,
-            ChaListDefine.CategoryNo.bo_hair_f,
-            ChaListDefine.CategoryNo.bo_hair_s,
-            ChaListDefine.CategoryNo.bo_hair_o,
-            ChaListDefine.CategoryNo.co_top,
-            ChaListDefine.CategoryNo.co_bot,
-            ChaListDefine.CategoryNo.co_bra,
-            ChaListDefine.CategoryNo.co_shorts,
-            ChaListDefine.CategoryNo.co_gloves,
-            ChaListDefine.CategoryNo.co_panst,
-            ChaListDefine.CategoryNo.co_socks,
-            ChaListDefine.CategoryNo.co_shoes,
-            ChaListDefine.CategoryNo.cpo_sailor_a,
-            ChaListDefine.CategoryNo.cpo_sailor_b,
-            ChaListDefine.CategoryNo.cpo_sailor_c,
-            ChaListDefine.CategoryNo.cpo_jacket_a,
-            ChaListDefine.CategoryNo.cpo_jacket_b,
-            ChaListDefine.CategoryNo.cpo_jacket_c,
+            public CustomWindowType(ChaListDefine.CategoryNo catNo, CustomSelectWindow.SelectWindowType winType, string name)
+            {
+                CatNo = catNo;
+                WinType = winType;
+                Name = name;
+            }
+
+            public readonly ChaListDefine.CategoryNo CatNo;
+            public readonly CustomSelectWindow.SelectWindowType WinType;
+            public readonly string Name;
+        }
+
+        private static readonly CustomWindowType[] _AcceptableCustomTypes =
+        {
+            new CustomWindowType(ChaListDefine.CategoryNo.bo_hair_b,    CustomSelectWindow.SelectWindowType.HairBack,   "Hair Back"),
+            new CustomWindowType(ChaListDefine.CategoryNo.bo_hair_f,    CustomSelectWindow.SelectWindowType.HairFront,  "Hair Front"),
+            new CustomWindowType(ChaListDefine.CategoryNo.bo_hair_s,    CustomSelectWindow.SelectWindowType.HairSide,   "Hair Side"),
+            new CustomWindowType(ChaListDefine.CategoryNo.bo_hair_o,    CustomSelectWindow.SelectWindowType.HairOption, "Hair Option"),
+            new CustomWindowType(ChaListDefine.CategoryNo.co_top,       CustomSelectWindow.SelectWindowType.CosTop,     "Clothes Top"),
+            new CustomWindowType(ChaListDefine.CategoryNo.co_bot,       CustomSelectWindow.SelectWindowType.CosBot,     "Clothes Bottom"),
+            new CustomWindowType(ChaListDefine.CategoryNo.co_bra,       CustomSelectWindow.SelectWindowType.CosBra,     "Clothes Bra"),
+            new CustomWindowType(ChaListDefine.CategoryNo.co_shorts,    CustomSelectWindow.SelectWindowType.CosShorts,  "Clothes Panties"),
+            new CustomWindowType(ChaListDefine.CategoryNo.co_gloves,    CustomSelectWindow.SelectWindowType.CosGloves,  "Clothes Gloves"),
+            new CustomWindowType(ChaListDefine.CategoryNo.co_panst,     CustomSelectWindow.SelectWindowType.CosPanst,   "Clothes Pantyhose"),
+            new CustomWindowType(ChaListDefine.CategoryNo.co_socks,     CustomSelectWindow.SelectWindowType.CosSocks,   "Clothes Socks"),
+            new CustomWindowType(ChaListDefine.CategoryNo.co_shoes,     CustomSelectWindow.SelectWindowType.CosShoes,   "Clothes Shoes"),
+            new CustomWindowType(ChaListDefine.CategoryNo.cpo_sailor_a, CustomSelectWindow.SelectWindowType.CosSailorA, "Clothes Sailor A"),
+            new CustomWindowType(ChaListDefine.CategoryNo.cpo_sailor_b, CustomSelectWindow.SelectWindowType.CosSailorB, "Clothes Sailor B"),
+            new CustomWindowType(ChaListDefine.CategoryNo.cpo_sailor_c, CustomSelectWindow.SelectWindowType.CosSailorC, "Clothes Sailor C"),
+            new CustomWindowType(ChaListDefine.CategoryNo.cpo_jacket_a, CustomSelectWindow.SelectWindowType.CosJacketA, "Clothes Jacket A"),
+            new CustomWindowType(ChaListDefine.CategoryNo.cpo_jacket_b, CustomSelectWindow.SelectWindowType.CosJacketB, "Clothes Jacket B"),
+            new CustomWindowType(ChaListDefine.CategoryNo.cpo_jacket_c, CustomSelectWindow.SelectWindowType.CosJacketC, "Clothes Jacket C"),
         };
 
         // list id equals dropdown id, stock list items are marked as ao_none
@@ -128,6 +149,15 @@ namespace KK_Plugins
 
             var acc01 = slot.cvsAccessory.First();
 
+#if KK
+            var origDropdownOptions = acc01.ddAcsType.options.ToList();
+            var originalOptionCount = origDropdownOptions.Count;
+#else
+            var origDropdownOptions = acc01.GetComponentInParent<ActivateHDropDown>().targetList.Select(x => x.ConvertTMP).ToList();
+            var originalOptionCount = origDropdownOptions.Count;
+#endif
+            _typeIndexLookup = Enumerable.Repeat(ChaListDefine.CategoryNo.ao_none, originalOptionCount).ToList();
+
 #if DEBUG // reload cleanup
             var orig = slot.customAcsSelectKind;
             var orig2 = acc01.cgAccessoryWin;
@@ -137,20 +167,19 @@ namespace KK_Plugins
                 slot.customAcsSelectKind = orig;
                 foreach (var cvsAccessory in slot.cvsAccessory)
                 {
-                    cvsAccessory.ddAcsType.options.RemoveAll(data => _AcceptableCustomTypes.Any(a => a.ToString() == data.text));
+                    cvsAccessory.ddAcsType.options.Clear();
+                    cvsAccessory.ddAcsType.options.AddRange(origDropdownOptions);
                     if (orig2 != null) cvsAccessory.cgAccessoryWin = orig2;
                     if (orig3 != null) cvsAccessory.customAccessory = orig3;
                 }
             }));
 #endif
 
-            var originalOptionCount = acc01.GetComponentInParent<ActivateHDropDown>().targetList.Count; //cac.ddAcsType.options.Count;
-            _typeIndexLookup = Enumerable.Repeat(ChaListDefine.CategoryNo.ao_none, originalOptionCount).ToList();
-
             var customWindows = new List<CustomAcsSelectKind>();
 
-            foreach (var typeToAdd in _AcceptableCustomTypes)
+            for (var index = 0; index < _AcceptableCustomTypes.Length; index++)
             {
+                var typeToAdd = _AcceptableCustomTypes[index];
                 var copy = Instantiate(donor, donor.transform.parent, false);
                 copy.name = $"winAcsCustomKind_{typeToAdd}";
 
@@ -159,37 +188,45 @@ namespace KK_Plugins
 #endif
 
                 var copyCmp = copy.GetComponent<CustomAcsSelectKind>();
-                copyCmp.cate = typeToAdd;
+                copyCmp.cate = typeToAdd.CatNo;
                 copyCmp.listCtrl.ClearList();
                 copyCmp.Initialize();
                 copyCmp.CloseWindow();
                 copyCmp.enabled = true;
 
                 // Remove the None items. For top, also remove the sailor and jacket tops since without the sub parts they don't actually exist
-                if (typeToAdd == ChaListDefine.CategoryNo.co_top)
+                if (typeToAdd.CatNo == ChaListDefine.CategoryNo.co_top)
                     copyCmp.listCtrl.lstSelectInfo.RemoveAll(info => info.index == 0 || info.index == 1 || info.index == 2);
-                else if (typeToAdd != ChaListDefine.CategoryNo.cpo_sailor_a && typeToAdd != ChaListDefine.CategoryNo.cpo_sailor_b && typeToAdd != ChaListDefine.CategoryNo.cpo_jacket_a)
+                else if (typeToAdd.CatNo != ChaListDefine.CategoryNo.cpo_sailor_a && typeToAdd.CatNo != ChaListDefine.CategoryNo.cpo_sailor_b &&
+                         typeToAdd.CatNo != ChaListDefine.CategoryNo.cpo_jacket_a)
                     copyCmp.listCtrl.lstSelectInfo.RemoveAll(info => info.index == 0);
-
-                copyCmp.selWin.textTitle.text = $"Accessory ({copyCmp.cate})";
 
                 slot.customAcsSelectKind = slot.customAcsSelectKind.AddToArray(copyCmp);
 
                 customWindows.Add(copyCmp);
 
-                _typeIndexLookup.Add(typeToAdd);
+                // This auto updates window title
+                copyCmp.selWin.swType = typeToAdd.WinType;
+
+                _typeIndexLookup.Add(typeToAdd.CatNo);
             }
 
             void AddNewAccKindsToSlot(CvsAccessory cvsAcc)
             {
+#if KKS
                 var hCheck = cvsAcc.GetComponentInParent<ActivateHDropDown>();
                 // This overwrites the options so need to do this before we modify it
                 hCheck.Set(cvsAcc.ddAcsType);
                 // Disable the component in case it didn't apply by itself yet
                 hCheck._dropdownTMP = null;
                 hCheck._dropdown = null;
+#endif
 
-                cvsAcc.ddAcsType.options.AddRange(customWindows.Select(x => new TMP_Dropdown.OptionData(x.cate.ToString())));
+                //cvsAcc.ddAcsType.options.Clear();
+                //cvsAcc.ddAcsType.options.AddRange(cvsAcc.ddAcsType.options);
+                if (cvsAcc.ddAcsType.options.Count - originalOptionCount >= 1)
+                    cvsAcc.ddAcsType.options.RemoveRange(originalOptionCount, cvsAcc.ddAcsType.options.Count - originalOptionCount);
+                cvsAcc.ddAcsType.options.AddRange(customWindows.Select(x => new TMP_Dropdown.OptionData(_AcceptableCustomTypes.First(c => c.WinType == x.selWin.swType).Name)));
 
                 //cvsAcc.ddAcsType.AddOptions(customWindows.Select(x => new TMP_Dropdown.OptionData(x.cate.ToString())).ToList());
                 // Take(originalOptionCount - 1) because copied slots will most likely already have customWindows added, so they would get duplicated. -1 to account for ao_none
@@ -199,11 +236,11 @@ namespace KK_Plugins
                 var template = cvsAcc.ddAcsType.template;
                 //var origSize = template.sizeDelta;
 #if DEBUG // reload cleanup
-                CleanupList.Add(Disposable.Create(() =>
-                {
-                    //template.sizeDelta = origSize;
-                    hCheck._dropdownTMP = cvsAcc.ddAcsType;
-                }));
+                //CleanupList.Add(Disposable.Create(() =>
+                //{
+                //    //template.sizeDelta = origSize;
+                //    hCheck._dropdownTMP = cvsAcc.ddAcsType;
+                //}));
 #endif
                 // Need to hardcode the offsets instead of changing sizeDelta because they get messed up on slots added by moreaccs
                 template.anchorMin = Vector2.zero;
@@ -225,12 +262,13 @@ namespace KK_Plugins
                 AddNewAccKindsToSlot(cvsAccessory);
             }
             AccessoriesApi.MakerAccSlotAdded += OnAccSlotAdded;
+
 #if DEBUG // reload cleanup
             CleanupList.Add(Disposable.Create(() => AccessoriesApi.MakerAccSlotAdded -= OnAccSlotAdded));
 #endif
 
             // Needed for class maker when editing a character that has 1st accessory using an acc type this plugin adds (UI is in broken state since its updated before hooks are applied)
-            if (_AcceptableCustomTypes.Contains((ChaListDefine.CategoryNo)acc01.accessory.parts[0].type))
+            if (_AcceptableCustomTypes.Any(x => x.CatNo == (ChaListDefine.CategoryNo)acc01.accessory.parts[0].type))
                 acc01.UpdateCustomUI();
 
             Logger.LogDebug($"InitializeMakerWindows finish in {sw.ElapsedMilliseconds}ms");
@@ -281,11 +319,34 @@ namespace KK_Plugins
             return customAccTypeIndex >= 0 ? customAccTypeIndex : accTypeSubtracted;
         }
 
+        // check if id is in bad range and set it to the default then
         [HarmonyTranspiler]
         [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryType))]
         private static IEnumerable<CodeInstruction> UnlockTypesTpl(IEnumerable<CodeInstruction> instructions)
         {
             var replacement = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(CustomGetDefault)) ?? throw new Exception("CustomGetDefault");
+
+#if KK
+            return new CodeMatcher(instructions)
+                .MatchForward(false,
+                    new CodeMatch(OpCodes.Ldc_I4_0),
+                    new CodeMatch(OpCodes.Callvirt, AccessTools.PropertySetter(typeof(ChaFileAccessory.PartsInfo), nameof(ChaFileAccessory.PartsInfo.id))))
+                .Repeat(matcher => matcher.SetAndAdvance(OpCodes.Ldarg_1, null).Insert(new CodeInstruction(OpCodes.Call, replacement)), s => throw new Exception("match fail - " + s))
+                .Instructions();
+        }
+
+        private static int CustomGetDefault(int index)
+        {
+            // index is type - 120
+            //if (index >= 0 && index < defaultAcsId.Length) return 0;
+
+            var type = (ChaListDefine.CategoryNo)(index + 120);
+            if (_AcceptableCustomTypes.All(x => x.CatNo != type)) return 0;
+            // Top clothes index 1 and 2 are not usable
+            var isTop = type == ChaListDefine.CategoryNo.co_top;
+            return isTop ? 3 : 1;
+        }
+#elif KKS
             return new CodeMatcher(instructions)
                 .MatchForward(true,
                     new CodeMatch(OpCodes.Ldfld),
@@ -304,13 +365,19 @@ namespace KK_Plugins
             var isTop = index + 120 == (int)ChaListDefine.CategoryNo.co_top;
             return isTop ? 3 : 1;
         }
+#endif
 
-        #endregion
+        #endregion add custom accessory categories
 
         #region allow loading clothes as accs
 
         [HarmonyTranspiler]
+#if KK
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.GetAccessoryDefaultParentStr), typeof(int), typeof(int))]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.GetAccessoryDefaultParentStr), typeof(int))]
+#else
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.GetAccessoryDefaultParentStr))]
+#endif
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryParent))]
         private static IEnumerable<CodeInstruction> GetAccessoryParentOverrideTpl(IEnumerable<CodeInstruction> instructions)
         {
@@ -323,12 +390,13 @@ namespace KK_Plugins
                 .Instructions();
         }
 
+#if KKS
         [HarmonyTranspiler]
         //todo needs new harmony ver [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryAsync), typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool), typeof(bool))]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryNoAsync))]
+#endif
         private static IEnumerable<CodeInstruction> UnlockAccessoryItemTypesTpl(IEnumerable<CodeInstruction> instructions)
         {
-
             var cm = new CodeMatcher(instructions);
 
             var replacement1 = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(CustomAccessoryTypeCheck)) ?? throw new Exception("CustomAccessoryTypeCheck");
@@ -369,9 +437,27 @@ namespace KK_Plugins
         {
             if (min != 121 || n >= min && n <= max) return MathfEx.RangeEqualOn(min, n, max);
 
-            return _AcceptableCustomTypes.Contains((ChaListDefine.CategoryNo)n);
+            return _AcceptableCustomTypes.Any(x => x.CatNo == (ChaListDefine.CategoryNo)n);
         }
 
+#if KK
+        private static GameObject LoadCharaFbxDataLeech(ChaControl instance, bool _hiPoly, int category, int id,
+            string createName, bool copyDynamicBone, byte copyWeights, Transform trfParent, int defaultId, bool worldPositionStays)
+        {
+            var spawnedObject = instance.LoadCharaFbxData(_hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, worldPositionStays);
+            CovertToChaAccessoryComponent(spawnedObject, spawnedObject.GetComponent<ListInfoComponent>().data, instance, (ChaListDefine.CategoryNo)category);
+            return spawnedObject;
+        }
+
+        private static IEnumerator LoadCharaFbxDataAsyncLeech(ChaControl instance, Action<GameObject> actObj, bool _hiPoly, int category,
+            int id, string createName, bool copyDynamicBone, byte copyWeights, Transform trfParent, int defaultId, bool AsyncFlags = true, bool worldPositionStays = false)
+        {
+            GameObject spawnedObject = null;
+            var newActObj = new Action<GameObject>(o => spawnedObject = o);
+            var result = instance.LoadCharaFbxDataAsync(actObj + newActObj, _hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, AsyncFlags, worldPositionStays);
+            return result.AppendCo(() => CovertToChaAccessoryComponent(spawnedObject, spawnedObject.GetComponent<ListInfoComponent>().data, instance, (ChaListDefine.CategoryNo)category));
+        }
+#elif KKS
         private static GameObject LoadCharaFbxDataLeech(ChaControl instance, Action<ListInfoBase> actListInfo, bool _hiPoly, int category, int id,
             string createName, bool copyDynamicBone, byte copyWeights, Transform trfParent, int defaultId, bool worldPositionStays)
         {
@@ -392,6 +478,7 @@ namespace KK_Plugins
             var result = instance.LoadCharaFbxDataAsync(actObj + newActObj, actListInfo + newActList, _hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, AsyncFlags, worldPositionStays);
             return result.AppendCo(() => CovertToChaAccessoryComponent(spawnedObject, spawnedLib, instance, (ChaListDefine.CategoryNo)category));
         }
+#endif
 
         private static void CovertToChaAccessoryComponent(GameObject instance, ListInfoBase listInfoBase, ChaControl chaControl, ChaListDefine.CategoryNo category)
         {
@@ -414,8 +501,12 @@ namespace KK_Plugins
                 cac.setcolor = ccc.setcolor;
 
                 cac.rendAlpha = ccc.rendAlpha01.Concat(ccc.rendAlpha02).Where(x => x != null).ToArray();
-                cac.rendNormal = ccc.rendNormal01.Concat(ccc.rendNormal02).Concat(ccc.rendNormal03).AddItem(ccc.rendAccessory).Where(x => x != null).ToArray();
-                cac.rendHair = Array.Empty<Renderer>();
+                cac.rendNormal = ccc.rendNormal01.Concat(ccc.rendNormal02)
+#if KKS
+                .Concat(ccc.rendNormal03)
+#endif
+                .AddItem(ccc.rendAccessory).Where(x => x != null).ToArray();
+                cac.rendHair = new Renderer[0];
 
                 var adapter = instance.AddComponent<ClothesToAccessoriesAdapter>();
                 adapter.Initialize(chaControl, ccc, cac, listInfoBase, category);
@@ -429,7 +520,7 @@ namespace KK_Plugins
 
                 cac.initialize = chc.initialize;
                 cac.setcolor = chc.setcolor;
-                cac.rendHair = Array.Empty<Renderer>();
+                cac.rendHair = new Renderer[0];
 
                 // Hair renderers need to be set as normal to work properly. rendHair on accessories doesn't apply color properly
                 cac.rendNormal = chc.rendHair;
@@ -462,7 +553,7 @@ namespace KK_Plugins
                 }).Distinct().ToArray();
                 if (positions.Length >= 1) positions[0].name = "N_move";
                 if (positions.Length >= 2) positions[1].name = "N_move2";
-                if (positions.Length >= 3) Logger.LogWarning($"More than 2 move transforms found! id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category} transforms={string.Join(", ", positions.Select(x => x.name))}");
+                if (positions.Length >= 3) Logger.LogWarning($"More than 2 move transforms found! id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category} transforms={string.Join(", ", positions.Select(x => x.name).ToArray())}");
 
                 return;
             }
@@ -550,7 +641,7 @@ namespace KK_Plugins
                     }
 
                     //AssignedWeightsAndSetBounds replaces the bones of an object with the body bones
-                    var objRootBone = instance.GetReferenceInfo(ChaReference.RefObjKey.A_ROOTBONE);
+                    var objRootBone = instance.GetReferenceInfo(UniversalRefObjKey.A_ROOTBONE);
                     foreach (var rend in chaAccessory.rendNormal.Concat(chaAccessory.rendAlpha).Concat(chaAccessory.rendHair))
                     {
                         if (rend)
@@ -592,7 +683,7 @@ namespace KK_Plugins
             if (type == ChaListDefine.KeyType.Parent)
             {
                 var category = (ChaListDefine.CategoryNo)instance.Category;
-                if (category != ChaListDefine.CategoryNo.ao_none && _AcceptableCustomTypes.Contains(category))
+                if (category != ChaListDefine.CategoryNo.ao_none && _AcceptableCustomTypes.Any(x => x.CatNo == category))
                 {
                     switch (category)
                     {
@@ -603,6 +694,7 @@ namespace KK_Plugins
                         case ChaListDefine.CategoryNo.bo_hair_s:
                             // headside is center of head, all normal hair seem to be using this
                             return ChaAccessoryDefine.AccessoryParentKey.a_n_headside.ToString();
+
                         case ChaListDefine.CategoryNo.bo_hair_o:
                             // Ahoges act like hats
                             return ChaAccessoryDefine.AccessoryParentKey.a_n_headtop.ToString();
@@ -635,16 +727,28 @@ namespace KK_Plugins
             return origInfo;
         }
 
-        #endregion
+        #endregion allow loading clothes as accs
 
         #region handle clothes state and texture
+
+#if KK
+        private class Bool8 : List<bool>
+        {
+            public Bool8() : base(Enumerable.Repeat(false, 8)) { }
+
+            public bool Any(int count)
+            {
+                return this.Take(count).Any(x => x);
+            }
+        }
+#endif
 
         internal static Dictionary<ChaControl, byte> LastTopState = new Dictionary<ChaControl, byte>();
 
         [HarmonyPostfix]
         [HarmonyWrapSafe]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateVisible))]
-        private static void UpdateVisibleAccessoryClothes(ChaControl __instance)
+        internal static void UpdateVisibleAccessoryClothes(ChaControl __instance)
         {
             // Don't run on disabled characters
             if (!__instance.objTop || !__instance.objTop.activeSelf) return;
@@ -672,9 +776,12 @@ namespace KK_Plugins
                     }
                     else
                     {
+                        // Console.WriteLine($"change {key} {enable}");
+
                         var go = target.Reference.GetReferenceInfo(key);
                         if (go != null && go.activeSelf != enable)
                         {
+                            // Console.WriteLine($"change {key} {enable}");
                             go.SetActive(enable);
                             result = true;
                         }
@@ -685,6 +792,11 @@ namespace KK_Plugins
 
             void DrawOption(List<ClothesToAccessoriesAdapter> targets, ChaFileDefine.ClothesKind kind)
             {
+#if KK
+                return;
+                //var flag = true;
+                //var flag2 = true;
+#elif KKS
                 var flag = !__instance.nowCoordinate.clothes.parts[(int)kind].hideOpt[0];
                 var flag2 = !__instance.nowCoordinate.clothes.parts[(int)kind].hideOpt[1];
                 if (ChaFileDefine.ClothesKind.bra == kind)
@@ -720,18 +832,29 @@ namespace KK_Plugins
                         }
                     }
                 }
+#endif
             }
 
             var visibleSon = true;
             var visibleBody = true;
             var visibleSimple = false;
+#if KK
+            if (Scene.Instance.NowSceneNames.Any(s => s == "H"))
+            {
+                visibleSon = __instance.sex != 0 || Manager.Config.EtcData.VisibleSon;
+                visibleBody = __instance.sex != 0 || Manager.Config.EtcData.VisibleBody;
+                visibleSimple = __instance.sex == 0 && __instance.fileStatus.visibleSimple;
+            }
+            var flags = new Bool8(); // default(Bool8);
+#else
             if (Scene.NowSceneNames.Any(s => s == "H"))
             {
                 visibleSon = __instance.sex != 0 || Manager.Config.HData.VisibleSon;
                 visibleBody = __instance.sex != 0 || Manager.Config.HData.VisibleBody;
                 visibleSimple = __instance.sex == 0 && __instance.fileStatus.visibleSimple;
             }
-            var flags = default(Bool8);
+            var flags = default(Illusion.Game.Array.Bool8);
+#endif
             flags[0] = __instance.visibleAll;
             flags[1] = visibleBody;
             flags[2] = !visibleSimple;
@@ -740,19 +863,21 @@ namespace KK_Plugins
             flags[4] = __instance.fileStatus.visibleBodyAlways;
             var anyTopVisible = flags.Any(5);
 
+            //Console.WriteLine($"{flags[0]} {flags[1]} {flags[2]} {flags[3]} {flags[4]} aa {topClothesState}");
+
             var flag7 = topClothesState == 0 && anyTopVisible;
-            if (SetActiveControls(accClothes[0], ChaReference.RefObjKey.S_CTOP_T_DEF, flag7)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[0], UniversalRefObjKey.S_CTOP_T_DEF, flag7)) __instance.updateShape = true;
 
             var flag8 = topClothesState == 1 && anyTopVisible;
-            if (SetActiveControls(accClothes[0], ChaReference.RefObjKey.S_CTOP_T_NUGE, flag8)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[0], UniversalRefObjKey.S_CTOP_T_NUGE, flag8)) __instance.updateShape = true;
 
             flags[0] = __instance.fileStatus.clothesState[1] == 0 && anyTopVisible;
             flags[1] = topClothesState != 3;
-            if (SetActiveControls(accClothes[0], ChaReference.RefObjKey.S_CTOP_B_DEF, flags.Any(2))) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[0], UniversalRefObjKey.S_CTOP_B_DEF, flags.Any(2))) __instance.updateShape = true;
 
             flags[0] = __instance.fileStatus.clothesState[1] > 0 && anyTopVisible;
             flags[1] = topClothesState != 3;
-            if (SetActiveControls(accClothes[0], ChaReference.RefObjKey.S_CTOP_B_NUGE, flags.Any(2))) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[0], UniversalRefObjKey.S_CTOP_B_NUGE, flags.Any(2))) __instance.updateShape = true;
 
             DrawOption(accClothes[0], ChaFileDefine.ClothesKind.top);
 
@@ -767,18 +892,18 @@ namespace KK_Plugins
             var anyBotVisible = flags.Any(6);
 
             var flag9 = __instance.fileStatus.clothesState[1] == 0 && anyBotVisible;
-            if (SetActiveControls(accClothes[1], ChaReference.RefObjKey.S_CBOT_B_DEF, flag9)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[1], UniversalRefObjKey.S_CBOT_B_DEF, flag9)) __instance.updateShape = true;
 
             var flag10 = __instance.fileStatus.clothesState[1] == 1 && anyBotVisible;
-            if (SetActiveControls(accClothes[1], ChaReference.RefObjKey.S_CBOT_B_NUGE, flag10)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[1], UniversalRefObjKey.S_CBOT_B_NUGE, flag10)) __instance.updateShape = true;
 
             flags[0] = topClothesState == 0 && anyBotVisible;
             flags[1] = __instance.fileStatus.clothesState[1] != 2;
-            if (SetActiveControls(accClothes[1], ChaReference.RefObjKey.S_CBOT_T_DEF, flags.Any(2))) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[1], UniversalRefObjKey.S_CBOT_T_DEF, flags.Any(2))) __instance.updateShape = true;
 
             flags[0] = topClothesState > 0 && anyBotVisible;
             flags[1] = __instance.fileStatus.clothesState[1] != 2;
-            if (SetActiveControls(accClothes[1], ChaReference.RefObjKey.S_CBOT_T_NUGE, flags.Any(2))) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[1], UniversalRefObjKey.S_CBOT_T_NUGE, flags.Any(2))) __instance.updateShape = true;
 
             DrawOption(accClothes[1], ChaFileDefine.ClothesKind.bot);
 
@@ -791,18 +916,18 @@ namespace KK_Plugins
             var anyBraVisible = flags.Any(6);
 
             var flag11 = __instance.fileStatus.clothesState[2] == 0 && anyBraVisible;
-            if (SetActiveControls(accClothes[2], ChaReference.RefObjKey.S_UWT_T_DEF, flag11)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[2], UniversalRefObjKey.S_UWT_T_DEF, flag11)) __instance.updateShape = true;
 
             var flag12 = 1 == __instance.fileStatus.clothesState[2] && anyBraVisible;
-            if (SetActiveControls(accClothes[2], ChaReference.RefObjKey.S_UWT_T_NUGE, flag12)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[2], UniversalRefObjKey.S_UWT_T_NUGE, flag12)) __instance.updateShape = true;
 
             flags[0] = __instance.fileStatus.clothesState[3] == 0 && anyBraVisible;
             flags[1] = 3 != __instance.fileStatus.clothesState[2];
-            if (SetActiveControls(accClothes[2], ChaReference.RefObjKey.S_UWT_B_DEF, flags.Any(2))) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[2], UniversalRefObjKey.S_UWT_B_DEF, flags.Any(2))) __instance.updateShape = true;
 
             flags[0] = __instance.fileStatus.clothesState[3] > 0 && anyBraVisible;
             flags[1] = 3 != __instance.fileStatus.clothesState[2];
-            if (SetActiveControls(accClothes[2], ChaReference.RefObjKey.S_UWT_B_NUGE, flags.Any(2))) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[2], UniversalRefObjKey.S_UWT_B_NUGE, flags.Any(2))) __instance.updateShape = true;
 
             DrawOption(accClothes[2], ChaFileDefine.ClothesKind.bra);
 
@@ -812,7 +937,11 @@ namespace KK_Plugins
             //        __instance.objHideNip.SetActiveIfDifferent(true);
 
             flags[0] = __instance.visibleAll;
-            flags[1] = !(__instance.hideShortsBot && __instance.objClothes[1] && __instance.objClothes[1].activeSelf && __instance.fileStatus.clothesState[1] == 0);
+            flags[1] = !(
+#if KKS
+                __instance.hideShortsBot &&
+#endif
+                 __instance.objClothes[1] && __instance.objClothes[1].activeSelf && __instance.fileStatus.clothesState[1] == 0);
             flags[2] = !__instance.notShorts;
             flags[3] = visibleBody;
             flags[4] = !visibleSimple;
@@ -821,13 +950,13 @@ namespace KK_Plugins
             var anyPantieVisible = flags.Any(7);
 
             var flag13 = __instance.fileStatus.clothesState[3] == 0 && anyPantieVisible;
-            if (SetActiveControls(accClothes[3], ChaReference.RefObjKey.S_UWB_B_DEF, flag13)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[3], UniversalRefObjKey.S_UWB_B_DEF, flag13)) __instance.updateShape = true;
 
             var flag14 = 1 == __instance.fileStatus.clothesState[3] && anyPantieVisible;
-            if (SetActiveControls(accClothes[3], ChaReference.RefObjKey.S_UWB_B_NUGE, flag14)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[3], UniversalRefObjKey.S_UWB_B_NUGE, flag14)) __instance.updateShape = true;
 
             var flag15 = 2 == __instance.fileStatus.clothesState[3] && anyPantieVisible;
-            if (SetActiveControls(accClothes[3], ChaReference.RefObjKey.S_UWB_B_NUGE2, flag15)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[3], UniversalRefObjKey.S_UWB_B_NUGE2, flag15)) __instance.updateShape = true;
 
             DrawOption(accClothes[3], ChaFileDefine.ClothesKind.shorts);
 
@@ -853,9 +982,9 @@ namespace KK_Plugins
             flags[4] = __instance.fileStatus.visibleBodyAlways;
             var anyPanstVisible = flags.Any(5);
 
-            if (SetActiveControls(accClothes[5], ChaReference.RefObjKey.S_PANST_DEF, __instance.fileStatus.clothesState[5] == 0 && anyPanstVisible)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[5], UniversalRefObjKey.S_PANST_DEF, __instance.fileStatus.clothesState[5] == 0 && anyPanstVisible)) __instance.updateShape = true;
 
-            if (SetActiveControls(accClothes[5], ChaReference.RefObjKey.S_PANST_NUGE, 1 == __instance.fileStatus.clothesState[5] && anyPanstVisible)) __instance.updateShape = true;
+            if (SetActiveControls(accClothes[5], UniversalRefObjKey.S_PANST_NUGE, 1 == __instance.fileStatus.clothesState[5] && anyPanstVisible)) __instance.updateShape = true;
 
             DrawOption(accClothes[5], ChaFileDefine.ClothesKind.panst);
 
@@ -878,31 +1007,40 @@ namespace KK_Plugins
 
             DrawOption(accClothes[7], ChaFileDefine.ClothesKind.shoes_inner);
 
-            var topstate = anyTopVisible && accClothes[0].Any(x => x.gameObject.activeSelf) ? topClothesState : (byte)3;
+            var hasBasicTop = __instance.nowCoordinate.clothes.parts[0].id != 0; // use __instance.objClothes[0] instead?
+            var topstate = anyTopVisible && (hasBasicTop || accClothes[0].Any(x => x.gameObject.activeSelf)) ? topClothesState : (byte)3;
             // If there are any top clothes in accessories and there are no normal clothes selected then pull masks from the accessory clothes
-            if (accClothes[0].Count > 0)
+            if (!hasBasicTop && accClothes[0].Count > 0)
             {
-                if (__instance.nowCoordinate.clothes.parts[0].id == 0)
+                if (__instance.texBodyAlphaMask == null || __instance.texBraAlphaMask == null)
                 {
-                    if (__instance.texBodyAlphaMask == null || __instance.texBraAlphaMask == null)
+                    foreach (var adapter in accClothes[0])
                     {
-                        foreach (var adapter in accClothes[0])
+                        adapter.ApplyMasksToChaControl();
+                        if (__instance.texBodyAlphaMask != null && __instance.texBraAlphaMask != null)
                         {
-                            adapter.ApplyMasksToChaControl();
-                            if (__instance.texBodyAlphaMask != null && __instance.texBraAlphaMask != null)
-                            {
-                                // Force ChangeAlphaMask to run
-                                LastTopState[__instance] = 255;
-                                break;
-                            }
+                            // Force ChangeAlphaMask to run
+                            LastTopState[__instance] = 255;
+                            break;
                         }
                     }
+                }
 
-                    if (LastTopState.TryGetValue(__instance, out var lts) && lts != topstate)
-                    {
-                        __instance.ChangeAlphaMask(ChaFileDefine.alphaState[topstate, 0], ChaFileDefine.alphaState[topstate, 1]);
-                        __instance.updateAlphaMask = false;
-                    }
+                if (LastTopState.TryGetValue(__instance, out var lts) && lts != topstate)
+                {
+#if KK
+                    // Different game versions have different parameters for ChangeAlphaMask
+                    var mCam = AccessTools.Method(typeof(ChaControl), nameof(ChaControl.ChangeAlphaMask));
+                    var parameters = mCam.GetParameters().Length == 1
+                        ? new object[] { new byte[] { alphaState[topstate, 0], alphaState[topstate, 1] } }
+                        : new object[] { alphaState[topstate, 0], alphaState[topstate, 1] };
+                    mCam.Invoke(__instance, parameters);
+
+                    //__instance.ChangeAlphaMask(alphaState[topstate, 0], alphaState[topstate, 1]);
+#else
+                    __instance.ChangeAlphaMask(alphaState[topstate, 0], alphaState[topstate, 1]);
+#endif
+                    __instance.updateAlphaMask = false;
                 }
             }
 
@@ -953,18 +1091,38 @@ namespace KK_Plugins
         [HarmonyPostfix]
         [HarmonyWrapSafe]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAlphaMask))]
-        private static void ChangeAlphaMaskPost(ChaControl __instance, byte state0, byte state1)
+        private static void ChangeAlphaMaskPost(ChaControl __instance, object[] __args)
         {
             ClothesToAccessoriesAdapter.AllInstances.TryGetValue(__instance, out var accClothes);
             if (accClothes == null) return;
 
-            foreach (var adapter in accClothes[2])
+            try
             {
-                adapter.ChangeAlphaMask(state0, state1);
+                if (accClothes[2].Count == 0) return;
+
+                // Different game versions have different parameter type/names for ChangeAlphaMask. Some are in byte[] some are 2 byte values
+                byte state0, state1;
+                if (__args.Length == 1)
+                {
+                    var arr = (byte[])__args[0];
+                    state0 = arr[0];
+                    state1 = arr[1];
+                }
+                else
+                {
+                    state0 = (byte)__args[0];
+                    state1 = (byte)__args[1];
+                }
+
+                foreach (var adapter in accClothes[2])
+                    adapter.ChangeAlphaMask(state0, state1);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
             }
         }
 
-        // todo unnecessary patch?
         [HarmonyPostfix]
         [HarmonyWrapSafe]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.IsClothes))]
@@ -979,7 +1137,6 @@ namespace KK_Plugins
             __result = accClothes[clothesKind].Count > 0;
         }
 
-        // todo unnecessary patch?
         [HarmonyPostfix]
         [HarmonyWrapSafe]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.IsKokanHide))]
@@ -1002,6 +1159,7 @@ namespace KK_Plugins
                 }
             }
         }
-        #endregion
+
+        #endregion handle clothes state and texture
     }
 }
