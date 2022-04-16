@@ -20,7 +20,7 @@ using UnityEngine;
 namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
-    [BepInDependency(KoikatuAPI.GUID, "1.30")]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public partial class ClothesToAccessoriesPlugin : BaseUnityPlugin
     {
         public const string GUID = "ClothesToAccessories";
@@ -47,10 +47,11 @@ namespace KK_Plugins
 
             ApplyHooks();
 
-#if DEBUG // apply instantly since we should be running inside maker already
-            InitializeMakerWindows();
-#else
-            MakerAPI.MakerFinishedLoading += (s, e) => InitializeMakerWindows();
+            MakerAPI.MakerFinishedLoading += InitializeMakerWindows;
+#if DEBUG
+            CleanupList.Add(Disposable.Create(() => MakerAPI.MakerFinishedLoading -= InitializeMakerWindows));
+            if (MakerAPI.InsideAndLoaded) // handle hot reload
+                InitializeMakerWindows(null, null);
 #endif
         }
 
@@ -140,7 +141,7 @@ namespace KK_Plugins
         // list id equals dropdown id, stock list items are marked as ao_none
         private static List<ChaListDefine.CategoryNo> _typeIndexLookup;
 
-        private static void InitializeMakerWindows()
+        private static void InitializeMakerWindows(object s, EventArgs e)
         {
             var sw = Stopwatch.StartNew();
 
@@ -213,7 +214,13 @@ namespace KK_Plugins
 
             void AddNewAccKindsToSlot(CvsAccessory cvsAcc)
             {
-#if KKS
+#if KK
+                // Necessary in case the dropdown items added to an existing slot got copied
+                //cvsAcc.ddAcsType.options.Clear();
+                //cvsAcc.ddAcsType.options.AddRange(cvsAcc.ddAcsType.options);
+                if (cvsAcc.ddAcsType.options.Count - originalOptionCount >= 1)
+                    cvsAcc.ddAcsType.options.RemoveRange(originalOptionCount, cvsAcc.ddAcsType.options.Count - originalOptionCount);
+#else
                 var hCheck = cvsAcc.GetComponentInParent<ActivateHDropDown>();
                 // This overwrites the options so need to do this before we modify it
                 hCheck.Set(cvsAcc.ddAcsType);
@@ -221,27 +228,14 @@ namespace KK_Plugins
                 hCheck._dropdownTMP = null;
                 hCheck._dropdown = null;
 #endif
-
-                //cvsAcc.ddAcsType.options.Clear();
-                //cvsAcc.ddAcsType.options.AddRange(cvsAcc.ddAcsType.options);
-                if (cvsAcc.ddAcsType.options.Count - originalOptionCount >= 1)
-                    cvsAcc.ddAcsType.options.RemoveRange(originalOptionCount, cvsAcc.ddAcsType.options.Count - originalOptionCount);
+                // Add new items
                 cvsAcc.ddAcsType.options.AddRange(customWindows.Select(x => new TMP_Dropdown.OptionData(_AcceptableCustomTypes.First(c => c.WinType == x.selWin.swType).Name)));
 
-                //cvsAcc.ddAcsType.AddOptions(customWindows.Select(x => new TMP_Dropdown.OptionData(x.cate.ToString())).ToList());
                 // Take(originalOptionCount - 1) because copied slots will most likely already have customWindows added, so they would get duplicated. -1 to account for ao_none
                 cvsAcc.cgAccessoryWin = cvsAcc.cgAccessoryWin.Take(originalOptionCount - 1).Concat(customWindows.Select(x => x.GetComponent<CanvasGroup>())).ToArray();
                 cvsAcc.customAccessory = cvsAcc.customAccessory.Take(originalOptionCount - 1).Concat(customWindows).ToArray();
 
                 var template = cvsAcc.ddAcsType.template;
-                //var origSize = template.sizeDelta;
-#if DEBUG // reload cleanup
-                //CleanupList.Add(Disposable.Create(() =>
-                //{
-                //    //template.sizeDelta = origSize;
-                //    hCheck._dropdownTMP = cvsAcc.ddAcsType;
-                //}));
-#endif
                 // Need to hardcode the offsets instead of changing sizeDelta because they get messed up on slots added by moreaccs
                 template.anchorMin = Vector2.zero;
                 template.anchorMax = new Vector2(1, 0);
@@ -250,15 +244,13 @@ namespace KK_Plugins
                 //template.sizeDelta = new Vector2(origSize.x, origSize.y + 480);
             }
 
-            foreach (var cvsAccessory in slot.cvsAccessory) AddNewAccKindsToSlot(cvsAccessory);
+            foreach (var cvsAccessory in slot.cvsAccessory)
+                AddNewAccKindsToSlot(cvsAccessory);
 
             void OnAccSlotAdded(object sender, AccessorySlotEventArgs args)
             {
                 //Logger.LogDebug("Adding clothing accessory kinds to dropdown in new acc slot id=" + args.SlotIndex);
                 var cvsAccessory = slot.cvsAccessory[args.SlotIndex];
-                // Necessary in case the dropdown items added to an existing slot got copied
-                // todo a more reliable method?
-                //cvsAccessory.ddAcsType.options.RemoveAll(data => _AcceptableCustomTypes.Any(a => a.ToString() == data.text));
                 AddNewAccKindsToSlot(cvsAccessory);
             }
             AccessoriesApi.MakerAccSlotAdded += OnAccSlotAdded;
@@ -284,8 +276,8 @@ namespace KK_Plugins
                 return;
             }
 
-            var customType = _typeIndexLookup[idx];
             // Handle default categories
+            var customType = _typeIndexLookup[idx];
             if (customType == ChaListDefine.CategoryNo.ao_none) return;
 
             // The dropdown index idx is later added 120 (ao_none) to convert it to CategoryNo, so 0 + 120 = CategoryNo.ao_none
@@ -319,6 +311,7 @@ namespace KK_Plugins
             return customAccTypeIndex >= 0 ? customAccTypeIndex : accTypeSubtracted;
         }
 
+#if KK
         // check if id is in bad range and set it to the default then
         [HarmonyTranspiler]
         [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryType))]
@@ -326,7 +319,6 @@ namespace KK_Plugins
         {
             var replacement = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(CustomGetDefault)) ?? throw new Exception("CustomGetDefault");
 
-#if KK
             return new CodeMatcher(instructions)
                 .MatchForward(false,
                     new CodeMatch(OpCodes.Ldc_I4_0),
@@ -347,6 +339,13 @@ namespace KK_Plugins
             return isTop ? 3 : 1;
         }
 #elif KKS
+        // check if id is in bad range and set it to the default then
+        [HarmonyTranspiler]
+        [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryType))]
+        private static IEnumerable<CodeInstruction> UnlockTypesTpl(IEnumerable<CodeInstruction> instructions)
+        {
+            var replacement = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(CustomGetDefault)) ?? throw new Exception("CustomGetDefault");
+
             return new CodeMatcher(instructions)
                 .MatchForward(true,
                     new CodeMatch(OpCodes.Ldfld),
@@ -503,9 +502,9 @@ namespace KK_Plugins
                 cac.rendAlpha = ccc.rendAlpha01.Concat(ccc.rendAlpha02).Where(x => x != null).ToArray();
                 cac.rendNormal = ccc.rendNormal01.Concat(ccc.rendNormal02)
 #if KKS
-                .Concat(ccc.rendNormal03)
+                    .Concat(ccc.rendNormal03)
 #endif
-                .AddItem(ccc.rendAccessory).Where(x => x != null).ToArray();
+                    .AddItem(ccc.rendAccessory).Where(x => x != null).ToArray();
                 cac.rendHair = new Renderer[0];
 
                 var adapter = instance.AddComponent<ClothesToAccessoriesAdapter>();
@@ -937,11 +936,11 @@ namespace KK_Plugins
             //        __instance.objHideNip.SetActiveIfDifferent(true);
 
             flags[0] = __instance.visibleAll;
-            flags[1] = !(
-#if KKS
-                __instance.hideShortsBot &&
+#if KK
+            flags[1] = !(__instance.objClothes[1] && __instance.objClothes[1].activeSelf && __instance.fileStatus.clothesState[1] == 0);
+#else
+            flags[1] = !(__instance.hideShortsBot && __instance.objClothes[1] && __instance.objClothes[1].activeSelf && __instance.fileStatus.clothesState[1] == 0);
 #endif
-                 __instance.objClothes[1] && __instance.objClothes[1].activeSelf && __instance.fileStatus.clothesState[1] == 0);
             flags[2] = !__instance.notShorts;
             flags[3] = visibleBody;
             flags[4] = !visibleSimple;
@@ -1035,8 +1034,6 @@ namespace KK_Plugins
                         ? new object[] { new byte[] { alphaState[topstate, 0], alphaState[topstate, 1] } }
                         : new object[] { alphaState[topstate, 0], alphaState[topstate, 1] };
                     mCam.Invoke(__instance, parameters);
-
-                    //__instance.ChangeAlphaMask(alphaState[topstate, 0], alphaState[topstate, 1]);
 #else
                     __instance.ChangeAlphaMask(alphaState[topstate, 0], alphaState[topstate, 1]);
 #endif
