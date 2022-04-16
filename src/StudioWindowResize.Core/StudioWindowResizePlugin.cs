@@ -19,7 +19,7 @@ namespace KK_Plugins
     {
         public const string GUID = "StudioWindowResize";
         public const string PluginName = "StudioWindowResize";
-        public const string Version = "0.2";
+        public const string Version = "1.0";
         public const string PluginNameInternal = Constants.Prefix + "_StudioWindowResize";
 
         // the Y offset is entirely arbitrary, not sure if it plays nice across aspect ratios or resize, probably not
@@ -27,7 +27,7 @@ namespace KK_Plugins
         // it would just be a case of separating sprite operations from resize operations, not a big deal
         private static float resizeY = -973;
         private const float resizeYmin = -300;
-        private const float resizeYdefault = -950;//-973;
+        //private const float resizeYdefault = -950;//-973;
         private const float resizeYmax = -1400;
 
         private IEnumerator Start()
@@ -87,13 +87,19 @@ namespace KK_Plugins
                 ResizeScrollRect(addItem.Find("Scroll View Item"), ADD_ITEM);
 
                 var addMap = addMenu.Find("03_Map");
+#if KKS
                 //ResizeScrollRect(addMap.Find("Map Category"), ADD_ITEM);
                 ResizeScrollRect(addMap.Find("Map"), ADD_ITEM);
+#else
+                ResizeScrollRect(addMap, ADD_ITEM);
+#endif
 
                 ResizeScrollRect(addMenu.Find("04_Light"), ADD_ITEM);
                 ResizeScrollRect(addMenu.Find("05_Background"), ADD_BG);
                 ResizeScrollRect(addMenu.Find("06_Frame"), ADD_BG);
-                ResizeScrollRect(addMenu.Find("07_Text"), ADD_ITEM); //todo missing in KK?
+#if KKS
+                ResizeScrollRect(addMenu.Find("07_Text"), ADD_ITEM);
+#endif
             }
 
             var manipulateMenu = mainMenu.Find("02_Manipulate");

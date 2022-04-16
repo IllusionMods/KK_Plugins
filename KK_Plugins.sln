@@ -525,7 +525,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PH.PoseTools", "src\PoseToo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StudioWindowResize", "StudioWindowResize", "{5ACE49BE-BD8A-49E9-8E54-541A154C87BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioWindowResize", "src\KKS.StudioWindowResize\KKS.StudioWindowResize.csproj", "{589EA7E6-340D-4273-8F58-1FD7D6A7D594}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.StudioWindowResize", "src\StudioWindowResize.KKS\KKS.StudioWindowResize.csproj", "{589EA7E6-340D-4273-8F58-1FD7D6A7D594}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.StudioWindowResize", "src\StudioWindowResize.KK\KK.StudioWindowResize.csproj", "{AFF5B1A5-40DB-4672-8668-8054EBD3406C}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.StudioWindowResize", "src\StudioWindowResize.Core\Core.StudioWindowResize.shproj", "{C8335D5A-C28F-4CB1-B6B6-86F84B939D08}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -674,6 +678,7 @@ Global
 		src\Shared\Shared.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
 		src\UncensorSelector.Core\Core.UncensorSelector.projitems*{587a82dd-6bc1-481a-b979-5ca6d247cf69}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{589ea7e6-340d-4273-8f58-1fd7d6a7d594}*SharedItemsImports = 4
+		src\StudioWindowResize.Core\StudioWindowResize.Core.projitems*{589ea7e6-340d-4273-8f58-1fd7d6a7d594}*SharedItemsImports = 4
 		src\AccessoryQuickRemove.Core\AccessoryQuickRemove.Core.projitems*{589fb078-fcf6-4096-a4f3-5fa362e5d0bf}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{589fb078-fcf6-4096-a4f3-5fa362e5d0bf}*SharedItemsImports = 4
 		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{5a8fdb27-ffca-4a77-ab0f-afdef9a034ed}*SharedItemsImports = 13
@@ -823,6 +828,8 @@ Global
 		src\Shared\Shared.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
 		src\Subtitles.Core\Core.Subtitles.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{aff5b1a5-40db-4672-8668-8054ebd3406c}*SharedItemsImports = 4
+		src\StudioWindowResize.Core\StudioWindowResize.Core.projitems*{aff5b1a5-40db-4672-8668-8054ebd3406c}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
 		src\StudioImageEmbed.Core\Core.StudioImageEmbed.projitems*{b341b2c7-f24f-46fe-8c34-cd4ae6ce7646}*SharedItemsImports = 4
 		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{b43d16f2-1542-423f-ba3c-c6abc82c4281}*SharedItemsImports = 4
@@ -863,6 +870,7 @@ Global
 		src\ItemBlacklist.Core\ItemBlacklist.Core.projitems*{c72b38c6-9216-4dc4-bb44-6e88035a7e65}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{c72b38c6-9216-4dc4-bb44-6e88035a7e65}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{c72b38c6-9216-4dc4-bb44-6e88035a7e65}*SharedItemsImports = 4
+		src\StudioWindowResize.Core\StudioWindowResize.Core.projitems*{c8335d5a-c28f-4cb1-b6b6-86f84b939d08}*SharedItemsImports = 13
 		src\CharacterExport.Core\Core.CharacterExport.projitems*{c88fbfe5-655f-4746-987c-e2826759f883}*SharedItemsImports = 13
 		src\AccessoryQuickRemove.Core\AccessoryQuickRemove.Core.projitems*{c8bd5fe6-46c1-4d45-8edd-a222c8d043c1}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{c8bd5fe6-46c1-4d45-8edd-a222c8d043c1}*SharedItemsImports = 4
@@ -1599,6 +1607,10 @@ Global
 		{589EA7E6-340D-4273-8F58-1FD7D6A7D594}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{589EA7E6-340D-4273-8F58-1FD7D6A7D594}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{589EA7E6-340D-4273-8F58-1FD7D6A7D594}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFF5B1A5-40DB-4672-8668-8054EBD3406C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFF5B1A5-40DB-4672-8668-8054EBD3406C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFF5B1A5-40DB-4672-8668-8054EBD3406C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFF5B1A5-40DB-4672-8668-8054EBD3406C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1812,6 +1824,8 @@ Global
 		{030250AC-329E-4244-A59F-F5B242DF9AC5} = {546FB98F-02D6-4C04-AE4C-F86E9A1CA88A}
 		{125B3166-DA35-4CDA-B71A-B5C3F0645062} = {6F0DF0B5-3EC0-40D1-8874-6960D8377E6D}
 		{589EA7E6-340D-4273-8F58-1FD7D6A7D594} = {5ACE49BE-BD8A-49E9-8E54-541A154C87BE}
+		{AFF5B1A5-40DB-4672-8668-8054EBD3406C} = {5ACE49BE-BD8A-49E9-8E54-541A154C87BE}
+		{C8335D5A-C28F-4CB1-B6B6-86F84B939D08} = {5ACE49BE-BD8A-49E9-8E54-541A154C87BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
