@@ -97,7 +97,7 @@
   <ItemGroup>
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\KoikatuCompatibilityAnalyzer.1.0.1\analyzers\dotnet\cs\KoikatuCompatibilityAnalyzer.dll" />
+    <Analyzer Include="..\..\packages\KoikatuCompatibilityAnalyzer.1.1.0\analyzers\dotnet\cs\KoikatuCompatibilityAnalyzer.dll" />
     <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.11.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\StudioImageEmbed.Core\Core.StudioImageEmbed.projitems" Label="Shared" />
