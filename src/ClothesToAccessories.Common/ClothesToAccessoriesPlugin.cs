@@ -47,11 +47,9 @@ namespace KK_Plugins
 
             ApplyHooks();
 
-            MakerAPI.MakerFinishedLoading += InitializeMakerWindows;
 #if DEBUG
-            CleanupList.Add(Disposable.Create(() => MakerAPI.MakerFinishedLoading -= InitializeMakerWindows));
             if (MakerAPI.InsideAndLoaded) // handle hot reload
-                InitializeMakerWindows(null, null);
+                InitializeMakerWindows();
 #endif
         }
 
@@ -102,7 +100,7 @@ namespace KK_Plugins
 
         #region add custom accessory categories
 
-        private struct CustomWindowType
+        private readonly struct CustomWindowType
         {
             public CustomWindowType(ChaListDefine.CategoryNo catNo, CustomSelectWindow.SelectWindowType winType, string name)
             {
@@ -138,18 +136,61 @@ namespace KK_Plugins
             new CustomWindowType(ChaListDefine.CategoryNo.cpo_jacket_c, CustomSelectWindow.SelectWindowType.CosJacketC, "Clothes Jacket C"),
         };
 
+        [HarmonyPostfix]
+        //[HarmonyBefore("KK_MakerSearch", "KKS_MakerSearch", "MakerRandomPicker")]
+        [HarmonyPriority(Priority.High)]
+        [HarmonyPatch(typeof(CustomControl), nameof(CustomControl.Initialize))]
+        private static void CustomControl_Initialize_CreateUI()
+        {
+            InitializeMakerWindows();
+        }
+
         // list id equals dropdown id, stock list items are marked as ao_none
         private static List<ChaListDefine.CategoryNo> _typeIndexLookup;
 
-        private static void InitializeMakerWindows(object s, EventArgs e)
+        private static void InitializeMakerWindows()
         {
             var sw = Stopwatch.StartNew();
 
             var slot = FindObjectOfType<CustomAcsChangeSlot>();
             var donor = slot.customAcsSelectKind.First().gameObject;
 
-            var acc01 = slot.cvsAccessory.First();
+            var customWindows = new List<CustomAcsSelectKind>();
 
+            for (var index = 0; index < _AcceptableCustomTypes.Length; index++)
+            {
+                var typeToAdd = _AcceptableCustomTypes[index];
+                var copy = Instantiate(donor, donor.transform.parent, false);
+                copy.name = $"winAcsCustomKind_{typeToAdd.CatNo}";
+
+#if DEBUG // reload cleanup
+                CleanupList.Add(Disposable.Create(() => Destroy(copy)));
+#endif
+
+                var copyCmp = copy.GetComponent<CustomAcsSelectKind>();
+                copyCmp.cate = typeToAdd.CatNo;
+                //copyCmp.listCtrl.ClearList();
+                //copyCmp.Initialize();
+                copyCmp.CloseWindow();
+                copyCmp.enabled = true;
+
+                slot.customAcsSelectKind = slot.customAcsSelectKind.AddToArray(copyCmp);
+
+                customWindows.Add(copyCmp);
+
+                // This auto updates window title
+                copyCmp.selWin.swType = typeToAdd.WinType;
+            }
+
+            sw.Stop();
+            //todo
+            ThreadingHelper.Instance.StartCoroutine(new WaitUntil(() => MakerAPI.InsideAndLoaded).AppendCo(() => InitializeMakerDropdowns(slot, customWindows, sw)));
+        }
+
+        private static void InitializeMakerDropdowns(CustomAcsChangeSlot slot, List<CustomAcsSelectKind> customWindows, Stopwatch sw)
+        {
+            var sw2 = Stopwatch.StartNew();
+            var acc01 = slot.cvsAccessory.First();
 #if KK
             var origDropdownOptions = acc01.ddAcsType.options.ToList();
             var originalOptionCount = origDropdownOptions.Count;
@@ -157,7 +198,7 @@ namespace KK_Plugins
             var origDropdownOptions = acc01.GetComponentInParent<ActivateHDropDown>().targetList.Select(x => x.ConvertTMP).ToList();
             var originalOptionCount = origDropdownOptions.Count;
 #endif
-            _typeIndexLookup = Enumerable.Repeat(ChaListDefine.CategoryNo.ao_none, originalOptionCount).ToList();
+            _typeIndexLookup = Enumerable.Repeat(ChaListDefine.CategoryNo.ao_none, originalOptionCount).Concat(customWindows.Select(x => x.cate)).ToList();
 
 #if DEBUG // reload cleanup
             var orig = slot.customAcsSelectKind;
@@ -175,42 +216,6 @@ namespace KK_Plugins
                 }
             }));
 #endif
-
-            var customWindows = new List<CustomAcsSelectKind>();
-
-            for (var index = 0; index < _AcceptableCustomTypes.Length; index++)
-            {
-                var typeToAdd = _AcceptableCustomTypes[index];
-                var copy = Instantiate(donor, donor.transform.parent, false);
-                copy.name = $"winAcsCustomKind_{typeToAdd}";
-
-#if DEBUG // reload cleanup
-                CleanupList.Add(Disposable.Create(() => Destroy(copy)));
-#endif
-
-                var copyCmp = copy.GetComponent<CustomAcsSelectKind>();
-                copyCmp.cate = typeToAdd.CatNo;
-                copyCmp.listCtrl.ClearList();
-                copyCmp.Initialize();
-                copyCmp.CloseWindow();
-                copyCmp.enabled = true;
-
-                // Remove the None items. For top, also remove the sailor and jacket tops since without the sub parts they don't actually exist
-                if (typeToAdd.CatNo == ChaListDefine.CategoryNo.co_top)
-                    copyCmp.listCtrl.lstSelectInfo.RemoveAll(info => info.index == 0 || info.index == 1 || info.index == 2);
-                else if (typeToAdd.CatNo != ChaListDefine.CategoryNo.cpo_sailor_a && typeToAdd.CatNo != ChaListDefine.CategoryNo.cpo_sailor_b &&
-                         typeToAdd.CatNo != ChaListDefine.CategoryNo.cpo_jacket_a)
-                    copyCmp.listCtrl.lstSelectInfo.RemoveAll(info => info.index == 0);
-
-                slot.customAcsSelectKind = slot.customAcsSelectKind.AddToArray(copyCmp);
-
-                customWindows.Add(copyCmp);
-
-                // This auto updates window title
-                copyCmp.selWin.swType = typeToAdd.WinType;
-
-                _typeIndexLookup.Add(typeToAdd.CatNo);
-            }
 
             void AddNewAccKindsToSlot(CvsAccessory cvsAcc)
             {
@@ -254,16 +259,17 @@ namespace KK_Plugins
                 AddNewAccKindsToSlot(cvsAccessory);
             }
             AccessoriesApi.MakerAccSlotAdded += OnAccSlotAdded;
-
+            MakerAPI.MakerExiting += (_, __) => AccessoriesApi.MakerAccSlotAdded -= OnAccSlotAdded;
 #if DEBUG // reload cleanup
             CleanupList.Add(Disposable.Create(() => AccessoriesApi.MakerAccSlotAdded -= OnAccSlotAdded));
 #endif
 
             // Needed for class maker when editing a character that has 1st accessory using an acc type this plugin adds (UI is in broken state since its updated before hooks are applied)
-            if (_AcceptableCustomTypes.Any(x => x.CatNo == (ChaListDefine.CategoryNo)acc01.accessory.parts[0].type))
+            var firstAccType = (ChaListDefine.CategoryNo)acc01.accessory.parts[0].type;
+            if (firstAccType != ChaListDefine.CategoryNo.ao_none && _AcceptableCustomTypes.Any(x => x.CatNo == firstAccType))
                 acc01.UpdateCustomUI();
 
-            Logger.LogDebug($"InitializeMakerWindows finish in {sw.ElapsedMilliseconds}ms");
+            Logger.LogDebug($"Initialized in {sw.ElapsedMilliseconds + sw2.ElapsedMilliseconds}ms (step1={sw.ElapsedMilliseconds}ms step2={sw2.ElapsedMilliseconds}ms)");
         }
 
         private static void ConvertDropdownIndexToRelativeTypeIndex(ref int idx)
@@ -454,7 +460,7 @@ namespace KK_Plugins
             GameObject spawnedObject = null;
             var newActObj = new Action<GameObject>(o => spawnedObject = o);
             var result = instance.LoadCharaFbxDataAsync(actObj + newActObj, _hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, AsyncFlags, worldPositionStays);
-            return result.AppendCo(() => CovertToChaAccessoryComponent(spawnedObject, spawnedObject.GetComponent<ListInfoComponent>().data, instance, (ChaListDefine.CategoryNo)category));
+            return result.AppendCo(() => CovertToChaAccessoryComponent(spawnedObject, spawnedObject.GetComponent<ListInfoComponent>()?.data, instance, (ChaListDefine.CategoryNo)category));
         }
 #elif KKS
         private static GameObject LoadCharaFbxDataLeech(ChaControl instance, Action<ListInfoBase> actListInfo, bool _hiPoly, int category, int id,
@@ -507,8 +513,15 @@ namespace KK_Plugins
                     .AddItem(ccc.rendAccessory).Where(x => x != null).ToArray();
                 cac.rendHair = new Renderer[0];
 
-                var adapter = instance.AddComponent<ClothesToAccessoriesAdapter>();
-                adapter.Initialize(chaControl, ccc, cac, listInfoBase, category);
+                if (listInfoBase == null)
+                {
+                    Logger.LogWarning("Clothes are missing their ListInfoComponent and won't be fully usable");
+                }
+                else
+                {
+                    var adapter = instance.AddComponent<ClothesToAccessoriesAdapter>();
+                    adapter.Initialize(chaControl, ccc, cac, listInfoBase, category);
+                }
                 return;
             }
 
@@ -557,7 +570,10 @@ namespace KK_Plugins
                 return;
             }
 
-            Logger.LogWarning($"CovertToChaAccessoryComponent failed for id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category}");
+            if (listInfoBase != null)
+                Logger.LogWarning($"CovertToChaAccessoryComponent failed for id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category}");
+            else
+                Logger.LogWarning("CovertToChaAccessoryComponent failed, unknown item kind and its ListInfoComponent is missing");
         }
 
         private static bool UpdateAccessoryMoveFromInfoAndReassignBones(ChaControl instance, int slotNo)
@@ -644,7 +660,16 @@ namespace KK_Plugins
                     foreach (var rend in chaAccessory.rendNormal.Concat(chaAccessory.rendAlpha).Concat(chaAccessory.rendHair))
                     {
                         if (rend)
-                            instance.aaWeightsBody.AssignedWeightsAndSetBounds(rend.gameObject, "cf_j_root", instance.bounds, objRootBone.transform);
+                        {
+                            try
+                            {
+                                instance.aaWeightsBody.AssignedWeightsAndSetBounds(rend.gameObject, "cf_j_root", instance.bounds, objRootBone.transform);
+                            }
+                            catch (Exception e)
+                            {
+                                UnityEngine.Debug.LogException(e);
+                            }
+                        }
                     }
 
                     FixConflictingBoneNames(accObj);
