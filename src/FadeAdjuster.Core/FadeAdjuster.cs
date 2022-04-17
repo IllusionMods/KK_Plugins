@@ -20,10 +20,6 @@ namespace KK_Plugins
 
         internal static new ManualLogSource Logger;
 
-#if KK
-        private static bool UpdateColor;
-#endif
-
         public static ConfigEntry<bool> DisableFade { get; private set; }
         public static ConfigEntry<Color> FadeColor { get; private set; }
 
@@ -32,9 +28,6 @@ namespace KK_Plugins
             Logger = base.Logger;
             DisableFade = Config.Bind("Config", "Disable Fade", false, "Disables fade on loading screens");
             FadeColor = Config.Bind("Config", "Fade Color", Color.white, "Color of loading screens");
-#if KK
-            FadeColor.SettingChanged += (a, b) => UpdateColor = true;
-#endif
 
             Harmony.CreateAndPatchAll(typeof(Hooks));
         }
@@ -52,27 +45,28 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(SimpleFade), nameof(SimpleFade.Update))]
             private static void SimpleFadeUpdate(SimpleFade __instance)
             {
-                if (UpdateColor)
+                if (FadeColor.Value != Color.white)
                     __instance._Color = FadeColor.Value;
                 if (DisableFade.Value)
                     __instance.ForceEnd();
             }
-#endif
-
-#if KKS
+#elif KKS
             [HarmonyPostfix, HarmonyPatch(typeof(SceneFadeCanvas), nameof(SceneFadeCanvas.Awake))]
             private static void SceneFadeCanvasAwake(SceneFadeCanvas __instance)
             {
-                __instance.SetColor(FadeColor.Value);
+                if (FadeColor.Value != Color.white)
+                    __instance.SetColor(FadeColor.Value);
             }
             [HarmonyPrefix, HarmonyPatch(typeof(SceneFadeCanvas), nameof(SceneFadeCanvas.SetColor))]
             private static void SceneFadeCanvasSetColor(ref Color _color)
             {
-                _color = FadeColor.Value;
+                if (FadeColor.Value != Color.white)
+                    _color = FadeColor.Value;
             }
             [HarmonyPrefix, HarmonyPatch(typeof(FadeCanvas), nameof(FadeCanvas.StartAysnc))]
             private static void SceneFadeCanvasSetColor(ref float duration)
             {
+                // Fix lockup in H scenes
                 Scene scene = SceneManager.GetActiveScene();
                 if (scene.buildIndex == -1)
                     return;
