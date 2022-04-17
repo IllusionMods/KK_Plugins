@@ -656,6 +656,20 @@ Allows you to freely mix two studio shades (luts), instead of one always being s
 
 Removes mosaics from the character models. **This is replaced by UncensorSelector and not needed** unless there is no UncensorSelector port available for a game.
 
+#### StudioWindowResize
+
+- [KK_StudioWindowResize]
+- [KKS_StudioWindowResize]
+
+Makes studio selection windows (e.g. item and animation lists) larger so more items are visible. The size is configurable in plugin settings.
+
+#### ClothesToAccessories
+
+- [KK_ClothesToAccessories]
+- [KKS_ClothesToAccessories]
+
+Allows using normal clothes and hair as accessories. New accessory types are added to the Type dropdown list. Body masks from normal top clothes will be used if available, otherwise masks from top clothes added as accessories will be used.
+
 #### ShaderSwapper
 
 - [KK_ShaderSwapper]
@@ -827,3 +841,7 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KKS_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_RandomCharacterGenerator.v2.0.zip "v2.0"
 [KK_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v222/KK_ShaderSwapper.v1.0.zip "v1.0"
 [KKS_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v222/KKS_ShaderSwapper.v1.0.zip "v1.0"
+[KK_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226/KK_StudioWindowResize.v1.0.zip "v1.0"
+[KKS_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226/KKS_StudioWindowResize.v1.0.zip "v1.0"
+[KK_ClothesToAccessories]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226/KK_ClothesToAccessories.v1.0.zip "v1.0"
+[KKS_ClothesToAccessories]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226/KKS_ClothesToAccessories.v1.0.zip "v1.0"
