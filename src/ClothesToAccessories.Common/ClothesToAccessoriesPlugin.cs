@@ -139,6 +139,7 @@ namespace KK_Plugins
         [HarmonyPostfix]
         //[HarmonyBefore("KK_MakerSearch", "KKS_MakerSearch", "MakerRandomPicker")]
         [HarmonyPriority(Priority.High)]
+        [HarmonyWrapSafe]
         [HarmonyPatch(typeof(CustomControl), nameof(CustomControl.Initialize))]
         private static void CustomControl_Initialize_CreateUI()
         {
