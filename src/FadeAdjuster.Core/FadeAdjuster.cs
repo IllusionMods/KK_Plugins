@@ -16,7 +16,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.fadeadjuster";
         public const string PluginName = "Fade Adjuster";
         public const string PluginNameInternal = "KK_FadeAdjuster";
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
 
         internal static new ManualLogSource Logger;
 
