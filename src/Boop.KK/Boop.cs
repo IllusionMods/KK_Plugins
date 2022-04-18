@@ -7,109 +7,98 @@ using KKAPI.Chara;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Boop
+namespace KK_Plugins
 {
-    [BepInPlugin("Boop", "Boop", "1.0")]
+    [BepInPlugin(GUID, PluginName, Version)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class Boop : BaseUnityPlugin
     {
-        static Boop()
-        {
-        }
+        public const string GUID = "Boop";
+        public const string PluginName = "Boop";
+        internal const string PluginNameInternal = "Boop";
+        public const string Version = "1.0.1";
 
-        public Boop()
-        {
-        }
+        private static float _damping = 0.5f;
+        private static int _distance = 100;
+        private static float _scaling = 0.0002f;
 
-        private void ApplyForce(DynamicBone_Ver02 dbc, Vector3 f)
-        {
-            dbc.Force += -f * 0.0002f;
-        }
+        private static readonly List<ChaInfo> _ChaInfos = new List<ChaInfo>();
+        private static IEnumerable<DynamicBone_Ver02> _dbv2S;
+
+        private Camera _main;
+        private Vector3 _mousePosPrev = Vector3.zero;
+        private readonly CircularBuffer _mouseVelocity = new CircularBuffer(5);
 
         private void Awake()
         {
-            CharacterApi.RegisterExtraBehaviour<BoopController>("Boop");
-            SceneManager.sceneLoaded += this.SceneManager_sceneLoaded;
+            CharacterApi.RegisterExtraBehaviour<BoopController>(GUID);
+            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+        }
+
+        private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode lsm)
+        {
+            try
+            {
+                RefreshDynamicBones();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
         }
 
         public static void RefreshDynamicBones()
         {
-            for (int i = Boop.chaInfos.Count - 1; i >= 0; i--)
+            for (var i = _ChaInfos.Count - 1; i >= 0; i--)
             {
-                if (Boop.chaInfos[i] == null)
-                {
-                    Boop.chaInfos.RemoveAt(i);
-                }
+                if (_ChaInfos[i] == null)
+                    _ChaInfos.RemoveAt(i);
             }
-            Boop.dbv2s = Boop.chaInfos.SelectMany((ChaInfo x) => x.GetComponentsInChildren<DynamicBone_Ver02>());
-            foreach (DynamicBone_Ver02 dynamicBone_Ver in Boop.dbv2s)
-            {
-                dynamicBone_Ver.Force = Vector3.zero;
-            }
+
+            _dbv2S = _ChaInfos.SelectMany(x => x.GetComponentsInChildren<DynamicBone_Ver02>());
+            foreach (var db in _dbv2S) db.Force = Vector3.zero;
         }
 
         public static void RegisterChar(ChaInfo ci)
         {
-            Boop.chaInfos.Add(ci);
-            Boop.RefreshDynamicBones();
-        }
-
-        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode lsm)
-        {
-            Boop.RefreshDynamicBones();
+            _ChaInfos.Add(ci);
+            RefreshDynamicBones();
         }
 
         public static void UnregisterChar(ChaInfo ci)
         {
-            if (Boop.chaInfos.Remove(ci))
-            {
-                Boop.RefreshDynamicBones();
-            }
+            if (_ChaInfos.Remove(ci)) RefreshDynamicBones();
+        }
+
+        private static void ApplyForce(DynamicBone_Ver02 dbc, Vector3 f)
+        {
+            dbc.Force += -f * _scaling;
         }
 
         private void Update()
         {
-            if (this.main == null)
+            if (_main == null) _main = Camera.main;
+            if (_main == null) return;
+
+            var mousePosition = Input.mousePosition;
+            var obj = _mousePosPrev - mousePosition;
+            _mouseVelocity.Add(obj);
+
+            if (_dbv2S != null)
             {
-                this.main = Camera.main;
-            }
-            if (!(this.main == null))
-            {
-                Vector3 mousePosition = Input.mousePosition;
-                Vector3 obj = this.mousePos_Prev - mousePosition;
-                this.mouseVelocity.Add(obj);
-                this.mousePos_Prev = mousePosition;
-                Vector3 point = this.mouseVelocity.Average();
-                Vector3 f = this.main.transform.rotation * point;
-                if (Boop.dbv2s != null)
+                _mousePosPrev = mousePosition;
+                var point = _mouseVelocity.Average();
+                var f = _main.transform.rotation * point;
+
+                foreach (var db in _dbv2S)
                 {
-                    foreach (DynamicBone_Ver02 dynamicBone_Ver in Boop.dbv2s)
-                    {
-                        float num = Vector3.Distance(this.main.transform.position, dynamicBone_Ver.Bones.Last<Transform>().transform.position);
-                        if (Vector3.Distance(this.main.WorldToScreenPoint(dynamicBone_Ver.Bones.Last<Transform>().transform.position), mousePosition) < 100f / num)
-                        {
-                            this.ApplyForce(dynamicBone_Ver, f);
-                        }
-                        dynamicBone_Ver.Force *= 0.5f;
-                    }
+                    var boneDist = Vector3.Distance(_main.transform.position, db.Bones.Last().transform.position);
+                    if (Vector3.Distance(_main.WorldToScreenPoint(db.Bones.Last().transform.position), mousePosition) < _distance / boneDist)
+                        ApplyForce(db, f);
+
+                    db.Force *= _damping;
                 }
             }
         }
-
-        private static List<ChaInfo> chaInfos = new List<ChaInfo>();
-
-        private const float damping = 0.5f;
-
-        private static IEnumerable<DynamicBone_Ver02> dbv2s;
-
-        private const int distance = 100;
-
-        private Camera main;
-
-        private Vector3 mousePos_Prev = Vector3.zero;
-
-        private CircularBuffer mouseVelocity = new CircularBuffer(5);
-
-        private const float scaling = 0.0002f;
     }
 }

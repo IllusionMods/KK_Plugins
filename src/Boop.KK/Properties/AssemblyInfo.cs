@@ -1,6 +1,9 @@
-﻿using System;
-using System.Diagnostics;
+﻿using KK_Plugins;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using static KK_Plugins.Boop;
 
-[assembly: AssemblyVersion("0.0.0.0")]
+[assembly: AssemblyTitle(PluginNameInternal)]
+[assembly: AssemblyProduct(PluginNameInternal)]
+[assembly: AssemblyDescription(PluginName + " for " + Constants.GameName)]
+[assembly: AssemblyVersion(Version)]
+[assembly: AssemblyFileVersion(Version)]

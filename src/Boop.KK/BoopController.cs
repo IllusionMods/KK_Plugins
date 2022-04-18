@@ -1,27 +1,20 @@
-﻿using System;
-using KKAPI;
+﻿using KKAPI;
 using KKAPI.Chara;
 
-namespace Boop
+namespace KK_Plugins
 {
     public class BoopController : CharaCustomFunctionController
     {
-        public BoopController()
-        {
-        }
-
-        protected override void OnCardBeingSaved(GameMode currentGameMode)
-        {
-        }
+        protected override void OnCardBeingSaved(GameMode currentGameMode) { }
 
         private new void OnDestroy()
         {
-            Boop.UnregisterChar(base.ChaControl);
+            Boop.UnregisterChar(ChaControl);
         }
 
         private new void Start()
         {
-            Boop.RegisterChar(base.ChaControl);
+            Boop.RegisterChar(ChaControl);
         }
     }
 }
