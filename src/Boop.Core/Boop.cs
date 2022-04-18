@@ -4,6 +4,7 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Studio;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -63,7 +64,9 @@ namespace KK_Plugins
         [HarmonyPatch(typeof(DynamicBone_Ver02), nameof(DynamicBone_Ver02.SetupParticles))]
         private static void OnDynamicBoneInit(MonoBehaviour __instance)
         {
-            _DBs.Add(DbAdapter.Create(__instance));
+            // Prevent having multiple copies, maybe use a dictionary and check for key?
+            if (_DBs.All(x => x.BoneMb != __instance))
+                _DBs.Add(DbAdapter.Create(__instance));
         }
 
         private void Update()
