@@ -24,7 +24,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.eyeshaking";
         public const string PluginName = "Eye Shaking";
         public const string PluginNameInternal = Constants.Prefix + "_EyeShaking";
-        public const string Version = "1.3";
+        public const string Version = "1.3.1";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<bool> Enabled { get; private set; }

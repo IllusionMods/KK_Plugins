@@ -98,10 +98,10 @@ namespace KK_Plugins
                     switch (i)
                     {
                         case 1:
-                            vector3 = new Vector2(vector3.x, vector3.y + __instance.hlUpOffsetY);
+                            vector3 = new Vector2(vector3.x + __instance.hlUpOffsetX, vector3.y + __instance.hlUpOffsetY);
                             break;
                         case 2:
-                            vector3 = new Vector2(vector3.x, vector3.y + __instance.hlDownOffsetY);
+                            vector3 = new Vector2(vector3.x + __instance.hlDownOffsetX, vector3.y + __instance.hlDownOffsetY);
                             break;
                     }
                     Vector2 value = vector3;
@@ -110,8 +110,8 @@ namespace KK_Plugins
                         value += a * -0.5f;
                         if (flag)
                         {
-                            __instance.YureAddScale.x = UnityEngine.Random.Range(1f, 2f);
-                            __instance.YureAddScale.y = UnityEngine.Random.Range(1f, 1.5f);
+                            __instance.YureAddScale.x = Random.Range(1f, 2f);
+                            __instance.YureAddScale.y = Random.Range(1f, 1.5f);
                         }
                         value += __instance.YureAddVec;
                         __instance.YureTimer += Time.deltaTime;
