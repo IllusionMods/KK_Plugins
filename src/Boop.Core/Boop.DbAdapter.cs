@@ -34,7 +34,7 @@ namespace KK_Plugins
 
             public void ApplyForce(Vector3 f)
             {
-                SetForce((GetForce() + -f * _scaling.Value) * _damping.Value);
+                SetForce((GetForce() + -f * ConfigScaling.Value) * ConfigDamping.Value);
             }
 
             private DbAdapter(MonoBehaviour boneMb, Func<Transform> getTransform, Func<Vector3> getForce, Action<Vector3> setForce)

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using KKAPI;
 using KKAPI.Studio;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -17,9 +17,11 @@ namespace KK_Plugins
         internal const string PluginNameInternal = "Boop";
         public const string Version = "2.0";
 
-        private static ConfigEntry<float> _damping;
-        private static ConfigEntry<int> _distance;
-        private static ConfigEntry<float> _scaling;
+        private static ConfigEntry<float> ConfigDamping;
+        private static ConfigEntry<int> ConfigDistance;
+        private static ConfigEntry<float> ConfigScaling;
+        private static ConfigEntry<bool> ConfigEnabledStudio;
+        private static ConfigEntry<bool> ConfigEnabledMainGame;
 
         private Camera _mainCam;
         private Vector3 _mousePosPrev = Vector3.zero;
@@ -28,11 +30,18 @@ namespace KK_Plugins
 
         private void Awake()
         {
-            _distance = Config.Bind("Mouse booping", "Distance", 100);
-            _damping = Config.Bind("Mouse booping", "Damping", 0.5f);
-            _scaling = Config.Bind("Mouse booping", "Scaling", 0.0002f);
+            ConfigDistance = Config.Bind("Mouse booping", "Distance", 100);
+            ConfigDamping = Config.Bind("Mouse booping", "Damping", 0.5f);
+            ConfigScaling = Config.Bind("Mouse booping", "Scaling", 0.0002f);
+            ConfigEnabledStudio = Config.Bind("General", "Run in Studio", true);
+            ConfigEnabledMainGame = Config.Bind("General", "Run in Main Game", true);
 
-            if (!Config.Bind("General", "Run in Studio", true).Value && StudioAPI.InsideStudio)
+            if (!ConfigEnabledStudio.Value && StudioAPI.InsideStudio)
+            {
+                enabled = false;
+                return;
+            }
+            if (!ConfigEnabledMainGame.Value && !StudioAPI.InsideStudio)
             {
                 enabled = false;
                 return;
@@ -82,7 +91,7 @@ namespace KK_Plugins
 
                 var bonePos = db.GetTransform().position;
                 var boneDist = Vector3.Distance(_mainCam.transform.position, bonePos);
-                if (Vector3.Distance(_mainCam.WorldToScreenPoint(bonePos), mousePosition) < _distance.Value / boneDist)
+                if (Vector3.Distance(_mainCam.WorldToScreenPoint(bonePos), mousePosition) < ConfigDistance.Value / boneDist)
                     db.ApplyForce(f);
                 else
                     db.ResetForce();
