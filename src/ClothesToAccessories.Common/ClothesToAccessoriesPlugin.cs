@@ -26,7 +26,7 @@ namespace KK_Plugins
         public const string GUID = "ClothesToAccessories";
         public const string PluginName = "Clothes To Accessories";
         public const string PluginNameInternal = "KKS_ClothesToAccessories";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
 
         internal static new ManualLogSource Logger;
 
@@ -451,7 +451,7 @@ namespace KK_Plugins
             string createName, bool copyDynamicBone, byte copyWeights, Transform trfParent, int defaultId, bool worldPositionStays)
         {
             var spawnedObject = instance.LoadCharaFbxData(_hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, worldPositionStays);
-            CovertToChaAccessoryComponent(spawnedObject, spawnedObject.GetComponent<ListInfoComponent>().data, instance, (ChaListDefine.CategoryNo)category);
+            ConvertToChaAccessoryComponent(spawnedObject, spawnedObject.GetComponent<ListInfoComponent>().data, instance, (ChaListDefine.CategoryNo)category);
             return spawnedObject;
         }
 
@@ -461,7 +461,7 @@ namespace KK_Plugins
             GameObject spawnedObject = null;
             var newActObj = new Action<GameObject>(o => spawnedObject = o);
             var result = instance.LoadCharaFbxDataAsync(actObj + newActObj, _hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, AsyncFlags, worldPositionStays);
-            return result.AppendCo(() => CovertToChaAccessoryComponent(spawnedObject, spawnedObject.GetComponent<ListInfoComponent>()?.data, instance, (ChaListDefine.CategoryNo)category));
+            return result.AppendCo(() => ConvertToChaAccessoryComponent(spawnedObject, spawnedObject.GetComponent<ListInfoComponent>()?.data, instance, (ChaListDefine.CategoryNo)category));
         }
 #elif KKS
         private static GameObject LoadCharaFbxDataLeech(ChaControl instance, Action<ListInfoBase> actListInfo, bool _hiPoly, int category, int id,
@@ -470,7 +470,7 @@ namespace KK_Plugins
             ListInfoBase spawnedLib = null;
             var newActList = new Action<ListInfoBase>(lib => spawnedLib = lib);
             var spawnedObject = instance.LoadCharaFbxData(actListInfo + newActList, _hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, worldPositionStays);
-            CovertToChaAccessoryComponent(spawnedObject, spawnedLib, instance, (ChaListDefine.CategoryNo)category);
+            ConvertToChaAccessoryComponent(spawnedObject, spawnedLib, instance, (ChaListDefine.CategoryNo)category);
             return spawnedObject;
         }
 
@@ -482,18 +482,24 @@ namespace KK_Plugins
             ListInfoBase spawnedLib = null;
             var newActList = new Action<ListInfoBase>(lib => spawnedLib = lib);
             var result = instance.LoadCharaFbxDataAsync(actObj + newActObj, actListInfo + newActList, _hiPoly, category, id, createName, copyDynamicBone, copyWeights, trfParent, defaultId, AsyncFlags, worldPositionStays);
-            return result.AppendCo(() => CovertToChaAccessoryComponent(spawnedObject, spawnedLib, instance, (ChaListDefine.CategoryNo)category));
+            return result.AppendCo(() => ConvertToChaAccessoryComponent(spawnedObject, spawnedLib, instance, (ChaListDefine.CategoryNo)category));
         }
 #endif
 
-        private static void CovertToChaAccessoryComponent(GameObject instance, ListInfoBase listInfoBase, ChaControl chaControl, ChaListDefine.CategoryNo category)
+        private static readonly HashSet<GameObject> _ConvertedAccessoryObjects = new HashSet<GameObject>();
+        private static void ConvertToChaAccessoryComponent(GameObject instance, ListInfoBase listInfoBase, ChaControl chaControl, ChaListDefine.CategoryNo category)
         {
+            if (category >= ChaListDefine.CategoryNo.ao_none && category <= ChaListDefine.CategoryNo.ao_kokan) return;
+
             var cac = instance.GetComponent<ChaAccessoryComponent>();
             if (cac != null) return;
 
             var ccc = instance.GetComponent<ChaClothesComponent>();
             if (ccc != null)
             {
+#if DEBUG
+                Logger.LogInfo($"Converting ChaClothesComponent to acessory id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category}");
+#endif
                 cac = instance.AddComponent<ChaAccessoryComponent>();
                 cac.defColor01 = ccc.defMainColor01;
                 cac.defColor02 = ccc.defMainColor02;
@@ -523,12 +529,18 @@ namespace KK_Plugins
                     var adapter = instance.AddComponent<ClothesToAccessoriesAdapter>();
                     adapter.Initialize(chaControl, ccc, cac, listInfoBase, category);
                 }
+
+                _ConvertedAccessoryObjects.RemoveWhere(o => o == null);
+                _ConvertedAccessoryObjects.Add(instance);
                 return;
             }
 
             var chc = instance.GetComponent<ChaCustomHairComponent>();
             if (chc != null)
             {
+#if DEBUG
+                Logger.LogInfo($"Converting ChaCustomHairComponent to acessory id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category}");
+#endif
                 cac = instance.AddComponent<ChaAccessoryComponent>();
 
                 cac.initialize = chc.initialize;
@@ -568,13 +580,15 @@ namespace KK_Plugins
                 if (positions.Length >= 2) positions[1].name = "N_move2";
                 if (positions.Length >= 3) Logger.LogWarning($"More than 2 move transforms found! id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category} transforms={string.Join(", ", positions.Select(x => x.name).ToArray())}");
 
+                _ConvertedAccessoryObjects.RemoveWhere(o => o == null);
+                _ConvertedAccessoryObjects.Add(instance);
                 return;
             }
 
             if (listInfoBase != null)
-                Logger.LogWarning($"CovertToChaAccessoryComponent failed for id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category}");
+                Logger.LogWarning($"ConvertToChaAccessoryComponent failed for id={listInfoBase.Id} kind={listInfoBase.Kind} category={listInfoBase.Category}");
             else
-                Logger.LogWarning("CovertToChaAccessoryComponent failed, unknown item kind and its ListInfoComponent is missing");
+                Logger.LogWarning("ConvertToChaAccessoryComponent failed, unknown item kind and its ListInfoComponent is missing");
         }
 
         private static bool UpdateAccessoryMoveFromInfoAndReassignBones(ChaControl instance, int slotNo)
@@ -584,6 +598,7 @@ namespace KK_Plugins
             try
             {
                 var accObj = instance.objAccessory[slotNo];
+                if (!_ConvertedAccessoryObjects.Contains(accObj)) return result;
 
                 if (accObj.GetComponent<ChaClothesComponent>())
                 {
