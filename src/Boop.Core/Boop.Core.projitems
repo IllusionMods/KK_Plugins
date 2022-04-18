@@ -11,7 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Boop.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BoopController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Boop.DbAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircularBuffer.cs" />
   </ItemGroup>
 </Project>
