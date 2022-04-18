@@ -47,15 +47,15 @@ namespace KK_Plugins
 
             public static DbAdapter Create(DynamicBone bone)
             {
-                return new DbAdapter(bone, () => bone.m_Particles.Last(t => t?.m_Transform != null).m_Transform, () => bone.m_Force, f => bone.m_Force = f);
+                return new DbAdapter(bone, () => bone.m_Particles.LastOrDefault(t => t?.m_Transform != null)?.m_Transform, () => bone.m_Force, f => bone.m_Force = f);
             }
             public static DbAdapter Create(DynamicBone_Ver01 bone)
             {
-                return new DbAdapter(bone, () => bone.m_Particles.Last(t => t?.m_Transform != null).m_Transform, () => bone.m_Force, f => bone.m_Force = f);
+                return new DbAdapter(bone, () => bone.m_Particles.LastOrDefault(t => t?.m_Transform != null)?.m_Transform, () => bone.m_Force, f => bone.m_Force = f);
             }
             public static DbAdapter Create(DynamicBone_Ver02 bone)
             {
-                return new DbAdapter(bone, () => bone.Bones.Last(t => t != null), () => bone.Force, f => bone.Force = f);
+                return new DbAdapter(bone, () => bone.Bones.LastOrDefault(t => t != null), () => bone.Force, f => bone.Force = f);
             }
 
             public static DbAdapter Create(MonoBehaviour bone)

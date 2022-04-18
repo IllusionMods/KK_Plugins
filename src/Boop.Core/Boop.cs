@@ -92,7 +92,9 @@ namespace KK_Plugins
                     continue;
                 }
 
-                var bonePos = db.GetTransform().position;
+                var dbtr = db.GetTransform();
+                if (dbtr == null) continue;
+                var bonePos = dbtr.position;
                 var boneDist = Vector3.Distance(_mainCam.transform.position, bonePos);
                 if (Vector3.Distance(_mainCam.WorldToScreenPoint(bonePos), mousePosition) < ConfigDistance.Value / boneDist)
                     db.ApplyForce(f);
