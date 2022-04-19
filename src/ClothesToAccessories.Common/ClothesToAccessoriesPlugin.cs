@@ -21,12 +21,14 @@ namespace KK_Plugins
 {
     [BepInPlugin(GUID, PluginName, Version)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    // CTA relies on a fix in sideloader to work correctly, so might as well depend on it
+    [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     public partial class ClothesToAccessoriesPlugin : BaseUnityPlugin
     {
         public const string GUID = "ClothesToAccessories";
         public const string PluginName = "Clothes To Accessories";
         public const string PluginNameInternal = "KKS_ClothesToAccessories";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
 
         internal static new ManualLogSource Logger;
 
