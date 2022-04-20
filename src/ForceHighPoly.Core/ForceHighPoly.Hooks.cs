@@ -147,12 +147,12 @@ namespace KK_Plugins
 #if KK
                 foreach (var item in Manager.Character.Instance.dictEntryChara)
                 {
-                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {Manager.Game.Instance.actScene.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {ForcedControls.Any(x => x == item.Value)} count {ForcedControls.Count}\n\thiPoly: {item.Value.hiPoly}");
+                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {Manager.Game.Instance.actScene.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {ForcedControls.Contains(item.Value)} count {ForcedControls.Count}\n\thiPoly: {item.Value.hiPoly}");
                 }
 #elif KKS
                 foreach (var item in Manager.Character.dictEntryChara)
                 {
-                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {ActionScene.instance.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {ForcedControls.Any(x => x == item.Value)} count {ForcedControls.Count}\n\thiPoly: {item.Value.hiPoly}");
+                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {ActionScene.instance.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {ForcedControls.Contains(item.Value)} count {ForcedControls.Count}\n\thiPoly: {item.Value.hiPoly}");
                 }
 #endif
 #endif
@@ -161,7 +161,7 @@ namespace KK_Plugins
 #elif KKS
                 var getNPC = ActionScene.instance.npcList.FirstOrDefault(x => x.heroine.chaCtrl == cha);
 #endif
-                if (getNPC != null && ForcedControls.Any(x => x == cha))
+                if (getNPC != null && ForcedControls.Contains(cha))
                 {
                     getNPC.heroine.chaCtrl = null;
                     cha.StartCoroutine(ReassignHeroine(cha, getNPC.heroine));
