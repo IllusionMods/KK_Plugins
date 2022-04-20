@@ -14,11 +14,17 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.forcehighpoly";
         public const string PluginName = "Force High Poly";
         public const string PluginNameInternal = Constants.Prefix + "_ForceHighPoly";
-        public const string Version = "2.0";
+        public const string Version = "2.1";
         public static ConfigEntry<bool> Enabled { get; private set; }
         public static ConfigEntry<PolyMode> PolySetting { get; private set; }
+#if DEBUG
+        internal static BepInEx.Logging.ManualLogSource logSource;
+#endif
         internal void Main()
         {
+#if DEBUG
+            logSource = Logger;
+#endif
             var hasEnoughRam = KKAPI.Utilities.MemoryInfo.GetCurrentStatus().ullTotalPhys > 16L * 1000L * 1000L * 1000L; // At least 16GB
             PolySetting = Config.Bind("Config", "Force High Poly Models", hasEnoughRam ? PolyMode.Full : PolyMode.Partial, "Whether or not to load high poly models in the main game roaming mode (has no effect outside of that). Improves quality of characters and fixes some modded items not appearing.\nMay require exiting to main menu to take effect.\nNone: Original behavior - Some characters may throw errors and walk around with glitched clothing.\nPartial: Use high poly models only if necessary. Higher resource usage and longer load times when using some modded clothes.\nFull: Always use high poly models. Best quality but very high resource usage. At least 8GB of RAM is recommended with ~10 characters. Load times can be 3x longer.");
             PolySetting.SettingChanged += PolySetting_SettingChanged;
