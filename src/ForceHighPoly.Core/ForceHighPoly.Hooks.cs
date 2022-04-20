@@ -10,6 +10,11 @@ namespace KK_Plugins
         internal static class Hooks
         {
             /// <summary>
+            /// List of controls that were affected by force high poly to stop weird stuff later
+            /// </summary>
+            public static readonly HashSet<ChaControl> ForcedControls = new HashSet<ChaControl>();
+
+            /// <summary>
             /// Test all coordiantes parts to check if a low poly doesn't exist.
             /// if low poly doesnt exist for an item set HiPoly to true and exit;
             /// </summary>
@@ -17,7 +22,11 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Initialize))]
             internal static void CheckHiPoly(ChaControl __instance)
             {
-                if (PolySetting.Value == PolyMode.Full) __instance.hiPoly = true;
+                if (PolySetting.Value == PolyMode.Full && !__instance.hiPoly)
+                {
+                    __instance.hiPoly = true;
+                    ForcedControls.Add(__instance);
+                }
 
                 if (__instance.hiPoly || PolySetting.Value != PolyMode.Partial) return;
 
@@ -79,6 +88,7 @@ namespace KK_Plugins
                         if (!CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, highAssetName + "_low", false, manifestName) && CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, highAssetName, false, manifestName))
                         {
                             __instance.hiPoly = true;
+                            ForcedControls.Add(__instance);
                             return;
                         }
                     }
@@ -96,32 +106,32 @@ namespace KK_Plugins
                 __result = __result || Enabled.Value;
             }
 
-            #region Stop Game from deleting these ChaControls
-            static ActionGame.Chara.Base[] DontDelete = new ActionGame.Chara.Base[0];
 
-            /// <summary>
-            /// Prefix the following methods to take the Base[] targets parameter.
-            /// parameters 
-            /// </summary>
-            /// <param name="targets"></param>
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.ChangeH))]
-            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.ChangeHEventWithActionPoint))]
-#if KK
-            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.ChangeHSpecial), new[] { typeof(List<int>), typeof(bool), typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(System.Action<ActionGame.H.OpenHData.Data>), typeof(ActionGame.Chara.Base[]) })]
-#elif KKS
-            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.ChangeHSpecial), new[] { typeof(List<int>), typeof(bool), typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(System.Action<ActionGame.H.OpenHData.Data>), typeof(System.Threading.CancellationToken), typeof(ActionGame.Chara.Base[]) })]
-            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.ChangeEsthetic))]
-#endif
-            public static void GetTargets(ActionGame.Chara.Base[] targets)
+            #region stop hand twitching
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LateUpdateForce)), HarmonyPriority(Priority.Last)]
+            private static void LateUpdateForcePrefix(ChaControl __instance, out bool __state)
             {
-                DontDelete = targets;
+                __state = __instance.hiPoly;
+                if (ForcedControls.Contains(__instance))
+                    __instance.hiPoly = false;
             }
 
+            [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LateUpdateForce)), HarmonyPriority(Priority.First)]
+            private static void LateUpdateForcePostfix(ChaControl __instance, bool __state)
+            {
+                __instance.hiPoly = __state;
+            }
+            #endregion
+
+            #region Stop Game from deleting these ChaControls
+            /// <summary>
+            /// Clearlist since characters should be reloading
+            /// </summary>
+            /// <param name="targets"></param>
             [HarmonyPostfix, HarmonyPatch(typeof(Manager.Character), nameof(Manager.Character.DeleteCharaAll))]
             private static void DeleteCharaAllPostfix()
             {
-                DontDelete = new ActionGame.Chara.Base[0];
+                ForcedControls.Clear();
             }
             #endregion
 
@@ -137,12 +147,12 @@ namespace KK_Plugins
 #if KK
                 foreach (var item in Manager.Character.Instance.dictEntryChara)
                 {
-                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {Manager.Game.Instance.actScene.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {DontDelete.Any(x => x.chaCtrl == item.Value)} count {DontDelete.Length}\n\thiPoly: {item.Value.hiPoly}");
+                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {Manager.Game.Instance.actScene.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {ForcedControls.Any(x => x == item.Value)} count {ForcedControls.Count}\n\thiPoly: {item.Value.hiPoly}");
                 }
 #elif KKS
                 foreach (var item in Manager.Character.dictEntryChara)
                 {
-                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {ActionScene.instance.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {DontDelete.Any(x => x.chaCtrl == item.Value)} count {DontDelete.Length}\n\thiPoly: {item.Value.hiPoly}");
+                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {ActionScene.instance.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {ForcedControls.Any(x => x == item.Value)} count {ForcedControls.Count}\n\thiPoly: {item.Value.hiPoly}");
                 }
 #endif
 #endif
@@ -151,7 +161,7 @@ namespace KK_Plugins
 #elif KKS
                 var getNPC = ActionScene.instance.npcList.FirstOrDefault(x => x.heroine.chaCtrl == cha);
 #endif
-                if (getNPC != null && DontDelete.Any(x => x.chaCtrl == cha))
+                if (getNPC != null && ForcedControls.Any(x => x == cha))
                 {
                     getNPC.heroine.chaCtrl = null;
                     cha.StartCoroutine(ReassignHeroine(cha, getNPC.heroine));
