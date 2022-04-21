@@ -11,8 +11,10 @@ namespace KK_Plugins
         {
             /// <summary>
             /// List of controls that were affected by force high poly to stop weird stuff later
+            /// Should be list of controls in overworld
+            /// Have hiPoly set to True
             /// </summary>
-            public static readonly HashSet<ChaControl> ForcedControls = new HashSet<ChaControl>();
+            private static readonly HashSet<ChaControl> ForcedControls = new HashSet<ChaControl>();
 
             /// <summary>
             /// Test all coordiantes parts to check if a low poly doesn't exist.
@@ -22,7 +24,7 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Initialize))]
             internal static void CheckHiPoly(ChaControl __instance)
             {
-                if (PolySetting.Value == PolyMode.Full && !__instance.hiPoly)
+                if (!__instance.hiPoly && PolySetting.Value == PolyMode.Full)
                 {
                     __instance.hiPoly = true;
                     ForcedControls.Add(__instance);
@@ -38,7 +40,7 @@ namespace KK_Plugins
                     var clothParts = coordinate[i].clothes.parts;
                     for (var j = 0; j < clothParts.Length; j++)
                     {
-                        if (clothParts[j].id < 10000000) continue;
+                        if (clothParts[j].id < 100000000) continue; //if ID is not considered unmodded (using  Sideloader.UAR.BaseSlotID minimum) skip.
                         var category = 105;
                         switch (j)
                         {
@@ -95,18 +97,6 @@ namespace KK_Plugins
                 }
             }
 
-            /// <summary>
-            /// Might not be neccessary because of the first line of the above method, put probably also cheaper than the previous method
-            /// Equivilant to last method results of patching AssetBundleManager and trimming _low
-            /// </summary>
-            /// <param name="__result"></param>
-            [HarmonyPostfix, HarmonyPatch(typeof(ChaInfo), nameof(ChaInfo.hiPoly), MethodType.Getter)]
-            private static void HiPolyPostfix(ref bool __result)
-            {
-                __result = __result || Enabled.Value;
-            }
-
-
             #region stop hand twitching
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LateUpdateForce)), HarmonyPriority(Priority.Last)]
             private static void LateUpdateForcePrefix(ChaControl __instance, out bool __state)
@@ -123,7 +113,6 @@ namespace KK_Plugins
             }
             #endregion
 
-            #region Stop Game from deleting these ChaControls
             /// <summary>
             /// Clearlist since characters should be reloading
             /// </summary>
@@ -133,32 +122,28 @@ namespace KK_Plugins
             {
                 ForcedControls.Clear();
             }
-            #endregion
 
+            [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.OnDestroy))]
+            private static void OnDestroyPrefix(ChaControl __instance)
+            {
+                ForcedControls.Remove(__instance);
+            }
+
+            #region Stop Game from deleting these ChaControls
             /// <summary>
-            /// Stops the game from deleting all HiPoly Models by comparing it with an array of targets from Overworld
+            /// Stops the game from deleting all HiPoly Models by comparing the hashset of known controls that have had HiPoly forcefully applied
+            /// Alternatively its possible to get a smaller arrays of ActionGame.Chara.Base[] targets from methods in ActionScene for the same effect, but requires additional patches
             /// Some stuff has while heroine.chactrl != null thus the need to reassign it since it attempts to delete hiPoly <see cref="ActionScene._SceneEventNPC"/>
             /// </summary>
-            /// <param name="entryOnly"></param>
+            /// <param name="entryOnly">Only true so far when <see cref="ChaControl.OnDestroy"/> is called </param>
             [HarmonyPrefix, HarmonyPatch(typeof(Manager.Character), nameof(Manager.Character.DeleteChara)), HarmonyPriority(Priority.Last)]
             private static bool DeleteCharaPrefix(ChaControl cha, bool entryOnly, ref bool __result)
             {
-#if DEBUG
 #if KK
-                foreach (var item in Manager.Character.Instance.dictEntryChara)
-                {
-                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {Manager.Game.Instance.actScene.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {ForcedControls.Contains(item.Value)} count {ForcedControls.Count}\n\thiPoly: {item.Value.hiPoly}");
-                }
-#elif KKS
-                foreach (var item in Manager.Character.dictEntryChara)
-                {
-                    logSource.Log(cha == item.Value ? BepInEx.Logging.LogLevel.Fatal : BepInEx.Logging.LogLevel.Warning, $"{item.Key} {item.Value.fileParam.fullname} MainGame heroine? {ActionScene.instance.npcList.FirstOrDefault(x => x.heroine.chaCtrl == item.Value) != null}\n\tDontDelete {ForcedControls.Contains(item.Value)} count {ForcedControls.Count}\n\thiPoly: {item.Value.hiPoly}");
-                }
-#endif
-#endif
-#if KK
+                if (Manager.Game.Instance == null || Manager.Game.Instance.actScene == null || entryOnly) return true;//use original function 
                 var getNPC = Manager.Game.Instance.actScene.npcList.FirstOrDefault(x => x.heroine.chaCtrl == cha);
 #elif KKS
+                if (ActionScene.instance == null || entryOnly) return true;
                 var getNPC = ActionScene.instance.npcList.FirstOrDefault(x => x.heroine.chaCtrl == cha);
 #endif
                 if (getNPC != null && ForcedControls.Contains(cha))
@@ -166,36 +151,9 @@ namespace KK_Plugins
                     getNPC.heroine.chaCtrl = null;
                     cha.StartCoroutine(ReassignHeroine(cha, getNPC.heroine));
                     __result = true;
-                    return false;
+                    return false;//skip original
                 }
-                //original function below
-#if KK
-                foreach (var keyValuePair in Manager.Character.Instance.dictEntryChara)
-#elif KKS
-                foreach (var keyValuePair in Manager.Character.dictEntryChara)
-#endif
-                {
-                    if (keyValuePair.Value == cha)
-                    {
-                        if (!entryOnly)
-                        {
-                            keyValuePair.Value.name = "Delete_Reserve";
-                            keyValuePair.Value.transform.SetParent(null);
-                            Destroy(keyValuePair.Value.gameObject);
-                        }
-#if KK
-                        Manager.Character.Instance.dictEntryChara.Remove(keyValuePair.Key);
-#elif KKS
-                        Manager.Character.dictEntryChara.Remove(keyValuePair.Key);
-                        Manager.Character.chaControls.Remove(cha);
-#endif
-                        __result = true;
-                        return false;
-                    }
-                }
-
-                __result = false;
-                return false;
+                return true;//original function
             }
 
             static IEnumerator ReassignHeroine(ChaControl cha, SaveData.Heroine hero)
@@ -203,6 +161,7 @@ namespace KK_Plugins
                 yield return null;
                 hero.chaCtrl = cha;
             }
+            #endregion
         }
     }
 }
