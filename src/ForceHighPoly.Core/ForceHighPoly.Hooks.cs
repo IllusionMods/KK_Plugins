@@ -1,8 +1,9 @@
-﻿using HarmonyLib;
+﻿using ActionGame;
+using HarmonyLib;
+using Manager;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace KK_Plugins
 {
     public partial class ForceHighPoly
@@ -83,9 +84,9 @@ namespace KK_Plugins
                         var manifestName = lib.GetInfo(ChaListDefine.KeyType.MainManifest);
                         var assetBundleName = lib.GetInfo(ChaListDefine.KeyType.MainAB);
 #if KK
-                        Singleton<Manager.Character>.Instance.AddLoadAssetBundle(assetBundleName, manifestName);
+                        Character.Instance.AddLoadAssetBundle(assetBundleName, manifestName);
 #elif KKS
-                        Manager.Character.AddLoadAssetBundle(assetBundleName, manifestName);
+                        Character.AddLoadAssetBundle(assetBundleName, manifestName);
 #endif
                         if (!CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, highAssetName + "_low", false, manifestName) && CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, highAssetName, false, manifestName))
                         {
@@ -117,7 +118,7 @@ namespace KK_Plugins
             /// Clearlist since characters should be reloading
             /// </summary>
             /// <param name="targets"></param>
-            [HarmonyPostfix, HarmonyPatch(typeof(Manager.Character), nameof(Manager.Character.DeleteCharaAll))]
+            [HarmonyPostfix, HarmonyPatch(typeof(Character), nameof(Character.DeleteCharaAll))]
             private static void DeleteCharaAllPostfix()
             {
                 ForcedControls.Clear();
@@ -136,12 +137,12 @@ namespace KK_Plugins
             /// Some stuff has while heroine.chactrl != null thus the need to reassign it since it attempts to delete hiPoly <see cref="ActionScene._SceneEventNPC"/>
             /// </summary>
             /// <param name="entryOnly">Only true so far when <see cref="ChaControl.OnDestroy"/> is called </param>
-            [HarmonyPrefix, HarmonyPatch(typeof(Manager.Character), nameof(Manager.Character.DeleteChara)), HarmonyPriority(Priority.Last)]
+            [HarmonyPrefix, HarmonyPatch(typeof(Character), nameof(Character.DeleteChara)), HarmonyPriority(Priority.Last)]
             private static bool DeleteCharaPrefix(ChaControl cha, bool entryOnly, ref bool __result)
             {
 #if KK
-                if (Manager.Game.Instance == null || Manager.Game.Instance.actScene == null || entryOnly) return true;//use original function 
-                var getNPC = Manager.Game.Instance.actScene.npcList.FirstOrDefault(x => x.heroine.chaCtrl == cha);
+                if (Game.Instance == null || Game.Instance.actScene == null || entryOnly) return true;//use original function 
+                var getNPC = Game.Instance.actScene.npcList.FirstOrDefault(x => x.heroine.chaCtrl == cha);
 #elif KKS
                 if (ActionScene.instance == null || entryOnly) return true;
                 var getNPC = ActionScene.instance.npcList.FirstOrDefault(x => x.heroine.chaCtrl == cha);
@@ -160,6 +161,120 @@ namespace KK_Plugins
             {
                 yield return null;
                 hero.chaCtrl = cha;
+            }
+            #endregion
+
+            #region the game methods are bad and should feel bad
+            [HarmonyPrefix, HarmonyPatch(typeof(EnvArea3D), nameof(EnvArea3D.Update)), HarmonyPriority(Priority.Last)]
+            private static bool EnvArea3DUpdatePrefix(EnvArea3D __instance)
+            {
+                if (!Character.IsInstance())
+                {
+                    return false;
+                }
+#if KK
+                var NatHiPoly = Character.Instance.dictEntryChara.Values.Any(x => x != null && !ForcedControls.Contains(x) && x.hiPoly);//only flag when a natural hiPoly ChaControl Exists
+#elif KKS
+                var NatHiPoly = Character.ChaControls.Any(x => x != null && !ForcedControls.Contains(x) && x.hiPoly);//only flag when a natural hiPoly ChaControl Exists
+#endif
+
+                if (__instance._playdataSolid != null)
+                {
+                    foreach (var item in __instance._playdataSolid)
+                    {
+                        item.Update(!NatHiPoly);
+                    }
+                }
+                return false;
+            }
+
+            [HarmonyPrefix, HarmonyPatch(typeof(ActionGame.MapSound.LoopSEVolume), nameof(ActionGame.MapSound.LoopSEVolume.Update)), HarmonyPriority(Priority.Last)]
+            private static bool LoopSEVolumeUpdatePrefix(ActionGame.MapSound.LoopSEVolume __instance)
+            {
+                if (!Character.IsInstance())
+                {
+                    return false;
+                }
+#if KK
+                if (!Game.IsInstance())
+                {
+                    return false;
+                }
+                var actionscene = Game.Instance.actScene;
+#elif KKS
+                var actionscene = ActionScene.instance;
+#endif
+                if (actionscene == null)
+                {
+                    return false;
+                }
+#if KK
+                var NatHiPoly = Character.Instance.dictEntryChara.Values.Any(x => x != null && !ForcedControls.Contains(x) && x.hiPoly);//only flag when a natural hiPoly ChaControl Exists
+#elif KKS
+                var NatHiPoly = Character.ChaControls.Any(x => x != null && !ForcedControls.Contains(x) && x.hiPoly);//only flag when a natural hiPoly ChaControl Exists
+#endif
+                var runtimeDataList = __instance._runtimeDataList;
+
+                if (!NatHiPoly && (__instance._ignoreCondition || actionscene.npcList.Any(x => x.isActive && x.mapNo == __instance.MapID && x.isArrival && x.AI.actionNo == __instance.ActionID)))
+                {
+                    foreach (var item in runtimeDataList)
+                    {
+                        item.Play(__instance._soundType);
+                    }
+                    return false;
+                }
+                foreach (var item in runtimeDataList)
+                {
+                    item.Stop();
+                }
+                return false;
+            }
+#if KKS
+            [HarmonyPrefix, HarmonyPatch(typeof(EnvLineArea3D), nameof(EnvLineArea3D.Update)), HarmonyPriority(Priority.Last)]
+            private static bool EnvLineArea3DUpdatePrefix(EnvLineArea3D __instance)
+            {
+                if (!Character.IsInstance())
+                {
+                    return false;
+                }
+
+                var NatHiPoly = Character.ChaControls.Any(x => !ForcedControls.Contains(x) && x.hiPoly);//only flag when a natural hiPoly ChaControl Exists
+
+                if (__instance._playdataSolid != null)
+                {
+                    foreach (var item in __instance._playdataSolid)
+                    {
+                        item.Update(!NatHiPoly);
+                    }
+                }
+                return false;
+            }
+#endif
+            [HarmonyPrefix, HarmonyPatch(typeof(CorrectLightAngle), nameof(CorrectLightAngle.LateUpdate)), HarmonyPriority(Priority.Last)]
+            private static bool CorrectLightAngleLateUpdate(CorrectLightAngle __instance)
+            {
+                ChaControl cha;
+                if (!__instance.condition.IsNullOrEmpty())
+                {
+                    cha = __instance.condition();
+                }
+                else
+                {
+#if KK
+                    cha = Character.Instance.dictEntryChara.Values.FirstOrDefault(x => x.hiPoly && !ForcedControls.Contains(x));
+#elif KKS
+                    cha = Character.ChaControls.FirstOrDefault(x => x.hiPoly && !ForcedControls.Contains(x));
+#endif
+                }
+                var neck = __instance.GetNeck(cha);
+                if (neck == null)
+                {
+                    __instance.lightTrans.localRotation = __instance.initRot;
+                    return false;
+                }
+                __instance.lightTrans.rotation = neck.rotation;
+                __instance.lightTrans.Rotate(__instance.correctRX + __instance.offset.x, __instance.correctRY + __instance.offset.y, 0f);
+                return false;
             }
             #endregion
         }
