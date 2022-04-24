@@ -1,4 +1,7 @@
 ﻿using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 
 namespace KK_Plugins
 {
@@ -6,6 +9,7 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
+            static HashSet<ChaControl> m_ChaControls = new HashSet<ChaControl>();
             /// <summary>
             /// Test all coordiantes parts to check if a low poly doesn't exist.
             /// if low poly doesnt exist for an item set HiPoly to true and exit;
@@ -14,7 +18,8 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Initialize))]
             internal static void CheckHiPoly(ChaControl __instance)
             {
-                if (PolySetting.Value == PolyMode.Full) __instance.hiPoly = true;
+                if (PolySetting.Value == PolyMode.Full && !__instance.hiPoly)
+                { m_ChaControls.Add(__instance); }
 
                 if (__instance.hiPoly || PolySetting.Value != PolyMode.Partial) return;
 
@@ -75,22 +80,88 @@ namespace KK_Plugins
 #endif
                         if (!CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, highAssetName + "_low", false, manifestName) && CommonLib.LoadAsset<UnityEngine.GameObject>(assetBundleName, highAssetName, false, manifestName))
                         {
-                            __instance.hiPoly = true;
+                            m_ChaControls.Add(__instance);
                             return;
                         }
                     }
                 }
             }
 
-            /// <summary>
-            /// Might not be neccessary because of the first line of the above method, put probably also cheaper than the previous method
-            /// Equivilant to last method results of patching AssetBundleManager and trimming _low
-            /// </summary>
-            /// <param name="__result"></param>
-            [HarmonyPostfix, HarmonyPatch(typeof(ChaInfo), nameof(ChaInfo.hiPoly), MethodType.Getter)]
-            private static void HiPolyPostfix(ref bool __result)
+            [HarmonyTranspiler]
+            #region Append "_low"
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadNoAsync))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadAsync), MethodType.Enumerator)]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.GetTexture))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateFaceTexture))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.CreateBodyTexture))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeEyesPtn))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitBaseCustomTextureClothes))]
+            #endregion
+
+            #region DynamicBones
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairNoAsync))]
+            #endregion
+
+#if KKS
+
+#endif
+            //...
+
+            private static IEnumerable<CodeInstruction> IsHiPolyRepeatTranspile(IEnumerable<CodeInstruction> instructions)
             {
-                __result = __result || Enabled.Value;
+                var orig = AccessTools.PropertyGetter(typeof(ChaInfo), nameof(ChaInfo.hiPoly)) ?? throw new Exception("ChaControl.hiPoly");
+                var replacement = AccessTools.Method(typeof(Hooks), nameof(IsHiPoly));
+
+                return new CodeMatcher(instructions)
+                    .MatchForward(false, new CodeMatch(OpCodes.Call, orig))
+                    .Repeat(matcher => matcher.Set(OpCodes.Call, replacement), s => throw new Exception("match fail - " + s))
+                    .Instructions();
+            }
+
+            [HarmonyTranspiler]
+
+            #region Append "_low"
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomClothes))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCustomEmblem))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetCreateTexture))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadAlphaMaskTexture))]
+            #endregion
+
+            #region Texture Resolution
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitBaseCustomTextureBody))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitBaseCustomTextureFace))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitBaseCustomTextureEtc))]
+            #endregion
+
+            #region Math?
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitShapeBody))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetShapeBodyValue))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateShapeBodyValueFromCustomInfo))]
+            #endregion
+
+
+            private static IEnumerable<CodeInstruction> IsHiPolyTranspile(IEnumerable<CodeInstruction> instructions)
+            {
+                var orig = AccessTools.PropertyGetter(typeof(ChaInfo), nameof(ChaInfo.hiPoly)) ?? throw new Exception("ChaControl.hiPoly");
+                var replacement = AccessTools.Method(typeof(Hooks), nameof(IsHiPoly));
+
+                return new CodeMatcher(instructions)
+                    .MatchForward(false, new CodeMatch(OpCodes.Call, orig))
+                    .Set(OpCodes.Call, replacement)
+                    .Instructions();
+            }
+
+            private static bool IsHiPoly(ChaControl cha)
+            {
+                return cha.hiPoly || m_ChaControls.Contains(cha);
+            }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadCharaFbxDataNoAsync))]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadCharaFbxDataAsync))]
+            private static void FBXDataPrefix(ChaControl __instance, ref bool _hiPoly)
+            {
+                _hiPoly |= m_ChaControls.Contains(__instance);
             }
         }
     }
