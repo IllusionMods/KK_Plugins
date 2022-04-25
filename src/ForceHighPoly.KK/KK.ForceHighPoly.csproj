@@ -94,6 +94,12 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UncensorSelector.KK\KK.UncensorSelector.csproj">
+      <Project>{190fe08f-1d2e-4615-8555-f036d5e48587}</Project>
+      <Name>KK.UncensorSelector</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\ForceHighPoly.Core\ForceHighPoly.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
