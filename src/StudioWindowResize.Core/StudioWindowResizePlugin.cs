@@ -121,9 +121,9 @@ namespace KK_Plugins
                 if (Config.Bind("Expand", "Animation lists", true, "Increase height of the anim/Animation lists.").Value)
                 {
                     var manipulateAnime = manipulateMenu.Find("03_Anime");
-                    ResizeScrollRect(manipulateAnime.Find("Group Panel"), ADD_ITEM);
-                    ResizeScrollRect(manipulateAnime.Find("Category Panel"), ADD_ITEM);
-                    ResizeScrollRect(manipulateAnime.Find("Anime Panel"), ADD_ITEM);
+                    ResizeScrollRectStrict(manipulateAnime.Find("Group Panel"), ADD_ITEM, 20, -20);
+                    ResizeScrollRectStrict(manipulateAnime.Find("Category Panel"), ADD_ITEM, 20, -20);
+                    ResizeScrollRectStrict(manipulateAnime.Find("Anime Panel"), ADD_ITEM, 20, -20);
                 }
             }
 

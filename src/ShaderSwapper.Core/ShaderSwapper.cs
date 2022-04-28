@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using KK_Plugins.MaterialEditor;
 using KKAPI.Maker;
+using KKAPI.Studio;
 using System.Collections.Generic;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialEditorCharaController;
@@ -53,17 +54,30 @@ namespace KK_Plugins
         {
             if (SwapShadersHotkey.Value.IsDown())
             {
-                if (!MakerAPI.InsideAndLoaded)
-                    return;
-                var controller = GetController(MakerAPI.GetCharacterControl());
-                for (var i = 0; i < controller.ChaControl.objClothes.Length; i++)
-                    SwapToVanillaPlusClothes(controller, i);
-                for (var i = 0; i < controller.ChaControl.objHair.Length; i++)
-                    SwapToVanillaPlusHair(controller, i);
-                for (var i = 0; i < controller.ChaControl.GetAccessoryObjects().Length; i++)
-                    SwapToVanillaPlusAccessory(controller, i);
-                SwapToVanillaPlusBody(controller);
+                if (MakerAPI.InsideAndLoaded)
+                {
+                    var chaControl = MakerAPI.GetCharacterControl();   
+                    UpdateCharShaders(chaControl);
+                }
+                else if (StudioAPI.InsideStudio)
+                {
+                    var ociChars = StudioAPI.GetSelectedCharacters();
+                    foreach (var ociChar in ociChars)                   
+                        UpdateCharShaders(ociChar.GetChaControl());                    
+                }
             }
+        }
+
+        public void UpdateCharShaders(ChaControl chaControl) 
+        {            
+            var controller = GetController(chaControl);
+            for (var i = 0; i < controller.ChaControl.objClothes.Length; i++)
+                SwapToVanillaPlusClothes(controller, i);
+            for (var i = 0; i < controller.ChaControl.objHair.Length; i++)
+                SwapToVanillaPlusHair(controller, i);
+            for (var i = 0; i < controller.ChaControl.GetAccessoryObjects().Length; i++)
+                SwapToVanillaPlusAccessory(controller, i);
+            SwapToVanillaPlusBody(controller);
         }
 
         public static MaterialEditorCharaController GetController(ChaControl chaControl)
