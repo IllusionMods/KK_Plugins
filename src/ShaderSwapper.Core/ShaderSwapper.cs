@@ -18,7 +18,7 @@ namespace KK_Plugins
         public const string PluginGUID = "com.deathweasel.bepinex.shaderswapper";
         public const string PluginName = "Shader Swapper";
         public const string PluginNameInternal = Constants.Prefix + "_ShaderSwapper";
-        public const string PluginVersion = "1.0";
+        public const string PluginVersion = "1.1";
         internal static new ManualLogSource Logger;
 
         internal static ConfigEntry<KeyboardShortcut> SwapShadersHotkey { get; private set; }
