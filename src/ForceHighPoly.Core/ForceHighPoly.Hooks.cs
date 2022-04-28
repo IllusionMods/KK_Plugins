@@ -18,8 +18,6 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Initialize))]
             internal static void CheckHiPoly(ChaControl __instance)
             {
-                //logSource.LogWarning($"{__instance.fileParam.fullname} initialized");
-
                 if (PolySetting.Value == PolyMode.Full && !__instance.hiPoly)
                 {
                     ForcedControls.Add(__instance);
@@ -106,16 +104,6 @@ namespace KK_Plugins
 #endif
             #endregion
 
-            #region DynamicBones
-            //[HarmonyPatch("ChaControl, Assembly-CSharp", nameof(ChaControl.ChangeHairAsync), MethodType.Enumerator, new Type[] { typeof(int), typeof(int), typeof(bool), typeof(bool) })]
-#if KKS
-            //[HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairNoAsync))]
-#endif
-            #endregion
-
-#if KKS
-
-#endif
             private static IEnumerable<CodeInstruction> IsHiPolyRepeatTranspile(IEnumerable<CodeInstruction> instructions)
             {
                 var orig = AccessTools.PropertyGetter(typeof(ChaInfo), nameof(ChaInfo.hiPoly)) ?? throw new Exception("ChaControl.hiPoly");
@@ -136,20 +124,6 @@ namespace KK_Plugins
             [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetCreateTexture))]
             [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadAlphaMaskTexture))]
             #endregion
-
-            #region Texture Resolution
-            //[HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitBaseCustomTextureBody))]
-            //[HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitBaseCustomTextureFace))]
-            //[HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitBaseCustomTextureEtc))]
-            #endregion
-
-            #region Math? 
-            //[HarmonyPatch(typeof(ChaControl), nameof(ChaControl.InitShapeBody))]
-            //[HarmonyPatch(typeof(ChaControl), nameof(ChaControl.SetShapeBodyValue))]
-            //[HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateShapeBodyValueFromCustomInfo))]
-            #endregion
-
-
             private static IEnumerable<CodeInstruction> IsHiPolyTranspile(IEnumerable<CodeInstruction> instructions)
             {
                 var orig = AccessTools.PropertyGetter(typeof(ChaInfo), nameof(ChaInfo.hiPoly)) ?? throw new Exception("ChaControl.hiPoly");
@@ -161,6 +135,7 @@ namespace KK_Plugins
                     .Instructions();
             }
             #endregion
+
             [HarmonyPrefix]
             [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.LoadCharaFbxDataAsync))]
 #if KKS
