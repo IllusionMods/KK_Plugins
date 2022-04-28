@@ -658,6 +658,8 @@ Removes mosaics from the character models. **This is replaced by UncensorSelecto
 
 #### StudioWindowResize
 
+- [AI_StudioWindowResize]
+- [HS2_StudioWindowResize]
 - [KK_StudioWindowResize]
 - [KKS_StudioWindowResize]
 
@@ -826,8 +828,8 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [EC_ReloadCharaListOnChange]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/EC_ReloadCharaListOnChange.v1.5.2.zip "v1.5.2"
 [KKS_EyeShaking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v227/KKS_EyeShaking.v1.3.1.zip "v1.3.1"
 [KK_EyeShaking]: https://github.com/IllusionMods/KK_Plugins/releases/download/v227/KK_EyeShaking.v1.3.1.zip "v1.3.1"
-[KKS_ForceHighPoly]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KKS_ForceHighPoly.v2.0.zip "v2.0"
-[KK_ForceHighPoly]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KK_ForceHighPoly.v2.0.zip "v2.0"
+[KKS_ForceHighPoly]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KKS_ForceHighPoly.v2.1.zip "v2.1"
+[KK_ForceHighPoly]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KK_ForceHighPoly.v2.1.zip "v2.1"
 [KKS_FreeHRandom]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KKS_FreeHRandom.v1.3.zip "v1.3"
 [KK_FreeHRandom]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KK_FreeHRandom.v1.3.zip "v1.3"
 [KKS_HCharaAdjustment]: https://github.com/IllusionMods/KK_Plugins/releases/download/v201/KKS_HCharaAdjustment.v2.0.zip "v2.0"
@@ -846,10 +848,12 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KKS_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_ListOverride.v1.0.zip "v1.0"
 [KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
 [KKS_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_RandomCharacterGenerator.v2.0.zip "v2.0"
-[KK_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v222/KK_ShaderSwapper.v1.0.zip "v1.0"
-[KKS_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v222/KKS_ShaderSwapper.v1.0.zip "v1.0"
-[KK_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KK_StudioWindowResize.v1.0.zip "v1.0"
-[KKS_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KKS_StudioWindowResize.v1.0.zip "v1.0"
+[KK_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KK_ShaderSwapper.v1.1.zip "v1.1"
+[KKS_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KKS_ShaderSwapper.v1.1.zip "v1.1"
+[KK_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KK_StudioWindowResize.v1.1.zip "v1.1"
+[KKS_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KKS_StudioWindowResize.v1.1.zip "v1.1"
+[AI_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/AI_StudioWindowResize.v1.1.zip "v1.1"
+[Hs2_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/HS2_StudioWindowResize.v1.1.zip "v1.1"
 [KK_ClothesToAccessories]: https://github.com/IllusionMods/KK_Plugins/releases/download/v228/KK_ClothesToAccessories.v1.0.2.zip "v1.0.2"
 [KKS_ClothesToAccessories]: https://github.com/IllusionMods/KK_Plugins/releases/download/v228/KKS_ClothesToAccessories.v1.0.2.zip "v1.0.2"
 [KK_Boop]: https://github.com/IllusionMods/KK_Plugins/releases/download/v228/KK_Boop.v2.0.zip "v2.0"
