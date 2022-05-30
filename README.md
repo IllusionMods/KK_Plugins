@@ -381,6 +381,7 @@ v3.1.5 Compatibility with UncensorSelector<br/>
 - [AI_MaleJuice]
 - [HS2_MaleJuice]
 - [KK_MaleJuice]
+- [KKS_MaleJuice]
 
 Enables juice textures for males in H scenes and Studio.
 
@@ -750,6 +751,7 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [EC_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v218/EC_MakerDefaults.v1.1.zip "v1.1"
 [AI_MakerDefaults]: https://github.com/IllusionMods/KK_Plugins/releases/download/v218/AI_MakerDefaults.v1.1.zip "v1.1"
 [KK_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/KK_MaleJuice.v1.3.zip "v1.3"
+[KKS_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v230/KKS_MaleJuice.v1.3.zip "v1.3"
 [HS2_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/HS2_MaleJuice.v1.3.zip "v1.3"
 [AI_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/AI_MaleJuice.v1.3.zip "v1.3"
 [PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/PH_MaterialEditor.v3.1.17.zip "v3.1.17"
@@ -848,8 +850,8 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KKS_ListOverride]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_ListOverride.v1.0.zip "v1.0"
 [KK_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KK_RandomCharacterGenerator.v2.0.zip "v2.0"
 [KKS_RandomCharacterGenerator]: https://github.com/IllusionMods/KK_Plugins/releases/download/v216/KKS_RandomCharacterGenerator.v2.0.zip "v2.0"
-[KK_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KK_ShaderSwapper.v1.1.zip "v1.1"
-[KKS_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KKS_ShaderSwapper.v1.1.zip "v1.1"
+[KK_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v230/KK_ShaderSwapper.v1.2.zip "v1.2"
+[KKS_ShaderSwapper]: https://github.com/IllusionMods/KK_Plugins/releases/download/v230/KKS_ShaderSwapper.v1.2.zip "v1.2"
 [KK_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KK_StudioWindowResize.v1.1.zip "v1.1"
 [KKS_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/KKS_StudioWindowResize.v1.1.zip "v1.1"
 [AI_StudioWindowResize]: https://github.com/IllusionMods/KK_Plugins/releases/download/v229/AI_StudioWindowResize.v1.1.zip "v1.1"
