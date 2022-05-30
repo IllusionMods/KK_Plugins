@@ -551,6 +551,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.StudioWindowResize", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.StudioWindowResize", "src\StudioWindowResize.AI\AI.StudioWindowResize.csproj", "{E5307B24-3898-463A-8DCB-D826802EFC5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.MaleJuice", "src\MaleJuice.KKS\KKS.MaleJuice.csproj", "{11112067-CFA0-4522-BE2E-0C4D1CF9E36A}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Shared\Shared.projitems*{002aa641-4dc8-4fef-83dd-a7fab3af6daf}*SharedItemsImports = 4
@@ -568,6 +570,8 @@ Global
 		src\AccessoryQuickRemove.Core\AccessoryQuickRemove.Core.projitems*{0cd64f6f-4e15-4c9c-a990-4616a8a8ea82}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{0cd64f6f-4e15-4c9c-a990-4616a8a8ea82}*SharedItemsImports = 4
 		src\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
+		src\MaleJuice.Core\MaleJuice.Core.projitems*{11112067-cfa0-4522-be2e-0c4d1cf9e36a}*SharedItemsImports = 4
+		src\Shared\Shared.projitems*{11112067-cfa0-4522-be2e-0c4d1cf9e36a}*SharedItemsImports = 4
 		src\ForceHighPoly.Core\ForceHighPoly.Core.projitems*{123d12ea-5526-4d07-ab26-7ab9459b4aeb}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{123d12ea-5526-4d07-ab26-7ab9459b4aeb}*SharedItemsImports = 4
 		src\PoseTools.Core\Core.PoseTools.projitems*{125b3166-da35-4cda-b71a-b5c3f0645062}*SharedItemsImports = 4
@@ -1669,6 +1673,10 @@ Global
 		{E5307B24-3898-463A-8DCB-D826802EFC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5307B24-3898-463A-8DCB-D826802EFC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5307B24-3898-463A-8DCB-D826802EFC5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11112067-CFA0-4522-BE2E-0C4D1CF9E36A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11112067-CFA0-4522-BE2E-0C4D1CF9E36A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11112067-CFA0-4522-BE2E-0C4D1CF9E36A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11112067-CFA0-4522-BE2E-0C4D1CF9E36A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1892,6 +1900,7 @@ Global
 		{4AB2E6F6-6B47-4539-8EBA-CDD199A8E0BD} = {3050327B-CAD1-4FD9-8133-FA3B085F3E35}
 		{1D8216CF-B9F0-4463-B120-02C068CC70B6} = {5ACE49BE-BD8A-49E9-8E54-541A154C87BE}
 		{E5307B24-3898-463A-8DCB-D826802EFC5C} = {5ACE49BE-BD8A-49E9-8E54-541A154C87BE}
+		{11112067-CFA0-4522-BE2E-0C4D1CF9E36A} = {0D9A7DD7-BF28-4205-8620-4D554009E96F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}

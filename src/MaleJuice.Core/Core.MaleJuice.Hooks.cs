@@ -19,7 +19,7 @@ namespace KK_Plugins.MaleJuice
         private static void SetSiruFlags(ChaFileDefine.SiruParts _parts, byte _state, OCIChar __instance)
         {
             if (__instance is OCICharMale charMale)
-#if KK
+#if KK || KKS
                 charMale.male.SetSiruFlags(_parts, _state);
 #else
                 charMale.male.SetSiruFlag(_parts, _state);
@@ -32,7 +32,7 @@ namespace KK_Plugins.MaleJuice
         private static void GetSiruFlags(ChaFileDefine.SiruParts _parts, OCIChar __instance, ref byte __result)
         {
             if (__instance is OCICharMale charMale)
-#if KK
+#if KK || KKS
                 __result = charMale.male.GetSiruFlags(_parts);
 #else
                 __result = charMale.male.GetSiruFlag(_parts);
@@ -47,7 +47,7 @@ namespace KK_Plugins.MaleJuice
             __instance.active = true;
             __instance.face.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruKao);
 
-#if KK
+#if KK || KKS
             __instance.breast.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruFrontUp);
             __instance.back.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruBackUp);
             __instance.belly.select = _char.GetSiruFlags(ChaFileDefine.SiruParts.SiruFrontDown);
