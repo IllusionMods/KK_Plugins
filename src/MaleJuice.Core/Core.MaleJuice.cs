@@ -21,7 +21,7 @@ namespace KK_Plugins.MaleJuice
         public const string PluginNameInternal = Constants.Prefix + "_MaleJuice";
         public const string PluginVersion = "1.3";
 
-#if KK
+#if KK || KKS
         private static Texture LiquidMask;
 #else
         private static Material LiquidMat;
@@ -42,7 +42,7 @@ namespace KK_Plugins.MaleJuice
 
             try
             {
-#if KK
+#if KK || KKS
                 //Get the juice texture used by females
                 var mat = CommonLib.LoadAsset<Material>("chara/mm_base.unity3d", "cf_m_body");
                 LiquidMask = mat.GetTexture("_liquidmask");
@@ -62,7 +62,7 @@ namespace KK_Plugins.MaleJuice
                 Logger.LogError("Could not load juice textures.");
             }
 
-#if KK
+#if KK || KKS
             if (LiquidMask == null) yield break;
 #else
             if (LiquidMat == null) yield break;
@@ -76,7 +76,7 @@ namespace KK_Plugins.MaleJuice
         /// </summary>
         public static void SetJuice(ChaControl chaControl)
         {
-#if KK
+#if KK || KKS
             if (chaControl.customMatBody.GetTexture("_liquidmask") == null)
                 chaControl.customMatBody.SetTexture("_liquidmask", LiquidMask);
 #else
