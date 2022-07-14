@@ -116,7 +116,7 @@ namespace KK_Plugins
                 if (Config.Bind("Expand", "Costume list", false,
                     "Increase height of the anim/Kinematics/Costume (coordinate / outfit) list. Warning: Might interfere with some other plugins that modify the UI. " +
                     "It will overlap with the FolderBrowser plugin until it's updated. Needs a studio restart to apply.").Value)
-                    ResizeScrollRect(manipulateChara.Find("05_Costume").Find("Scroll View"), ADD_CHARA);
+                    ResizeScrollRectStrict(manipulateChara.Find("05_Costume").Find("Scroll View"), ADD_CHARA, 20, -60);
 
                 if (Config.Bind("Expand", "Animation lists", true, "Increase height of the anim/Animation lists.").Value)
                 {
@@ -126,6 +126,9 @@ namespace KK_Plugins
                     ResizeScrollRectStrict(manipulateAnime.Find("Anime Panel"), ADD_ITEM, 20, -20);
                 }
             }
+
+            if (Config.Bind("Expand", "Image Board list", true, "Increase height of the Image Board list. Needs a studio restart to apply.").Value)
+                ResizeScrollRect(mainMenu.Find("02_01_Panel"), ADD_BG);
 
             if (Config.Bind("Expand", "Sound lists", true, "Increase height of the sound/BGM lists. Needs a studio restart to apply.").Value)
             {
