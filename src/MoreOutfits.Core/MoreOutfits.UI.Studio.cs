@@ -30,29 +30,34 @@ namespace KK_Plugins.MoreOutfits
             StudioCoordinateCurrentStateCategoryDropdown.Value.Subscribe(value =>
             {
                 var mpCharCtrol = Object.FindObjectOfType<MPCharCtrl>();
+                var currentCoord = -1;
+
                 if (StudioCoordinateDropdown != null)
                 {
                     var character = StudioAPI.GetSelectedCharacters().First();
+                    currentCoord = character.charInfo.fileStatus.coordinateType;
 
                     //Remove extras
                     if (StudioCoordinateDropdown.options.Count > OriginalCoordinateLength)
                         StudioCoordinateDropdown.options.RemoveRange(OriginalCoordinateLength, StudioCoordinateDropdown.options.Count - OriginalCoordinateLength);
 
-                    //Add dropdown options for each additional coodinate
+                    //Add dropdown options for each additional coordinate
                     if (StudioCoordinateDropdown.options.Count < character.charInfo.chaFile.coordinate.Length)
                     {
                         for (int i = 0; i < (character.charInfo.chaFile.coordinate.Length - OriginalCoordinateLength); i++)
                         {
                             StudioCoordinateDropdown.options.Add(new Dropdown.OptionData(GetCoodinateName(character.charInfo, OriginalCoordinateLength + i)));
                         }
+
                         StudioCoordinateDropdown.captionText.text = StudioCoordinateDropdown.options[value].text;
                     }
                 }
 
-                if (mpCharCtrol != null)
-                    mpCharCtrol.stateInfo.OnClickCosType(value);
-            });
+                if (mpCharCtrol == null || currentCoord == value) return;
+                mpCharCtrol.stateInfo.OnClickCosType(value);
 
+            });
+                
             int CoordinateIndex()
             {
                 var character = StudioAPI.GetSelectedCharacters().First();
