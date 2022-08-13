@@ -17,15 +17,15 @@ namespace KK_Plugins.MaterialEditor
         private string _materialName;
         //Normal Maker mode
         private MoveableUI _mui;
-        private MoveableUI MUI => _mui ?? (_mui = GameObject.Find("EditScene/Canvas/MoveableRoot/ColorUI").GetComponent<MoveableUI>());
+        private MoveableUI MUI => _mui != null ? _mui : (_mui = GameObject.Find("EditScene/Canvas/MoveableRoot/ColorUI").GetComponent<MoveableUI>());
         private MoveableColorCustomUI _movcui;
-        private MoveableColorCustomUI MCCUI => _movcui ?? (_movcui = GameObject.Find("EditScene/Canvas/MoveableRoot/ColorUI").GetComponent<MoveableColorCustomUI>());
+        private MoveableColorCustomUI MCCUI => _movcui != null ? _movcui : (_movcui = GameObject.Find("EditScene/Canvas/MoveableRoot/ColorUI").GetComponent<MoveableColorCustomUI>());
         //H-Scene Maker mode
-        private H_Scene hscene = UnityEngine.Object.FindObjectOfType<H_Scene>();
+        private readonly H_Scene hscene = UnityEngine.Object.FindObjectOfType<H_Scene>();
         private MoveableUI _mui_h;
-        private MoveableUI MUI_H => _mui_h ?? (_mui_h = GameObject.Find("Left Middle Canvas/MoveableRoot/ColorUI").GetComponent<MoveableUI>());
+        private MoveableUI MUI_H => _mui_h != null ? _mui_h : (_mui_h = GameObject.Find("Left Middle Canvas/MoveableRoot/ColorUI").GetComponent<MoveableUI>());
         private MoveableColorCustomUI _movcui_h;
-        private MoveableColorCustomUI MCCUI_H => _movcui_h ?? (_movcui_h = GameObject.Find("Left Middle Canvas/MoveableRoot/ColorUI").GetComponent<MoveableColorCustomUI>());
+        private MoveableColorCustomUI MCCUI_H => _movcui_h != null ? _movcui_h : (_movcui_h = GameObject.Find("Left Middle Canvas/MoveableRoot/ColorUI").GetComponent<MoveableColorCustomUI>());
 
         public void Close()
         {
@@ -67,7 +67,7 @@ namespace KK_Plugins.MaterialEditor
             mui_all.Open();
             mccui_all.colorPicker.Setup(color, useAlpha, onChanged);
 
-            //* Turning off lists with Thumbnails. But I don't want it to turn off automatically as it takes time to load the list window again.
+            //* Turning off lists with Thumbnails.
             //MoveableThumbnailSelectUI[] array = UnityEngine.Object.FindObjectsOfType<MoveableThumbnailSelectUI>();
             //for (int i = 0; i < array.Length; i++)
             //{
