@@ -19,7 +19,7 @@ namespace KK_Plugins
     {
         public const string GUID = "StudioWindowResize";
         public const string PluginName = "StudioWindowResize";
-        public const string Version = "1.1";
+        public const string Version = "1.1.1";
         public const string PluginNameInternal = Constants.Prefix + "_StudioWindowResize";
 
         // the Y offset is entirely arbitrary, not sure if it plays nice across aspect ratios or resize, probably not
