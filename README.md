@@ -685,7 +685,7 @@ Boop the character by moving mouse over parts of their body, hair and clothes. U
 - [KK_ShaderSwapper]
 - [KKS_ShaderSwapper]
 
-Swap all shaders to the equivalent Vanilla Plus shader in the character maker by pressing right ctrl + P
+Swap all shaders to the equivalent Vanilla Plus shader in the character maker or studio by pressing right ctrl + P
 
 #### FreeHStudioSceneLoader
 
