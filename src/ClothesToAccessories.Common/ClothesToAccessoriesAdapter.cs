@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Manager;
+using KKABMX.Core;
+using StrayTech;
 using UnityEngine;
+using Character = Manager.Character;
 
 namespace KK_Plugins
 {
@@ -19,6 +21,10 @@ namespace KK_Plugins
 
         public static readonly Dictionary<ChaControl, List<ClothesToAccessoriesAdapter>[]> AllInstances = new Dictionary<ChaControl, List<ClothesToAccessoriesAdapter>[]>();
         public GameObject[] AllObjects { get; private set; }
+        /// <summary>
+        /// acc bone, body bone
+        /// </summary>
+        private List<KeyValuePair<Transform, Transform>> _boneLinks;
 
         private ChaListDefine.CategoryNo _kind;
         private int _clothingKind;
@@ -521,6 +527,46 @@ namespace KK_Plugins
             //Console.WriteLine($"set {state0} {state1} {any}");
 
             if (any) ApplyChaControlMasksToThis();
+        }
+
+        private bool _boneUpdateDone;
+
+        private void Update()
+        {
+            _boneUpdateDone = false;
+        }
+
+        public void UpdateLinkedBonePositions()
+        {
+            if (_boneUpdateDone) return;
+            _boneUpdateDone = true;
+
+            for (var i = 0; i < _boneLinks.Count; i++)
+            {
+                var boneLink = _boneLinks[i];
+                boneLink.Key.position = boneLink.Value.position;
+                boneLink.Key.localRotation = boneLink.Value.localRotation; //todo localrot or global rot? //todo need to keep topmost as global?
+                boneLink.Key.localScale = boneLink.Value.localScale; //todo need to keep topmost as global?
+            }
+        }
+
+        public void CreateBoneLinks()
+        {
+            if (_boneLinks == null)
+            {
+                _boneLinks = new List<KeyValuePair<Transform, Transform>>();
+                var bc = Owner.GetComponent<BoneController>();
+                var bones = bc.BoneSearcher.GetAllBones(BoneLocation.BodyTop);
+
+                foreach (var bone in AccessoryComponent.rendNormal.Concat(AccessoryComponent.rendAlpha).Concat(AccessoryComponent.rendHair).OfType<SkinnedMeshRenderer>().SelectMany(x => x.bones).Distinct())
+                {
+                    bones.TryGetValue(bone.name, out var bodyBone);
+                    if (bodyBone != null)
+                        _boneLinks.Add(new KeyValuePair<Transform, Transform>(bone, bodyBone.transform));
+                    else
+                        Console.WriteLine("no link for " + bone.gameObject.FullPath());
+                }
+            }
         }
     }
 }

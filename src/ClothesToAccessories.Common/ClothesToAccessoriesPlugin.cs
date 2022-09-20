@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
+using KKABMX.Core;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -23,6 +24,7 @@ namespace KK_Plugins
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     // CTA relies on a fix in sideloader to work correctly, so might as well depend on it
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
+    [BepInDependency(KKABMX_Core.GUID, KKABMX_Core.Version)]
     public partial class ClothesToAccessoriesPlugin : BaseUnityPlugin
     {
         public const string GUID = "ClothesToAccessories";
@@ -60,6 +62,7 @@ namespace KK_Plugins
             var hi = new Harmony(GUID);
 #if DEBUG // reload cleanup
             CleanupList.Add(Disposable.Create(() => hi.UnpatchSelf()));
+            CleanupList.Add(Disposable.Create(() => BoneController.OnEffectsApplied -= OnAbmxEffectsApplied));
 #endif
             try
             {
@@ -80,12 +83,40 @@ namespace KK_Plugins
                                mi.Name.StartsWith("<Start>");
                     }),
                     prefix: new HarmonyMethod(typeof(ClothesToAccessoriesPlugin), nameof(ConvertDropdownIndexToRelativeTypeIndex)));
+                
+                BoneController.OnEffectsApplied += OnAbmxEffectsApplied;
             }
             catch
             {
                 Logger.LogError("Failed to apply hooks");
                 hi.UnpatchSelf();
                 throw;
+            }
+        }
+
+        private static void OnAbmxEffectsApplied(object sender, BoneController.EffectsAppliedEventArgs args)
+        {
+            if (args.AppliedLocation == BoneLocation.BodyTop) AbmxUpdateHook(args.Controller);
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(BoneController), "LateUpdate")]
+        private static void AbmxUpdateHook(BoneController __instance)
+        {
+            //var sw = Stopwatch.StartNew();
+            ClothesToAccessoriesAdapter.AllInstances.TryGetValue(__instance.ChaControl, out var adapters);
+            if (adapters != null)
+            {
+                for (var i = 0; i < adapters.Length; i++)
+                {
+                    var x = adapters[i];
+                    for (var i2 = 0; i2 < x.Count; i2++)
+                    {
+                        var adapter = x[i2];
+                        adapter.UpdateLinkedBonePositions(); //todo needs to happen after abmx applies to body bones but before it applies to cta bones, also after dynamicbones apply to body and before they apply to cta bones
+                    }
+                }
+                //Console.WriteLine(sw.ElapsedMilliseconds);
             }
         }
 
@@ -604,8 +635,15 @@ namespace KK_Plugins
 
                 if (accObj.GetComponent<ChaClothesComponent>())
                 {
-                    var chaAccessory = accObj.GetComponent<ChaAccessoryComponent>();
+                    // todo get adapter,
+                    // call update bone links method on it
+                    // adapter in lateupdate sets pos rot scl of cloth bones to body bones
+                    // make sure it happens right before abmx updates? actually need to set after and then run abmx update again?
 
+                    // sub to OnEffectsApplied bodytop and hook lateupdate, run bone sync on the first one that happens
+
+                    //var chaAccessory = accObj.GetComponent<ChaAccessoryComponent>();
+                    
                     // Make dynamic bones on the instantiated clothing operate on the main body bones instead (since the renderers will be using these instead)
                     var componentsInChildren = accObj.GetComponentsInChildren<DynamicBone>(true);
                     if (!componentsInChildren.IsNullOrEmpty())
@@ -625,7 +663,7 @@ namespace KK_Plugins
                                     }
                                 }
                             }
-
+                    
                             if (dynamicBone.m_Exclusions != null && dynamicBone.m_Exclusions.Count != 0)
                             {
                                 for (var j = 0; j < dynamicBone.m_Exclusions.Count; j++)
@@ -643,7 +681,7 @@ namespace KK_Plugins
                                     }
                                 }
                             }
-
+                    
                             if (dynamicBone.m_notRolls != null && dynamicBone.m_notRolls.Count != 0)
                             {
                                 for (var k = 0; k < dynamicBone.m_notRolls.Count; k++)
@@ -661,7 +699,7 @@ namespace KK_Plugins
                                     }
                                 }
                             }
-
+                    
                             if (dynamicBone.m_Colliders != null)
                             {
                                 dynamicBone.m_Colliders.Clear();
@@ -672,23 +710,27 @@ namespace KK_Plugins
                             }
                         }
                     }
+                    //
+                    ////AssignedWeightsAndSetBounds replaces the bones of an object with the body bones
+                    //var objRootBone = instance.GetReferenceInfo(UniversalRefObjKey.A_ROOTBONE);
+                    //foreach (var rend in chaAccessory.rendNormal.Concat(chaAccessory.rendAlpha).Concat(chaAccessory.rendHair))
+                    //{
+                    //    if (rend)
+                    //    {
+                    //        try
+                    //        {
+                    //            instance.aaWeightsBody.AssignedWeightsAndSetBounds(rend.gameObject, "cf_j_root", instance.bounds, objRootBone.transform);
+                    //        }
+                    //        catch (Exception e)
+                    //        {
+                    //            UnityEngine.Debug.LogException(e);
+                    //        }
+                    //    }
+                    //}
 
-                    //AssignedWeightsAndSetBounds replaces the bones of an object with the body bones
-                    var objRootBone = instance.GetReferenceInfo(UniversalRefObjKey.A_ROOTBONE);
-                    foreach (var rend in chaAccessory.rendNormal.Concat(chaAccessory.rendAlpha).Concat(chaAccessory.rendHair))
-                    {
-                        if (rend)
-                        {
-                            try
-                            {
-                                instance.aaWeightsBody.AssignedWeightsAndSetBounds(rend.gameObject, "cf_j_root", instance.bounds, objRootBone.transform);
-                            }
-                            catch (Exception e)
-                            {
-                                UnityEngine.Debug.LogException(e);
-                            }
-                        }
-                    }
+                    var adapter = accObj.GetComponent<ClothesToAccessoriesAdapter>();
+                    //todo adapter.BoneLinks.Add();
+                    adapter.CreateBoneLinks();
 
                     FixConflictingBoneNames(accObj);
                 }
