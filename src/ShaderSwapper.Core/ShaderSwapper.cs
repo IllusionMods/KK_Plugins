@@ -1,10 +1,12 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using KK_Plugins.MaterialEditor;
 using KKAPI.Maker;
 using KKAPI.Studio;
 using System.Collections.Generic;
+using HarmonyLib;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialEditorCharaController;
 using static MaterialEditorAPI.MaterialAPI;
@@ -18,8 +20,9 @@ namespace KK_Plugins
         public const string PluginGUID = "com.deathweasel.bepinex.shaderswapper";
         public const string PluginName = "Shader Swapper";
         public const string PluginNameInternal = Constants.Prefix + "_ShaderSwapper";
-        public const string PluginVersion = "1.2";
+        public const string PluginVersion = "1.3";
         internal static new ManualLogSource Logger;
+        private static ShaderSwapper Instance;
 
         internal static ConfigEntry<KeyboardShortcut> SwapShadersHotkey { get; private set; }
         internal static ConfigEntry<float> TesselationSlider { get; private set; }
@@ -66,15 +69,44 @@ namespace KK_Plugins
             {"Koikano/main_clothes_item", "xukmi/MainItemPlus" },
         };
 
+        internal static ConfigEntry<bool> AutoReplace { get; private set; }
+        internal static ConfigEntry<bool> DebugLogging { get; private set; }
+
+        private readonly Harmony _harmony = new Harmony(PluginGUID);
+
         private void Awake()
         {
             Logger = base.Logger;
+            Instance = this;
+
             SwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl), "Swap all shaders to the equivalent Vanilla+ shader.");
+
             TesselationSlider = Config.Bind("Tesselation", "Tesselation", 0f, 
                 new ConfigDescription("The amount of tesselation to apply.  Leave at 0% to use the regular Vanilla+ shaders without tesselation.",
                     new AcceptableValueRange<float>(0f, 1f)
                 )
             );
+
+            DebugLogging = Config.Bind("General", "Verbose logging", true, "Write to log every time a shader is swapped.");
+
+            AutoReplace = Config.Bind("General", "Auto swap to V+ shaders", false, 
+                "Automatically swap vanilla shaders to their Vanilla+ equivalents on ALL characters.\n" +
+                "Changes take effect after character reload.\n" +
+                "WARNING: Saving the game, cards, or scenes with this setting enabled can permanently apply the V+ shaders! You won't be able to go back to vanilla shaders without manually resetting MaterialEditor edits in the maker!");
+            void ApplyPatches(bool enable)
+            {
+                if (enable)
+                    _harmony.Patch(AccessTools.Method(typeof(MaterialEditorCharaController), "LoadCharacterExtSaveData"), postfix: new HarmonyMethod(typeof(ShaderSwapper), nameof(ShaderSwapper.LoadHook)));
+                else
+                    _harmony.UnpatchSelf();
+            }
+            AutoReplace.SettingChanged += (sender, args) => ApplyPatches(AutoReplace.Value);
+            if (AutoReplace.Value) ApplyPatches(true);
+        }
+
+        private static void LoadHook(MaterialEditorCharaController __instance)
+        {
+            Instance.UpdateCharShaders(__instance.ChaControl);
         }
 
         private void Update()
@@ -83,20 +115,20 @@ namespace KK_Plugins
             {
                 if (MakerAPI.InsideAndLoaded)
                 {
-                    var chaControl = MakerAPI.GetCharacterControl();   
+                    var chaControl = MakerAPI.GetCharacterControl();
                     UpdateCharShaders(chaControl);
                 }
                 else if (StudioAPI.InsideStudio)
                 {
                     var ociChars = StudioAPI.GetSelectedCharacters();
-                    foreach (var ociChar in ociChars)                   
-                        UpdateCharShaders(ociChar.GetChaControl());                    
+                    foreach (var ociChar in ociChars)
+                        UpdateCharShaders(ociChar.GetChaControl());
                 }
             }
         }
 
-        public void UpdateCharShaders(ChaControl chaControl) 
-        {            
+        public void UpdateCharShaders(ChaControl chaControl)
+        {
             var controller = GetController(chaControl);
             for (var i = 0; i < controller.ChaControl.objClothes.Length; i++)
                 SwapToVanillaPlusClothes(controller, i);
@@ -117,25 +149,36 @@ namespace KK_Plugins
         private void SwapToVanillaPlus(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go)
         {
             if (controller.GetMaterialShader(slot, ObjectType.Clothing, mat, go) == null)
-            {                
-                if (TesselationSlider.Value > 0 && VanillaPlusTesselationShaders.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
+            {
+                if (TesselationSlider.Value > 0)
                 {
-                    int renderQueue = mat.renderQueue;
-                    controller.SetMaterialShader(slot, objectType, mat, vanillaPlusTesShaderName, go);
-                    controller.SetMaterialShaderRenderQueue(slot, objectType, mat, renderQueue, go);
-                    if (mat.shader.name == "xukmi/MainAlphaPlus")
-                        controller.SetMaterialFloatProperty(slot, objectType, mat, "Cutoff", 0.1f, go);
+                    if (VanillaPlusTesselationShaders.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
+                    {
+                        if (DebugLogging.Value)
+                            Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusTesShaderName}] on [{controller.ChaControl.fileParam.fullname}]");
 
-                    SetTesselationValue(mat);
+                        int renderQueue = mat.renderQueue;
+                        controller.SetMaterialShader(slot, objectType, mat, vanillaPlusTesShaderName, go);
+                        controller.SetMaterialShaderRenderQueue(slot, objectType, mat, renderQueue, go);
+                        if (mat.shader.name == "xukmi/MainAlphaPlus")
+                            controller.SetMaterialFloatProperty(slot, objectType, mat, "Cutoff", 0.1f, go);
+
+                        SetTesselationValue(mat);
+                    }
                 }
-
-                if (TesselationSlider.Value == 0 && VanillaPlusShaders.TryGetValue(mat.shader.name, out var vanillaPlusShaderName))
+                else
                 {
-                    int renderQueue = mat.renderQueue;
-                    controller.SetMaterialShader(slot, objectType, mat, vanillaPlusShaderName, go);
-                    controller.SetMaterialShaderRenderQueue(slot, objectType, mat, renderQueue, go);
-                    if (mat.shader.name == "xukmi/MainAlphaPlus")
-                        controller.SetMaterialFloatProperty(slot, objectType, mat, "Cutoff", 0.1f, go);
+                    if (VanillaPlusShaders.TryGetValue(mat.shader.name, out var vanillaPlusShaderName))
+                    {
+                        if (DebugLogging.Value)
+                            Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusShaderName}] on [{controller.ChaControl.fileParam.fullname}]");
+
+                        int renderQueue = mat.renderQueue;
+                        controller.SetMaterialShader(slot, objectType, mat, vanillaPlusShaderName, go);
+                        controller.SetMaterialShaderRenderQueue(slot, objectType, mat, renderQueue, go);
+                        if (mat.shader.name == "xukmi/MainAlphaPlus")
+                            controller.SetMaterialFloatProperty(slot, objectType, mat, "Cutoff", 0.1f, go);
+                    }
                 }
             }
         }
@@ -169,13 +212,13 @@ namespace KK_Plugins
                     SwapToVanillaPlus(controller, 0, ObjectType.Character, material, controller.ChaControl.gameObject);
         }
 
-        private void SetTesselationValue(Material mat) 
+        private void SetTesselationValue(Material mat)
         {
             if (mat == null || !mat.HasProperty("_TessSmooth"))
                 return;
-                
+
             //Adjust the weight of the tesselation
-            mat.SetFloat("_TessSmooth", TesselationSlider.Value);                        
+            mat.SetFloat("_TessSmooth", TesselationSlider.Value);
         }
     }
 }
