@@ -7,6 +7,7 @@ using KKAPI.Utilities;
 using MaterialEditorAPI;
 using System;
 using UnityEngine;
+using HarmonyLib;
 
 namespace KK_Plugins.MaterialEditor
 {
@@ -116,7 +117,16 @@ namespace KK_Plugins.MaterialEditor
         public void Setup(string title, object data, string materialName, Color color, Action<Color> onChanged, bool useAlpha)
         {
             var kind = (CvsColor.ConnectColorKind)title.GetHashCode();
-            CvsColor.Setup(title, kind, color, onChanged, useAlpha);
+
+            var setup = AccessTools.Method(typeof(CvsColor), nameof(CvsColor.Setup));
+            if (setup.GetParameters().Length == 5) //KK, KKS, EC
+            {
+                setup.Invoke(CvsColor, new object[] { title, kind, color, onChanged, useAlpha });
+            }
+            else if (setup.GetParameters().Length == 6) //KK Party
+            {
+                setup.Invoke(CvsColor, new object[] { title, kind, color, onChanged, null, useAlpha });
+            }
 
             _slot = ((ObjectData)data).Slot;
             _materialName = materialName;
