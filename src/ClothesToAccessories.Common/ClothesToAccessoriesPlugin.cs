@@ -25,6 +25,8 @@ namespace KK_Plugins
     // CTA relies on a fix in sideloader to work correctly, so might as well depend on it
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     [BepInDependency(KKABMX_Core.GUID, KKABMX_Core.Version)]
+    // LateUpdate needs to run after DynamicBones to match the position correctly
+    [DefaultExecutionOrder(1000000)]
     public partial class ClothesToAccessoriesPlugin : BaseUnityPlugin
     {
         public const string GUID = "ClothesToAccessories";
@@ -62,7 +64,6 @@ namespace KK_Plugins
             var hi = new Harmony(GUID);
 #if DEBUG // reload cleanup
             CleanupList.Add(Disposable.Create(() => hi.UnpatchSelf()));
-            CleanupList.Add(Disposable.Create(() => BoneController.OnEffectsApplied -= OnAbmxEffectsApplied));
 #endif
             try
             {
@@ -83,8 +84,6 @@ namespace KK_Plugins
                                mi.Name.StartsWith("<Start>");
                     }),
                     prefix: new HarmonyMethod(typeof(ClothesToAccessoriesPlugin), nameof(ConvertDropdownIndexToRelativeTypeIndex)));
-                
-                BoneController.OnEffectsApplied += OnAbmxEffectsApplied;
             }
             catch
             {
@@ -94,30 +93,52 @@ namespace KK_Plugins
             }
         }
 
-        private static void OnAbmxEffectsApplied(object sender, BoneController.EffectsAppliedEventArgs args)
+        private static readonly Dictionary<ChaControl, Action> _BonemodApplyEffectsActions = new Dictionary<ChaControl, Action>();
+        private static bool _applyEffectsOverrideEnable = true;
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(BoneController), nameof(BoneController.ApplyEffectsToLocation))]
+        private static bool ApplyEffectsOverride(BoneController __instance, BoneLocation boneLocation, List<BoneModifier> boneModifiers)
         {
-            if (args.AppliedLocation == BoneLocation.BodyTop) AbmxUpdateHook(args.Controller);
+            if (_applyEffectsOverrideEnable && boneLocation >= BoneLocation.Accessory)
+            {
+                if (ClothesToAccessoriesAdapter.AllInstances.ContainsKey(__instance.ChaControl))
+                {
+                    _BonemodApplyEffectsActions.TryGetValue(__instance.ChaControl, out var action);
+                    _BonemodApplyEffectsActions[__instance.ChaControl] = action + delegate { __instance.ApplyEffectsToLocation(boneLocation, boneModifiers); };
+
+                    return false;
+                }
+            }
+
+            return true;
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(BoneController), "LateUpdate")]
-        private static void AbmxUpdateHook(BoneController __instance)
+        private void LateUpdate()
         {
-            //var sw = Stopwatch.StartNew();
-            ClothesToAccessoriesAdapter.AllInstances.TryGetValue(__instance.ChaControl, out var adapters);
-            if (adapters != null)
+            foreach (var instance in ClothesToAccessoriesAdapter.AllInstances)
             {
-                for (var i = 0; i < adapters.Length; i++)
+                var adapters = instance.Value;
+                //if (adapters != null)
                 {
-                    var x = adapters[i];
-                    for (var i2 = 0; i2 < x.Count; i2++)
+                    //var sw = Stopwatch.StartNew();
+                    for (var i = 0; i < adapters.Length; i++)
                     {
-                        var adapter = x[i2];
-                        adapter.UpdateLinkedBonePositions(); //todo needs to happen after abmx applies to body bones but before it applies to cta bones, also after dynamicbones apply to body and before they apply to cta bones
+                        var x = adapters[i];
+                        for (var i2 = 0; i2 < x.Count; i2++)
+                        {
+                            var adapter = x[i2];
+                            adapter.UpdateLinkedBonePositions(); //todo needs to happen after abmx applies to body bones but before it applies to cta bones, also after dynamicbones apply to body and before they apply to cta bones
+                        }
                     }
+                    //Console.WriteLine(sw.ElapsedMilliseconds);
                 }
-                //Console.WriteLine(sw.ElapsedMilliseconds);
             }
+
+            _applyEffectsOverrideEnable = false;
+            foreach (var action in _BonemodApplyEffectsActions) action.Value();
+            _applyEffectsOverrideEnable = true;
+            _BonemodApplyEffectsActions.Clear();
         }
 
 #if DEBUG // reload cleanup
@@ -643,7 +664,7 @@ namespace KK_Plugins
                     // sub to OnEffectsApplied bodytop and hook lateupdate, run bone sync on the first one that happens
 
                     //var chaAccessory = accObj.GetComponent<ChaAccessoryComponent>();
-                    
+
                     // Make dynamic bones on the instantiated clothing operate on the main body bones instead (since the renderers will be using these instead)
                     var componentsInChildren = accObj.GetComponentsInChildren<DynamicBone>(true);
                     if (!componentsInChildren.IsNullOrEmpty())
@@ -663,7 +684,7 @@ namespace KK_Plugins
                                     }
                                 }
                             }
-                    
+
                             if (dynamicBone.m_Exclusions != null && dynamicBone.m_Exclusions.Count != 0)
                             {
                                 for (var j = 0; j < dynamicBone.m_Exclusions.Count; j++)
@@ -681,7 +702,7 @@ namespace KK_Plugins
                                     }
                                 }
                             }
-                    
+
                             if (dynamicBone.m_notRolls != null && dynamicBone.m_notRolls.Count != 0)
                             {
                                 for (var k = 0; k < dynamicBone.m_notRolls.Count; k++)
@@ -699,7 +720,7 @@ namespace KK_Plugins
                                     }
                                 }
                             }
-                    
+
                             if (dynamicBone.m_Colliders != null)
                             {
                                 dynamicBone.m_Colliders.Clear();

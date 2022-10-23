@@ -545,12 +545,12 @@ namespace KK_Plugins
             {
                 var boneLink = _boneLinks[i];
                 boneLink.Key.position = boneLink.Value.position;
-                boneLink.Key.localRotation = boneLink.Value.localRotation; //todo localrot or global rot? //todo need to keep topmost as global?
-                boneLink.Key.localScale = boneLink.Value.localScale; //todo need to keep topmost as global?
+                boneLink.Key.rotation = boneLink.Value.rotation;
+                boneLink.Key.localScale = boneLink.Value.localScale; //bug scale of some things seems off, maybe need to keep topmost as global?
             }
         }
 
-        public void CreateBoneLinks()
+        public void CreateBoneLinks() // todo option to use old method or new method to enable abmx in acc window
         {
             if (_boneLinks == null)
             {
@@ -558,7 +558,18 @@ namespace KK_Plugins
                 var bc = Owner.GetComponent<BoneController>();
                 var bones = bc.BoneSearcher.GetAllBones(BoneLocation.BodyTop);
 
-                foreach (var bone in AccessoryComponent.rendNormal.Concat(AccessoryComponent.rendAlpha).Concat(AccessoryComponent.rendHair).OfType<SkinnedMeshRenderer>().SelectMany(x => x.bones).Distinct())
+                var skinnedMeshRenderers = AccessoryComponent.rendNormal.Concat(AccessoryComponent.rendAlpha).Concat(AccessoryComponent.rendHair).OfType<SkinnedMeshRenderer>();
+                var distinctBones = new HashSet<Transform>();
+                foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
+                {
+                    // Fix clothes disappearing at some camera angles
+                    skinnedMeshRenderer.localBounds = Owner.rendBody.bounds;
+
+                    foreach (var bone in skinnedMeshRenderer.bones) 
+                        distinctBones.Add(bone);
+                }
+
+                foreach (var bone in distinctBones)
                 {
                     bones.TryGetValue(bone.name, out var bodyBone);
                     if (bodyBone != null)
