@@ -530,6 +530,7 @@ namespace KK_Plugins
         }
 
         private bool _boneUpdateDone;
+        private List<SkinnedMeshRenderer> _allSkinnedMeshRenderers;
 
         private void Update()
         {
@@ -541,35 +542,114 @@ namespace KK_Plugins
             if (_boneUpdateDone) return;
             _boneUpdateDone = true;
 
+            var rootTr = Owner.objBody.transform;
+            transform.position = rootTr.position;
+            transform.rotation = rootTr.rotation;
+            SetLossyScale(transform, rootTr.lossyScale);
+
+            // Because bone positions are changed from code, localBounds does not get recalculated and objects
+            // might disappear while still on-camera. Fix by using body bounds.
+            var bodyBounds = ((SkinnedMeshRenderer)Owner.rendBody).localBounds;
+            for (var i = 0; i < _allSkinnedMeshRenderers.Count; i++)
+            {
+                _allSkinnedMeshRenderers[i].localBounds = bodyBounds;
+            }
+
             for (var i = 0; i < _boneLinks.Count; i++)
             {
                 var boneLink = _boneLinks[i];
+
+                //todo doesn't track properly
+                //boneLink.Key.localPosition = boneLink.Value.localPosition;
+                //boneLink.Key.localRotation = boneLink.Value.localRotation;
+                boneLink.Key.localScale = boneLink.Value.localScale;
+
+
                 boneLink.Key.position = boneLink.Value.position;
                 boneLink.Key.rotation = boneLink.Value.rotation;
-                boneLink.Key.localScale = boneLink.Value.localScale; //bug scale of some things seems off, maybe need to keep topmost as global?
+
+
+                //var keyLossyScale = boneLink.Key.lossyScale;
+                //var valueLossyScale = boneLink.Value.lossyScale;
+                //if (keyLossyScale != valueLossyScale)
+                //    Console.WriteLine($"{keyLossyScale.ToString("0.000000")} - {valueLossyScale.ToString("0.000000")}");
+
+                //var keyLocalScale = boneLink.Key.localScale;
+                //SetLossyScale(boneLink.Key, valueLossyScale);
+
+                //if (keyLossyScale != valueLossyScale && boneLink.Key.localScale == boneLink.Value.localScale)
+                //    Console.WriteLine($"{keyLossyScale.ToString("0.000000")} - {valueLossyScale.ToString("0.000000")}");
+
+
+                //boneLink.Key.localScale = boneLink.Value.localScale; //bug scale of some things seems off, maybe need to keep topmost as global?
             }
+        }
+
+        private static void SetLossyScale(Transform targetTransform, Vector3 lossyScale)
+        {
+            targetTransform.localScale = new Vector3(targetTransform.localScale.x * (lossyScale.x / targetTransform.lossyScale.x),
+                                                     targetTransform.localScale.y * (lossyScale.y / targetTransform.lossyScale.y),
+                                                     targetTransform.localScale.z * (lossyScale.z / targetTransform.lossyScale.z));
         }
 
         public void CreateBoneLinks() // todo option to use old method or new method to enable abmx in acc window
         {
             if (_boneLinks == null)
             {
+                //todo keep links as local only, do global sync only on top acc object
+
                 _boneLinks = new List<KeyValuePair<Transform, Transform>>();
                 var bc = Owner.GetComponent<BoneController>();
                 var bones = bc.BoneSearcher.GetAllBones(BoneLocation.BodyTop);
 
-                var skinnedMeshRenderers = AccessoryComponent.rendNormal.Concat(AccessoryComponent.rendAlpha).Concat(AccessoryComponent.rendHair).OfType<SkinnedMeshRenderer>();
-                var distinctBones = new HashSet<Transform>();
-                foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
-                {
-                    // Fix clothes disappearing at some camera angles
-                    skinnedMeshRenderer.localBounds = Owner.rendBody.bounds;
-
-                    foreach (var bone in skinnedMeshRenderer.bones) 
-                        distinctBones.Add(bone);
-                }
-
-                foreach (var bone in distinctBones)
+                _allSkinnedMeshRenderers = AccessoryComponent.rendNormal.Concat(AccessoryComponent.rendAlpha).Concat(AccessoryComponent.rendHair).OfType<SkinnedMeshRenderer>().ToList();
+                //var distinctBones = new HashSet<Transform>();
+                //var bodyTransform = Owner.rendBody.transform;
+                //for (var i = 0; i < _allSkinnedMeshRenderers.Count; i++)
+                //{
+                //    var skinnedMeshRenderer = _allSkinnedMeshRenderers[i];
+                //    // Fix clothes disappearing at some camera angles
+                //    // todo need to move origin point to body origin
+                //
+                //    //var bodyRootBone = ((SkinnedMeshRenderer)Owner.rendBody).rootBone;
+                //    //if (bodyRootBone == null) throw new ArgumentNullException(nameof(bodyRootBone));
+                //    //var thisRootBone = skinnedMeshRenderer.rootBone;
+                //    //if (thisRootBone == null) throw new ArgumentNullException(nameof(thisRootBone));
+                //    //thisRootBone.position = bodyRootBone.position;
+                //    //thisRootBone.rotation = bodyRootBone.rotation;
+                //    //
+                //    //skinnedMeshRenderer.transform.position = bodyRootBone.position;
+                //    //skinnedMeshRenderer.transform.rotation = bodyRootBone.rotation;
+                //    //
+                //    //var keyLocalScale = thisRootBone.lossyScale;
+                //    //var keyLossyScale = thisRootBone.lossyScale;
+                //    //var valueLossyScale = bodyRootBone.lossyScale;
+                //    //thisRootBone.localScale = new Vector3(keyLocalScale.x * (valueLossyScale.x / keyLossyScale.x),
+                //    //                                  keyLocalScale.y * (valueLossyScale.y / keyLossyScale.y),
+                //    //                                  keyLocalScale.z * (valueLossyScale.z / keyLossyScale.z));
+                //
+                //
+                //    //skinnedMeshRenderer.transform.position = Owner.rendBody.transform.position;
+                //    //skinnedMeshRenderer.transform.rotation = Owner.rendBody.transform.rotation;
+                //
+                //    //_boneLinks.Add(new KeyValuePair<Transform, Transform>(skinnedMeshRenderer.transform, bodyTransform));
+                //
+                //    for (var j = 0; j < skinnedMeshRenderer.bones.Length; j++)
+                //    {
+                //        var bone = skinnedMeshRenderer.bones[j];
+                //        distinctBones.Add(bone);
+                //    }
+                //}
+                //
+                //foreach (var bone in distinctBones)
+                //{
+                //    bones.TryGetValue(bone.name, out var bodyBone);
+                //    if (bodyBone != null)
+                //        _boneLinks.Add(new KeyValuePair<Transform, Transform>(bone, bodyBone.transform));
+                //    else
+                //        Console.WriteLine("no link for " + bone.gameObject.FullPath());
+                //}
+                foreach (var bone in transform.GetComponentsInChildren<Transform>())
                 {
                     bones.TryGetValue(bone.name, out var bodyBone);
                     if (bodyBone != null)
