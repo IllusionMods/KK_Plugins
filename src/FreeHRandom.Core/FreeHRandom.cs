@@ -3,9 +3,11 @@ using BepInEx.Configuration;
 using HarmonyLib;
 using Illusion.Extensions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BepInEx.Logging;
 using TMPro;
 using UILib;
 using UniRx;
@@ -21,9 +23,11 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.freehrandom";
         public const string PluginName = "Free H Random";
         public const string PluginNameInternal = Constants.Prefix + "_FreeHRandom";
-        public const string Version = "1.3";
+        public const string Version = "1.4";
 
-        private enum CharacterType { Heroine, Partner, Female3P, Player }
+        private enum CharacterType { Heroine, Partner, Female3P, Player, Darkness }
+
+        internal static new ManualLogSource Logger;
 
 #if KKS
         internal static ConfigEntry<bool> IncludeDefaultMales { get; private set; }
@@ -32,6 +36,7 @@ namespace KK_Plugins
 
         internal void Main()
         {
+            Logger = base.Logger;
             //KK Party may not have these directories when first run, create them to avoid errors
             Directory.CreateDirectory(CC.Paths.FemaleCardPath);
             Directory.CreateDirectory(CC.Paths.MaleCardPath);
@@ -59,6 +64,7 @@ namespace KK_Plugins
                 CreateRandomButton("FreeHScene/Canvas/Panel/3P/FemaleSelectButton", CharacterType.Female3P);
                 CreateRandomButton("FreeHScene/Canvas/Panel/3P/MaleSelectButton", CharacterType.Player);
                 CreateRandomButton("FreeHScene/Canvas/Panel/Dark/MaleSelectButton", CharacterType.Player);
+                CreateRandomButton("FreeHScene/Canvas/Panel/Dark/FemaleSelectButton", CharacterType.Darkness);
 #elif KKS
                 CreateRandomButton("FreeHScene/Canvas/Panel/3P/main/FemaleSelectButton", CharacterType.Female3P);
                 CreateRandomButton("FreeHScene/Canvas/Panel/3P/main/MaleSelectButton", CharacterType.Player);
@@ -148,42 +154,42 @@ namespace KK_Plugins
             var listFileObj = folderAssist.GetType().GetField("_lstFile", AccessTools.all)?.GetValue(folderAssist);
             if (listFileObj == null)
                 listFileObj = folderAssist.GetType().GetField("lstFile", AccessTools.all)?.GetValue(folderAssist);
-            List<FolderAssist.FileInfo> lstFile = (List<FolderAssist.FileInfo>)listFileObj;
 
-            if (lstFile == null || lstFile.Count == 0)
-                return;
-
-            lstFile.Randomize();
-
-            //different fields for different versions of the game, get the correct one
-            string filePath = (string)lstFile[0].GetType().GetField("fullPath", AccessTools.all)?.GetValue(lstFile[0]);
-            if (filePath.IsNullOrEmpty())
-                filePath = (string)lstFile[0].GetType().GetField("FullPath", AccessTools.all)?.GetValue(lstFile[0]);
-
-            SetupCharacter(filePath, characterType);
+            SetupCharacter((List<FolderAssist.FileInfo>)listFileObj, characterType);
         }
+
         /// <summary>
         /// Load and set the character
         /// </summary>
-        private static void SetupCharacter(string filePath, CharacterType characterType)
+        private static void SetupCharacter(List<FolderAssist.FileInfo> lstFile, CharacterType characterType)
         {
+            if (lstFile == null || lstFile.Count == 0)
+                return;
+
+            var hSceneObject = GetFreeHInstance();
+
             var chaFileControl = new ChaFileControl();
-            if (chaFileControl.LoadCharaFile(filePath))
-            {
-                object member;
-                if (Singleton<FreeHScene>.Instance == null)
-                {
-                    //Use reflection to get the VR version of the character select screen
+            var loadSuccess = false;
+
+            lstFile.Randomize();
+
+            var loadCharasUntilSuccess = lstFile.Select(GetFilePath).Where(filePath => chaFileControl.LoadCharaFile(filePath));
 #if KK
-                    Type VRHSceneType = Type.GetType("VRCharaSelectScene, Assembly-CSharp");
-#elif KKS
-                    Type VRHSceneType = Type.GetType("VRFreeHSelect, Assembly-CSharp");
+            if (characterType == CharacterType.Darkness)
+            {
+                // Need to filter out incompatible personalities for darkness since there's no sanity checks
+                var loadM = Traverse.Create(hSceneObject).Method("LoadDarkList");
+                var list = loadM.GetValue<ICollection>();
+                var availableDarknessPersonalities = list.Cast<object>().Select(x => Traverse.Create(x).Field<int>("personal").Value).ToList();
+                
+                loadCharasUntilSuccess = loadCharasUntilSuccess.Where(filePath => availableDarknessPersonalities.Contains(chaFileControl.parameter.personality));
+            }
 #endif
-                    var HSceneObject = FindObjectOfType(VRHSceneType);
-                    member = HSceneObject.GetType().GetField("member", AccessTools.all).GetValue(HSceneObject);
-                }
-                else
-                    member = Singleton<FreeHScene>.Instance.GetType().GetField("member", AccessTools.all).GetValue(Singleton<FreeHScene>.Instance);
+            loadSuccess = loadCharasUntilSuccess.Any();
+
+            if (loadSuccess)
+            {
+                var member = hSceneObject.GetType().GetField("member", AccessTools.all).GetValue(hSceneObject);
 
                 switch (characterType)
                 {
@@ -215,8 +221,40 @@ namespace KK_Plugins
                         ReactiveProperty<SaveData.Player> resultPlayer = (ReactiveProperty<SaveData.Player>)Traverse.Create(member).Field("resultPlayer").GetValue();
                         resultPlayer.SetValueAndForceNotify(new SaveData.Player(chaFileControl, false));
                         break;
+                    case CharacterType.Darkness:
+                        ReactiveProperty<SaveData.Heroine> resultDarkHeroine = (ReactiveProperty<SaveData.Heroine>)Traverse.Create(member).Field("resultDarkHeroine").GetValue();
+                        resultDarkHeroine.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
+                        break;
+
                 }
             }
+            else
+            {
+                Logger.LogMessage("No applicable cards were found to load. Only topmost male/female directory is searched.");
+            }
+        }
+
+        private static object GetFreeHInstance()
+        {
+            if (Singleton<FreeHScene>.Instance != null)
+                return Singleton<FreeHScene>.Instance;
+
+            //Use reflection to get the VR version of the character select screen
+#if KK
+            Type VRHSceneType = Type.GetType("VRCharaSelectScene, Assembly-CSharp");
+#elif KKS
+            Type VRHSceneType = Type.GetType("VRFreeHSelect, Assembly-CSharp");
+#endif
+            return FindObjectOfType(VRHSceneType);
+        }
+
+        private static string GetFilePath(FolderAssist.FileInfo lstFile)
+        {
+            //different fields for different versions of the game, get the correct one
+            string filePath = (string)lstFile.GetType().GetField("fullPath", AccessTools.all)?.GetValue(lstFile);
+            if (filePath.IsNullOrEmpty())
+                filePath = (string)lstFile.GetType().GetField("FullPath", AccessTools.all)?.GetValue(lstFile);
+            return filePath;
         }
     }
 }
