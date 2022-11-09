@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using HarmonyLib;
@@ -24,7 +25,7 @@ namespace KK_Plugins.DynamicBoneEditor
         public const string PluginGUID = "com.deathweasel.bepinex.dynamicboneeditor";
         public const string PluginName = "Dynamic Bone Editor";
         public const string PluginNameInternal = Constants.Prefix + "_DynamicBoneEditor";
-        public const string PluginVersion = "1.0.4";
+        public const string PluginVersion = "1.0.5";
         internal static new ManualLogSource Logger;
         internal static Plugin PluginInstance;
 
@@ -36,6 +37,7 @@ namespace KK_Plugins.DynamicBoneEditor
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
+            MakerAPI.MakerExiting += MakerAPI_MakerExiting;
             CharacterApi.RegisterExtraBehaviour<CharaController>(PluginGUID);
             AccessoriesApi.SelectedMakerAccSlotChanged += AccessoriesApi_SelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += AccessoriesApi_AccessoryKindChanged;
@@ -57,6 +59,11 @@ namespace KK_Plugins.DynamicBoneEditor
         private void MakerAPI_MakerFinishedLoading(object sender, System.EventArgs e)
         {
             UI.ToggleButtonVisibility();
+        }
+
+        private void MakerAPI_MakerExiting(object sender, EventArgs e)
+        {
+            UI.DestroyUI();
         }
 
         private void AccessoriesApi_SelectedMakerAccSlotChanged(object sender, AccessorySlotEventArgs e)

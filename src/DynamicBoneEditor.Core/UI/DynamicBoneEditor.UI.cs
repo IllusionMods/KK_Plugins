@@ -48,7 +48,7 @@ namespace KK_Plugins.DynamicBoneEditor
         {
             get
             {
-                if (EditorWindow != null && EditorWindow.gameObject != null)
+                if (DynamicBoneEditorButton != null && EditorWindow != null && EditorWindow.gameObject != null)
                     return EditorWindow.gameObject.activeInHierarchy;
                 return false;
             }
@@ -156,10 +156,18 @@ namespace KK_Plugins.DynamicBoneEditor
             Radius.CreateUI(EditorScrollableUI.content.transform);
         }
 
+        public static void DestroyUI()
+        {
+            DynamicBoneEditorButton = null;
+        }
+
         public static void ShowUI(int dynamicBoneIndex)
         {
             if (!MakerAPI.InsideAndLoaded)
                 return;
+            if (DynamicBoneEditorButton == null)
+                return;
+
             int slot = AccessoriesApi.SelectedMakerAccSlot;
 
             var accessory = MakerAPI.GetCharacterControl().GetAccessoryObject(slot);
