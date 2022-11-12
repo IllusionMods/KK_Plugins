@@ -276,9 +276,13 @@ namespace KK_Plugins.MaterialEditor
         }
 
         [HarmonyPostfix]
-        // bug? async postfix doesn't actually run after method finishes but before
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), typeof(int), typeof(int), typeof(bool), typeof(bool))]
+        private static void ChangeHair(ChaControl __instance, int kind, ref IEnumerator __result)
+        {
+            __result = __result.AppendCo(() => ChangeHair(__instance, kind));
+        }
 #if KKS
+        [HarmonyPostfix]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairNoAsync), typeof(int), typeof(int), typeof(bool))]
 #endif
         private static void ChangeHair(ChaControl __instance, int kind)
