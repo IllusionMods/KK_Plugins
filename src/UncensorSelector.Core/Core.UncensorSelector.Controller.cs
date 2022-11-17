@@ -616,15 +616,35 @@ namespace KK_Plugins
                 _ksox.UpdateTexture(TexType.BodyOver);
                 _ksox.UpdateTexture(TexType.BodyUnder);
             }
+
+#if AI || HS2
+            private bool? _lastUpdatedMonochromeState;
+            private void Update()
+            {
+                base.Update();
+                UpdateMonochromeBody(false);
+            }
+#endif
             /// <summary>
             /// Disable dick and balls for the monochrome body since the main body already has the parts
+            /// Keep parameterless overload for backwards compatibility
             /// </summary>
-            private void UpdateMonochromeBody()
+            private void UpdateMonochromeBody() => UpdateMonochromeBody(true);
+            private void UpdateMonochromeBody(bool force)
             {
 #if AI || HS2
-                foreach (var renderer in ChaControl.objSimpleBody.GetComponentsInChildren<SkinnedMeshRenderer>())
-                    if (PenisParts.Contains(renderer.name) || BallsParts.Contains(renderer.name))
-                        renderer.enabled = false;
+#if AI
+                var monochromeState = Manager.Config.GraphicData.SimpleBody;
+#else
+                var monochromeState = Manager.Config.HData.SimpleBody;
+#endif
+                if (force || _lastUpdatedMonochromeState != monochromeState)
+                {
+                    _lastUpdatedMonochromeState = monochromeState;
+                    foreach (var renderer in ChaControl.objSimpleBody.GetComponentsInChildren<SkinnedMeshRenderer>())
+                        if (PenisParts.Contains(renderer.name) || BallsParts.Contains(renderer.name))
+                            renderer.enabled = false;
+                }
 #endif
             }
             /// <summary>
