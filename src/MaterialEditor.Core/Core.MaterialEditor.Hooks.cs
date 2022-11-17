@@ -48,28 +48,41 @@ namespace KK_Plugins.MaterialEditor
                 GetBodyRendererList(gameObject.transform.GetChild(i).gameObject, rendList);
         }
 
+        private static readonly Dictionary<GameObject, List<Renderer>> _RendererLookup = new Dictionary<GameObject, List<Renderer>>();
         [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditorAPI.MaterialAPI), nameof(MaterialEditorAPI.MaterialAPI.GetRendererList))]
         private static bool MaterialAPI_GetRendererList(ref IEnumerable<Renderer> __result, GameObject gameObject)
         {
             if (gameObject == null)
                 return true;
 
-            //For ChaControl objects, return only specific renderes (i.e. not clothes, hair, etc.)
-            var chaControl = gameObject.GetComponent<ChaControl>();
-            if (chaControl)
+            if (_RendererLookup.TryGetValue(gameObject, out var cached))
             {
-                List<Renderer> rendList = new List<Renderer>();
-                GetBodyRendererList(chaControl.gameObject, rendList);
-                __result = rendList;
-                return false;
+                if (cached.All(r => r != null))
+                {
+                    __result = cached;
+                    return false;
+                }
             }
 
-#if !PH
-            //If this is an ItemComponent return only the renderers in the arrays, otherwise child objects will show in the UI
-            var itemComponent = gameObject.GetComponent<ItemComponent>();
-            if (itemComponent)
+            try
             {
-                List<Renderer> rendList = new List<Renderer>();
+                //For ChaControl objects, return only specific renderes (i.e. not clothes, hair, etc.)
+                var chaControl = gameObject.GetComponent<ChaControl>();
+                if (chaControl)
+                {
+                    List<Renderer> rendList = new List<Renderer>();
+                    GetBodyRendererList(chaControl.gameObject, rendList);
+                    __result = rendList;
+                    _RendererLookup[gameObject] = rendList;
+                    return false;
+                }
+
+#if !PH
+                //If this is an ItemComponent return only the renderers in the arrays, otherwise child objects will show in the UI
+                var itemComponent = gameObject.GetComponent<ItemComponent>();
+                if (itemComponent)
+                {
+                    List<Renderer> rendList = new List<Renderer>();
 
 #if KK || KKS
                 for (int i = 0; i < itemComponent.rendNormal.Length; i++)
@@ -86,20 +99,26 @@ namespace KK_Plugins.MaterialEditor
                     if (itemComponent.renderers[i] && !rendList.Contains(itemComponent.renderers[i]))
                         rendList.Add(itemComponent.renderers[i]);
 #else
-                for (int i = 0; i < itemComponent.rendererInfos.Length; i++)
-                    if (itemComponent.rendererInfos[i].renderer && !rendList.Contains(itemComponent.rendererInfos[i].renderer))
-                        rendList.Add(itemComponent.rendererInfos[i].renderer);
-                for (int i = 0; i < itemComponent.renderersSea.Length; i++)
-                    if (itemComponent.renderersSea[i] && !rendList.Contains(itemComponent.renderersSea[i]))
-                        rendList.Add(itemComponent.renderersSea[i]);
+                    for (int i = 0; i < itemComponent.rendererInfos.Length; i++)
+                        if (itemComponent.rendererInfos[i].renderer && !rendList.Contains(itemComponent.rendererInfos[i].renderer))
+                            rendList.Add(itemComponent.rendererInfos[i].renderer);
+                    for (int i = 0; i < itemComponent.renderersSea.Length; i++)
+                        if (itemComponent.renderersSea[i] && !rendList.Contains(itemComponent.renderersSea[i]))
+                            rendList.Add(itemComponent.renderersSea[i]);
 #endif
-                if (rendList.Count > 0)
-                {
-                    __result = rendList;
-                    return false;
+                    if (rendList.Count > 0)
+                    {
+                        __result = rendList;
+                        _RendererLookup[gameObject] = rendList;
+                        return false;
+                    }
                 }
-            }
 #endif
+            }
+            catch (Exception ex)
+            {
+                MaterialEditorPlugin.Logger.LogError("Failed to get filtered renderers, falling back to getting all renderers. Cause: " + ex);
+            }
 
             return true;
         }
