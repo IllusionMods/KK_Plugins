@@ -9,19 +9,20 @@ using KKAPI.Maker;
 using MessagePack;
 using System.Collections.Generic;
 using System.Linq;
+using KKABMX.Core;
 using UnityEngine;
 
 namespace KK_Plugins
 {
-    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
-    [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInDependency(KKABMX_Core.GUID, KKABMX_Core.Version)]
     public partial class Pushup : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.pushup";
         public const string PluginName = "Pushup";
         public const string PluginNameInternal = Constants.Prefix + "_Pushup";
-        public const string Version = "1.3.2";
+        public const string Version = "2.0";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<bool> ConfigEnablePushup { get; private set; }
@@ -54,51 +55,13 @@ namespace KK_Plugins
             MakerAPI.MakerExiting += MakerExiting;
             MakerAPI.MakerFinishedLoading += MakerFinishedLoading;
 #if EC || KKS
-            ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported;
+            ExtendedSave.CardBeingImported += ExtendedSave_CardBeingImported; //todo handle for new format
 #endif
 #if KK || KKS
             //No studio for EC
             RegisterStudioControls();
 #endif
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
-
-            //Patch all the slider onValueChanged events to return false and cancel original code
-            //Pushup adds its own onValueChanged event that manages this stuff
-            for (var i = 0; i < typeof(ChaCustom.CvsBreast).GetNestedTypes(AccessTools.all).Length; i++)
-            {
-                var anonType = typeof(ChaCustom.CvsBreast).GetNestedTypes(AccessTools.all)[i];
-                if (anonType.Name.Contains("<Start>"))
-                    for (var index = 0; index < anonType.GetMethods(AccessTools.all).Length; index++)
-                    {
-                        var anonTypeMethod = anonType.GetMethods(AccessTools.all)[index];
-                        if (anonTypeMethod.Name.Contains("<>m"))
-                            if (anonTypeMethod.GetParameters().Any(x => x.ParameterType == typeof(float)))
-                                harmony.Patch(anonTypeMethod, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
-                    }
-            }
-
-            var sliders = typeof(ChaCustom.CvsBreast).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>") && x.GetParameters().Any(y => y.ParameterType == typeof(float)));
-            //Don't patch areola size or nipple gloss since they are not managed by this plugin
-            foreach (var slider in sliders)
-            {
-                if (Application.productName == Constants.MainGameProcessName)
-                {
-                    if (slider.Name == "<Start>m__E") { }//areola size
-                    else if (slider.Name == "<Start>m__14") { }//nipple gloss
-                    else
-                        harmony.Patch(slider, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
-                }
-#if KK
-                //EC sliders match non-Steam version of KK
-                else if (Application.productName == Constants.MainGameProcessNameSteam)
-                {
-                    if (slider.Name == "<Start>m__10") { }//areola size
-                    else if (slider.Name == "<Start>m__17") { }//nipple gloss
-                    else
-                        harmony.Patch(slider, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.SliderHook), AccessTools.all)));
-                }
-#endif
-            }
         }
 
 #if EC

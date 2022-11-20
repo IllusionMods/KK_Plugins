@@ -8,37 +8,54 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using KKABMX.Core;
 using UniRx;
 
 namespace KK_Plugins
 {
     public partial class Pushup
     {
+        public sealed class PushupBoneEffect : BoneEffect
+        {
+            private readonly PushupController _owner;
+            public PushupBoneEffect(PushupController owner)
+            {
+                _owner = owner;
+            }
+
+            public override IEnumerable<string> GetAffectedBones(BoneController origin)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override BoneModifierData GetEffect(string bone, BoneController origin, ChaFileDefine.CoordinateType coordinate)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public class PushupController : CharaCustomFunctionController
         {
             public BodyData BaseData;
             public BodyData LoadedBaseData;
             public BodyData CurrentPushupData;
 
+            private PushupBoneEffect boneEffect;
+
             private Dictionary<int, ClothData> BraDataDictionary = new Dictionary<int, ClothData>();
             private Dictionary<int, ClothData> TopDataDictionary = new Dictionary<int, ClothData>();
 
-#if KK || KKS
-            //EC only has one outfit slot, no need to watch changes
             protected override void Start()
             {
+#if !EC         //EC only has one outfit slot, no need to watch changes
                 CurrentCoordinate.Subscribe(value => { OnCoordinateChanged(); });
+#endif
+                boneEffect = new PushupBoneEffect(this);
                 base.Start();
             }
-#endif
             protected override void OnCardBeingSaved(GameMode currentGameMode)
             {
-                bool hasData = false;
-
-                if (BraDataDictionary.Values.Any(x => x.EnablePushup || x.UseAdvanced))
-                    hasData = true;
-                if (TopDataDictionary.Values.Any(x => x.EnablePushup || x.UseAdvanced))
-                    hasData = true;
+                bool hasData = BraDataDictionary.Values.Concat(TopDataDictionary.Values).Any(x => x.EnablePushup || x.UseAdvanced);
 
                 if (!hasData)
                 {
@@ -247,42 +264,18 @@ namespace KK_Plugins
             /// </summary>
             internal void ClothesChangeEvent() => RecalculateBody();
 
-            /// <summary>
-            /// Refreshes ABMX modifications
-            /// </summary>
-            private void UpdateABMX()
-            {
-                var abmxType = Type.GetType("KKABMX.Core.BoneController, KKABMX");
-                if (abmxType == null) return;
-                var abmxComponent = ChaControl.gameObject.GetComponent(abmxType);
-                if (abmxComponent == null) return;
-                Traverse.Create(abmxComponent).Property("NeedsBaselineUpdate")?.SetValue(true);
-            }
 
             /// <summary>
             /// Sets the body values to the values stored in the BodyData.
             /// </summary>
             internal void MapBodyInfoToChaFile(BodyData bodyData)
             {
-                void setShapeValue(int idx, float val)
-                {
-                    ChaControl.fileBody.shapeValueBody[idx] = val;
-                    ChaControl.SetShapeBodyValue(idx, val);
-                }
-
-                ChaControl.ChangeBustSoftness(bodyData.Softness);
-                ChaControl.ChangeBustGravity(bodyData.Weight);
-
-                setShapeValue(PushupConstants.IndexSize, bodyData.Size);
-                setShapeValue(PushupConstants.IndexVerticalPosition, bodyData.VerticalPosition);
-                setShapeValue(PushupConstants.IndexHorizontalAngle, bodyData.HorizontalAngle);
-                setShapeValue(PushupConstants.IndexHorizontalPosition, bodyData.HorizontalPosition);
-                setShapeValue(PushupConstants.IndexVerticalAngle, bodyData.VerticalAngle);
-                setShapeValue(PushupConstants.IndexDepth, bodyData.Depth);
-                setShapeValue(PushupConstants.IndexRoundness, bodyData.Roundness);
-                setShapeValue(PushupConstants.IndexAreolaDepth, bodyData.AreolaDepth);
-                setShapeValue(PushupConstants.IndexNippleWidth, bodyData.NippleWidth);
-                setShapeValue(PushupConstants.IndexNippleDepth, bodyData.NippleDepth);
+                //todo patch these and set pushup adjustments in prefix and restore in postfix
+                //ChaControl.bustSoft.ReCalc();
+                //ChaControl.bustGravity.ReCalc();
+                //old:
+                //ChaControl.ChangeBustSoftness(bodyData.Softness);
+                //ChaControl.ChangeBustGravity(bodyData.Weight);
             }
 
             internal void CalculatePush(Wearing wearing)
@@ -495,6 +488,7 @@ namespace KK_Plugins
 #endif
 
             private bool characterLoading;
+
             public bool CharacterLoading
             {
                 get => characterLoading;

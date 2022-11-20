@@ -51,6 +51,10 @@
       <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.15\lib\net35\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ECABMX, Version=4.4.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ABMX.ECABMX.4.4.6\lib\net46\ECABMX.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ECAPI, Version=1.31.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IllusionModdingAPI.ECAPI.1.31.2\lib\net46\ECAPI.dll</HintPath>
       <Private>False</Private>
