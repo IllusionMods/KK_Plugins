@@ -122,6 +122,7 @@
     <ProjectReference Include="..\MaterialEditor.HS2\HS2.MaterialEditor.csproj">
       <Project>{cfb86ab8-8852-4939-b0eb-09d320a4266b}</Project>
       <Name>HS2.MaterialEditor</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

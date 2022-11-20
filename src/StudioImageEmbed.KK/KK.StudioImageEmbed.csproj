@@ -92,6 +92,7 @@
     <ProjectReference Include="..\MaterialEditor.KK\KK.MaterialEditor.csproj">
       <Project>{b743e048-5913-4dec-9067-8afd1293a211}</Project>
       <Name>KK.MaterialEditor</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

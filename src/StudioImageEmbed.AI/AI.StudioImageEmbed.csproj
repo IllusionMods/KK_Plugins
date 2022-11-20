@@ -118,6 +118,7 @@
     <ProjectReference Include="..\MaterialEditor.AI\AI.MaterialEditor.csproj">
       <Project>{36247dab-4f43-4007-9856-03971a475d8f}</Project>
       <Name>AI.MaterialEditor</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
