@@ -3,6 +3,7 @@ using KKAPI.Maker;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using KKAPI.Utilities;
 using UniRx;
@@ -62,8 +63,16 @@ namespace KK_Plugins.MaterialEditor
                     __result = cached;
                     return false;
                 }
+                else
+                {
+                    // Invalidate cache if any objects got removed. This might not catch all cases but should be close enough.
+                    _RendererLookup.Remove(gameObject);
+                    foreach (var destroyed in _RendererLookup.Keys.Where(key => !key).ToList())
+                        _RendererLookup.Remove(destroyed);
+                }
             }
 
+            var sw = Stopwatch.StartNew();
             try
             {
                 //For ChaControl objects, return only specific renderes (i.e. not clothes, hair, etc.)
@@ -73,7 +82,8 @@ namespace KK_Plugins.MaterialEditor
                     List<Renderer> rendList = new List<Renderer>();
                     GetBodyRendererList(chaControl.gameObject, rendList);
                     __result = rendList;
-                    _RendererLookup[gameObject] = rendList;
+                    if (rendList.Count > 0)
+                        _RendererLookup[gameObject] = rendList;
                     return false;
                 }
 
@@ -85,15 +95,15 @@ namespace KK_Plugins.MaterialEditor
                     List<Renderer> rendList = new List<Renderer>();
 
 #if KK || KKS
-                for (int i = 0; i < itemComponent.rendNormal.Length; i++)
-                    if (itemComponent.rendNormal[i] && !rendList.Contains(itemComponent.rendNormal[i]))
-                        rendList.Add(itemComponent.rendNormal[i]);
-                for (int i = 0; i < itemComponent.rendAlpha.Length; i++)
-                    if (itemComponent.rendAlpha[i] && !rendList.Contains(itemComponent.rendAlpha[i]))
-                        rendList.Add(itemComponent.rendAlpha[i]);
-                for (int i = 0; i < itemComponent.rendGlass.Length; i++)
-                    if (itemComponent.rendGlass[i] && !rendList.Contains(itemComponent.rendGlass[i]))
-                        rendList.Add(itemComponent.rendGlass[i]);
+                    for (int i = 0; i < itemComponent.rendNormal.Length; i++)
+                        if (itemComponent.rendNormal[i] && !rendList.Contains(itemComponent.rendNormal[i]))
+                            rendList.Add(itemComponent.rendNormal[i]);
+                    for (int i = 0; i < itemComponent.rendAlpha.Length; i++)
+                        if (itemComponent.rendAlpha[i] && !rendList.Contains(itemComponent.rendAlpha[i]))
+                            rendList.Add(itemComponent.rendAlpha[i]);
+                    for (int i = 0; i < itemComponent.rendGlass.Length; i++)
+                        if (itemComponent.rendGlass[i] && !rendList.Contains(itemComponent.rendGlass[i]))
+                            rendList.Add(itemComponent.rendGlass[i]);
 #elif EC
                 for (int i = 0; i < itemComponent.renderers.Length; i++)
                     if (itemComponent.renderers[i] && !rendList.Contains(itemComponent.renderers[i]))
@@ -119,7 +129,11 @@ namespace KK_Plugins.MaterialEditor
             {
                 MaterialEditorPlugin.Logger.LogError("Failed to get filtered renderers, falling back to getting all renderers. Cause: " + ex);
             }
-
+            finally
+            {
+                if (sw.ElapsedMilliseconds > 0)
+                    MaterialEditorPlugin.Logger.LogDebug($"MaterialAPI_GetRendererList took {sw.ElapsedMilliseconds}ms to finish for {gameObject.name} with {(__result as ICollection)?.Count ?? 0} results.");
+            }
             return true;
         }
 
