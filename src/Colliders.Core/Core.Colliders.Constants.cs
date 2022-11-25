@@ -7,14 +7,23 @@ namespace KK_Plugins
     {
 #if AI || HS2
         internal static ColliderData FloorColliderData = new ColliderData("cf_J_Root", 100f, 0f, new Vector3(0, -100.01f, 0f));
+/*      AIS default colliders for future reference:
+            "cf_J_Hand_s_L", 0.3f, 1f, new Vector3(-0.25f, 0f, 0f)
+            "cf_J_Hand_s_R", 0.3f, 1f, new Vector3(0.25f, 0f, 0f)
+            "cf_J_ArmLow01_s_L", 0.4f, 1.5f, new Vector3(-0.35f, 0f, 0f)
+            "cf_J_ArmLow01_s_R", 0.4f, 1.5f, new Vector3(0.35f, 0f, 0f)
+            "cf_J_ArmLow02_s_L", 0.3f, 1f, new Vector3(0f, 0f, 0f)
+            "cf_J_ArmLow02_s_R", 0.3f, 1f, new Vector3(0f, 0f, 0f)
+            "cf_J_ArmUp02_s_L", 0.45f, 3f, new Vector3(0f, 0f, 0f)
+            "cf_J_ArmUp02_s_R", 0.45f, 3f, new Vector3(0f, 0f, 0f) */      
         internal static readonly List<ColliderData> ArmColliderDataList = new List<ColliderData>
         {
-            new ColliderData("cf_J_Hand_s_L", 0.20f, 0.75f, new Vector3(-0.3f, -0.05f, 0f)),
-            new ColliderData("cf_J_Hand_s_R", 0.20f, 0.75f, new Vector3(0.3f, -0.05f, 0f)),
-            new ColliderData("cf_J_ArmLow02_s_L", 0.25f, 2.5f, new Vector3(0f, 0f, 0f)),
-            new ColliderData("cf_J_ArmLow02_s_R", 0.25f, 2.5f, new Vector3(0f, 0f, 0f)),
-            new ColliderData("cf_J_ArmUp02_s_L", 0.25f, 2.5f, new Vector3(0f, 0f, 0f)),
-            new ColliderData("cf_J_ArmUp02_s_R", 0.25f, 2.5f, new Vector3(0f, 0f, 0f)),
+            new ColliderData("cf_J_Hand_s_L", 0.05f, 0.75f, new Vector3(-0.3f, -0.05f, 0f)),
+            new ColliderData("cf_J_Hand_s_R", 0.05f, 0.75f, new Vector3(0.3f, -0.05f, 0f)),
+            new ColliderData("cf_J_ArmLow02_s_L", 0.05f, 2.5f, new Vector3(0f, 0f, 0f)),
+            new ColliderData("cf_J_ArmLow02_s_R", 0.05f, 2.5f, new Vector3(0f, 0f, 0f)),
+            new ColliderData("cf_J_ArmUp02_s_L", 0.05f, 2.5f, new Vector3(0f, 0f, 0f)),
+            new ColliderData("cf_J_ArmUp02_s_R", 0.05f, 2.5f, new Vector3(0f, 0f, 0f)),
         };
         internal static readonly HashSet<string> BreastDBComments = new HashSet<string> { "Mune_L", "Mune_R" };
 #elif KK || KKS
