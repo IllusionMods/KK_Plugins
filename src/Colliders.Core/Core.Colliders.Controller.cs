@@ -44,8 +44,10 @@ namespace KK_Plugins
                 FloorCollider = AddCollider(FloorColliderData);
 
                 //Add the arm and hand colliders
+#if !AI
                 for (var i = 0; i < ArmColliderDataList.Count; i++)
                     ArmColliders.Add(AddCollider(ArmColliderDataList[i]));
+#endif
 
 #if KK || KKS
                 //Add the leg colliders for skirts
