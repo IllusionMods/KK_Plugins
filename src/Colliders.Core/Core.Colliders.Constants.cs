@@ -11,8 +11,8 @@ namespace KK_Plugins
         {
             new ColliderData("cf_J_Hand_s_L", 0.3f, 1f, new Vector3(-0.25f, 0f, 0f)),
             new ColliderData("cf_J_Hand_s_R", 0.3f, 1f, new Vector3(0.25f, 0f, 0f)),
-            new ColliderData("cf_J_ArmLow01_s_L", 0.4f, 1.5f, new Vector3(-0.35f, 0f, 0f)),
-            new ColliderData("cf_J_ArmLow01_s_R", 0.4f, 1.5f, new Vector3(0.35f, 0f, 0f)),
+//            new ColliderData("cf_J_ArmLow01_s_L", 0.4f, 1.5f, new Vector3(-0.35f, 0f, 0f)),
+//            new ColliderData("cf_J_ArmLow01_s_R", 0.4f, 1.5f, new Vector3(0.35f, 0f, 0f)),
             new ColliderData("cf_J_ArmLow02_s_L", 0.3f, 1f, new Vector3(0f, 0f, 0f)),
             new ColliderData("cf_J_ArmLow02_s_R", 0.3f, 1f, new Vector3(0f, 0f, 0f)),
             new ColliderData("cf_J_ArmUp02_s_L", 0.45f, 3f, new Vector3(0f, 0f, 0f)),
