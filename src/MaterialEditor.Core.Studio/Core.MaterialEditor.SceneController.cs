@@ -515,9 +515,10 @@ namespace KK_Plugins.MaterialEditor
             if (visible && objectCtrlInfo is OCIItem item)
             {
                 var id = item.GetSceneId();
-                var property = RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == RendererProperties.Enabled);
-                if (property != null)
+                foreach (var property in RendererPropertyList.Where(x => x.ID == id && x.Property == RendererProperties.Enabled))
+                {
                     MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
+                }
             }
             base.OnObjectVisibilityToggled(objectCtrlInfo, visible);
         }
