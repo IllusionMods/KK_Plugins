@@ -13,6 +13,8 @@ using UnityEngine.SceneManagement;
 
 namespace KK_Plugins
 {
+    using ItemGroup = Dictionary<string, Dictionary<int, HashSet<int>>>;
+
 #if KK
     [BepInProcess(Constants.MainGameProcessNameSteam)]
 #endif
@@ -29,10 +31,13 @@ namespace KK_Plugins
 
         private static CustomSelectListCtrl CustomSelectListCtrlInstance;
         private static CustomSelectInfoComponent CurrentCustomSelectInfoComponent;
+        private static string FavoritesDirectory;
+        private static string FavoritesFile;
         private static string BlacklistDirectory;
         private static string BlacklistFile;
         //GUID/Category/ID
-        private static readonly Dictionary<string, Dictionary<int, HashSet<int>>> Blacklist = new Dictionary<string, Dictionary<int, HashSet<int>>>();
+        private static readonly Dictionary<string, Dictionary<int, HashSet<int>>> Favorites = new ItemGroup();
+        private static readonly Dictionary<string, Dictionary<int, HashSet<int>>> Blacklist = new ItemGroup();
         private static readonly Dictionary<CustomSelectListCtrl, ListVisibilityType> ListVisibility = new Dictionary<CustomSelectListCtrl, ListVisibilityType>();
 
         private static bool MouseIn;
@@ -41,6 +46,8 @@ namespace KK_Plugins
         {
             BlacklistDirectory = Path.Combine(UserData.Path, "save");
             BlacklistFile = Path.Combine(BlacklistDirectory, "itemblacklist.xml");
+            FavoritesDirectory = BlacklistDirectory;
+            FavoritesFile = Path.Combine(FavoritesDirectory, "itemfavorites.xml");
             Padding = new RectOffset(3, 3, 0, 1);
 
             Logger = base.Logger;
@@ -48,6 +55,7 @@ namespace KK_Plugins
             Harmony.CreateAndPatchAll(typeof(Hooks));
             SceneManager.sceneLoaded += (s, lsm) => SetMenuVisibility(false);
 
+            LoadFavorites();
             LoadBlacklist();
         }
 
@@ -57,35 +65,42 @@ namespace KK_Plugins
                 ShowMenu();
         }
 
-        private static bool CheckBlacklist(string guid, int category, int id)
-        {
-            if (Blacklist.TryGetValue(guid, out var x))
+        private static bool CheckGroup(ItemGroup group, string guid, int category, int id) {
+            if (group.TryGetValue(guid, out var x))
                 if (x.TryGetValue(category, out var y))
                     if (y.Contains(id))
                         return true;
             return false;
         }
-
-        private static void LoadBlacklist()
+        private static bool CheckFavorites(string guid, int category, int id)
         {
-            Directory.CreateDirectory(BlacklistDirectory);
+            return CheckGroup(Favorites, guid, category, id);
+        }
+        private static bool CheckBlacklist(string guid, int category, int id)
+        {
+            return CheckGroup(Blacklist, guid, category, id);
+        }
 
-            XDocument blacklistXML;
-            if (File.Exists(BlacklistFile))
+        private static void LoadGroup(ItemGroup group, string directory, string file, string xmlElement)
+        {
+            Directory.CreateDirectory(directory);
+
+            XDocument xml;
+            if (File.Exists(file))
             {
-                blacklistXML = XDocument.Load(BlacklistFile);
+                xml = XDocument.Load(file);
             }
             else
             {
-                blacklistXML = new XDocument();
-                blacklistXML.Add(new XElement("itemBlacklist"));
-                blacklistXML.Save(BlacklistFile);
+                xml = new XDocument();
+                xml.Add(new XElement(xmlElement));
+                xml.Save(file);
             }
 
-            var itemBlacklist = blacklistXML.Element("itemBlacklist");
-            if (itemBlacklist != null)
+            var itemGroup = xml.Element(xmlElement);
+            if (itemGroup != null)
             {
-                foreach (var modElement in itemBlacklist.Elements("mod"))
+                foreach (var modElement in itemGroup.Elements("mod"))
                 {
                     string guid = modElement.Attribute("guid")?.Value;
                     if (!string.IsNullOrEmpty(guid))
@@ -98,11 +113,11 @@ namespace KK_Plugins
                                 {
                                     if (int.TryParse(itemElement.Attribute("id")?.Value, out int id))
                                     {
-                                        if (!Blacklist.ContainsKey(guid))
-                                            Blacklist[guid] = new Dictionary<int, HashSet<int>>();
-                                        if (!Blacklist[guid].ContainsKey(category))
-                                            Blacklist[guid][category] = new HashSet<int>();
-                                        Blacklist[guid][category].Add(id);
+                                        if (!group.ContainsKey(guid))
+                                            group[guid] = new Dictionary<int, HashSet<int>>();
+                                        if (!group[guid].ContainsKey(category))
+                                            group[guid][category] = new HashSet<int>();
+                                        group[guid][category].Add(id);
                                     }
                                 }
                             }
@@ -111,20 +126,28 @@ namespace KK_Plugins
                 }
             }
         }
-
-        private static void SaveBlacklist()
+        private static void LoadFavorites()
         {
-            File.Delete(BlacklistFile);
+            LoadGroup(Favorites, FavoritesDirectory, FavoritesFile, "itemFavorites");
+        }
+        private static void LoadBlacklist()
+        {
+            LoadGroup(Blacklist, BlacklistDirectory, BlacklistFile, "itemBlacklist");
+        }
 
-            XDocument blacklistXML = new XDocument();
-            XElement itemBlacklistElement = new XElement("itemBlacklist");
-            blacklistXML.Add(itemBlacklistElement);
+        private static void SaveGroup(ItemGroup group, string file, string xmlElement)
+        {
+            File.Delete(file);
 
-            foreach (var x in Blacklist)
+            XDocument xml = new XDocument();
+            XElement itemGroupElement = new XElement(xmlElement);
+            xml.Add(itemGroupElement);
+
+            foreach (var x in group)
             {
                 XElement modElement = new XElement("mod");
                 modElement.SetAttributeValue("guid", x.Key);
-                itemBlacklistElement.Add(modElement);
+                itemGroupElement.Add(modElement);
 
                 foreach (var y in x.Value)
                 {
@@ -141,7 +164,15 @@ namespace KK_Plugins
                 }
             }
 
-            blacklistXML.Save(BlacklistFile);
+            xml.Save(file);
+        }
+        private static void SaveFavorites()
+        {
+            SaveGroup(Favorites, FavoritesFile, "itemFavorites");
+        }
+        private static void SaveBlacklist()
+        {
+            SaveGroup(Blacklist, BlacklistFile, "itemBlacklist");
         }
 
         public void ChangeListFilter(ListVisibilityType visibilityType) => ChangeListFilter(CustomSelectListCtrlInstance, visibilityType);
@@ -165,9 +196,15 @@ namespace KK_Plugins
                     ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
                     if (Info != null)
                     {
-                        if (CheckBlacklist(Info.GUID, (int)Info.CategoryNo, Info.Slot))
+                        if (visibilityType == ListVisibilityType.Filtered && CheckBlacklist(Info.GUID, (int)Info.CategoryNo, Info.Slot))
                         {
-                            hide = visibilityType == ListVisibilityType.Filtered;
+                            hide = true;
+                            count++;
+                        }
+                        if ((visibilityType == ListVisibilityType.Favorites && CheckFavorites(Info.GUID, (int)Info.CategoryNo, Info.Slot)) ||
+                            (visibilityType == ListVisibilityType.Hidden && CheckBlacklist(Info.GUID, (int)Info.CategoryNo, Info.Slot)))
+                        {
+                            hide = false;
                             count++;
                         }
                     }
@@ -176,6 +213,11 @@ namespace KK_Plugins
             }
             ListVisibility[customSelectListCtrl] = visibilityType;
 
+            if (count == 0 && visibilityType == ListVisibilityType.Favorites)
+            {
+                Logger.LogMessage("No items are favorited");
+                ChangeListFilter(customSelectListCtrl, ListVisibilityType.Filtered);
+            }
             if (count == 0 && visibilityType == ListVisibilityType.Hidden)
             {
                 Logger.LogMessage("No items are hidden");
@@ -183,14 +225,14 @@ namespace KK_Plugins
             }
         }
 
-        private void BlacklistItem(string guid, int category, int id, int index)
+        private void GroupItem(ItemGroup group, ListVisibilityType? hideFrom, string guid, int category, int id, int index)
         {
-            if (!Blacklist.ContainsKey(guid))
-                Blacklist[guid] = new Dictionary<int, HashSet<int>>();
-            if (!Blacklist[guid].ContainsKey(category))
-                Blacklist[guid][category] = new HashSet<int>();
-            Blacklist[guid][category].Add(id);
-            SaveBlacklist();
+            if (!group.ContainsKey(guid))
+                group[guid] = new Dictionary<int, HashSet<int>>();
+            if (!group[guid].ContainsKey(category))
+                group[guid][category] = new HashSet<int>();
+            group[guid][category].Add(id);
+            SetMenuVisibility(false);
 
             var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
             for (var i = 0; i < controls.Length; i++)
@@ -198,19 +240,30 @@ namespace KK_Plugins
                 var customSelectListCtrl = controls[i];
                 if (customSelectListCtrl.GetSelectInfoFromIndex(index)?.category == category)
                     if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                        if (visibilityType == ListVisibilityType.Filtered)
+                        if (visibilityType == hideFrom)
                             customSelectListCtrl.DisvisibleItem(index, true);
             }
-
-            SetMenuVisibility(false);
         }
-        private void UnblacklistItem(string guid, int category, int id, int index)
+        private void FavoriteItem(string guid, int category, int id, int index)
         {
-            if (!Blacklist.ContainsKey(guid))
-                Blacklist[guid] = new Dictionary<int, HashSet<int>>();
-            if (!Blacklist[guid].ContainsKey(category))
-                Blacklist[guid][category] = new HashSet<int>();
-            Blacklist[guid][category].Remove(id);
+            UnblacklistItem(guid, category, id, index);
+            GroupItem(Favorites, null, guid, category, id, index);
+            SaveFavorites();
+        }
+        private void BlacklistItem(string guid, int category, int id, int index)
+        {
+            UnfavoriteItem(guid, category, id, index);
+            GroupItem(Blacklist, ListVisibilityType.Filtered, guid, category, id, index);
+            SaveBlacklist();
+        }
+
+        private void UngroupItem(ItemGroup group, ListVisibilityType boundVisibility, string guid, int category, int id, int index)
+        {
+            if (!group.ContainsKey(guid))
+                group[guid] = new Dictionary<int, HashSet<int>>();
+            if (!group[guid].ContainsKey(category))
+                group[guid][category] = new HashSet<int>();
+            group[guid][category].Remove(id);
             SaveBlacklist();
 
             bool changeFilter = false;
@@ -221,7 +274,7 @@ namespace KK_Plugins
                 if (customSelectListCtrl.GetSelectInfoFromIndex(index)?.category == category)
                 {
                     if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                        if (visibilityType == ListVisibilityType.Hidden)
+                        if (visibilityType == boundVisibility)
                             customSelectListCtrl.DisvisibleItem(index, true);
 
                     if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
@@ -233,9 +286,16 @@ namespace KK_Plugins
                 ChangeListFilter(ListVisibilityType.Filtered);
             SetMenuVisibility(false);
         }
+        private void UnfavoriteItem(string guid, int category, int id, int index) {
+            UngroupItem(Favorites, ListVisibilityType.Favorites, guid, category, id, index);
+        }
+        private void UnblacklistItem(string guid, int category, int id, int index) {
+            UngroupItem(Blacklist, ListVisibilityType.Hidden, guid, category, id, index);
+        }
 
-        private void BlacklistMod(string guid)
+        private int GroupMod(ItemGroup group, ItemGroup skipItemsIn, ListVisibilityType? hideFrom, string guid)
         {
+            int skipped = 0;
             for (var i = 0; i < CustomSelectListCtrlInstance.lstSelectInfo.Count; i++)
             {
                 CustomSelectInfo customSelectInfo = CustomSelectListCtrlInstance.lstSelectInfo[i];
@@ -244,12 +304,17 @@ namespace KK_Plugins
                     ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
                     if (info != null && info.GUID == guid)
                     {
-                        if (!Blacklist.ContainsKey(info.GUID))
-                            Blacklist[info.GUID] = new Dictionary<int, HashSet<int>>();
-                        if (!Blacklist[info.GUID].ContainsKey(customSelectInfo.category))
-                            Blacklist[info.GUID][customSelectInfo.category] = new HashSet<int>();
-                        Blacklist[info.GUID][customSelectInfo.category].Add(info.Slot);
-                        SaveBlacklist();
+                        if (skipItemsIn.ContainsKey(info.GUID) && skipItemsIn[info.GUID].ContainsKey(customSelectInfo.category) && skipItemsIn[info.GUID][customSelectInfo.category].Contains(info.Slot))
+                        {
+                            skipped++;
+                            continue;
+                        }
+
+                        if (!group.ContainsKey(info.GUID))
+                            group[info.GUID] = new Dictionary<int, HashSet<int>>();
+                        if (!group[info.GUID].ContainsKey(customSelectInfo.category))
+                            group[info.GUID][customSelectInfo.category] = new HashSet<int>();
+                        group[info.GUID][customSelectInfo.category].Add(info.Slot);
 
                         var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
                         for (var j = 0; j < controls.Length; j++)
@@ -257,16 +322,29 @@ namespace KK_Plugins
                             var customSelectListCtrl = controls[j];
                             if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == customSelectInfo.category)
                                 if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                                    if (visibilityType == ListVisibilityType.Filtered)
+                                    if (visibilityType == hideFrom)
                                         customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
                         }
                     }
                 }
             }
-
             SetMenuVisibility(false);
+            return skipped;
         }
-        private void UnblacklistMod(string guid)
+        private void FavoriteMod(string guid) {
+            int skipped = GroupMod(Favorites, Blacklist, null, guid);
+            if (skipped > 0)
+                Logger.LogMessage($"Skipped {skipped} blacklisted items");
+            SaveFavorites();
+        }
+        private void BlacklistMod(string guid) {
+            int skipped = GroupMod(Blacklist, Favorites, ListVisibilityType.Filtered, guid);
+            if (skipped > 0)
+                Logger.LogMessage($"Skipped {skipped} items that are in favorites");
+            SaveBlacklist();
+        }
+
+        private void UngroupMod(ItemGroup group, ListVisibilityType boundVisibility, string guid)
         {
             bool changeFilter = false;
             for (var i = 0; i < CustomSelectListCtrlInstance.lstSelectInfo.Count; i++)
@@ -277,12 +355,11 @@ namespace KK_Plugins
                     ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
                     if (info != null && info.GUID == guid)
                     {
-                        if (!Blacklist.ContainsKey(info.GUID))
-                            Blacklist[info.GUID] = new Dictionary<int, HashSet<int>>();
-                        if (!Blacklist[info.GUID].ContainsKey(customSelectInfo.category))
-                            Blacklist[info.GUID][customSelectInfo.category] = new HashSet<int>();
-                        Blacklist[info.GUID][customSelectInfo.category].Remove(info.Slot);
-                        SaveBlacklist();
+                        if (!group.ContainsKey(info.GUID))
+                            group[info.GUID] = new Dictionary<int, HashSet<int>>();
+                        if (!group[info.GUID].ContainsKey(customSelectInfo.category))
+                            group[info.GUID][customSelectInfo.category] = new HashSet<int>();
+                        group[info.GUID][customSelectInfo.category].Remove(info.Slot);
 
                         var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
                         for (var j = 0; j < controls.Length; j++)
@@ -291,7 +368,7 @@ namespace KK_Plugins
                             if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == customSelectInfo.category)
                             {
                                 if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                                    if (visibilityType == ListVisibilityType.Hidden)
+                                    if (visibilityType == boundVisibility)
                                         customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
 
                                 if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
@@ -305,6 +382,16 @@ namespace KK_Plugins
             if (changeFilter)
                 ChangeListFilter(ListVisibilityType.Filtered);
             SetMenuVisibility(false);
+        }
+        private void UnfavoriteMod(string guid)
+        {
+            UngroupMod(Favorites, ListVisibilityType.Favorites, guid);
+            SaveFavorites();
+        }
+        private void UnblacklistMod(string guid)
+        {
+            UngroupMod(Blacklist, ListVisibilityType.Hidden, guid);
+            SaveBlacklist();
         }
 
         private void PrintInfo(int index)
@@ -393,6 +480,6 @@ namespace KK_Plugins
             return null;
         }
 
-        public enum ListVisibilityType { Filtered, Hidden, All }
+        public enum ListVisibilityType { Filtered, Favorites, Hidden, All }
     }
 }

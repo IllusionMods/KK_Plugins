@@ -14,12 +14,14 @@ namespace KK_Plugins
         private Canvas ContextMenu;
         private CanvasGroup ContextMenuCanvasGroup;
         private Image ContextMenuPanel;
+        private static Button FavoriteButton;
+        private static Button FavoriteModButton;
         private static Button BlacklistButton;
         private static Button BlacklistModButton;
         private static Button InfoButton;
         private static Dropdown FilterDropdown;
-        private readonly float UIWidth = 0.175f;
-        private readonly float UIHeight = 0.1375f;
+        private readonly float UIWidth = 0.2f;
+        private readonly float UIHeight = 0.2020f;
 
         internal const float MarginSize = 4f;
         internal const float PanelHeight = 35f;
@@ -66,6 +68,42 @@ namespace KK_Plugins
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
 
+                FavoriteButton = UIUtility.CreateButton("BlacklistButton", itemPanel.transform, "Favorite this item");
+                FavoriteButton.gameObject.AddComponent<LayoutElement>();
+
+                var text = FavoriteButton.GetComponentInChildren<Text>();
+                text.resizeTextForBestFit = false;
+                text.fontSize = 26;
+            }
+            {
+                var contentItem = UIUtility.CreatePanel("BlacklistModContent", scrollRect.content.transform);
+                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
+                contentItem.gameObject.AddComponent<Mask>();
+                contentItem.color = RowColor;
+
+                var itemPanel = UIUtility.CreatePanel("BlacklistModPanel", contentItem.transform);
+                itemPanel.color = RowColor;
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+
+                FavoriteModButton = UIUtility.CreateButton("BlacklistModButton", itemPanel.transform, "Favorite all items from this mod");
+                FavoriteModButton.gameObject.AddComponent<LayoutElement>();
+
+                var text = FavoriteModButton.GetComponentInChildren<Text>();
+                text.resizeTextForBestFit = false;
+                text.fontSize = 24;
+            }
+            {
+                var contentItem = UIUtility.CreatePanel("BlacklistContent", scrollRect.content.transform);
+                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
+                contentItem.gameObject.AddComponent<Mask>();
+                contentItem.color = RowColor;
+
+                var itemPanel = UIUtility.CreatePanel("BlacklistPanel", contentItem.transform);
+                itemPanel.color = RowColor;
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+
                 BlacklistButton = UIUtility.CreateButton("BlacklistButton", itemPanel.transform, "Hide this item");
                 BlacklistButton.gameObject.AddComponent<LayoutElement>();
 
@@ -89,7 +127,7 @@ namespace KK_Plugins
 
                 var text = BlacklistModButton.GetComponentInChildren<Text>();
                 text.resizeTextForBestFit = false;
-                text.fontSize = 26;
+                text.fontSize = 24;
             }
             {
                 var contentItem = UIUtility.CreatePanel("InfoContent", scrollRect.content.transform);
@@ -142,6 +180,7 @@ namespace KK_Plugins
 
                 FilterDropdown.options.Clear();
                 FilterDropdown.options.Add(new Dropdown.OptionData("Filtered List"));
+                FilterDropdown.options.Add(new Dropdown.OptionData("Favorite Items"));
                 FilterDropdown.options.Add(new Dropdown.OptionData("Hidden Items"));
                 FilterDropdown.options.Add(new Dropdown.OptionData("All Items"));
                 FilterDropdown.value = 0;
@@ -193,19 +232,39 @@ namespace KK_Plugins
             if (ListVisibility.TryGetValue(CustomSelectListCtrlInstance, out var listVisibilityType))
                 FilterDropdown.Set((int)listVisibilityType);
 
+            FavoriteButton.onClick.RemoveAllListeners();
+            FavoriteModButton.onClick.RemoveAllListeners();
             BlacklistButton.onClick.RemoveAllListeners();
             BlacklistModButton.onClick.RemoveAllListeners();
             InfoButton.onClick.RemoveAllListeners();
 
             if (guid == null)
             {
+                FavoriteButton.enabled = false;
+                FavoriteModButton.enabled = false;
                 BlacklistButton.enabled = false;
                 BlacklistModButton.enabled = false;
             }
             else
             {
+                FavoriteButton.enabled = true;
+                FavoriteModButton.enabled = true;
                 BlacklistButton.enabled = true;
                 BlacklistModButton.enabled = true;
+                if (CheckFavorites(guid, category, id))
+                {
+                    FavoriteButton.GetComponentInChildren<Text>().text = "Unfavorite this item";
+                    FavoriteButton.onClick.AddListener(() => UnfavoriteItem(guid, category, id, index));
+                    FavoriteModButton.GetComponentInChildren<Text>().text = "Unfavorite all items from this mod";
+                    FavoriteModButton.onClick.AddListener(() => UnfavoriteMod(guid));
+                }
+                else
+                {
+                    FavoriteButton.GetComponentInChildren<Text>().text = "Favorite this item";
+                    FavoriteButton.onClick.AddListener(() => FavoriteItem(guid, category, id, index));
+                    FavoriteModButton.GetComponentInChildren<Text>().text = "Favorite all items from this mod";
+                    FavoriteModButton.onClick.AddListener(() => FavoriteMod(guid));
+                }
                 if (CheckBlacklist(guid, category, id))
                 {
                     BlacklistButton.GetComponentInChildren<Text>().text = "Unhide this item";
