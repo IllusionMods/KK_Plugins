@@ -32,18 +32,6 @@ namespace KK_Plugins
                 bool first = true;
                 foreach (var controller in StudioAPI.GetSelectedControllers<UncensorSelectorController>())
                 {
-#if AI || HS2
-                    //Hide the body dropdown for male characters
-                    if (first)
-                        if (controller.ChaControl.sex == 0)
-                            bodyDropdown.Visible.OnNext(false);
-                        else
-                            bodyDropdown.Visible.OnNext(true);
-
-                    if (controller.ChaControl.sex == 0)
-                        continue;
-#endif
-
                     var guid = bodyList[value];
 
                     //Prevent changing other characters when the value did not actually change
