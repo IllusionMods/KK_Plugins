@@ -58,17 +58,17 @@ namespace KK_Plugins
             scrollRect.GetComponent<Image>().color = RowColor;
 
             {
-                var contentItem = UIUtility.CreatePanel("BlacklistContent", scrollRect.content.transform);
+                var contentItem = UIUtility.CreatePanel("FavoriteContent", scrollRect.content.transform);
                 contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
                 contentItem.color = RowColor;
 
-                var itemPanel = UIUtility.CreatePanel("BlacklistPanel", contentItem.transform);
+                var itemPanel = UIUtility.CreatePanel("FavoritePanel", contentItem.transform);
                 itemPanel.color = RowColor;
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
 
-                FavoriteButton = UIUtility.CreateButton("BlacklistButton", itemPanel.transform, "Favorite this item");
+                FavoriteButton = UIUtility.CreateButton("FavoriteButton", itemPanel.transform, "Favorite this item");
                 FavoriteButton.gameObject.AddComponent<LayoutElement>();
 
                 var text = FavoriteButton.GetComponentInChildren<Text>();
@@ -76,17 +76,17 @@ namespace KK_Plugins
                 text.fontSize = 26;
             }
             {
-                var contentItem = UIUtility.CreatePanel("BlacklistModContent", scrollRect.content.transform);
+                var contentItem = UIUtility.CreatePanel("FavoriteModContent", scrollRect.content.transform);
                 contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
                 contentItem.color = RowColor;
 
-                var itemPanel = UIUtility.CreatePanel("BlacklistModPanel", contentItem.transform);
+                var itemPanel = UIUtility.CreatePanel("FavoriteModPanel", contentItem.transform);
                 itemPanel.color = RowColor;
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
 
-                FavoriteModButton = UIUtility.CreateButton("BlacklistModButton", itemPanel.transform, "Favorite all items from this mod");
+                FavoriteModButton = UIUtility.CreateButton("FavoriteModButton", itemPanel.transform, "Favorite all items from this mod");
                 FavoriteModButton.gameObject.AddComponent<LayoutElement>();
 
                 var text = FavoriteModButton.GetComponentInChildren<Text>();
