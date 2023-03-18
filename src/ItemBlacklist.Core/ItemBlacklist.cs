@@ -103,22 +103,19 @@ namespace KK_Plugins
                 foreach (var modElement in itemGroup.Elements("mod"))
                 {
                     string guid = modElement.Attribute("guid")?.Value;
-                    if (!string.IsNullOrEmpty(guid))
+                    foreach (var categoryElement in modElement.Elements("category"))
                     {
-                        foreach (var categoryElement in modElement.Elements("category"))
+                        if (int.TryParse(categoryElement.Attribute("number")?.Value, out int category))
                         {
-                            if (int.TryParse(categoryElement.Attribute("number")?.Value, out int category))
+                            foreach (var itemElement in categoryElement.Elements("item"))
                             {
-                                foreach (var itemElement in categoryElement.Elements("item"))
+                                if (int.TryParse(itemElement.Attribute("id")?.Value, out int id))
                                 {
-                                    if (int.TryParse(itemElement.Attribute("id")?.Value, out int id))
-                                    {
-                                        if (!group.ContainsKey(guid))
-                                            group[guid] = new Dictionary<int, HashSet<int>>();
-                                        if (!group[guid].ContainsKey(category))
-                                            group[guid][category] = new HashSet<int>();
-                                        group[guid][category].Add(id);
-                                    }
+                                    if (!group.ContainsKey(guid))
+                                        group[guid] = new Dictionary<int, HashSet<int>>();
+                                    if (!group[guid].ContainsKey(category))
+                                        group[guid][category] = new HashSet<int>();
+                                    group[guid][category].Add(id);
                                 }
                             }
                         }
@@ -191,26 +188,25 @@ namespace KK_Plugins
 
                 bool hide = visibilityType != ListVisibilityType.Filtered;
 
-                if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
+                ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
+                string guid = Info == null || Info.GUID.IsNullOrEmpty() ? "" : Info.GUID;
+                int category = Info == null ? customSelectInfo.category : (int)Info.CategoryNo;
+                int slot = Info == null ? customSelectInfo.index : Info.Slot;
+
+                if (visibilityType == ListVisibilityType.Filtered && CheckBlacklist(guid, category, slot))
                 {
-                    ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
-                    if (Info != null)
-                    {
-                        if (visibilityType == ListVisibilityType.Filtered && CheckBlacklist(Info.GUID, (int)Info.CategoryNo, Info.Slot))
-                        {
-                            hide = true;
-                            count++;
-                        }
-                        if ((visibilityType == ListVisibilityType.Favorites && CheckFavorites(Info.GUID, (int)Info.CategoryNo, Info.Slot)) ||
-                            (visibilityType == ListVisibilityType.Hidden && CheckBlacklist(Info.GUID, (int)Info.CategoryNo, Info.Slot)))
-                        {
-                            hide = false;
-                            count++;
-                        }
-                    }
+                    hide = true;
+                    count++;
+                }
+                if ((visibilityType == ListVisibilityType.Favorites && CheckFavorites(guid, category, slot)) ||
+                    (visibilityType == ListVisibilityType.Hidden && CheckBlacklist(guid, category, slot)))
+                {
+                    hide = false;
+                    count++;
                 }
                 customSelectListCtrl.DisvisibleItem(customSelectInfo.index, hide);
             }
+
             ListVisibility[customSelectListCtrl] = visibilityType;
 
             if (count == 0 && visibilityType == ListVisibilityType.Favorites)
@@ -299,33 +295,33 @@ namespace KK_Plugins
             for (var i = 0; i < CustomSelectListCtrlInstance.lstSelectInfo.Count; i++)
             {
                 CustomSelectInfo customSelectInfo = CustomSelectListCtrlInstance.lstSelectInfo[i];
-                if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
+                int category = customSelectInfo.category;
+                ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)category, customSelectInfo.index);
+                int slot = info == null ? customSelectInfo.index : info.Slot;
+
+                if (guid != (info == null || info.GUID.IsNullOrEmpty() ? "" : info.GUID))
+                    continue;
+
+                if (skipItemsIn.ContainsKey(guid) && skipItemsIn[guid].ContainsKey(category) && skipItemsIn[guid][category].Contains(slot))
                 {
-                    ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
-                    if (info != null && info.GUID == guid)
-                    {
-                        if (skipItemsIn.ContainsKey(info.GUID) && skipItemsIn[info.GUID].ContainsKey(customSelectInfo.category) && skipItemsIn[info.GUID][customSelectInfo.category].Contains(info.Slot))
-                        {
-                            skipped++;
-                            continue;
-                        }
+                    skipped++;
+                    continue;
+                }
 
-                        if (!group.ContainsKey(info.GUID))
-                            group[info.GUID] = new Dictionary<int, HashSet<int>>();
-                        if (!group[info.GUID].ContainsKey(customSelectInfo.category))
-                            group[info.GUID][customSelectInfo.category] = new HashSet<int>();
-                        group[info.GUID][customSelectInfo.category].Add(info.Slot);
+                if (!group.ContainsKey(guid))
+                    group[guid] = new Dictionary<int, HashSet<int>>();
+                if (!group[guid].ContainsKey(category))
+                    group[guid][category] = new HashSet<int>();
+                group[guid][category].Add(slot);
 
-                        var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
-                        for (var j = 0; j < controls.Length; j++)
-                        {
-                            var customSelectListCtrl = controls[j];
-                            if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == customSelectInfo.category)
-                                if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                                    if (visibilityType == hideFrom)
-                                        customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
-                        }
-                    }
+                var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
+                for (var j = 0; j < controls.Length; j++)
+                {
+                    var customSelectListCtrl = controls[j];
+                    if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == category)
+                        if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
+                            if (visibilityType == hideFrom)
+                                customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
                 }
             }
             SetMenuVisibility(false);
@@ -350,31 +346,31 @@ namespace KK_Plugins
             for (var i = 0; i < CustomSelectListCtrlInstance.lstSelectInfo.Count; i++)
             {
                 CustomSelectInfo customSelectInfo = CustomSelectListCtrlInstance.lstSelectInfo[i];
-                if (customSelectInfo.index >= UniversalAutoResolver.BaseSlotID)
+                int category = customSelectInfo.category;
+                ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)category, customSelectInfo.index);
+                int slot = info == null ? customSelectInfo.index : info.Slot;
+
+                if (guid != (info == null || info.GUID.IsNullOrEmpty() ? "" : info.GUID))
+                    continue;
+
+                if (!group.ContainsKey(guid))
+                    group[guid] = new Dictionary<int, HashSet<int>>();
+                if (!group[guid].ContainsKey(category))
+                    group[guid][category] = new HashSet<int>();
+                group[guid][category].Remove(slot);
+
+                var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
+                for (var j = 0; j < controls.Length; j++)
                 {
-                    ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
-                    if (info != null && info.GUID == guid)
+                    var customSelectListCtrl = controls[j];
+                    if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == category)
                     {
-                        if (!group.ContainsKey(info.GUID))
-                            group[info.GUID] = new Dictionary<int, HashSet<int>>();
-                        if (!group[info.GUID].ContainsKey(customSelectInfo.category))
-                            group[info.GUID][customSelectInfo.category] = new HashSet<int>();
-                        group[info.GUID][customSelectInfo.category].Remove(info.Slot);
+                        if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
+                            if (visibilityType == boundVisibility)
+                                customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
 
-                        var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
-                        for (var j = 0; j < controls.Length; j++)
-                        {
-                            var customSelectListCtrl = controls[j];
-                            if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == customSelectInfo.category)
-                            {
-                                if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                                    if (visibilityType == boundVisibility)
-                                        customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
-
-                                if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
-                                    changeFilter = true;
-                            }
-                        }
+                        if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
+                            changeFilter = true;
                     }
                 }
             }

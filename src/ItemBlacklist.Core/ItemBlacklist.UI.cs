@@ -215,7 +215,7 @@ namespace KK_Plugins
             List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
             int index = CurrentCustomSelectInfoComponent.info.index;
             var customSelectInfo = lstSelectInfo.First(x => x.index == index);
-            string guid = null;
+            string guid = "";
             int category = customSelectInfo.category;
             int id = index;
 
@@ -224,7 +224,7 @@ namespace KK_Plugins
                 ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
                 if (info != null)
                 {
-                    guid = info.GUID;
+                    guid = info.GUID.IsNullOrEmpty() ? "" : info.GUID;
                     id = info.Slot;
                 }
             }
@@ -238,47 +238,38 @@ namespace KK_Plugins
             BlacklistModButton.onClick.RemoveAllListeners();
             InfoButton.onClick.RemoveAllListeners();
 
-            if (guid == null)
+            FavoriteButton.enabled = true;
+            FavoriteModButton.enabled = true;
+            BlacklistButton.enabled = true;
+            BlacklistModButton.enabled = true;
+
+            if (CheckFavorites(guid, category, id))
             {
-                FavoriteButton.enabled = false;
-                FavoriteModButton.enabled = false;
-                BlacklistButton.enabled = false;
-                BlacklistModButton.enabled = false;
+                FavoriteButton.GetComponentInChildren<Text>().text = "Unfavorite this item";
+                FavoriteButton.onClick.AddListener(() => UnfavoriteItem(guid, category, id, index));
+                FavoriteModButton.GetComponentInChildren<Text>().text = "Unfavorite all items from this mod";
+                FavoriteModButton.onClick.AddListener(() => UnfavoriteMod(guid));
             }
             else
             {
-                FavoriteButton.enabled = true;
-                FavoriteModButton.enabled = true;
-                BlacklistButton.enabled = true;
-                BlacklistModButton.enabled = true;
-                if (CheckFavorites(guid, category, id))
-                {
-                    FavoriteButton.GetComponentInChildren<Text>().text = "Unfavorite this item";
-                    FavoriteButton.onClick.AddListener(() => UnfavoriteItem(guid, category, id, index));
-                    FavoriteModButton.GetComponentInChildren<Text>().text = "Unfavorite all items from this mod";
-                    FavoriteModButton.onClick.AddListener(() => UnfavoriteMod(guid));
-                }
-                else
-                {
-                    FavoriteButton.GetComponentInChildren<Text>().text = "Favorite this item";
-                    FavoriteButton.onClick.AddListener(() => FavoriteItem(guid, category, id, index));
-                    FavoriteModButton.GetComponentInChildren<Text>().text = "Favorite all items from this mod";
-                    FavoriteModButton.onClick.AddListener(() => FavoriteMod(guid));
-                }
-                if (CheckBlacklist(guid, category, id))
-                {
-                    BlacklistButton.GetComponentInChildren<Text>().text = "Unhide this item";
-                    BlacklistButton.onClick.AddListener(() => UnblacklistItem(guid, category, id, index));
-                    BlacklistModButton.GetComponentInChildren<Text>().text = "Unhide all items from this mod";
-                    BlacklistModButton.onClick.AddListener(() => UnblacklistMod(guid));
-                }
-                else
-                {
-                    BlacklistButton.GetComponentInChildren<Text>().text = "Hide this item";
-                    BlacklistButton.onClick.AddListener(() => BlacklistItem(guid, category, id, index));
-                    BlacklistModButton.GetComponentInChildren<Text>().text = "Hide all items from this mod";
-                    BlacklistModButton.onClick.AddListener(() => BlacklistMod(guid));
-                }
+                FavoriteButton.GetComponentInChildren<Text>().text = "Favorite this item";
+                FavoriteButton.onClick.AddListener(() => FavoriteItem(guid, category, id, index));
+                FavoriteModButton.GetComponentInChildren<Text>().text = "Favorite all items from this mod";
+                FavoriteModButton.onClick.AddListener(() => FavoriteMod(guid));
+            }
+            if (CheckBlacklist(guid, category, id))
+            {
+                BlacklistButton.GetComponentInChildren<Text>().text = "Unhide this item";
+                BlacklistButton.onClick.AddListener(() => UnblacklistItem(guid, category, id, index));
+                BlacklistModButton.GetComponentInChildren<Text>().text = "Unhide all items from this mod";
+                BlacklistModButton.onClick.AddListener(() => UnblacklistMod(guid));
+            }
+            else
+            {
+                BlacklistButton.GetComponentInChildren<Text>().text = "Hide this item";
+                BlacklistButton.onClick.AddListener(() => BlacklistItem(guid, category, id, index));
+                BlacklistModButton.GetComponentInChildren<Text>().text = "Hide all items from this mod";
+                BlacklistModButton.onClick.AddListener(() => BlacklistMod(guid));
             }
 
             InfoButton.onClick.AddListener(() => PrintInfo(index));
