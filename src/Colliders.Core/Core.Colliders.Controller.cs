@@ -44,8 +44,10 @@ namespace KK_Plugins
                 FloorCollider = AddCollider(FloorColliderData);
 
                 //Add the arm and hand colliders
+#if !AI
                 for (var i = 0; i < ArmColliderDataList.Count; i++)
                     ArmColliders.Add(AddCollider(ArmColliderDataList[i]));
+#endif
 
 #if KK || KKS
                 //Add the leg colliders for skirts
@@ -284,7 +286,7 @@ namespace KK_Plugins
                     pat.Params[0].CollisionRadius = BreastCollidersEnabled ? 0.10f * BreastSize : 0;
                     pat.Params[1].CollisionRadius = BreastCollidersEnabled ? 0.08f * BreastSize : 0;
 #elif AI || HS2
-                    pat.Params[2].CollisionRadius = BreastCollidersEnabled ? 1.0f * BreastSize : 0;
+                    pat.Params[2].CollisionRadius = BreastCollidersEnabled ? 0.6f * BreastSize : 0;
                     pat.Params[3].CollisionRadius = BreastCollidersEnabled ? 0.8f * BreastSize : 0;
 #endif
                 }
