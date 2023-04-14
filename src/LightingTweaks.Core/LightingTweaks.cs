@@ -38,11 +38,10 @@ namespace KK_Plugins
 
                         //Studio shadow strength is different from main game for some reason
                         light.shadowStrength = 1;
-
-                        //Allows multiple lights to affect objects with Vanilla Plus shaders
-                        //Why does this work for all lights when applied to the chara light? I dunno lol
-                        light.renderMode = LightRenderMode.ForcePixel;
                     }
+
+                    //Allows multiple lights to affect objects with Vanilla Plus shaders
+                    light.renderMode = LightRenderMode.ForcePixel;
                 }
                 else
                 {
