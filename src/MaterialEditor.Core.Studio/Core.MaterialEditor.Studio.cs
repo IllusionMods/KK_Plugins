@@ -657,5 +657,35 @@ namespace KK_Plugins.MaterialEditor
             else
                 GetSceneController().RemoveMaterialFloatProperty((int)data, material, propertyName);
         }
+        public override bool? GetMaterialKeywordPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = go.GetComponentInParent<ChaControl>();
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialKeywordPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+            }
+            else
+                return GetSceneController().GetMaterialKeywordPropertyValueOriginal((int)data, material, propertyName);
+        }
+        public override void SetMaterialKeywordProperty(object data, Material material, string propertyName, bool value, GameObject go)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = go.GetComponentInParent<ChaControl>();
+                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialKeywordProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+            }
+            else
+                GetSceneController().SetMaterialKeywordProperty((int)data, material, propertyName, value);
+        }
+        public override void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject go)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = go.GetComponentInParent<ChaControl>();
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialKeywordProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+            }
+            else
+                GetSceneController().RemoveMaterialKeywordProperty((int)data, material, propertyName);
+        }
     }
 }
