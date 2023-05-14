@@ -72,12 +72,17 @@ namespace MaterialEditorAPI
         public Action<float> FloatValueOnChange { get; set; }
         public Action FloatValueOnReset { get; set; }
 
+        public bool KeywordValue { get; set; }
+        public bool KeywordValueOriginal { get; set; }
+        public Action<bool> KeywordValueOnChange { get; set; }
+        public Action KeywordValueOnReset { get; set; }
+
         public ItemInfo(RowItemType itemType, string labelText = "")
         {
             ItemType = itemType;
             LabelText = labelText;
         }
 
-        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, Material, Shader, ShaderRenderQueue, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty }
+        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, Material, Shader, ShaderRenderQueue, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
     }
 }

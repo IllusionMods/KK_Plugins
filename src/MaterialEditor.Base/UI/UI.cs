@@ -471,6 +471,25 @@ namespace MaterialEditorAPI
                             items.Add(contentItem);
                         }
                     }
+                    else if (property.Value.Type == ShaderPropertyType.Keyword)
+                    { // Since there's no way to check if a Keyword exists, we'll have to trust the XML.
+                        bool valueKeyword = mat.IsKeywordEnabled($"_{propertyName}");
+                        bool valueKeywordOriginal = valueKeyword;
+                        bool? valueKeywordOriginalTemp = GetMaterialKeywordPropertyValueOriginal(data, mat, propertyName, go);
+
+                        if (valueKeywordOriginalTemp != null)
+                            valueKeywordOriginal = (bool)valueKeywordOriginalTemp;
+
+                        var contentItem = new ItemInfo(ItemInfo.RowItemType.KeywordProperty, propertyName)
+                        {
+                            KeywordValue = valueKeyword,
+                            KeywordValueOriginal = valueKeywordOriginal,
+                            KeywordValueOnChange = value => SetMaterialKeywordProperty(data, mat, propertyName, value, go),
+                            KeywordValueOnReset = () => RemoveMaterialKeywordProperty(data, mat, propertyName, go)
+                        };
+
+                        items.Add(contentItem);
+                    }
                 }
             }
 
@@ -556,6 +575,10 @@ namespace MaterialEditorAPI
         public abstract float? GetMaterialFloatPropertyValueOriginal(object data, Material material, string propertyName, GameObject gameObject);
         public abstract void SetMaterialFloatProperty(object data, Material material, string propertyName, float value, GameObject gameObject);
         public abstract void RemoveMaterialFloatProperty(object data, Material material, string propertyName, GameObject gameObject);
+
+        public abstract bool? GetMaterialKeywordPropertyValueOriginal(object data, Material material, string propertyName, GameObject gameObject);
+        public abstract void SetMaterialKeywordProperty(object data, Material material, string propertyName, bool value, GameObject gameObject);
+        public abstract void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject gameObject);
 
         private void SetupColorPalette(object data, Material material, string title, Color value, Action<Color> onChanged, bool useAlpha)
         {

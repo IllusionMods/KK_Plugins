@@ -13,6 +13,10 @@ namespace MaterialEditorAPI
         /// </summary>
         public List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
         /// <summary>
+        /// List of keyword property edits
+        /// </summary>
+        public List<MaterialKeywordProperty> MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
+        /// <summary>
         /// List of color property edits
         /// </summary>
         public List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
@@ -32,7 +36,7 @@ namespace MaterialEditorAPI
         {
             get
             {
-                if (MaterialFloatPropertyList.Count == 0 && MaterialColorPropertyList.Count == 0 && MaterialTexturePropertyList.Count == 0 && MaterialShaderList.Count == 0)
+                if (MaterialFloatPropertyList.Count == 0 && MaterialKeywordPropertyList.Count == 0 && MaterialColorPropertyList.Count == 0 && MaterialTexturePropertyList.Count == 0 && MaterialShaderList.Count == 0)
                     return true;
                 return false;
             }
@@ -44,6 +48,7 @@ namespace MaterialEditorAPI
         public void ClearAll()
         {
             MaterialFloatPropertyList = new List<MaterialFloatProperty>();
+            MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
             MaterialColorPropertyList = new List<MaterialColorProperty>();
             MaterialTexturePropertyList = new List<MaterialTextureProperty>();
             MaterialShaderList = new List<MaterialShader>();
@@ -69,6 +74,32 @@ namespace MaterialEditorAPI
             /// <param name="property">Name of the property</param>
             /// <param name="value">Value</param>
             public MaterialFloatProperty(string property, float value)
+            {
+                Property = property;
+                Value = value;
+            }
+        }
+
+        /// <summary>
+        /// Data storage class for keyword properties
+        /// </summary>
+        public class MaterialKeywordProperty
+        {
+            /// <summary>
+            /// Name of the property
+            /// </summary>
+            public string Property;
+            /// <summary>
+            /// Value
+            /// </summary>
+            public bool Value;
+
+            /// <summary>
+            /// Data storage class for keyword properties
+            /// </summary>
+            /// <param name="property">Name of the property</param>
+            /// <param name="value">Value</param>
+            public MaterialKeywordProperty(string property, bool value)
             {
                 Property = property;
                 Value = value;

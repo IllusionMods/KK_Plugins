@@ -127,6 +127,11 @@ namespace MaterialEditorAPI
             listEntry.FloatSlider = listEntry.GetUIComponent<Slider>("FloatSlider");
             listEntry.FloatInputField = listEntry.GetUIComponent<InputField>("FloatInputField");
             listEntry.FloatResetButton = listEntry.GetUIComponent<Button>("FloatResetButton");
+            
+            listEntry.KeywordPanel = listEntry.GetUIComponent<CanvasGroup>("KeywordPanel");
+            listEntry.KeywordLabel = listEntry.GetUIComponent<Text>("KeywordLabel");
+            listEntry.KeywordToggle = listEntry.GetUIComponent<Toggle>("KeywordToggle");
+            listEntry.KeywordResetButton = listEntry.GetUIComponent<Button>("KeywordResetButton");
 
             listEntry.SetItem(null, true);
         }

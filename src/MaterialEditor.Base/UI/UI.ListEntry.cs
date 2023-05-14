@@ -82,6 +82,11 @@ namespace MaterialEditorAPI
         public InputField FloatInputField;
         public Button FloatResetButton;
 
+        public CanvasGroup KeywordPanel;
+        public Text KeywordLabel;
+        public Toggle KeywordToggle;
+        public Button KeywordResetButton;
+
         private ItemInfo _currentItem;
 
         public ItemInfo CurrentItem
@@ -603,6 +608,34 @@ namespace MaterialEditorAPI
                             SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal);
                         });
                         break;
+                    case ItemInfo.RowItemType.KeywordProperty:
+                        ShowKeyword();
+                        SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal);
+                        KeywordToggle.isOn = item.KeywordValue;
+                        KeywordToggle.onValueChanged.RemoveAllListeners();
+                        KeywordToggle.onValueChanged.AddListener(value =>
+                        {
+                            item.KeywordValue = value;
+
+                            if (item.KeywordValue == item.KeywordValueOriginal)
+                                item.KeywordValueOnReset();
+                            else
+                                item.KeywordValueOnChange(item.KeywordValue);
+
+                            SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal);
+                        });
+
+                        KeywordResetButton.onClick.RemoveAllListeners();
+                        KeywordResetButton.onClick.AddListener(() =>
+                        {
+                            item.KeywordValue = item.KeywordValueOriginal;
+
+                            KeywordToggle.Set(item.KeywordValue);
+
+                            item.KeywordValueOnReset();
+                            SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal);
+                        });
+                        break;
                 }
             }
         }
@@ -643,6 +676,7 @@ namespace MaterialEditorAPI
             ShowOffsetScale(false);
             ShowColor(false);
             ShowFloat(false);
+            ShowKeyword(false);
         }
 
         private void ShowRenderer(bool visible = true)
@@ -704,6 +738,12 @@ namespace MaterialEditorAPI
         {
             FloatPanel.alpha = visible ? 1 : 0;
             FloatPanel.blocksRaycasts = visible;
+        }
+
+        private void ShowKeyword(bool visible = true)
+        {
+            KeywordPanel.alpha = visible ? 1 : 0;
+            KeywordPanel.blocksRaycasts = visible;
         }
 
         public T GetUIComponent<T>(string gameObjectName) where T : Component

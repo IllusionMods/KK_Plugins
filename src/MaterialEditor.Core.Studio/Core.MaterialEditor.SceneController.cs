@@ -24,6 +24,7 @@ namespace KK_Plugins.MaterialEditor
     {
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
         private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
+        private readonly List<MaterialKeywordProperty> MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
         private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
         private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
         private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
@@ -65,6 +66,11 @@ namespace KK_Plugins.MaterialEditor
                 data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(MaterialFloatPropertyList));
             else
                 data.data.Add(nameof(MaterialFloatPropertyList), null);
+
+            if (MaterialKeywordPropertyList.Count > 0)
+                data.data.Add(nameof(MaterialKeywordPropertyList), MessagePackSerializer.Serialize(MaterialKeywordPropertyList));
+            else
+                data.data.Add(nameof(MaterialKeywordPropertyList), null);
 
             if (MaterialColorPropertyList.Count > 0)
                 data.data.Add(nameof(MaterialColorPropertyList), MessagePackSerializer.Serialize(MaterialColorPropertyList));
@@ -179,6 +185,18 @@ namespace KK_Plugins.MaterialEditor
                             MaterialFloatPropertyList.Add(new MaterialFloatProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                 }
             }
+            
+            if (data.data.TryGetValue(nameof(MaterialKeywordPropertyList), out var materialKeywordProperties) && materialKeywordProperties != null)
+            {
+                var properties = MessagePackSerializer.Deserialize<List<MaterialKeywordProperty>>((byte[])materialKeywordProperties);
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var loadedProperty = properties[i];
+                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                        if (SetKeyword(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                            MaterialKeywordPropertyList.Add(new MaterialKeywordProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                }
+            }
 
             if (data.data.TryGetValue(nameof(MaterialColorPropertyList), out var materialColorProperties) && materialColorProperties != null)
             {
@@ -233,6 +251,7 @@ namespace KK_Plugins.MaterialEditor
         {
             List<RendererProperty> rendererPropertyListNew = new List<RendererProperty>();
             List<MaterialFloatProperty> materialFloatPropertyListNew = new List<MaterialFloatProperty>();
+            List<MaterialKeywordProperty> materialKeywordPropertyListNew = new List<MaterialKeywordProperty>();
             List<MaterialColorProperty> materialColorPropertyListNew = new List<MaterialColorProperty>();
             List<MaterialTextureProperty> materialTexturePropertyListNew = new List<MaterialTextureProperty>();
             List<MaterialShader> materialShaderListNew = new List<MaterialShader>();
@@ -280,6 +299,14 @@ namespace KK_Plugins.MaterialEditor
                                 materialFloatPropertyListNew.Add(new MaterialFloatProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                     }
 
+                    for (var i = 0; i < MaterialKeywordPropertyList.Count; i++)
+                    {
+                        var loadedProperty = MaterialKeywordPropertyList[i];
+                        if (loadedProperty.ID == copiedItem.Key)
+                            if (SetKeyword(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                                materialKeywordPropertyListNew.Add(new MaterialKeywordProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    }
+
                     for (var i = 0; i < MaterialColorPropertyList.Count; i++)
                     {
                         var loadedProperty = MaterialColorPropertyList[i];
@@ -309,6 +336,7 @@ namespace KK_Plugins.MaterialEditor
 
             RendererPropertyList.AddRange(rendererPropertyListNew);
             MaterialFloatPropertyList.AddRange(materialFloatPropertyListNew);
+            MaterialKeywordPropertyList.AddRange(materialKeywordPropertyListNew);
             MaterialColorPropertyList.AddRange(materialColorPropertyListNew);
             MaterialTexturePropertyList.AddRange(materialTexturePropertyListNew);
             MaterialShaderList.AddRange(materialShaderListNew);
@@ -499,6 +527,7 @@ namespace KK_Plugins.MaterialEditor
                 var id = item.GetSceneId();
                 RendererPropertyList.RemoveAll(x => x.ID == id);
                 MaterialFloatPropertyList.RemoveAll(x => x.ID == id);
+                MaterialKeywordPropertyList.RemoveAll(x => x.ID == id);
                 MaterialColorPropertyList.RemoveAll(x => x.ID == id);
                 MaterialTexturePropertyList.RemoveAll(x => x.ID == id);
                 MaterialShaderList.RemoveAll(x => x.ID == id);
@@ -568,6 +597,12 @@ namespace KK_Plugins.MaterialEditor
                 if (materialFloatProperty.ID == id && materialFloatProperty.MaterialName == material.NameFormatted())
                     CopyData.MaterialFloatPropertyList.Add(new CopyContainer.MaterialFloatProperty(materialFloatProperty.Property, float.Parse(materialFloatProperty.Value)));
             }
+            for (var i = 0; i < MaterialKeywordPropertyList.Count; i++)
+            {
+                var materialKeywordProperty = MaterialKeywordPropertyList[i];
+                if (materialKeywordProperty.ID == id && materialKeywordProperty.MaterialName == material.NameFormatted())
+                    CopyData.MaterialKeywordPropertyList.Add(new CopyContainer.MaterialKeywordProperty(materialKeywordProperty.Property, materialKeywordProperty.Value));
+            }
             for (var i = 0; i < MaterialColorPropertyList.Count; i++)
             {
                 var materialColorProperty = MaterialColorPropertyList[i];
@@ -608,6 +643,12 @@ namespace KK_Plugins.MaterialEditor
                 if (material.HasProperty($"_{materialFloatProperty.Property}"))
                     SetMaterialFloatProperty(id, material, materialFloatProperty.Property, materialFloatProperty.Value, setProperty);
             }
+            for (var i = 0; i < CopyData.MaterialKeywordPropertyList.Count; i++)
+            {
+                var materialKeywordProperty = CopyData.MaterialKeywordPropertyList[i];
+                if (material.HasProperty($"_{materialKeywordProperty.Property}"))
+                    SetMaterialKeywordProperty(id, material, materialKeywordProperty.Property, materialKeywordProperty.Value, setProperty);
+            }
             for (var i = 0; i < CopyData.MaterialColorPropertyList.Count; i++)
             {
                 var materialColorProperty = CopyData.MaterialColorPropertyList[i];
@@ -633,6 +674,7 @@ namespace KK_Plugins.MaterialEditor
                 RemoveMaterial(go, material);
                 MaterialShaderList.RemoveAll(x => x.ID == id && x.MaterialName == matName);
                 MaterialFloatPropertyList.RemoveAll(x => x.ID == id && x.MaterialName == matName);
+                MaterialKeywordPropertyList.RemoveAll(x => x.ID == id && x.MaterialName == matName);
                 MaterialColorPropertyList.RemoveAll(x => x.ID == id && x.MaterialName == matName);
                 MaterialTexturePropertyList.RemoveAll(x => x.ID == id && x.MaterialName == matName);
                 MaterialCopyList.RemoveAll(x => x.ID == id && x.MaterialCopyName == matName);
@@ -644,6 +686,7 @@ namespace KK_Plugins.MaterialEditor
 
                 List<MaterialShader> newAccessoryMaterialShaderList = new List<MaterialShader>();
                 List<MaterialFloatProperty> newAccessoryMaterialFloatPropertyList = new List<MaterialFloatProperty>();
+                List<MaterialKeywordProperty> newAccessoryMaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
                 List<MaterialColorProperty> newAccessoryMaterialColorPropertyList = new List<MaterialColorProperty>();
                 List<MaterialTextureProperty> newAccessoryMaterialTexturePropertyList = new List<MaterialTextureProperty>();
 
@@ -651,6 +694,8 @@ namespace KK_Plugins.MaterialEditor
                     newAccessoryMaterialShaderList.Add(new MaterialShader(id, newMatName, property.ShaderName, property.ShaderNameOriginal, property.RenderQueue, property.RenderQueueOriginal));
                 foreach (var property in MaterialFloatPropertyList.Where(x => x.ID == id && x.MaterialName == matName))
                     newAccessoryMaterialFloatPropertyList.Add(new MaterialFloatProperty(id, newMatName, property.Property, property.Value, property.ValueOriginal));
+                foreach (var property in MaterialKeywordPropertyList.Where(x => x.ID == id && x.MaterialName == matName))
+                    newAccessoryMaterialKeywordPropertyList.Add(new MaterialKeywordProperty(id, newMatName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialColorPropertyList.Where(x => x.ID == id && x.MaterialName == matName))
                     newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(id, newMatName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialTexturePropertyList.Where(x => x.ID == id && x.MaterialName == matName))
@@ -658,6 +703,7 @@ namespace KK_Plugins.MaterialEditor
 
                 MaterialShaderList.AddRange(newAccessoryMaterialShaderList);
                 MaterialFloatPropertyList.AddRange(newAccessoryMaterialFloatPropertyList);
+                MaterialKeywordPropertyList.AddRange(newAccessoryMaterialKeywordPropertyList);
                 MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
             }
@@ -812,6 +858,75 @@ namespace KK_Plugins.MaterialEditor
             }
 
             MaterialFloatPropertyList.RemoveAll(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
+        }
+        /// <summary>
+        /// Add a keyword property to be saved and loaded with the scene and optionally also update the materials.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="value">Value</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
+        public void SetMaterialKeywordProperty(int id, Material material, string propertyName, bool value, bool setProperty = true)
+        {
+            GameObject go = GetObjectByID(id);
+            var materialProperty = MaterialKeywordPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
+            if (materialProperty == null)
+            {
+                bool valueOriginal = material.IsKeywordEnabled($"_{propertyName}");
+                MaterialKeywordPropertyList.Add(new MaterialKeywordProperty(id, material.NameFormatted(), propertyName, value, valueOriginal));
+            }
+            else
+            {
+                if (value == materialProperty.ValueOriginal)
+                    RemoveMaterialKeywordProperty(id, material, propertyName, false);
+                else
+                    materialProperty.Value = value;
+            }
+
+            if (setProperty)
+                SetKeyword(go, material.NameFormatted(), propertyName, value);
+        }
+        /// <summary>
+        /// Get the saved renderer property's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="renderer">Renderer being modified</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <returns>Saved renderer property's original value</returns>
+        public bool? GetMaterialKeywordPropertyValue(int id, Material material, string propertyName)
+        {
+            return MaterialKeywordPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
+        }
+        /// <summary>
+        /// Get the saved material property's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
+        public bool? GetMaterialKeywordPropertyValueOriginal(int id, Material material, string propertyName)
+        {
+            return MaterialKeywordPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
+        }
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="propertyName">Property of the material without the leading underscore</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
+        public void RemoveMaterialKeywordProperty(int id, Material material, string propertyName, bool setProperty = true)
+        {
+            GameObject go = GetObjectByID(id);
+            if (setProperty)
+            {
+                var original = GetMaterialKeywordPropertyValueOriginal(id, material, propertyName);
+                if (original != null)
+                    SetKeyword(go, material.NameFormatted(), propertyName, (bool)original);
+            }
+
+            MaterialKeywordPropertyList.RemoveAll(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
         }
         /// <summary>
         /// Add a color property to be saved and loaded with the scene and optionally also update the materials.
@@ -1393,6 +1508,57 @@ namespace KK_Plugins.MaterialEditor
             /// <param name="value">Value</param>
             /// <param name="valueOriginal">Original</param>
             public MaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
+            {
+                ID = id;
+                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                Property = property;
+                Value = value;
+                ValueOriginal = valueOriginal;
+            }
+        }
+
+        /// <summary>
+        /// Data storage class for keyword properties
+        /// </summary>
+        [Serializable]
+        [MessagePackObject]
+        public class MaterialKeywordProperty
+        {
+            /// <summary>
+            /// ID of the item
+            /// </summary>
+            [Key("ID")]
+            public int ID;
+            /// <summary>
+            /// Name of the material
+            /// </summary>
+            [Key("MaterialName")]
+            public string MaterialName;
+            /// <summary>
+            /// Name of the property
+            /// </summary>
+            [Key("Property")]
+            public string Property;
+            /// <summary>
+            /// Value
+            /// </summary>
+            [Key("Value")]
+            public bool Value;
+            /// <summary>
+            /// Original value
+            /// </summary>
+            [Key("ValueOriginal")]
+            public bool ValueOriginal;
+
+            /// <summary>
+            /// Data storage class for keyword properties
+            /// </summary>
+            /// <param name="id">ID of the item</param>
+            /// <param name="materialName">Name of the material</param>
+            /// <param name="property">Name of the property</param>
+            /// <param name="value">Value</param>
+            /// <param name="valueOriginal">Original</param>
+            public MaterialKeywordProperty(int id, string materialName, string property, bool value, bool valueOriginal)
             {
                 ID = id;
                 MaterialName = materialName.Replace("(Instance)", "").Trim();
