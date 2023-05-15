@@ -441,5 +441,21 @@ namespace KK_Plugins.MaterialEditor
             ObjectData objectData = (ObjectData)data;
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
         }
+
+        public override bool? GetMaterialKeywordPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialKeywordPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
+        public override void SetMaterialKeywordProperty(object data, Material material, string propertyName, bool value, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialKeywordProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+        }
+        public override void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialKeywordProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
     }
 }

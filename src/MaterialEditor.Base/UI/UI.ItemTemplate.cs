@@ -454,6 +454,31 @@ namespace MaterialEditorAPI
                 resetLE.flexibleWidth = 0;
             }
 
+            //Keyword properties
+            {
+                var itemPanel = UIUtility.CreatePanel("KeywordPanel", contentList.transform);
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+                itemPanel.color = ItemColor;
+
+                var label = UIUtility.CreateText("KeywordLabel", itemPanel.transform, "");
+                label.alignment = TextAnchor.MiddleLeft;
+                label.color = Color.black;
+                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                labelLE.preferredWidth = LabelWidth;
+                labelLE.flexibleWidth = LabelWidth;
+
+                Toggle toggleKeyword = UIUtility.CreateToggle("KeywordToggle", itemPanel.transform, "");
+                var toggleKeywordLE = toggleKeyword.gameObject.AddComponent<LayoutElement>();
+                toggleKeywordLE.preferredWidth = TextBoxWidth;
+                toggleKeywordLE.flexibleWidth = 0;
+
+                var reset = UIUtility.CreateButton($"KeywordResetButton", itemPanel.transform, "Reset");
+                var resetLE = reset.gameObject.AddComponent<LayoutElement>();
+                resetLE.preferredWidth = ResetButtonWidth;
+                resetLE.flexibleWidth = 0;
+            }
+
             return contentList.gameObject;
         }
     }

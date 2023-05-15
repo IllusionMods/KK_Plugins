@@ -201,6 +201,35 @@ namespace MaterialEditorAPI
         /// <param name="propertyName">Property of the material being set</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the material was found and the value set</returns>
+        public static bool SetKeyword(GameObject gameObject, string materialName, string propertyName, bool value)
+        {
+            bool didSet = false; 
+
+            var list = GetObjectMaterials(gameObject, materialName);
+            for (var i = 0; i < list.Count; i++)
+            {
+                var material = list[i];
+                if (value == true)
+                {
+                    material.EnableKeyword($"_{propertyName}");
+                }
+                else
+                {
+                    material.DisableKeyword($"_{propertyName}");
+                }
+                didSet = true; // There's no way to tell if the keyword actually exists, so we'll just have to trust the XML.
+            }
+            return didSet;
+        }
+        
+        /// <summary>
+        /// Set the value of the specified material property
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the material</param>
+        /// <param name="materialName">Name of the material being set</param>
+        /// <param name="propertyName">Property of the material being set</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the material was found and the value set</returns>
         public static bool SetColor(GameObject gameObject, string materialName, string propertyName, string value) => SetColor(gameObject, materialName, propertyName, value.ToColor());
         /// <summary>
         /// Set the value of the specified material property
@@ -458,6 +487,9 @@ namespace MaterialEditorAPI
                                     MaterialEditorPluginBase.Logger.LogWarning($"Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
                                 }
                                 break;
+                           case ShaderPropertyType.Keyword:
+                                SetKeyword(gameObject, materialName, shaderPropertyData.Name, bool.Parse(shaderPropertyData.DefaultValue));
+                                break;
                         }
                     }
                 didSet = true;
@@ -512,7 +544,11 @@ namespace MaterialEditorAPI
             /// <summary>
             /// Float, Int, Bool
             /// </summary>
-            Float
+            Float,
+            /// <summary>
+            /// Bool
+            /// </summary>
+            Keyword
         }
         /// <summary>
         /// Properties of a renderer that can be set
