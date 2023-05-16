@@ -1208,12 +1208,11 @@ namespace KK_Plugins
             ClothesToAccessoriesAdapter.AllInstances.TryGetValue(__instance, out var accClothes);
             if (accClothes == null || kind >= accClothes.Length) return;
 
-            // Just copy pasted the relevant part of UpdateClothesSiru()
-            // I tried to use a ReversePatch Transpiler, but I'm not smart enough to pull that off.
+            // Run UpdateClothesSiru on each adapter
             foreach (ClothesToAccessoriesAdapter adapter in accClothes[kind])
             {
                 ChaClothesComponent chaClothesComponent = adapter.ClothesComponent;
-                if (!(null == chaClothesComponent))
+                if (null != chaClothesComponent)
                 {
                     if (chaClothesComponent.rendNormal01 != null && chaClothesComponent.rendNormal01.Length != 0)
                     {
