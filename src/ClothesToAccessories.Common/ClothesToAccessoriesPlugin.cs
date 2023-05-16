@@ -28,7 +28,7 @@ namespace KK_Plugins
         public const string GUID = "ClothesToAccessories";
         public const string PluginName = "Clothes To Accessories";
         public const string PluginNameInternal = "KKS_ClothesToAccessories";
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
 
         internal static new ManualLogSource Logger;
 
@@ -1196,6 +1196,69 @@ namespace KK_Plugins
                 {
                     __result = true;
                     break;
+                }
+            }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyWrapSafe]
+        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.UpdateClothesSiru))]
+        private static void UpdateClothesSiruPost(ChaControl __instance, int kind, float frontTop, float frontBot, float downTop, float downBot)
+        {
+            ClothesToAccessoriesAdapter.AllInstances.TryGetValue(__instance, out var accClothes);
+            if (accClothes == null || kind >= accClothes.Length) return;
+
+            // Run UpdateClothesSiru on each adapter
+            foreach (ClothesToAccessoriesAdapter adapter in accClothes[kind])
+            {
+                ChaClothesComponent chaClothesComponent = adapter.ClothesComponent;
+                if (null != chaClothesComponent)
+                {
+                    if (chaClothesComponent.rendNormal01 != null && chaClothesComponent.rendNormal01.Length != 0)
+                    {
+                        Renderer[] rendNormal = chaClothesComponent.rendNormal01;
+                        foreach (Renderer renderer in rendNormal)
+                        {
+                            if (!(null == renderer))
+                            {
+                                renderer.material.SetFloat(ChaShader._liquidftop, frontTop);
+                                renderer.material.SetFloat(ChaShader._liquidfbot, frontBot);
+                                renderer.material.SetFloat(ChaShader._liquidbtop, downTop);
+                                renderer.material.SetFloat(ChaShader._liquidbbot, downBot);
+                            }
+                        }
+                    }
+                    if (chaClothesComponent.rendNormal02 != null && chaClothesComponent.rendNormal02.Length != 0)
+                    {
+                        Renderer[] rendNormal2 = chaClothesComponent.rendNormal02;
+                        foreach (Renderer renderer2 in rendNormal2)
+                        {
+                            if (!(null == renderer2))
+                            {
+                                renderer2.material.SetFloat(ChaShader._liquidftop, frontTop);
+                                renderer2.material.SetFloat(ChaShader._liquidfbot, frontBot);
+                                renderer2.material.SetFloat(ChaShader._liquidbtop, downTop);
+                                renderer2.material.SetFloat(ChaShader._liquidbbot, downBot);
+                            }
+                        }
+                    }
+#if KKS
+                    // This also exists in KK with Darkness installed, but I guess we're just going to ignore that.
+                    if (chaClothesComponent.rendNormal03 != null && chaClothesComponent.rendNormal03.Length != 0)
+                    {
+                        Renderer[] rendNormal3 = chaClothesComponent.rendNormal03;
+                        foreach (Renderer renderer3 in rendNormal3)
+                        {
+                            if (!(null == renderer3))
+                            {
+                                renderer3.material.SetFloat(ChaShader._liquidftop, frontTop);
+                                renderer3.material.SetFloat(ChaShader._liquidfbot, frontBot);
+                                renderer3.material.SetFloat(ChaShader._liquidbtop, downTop);
+                                renderer3.material.SetFloat(ChaShader._liquidbbot, downBot);
+                            }
+                        }
+                    }
+#endif
                 }
             }
         }
