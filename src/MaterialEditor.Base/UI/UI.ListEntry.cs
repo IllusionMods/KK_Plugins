@@ -611,8 +611,9 @@ namespace MaterialEditorAPI
                     case ItemInfo.RowItemType.KeywordProperty:
                         ShowKeyword();
                         SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal);
-                        KeywordToggle.isOn = item.KeywordValue;
                         KeywordToggle.onValueChanged.RemoveAllListeners();
+
+                        KeywordToggle.isOn = item.KeywordValue;
                         KeywordToggle.onValueChanged.AddListener(value =>
                         {
                             item.KeywordValue = value;
