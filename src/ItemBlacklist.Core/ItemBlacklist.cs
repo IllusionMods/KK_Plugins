@@ -7,6 +7,7 @@ using Sideloader.AutoResolver;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,7 +27,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.itemblacklist";
         public const string PluginName = "Item Blacklist";
         public const string PluginNameInternal = "KK_ItemBlacklist";
-        public const string Version = "2.0";
+        public const string Version = "3.0";
         internal const string BaseGameItemGuid = "[['BASE'GAME'ITEM']]";
         internal static new ManualLogSource Logger;
 
@@ -304,104 +305,122 @@ namespace KK_Plugins
             UngroupItem(Blacklist, ListVisibilityType.Hidden, guid, category, id, index);
         }
 
-        private int GroupMod(ItemGroup group, ItemGroup skipItemsIn, ListVisibilityType? hideFrom, string guid)
+        private int GroupMod(ItemGroup group, ItemGroup skipItemsIn, ListVisibilityType? hideFrom, string guid, bool onlyCurrentList)
         {
-            int skipped = 0;
-            for (var i = 0; i < CustomSelectListCtrlInstance.lstSelectInfo.Count; i++)
+            var allLists = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
+
+            int ProcessList(CustomSelectListCtrl targetListCtrl1)
             {
-                CustomSelectInfo customSelectInfo = CustomSelectListCtrlInstance.lstSelectInfo[i];
-                int category = customSelectInfo.category;
-                ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)category, customSelectInfo.index);
-                int slot = info == null ? customSelectInfo.index : info.Slot;
+                int skipped = 0;
+                for (var i = 0; i < targetListCtrl1.lstSelectInfo.Count; i++)
+                {
+                    CustomSelectInfo customSelectInfo = targetListCtrl1.lstSelectInfo[i];
+                    int category = customSelectInfo.category;
+                    ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)category, customSelectInfo.index);
+                    int slot = info == null ? customSelectInfo.index : info.Slot;
 
                     if (guid != (info == null ? BaseGameItemGuid : info.GUID ?? string.Empty))
                         continue;
 
-                if (skipItemsIn.ContainsKey(guid) && skipItemsIn[guid].ContainsKey(category) && skipItemsIn[guid][category].Contains(slot))
-                {
-                    skipped++;
-                    continue;
+                    if (skipItemsIn.ContainsKey(guid) && skipItemsIn[guid].ContainsKey(category) && skipItemsIn[guid][category].Contains(slot))
+                    {
+                        skipped++;
+                        continue;
+                    }
+
+                    if (!group.ContainsKey(guid))
+                        group[guid] = new Dictionary<int, HashSet<int>>();
+                    if (!group[guid].ContainsKey(category))
+                        group[guid][category] = new HashSet<int>();
+                    group[guid][category].Add(slot);
+
+                    for (var j = 0; j < allLists.Length; j++)
+                    {
+                        var customSelectListCtrl = allLists[j];
+                        if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == category)
+                            if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
+                                if (visibilityType == hideFrom)
+                                    customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
+                    }
                 }
 
-                if (!group.ContainsKey(guid))
-                    group[guid] = new Dictionary<int, HashSet<int>>();
-                if (!group[guid].ContainsKey(category))
-                    group[guid][category] = new HashSet<int>();
-                group[guid][category].Add(slot);
-
-                var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
-                for (var j = 0; j < controls.Length; j++)
-                {
-                    var customSelectListCtrl = controls[j];
-                    if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == category)
-                        if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                            if (visibilityType == hideFrom)
-                                customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
-                }
+                return skipped;
             }
+
+            var allSkipped = onlyCurrentList ? ProcessList(CustomSelectListCtrlInstance) : allLists.Sum(ProcessList);
             SetMenuVisibility(false);
-            return skipped;
+            return allSkipped;
         }
-        private void FavoriteMod(string guid) {
-            int skipped = GroupMod(Favorites, Blacklist, null, guid);
+        private void FavoriteMod(string guid, bool onlyCurrentList)
+        {
+            int skipped = GroupMod(Favorites, Blacklist, null, guid, onlyCurrentList);
             if (skipped > 0)
                 Logger.LogMessage($"Skipped {skipped} blacklisted items");
             SaveFavorites();
         }
-        private void BlacklistMod(string guid) {
-            int skipped = GroupMod(Blacklist, Favorites, ListVisibilityType.Filtered, guid);
+        private void BlacklistMod(string guid, bool onlyCurrentList)
+        {
+            int skipped = GroupMod(Blacklist, Favorites, ListVisibilityType.Filtered, guid, onlyCurrentList);
             if (skipped > 0)
                 Logger.LogMessage($"Skipped {skipped} items that are in favorites");
             SaveBlacklist();
         }
 
-        private void UngroupMod(ItemGroup group, ListVisibilityType boundVisibility, string guid)
+        private void UngroupMod(ItemGroup group, ListVisibilityType boundVisibility, string guid, bool onlyCurrentList)
         {
-            bool changeFilter = false;
-            for (var i = 0; i < CustomSelectListCtrlInstance.lstSelectInfo.Count; i++)
+            var allLists = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
+
+            bool ProcessList(CustomSelectListCtrl targetListCtrl)
             {
-                CustomSelectInfo customSelectInfo = CustomSelectListCtrlInstance.lstSelectInfo[i];
-                int category = customSelectInfo.category;
-                ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)category, customSelectInfo.index);
-                int slot = info == null ? customSelectInfo.index : info.Slot;
+                var result = false;
+                for (var i = 0; i < targetListCtrl.lstSelectInfo.Count; i++)
+                {
+                    CustomSelectInfo customSelectInfo = targetListCtrl.lstSelectInfo[i];
+                    int category = customSelectInfo.category;
+                    ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)category, customSelectInfo.index);
+                    int slot = info == null ? customSelectInfo.index : info.Slot;
 
                     if (guid != (info == null ? BaseGameItemGuid : info.GUID ?? string.Empty))
                         continue;
 
-                if (!group.ContainsKey(guid))
-                    group[guid] = new Dictionary<int, HashSet<int>>();
-                if (!group[guid].ContainsKey(category))
-                    group[guid][category] = new HashSet<int>();
-                group[guid][category].Remove(slot);
+                    if (!group.ContainsKey(guid))
+                        group[guid] = new Dictionary<int, HashSet<int>>();
+                    if (!group[guid].ContainsKey(category))
+                        group[guid][category] = new HashSet<int>();
+                    group[guid][category].Remove(slot);
 
-                var controls = CustomBase.Instance.GetComponentsInChildren<CustomSelectListCtrl>(true);
-                for (var j = 0; j < controls.Length; j++)
-                {
-                    var customSelectListCtrl = controls[j];
-                    if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == category)
+                    for (var j = 0; j < allLists.Length; j++)
                     {
-                        if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
-                            if (visibilityType == boundVisibility)
-                                customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
+                        var customSelectListCtrl = allLists[j];
+                        if (customSelectListCtrl.GetSelectInfoFromIndex(customSelectInfo.index)?.category == category)
+                        {
+                            if (ListVisibility.TryGetValue(customSelectListCtrl, out var visibilityType))
+                                if (visibilityType == boundVisibility)
+                                    customSelectListCtrl.DisvisibleItem(customSelectInfo.index, true);
 
-                        if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
-                            changeFilter = true;
+                            if (customSelectListCtrl.lstSelectInfo.All(x => x.disvisible))
+                                result = true;
+                        }
                     }
                 }
+
+                return result;
             }
+
+            var changeFilter = onlyCurrentList ? ProcessList(CustomSelectListCtrlInstance) : allLists.Count(ProcessList) > 0;
 
             if (changeFilter)
                 ChangeListFilter(ListVisibilityType.Filtered);
             SetMenuVisibility(false);
         }
-        private void UnfavoriteMod(string guid)
+        private void UnfavoriteMod(string guid, bool onlyCurrentList)
         {
-            UngroupMod(Favorites, ListVisibilityType.Favorites, guid);
+            UngroupMod(Favorites, ListVisibilityType.Favorites, guid, onlyCurrentList);
             SaveFavorites();
         }
-        private void UnblacklistMod(string guid)
+        private void UnblacklistMod(string guid, bool onlyCurrentList)
         {
-            UngroupMod(Blacklist, ListVisibilityType.Hidden, guid);
+            UngroupMod(Blacklist, ListVisibilityType.Hidden, guid, onlyCurrentList);
             SaveBlacklist();
         }
 

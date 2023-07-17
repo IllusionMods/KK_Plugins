@@ -16,12 +16,14 @@ namespace KK_Plugins
         private Image ContextMenuPanel;
         private static Button FavoriteButton;
         private static Button FavoriteModButton;
+        private static Button FavoriteModButton2;
         private static Button BlacklistButton;
         private static Button BlacklistModButton;
+        private static Button BlacklistModButton2;
         private static Button InfoButton;
         private static Dropdown FilterDropdown;
         private readonly float UIWidth = 0.2f;
-        private readonly float UIHeight = 0.2020f;
+        private readonly float UIHeight = 0.27f;
 
         internal const float MarginSize = 4f;
         internal const float PanelHeight = 35f;
@@ -76,6 +78,24 @@ namespace KK_Plugins
                 text.fontSize = 26;
             }
             {
+                var contentItem = UIUtility.CreatePanel("FavoriteModContent2", scrollRect.content.transform);
+                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
+                contentItem.gameObject.AddComponent<Mask>();
+                contentItem.color = RowColor;
+
+                var itemPanel = UIUtility.CreatePanel("FavoriteModPanel2", contentItem.transform);
+                itemPanel.color = RowColor;
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+
+                FavoriteModButton2 = UIUtility.CreateButton("FavoriteModButton2", itemPanel.transform, "Favorite all items from this mod on this list");
+                FavoriteModButton2.gameObject.AddComponent<LayoutElement>();
+
+                var text = FavoriteModButton2.GetComponentInChildren<Text>();
+                text.resizeTextForBestFit = true;
+                text.fontSize = 24;
+            }
+            {
                 var contentItem = UIUtility.CreatePanel("FavoriteModContent", scrollRect.content.transform);
                 contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
                 contentItem.gameObject.AddComponent<Mask>();
@@ -110,6 +130,24 @@ namespace KK_Plugins
                 var text = BlacklistButton.GetComponentInChildren<Text>();
                 text.resizeTextForBestFit = false;
                 text.fontSize = 26;
+            }
+            {
+                var contentItem = UIUtility.CreatePanel("BlacklistModContent2", scrollRect.content.transform);
+                contentItem.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
+                contentItem.gameObject.AddComponent<Mask>();
+                contentItem.color = RowColor;
+
+                var itemPanel = UIUtility.CreatePanel("BlacklistModPanel2", contentItem.transform);
+                itemPanel.color = RowColor;
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+
+                BlacklistModButton2 = UIUtility.CreateButton("BlacklistModButton2", itemPanel.transform, "Hide all items from this mod on this list");
+                BlacklistModButton2.gameObject.AddComponent<LayoutElement>();
+
+                var text = BlacklistModButton2.GetComponentInChildren<Text>();
+                text.resizeTextForBestFit = true;
+                text.fontSize = 24;
             }
             {
                 var contentItem = UIUtility.CreatePanel("BlacklistModContent", scrollRect.content.transform);
@@ -234,42 +272,54 @@ namespace KK_Plugins
 
             FavoriteButton.onClick.RemoveAllListeners();
             FavoriteModButton.onClick.RemoveAllListeners();
+            FavoriteModButton2.onClick.RemoveAllListeners();
             BlacklistButton.onClick.RemoveAllListeners();
             BlacklistModButton.onClick.RemoveAllListeners();
+            BlacklistModButton2.onClick.RemoveAllListeners();
             InfoButton.onClick.RemoveAllListeners();
 
             FavoriteButton.enabled = true;
             FavoriteModButton.enabled = true;
+            FavoriteModButton2.enabled = true;
             BlacklistButton.enabled = true;
             BlacklistModButton.enabled = true;
+            BlacklistModButton2.enabled = true;
 
             if (CheckFavorites(guid, category, id))
             {
                 FavoriteButton.GetComponentInChildren<Text>().text = "Unfavorite this item";
                 FavoriteButton.onClick.AddListener(() => UnfavoriteItem(guid, category, id, index));
                 FavoriteModButton.GetComponentInChildren<Text>().text = "Unfavorite all items from this mod";
-                FavoriteModButton.onClick.AddListener(() => UnfavoriteMod(guid));
+                FavoriteModButton.onClick.AddListener(() => UnfavoriteMod(guid, false));
+                FavoriteModButton2.GetComponentInChildren<Text>().text = "Unfavorite all items from this mod on this list";
+                FavoriteModButton2.onClick.AddListener(() => UnfavoriteMod(guid, true));
             }
             else
             {
                 FavoriteButton.GetComponentInChildren<Text>().text = "Favorite this item";
                 FavoriteButton.onClick.AddListener(() => FavoriteItem(guid, category, id, index));
                 FavoriteModButton.GetComponentInChildren<Text>().text = "Favorite all items from this mod";
-                FavoriteModButton.onClick.AddListener(() => FavoriteMod(guid));
+                FavoriteModButton.onClick.AddListener(() => FavoriteMod(guid, false));
+                FavoriteModButton2.GetComponentInChildren<Text>().text = "Favorite all items from this mod on this list";
+                FavoriteModButton2.onClick.AddListener(() => FavoriteMod(guid, true));
             }
             if (CheckBlacklist(guid, category, id))
             {
                 BlacklistButton.GetComponentInChildren<Text>().text = "Unhide this item";
                 BlacklistButton.onClick.AddListener(() => UnblacklistItem(guid, category, id, index));
                 BlacklistModButton.GetComponentInChildren<Text>().text = "Unhide all items from this mod";
-                BlacklistModButton.onClick.AddListener(() => UnblacklistMod(guid));
+                BlacklistModButton.onClick.AddListener(() => UnblacklistMod(guid, false));
+                BlacklistModButton2.GetComponentInChildren<Text>().text = "Unhide all items from this mod on this list";
+                BlacklistModButton2.onClick.AddListener(() => UnblacklistMod(guid, true));
             }
             else
             {
                 BlacklistButton.GetComponentInChildren<Text>().text = "Hide this item";
                 BlacklistButton.onClick.AddListener(() => BlacklistItem(guid, category, id, index));
                 BlacklistModButton.GetComponentInChildren<Text>().text = "Hide all items from this mod";
-                BlacklistModButton.onClick.AddListener(() => BlacklistMod(guid));
+                BlacklistModButton.onClick.AddListener(() => BlacklistMod(guid, false));
+                BlacklistModButton2.GetComponentInChildren<Text>().text = "Hide all items from this mod on this list";
+                BlacklistModButton2.onClick.AddListener(() => BlacklistMod(guid, true));
             }
 
             InfoButton.onClick.AddListener(() => PrintInfo(index));
