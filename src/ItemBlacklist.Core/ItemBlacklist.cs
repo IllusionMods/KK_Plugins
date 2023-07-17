@@ -27,6 +27,7 @@ namespace KK_Plugins
         public const string PluginName = "Item Blacklist";
         public const string PluginNameInternal = "KK_ItemBlacklist";
         public const string Version = "2.0";
+        internal const string BaseGameItemGuid = "[['BASE'GAME'ITEM']]";
         internal static new ManualLogSource Logger;
 
         private static CustomSelectListCtrl CustomSelectListCtrlInstance;
@@ -203,7 +204,7 @@ namespace KK_Plugins
                 bool hide = visibilityType != ListVisibilityType.Filtered;
 
                 ResolveInfo Info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
-                string guid = Info == null || Info.GUID.IsNullOrEmpty() ? "" : Info.GUID;
+                string guid = Info == null ? BaseGameItemGuid : Info.GUID ?? string.Empty;
                 int category = Info == null ? customSelectInfo.category : (int)Info.CategoryNo;
                 int slot = Info == null ? customSelectInfo.index : Info.Slot;
 
@@ -313,8 +314,8 @@ namespace KK_Plugins
                 ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)category, customSelectInfo.index);
                 int slot = info == null ? customSelectInfo.index : info.Slot;
 
-                if (guid != (info == null || info.GUID.IsNullOrEmpty() ? "" : info.GUID))
-                    continue;
+                    if (guid != (info == null ? BaseGameItemGuid : info.GUID ?? string.Empty))
+                        continue;
 
                 if (skipItemsIn.ContainsKey(guid) && skipItemsIn[guid].ContainsKey(category) && skipItemsIn[guid][category].Contains(slot))
                 {
@@ -364,8 +365,8 @@ namespace KK_Plugins
                 ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)category, customSelectInfo.index);
                 int slot = info == null ? customSelectInfo.index : info.Slot;
 
-                if (guid != (info == null || info.GUID.IsNullOrEmpty() ? "" : info.GUID))
-                    continue;
+                    if (guid != (info == null ? BaseGameItemGuid : info.GUID ?? string.Empty))
+                        continue;
 
                 if (!group.ContainsKey(guid))
                     group[guid] = new Dictionary<int, HashSet<int>>();

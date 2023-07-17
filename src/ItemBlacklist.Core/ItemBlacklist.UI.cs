@@ -215,7 +215,7 @@ namespace KK_Plugins
             List<CustomSelectInfo> lstSelectInfo = (List<CustomSelectInfo>)Traverse.Create(CustomSelectListCtrlInstance).Field("lstSelectInfo").GetValue();
             int index = CurrentCustomSelectInfoComponent.info.index;
             var customSelectInfo = lstSelectInfo.First(x => x.index == index);
-            string guid = "";
+            string guid = BaseGameItemGuid;
             int category = customSelectInfo.category;
             int id = index;
 
@@ -224,7 +224,7 @@ namespace KK_Plugins
                 ResolveInfo info = UniversalAutoResolver.TryGetResolutionInfo((ChaListDefine.CategoryNo)customSelectInfo.category, customSelectInfo.index);
                 if (info != null)
                 {
-                    guid = info.GUID.IsNullOrEmpty() ? "" : info.GUID;
+                    guid = info.GUID ?? string.Empty;
                     id = info.Slot;
                 }
             }
