@@ -134,8 +134,6 @@ namespace KK_Plugins
 
         private static void SaveGroup(ItemGroup group, string file, string xmlElement)
         {
-            File.Delete(file);
-
             XDocument xml = new XDocument();
             XElement itemGroupElement = new XElement(xmlElement);
             xml.Add(itemGroupElement);
@@ -161,7 +159,23 @@ namespace KK_Plugins
                 }
             }
 
-            xml.Save(file);
+            var retryCount = 3;
+        retry:
+            try
+            {
+                using (var fs = new FileStream(file, FileMode.Create, FileAccess.ReadWrite))
+                using (var tw = new StreamWriter(fs, Encoding.UTF8))
+                    xml.Save(tw);
+                return;
+            }
+            catch (IOException)
+            {
+                System.Threading.Thread.Sleep(500);
+                if (retryCount-- > 0)
+                    goto retry;
+                else
+                    throw;
+            }
         }
         private static void SaveFavorites()
         {
