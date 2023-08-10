@@ -185,7 +185,7 @@ namespace KK_Plugins.MaterialEditor
                             MaterialFloatPropertyList.Add(new MaterialFloatProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                 }
             }
-            
+
             if (data.data.TryGetValue(nameof(MaterialKeywordPropertyList), out var materialKeywordProperties) && materialKeywordProperties != null)
             {
                 var properties = MessagePackSerializer.Deserialize<List<MaterialKeywordProperty>>((byte[])materialKeywordProperties);
@@ -376,6 +376,24 @@ namespace KK_Plugins.MaterialEditor
                 if (count > 0)
                     MaterialEditorPlugin.Logger.LogMessage($"Enabled ShadowCasting for {count} items");
             }
+            else if (MaterialEditorPlugin.TwoSidedShadowCastingHotkey.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "2", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Two Sided ShadowCasting for {count} items");
+            }
+            else if (MaterialEditorPlugin.ShadowsOnlyShadowCastingHotkey.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "3", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Shadows Only ShadowCasting for {count} items");
+            }
             else if (MaterialEditorPlugin.ResetShadowCastingHotkey.Value.IsDown())
             {
                 int count = 0;
@@ -455,6 +473,12 @@ namespace KK_Plugins.MaterialEditor
                         {
                             if (value == "-1")
                                 controller.RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
+                            //keep consistency in the casted shadow with how it would normally look
+                            else if (value == "2" | value == "3")
+                            {
+                                controller.RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
+                                controller.SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, chaControl.gameObject);
+                            }
                             else
                                 controller.SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, value, chaControl.gameObject);
                         }
