@@ -855,7 +855,7 @@ namespace KK_Plugins.MaterialEditor
         internal void CoordinateChangedEvent()
         {
             //In H if a coordinate is loaded the data will be overwritten. When switching coordinates the ExtSave data must be reloaded to restore the original.
-            if (KoikatuAPI.GetCurrentGameMode() == GameMode.MainGame)
+            if (KKAPI.MainGame.GameAPI.InsideHScene)
                 LoadCharacterExtSaveData();
 
             ChaControl.StartCoroutine(LoadData(true, true, false));
