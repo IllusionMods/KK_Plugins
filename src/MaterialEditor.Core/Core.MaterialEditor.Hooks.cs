@@ -82,7 +82,12 @@ namespace KK_Plugins.MaterialEditor
                     List<Renderer> rendList = new List<Renderer>();
                     GetBodyRendererList(chaControl.gameObject, rendList);
                     __result = rendList;
-                    if (rendList.Count > 0)
+#if PH
+                    var fullyLoaded = true;
+#else
+                    var fullyLoaded = chaControl.loadEnd;
+#endif
+                    if (rendList.Count > 0 && fullyLoaded)
                         _RendererLookup[gameObject] = rendList;
                     return false;
                 }
