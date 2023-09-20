@@ -203,7 +203,7 @@ v2.2 AI version, window position adjustment<br/>
 - [KK_ClothingUnlocker]
 - [KKS_ClothingUnlocker]
 
-Allows gender restricted clothing to be used on all characters. Also allows you to unlock bras or skirts with any top on a per-character, per-ourfit basis. This setting saves and loads with the character card or coordinate card to ensure compatibility.
+Allows gender restricted clothing to be used on all characters. Also allows you to unlock bras or skirts with any top on a per-character, per-outfit basis. This setting saves and loads with the character card or coordinate card to ensure compatibility.
 
 <details><summary>Change Log</summary>
 v1.1 Added clothing unlocking for bras/skirts with any top<br/>
@@ -242,7 +242,7 @@ v2.0 Merged changes from https://github.com/AUTOMATIC1111/KoikatsuMods<br/>
 - [KKS_PoseTools]
 - [PH_PoseTools]
 
-This plugin is aimed at increasing the usability of poses. You can reate new folders in userdata/studio/pose and place the pose data inside them and those folders will show up in your list of poses in Studio. It also saves poses as .png files instead of .dat so you see can see what the content of the pose is. The list of poses is ordered by filename and the pose name is added to the file name so the list will be ordered alphabetically. It also saves skirt FK and facial expressions, though these can be disabled in plugin settings if you prefer.
+This plugin is aimed at increasing the usability of poses. You can create new folders in userdata/studio/pose and place the pose data inside them and those folders will show up in your list of poses in Studio. It also saves poses as .png files instead of .dat so you see can see what the content of the pose is. The list of poses is ordered by filename and the pose name is added to the file name so the list will be ordered alphabetically. It also saves skirt FK and facial expressions, though these can be disabled in plugin settings if you prefer.
 
 Ported from Essu's NEOpose List Folders plugin for Honey Select.
 
