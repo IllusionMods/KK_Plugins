@@ -27,6 +27,11 @@ namespace MaterialEditorAPI
         public Action<int> RendererReceiveShadowsOnChange { get; set; }
         public Action RendererReceiveShadowsOnReset { get; set; }
 
+        public int RendererRecalculateNormals { get; set; }
+        public int RendererRecalculateNormalsOriginal { get; set; }
+        public Action<int> RendererRecalculateNormalsOnChange { get; set; }
+        public Action RendererRecalculateNormalsOnReset { get; set; }
+
         public string MaterialName { get; set; }
         public Action MaterialOnCopy { get; set; }
         public Action MaterialOnPaste { get; set; }
@@ -83,6 +88,6 @@ namespace MaterialEditorAPI
             LabelText = labelText;
         }
 
-        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, Material, Shader, ShaderRenderQueue, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
+        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, RendererRecalculateNormals, Material, Shader, ShaderRenderQueue, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
     }
 }

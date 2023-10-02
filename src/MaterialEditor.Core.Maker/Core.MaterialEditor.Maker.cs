@@ -303,6 +303,11 @@ namespace KK_Plugins.MaterialEditor
             ObjectData objectData = (ObjectData)data;
             return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetRendererPropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, property, go);
         }
+        public override string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetRendererPropertyValue(objectData.Slot, objectData.ObjectType, renderer, property, go);
+        }
         public override void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject go)
         {
             ObjectData objectData = (ObjectData)data;

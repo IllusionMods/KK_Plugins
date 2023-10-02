@@ -28,6 +28,11 @@ namespace MaterialEditorAPI
         public Dropdown RendererReceiveShadowsDropdown;
         public Button RendererReceiveShadowsResetButton;
 
+        public CanvasGroup RendererRecalculateNormalsPanel;
+        public Text RendererRecalculateNormalsLabel;
+        public Dropdown RendererRecalculateNormalsDropdown;
+        public Button RendererRecalculateNormalsResetButton;
+
         public CanvasGroup MaterialPanel;
         public Text MaterialLabel;
         public Text MaterialText;
@@ -170,6 +175,25 @@ namespace MaterialEditorAPI
 
                         RendererReceiveShadowsResetButton.onClick.RemoveAllListeners();
                         RendererReceiveShadowsResetButton.onClick.AddListener(() => RendererReceiveShadowsDropdown.value = item.RendererReceiveShadowsOriginal);
+
+                        break;
+                    case ItemInfo.RowItemType.RendererRecalculateNormals:
+                        ShowRendererRecalculateNormals();
+                        SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal);
+                        RendererRecalculateNormalsDropdown.onValueChanged.RemoveAllListeners();
+                        RendererRecalculateNormalsDropdown.value = item.RendererRecalculateNormals;
+                        RendererRecalculateNormalsDropdown.onValueChanged.AddListener(value =>
+                        {
+                            item.RendererRecalculateNormals = value;
+                            if (item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal)
+                                item.RendererRecalculateNormalsOnChange(value);
+                            else
+                                item.RendererRecalculateNormalsOnReset();
+                            SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal);
+                        });
+
+                        RendererRecalculateNormalsResetButton.onClick.RemoveAllListeners();
+                        RendererRecalculateNormalsResetButton.onClick.AddListener(() => RendererRecalculateNormalsDropdown.value = item.RendererRecalculateNormalsOriginal);
 
                         break;
                     case ItemInfo.RowItemType.Material:
@@ -670,6 +694,7 @@ namespace MaterialEditorAPI
             ShowRendererEnabled(false);
             ShowRendererShadowCastingMode(false);
             ShowRendererReceiveShadows(false);
+            ShowRendererRecalculateNormals(false);
             ShowMaterial(false);
             ShowShader(false);
             ShowShaderRenderQueue(false);
@@ -700,6 +725,11 @@ namespace MaterialEditorAPI
         {
             RendererReceiveShadowsPanel.alpha = visible ? 1 : 0;
             RendererReceiveShadowsPanel.blocksRaycasts = visible;
+        }
+        private void ShowRendererRecalculateNormals(bool visible = true)
+        {
+            RendererRecalculateNormalsPanel.alpha = visible ? 1 : 0;
+            RendererRecalculateNormalsPanel.blocksRaycasts = visible;
         }
         private void ShowMaterial(bool visible = true)
         {

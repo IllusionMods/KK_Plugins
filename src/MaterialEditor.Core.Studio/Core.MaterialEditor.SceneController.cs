@@ -547,6 +547,7 @@ namespace KK_Plugins.MaterialEditor
                 foreach (var property in RendererPropertyList.Where(x => x.ID == id && x.Property == RendererProperties.Enabled))
                 {
                     MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
+                    // potential recalc of normals, have to test...
                 }
             }
             base.OnObjectVisibilityToggled(objectCtrlInfo, visible);
@@ -724,15 +725,18 @@ namespace KK_Plugins.MaterialEditor
             var rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted());
             if (rendererProperty == null)
             {
-                string valueOriginal;
+                string valueOriginal = "";
                 if (property == RendererProperties.Enabled)
                     valueOriginal = renderer.enabled ? "1" : "0";
                 else if (property == RendererProperties.ReceiveShadows)
                     valueOriginal = renderer.receiveShadows ? "1" : "0";
-                else
+                else if (property == RendererProperties.ShadowCastingMode)
                     valueOriginal = ((int)renderer.shadowCastingMode).ToString();
+                else if (property == RendererProperties.RecalculateNormals)
+                    valueOriginal = "0"; // this property cannot be set by default
 
-                RendererPropertyList.Add(new RendererProperty(id, renderer.NameFormatted(), property, value, valueOriginal));
+                if (valueOriginal != "")
+                    RendererPropertyList.Add(new RendererProperty(id, renderer.NameFormatted(), property, value, valueOriginal));
             }
             else
             {
@@ -779,6 +783,8 @@ namespace KK_Plugins.MaterialEditor
                 var original = GetRendererPropertyValueOriginal(id, renderer, property);
                 if (!original.IsNullOrEmpty())
                     MaterialAPI.SetRendererProperty(go, renderer.NameFormatted(), property, original);
+                if (property == RendererProperties.RecalculateNormals)
+                    MaterialEditorPlugin.Logger.LogMessage("Save and reload character or change outfits to reset normals.");
             }
 
             RendererPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted());
