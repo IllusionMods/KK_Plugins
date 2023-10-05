@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UILib;
 using UnityEngine;
 using UnityEngine.UI;
@@ -175,6 +176,18 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
+        /// Search text using wildcards.
+        /// </summary>
+        /// <param name="text">Text to search in</param>
+        /// <param name="filter">Filter with which to search the text</param>
+        private bool WildCardSearch(string text, string filter)
+        {
+            string regex = "^.*" + Regex.Escape(filter).Replace("\\?", ".").Replace("\\*", ".*") + ".*$";
+            Logger.LogInfo(filter);
+            return Regex.IsMatch(text, regex, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        }
+
+        /// <summary>
         /// Populate the MaterialEditor UI
         /// </summary>
         /// <param name="go">GameObject for which to read the renderers and materials</param>
@@ -209,22 +222,14 @@ namespace MaterialEditorAPI
             else
                 foreach (var rend in rendListFull)
                 {
-                    for (var j = 0; j < filterList.Count; j++)
-                    {
-                        var filterWord = filterList[j];
-                        if (rend.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()) && !rendList.Contains(rend))
+                    foreach (string filterWord in filterList)
+                        if (WildCardSearch(rend.NameFormatted(), filterWord.Trim()) && !rendList.Contains(rend))
                             rendList.Add(rend);
-                    }
 
                     foreach (var mat in GetMaterials(go, rend))
-                    {
-                        for (var k = 0; k < filterList.Count; k++)
-                        {
-                            var filterWord = filterList[k];
-                            if (mat.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()))
+                        foreach (string filterWord in filterList)
+                            if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
                                 matList[mat.NameFormatted()] = mat;
-                        }
-                    }
                 }
 
             for (var i = 0; i < rendList.Count; i++)
