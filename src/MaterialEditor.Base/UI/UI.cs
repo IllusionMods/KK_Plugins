@@ -62,7 +62,7 @@ namespace MaterialEditorAPI
 
         private GameObject CurrentGameObject;
         private object CurrentData;
-        private string CurrentFilter = "";
+        private static string CurrentFilter = "";
         private bool DoObjExport = false;
         private Renderer ObjRenderer;
 
@@ -95,6 +95,7 @@ namespace MaterialEditorAPI
             nametext.alignment = TextAnchor.MiddleCenter;
 
             FilterInputField = UIUtility.CreateInputField("Filter", DragPanel.transform, "Filter");
+            FilterInputField.text = CurrentFilter;
             FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 1f, 1f, 100f, -1f);
             FilterInputField.onValueChanged.AddListener(RefreshUI);
 
@@ -192,8 +193,9 @@ namespace MaterialEditorAPI
         /// <param name="go">GameObject for which to read the renderers and materials</param>
         /// <param name="data">Object that will be passed through to the get/set/reset events</param>
         /// <param name="filter">Comma separated list of text to filter the results</param>
-        protected void PopulateList(GameObject go, object data, string filter = "")
+        protected void PopulateList(GameObject go, object data, string filter = null)
         {
+            if (filter == null) filter = CurrentFilter;
             MaterialEditorWindow.gameObject.SetActive(true);
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
             SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
