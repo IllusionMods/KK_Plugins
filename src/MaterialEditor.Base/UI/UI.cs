@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using KK_Plugins.MaterialEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -195,7 +196,12 @@ namespace MaterialEditorAPI
         /// <param name="filter">Comma separated list of text to filter the results</param>
         protected void PopulateList(GameObject go, object data, string filter = null)
         {
-            if (filter == null) filter = CurrentFilter;
+            if (filter == null)
+            {
+                if (MaterialEditorPlugin.PersistFilter.Value) filter = CurrentFilter;
+                else filter = "";
+            }
+
             MaterialEditorWindow.gameObject.SetActive(true);
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
             SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);

@@ -71,6 +71,7 @@ namespace KK_Plugins.MaterialEditor
 #if EC || KKS
         internal static ConfigEntry<bool> ConfigConvertNormalMaps { get; private set; }
 #endif
+        internal static ConfigEntry<bool> PersistFilter { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> DisableShadowCastingHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> EnableShadowCastingHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> ResetShadowCastingHotkey { get; private set; }
@@ -136,6 +137,7 @@ namespace KK_Plugins.MaterialEditor
 #if EC || KKS
             ConfigConvertNormalMaps = Config.Bind("Config", "Convert Normal Maps", true, new ConfigDescription("Convert grey normal maps to red normal maps for compatibility with Koikatsu mods.", null, new ConfigurationManagerAttributes { Order = 1 }));
 #endif
+            PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
             DisableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Disable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl), "Disable ShadowCasting for all selected items and their child items in Studio");
             EnableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Enable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftAlt), "Enable ShadowCasting for all selected items and their child items in Studio");
             ResetShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Reset ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl, KeyCode.LeftAlt), "Reset ShadowCasting for all selected items and their child items in Studio");
