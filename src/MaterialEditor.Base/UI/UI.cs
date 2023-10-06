@@ -185,7 +185,7 @@ namespace MaterialEditorAPI
         private bool WildCardSearch(string text, string filter)
         {
             string regex = "^.*" + Regex.Escape(filter).Replace("\\?", ".").Replace("\\*", ".*") + ".*$";
-            return Regex.IsMatch(text, regex, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            return Regex.IsMatch(text, regex, RegexOptions.IgnoreCase);
         }
 
         /// <summary>
