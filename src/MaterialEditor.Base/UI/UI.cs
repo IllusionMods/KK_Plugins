@@ -183,7 +183,6 @@ namespace MaterialEditorAPI
         private bool WildCardSearch(string text, string filter)
         {
             string regex = "^.*" + Regex.Escape(filter).Replace("\\?", ".").Replace("\\*", ".*") + ".*$";
-            Logger.LogInfo(filter);
             return Regex.IsMatch(text, regex, RegexOptions.IgnoreCase | RegexOptions.Compiled);
         }
 
@@ -209,12 +208,19 @@ namespace MaterialEditorAPI
             List<Renderer> rendList = new List<Renderer>();
             IEnumerable<Renderer> rendListFull = GetRendererList(go);
             List<string> filterList = new List<string>();
+            List<string> filterListProperties = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
 
             if (!filter.IsNullOrEmpty())
-                filterList = filter.Split(',').ToList();
-            filterList.RemoveAll(x => x.IsNullOrWhiteSpace());
+            {
+                filterList = filter.Split(',').Select(x => x.Trim()).ToList();
+                filterList.RemoveAll(x => x.IsNullOrWhiteSpace());
+
+                filterListProperties = new List<string>(filterList);
+                filterListProperties = filterListProperties.Where(x => x.StartsWith("_")).Select(x => x.Trim('_')).ToList();
+                filterList = filterList.Where(x => !x.StartsWith("_")).ToList();
+            }
 
             //Get all renderers and materials matching the filter
             if (filterList.Count == 0)
@@ -357,9 +363,17 @@ namespace MaterialEditorAPI
                     string propertyName = property.Key;
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
 
-                    if (property.Value.Type == ShaderPropertyType.Texture)
+                    bool showProperty = filterListProperties.Count == 0 ? true : false;
+                    foreach (string filterWord in filterListProperties)
+                        if (WildCardSearch(propertyName, filterWord))
+                        {
+                            showProperty = true;
+                            break;
+                        }
+
+                    if (showProperty && mat.HasProperty($"_{propertyName}"))
                     {
-                        if (mat.HasProperty($"_{propertyName}"))
+                        if (property.Value.Type == ShaderPropertyType.Texture)
                         {
                             var textureItem = new ItemInfo(ItemInfo.RowItemType.TextureProperty, propertyName)
                             {
@@ -429,12 +443,9 @@ namespace MaterialEditorAPI
                                 ScaleOnReset = () => RemoveMaterialTextureScale(data, mat, propertyName, go)
                             };
                             items.Add(textureItemOffsetScale);
-                        }
 
-                    }
-                    else if (property.Value.Type == ShaderPropertyType.Color)
-                    {
-                        if (mat.HasProperty($"_{propertyName}"))
+                        }
+                        else if (property.Value.Type == ShaderPropertyType.Color)
                         {
                             Color valueColor = mat.GetColor($"_{propertyName}");
                             Color valueColorOriginal = valueColor;
@@ -452,10 +463,7 @@ namespace MaterialEditorAPI
                             };
                             items.Add(contentItem);
                         }
-                    }
-                    else if (property.Value.Type == ShaderPropertyType.Float)
-                    {
-                        if (mat.HasProperty($"_{propertyName}"))
+                        else if (property.Value.Type == ShaderPropertyType.Float)
                         {
                             float valueFloat = mat.GetFloat($"_{propertyName}");
                             float valueFloatOriginal = valueFloat;
