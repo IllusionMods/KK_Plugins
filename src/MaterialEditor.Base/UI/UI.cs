@@ -363,7 +363,7 @@ namespace MaterialEditorAPI
                     string propertyName = property.Key;
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
 
-                    bool showProperty = filterListProperties.Count == 0 ? true : false;
+                    bool showProperty = filterListProperties.Count == 0;
                     foreach (string filterWord in filterListProperties)
                         if (WildCardSearch(propertyName, filterWord))
                         {
