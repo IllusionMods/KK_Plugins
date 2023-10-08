@@ -172,6 +172,38 @@ namespace MaterialEditorAPI
                    writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
                    getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
                );
+
+            //Float value
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "floatProperty",
+                   name: "Float Property",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetFloat(parameter.go, parameter.materialName, parameter.propertyName, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
+                   interpolateAfter: null,
+                   isCompatibleWithTarget: (oci) => oci != null,
+                   getValue: (oci, parameter) => {
+                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetFloat($"_{parameter.propertyName}");
+                   },
+                   readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
+                   writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                   getParameter: (oci) =>
+                   {
+                       var go = GetGameObjectFromOci(oci);
+                       var renderer = GetRendererList(go).First();
+                       var material = GetMaterials(go, renderer).First();
+                       MaterialEditorPluginBase.Logger.LogInfo(material.NameFormatted());
+                       return new MaterialInfo(oci, material.NameFormatted(), "Alpha");
+                   },
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) =>
+                   {
+                       if (parameter is MaterialInfo && parameter != null)
+                           return true;
+                       return false;
+                   },
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.materialName}"
+               );
         }
 
         private static GameObject GetGameObjectFromOci(ObjectCtrlInfo oci)
@@ -181,6 +213,43 @@ namespace MaterialEditorAPI
             else if (oci is OCIChar ociChar)
                 return ociChar.charInfo.gameObject;
             return null;
+        }
+
+        private static void WriteMaterialInfoXml(ObjectCtrlInfo oci, XmlTextWriter writer, MaterialInfo parameter)
+        {
+            writer.WriteAttributeString("materialName", parameter.materialName);
+            writer.WriteAttributeString("propertyName", parameter.propertyName);
+        }
+        private static MaterialInfo ReadMaterialInfoXml(ObjectCtrlInfo oci, XmlNode node)
+        {
+            return new MaterialInfo(oci, node.Attributes["materialName"].Value, node.Attributes["propertyName"].Value);
+        }
+
+        private class MaterialInfo
+        {
+            public GameObject go;
+            public string materialName;
+            public string propertyName;
+            private readonly int _hashCode;
+
+            public MaterialInfo(ObjectCtrlInfo oci, string materialName, string propertyName)
+            {
+                this.go = GetGameObjectFromOci(oci);
+                this.materialName = materialName;
+                this.propertyName = propertyName;
+
+                unchecked
+                {
+                    int hash = 17;
+                    hash = hash * 31 + this.materialName.GetHashCode();
+                    this._hashCode = hash * 31 + this.propertyName.GetHashCode();
+                }
+            }
+
+            public override int GetHashCode()
+            {
+                return this._hashCode;
+            }
         }
     }
 }
