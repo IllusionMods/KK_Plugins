@@ -139,6 +139,37 @@ namespace MaterialEditorAPI
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}"
                );
 
+            //Shader
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "shader",
+                   name: "Shader",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetShader(parameter.go, parameter.materialName, leftValue),
+                   interpolateAfter: null,
+                   isCompatibleWithTarget: (oci) => oci != null,
+                   getValue: (oci, parameter) => {
+                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().shader.NameFormatted();
+                   },
+                   readValueFromXml: (parameter, node) => node.Attributes["value"].Value,
+                   writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value),
+                   getParameter: (oci) =>
+                   {
+                       var go = GetGameObjectFromOci(oci);
+                       var renderer = GetRendererList(go).First();
+                       var material = GetMaterials(go, renderer).First();
+                       return new MaterialInfo(oci, material.NameFormatted(), "");
+                   },
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) =>
+                   {
+                       if (parameter is MaterialInfo && parameter != null)
+                           return true;
+                       return false;
+                   },
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+               );
+
             //Shader RenderQueue
             TimelineCompatibility.AddInterpolableModelDynamic(
                    owner: "MaterialEditor",
