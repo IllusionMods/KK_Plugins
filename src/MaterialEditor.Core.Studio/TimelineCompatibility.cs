@@ -144,33 +144,30 @@ namespace MaterialEditorAPI
                    owner: "MaterialEditor",
                    id: "renderQueue",
                    name: "Render Queue",
-                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => ((Material)parameter).renderQueue = leftValue,
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetRenderQueue(parameter.go, parameter.materialName, leftValue),
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => {
-                       GameObject _go = GetGameObjectFromOci(oci);
-                       return GetMaterials(_go, GetRendererList(_go).First()).First().renderQueue;
+                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().renderQueue;
                    },
                    readValueFromXml: (parameter, node) => XmlConvert.ToInt32(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
                    getParameter: (oci) =>
                    {
-                       GameObject _go = GetGameObjectFromOci(oci);
-                       return GetMaterials(_go, GetRendererList(_go).First()).First();
-                   },
-                   readParameterFromXml: (oci, node) =>
-                   {
-                       GameObject _go = GetGameObjectFromOci(oci);
-                       return GetMaterials(_go, GetRendererList(_go).First()).First();
+                       var go = GetGameObjectFromOci(oci);
+                       var renderer = GetRendererList(go).First();
+                       var material = GetMaterials(go, renderer).First();
+                       return new MaterialInfo(oci, material.NameFormatted(), "");
                    },
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
-                       if (parameter is Material && parameter != null)
+                       if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}"
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
 
             //Float value
@@ -191,7 +188,6 @@ namespace MaterialEditorAPI
                        var go = GetGameObjectFromOci(oci);
                        var renderer = GetRendererList(go).First();
                        var material = GetMaterials(go, renderer).First();
-                       MaterialEditorPluginBase.Logger.LogInfo(material.NameFormatted());
                        return new MaterialInfo(oci, material.NameFormatted(), "Alpha");
                    },
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
