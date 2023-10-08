@@ -54,7 +54,7 @@ namespace MaterialEditorAPI
                        return false;
                    },
                    writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
-                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}"
                );
 
             //Renderer ShadowCastingMode
@@ -95,7 +95,7 @@ namespace MaterialEditorAPI
                        return false;
                    },
                    writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
-                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}"
                );
 
             //Renderer ReceiveShadows
@@ -136,7 +136,7 @@ namespace MaterialEditorAPI
                        return false;
                    },
                    writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
-                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}"
                );
 
             //Shader RenderQueue
@@ -170,7 +170,7 @@ namespace MaterialEditorAPI
                        return false;
                    },
                    writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
-                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}"
                );
 
             //Float value
@@ -202,7 +202,7 @@ namespace MaterialEditorAPI
                    },
                    writeParameterToXml: WriteMaterialInfoXml,
                    readParameterFromXml: ReadMaterialInfoXml,
-                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.materialName}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
         }
 
