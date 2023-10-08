@@ -12,5 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SceneController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Studio.ColorPalette.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Studio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimelineCompatibility.cs" />
   </ItemGroup>
 </Project>
