@@ -15,6 +15,7 @@ namespace MaterialEditorAPI
         {
             if (!TimelineCompatibility.IsTimelineAvailable()) return;
 
+            //Renderer Enabled
             TimelineCompatibility.AddInterpolableModelDynamic(
                    owner: "MaterialEditor",
                    id: "targetEnabled",
@@ -23,11 +24,7 @@ namespace MaterialEditorAPI
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => {
-                       GameObject _go = null;
-                       if (oci is OCIItem ociItem)
-                           _go = ociItem.objectItem;
-                       else if (oci is OCIChar ociChar)
-                           _go = ociChar.charInfo.gameObject;
+                       GameObject _go = GetGameObjectFromOci(oci);
 
                        if (_go != null)
                            return GetRendererList(_go).First().enabled;
@@ -37,22 +34,13 @@ namespace MaterialEditorAPI
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", XmlConvert.ToString((bool)value)),
                    getParameter: (oci) =>
                    {
-                       GameObject _go;
-                       if (oci is OCIItem ociItem)
-                           _go = ociItem.objectItem;
-                       else if (oci is OCIChar ociChar)
-                           _go = ociChar.charInfo.gameObject;
-                       else return null;
+                       GameObject _go = GetGameObjectFromOci(oci);
                        
                        return GetRendererList(_go).First();
                    },
                    readParameterFromXml: (oci, node) =>
                    {
-                       GameObject _go = null;
-                       if (oci is OCIItem ociItem)
-                           _go = ociItem.objectItem;
-                       else if (oci is OCIChar ociChar)
-                           _go = ociChar.charInfo.gameObject;
+                       GameObject _go = GetGameObjectFromOci(oci);
 
                        if (_go != null)
                            return GetRendererList(_go).First();
@@ -67,6 +55,15 @@ namespace MaterialEditorAPI
                    writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
                    getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter}"
                );
+        }
+
+        private static GameObject GetGameObjectFromOci(ObjectCtrlInfo oci)
+        {
+            if (oci is OCIItem ociItem)
+                return ociItem.objectItem;
+            else if (oci is OCIChar ociChar)
+                return ociChar.charInfo.gameObject;
+            return null;
         }
     }
 }
