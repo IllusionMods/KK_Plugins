@@ -138,6 +138,40 @@ namespace MaterialEditorAPI
                    writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
                    getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
                );
+
+            //Shader RenderQueue
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "renderQueue",
+                   name: "Render Queue",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => ((Material)parameter).renderQueue = leftValue,
+                   interpolateAfter: null,
+                   isCompatibleWithTarget: (oci) => oci != null,
+                   getValue: (oci, parameter) => {
+                       GameObject _go = GetGameObjectFromOci(oci);
+                       return GetMaterials(_go, GetRendererList(_go).First()).First().renderQueue;
+                   },
+                   readValueFromXml: (parameter, node) => XmlConvert.ToInt32(node.Attributes["value"].Value),
+                   writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                   getParameter: (oci) =>
+                   {
+                       GameObject _go = GetGameObjectFromOci(oci);
+                       return GetMaterials(_go, GetRendererList(_go).First()).First();
+                   },
+                   readParameterFromXml: (oci, node) =>
+                   {
+                       GameObject _go = GetGameObjectFromOci(oci);
+                       return GetMaterials(_go, GetRendererList(_go).First()).First();
+                   },
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) =>
+                   {
+                       if (parameter is Material && parameter != null)
+                           return true;
+                       return false;
+                   },
+                   writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
+                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
+               );
         }
 
         private static GameObject GetGameObjectFromOci(ObjectCtrlInfo oci)
