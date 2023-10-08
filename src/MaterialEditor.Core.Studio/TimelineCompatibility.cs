@@ -4,6 +4,7 @@ using Studio;
 using System.Linq;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.Rendering;
 using static MaterialEditorAPI.MaterialAPI;
 
 
@@ -53,7 +54,89 @@ namespace MaterialEditorAPI
                        return false;
                    },
                    writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
-                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter}"
+                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
+               );
+
+            //Renderer ShadowCastingMode
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "shadowCastingMode",
+                   name: "Shadow Casting Mode",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => ((Renderer)parameter).shadowCastingMode = (ShadowCastingMode)leftValue,
+                   interpolateAfter: null,
+                   isCompatibleWithTarget: (oci) => oci != null,
+                   getValue: (oci, parameter) => {
+                       GameObject _go = GetGameObjectFromOci(oci);
+
+                       if (_go != null)
+                           return GetRendererList(_go).First().shadowCastingMode;
+                       else return ShadowCastingMode.On;
+                   },
+                   readValueFromXml: (parameter, node) => (ShadowCastingMode)XmlConvert.ToInt32(node.Attributes["value"].Value),
+                   writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", ((int)value).ToString()),
+                   getParameter: (oci) =>
+                   {
+                       GameObject _go = GetGameObjectFromOci(oci);
+
+                       return GetRendererList(_go).First();
+                   },
+                   readParameterFromXml: (oci, node) =>
+                   {
+                       GameObject _go = GetGameObjectFromOci(oci);
+
+                       if (_go != null)
+                           return GetRendererList(_go).First();
+                       else return null;
+                   },
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) =>
+                   {
+                       if (parameter is Renderer && parameter != null)
+                           return true;
+                       return false;
+                   },
+                   writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
+                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
+               );
+
+            //Renderer ReceiveShadows
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "receiveShadows",
+                   name: "Receive Shadows",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => ((Renderer)parameter).receiveShadows = (bool)leftValue,
+                   interpolateAfter: null,
+                   isCompatibleWithTarget: (oci) => oci != null,
+                   getValue: (oci, parameter) => {
+                       GameObject _go = GetGameObjectFromOci(oci);
+
+                       if (_go != null)
+                           return GetRendererList(_go).First().receiveShadows;
+                       else return true;
+                   },
+                   readValueFromXml: (parameter, node) => XmlConvert.ToBoolean(node.Attributes["value"].Value),
+                   writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", XmlConvert.ToString((bool)value)),
+                   getParameter: (oci) =>
+                   {
+                       GameObject _go = GetGameObjectFromOci(oci);
+
+                       return GetRendererList(_go).First();
+                   },
+                   readParameterFromXml: (oci, node) =>
+                   {
+                       GameObject _go = GetGameObjectFromOci(oci);
+
+                       if (_go != null)
+                           return GetRendererList(_go).First();
+                       else return null;
+                   },
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) =>
+                   {
+                       if (parameter is Renderer && parameter != null)
+                           return true;
+                       return false;
+                   },
+                   writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
+                   getFinalName: (currentName, oci, parameter) => $"Enabled: {parameter.NameFormatted()}"
                );
         }
 
