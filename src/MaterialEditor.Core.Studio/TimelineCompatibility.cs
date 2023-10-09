@@ -1,6 +1,7 @@
 ﻿#if !PH
 using KKAPI.Utilities;
 using Studio;
+using System;
 using System.Linq;
 using System.Xml;
 using UnityEngine;
@@ -189,6 +190,42 @@ namespace MaterialEditorAPI
                        var renderer = GetRendererList(go).First();
                        var material = GetMaterials(go, renderer).First();
                        return new MaterialInfo(oci, material.NameFormatted(), "");
+                   },
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) =>
+                   {
+                       if (parameter is MaterialInfo && parameter != null)
+                           return true;
+                       return false;
+                   },
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+               );
+
+            //Texture value
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "textureProperty",
+                   name: "Texture Property",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTexture(parameter.go, parameter.materialName, parameter.propertyName, leftValue),
+                   interpolateAfter: null,
+                   isCompatibleWithTarget: (oci) => oci != null,
+                   getValue: (oci, parameter) => {
+                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetTexture($"_{parameter.propertyName}");
+                   },
+                   readValueFromXml: (parameter, node) =>
+                   {
+                       var texture = new Texture2D(1, 1);
+                       texture.LoadImage(Convert.FromBase64String(node.Attributes["X"].Value));
+                       return texture;
+                   },
+                   writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", Convert.ToBase64String(value.ToTexture2D().EncodeToPNG())),
+                   getParameter: (oci) =>
+                   {
+                       var go = GetGameObjectFromOci(oci);
+                       var renderer = GetRendererList(go).First();
+                       var material = GetMaterials(go, renderer).First();
+                       return new MaterialInfo(oci, material.NameFormatted(), "MainTex");
                    },
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
