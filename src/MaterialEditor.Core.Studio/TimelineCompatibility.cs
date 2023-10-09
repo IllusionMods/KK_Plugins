@@ -201,6 +201,51 @@ namespace MaterialEditorAPI
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
 
+            //Color value
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "colorProperty",
+                   name: "Color Property",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetColor(parameter.go, parameter.materialName, parameter.propertyName, Color.LerpUnclamped(leftValue, rightValue, factor)),
+                   interpolateAfter: null,
+                   isCompatibleWithTarget: (oci) => oci != null,
+                   getValue: (oci, parameter) => {
+                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetColor($"_{parameter.propertyName}");
+                   },
+                   readValueFromXml: (parameter, node) =>
+                   {
+                       return new Color(
+                           XmlConvert.ToSingle(node.Attributes["R"].Value),
+                           XmlConvert.ToSingle(node.Attributes["G"].Value),
+                           XmlConvert.ToSingle(node.Attributes["B"].Value),
+                           XmlConvert.ToSingle(node.Attributes["A"].Value)
+                       );
+                   },
+                   writeValueToXml: (parameter, writer, value) =>
+                   {
+                       writer.WriteAttributeString("R", XmlConvert.ToString(value.r));
+                       writer.WriteAttributeString("G", XmlConvert.ToString(value.g));
+                       writer.WriteAttributeString("B", XmlConvert.ToString(value.b));
+                       writer.WriteAttributeString("A", XmlConvert.ToString(value.a));
+                   },
+                   getParameter: (oci) =>
+                   {
+                       var go = GetGameObjectFromOci(oci);
+                       var renderer = GetRendererList(go).First();
+                       var material = GetMaterials(go, renderer).First();
+                       return new MaterialInfo(oci, material.NameFormatted(), "Color");
+                   },
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) =>
+                   {
+                       if (parameter is MaterialInfo && parameter != null)
+                           return true;
+                       return false;
+                   },
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+               );
+
             //Float value
             TimelineCompatibility.AddInterpolableModelDynamic(
                    owner: "MaterialEditor",
