@@ -203,10 +203,11 @@ namespace MaterialEditorAPI
                );
 
             //Texture value
+            //Using this interpolable explodes scene filesize due to needing to convert an image to base64 to save it
             TimelineCompatibility.AddInterpolableModelDynamic(
                    owner: "MaterialEditor",
                    id: "textureProperty",
-                   name: "Texture Property",
+                   name: "Texture Property (DON'T USE UNLESS YOU REALLY NEED TO!!!!)",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTexture(parameter.go, parameter.materialName, parameter.propertyName, leftValue),
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
@@ -235,7 +236,7 @@ namespace MaterialEditorAPI
                    },
                    writeParameterToXml: WriteMaterialInfoXml,
                    readParameterFromXml: ReadMaterialInfoXml,
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+                   getFinalName: (currentName, oci, parameter) => $"Texture Property: {parameter.materialName}"
                );
 
             //Texture scale value
