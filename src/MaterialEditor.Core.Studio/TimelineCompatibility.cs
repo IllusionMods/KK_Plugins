@@ -201,6 +201,88 @@ namespace MaterialEditorAPI
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
 
+            //Texture scale value
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "textureScaleProperty",
+                   name: "Texture Scale Property",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTextureScale(parameter.go, parameter.materialName, parameter.propertyName, Vector2.LerpUnclamped(leftValue, rightValue, factor)),
+                   interpolateAfter: null,
+                   isCompatibleWithTarget: (oci) => oci != null,
+                   getValue: (oci, parameter) => {
+                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetTextureScale($"_{parameter.propertyName}");
+                   },
+                   readValueFromXml: (parameter, node) =>
+                   {
+                       return new Vector2(
+                           XmlConvert.ToSingle(node.Attributes["X"].Value),
+                           XmlConvert.ToSingle(node.Attributes["Y"].Value)
+                       );
+                   },
+                   writeValueToXml: (parameter, writer, value) =>
+                   {
+                       writer.WriteAttributeString("X", XmlConvert.ToString(value.x));
+                       writer.WriteAttributeString("Y", XmlConvert.ToString(value.y));
+                   },
+                   getParameter: (oci) =>
+                   {
+                       var go = GetGameObjectFromOci(oci);
+                       var renderer = GetRendererList(go).First();
+                       var material = GetMaterials(go, renderer).First();
+                       return new MaterialInfo(oci, material.NameFormatted(), "MainTex");
+                   },
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) =>
+                   {
+                       if (parameter is MaterialInfo && parameter != null)
+                           return true;
+                       return false;
+                   },
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+               );
+
+            //Texture offset value
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "textureOffsetProperty",
+                   name: "Texture Offset Property",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTextureOffset(parameter.go, parameter.materialName, parameter.propertyName, Vector2.LerpUnclamped(leftValue, rightValue, factor)),
+                   interpolateAfter: null,
+                   isCompatibleWithTarget: (oci) => oci != null,
+                   getValue: (oci, parameter) => {
+                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetTextureOffset($"_{parameter.propertyName}");
+                   },
+                   readValueFromXml: (parameter, node) =>
+                   {
+                       return new Vector2(
+                           XmlConvert.ToSingle(node.Attributes["X"].Value),
+                           XmlConvert.ToSingle(node.Attributes["Y"].Value)
+                       );
+                   },
+                   writeValueToXml: (parameter, writer, value) =>
+                   {
+                       writer.WriteAttributeString("X", XmlConvert.ToString(value.x));
+                       writer.WriteAttributeString("Y", XmlConvert.ToString(value.y));
+                   },
+                   getParameter: (oci) =>
+                   {
+                       var go = GetGameObjectFromOci(oci);
+                       var renderer = GetRendererList(go).First();
+                       var material = GetMaterials(go, renderer).First();
+                       return new MaterialInfo(oci, material.NameFormatted(), "MainTex");
+                   },
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) =>
+                   {
+                       if (parameter is MaterialInfo && parameter != null)
+                           return true;
+                       return false;
+                   },
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+               );
+
             //Color value
             TimelineCompatibility.AddInterpolableModelDynamic(
                    owner: "MaterialEditor",
