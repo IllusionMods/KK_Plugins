@@ -94,26 +94,18 @@ namespace MaterialEditorAPI
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetShader(parameter.go, parameter.materialName, leftValue),
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
-                   getValue: (oci, parameter) => {
-                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().shader.NameFormatted();
-                   },
+                   getValue: (oci, parameter) => parameter.GetMaterial().shader.NameFormatted(),
                    readValueFromXml: (parameter, node) => node.Attributes["value"].Value,
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value),
-                   getParameter: (oci) =>
-                   {
-                       var go = GetGameObjectFromOci(oci);
-                       var renderer = GetRendererList(go).First();
-                       var material = GetMaterials(go, renderer).First();
-                       return new MaterialInfo(oci, material.NameFormatted(), "");
-                   },
+                   getParameter: GetMaterialInfoParameter,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
                        if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   writeParameterToXml: WriteMaterialInfoXml,
-                   readParameterFromXml: ReadMaterialInfoXml,
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
 
@@ -125,26 +117,18 @@ namespace MaterialEditorAPI
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetRenderQueue(parameter.go, parameter.materialName, leftValue),
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
-                   getValue: (oci, parameter) => {
-                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().renderQueue;
-                   },
+                   getValue: (oci, parameter) => parameter.GetMaterial().renderQueue,
                    readValueFromXml: (parameter, node) => XmlConvert.ToInt32(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
-                   getParameter: (oci) =>
-                   {
-                       var go = GetGameObjectFromOci(oci);
-                       var renderer = GetRendererList(go).First();
-                       var material = GetMaterials(go, renderer).First();
-                       return new MaterialInfo(oci, material.NameFormatted(), "");
-                   },
+                   getParameter: GetMaterialInfoParameter,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
                        if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   writeParameterToXml: WriteMaterialInfoXml,
-                   readParameterFromXml: ReadMaterialInfoXml,
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
 
@@ -157,9 +141,7 @@ namespace MaterialEditorAPI
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTexture(parameter.go, parameter.materialName, parameter.propertyName, leftValue),
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
-                   getValue: (oci, parameter) => {
-                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetTexture($"_{parameter.propertyName}");
-                   },
+                   getValue: (oci, parameter) => parameter.GetMaterial().GetTexture($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) =>
                    {
                        var texture = new Texture2D(1, 1);
@@ -167,21 +149,15 @@ namespace MaterialEditorAPI
                        return texture;
                    },
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", Convert.ToBase64String(value.ToTexture2D().EncodeToPNG())),
-                   getParameter: (oci) =>
-                   {
-                       var go = GetGameObjectFromOci(oci);
-                       var renderer = GetRendererList(go).First();
-                       var material = GetMaterials(go, renderer).First();
-                       return new MaterialInfo(oci, material.NameFormatted(), "MainTex");
-                   },
+                   getParameter: GetMaterialInfoParameter,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
                        if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   writeParameterToXml: WriteMaterialInfoXml,
-                   readParameterFromXml: ReadMaterialInfoXml,
                    getFinalName: (currentName, oci, parameter) => $"Texture Property: {parameter.materialName}"
                );
 
@@ -193,9 +169,7 @@ namespace MaterialEditorAPI
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTextureScale(parameter.go, parameter.materialName, parameter.propertyName, Vector2.LerpUnclamped(leftValue, rightValue, factor)),
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
-                   getValue: (oci, parameter) => {
-                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetTextureScale($"_{parameter.propertyName}");
-                   },
+                   getValue: (oci, parameter) => parameter.GetMaterial().GetTextureScale($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) =>
                    {
                        return new Vector2(
@@ -208,21 +182,15 @@ namespace MaterialEditorAPI
                        writer.WriteAttributeString("X", XmlConvert.ToString(value.x));
                        writer.WriteAttributeString("Y", XmlConvert.ToString(value.y));
                    },
-                   getParameter: (oci) =>
-                   {
-                       var go = GetGameObjectFromOci(oci);
-                       var renderer = GetRendererList(go).First();
-                       var material = GetMaterials(go, renderer).First();
-                       return new MaterialInfo(oci, material.NameFormatted(), "MainTex");
-                   },
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   getParameter: GetMaterialInfoParameter,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
                        if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   writeParameterToXml: WriteMaterialInfoXml,
-                   readParameterFromXml: ReadMaterialInfoXml,
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
 
@@ -234,9 +202,7 @@ namespace MaterialEditorAPI
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTextureOffset(parameter.go, parameter.materialName, parameter.propertyName, Vector2.LerpUnclamped(leftValue, rightValue, factor)),
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
-                   getValue: (oci, parameter) => {
-                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetTextureOffset($"_{parameter.propertyName}");
-                   },
+                   getValue: (oci, parameter) => parameter.GetMaterial().GetTextureOffset($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) =>
                    {
                        return new Vector2(
@@ -249,21 +215,15 @@ namespace MaterialEditorAPI
                        writer.WriteAttributeString("X", XmlConvert.ToString(value.x));
                        writer.WriteAttributeString("Y", XmlConvert.ToString(value.y));
                    },
-                   getParameter: (oci) =>
-                   {
-                       var go = GetGameObjectFromOci(oci);
-                       var renderer = GetRendererList(go).First();
-                       var material = GetMaterials(go, renderer).First();
-                       return new MaterialInfo(oci, material.NameFormatted(), "MainTex");
-                   },
+                   getParameter: GetMaterialInfoParameter,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
                        if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   writeParameterToXml: WriteMaterialInfoXml,
-                   readParameterFromXml: ReadMaterialInfoXml,
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
 
@@ -275,9 +235,7 @@ namespace MaterialEditorAPI
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetColor(parameter.go, parameter.materialName, parameter.propertyName, Color.LerpUnclamped(leftValue, rightValue, factor)),
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
-                   getValue: (oci, parameter) => {
-                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetColor($"_{parameter.propertyName}");
-                   },
+                   getValue: (oci, parameter) => parameter.GetMaterial().GetColor($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) =>
                    {
                        return new Color(
@@ -294,21 +252,15 @@ namespace MaterialEditorAPI
                        writer.WriteAttributeString("B", XmlConvert.ToString(value.b));
                        writer.WriteAttributeString("A", XmlConvert.ToString(value.a));
                    },
-                   getParameter: (oci) =>
-                   {
-                       var go = GetGameObjectFromOci(oci);
-                       var renderer = GetRendererList(go).First();
-                       var material = GetMaterials(go, renderer).First();
-                       return new MaterialInfo(oci, material.NameFormatted(), "Color");
-                   },
+                   getParameter: GetMaterialInfoParameter,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
                        if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   writeParameterToXml: WriteMaterialInfoXml,
-                   readParameterFromXml: ReadMaterialInfoXml,
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
 
@@ -320,26 +272,18 @@ namespace MaterialEditorAPI
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetFloat(parameter.go, parameter.materialName, parameter.propertyName, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
                    interpolateAfter: null,
                    isCompatibleWithTarget: (oci) => oci != null,
-                   getValue: (oci, parameter) => {
-                       return GetMaterials(parameter.go, GetRendererList(parameter.go).First()).First().GetFloat($"_{parameter.propertyName}");
-                   },
+                   getValue: (oci, parameter) => parameter.GetMaterial().GetFloat($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
-                   getParameter: (oci) =>
-                   {
-                       var go = GetGameObjectFromOci(oci);
-                       var renderer = GetRendererList(go).First();
-                       var material = GetMaterials(go, renderer).First();
-                       return new MaterialInfo(oci, material.NameFormatted(), "Alpha");
-                   },
+                   getParameter: GetMaterialInfoParameter,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
                        if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   writeParameterToXml: WriteMaterialInfoXml,
-                   readParameterFromXml: ReadMaterialInfoXml,
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
                );
         }
@@ -357,6 +301,11 @@ namespace MaterialEditorAPI
         {
             GameObject _go = GetGameObjectFromOci(oci);
             return GetRendererList(_go).First(x => x.NameFormatted() == name);
+        }
+
+        private static MaterialInfo GetMaterialInfoParameter(ObjectCtrlInfo oci)
+        {
+            return new MaterialInfo(oci, selectedInterpolable.MaterialName, selectedInterpolable.PropertyName);
         }
 
         private static void WriteMaterialInfoXml(ObjectCtrlInfo oci, XmlTextWriter writer, MaterialInfo parameter)
@@ -388,6 +337,15 @@ namespace MaterialEditorAPI
                     hash = hash * 31 + this.materialName.GetHashCode();
                     this._hashCode = hash * 31 + this.propertyName.GetHashCode();
                 }
+            }
+
+            public Material GetMaterial()
+            {
+                foreach (var rend in GetRendererList(go))
+                    foreach (var mat in GetMaterials(go, rend))
+                        if (mat.NameFormatted() == materialName)
+                            return mat;
+                return null;
             }
 
             public override int GetHashCode()
