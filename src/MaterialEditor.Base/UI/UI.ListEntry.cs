@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KKAPI.Utilities;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using static UILib.Extensions;
@@ -10,6 +11,7 @@ namespace MaterialEditorAPI
         public CanvasGroup RendererPanel;
         public Text RendererLabel;
         public Text RendererText;
+        public Button SelectInterpolableRendererButton;
         public Button ExportUVButton;
         public Button ExportObjButton;
 
@@ -31,6 +33,7 @@ namespace MaterialEditorAPI
         public CanvasGroup MaterialPanel;
         public Text MaterialLabel;
         public Text MaterialText;
+        public Button SelectInterpolableMaterialButton;
         public Button MaterialCopyButton;
         public Button MaterialPasteButton;
         public Button MaterialCopyRemove;
@@ -38,6 +41,7 @@ namespace MaterialEditorAPI
         public CanvasGroup ShaderPanel;
         public Text ShaderLabel;
         public Dropdown ShaderDropdown;
+        public Button SelectInterpolableShaderButton;
         public Button ShaderResetButton;
 
         public CanvasGroup ShaderRenderQueuePanel;
@@ -47,6 +51,7 @@ namespace MaterialEditorAPI
 
         public CanvasGroup TexturePanel;
         public Text TextureLabel;
+        public Button SelectInterpolableTextureButton;
         public Button ExportTextureButton;
         public Button ImportTextureButton;
         public Button TextureResetButton;
@@ -73,11 +78,13 @@ namespace MaterialEditorAPI
         public InputField ColorGInput;
         public InputField ColorBInput;
         public InputField ColorAInput;
+        public Button SelectInterpolableColorButton;
         public Button ColorResetButton;
         public Button ColorEditButton;
 
         public CanvasGroup FloatPanel;
         public Text FloatLabel;
+        public Button SelectInterpolableFloatButton;
         public Slider FloatSlider;
         public InputField FloatInputField;
         public Button FloatResetButton;
@@ -113,6 +120,8 @@ namespace MaterialEditorAPI
                         ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
                         ExportObjButton.onClick.RemoveAllListeners();
                         ExportObjButton.onClick.AddListener(() => item.ExportObjOnClick());
+                        SelectInterpolableRendererButton.onClick.RemoveAllListeners();
+                        SelectInterpolableRendererButton.onClick.AddListener(() => item.SelectInterpolableButtonRendererOnClick());
                         RendererText.text = item.RendererName;
                         break;
                     case ItemInfo.RowItemType.RendererEnabled:
@@ -229,6 +238,8 @@ namespace MaterialEditorAPI
 
                         ShaderResetButton.onClick.RemoveAllListeners();
                         ShaderResetButton.onClick.AddListener(() => ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderNameOriginal));
+                        SelectInterpolableShaderButton.onClick.RemoveAllListeners();
+                        SelectInterpolableShaderButton.onClick.AddListener(() => item.SelectInterpolableButtonShaderOnClick());
 
                         break;
                     case ItemInfo.RowItemType.ShaderRenderQueue:
@@ -306,6 +317,8 @@ namespace MaterialEditorAPI
                             item.TextureOnReset();
                             SetLabelText(TextureLabel, item.LabelText, item.TextureChanged);
                         });
+                        SelectInterpolableTextureButton.onClick.RemoveAllListeners();
+                        SelectInterpolableTextureButton.onClick.AddListener(() => item.SelectInterpolableButtonTextureOnClick());
                         break;
                     case ItemInfo.RowItemType.TextureOffsetScale:
                         ShowOffsetScale();
@@ -558,6 +571,8 @@ namespace MaterialEditorAPI
                                 SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
                             }
                         });
+                        SelectInterpolableColorButton.onClick.RemoveAllListeners();
+                        SelectInterpolableColorButton.onClick.AddListener(() => item.SelectInterpolableButtonColorOnClick());
 
                         break;
                     case ItemInfo.RowItemType.FloatProperty:
@@ -607,6 +622,8 @@ namespace MaterialEditorAPI
                             item.FloatValueOnReset();
                             SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal);
                         });
+                        SelectInterpolableFloatButton.onClick.RemoveAllListeners();
+                        SelectInterpolableFloatButton.onClick.AddListener(() => item.SelectInterpolableButtonFloatOnClick());
                         break;
                     case ItemInfo.RowItemType.KeywordProperty:
                         ShowKeyword();

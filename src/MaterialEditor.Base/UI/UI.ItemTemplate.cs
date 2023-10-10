@@ -35,6 +35,8 @@ namespace MaterialEditorAPI
                 labelRendererLE.preferredWidth = 200;
                 labelRendererLE.flexibleWidth = 0;
 
+                CreateInterpolableButton("SelectInterpolableRendererButton", itemPanel.transform);
+
                 Button exportUVButton = UIUtility.CreateButton("ExportUVButton", itemPanel.transform, "Export UV Map");
                 var exportUVButtonLE = exportUVButton.gameObject.AddComponent<LayoutElement>();
                 exportUVButtonLE.preferredWidth = 110;
@@ -198,6 +200,8 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = LabelWidth;
 
+                CreateInterpolableButton("SelectInterpolableShaderButton", itemPanel.transform);
+
                 Dropdown dropdownShader = UIUtility.CreateDropdown("ShaderDropdown", itemPanel.transform);
                 dropdownShader.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
                 dropdownShader.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
@@ -256,6 +260,8 @@ namespace MaterialEditorAPI
                 var labelLE = label.gameObject.AddComponent<LayoutElement>();
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = LabelWidth;
+
+                CreateInterpolableButton("SelectInterpolableTextureButton", itemPanel.transform);
 
                 Button exportButton = UIUtility.CreateButton($"TextureExportButton", itemPanel.transform, $"Export Texture");
                 var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
@@ -360,6 +366,8 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = LabelWidth;
 
+                CreateInterpolableButton("SelectInterpolableColorButton", itemPanel.transform);
+
                 Text labelR = UIUtility.CreateText("ColorRText", itemPanel.transform, "R");
                 labelR.alignment = TextAnchor.MiddleLeft;
                 labelR.color = Color.black;
@@ -437,6 +445,8 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = LabelWidth;
 
+                CreateInterpolableButton("SelectInterpolableFloatButton", itemPanel.transform);
+
                 Slider sliderFloat = UIUtility.CreateSlider("FloatSlider", itemPanel.transform);
                 var sliderFloatLE = sliderFloat.gameObject.AddComponent<LayoutElement>();
                 sliderFloatLE.preferredWidth = SliderWidth;
@@ -480,6 +490,14 @@ namespace MaterialEditorAPI
             }
 
             return contentList.gameObject;
+        }
+        private static Button CreateInterpolableButton(string objectName, Transform parent)
+        {
+            Button interpolableButton = UIUtility.CreateButton(objectName, parent, "O");
+            var sinterpolableButtonLE = interpolableButton.gameObject.AddComponent<LayoutElement>();
+            sinterpolableButtonLE.preferredWidth = 15;
+            sinterpolableButtonLE.flexibleWidth = 0;
+            return interpolableButton;
         }
     }
 }
