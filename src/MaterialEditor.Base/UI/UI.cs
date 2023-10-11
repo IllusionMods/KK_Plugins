@@ -388,119 +388,115 @@ namespace MaterialEditorAPI
                             showProperty = true;
                             break;
                         }
-
-                    if (showProperty && mat.HasProperty($"_{propertyName}"))
+                    if (property.Value.Type == ShaderPropertyType.Texture && showProperty && mat.HasProperty($"_{propertyName}"))
                     {
-                        if (property.Value.Type == ShaderPropertyType.Texture)
+                        var textureItem = new ItemInfo(ItemInfo.RowItemType.TextureProperty, propertyName)
                         {
-                            var textureItem = new ItemInfo(ItemInfo.RowItemType.TextureProperty, propertyName)
-                            {
-                                TextureChanged = !GetMaterialTextureValueOriginal(data, mat, propertyName, go),
-                                TextureExists = mat.GetTexture($"_{propertyName}") != null,
-                                TextureOnExport = () => ExportTexture(mat, propertyName)
-                            };
-                            textureItem.TextureOnImport = () =>
-                            {
-                                OpenFileDialog.Show(OnFileAccept, "Open image", Application.dataPath, FileFilter);
+                            TextureChanged = !GetMaterialTextureValueOriginal(data, mat, propertyName, go),
+                            TextureExists = mat.GetTexture($"_{propertyName}") != null,
+                            TextureOnExport = () => ExportTexture(mat, propertyName)
+                        };
+                        textureItem.TextureOnImport = () =>
+                        {
+                            OpenFileDialog.Show(OnFileAccept, "Open image", Application.dataPath, FileFilter);
 
-                                void OnFileAccept(string[] strings)
+                            void OnFileAccept(string[] strings)
+                            {
+                                if (strings == null || strings.Length == 0 || strings[0].IsNullOrEmpty())
                                 {
-                                    if (strings == null || strings.Length == 0 || strings[0].IsNullOrEmpty())
-                                    {
-                                        textureItem.TextureChanged = !GetMaterialTextureValueOriginal(data, mat, propertyName, go);
-                                        textureItem.TextureExists = mat.GetTexture($"_{propertyName}") != null;
-                                        return;
-                                    }
-                                    string filePath = strings[0];
+                                    textureItem.TextureChanged = !GetMaterialTextureValueOriginal(data, mat, propertyName, go);
+                                    textureItem.TextureExists = mat.GetTexture($"_{propertyName}") != null;
+                                    return;
+                                }
+                                string filePath = strings[0];
 
-                                    SetMaterialTexture(data, mat, propertyName, filePath, go);
+                                SetMaterialTexture(data, mat, propertyName, filePath, go);
 
-                                    TexChangeWatcher?.Dispose();
-                                    if (WatchTexChanges.Value)
+                                TexChangeWatcher?.Dispose();
+                                if (WatchTexChanges.Value)
+                                {
+                                    var directory = Path.GetDirectoryName(filePath);
+                                    if (directory != null)
                                     {
-                                        var directory = Path.GetDirectoryName(filePath);
-                                        if (directory != null)
+                                        TexChangeWatcher = new FileSystemWatcher(directory, Path.GetFileName(filePath));
+                                        TexChangeWatcher.Changed += (sender, args) =>
                                         {
-                                            TexChangeWatcher = new FileSystemWatcher(directory, Path.GetFileName(filePath));
-                                            TexChangeWatcher.Changed += (sender, args) =>
-                                            {
-                                                if (WatchTexChanges.Value && File.Exists(filePath))
-                                                    SetMaterialTexture(data, mat, propertyName, filePath, go);
-                                            };
-                                            TexChangeWatcher.Deleted += (sender, args) => TexChangeWatcher?.Dispose();
-                                            TexChangeWatcher.Error += (sender, args) => TexChangeWatcher?.Dispose();
-                                            TexChangeWatcher.EnableRaisingEvents = true;
-                                        }
+                                            if (WatchTexChanges.Value && File.Exists(filePath))
+                                                SetMaterialTexture(data, mat, propertyName, filePath, go);
+                                        };
+                                        TexChangeWatcher.Deleted += (sender, args) => TexChangeWatcher?.Dispose();
+                                        TexChangeWatcher.Error += (sender, args) => TexChangeWatcher?.Dispose();
+                                        TexChangeWatcher.EnableRaisingEvents = true;
                                     }
                                 }
-                            };
-                            textureItem.TextureOnReset = () => RemoveMaterialTexture(data, mat, propertyName, go);
-                            items.Add(textureItem);
+                            }
+                        };
+                        textureItem.TextureOnReset = () => RemoveMaterialTexture(data, mat, propertyName, go);
+                        items.Add(textureItem);
 
-                            Vector2 textureOffset = mat.GetTextureOffset($"_{propertyName}");
-                            Vector2 textureOffsetOriginal = textureOffset;
-                            Vector2? textureOffsetOriginalTemp = GetMaterialTextureOffsetOriginal(data, mat, propertyName, go);
-                            if (textureOffsetOriginalTemp != null)
-                                textureOffsetOriginal = (Vector2)textureOffsetOriginalTemp;
+                        Vector2 textureOffset = mat.GetTextureOffset($"_{propertyName}");
+                        Vector2 textureOffsetOriginal = textureOffset;
+                        Vector2? textureOffsetOriginalTemp = GetMaterialTextureOffsetOriginal(data, mat, propertyName, go);
+                        if (textureOffsetOriginalTemp != null)
+                            textureOffsetOriginal = (Vector2)textureOffsetOriginalTemp;
 
-                            Vector2 textureScale = mat.GetTextureScale($"_{propertyName}");
-                            Vector2 textureScaleOriginal = textureScale;
-                            Vector2? textureScaleOriginalTemp = GetMaterialTextureScaleOriginal(data, mat, propertyName, go);
-                            if (textureScaleOriginalTemp != null)
-                                textureScaleOriginal = (Vector2)textureScaleOriginalTemp;
+                        Vector2 textureScale = mat.GetTextureScale($"_{propertyName}");
+                        Vector2 textureScaleOriginal = textureScale;
+                        Vector2? textureScaleOriginalTemp = GetMaterialTextureScaleOriginal(data, mat, propertyName, go);
+                        if (textureScaleOriginalTemp != null)
+                            textureScaleOriginal = (Vector2)textureScaleOriginalTemp;
 
-                            var textureItemOffsetScale = new ItemInfo(ItemInfo.RowItemType.TextureOffsetScale)
-                            {
-                                Offset = textureOffset,
-                                OffsetOriginal = textureOffsetOriginal,
-                                OffsetOnChange = value => SetMaterialTextureOffset(data, mat, propertyName, value, go),
-                                OffsetOnReset = () => RemoveMaterialTextureOffset(data, mat, propertyName, go),
-                                Scale = textureScale,
-                                ScaleOriginal = textureScaleOriginal,
-                                ScaleOnChange = value => SetMaterialTextureScale(data, mat, propertyName, value, go),
-                                ScaleOnReset = () => RemoveMaterialTextureScale(data, mat, propertyName, go)
-                            };
-                            items.Add(textureItemOffsetScale);
-
-                        }
-                        else if (property.Value.Type == ShaderPropertyType.Color)
+                        var textureItemOffsetScale = new ItemInfo(ItemInfo.RowItemType.TextureOffsetScale)
                         {
-                            Color valueColor = mat.GetColor($"_{propertyName}");
-                            Color valueColorOriginal = valueColor;
-                            Color? c = GetMaterialColorPropertyValueOriginal(data, mat, propertyName, go);
-                            if (c != null)
-                                valueColorOriginal = (Color)c;
-                            var contentItem = new ItemInfo(ItemInfo.RowItemType.ColorProperty, propertyName)
-                            {
-                                ColorValue = valueColor,
-                                ColorValueOriginal = valueColorOriginal,
-                                ColorValueOnChange = value => SetMaterialColorProperty(data, mat, propertyName, value, go),
-                                ColorValueOnReset = () => RemoveMaterialColorProperty(data, mat, propertyName, go),
-                                ColorValueOnEdit = (title, value, onChanged) => SetupColorPalette(data, mat, $"Material Editor - {title}", value, onChanged, true),
-                                ColorValueSetToPalette = (title, value) => SetColorToPalette(data, mat, $"Material Editor - {title}", value)
-                            };
-                            items.Add(contentItem);
-                        }
-                        else if (property.Value.Type == ShaderPropertyType.Float)
+                            Offset = textureOffset,
+                            OffsetOriginal = textureOffsetOriginal,
+                            OffsetOnChange = value => SetMaterialTextureOffset(data, mat, propertyName, value, go),
+                            OffsetOnReset = () => RemoveMaterialTextureOffset(data, mat, propertyName, go),
+                            Scale = textureScale,
+                            ScaleOriginal = textureScaleOriginal,
+                            ScaleOnChange = value => SetMaterialTextureScale(data, mat, propertyName, value, go),
+                            ScaleOnReset = () => RemoveMaterialTextureScale(data, mat, propertyName, go)
+                        };
+                        items.Add(textureItemOffsetScale);
+
+                    }
+                    else if (property.Value.Type == ShaderPropertyType.Color && showProperty && mat.HasProperty($"_{propertyName}"))
+                    {
+                        Color valueColor = mat.GetColor($"_{propertyName}");
+                        Color valueColorOriginal = valueColor;
+                        Color? c = GetMaterialColorPropertyValueOriginal(data, mat, propertyName, go);
+                        if (c != null)
+                            valueColorOriginal = (Color)c;
+                        var contentItem = new ItemInfo(ItemInfo.RowItemType.ColorProperty, propertyName)
                         {
-                            float valueFloat = mat.GetFloat($"_{propertyName}");
-                            float valueFloatOriginal = valueFloat;
-                            float? valueFloatOriginalTemp = GetMaterialFloatPropertyValueOriginal(data, mat, propertyName, go);
-                            if (valueFloatOriginalTemp != null)
-                                valueFloatOriginal = (float)valueFloatOriginalTemp;
-                            var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
-                            {
-                                FloatValue = valueFloat,
-                                FloatValueOriginal = valueFloatOriginal
-                            };
-                            if (property.Value.MinValue != null)
-                                contentItem.FloatValueSliderMin = (float)property.Value.MinValue;
-                            if (property.Value.MaxValue != null)
-                                contentItem.FloatValueSliderMax = (float)property.Value.MaxValue;
-                            contentItem.FloatValueOnChange = value => SetMaterialFloatProperty(data, mat, propertyName, value, go);
-                            contentItem.FloatValueOnReset = () => RemoveMaterialFloatProperty(data, mat, propertyName, go);
-                            items.Add(contentItem);
-                        }
+                            ColorValue = valueColor,
+                            ColorValueOriginal = valueColorOriginal,
+                            ColorValueOnChange = value => SetMaterialColorProperty(data, mat, propertyName, value, go),
+                            ColorValueOnReset = () => RemoveMaterialColorProperty(data, mat, propertyName, go),
+                            ColorValueOnEdit = (title, value, onChanged) => SetupColorPalette(data, mat, $"Material Editor - {title}", value, onChanged, true),
+                            ColorValueSetToPalette = (title, value) => SetColorToPalette(data, mat, $"Material Editor - {title}", value)
+                        };
+                        items.Add(contentItem);
+                    }
+                    else if (property.Value.Type == ShaderPropertyType.Float && showProperty && mat.HasProperty($"_{propertyName}"))
+                    {
+                        float valueFloat = mat.GetFloat($"_{propertyName}");
+                        float valueFloatOriginal = valueFloat;
+                        float? valueFloatOriginalTemp = GetMaterialFloatPropertyValueOriginal(data, mat, propertyName, go);
+                        if (valueFloatOriginalTemp != null)
+                            valueFloatOriginal = (float)valueFloatOriginalTemp;
+                        var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
+                        {
+                            FloatValue = valueFloat,
+                            FloatValueOriginal = valueFloatOriginal
+                        };
+                        if (property.Value.MinValue != null)
+                            contentItem.FloatValueSliderMin = (float)property.Value.MinValue;
+                        if (property.Value.MaxValue != null)
+                            contentItem.FloatValueSliderMax = (float)property.Value.MaxValue;
+                        contentItem.FloatValueOnChange = value => SetMaterialFloatProperty(data, mat, propertyName, value, go);
+                        contentItem.FloatValueOnReset = () => RemoveMaterialFloatProperty(data, mat, propertyName, go);
+                        items.Add(contentItem);
                     }
                     else if (property.Value.Type == ShaderPropertyType.Keyword)
                     { // Since there's no way to check if a Keyword exists, we'll have to trust the XML.
