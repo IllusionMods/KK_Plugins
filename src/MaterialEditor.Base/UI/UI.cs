@@ -498,7 +498,7 @@ namespace MaterialEditorAPI
                         contentItem.FloatValueOnReset = () => RemoveMaterialFloatProperty(data, mat, propertyName, go);
                         items.Add(contentItem);
                     }
-                    else if (property.Value.Type == ShaderPropertyType.Keyword)
+                    else if (property.Value.Type == ShaderPropertyType.Keyword && showProperty)
                     { // Since there's no way to check if a Keyword exists, we'll have to trust the XML.
                         bool valueKeyword = mat.IsKeywordEnabled($"_{propertyName}");
                         bool valueKeywordOriginal = valueKeyword;
