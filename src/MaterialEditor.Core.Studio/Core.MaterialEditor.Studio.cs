@@ -392,6 +392,16 @@ namespace KK_Plugins.MaterialEditor
             else
                 return GetSceneController().GetRendererPropertyValueOriginal((int)data, renderer, property);
         }
+        public override string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject go)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = go.GetComponentInParent<ChaControl>();
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetRendererPropertyValue(objectData.Slot, objectData.ObjectType, renderer, property, go);
+            }
+            else
+                return GetSceneController().GetRendererPropertyValue((int)data, renderer, property);
+        }
         public override void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject go)
         {
             if (data is ObjectData objectData)

@@ -1,9 +1,11 @@
 ﻿using BepInEx;
+using KK_Plugins.MaterialEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UILib;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,7 +63,7 @@ namespace MaterialEditorAPI
 
         private GameObject CurrentGameObject;
         private object CurrentData;
-        private string CurrentFilter = "";
+        private static string CurrentFilter = "";
         private bool DoObjExport = false;
         private Renderer ObjRenderer;
 
@@ -96,8 +98,19 @@ namespace MaterialEditorAPI
             nametext.alignment = TextAnchor.MiddleCenter;
 
             FilterInputField = UIUtility.CreateInputField("Filter", DragPanel.transform, "Filter");
+            FilterInputField.text = CurrentFilter;
             FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 1f, 1f, 100f, -1f);
             FilterInputField.onValueChanged.AddListener(RefreshUI);
+
+            var persistSearch = UIUtility.CreateToggle("PersistSearch", DragPanel.transform, "");
+            persistSearch.transform.SetRect(0f, 1f, 1f, 0.5f, 100f, 0f, 0, 10f);
+            persistSearch.Set(MaterialEditorPlugin.PersistFilter.Value);
+            persistSearch.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 0f, 0f, -19f, 19f, -1f);
+            persistSearch.onValueChanged.AddListener((value) => MaterialEditorPlugin.PersistFilter.Value = value);
+
+            //Don't use text withing the toggle itself to prevent weird scaling issues
+            var persistSearchText = UIUtility.CreateText("PersistSearchText", DragPanel.transform, "Persist search");
+            persistSearchText.transform.SetRect(0f, 0.15f, 1f, 0.85f, 120f, 0f, 0, 0f);
 
             var close = UIUtility.CreateButton("CloseButton", DragPanel.transform, "");
             close.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
@@ -177,13 +190,30 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
+        /// Search text using wildcards.
+        /// </summary>
+        /// <param name="text">Text to search in</param>
+        /// <param name="filter">Filter with which to search the text</param>
+        private bool WildCardSearch(string text, string filter)
+        {
+            string regex = "^.*" + Regex.Escape(filter).Replace("\\?", ".").Replace("\\*", ".*") + ".*$";
+            return Regex.IsMatch(text, regex, RegexOptions.IgnoreCase);
+        }
+
+        /// <summary>
         /// Populate the MaterialEditor UI
         /// </summary>
         /// <param name="go">GameObject for which to read the renderers and materials</param>
         /// <param name="data">Object that will be passed through to the get/set/reset events</param>
         /// <param name="filter">Comma separated list of text to filter the results</param>
-        protected void PopulateList(GameObject go, object data, string filter = "")
+        protected void PopulateList(GameObject go, object data, string filter = null)
         {
+            if (filter == null)
+            {
+                if (MaterialEditorPlugin.PersistFilter.Value) filter = CurrentFilter;
+                else filter = "";
+            }
+
             MaterialEditorWindow.gameObject.SetActive(true);
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
             SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
@@ -198,12 +228,19 @@ namespace MaterialEditorAPI
             List<Renderer> rendList = new List<Renderer>();
             IEnumerable<Renderer> rendListFull = GetRendererList(go);
             List<string> filterList = new List<string>();
+            List<string> filterListProperties = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
 
             if (!filter.IsNullOrEmpty())
-                filterList = filter.Split(',').ToList();
-            filterList.RemoveAll(x => x.IsNullOrWhiteSpace());
+            {
+                filterList = filter.Split(',').Select(x => x.Trim()).ToList();
+                filterList.RemoveAll(x => x.IsNullOrWhiteSpace());
+
+                filterListProperties = new List<string>(filterList);
+                filterListProperties = filterListProperties.Where(x => x.StartsWith("_")).Select(x => x.Trim('_')).ToList();
+                filterList = filterList.Where(x => !x.StartsWith("_")).ToList();
+            }
 
             //Get all renderers and materials matching the filter
             if (filterList.Count == 0)
@@ -211,22 +248,14 @@ namespace MaterialEditorAPI
             else
                 foreach (var rend in rendListFull)
                 {
-                    for (var j = 0; j < filterList.Count; j++)
-                    {
-                        var filterWord = filterList[j];
-                        if (rend.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()) && !rendList.Contains(rend))
+                    foreach (string filterWord in filterList)
+                        if (WildCardSearch(rend.NameFormatted(), filterWord.Trim()) && !rendList.Contains(rend))
                             rendList.Add(rend);
-                    }
 
                     foreach (var mat in GetMaterials(go, rend))
-                    {
-                        for (var k = 0; k < filterList.Count; k++)
-                        {
-                            var filterWord = filterList[k];
-                            if (mat.NameFormatted().ToLower().Contains(filterWord.Trim().ToLower()))
+                        foreach (string filterWord in filterList)
+                            if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
                                 matList[mat.NameFormatted()] = mat;
-                        }
-                    }
                 }
 
             for (var i = 0; i < rendList.Count; i++)
@@ -291,6 +320,27 @@ namespace MaterialEditorAPI
                     RendererReceiveShadowsOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.ReceiveShadows, go)
                 };
                 items.Add(rendererReceiveShadowsItem);
+
+                //Renderer RecalculateNormals
+                if (rend is SkinnedMeshRenderer) // recalculate normals should only exist on skinned renderers
+                {
+                    bool valueRecalculateNormalsOriginal = false; // this is not a real renderproperty so I cannot be true by default
+                    temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.RecalculateNormals, go);
+                    if (!temp.IsNullOrEmpty())
+                        valueRecalculateNormalsOriginal = temp == "1";
+                    bool valueRecalculateNormals = false; // actual value not storable in renderer, grab renderProperty stored by ME instead
+                    temp = GetRendererPropertyValue(data, rend, RendererProperties.RecalculateNormals, go);
+                    if (!temp.IsNullOrEmpty())
+                        valueRecalculateNormals = temp == "1";
+                    var rendererRecalculateNormalsItem = new ItemInfo(ItemInfo.RowItemType.RendererRecalculateNormals, "Recalculate Normals")
+                    {
+                        RendererRecalculateNormals = valueRecalculateNormals ? 1 : 0,
+                        RendererRecalculateNormalsOriginal = valueRecalculateNormalsOriginal ? 1 : 0,
+                        RendererRecalculateNormalsOnChange = value => SetRendererProperty(data, rend, RendererProperties.RecalculateNormals, value.ToString(), go),
+                        RendererRecalculateNormalsOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.RecalculateNormals, go)
+                    };
+                    items.Add(rendererRecalculateNormalsItem);
+                }
             }
 
             foreach (var mat in matList.Values)
@@ -355,6 +405,10 @@ namespace MaterialEditorAPI
                 {
                     string propertyName = property.Key;
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
+                    
+                    bool showProperty = filterListProperties.Count == 0 || 
+                                        filterListProperties.Any(filterWord => WildCardSearch(propertyName, filterWord));
+                    if (!showProperty) continue;
 
                     if (property.Value.Type == ShaderPropertyType.Texture)
                     {
@@ -548,6 +602,7 @@ namespace MaterialEditorAPI
         }
 
         public abstract string GetRendererPropertyValueOriginal(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
+        public abstract string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
         public abstract void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject gameObject);
         public abstract void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
 

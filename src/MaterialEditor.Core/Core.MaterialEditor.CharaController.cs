@@ -1324,15 +1324,18 @@ namespace KK_Plugins.MaterialEditor
             RendererProperty rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.RendererName == renderer.NameFormatted());
             if (rendererProperty == null)
             {
-                string valueOriginal;
+                string valueOriginal = "";
                 if (property == RendererProperties.Enabled)
                     valueOriginal = renderer.enabled ? "1" : "0";
                 else if (property == RendererProperties.ReceiveShadows)
                     valueOriginal = renderer.receiveShadows ? "1" : "0";
-                else
+                else if (property == RendererProperties.ShadowCastingMode)
                     valueOriginal = ((int)renderer.shadowCastingMode).ToString();
+                else if (property == RendererProperties.RecalculateNormals)
+                    valueOriginal = "0"; // this property cannot be set by default
 
-                RendererPropertyList.Add(new RendererProperty(objectType, GetCoordinateIndex(objectType), slot, renderer.NameFormatted(), property, value, valueOriginal));
+                if (valueOriginal != "")
+                    RendererPropertyList.Add(new RendererProperty(objectType, GetCoordinateIndex(objectType), slot, renderer.NameFormatted(), property, value, valueOriginal));
             }
             else
             {
@@ -1383,6 +1386,8 @@ namespace KK_Plugins.MaterialEditor
                 var original = GetRendererPropertyValueOriginal(slot, objectType, renderer, property, go);
                 if (!original.IsNullOrEmpty())
                     MaterialAPI.SetRendererProperty(go, renderer.NameFormatted(), property, original);
+                if (property == RendererProperties.RecalculateNormals)
+                    MaterialEditorPlugin.Logger.LogMessage("Save and reload character or change outfits to reset normals.");
             }
             RendererPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.RendererName == renderer.NameFormatted());
         }

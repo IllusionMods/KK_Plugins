@@ -75,6 +75,11 @@ namespace MaterialEditorAPI
             listEntry.RendererReceiveShadowsDropdown = listEntry.GetUIComponent<Dropdown>("RendererReceiveShadowsDropdown");
             listEntry.RendererReceiveShadowsResetButton = listEntry.GetUIComponent<Button>("RendererReceiveShadowsResetButton");
 
+            listEntry.RendererRecalculateNormalsPanel = listEntry.GetUIComponent<CanvasGroup>("RendererRecalculateNormalsPanel");
+            listEntry.RendererRecalculateNormalsLabel = listEntry.GetUIComponent<Text>("RendererRecalculateNormalsLabel");
+            listEntry.RendererRecalculateNormalsDropdown = listEntry.GetUIComponent<Dropdown>("RendererRecalculateNormalsDropdown");
+            listEntry.RendererRecalculateNormalsResetButton = listEntry.GetUIComponent<Button>("RendererRecalculateNormalsResetButton");
+
             listEntry.MaterialPanel = listEntry.GetUIComponent<CanvasGroup>("MaterialPanel");
             listEntry.MaterialLabel = listEntry.GetUIComponent<Text>("MaterialLabel");
             listEntry.MaterialText = listEntry.GetUIComponent<Text>("MaterialText");

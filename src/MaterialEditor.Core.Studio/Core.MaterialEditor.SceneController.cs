@@ -185,7 +185,7 @@ namespace KK_Plugins.MaterialEditor
                             MaterialFloatPropertyList.Add(new MaterialFloatProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                 }
             }
-            
+
             if (data.data.TryGetValue(nameof(MaterialKeywordPropertyList), out var materialKeywordProperties) && materialKeywordProperties != null)
             {
                 var properties = MessagePackSerializer.Deserialize<List<MaterialKeywordProperty>>((byte[])materialKeywordProperties);
@@ -376,6 +376,24 @@ namespace KK_Plugins.MaterialEditor
                 if (count > 0)
                     MaterialEditorPlugin.Logger.LogMessage($"Enabled ShadowCasting for {count} items");
             }
+            else if (MaterialEditorPlugin.TwoSidedShadowCastingHotkey.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "2", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Two Sided ShadowCasting for {count} items");
+            }
+            else if (MaterialEditorPlugin.ShadowsOnlyShadowCastingHotkey.Value.IsDown())
+            {
+                int count = 0;
+                TreeNodeObject[] selectNodes = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+                for (int i = 0; i < selectNodes.Length; i++)
+                    SetRendererPropertyRecursive(selectNodes[i], RendererProperties.ShadowCastingMode, "3", ref count);
+                if (count > 0)
+                    MaterialEditorPlugin.Logger.LogMessage($"Shadows Only ShadowCasting for {count} items");
+            }
             else if (MaterialEditorPlugin.ResetShadowCastingHotkey.Value.IsDown())
             {
                 int count = 0;
@@ -455,6 +473,12 @@ namespace KK_Plugins.MaterialEditor
                         {
                             if (value == "-1")
                                 controller.RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
+                            //keep consistency in the casted shadow with how it would normally look
+                            else if (value == "2" | value == "3")
+                            {
+                                controller.RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
+                                controller.SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, chaControl.gameObject);
+                            }
                             else
                                 controller.SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, value, chaControl.gameObject);
                         }
@@ -547,6 +571,7 @@ namespace KK_Plugins.MaterialEditor
                 foreach (var property in RendererPropertyList.Where(x => x.ID == id && x.Property == RendererProperties.Enabled))
                 {
                     MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
+                    // potential recalc of normals, have to test...
                 }
             }
             base.OnObjectVisibilityToggled(objectCtrlInfo, visible);
@@ -724,15 +749,18 @@ namespace KK_Plugins.MaterialEditor
             var rendererProperty = RendererPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted());
             if (rendererProperty == null)
             {
-                string valueOriginal;
+                string valueOriginal = "";
                 if (property == RendererProperties.Enabled)
                     valueOriginal = renderer.enabled ? "1" : "0";
                 else if (property == RendererProperties.ReceiveShadows)
                     valueOriginal = renderer.receiveShadows ? "1" : "0";
-                else
+                else if (property == RendererProperties.ShadowCastingMode)
                     valueOriginal = ((int)renderer.shadowCastingMode).ToString();
+                else if (property == RendererProperties.RecalculateNormals)
+                    valueOriginal = "0"; // this property cannot be set by default
 
-                RendererPropertyList.Add(new RendererProperty(id, renderer.NameFormatted(), property, value, valueOriginal));
+                if (valueOriginal != "")
+                    RendererPropertyList.Add(new RendererProperty(id, renderer.NameFormatted(), property, value, valueOriginal));
             }
             else
             {
@@ -779,6 +807,8 @@ namespace KK_Plugins.MaterialEditor
                 var original = GetRendererPropertyValueOriginal(id, renderer, property);
                 if (!original.IsNullOrEmpty())
                     MaterialAPI.SetRendererProperty(go, renderer.NameFormatted(), property, original);
+                if (property == RendererProperties.RecalculateNormals)
+                    MaterialEditorPlugin.Logger.LogMessage("Save and reload character or change outfits to reset normals.");
             }
 
             RendererPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted());

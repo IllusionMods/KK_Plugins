@@ -58,7 +58,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.1.23";
+        public const string PluginVersion = "3.2.0";
 
         /// <summary>
         /// Material which is used in normal map conversion
@@ -71,8 +71,11 @@ namespace KK_Plugins.MaterialEditor
 #if EC || KKS
         internal static ConfigEntry<bool> ConfigConvertNormalMaps { get; private set; }
 #endif
+        internal static ConfigEntry<bool> PersistFilter { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> DisableShadowCastingHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> EnableShadowCastingHotkey { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> TwoSidedShadowCastingHotkey { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> ShadowsOnlyShadowCastingHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> ResetShadowCastingHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> DisableReceiveShadows { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> EnableReceiveShadows { get; private set; }
@@ -88,7 +91,7 @@ namespace KK_Plugins.MaterialEditor
             "cm_o_dan00", "o_tang", "o_silhouette_cf", "o_body_cf", "o_body_cm", "o_head" };
 #elif KK || EC || KKS
         public static HashSet<string> BodyParts = new HashSet<string> {
-            "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang", "n_tang_silhouette",  "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_mayuge", "cf_Ohitomi_L", "cf_Ohitomi_R",
+            "cf_O_tooth", "cf_O_canine", "cf_O_tang", "o_tang", "n_tang", "n_tang_silhouette",  "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_mayuge", "cf_O_mayuge2", "cf_Ohitomi_L", "cf_Ohitomi_R",
             "cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_noseline", "cf_O_namida_L", "cf_O_namida_M", "o_dankon", "o_gomu", "o_dan_f", "cf_O_namida_S", "cf_O_gag_eye_00", "cf_O_gag_eye_01",
             "cf_O_gag_eye_02", "o_shadowcaster", "o_shadowcaster_cm", "o_mnpa", "o_mnpb", "n_body_silhouette", "o_body_a", "cf_O_face" };
 #elif PH
@@ -136,8 +139,11 @@ namespace KK_Plugins.MaterialEditor
 #if EC || KKS
             ConfigConvertNormalMaps = Config.Bind("Config", "Convert Normal Maps", true, new ConfigDescription("Convert grey normal maps to red normal maps for compatibility with Koikatsu mods.", null, new ConfigurationManagerAttributes { Order = 1 }));
 #endif
+            PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
             DisableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Disable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl), "Disable ShadowCasting for all selected items and their child items in Studio");
             EnableShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Enable ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftAlt), "Enable ShadowCasting for all selected items and their child items in Studio");
+            TwoSidedShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Two Sided ShadowCasting", new KeyboardShortcut(KeyCode.K, KeyCode.LeftAlt), "Set ShadowCasting to 'Two Sided' for all selected items and their child items in Studio");
+            ShadowsOnlyShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Shadows Only ShadowCasting", new KeyboardShortcut(KeyCode.L, KeyCode.LeftAlt), "Set ShadowCasting to 'Shadows Only' for all selected items and their child items in Studio");
             ResetShadowCastingHotkey = Config.Bind("Keyboard Shortcuts", "Reset ShadowCasting", new KeyboardShortcut(KeyCode.M, KeyCode.LeftControl, KeyCode.LeftAlt), "Reset ShadowCasting for all selected items and their child items in Studio");
             DisableReceiveShadows = Config.Bind("Keyboard Shortcuts", "Disable ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftControl), "Disable ReceiveShadows for all selected items and their child items in Studio");
             EnableReceiveShadows = Config.Bind("Keyboard Shortcuts", "Enable ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftAlt), "Enable ReceiveShadows for all selected items and their child items in Studio");

@@ -281,6 +281,8 @@ namespace MaterialEditorAPI
                 return SetRendererShadowCastingMode(gameObject, rendererName, (UnityEngine.Rendering.ShadowCastingMode)value);
             if (propertyName == RendererProperties.ReceiveShadows)
                 return SetRendererReceiveShadows(gameObject, rendererName, value == 1);
+            if (propertyName == RendererProperties.RecalculateNormals)
+                return SetRendererRecalculateNormals(gameObject, rendererName, value == 1);
             return false;
         }
 
@@ -341,6 +343,29 @@ namespace MaterialEditorAPI
                 if (renderer.NameFormatted() == rendererName)
                 {
                     renderer.receiveShadows = value;
+                    didSet = true;
+                }
+            }
+            return didSet;
+        }
+
+        public static bool SetRendererRecalculateNormals(GameObject gameObject, string rendererName, bool value)
+        {
+            bool didSet = false;
+            foreach (var renderer in GetRendererList(gameObject))
+            {
+                if (renderer is SkinnedMeshRenderer && renderer.NameFormatted() == rendererName)
+                {
+                    if (value)
+                    {
+                        SkinnedMeshRenderer rend = (SkinnedMeshRenderer)renderer;
+                        Mesh temp = new Mesh();
+                        rend.BakeMesh(temp);
+                        temp.RecalculateNormals();
+                        Mesh original = Object.Instantiate(rend.sharedMesh);
+                        original.normals = temp.normals;
+                        rend.sharedMesh = original;
+                    }
                     didSet = true;
                 }
             }
@@ -566,7 +591,11 @@ namespace MaterialEditorAPI
             /// <summary>
             /// Whether the renderer will receive shadows cast by other objects
             /// </summary>
-            ReceiveShadows
+            ReceiveShadows,
+            /// <summary>
+            /// Whether the renderer should recalculate the normals on itself
+            /// </summary>
+            RecalculateNormals
         }
     }
 }
