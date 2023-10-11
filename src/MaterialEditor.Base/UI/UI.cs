@@ -288,6 +288,27 @@ namespace MaterialEditorAPI
                     RendererReceiveShadowsOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.ReceiveShadows, go)
                 };
                 items.Add(rendererReceiveShadowsItem);
+
+                //Renderer RecalculateNormals
+                if (rend is SkinnedMeshRenderer) // recalculate normals should only exist on skinned renderers
+                {
+                    bool valueRecalculateNormalsOriginal = false; // this is not a real renderproperty so I cannot be true by default
+                    temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.RecalculateNormals, go);
+                    if (!temp.IsNullOrEmpty())
+                        valueRecalculateNormalsOriginal = temp == "1";
+                    bool valueRecalculateNormals = false; // actual value not storable in renderer, grab renderProperty stored by ME instead
+                    temp = GetRendererPropertyValue(data, rend, RendererProperties.RecalculateNormals, go);
+                    if (!temp.IsNullOrEmpty())
+                        valueRecalculateNormals = temp == "1";
+                    var rendererRecalculateNormalsItem = new ItemInfo(ItemInfo.RowItemType.RendererRecalculateNormals, "Recalculate Normals")
+                    {
+                        RendererRecalculateNormals = valueRecalculateNormals ? 1 : 0,
+                        RendererRecalculateNormalsOriginal = valueRecalculateNormalsOriginal ? 1 : 0,
+                        RendererRecalculateNormalsOnChange = value => SetRendererProperty(data, rend, RendererProperties.RecalculateNormals, value.ToString(), go),
+                        RendererRecalculateNormalsOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.RecalculateNormals, go)
+                    };
+                    items.Add(rendererRecalculateNormalsItem);
+                }
             }
 
             foreach (var mat in matList.Values)
@@ -541,6 +562,7 @@ namespace MaterialEditorAPI
         }
 
         public abstract string GetRendererPropertyValueOriginal(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
+        public abstract string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
         public abstract void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject gameObject);
         public abstract void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
 

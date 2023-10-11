@@ -147,6 +147,39 @@ namespace MaterialEditorAPI
                 resetLE.flexibleWidth = 0;
             }
 
+            //Renderer RecalulateNormals
+            {
+                var itemPanel = UIUtility.CreatePanel("RendererRecalculateNormalsPanel", contentList.transform);
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+                itemPanel.color = ItemColor;
+
+                var label = UIUtility.CreateText("RendererRecalculateNormalsLabel", itemPanel.transform, "");
+                label.alignment = TextAnchor.MiddleLeft;
+                label.color = Color.black;
+                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                labelLE.preferredWidth = LabelWidth;
+                labelLE.flexibleWidth = LabelWidth;
+
+                Dropdown dropdownRecalculateNormals = UIUtility.CreateDropdown("RendererRecalculateNormalsDropdown", itemPanel.transform);
+                dropdownRecalculateNormals.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
+                dropdownRecalculateNormals.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
+                dropdownRecalculateNormals.captionText.alignment = TextAnchor.MiddleLeft;
+                dropdownRecalculateNormals.options.Clear();
+                dropdownRecalculateNormals.options.Add(new Dropdown.OptionData("Off"));
+                dropdownRecalculateNormals.options.Add(new Dropdown.OptionData("On"));
+                dropdownRecalculateNormals.value = 0;
+                dropdownRecalculateNormals.captionText.text = "Off";
+                var dropdownRecalculateNormalsLE = dropdownRecalculateNormals.gameObject.AddComponent<LayoutElement>();
+                dropdownRecalculateNormalsLE.preferredWidth = DropdownWidth;
+                dropdownRecalculateNormalsLE.flexibleWidth = 0;
+
+                var reset = UIUtility.CreateButton($"RendererRecalculateNormalsResetButton", itemPanel.transform, "Reset");
+                var resetLE = reset.gameObject.AddComponent<LayoutElement>();
+                resetLE.preferredWidth = ResetButtonWidth;
+                resetLE.flexibleWidth = 0;
+            }
+
             //Material
             {
                 var itemPanel = UIUtility.CreatePanel("MaterialPanel", contentList.transform);
