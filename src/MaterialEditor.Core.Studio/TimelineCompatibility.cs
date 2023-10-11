@@ -24,7 +24,6 @@ namespace MaterialEditorAPI
                    name: "Enabled",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.enabled = leftValue,
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => GetRenderer(oci, parameter.NameFormatted()).enabled,
                    readValueFromXml: (parameter, node) => XmlConvert.ToBoolean(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", XmlConvert.ToString(value)),
@@ -37,7 +36,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Renderer)
                );
 
             //Renderer ShadowCastingMode
@@ -47,7 +47,6 @@ namespace MaterialEditorAPI
                    name: "Shadow Casting Mode",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.shadowCastingMode = leftValue,
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => GetRenderer(oci, parameter.NameFormatted()).shadowCastingMode,
                    readValueFromXml: (parameter, node) => (ShadowCastingMode)XmlConvert.ToInt32(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", ((int)value).ToString()),
@@ -60,7 +59,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Renderer)
                );
 
             //Renderer ReceiveShadows
@@ -70,7 +70,6 @@ namespace MaterialEditorAPI
                    name: "Receive Shadows",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.receiveShadows = leftValue,
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => GetRenderer(oci, parameter.NameFormatted()).receiveShadows,
                    readValueFromXml: (parameter, node) => XmlConvert.ToBoolean(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", XmlConvert.ToString((bool)value)),
@@ -83,7 +82,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Renderer)
                );
 
             //Shader
@@ -93,7 +93,6 @@ namespace MaterialEditorAPI
                    name: "Shader",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetShader(parameter.go, parameter.materialName, leftValue),
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => parameter.GetMaterial().shader.NameFormatted(),
                    readValueFromXml: (parameter, node) => node.Attributes["value"].Value,
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value),
@@ -106,7 +105,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Shader)
                );
 
             //Shader RenderQueue
@@ -116,7 +116,6 @@ namespace MaterialEditorAPI
                    name: "Render Queue",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetRenderQueue(parameter.go, parameter.materialName, leftValue),
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => parameter.GetMaterial().renderQueue,
                    readValueFromXml: (parameter, node) => XmlConvert.ToInt32(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
@@ -129,7 +128,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Shader)
                );
 
             //Texture value
@@ -140,7 +140,6 @@ namespace MaterialEditorAPI
                    name: "Texture Property (DON'T USE UNLESS YOU REALLY NEED TO!!!!)",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTexture(parameter.go, parameter.materialName, parameter.propertyName, leftValue),
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => parameter.GetMaterial().GetTexture($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) =>
                    {
@@ -158,7 +157,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"Texture Property: {parameter.materialName}"
+                   getFinalName: (currentName, oci, parameter) => $"Texture Property: {parameter.materialName}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
                );
 
             //Texture scale value
@@ -168,7 +168,6 @@ namespace MaterialEditorAPI
                    name: "Texture Scale Property",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTextureScale(parameter.go, parameter.materialName, parameter.propertyName, Vector2.LerpUnclamped(leftValue, rightValue, factor)),
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => parameter.GetMaterial().GetTextureScale($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) =>
                    {
@@ -191,7 +190,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
                );
 
             //Texture offset value
@@ -201,7 +201,6 @@ namespace MaterialEditorAPI
                    name: "Texture Offset Property",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTextureOffset(parameter.go, parameter.materialName, parameter.propertyName, Vector2.LerpUnclamped(leftValue, rightValue, factor)),
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => parameter.GetMaterial().GetTextureOffset($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) =>
                    {
@@ -224,7 +223,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
                );
 
             //Color value
@@ -234,7 +234,6 @@ namespace MaterialEditorAPI
                    name: "Color Property",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetColor(parameter.go, parameter.materialName, parameter.propertyName, Color.LerpUnclamped(leftValue, rightValue, factor)),
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => parameter.GetMaterial().GetColor($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) =>
                    {
@@ -261,7 +260,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.ColorProperty)
                );
 
             //Float value
@@ -271,7 +271,6 @@ namespace MaterialEditorAPI
                    name: "Float Property",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetFloat(parameter.go, parameter.materialName, parameter.propertyName, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
                    interpolateAfter: null,
-                   isCompatibleWithTarget: (oci) => oci != null,
                    getValue: (oci, parameter) => parameter.GetMaterial().GetFloat($"_{parameter.propertyName}"),
                    readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
@@ -284,7 +283,8 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}"
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.FloatProperty)
                );
         }
 
@@ -316,6 +316,18 @@ namespace MaterialEditorAPI
         private static MaterialInfo ReadMaterialInfoXml(ObjectCtrlInfo oci, XmlNode node)
         {
             return new MaterialInfo(oci, node.Attributes["materialName"].Value, node.Attributes["propertyName"].Value);
+        }
+
+        private static bool IsCompatibleWithTarget(ItemInfo.RowItemType rowtype)
+        {
+            if (selectedInterpolable != null && selectedInterpolable.RowType == rowtype)
+                if (rowtype == ItemInfo.RowItemType.Renderer && !selectedInterpolable.RendererName.IsNullOrEmpty())
+                    return true;
+                else if (rowtype == ItemInfo.RowItemType.Shader && !selectedInterpolable.MaterialName.IsNullOrEmpty())
+                    return true;
+                else if ((rowtype == ItemInfo.RowItemType.TextureProperty || rowtype == ItemInfo.RowItemType.ColorProperty || rowtype == ItemInfo.RowItemType.FloatProperty) && !selectedInterpolable.MaterialName.IsNullOrEmpty() && !selectedInterpolable.PropertyName.IsNullOrEmpty())
+                    return true;
+            return false;
         }
 
         private class MaterialInfo
