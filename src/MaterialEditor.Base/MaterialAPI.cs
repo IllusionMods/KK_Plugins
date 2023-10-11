@@ -354,7 +354,7 @@ namespace MaterialEditorAPI
             bool didSet = false;
             foreach (var renderer in GetRendererList(gameObject))
             {
-                if (renderer.NameFormatted() == rendererName && renderer is SkinnedMeshRenderer)
+                if (renderer is SkinnedMeshRenderer && renderer.NameFormatted() == rendererName)
                 {
                     if (value)
                     {
