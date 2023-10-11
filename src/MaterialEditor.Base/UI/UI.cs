@@ -100,6 +100,16 @@ namespace MaterialEditorAPI
             FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 1f, 1f, 100f, -1f);
             FilterInputField.onValueChanged.AddListener(RefreshUI);
 
+            var persistSearch = UIUtility.CreateToggle("PersistSearch", DragPanel.transform, "");
+            persistSearch.transform.SetRect(0f, 1f, 1f, 0.5f, 100f, 0f, 0, 10f);
+            persistSearch.Set(MaterialEditorPlugin.PersistFilter.Value);
+            persistSearch.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 0f, 0f, -19f, 19f, -1f);
+            persistSearch.onValueChanged.AddListener((value) => MaterialEditorPlugin.PersistFilter.Value = value);
+
+            //Don't use text withing the toggle itself to prevent weird scaling issues
+            var persistSearchText = UIUtility.CreateText("PersistSearchText", DragPanel.transform, "Persist search");
+            persistSearchText.transform.SetRect(0f, 0.15f, 1f, 0.85f, 120f, 0f, 0, 0f);
+
             var close = UIUtility.CreateButton("CloseButton", DragPanel.transform, "");
             close.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
             close.onClick.AddListener(() => Visible = false);
