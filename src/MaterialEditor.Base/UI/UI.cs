@@ -680,6 +680,7 @@ namespace MaterialEditorAPI
         private void SelectInterpolableButtonOnClick(GameObject go, ItemInfo.RowItemType rowType, string materialName = "", string propertyName = "", string rendererName = "")
         {
             selectedInterpolable = new SelectedInterpolable(go, rowType, materialName, propertyName, rendererName);
+            MaterialEditorPluginBase.Logger.LogMessage($"Activated interpolable(s), {selectedInterpolable}");
             //TODO Can't use KKAPI here
             KKAPI.Utilities.TimelineCompatibility.RefreshInterpolablesList();
         }
@@ -703,7 +704,7 @@ namespace MaterialEditorAPI
 
             public override string ToString()
             {
-                return string.Join(" - ", new string[] { MaterialName, PropertyName, RendererName });
+                return $"{RowType}: {string.Join(" - ", new string[] { PropertyName, MaterialName, RendererName,  }.Where(x => !x.IsNullOrEmpty()).ToArray())}";
             }
         }
     }
