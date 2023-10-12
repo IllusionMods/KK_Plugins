@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using KK_Plugins.MaterialEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -104,9 +103,9 @@ namespace MaterialEditorAPI
 
             var persistSearch = UIUtility.CreateToggle("PersistSearch", DragPanel.transform, "");
             persistSearch.transform.SetRect(0f, 1f, 1f, 0.5f, 100f, 0f, 0, 10f);
-            persistSearch.Set(MaterialEditorPlugin.PersistFilter.Value);
+            persistSearch.Set(PersistFilter.Value);
             persistSearch.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 0f, 0f, -19f, 19f, -1f);
-            persistSearch.onValueChanged.AddListener((value) => MaterialEditorPlugin.PersistFilter.Value = value);
+            persistSearch.onValueChanged.AddListener((value) => PersistFilter.Value = value);
 
             //Don't use text withing the toggle itself to prevent weird scaling issues
             var persistSearchText = UIUtility.CreateText("PersistSearchText", DragPanel.transform, "Persist search");
@@ -210,7 +209,7 @@ namespace MaterialEditorAPI
         {
             if (filter == null)
             {
-                if (MaterialEditorPlugin.PersistFilter.Value) filter = CurrentFilter;
+                if (PersistFilter.Value) filter = CurrentFilter;
                 else filter = "";
             }
 
