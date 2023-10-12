@@ -94,7 +94,7 @@ namespace MaterialEditorAPI
                    owner: "MaterialEditor",
                    id: "renderQueue",
                    name: "Render Queue",
-                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetRenderQueue(parameter.GetGameObject(oci), parameter.materialName, leftValue),
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetRenderQueue(parameter.GetGameObject(oci), parameter.materialName, (int)Mathf.LerpUnclamped(leftValue, rightValue, factor)),
                    interpolateAfter: null,
                    getValue: (oci, parameter) => parameter.GetMaterial(oci).renderQueue,
                    readValueFromXml: (parameter, node) => XmlConvert.ToInt32(node.Attributes["value"].Value),
