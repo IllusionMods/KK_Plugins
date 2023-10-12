@@ -22,21 +22,21 @@ namespace MaterialEditorAPI
                    owner: "MaterialEditor",
                    id: "targetEnabled",
                    name: "Enabled",
-                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.enabled = leftValue,
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetRendererEnabled(parameter.GetGameObject(oci), parameter.rendererName, leftValue),
                    interpolateAfter: null,
-                   getValue: (oci, parameter) => GetRenderer(oci, parameter.NameFormatted()).enabled,
+                   getValue: (oci, parameter) => parameter.GetRenderer(oci).enabled,
                    readValueFromXml: (parameter, node) => XmlConvert.ToBoolean(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", XmlConvert.ToString(value)),
-                   getParameter: (oci) => GetRenderer(oci, selectedInterpolable.RendererName),
-                   readParameterFromXml: (oci, node) => GetRenderer(oci, node.Attributes["parameter"].Value),
-                   writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   getParameter: GetMaterialInfoParameter,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
-                       if (parameter is Renderer && parameter != null)
+                       if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}",
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.rendererName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Renderer)
                );
 
@@ -45,21 +45,21 @@ namespace MaterialEditorAPI
                    owner: "MaterialEditor",
                    id: "shadowCastingMode",
                    name: "Shadow Casting Mode",
-                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.shadowCastingMode = leftValue,
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetRendererShadowCastingMode(parameter.GetGameObject(oci), parameter.rendererName, leftValue),
                    interpolateAfter: null,
-                   getValue: (oci, parameter) => GetRenderer(oci, parameter.NameFormatted()).shadowCastingMode,
+                   getValue: (oci, parameter) => parameter.GetRenderer(oci).shadowCastingMode,
                    readValueFromXml: (parameter, node) => (ShadowCastingMode)XmlConvert.ToInt32(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", ((int)value).ToString()),
-                   getParameter: (oci) => GetRenderer(oci, selectedInterpolable.RendererName),
-                   readParameterFromXml: (oci, node) => GetRenderer(oci, node.Attributes["parameter"].Value),
-                   writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   getParameter: GetMaterialInfoParameter,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
-                       if (parameter is Renderer && parameter != null)
+                       if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}",
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.rendererName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Renderer)
                );
 
@@ -68,21 +68,21 @@ namespace MaterialEditorAPI
                    owner: "MaterialEditor",
                    id: "receiveShadows",
                    name: "Receive Shadows",
-                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => parameter.receiveShadows = leftValue,
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetRendererReceiveShadows(parameter.GetGameObject(oci), parameter.rendererName, leftValue),
                    interpolateAfter: null,
-                   getValue: (oci, parameter) => GetRenderer(oci, parameter.NameFormatted()).receiveShadows,
+                   getValue: (oci, parameter) => parameter.GetRenderer(oci).receiveShadows,
                    readValueFromXml: (parameter, node) => XmlConvert.ToBoolean(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", XmlConvert.ToString((bool)value)),
-                   getParameter: (oci) => GetRenderer(oci, selectedInterpolable.RendererName),
-                   readParameterFromXml: (oci, node) => GetRenderer(oci, node.Attributes["parameter"].Value),
-                   writeParameterToXml: (oci, writer, parameter) => writer.WriteAttributeString("parameter", parameter.NameFormatted()),
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   getParameter: GetMaterialInfoParameter,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) =>
                    {
-                       if (parameter is Renderer && parameter != null)
+                       if (parameter is MaterialInfo && parameter != null)
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.NameFormatted()}",
+                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.rendererName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Renderer)
                );
 
@@ -288,16 +288,9 @@ namespace MaterialEditorAPI
                );
         }
 
-        private static Renderer GetRenderer(ObjectCtrlInfo oci, string name)
-        {
-            return oci.guideObject.transformTarget.GetComponentsInChildren<Renderer>(true).First(x => x.NameFormatted() == name);
-            //GameObject _go = GetGameObjectFromOci(oci);
-            //return GetRendererList(_go).First(x => x.NameFormatted() == name);
-        }
-
         private static MaterialInfo GetMaterialInfoParameter(ObjectCtrlInfo oci)
         {
-            return new MaterialInfo(selectedInterpolable.GameObject.GetFullPath(), selectedInterpolable.MaterialName, selectedInterpolable.PropertyName);
+            return new MaterialInfo(selectedInterpolable.GameObject.GetFullPath(), selectedInterpolable.MaterialName, selectedInterpolable.PropertyName, selectedInterpolable.RendererName);
         }
 
         private static void WriteMaterialInfoXml(ObjectCtrlInfo oci, XmlTextWriter writer, MaterialInfo parameter)
@@ -305,10 +298,11 @@ namespace MaterialEditorAPI
             writer.WriteAttributeString("gameObjectPath", parameter.gameObjectPath);
             writer.WriteAttributeString("materialName", parameter.materialName);
             writer.WriteAttributeString("propertyName", parameter.propertyName);
+            writer.WriteAttributeString("rendererName", parameter.rendererName);
         }
         private static MaterialInfo ReadMaterialInfoXml(ObjectCtrlInfo oci, XmlNode node)
         {
-            return new MaterialInfo(node.Attributes["gameObjectPath"].Value, node.Attributes["materialName"].Value, node.Attributes["propertyName"].Value);
+            return new MaterialInfo(node.Attributes["gameObjectPath"].Value, node.Attributes["materialName"].Value, node.Attributes["propertyName"].Value, node.Attributes["rendererName"].Value);
         }
 
         private static bool IsCompatibleWithTarget(ItemInfo.RowItemType rowtype)
@@ -328,13 +322,15 @@ namespace MaterialEditorAPI
             public string gameObjectPath;
             public string materialName;
             public string propertyName;
+            public string rendererName;
             private readonly int _hashCode;
 
-            public MaterialInfo(string gameObjectPath, string materialName, string propertyName)
+            public MaterialInfo(string gameObjectPath, string materialName, string propertyName, string rendererName)
             {
                 this.gameObjectPath = gameObjectPath;
                 this.materialName = materialName;
                 this.propertyName = propertyName;
+                this.rendererName = rendererName;
 
                 unchecked
                 {
@@ -343,6 +339,11 @@ namespace MaterialEditorAPI
                     hash = hash * 31 + this.propertyName.GetHashCode();
                     this._hashCode = hash * 31 + this.gameObjectPath.GetHashCode();
                 }
+            }
+
+            public Renderer GetRenderer(ObjectCtrlInfo oci)
+            {
+                return GetGameObject(oci).GetComponentsInChildren<Renderer>(true).First(x => x.NameFormatted() == rendererName);
             }
 
             public GameObject GetGameObject(ObjectCtrlInfo oci)
