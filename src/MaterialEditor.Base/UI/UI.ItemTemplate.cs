@@ -535,7 +535,7 @@ namespace MaterialEditorAPI
             sinterpolableButtonLE.flexibleWidth = 0;
             interpolableButton.gameObject.SetActive(false);
 
-            if (MaterialAPI.IsTimelineAvailable())
+            if (MaterialEditorPluginBase.ShowTimelineButtons.Value && MaterialAPI.IsTimelineAvailable())
                 interpolableButton.gameObject.SetActive(true);
         }
     }
