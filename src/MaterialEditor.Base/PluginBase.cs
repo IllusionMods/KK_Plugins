@@ -44,6 +44,7 @@ namespace MaterialEditorAPI
         /// </summary>
         public static readonly List<string> NormalMapProperties = new List<string>();
 
+        public static ConfigEntry<bool> PersistFilter { get; private set; }
         public static ConfigEntry<float> UIScale { get; set; }
         public static ConfigEntry<float> UIWidth { get; set; }
         public static ConfigEntry<float> UIHeight { get; set; }
@@ -67,6 +68,7 @@ namespace MaterialEditorAPI
             ExportBakedMesh = Config.Bind("Config", "Export Baked Mesh", false, new ConfigDescription("When enabled, skinned meshes will be exported in their current state with all customization applied as well as in the current pose.", null, new ConfigurationManagerAttributes { Order = 1 }));
             ExportBakedWorldPosition = Config.Bind("Config", "Export Baked World Position", false, new ConfigDescription("When enabled, objects will be exported with their position changes intact so that, i.e. when exporting two objects they retain their position relative to each other.\nOnly works when Export Baked Mesh is also enabled.", null, new ConfigurationManagerAttributes { Order = 1 }));
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
+            PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
 
             UIScale.SettingChanged += MaterialEditorUI.UISettingChanged;
             UIWidth.SettingChanged += MaterialEditorUI.UISettingChanged;

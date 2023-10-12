@@ -1,4 +1,6 @@
-﻿using UILib;
+﻿using System;
+using System.Reflection;
+using UILib;
 using UnityEngine;
 using UnityEngine.UI;
 using static MaterialEditorAPI.MaterialEditorUI;
@@ -524,13 +526,17 @@ namespace MaterialEditorAPI
 
             return contentList.gameObject;
         }
-        private static Button CreateInterpolableButton(string objectName, Transform parent)
+
+        private static void CreateInterpolableButton(string objectName, Transform parent)
         {
             Button interpolableButton = UIUtility.CreateButton(objectName, parent, "O");
             var sinterpolableButtonLE = interpolableButton.gameObject.AddComponent<LayoutElement>();
             sinterpolableButtonLE.preferredWidth = 15;
             sinterpolableButtonLE.flexibleWidth = 0;
-            return interpolableButton;
+            interpolableButton.gameObject.SetActive(false);
+
+            if (MaterialAPI.IsTimelineAvailable())
+                interpolableButton.gameObject.SetActive(true);
         }
     }
 }
