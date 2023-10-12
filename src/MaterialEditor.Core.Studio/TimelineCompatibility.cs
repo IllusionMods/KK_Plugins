@@ -157,7 +157,7 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"Texture Property: {parameter.materialName}",
+                   getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName}: {parameter.materialName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
                );
 
@@ -190,7 +190,7 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName} Scale: {parameter.materialName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
                );
 
@@ -223,7 +223,7 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName} Offset: {parameter.materialName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
                );
 
@@ -260,7 +260,7 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName}: {parameter.materialName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.ColorProperty)
                );
 
@@ -283,7 +283,7 @@ namespace MaterialEditorAPI
                            return true;
                        return false;
                    },
-                   getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
+                   getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName}: {parameter.materialName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.FloatProperty)
                );
         }
