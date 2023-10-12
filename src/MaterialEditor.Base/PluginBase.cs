@@ -44,8 +44,6 @@ namespace MaterialEditorAPI
         /// </summary>
         public static readonly List<string> NormalMapProperties = new List<string>();
 
-        public static ConfigEntry<bool> PersistFilter { get; set; }
-        public static ConfigEntry<bool> ShowTimelineButtons { get; set; }
         public static ConfigEntry<float> UIScale { get; set; }
         public static ConfigEntry<float> UIWidth { get; set; }
         public static ConfigEntry<float> UIHeight { get; set; }
@@ -54,6 +52,8 @@ namespace MaterialEditorAPI
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
         public static ConfigEntry<bool> ExportBakedWorldPosition { get; set; }
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
+        public static ConfigEntry<bool> PersistFilter { get; set; }
+        public static ConfigEntry<bool> ShowTimelineButtons { get; set; }
 
         public virtual void Awake()
         {
