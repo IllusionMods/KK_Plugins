@@ -1,7 +1,7 @@
-﻿#if !PH
-using KKAPI.Utilities;
+﻿using KKAPI.Utilities;
 using Studio;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -12,8 +12,12 @@ namespace MaterialEditorAPI
 {
     internal static class TimelineCompatibilityHelper
     {
+        private static bool? isTimelineAvailable;
+        private static MethodInfo refreshInterpolablesList;
+
         internal static void PopulateTimeline()
         {
+#if !PH
             if (!TimelineCompatibility.IsTimelineAvailable()) return;
 
             //Renderer Enabled
@@ -324,7 +328,49 @@ namespace MaterialEditorAPI
             {
                 return this._hashCode;
             }
+#endif
+        }
+        private static System.Type GetKkapiType()
+        {
+#if KK
+            return System.Type.GetType("KKAPI.Utilities.TimelineCompatibility,KKAPI", throwOnError: false);
+#elif KKS
+            return System.Type.GetType("KKAPI.Utilities.TimelineCompatibility,KKSAPI", throwOnError: false);
+#elif AI
+            return System.Type.GetType("KKAPI.Utilities.TimelineCompatibility,AIAPI", throwOnError: false);
+#elif HS2
+            return System.Type.GetType("KKAPI.Utilities.TimelineCompatibility,HS2API", throwOnError: false);
+#else       //The others don't have timeline and/or studio, so no reason to check further
+            return null;
+#endif
+        }
+
+        internal static bool IsTimelineAvailable()
+        {
+            if (isTimelineAvailable == null)
+            {
+                var type = GetKkapiType();
+                if (type != null)
+                {
+                    var _isTimelineAvailable = type.GetMethod("IsTimelineAvailable", BindingFlags.Static | BindingFlags.Public);
+                    isTimelineAvailable = (bool)_isTimelineAvailable.Invoke(null, null);
+                }
+                else isTimelineAvailable = false;
+            }
+            return (bool)isTimelineAvailable;
+        }
+
+        internal static void RefreshInterpolablesList()
+        {
+            if (!(bool)isTimelineAvailable) return;
+
+            if (refreshInterpolablesList == null)
+            {
+                var type = GetKkapiType();
+                if (type != null)
+                    refreshInterpolablesList = type.GetMethod("RefreshInterpolablesList", BindingFlags.Static | BindingFlags.Public);
+            }
+            refreshInterpolablesList.Invoke(null, null);
         }
     }
 }
-#endif

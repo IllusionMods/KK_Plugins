@@ -680,7 +680,9 @@ namespace MaterialEditorAPI
         {
             selectedInterpolable = new SelectedInterpolable(go, rowType, materialName, propertyName, rendererName);
             MaterialEditorPluginBase.Logger.LogMessage($"Activated interpolable(s), {selectedInterpolable}");
-            RefreshInterpolablesList();
+#if !API && !EC
+            TimelineCompatibilityHelper.RefreshInterpolablesList();
+#endif
         }
 
         internal class SelectedInterpolable
