@@ -52,7 +52,8 @@ namespace MaterialEditorAPI
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
         public static ConfigEntry<bool> ExportBakedWorldPosition { get; set; }
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
-        internal static ConfigEntry<bool> PersistFilter { get; private set; }
+        public static ConfigEntry<bool> PersistFilter { get; set; }
+        public static ConfigEntry<bool> ShowTimelineButtons { get; set; }
 
         public virtual void Awake()
         {
@@ -69,6 +70,7 @@ namespace MaterialEditorAPI
             ExportBakedWorldPosition = Config.Bind("Config", "Export Baked World Position", false, new ConfigDescription("When enabled, objects will be exported with their position changes intact so that, i.e. when exporting two objects they retain their position relative to each other.\nOnly works when Export Baked Mesh is also enabled.", null, new ConfigurationManagerAttributes { Order = 1 }));
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
             PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
+            ShowTimelineButtons = Config.Bind("Config", "Show Timeline Buttons", false, "Show buttons in the UI (in studio only) to add interpolables to the timeline. Requires game restart to take effect");
 
             UIScale.SettingChanged += MaterialEditorUI.UISettingChanged;
             UIWidth.SettingChanged += MaterialEditorUI.UISettingChanged;

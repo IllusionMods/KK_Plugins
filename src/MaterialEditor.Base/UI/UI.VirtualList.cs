@@ -56,6 +56,7 @@ namespace MaterialEditorAPI
             listEntry.RendererPanel = listEntry.GetUIComponent<CanvasGroup>("RendererPanel");
             listEntry.RendererLabel = listEntry.GetUIComponent<Text>("RendererLabel");
             listEntry.RendererText = listEntry.GetUIComponent<Text>("RendererText");
+            listEntry.SelectInterpolableRendererButton = listEntry.GetUIComponent<Button>("SelectInterpolableRendererButton");
             listEntry.ExportUVButton = listEntry.GetUIComponent<Button>("ExportUVButton");
             listEntry.ExportObjButton = listEntry.GetUIComponent<Button>("ExportObjButton");
 
@@ -88,6 +89,7 @@ namespace MaterialEditorAPI
 
             listEntry.ShaderPanel = listEntry.GetUIComponent<CanvasGroup>("ShaderPanel");
             listEntry.ShaderLabel = listEntry.GetUIComponent<Text>("ShaderLabel");
+            listEntry.SelectInterpolableShaderButton = listEntry.GetUIComponent<Button>("SelectInterpolableShaderButton");
             listEntry.ShaderDropdown = listEntry.GetUIComponent<Dropdown>("ShaderDropdown");
             listEntry.ShaderResetButton = listEntry.GetUIComponent<Button>("ShaderResetButton");
 
@@ -98,6 +100,7 @@ namespace MaterialEditorAPI
 
             listEntry.TexturePanel = listEntry.GetUIComponent<CanvasGroup>("TexturePanel");
             listEntry.TextureLabel = listEntry.GetUIComponent<Text>("TextureLabel");
+            listEntry.SelectInterpolableTextureButton = listEntry.GetUIComponent<Button>("SelectInterpolableTextureButton");
             listEntry.ExportTextureButton = listEntry.GetUIComponent<Button>("TextureExportButton");
             listEntry.ImportTextureButton = listEntry.GetUIComponent<Button>("TextureImportButton");
             listEntry.TextureResetButton = listEntry.GetUIComponent<Button>("TextureResetButton");
@@ -115,6 +118,7 @@ namespace MaterialEditorAPI
             listEntry.OffsetScaleResetButton = listEntry.GetUIComponent<Button>("OffsetScaleResetButton");
 
             listEntry.ColorPanel = listEntry.GetUIComponent<CanvasGroup>("ColorPanel");
+            listEntry.SelectInterpolableColorButton = listEntry.GetUIComponent<Button>("SelectInterpolableColorButton");
             listEntry.ColorLabel = listEntry.GetUIComponent<Text>("ColorLabel");
             listEntry.ColorRText = listEntry.GetUIComponent<Text>("ColorRText");
             listEntry.ColorGText = listEntry.GetUIComponent<Text>("ColorGText");
@@ -129,6 +133,7 @@ namespace MaterialEditorAPI
 
             listEntry.FloatPanel = listEntry.GetUIComponent<CanvasGroup>("FloatPanel");
             listEntry.FloatLabel = listEntry.GetUIComponent<Text>("FloatLabel");
+            listEntry.SelectInterpolableFloatButton = listEntry.GetUIComponent<Button>("SelectInterpolableFloatButton");
             listEntry.FloatSlider = listEntry.GetUIComponent<Slider>("FloatSlider");
             listEntry.FloatInputField = listEntry.GetUIComponent<InputField>("FloatInputField");
             listEntry.FloatResetButton = listEntry.GetUIComponent<Button>("FloatResetButton");

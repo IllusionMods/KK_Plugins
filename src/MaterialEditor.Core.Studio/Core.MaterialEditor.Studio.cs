@@ -65,6 +65,9 @@ namespace KK_Plugins.MaterialEditor
             Instance = this;
             SceneManager.sceneLoaded += (s, lsm) => InitStudioUI(s.name);
             StudioSaveLoadApi.RegisterExtraBehaviour<SceneController>(MaterialEditorPlugin.PluginGUID);
+#if !PH
+            TimelineCompatibilityHelper.PopulateTimeline();
+#endif
         }
 
         private void InitStudioUI(string sceneName)

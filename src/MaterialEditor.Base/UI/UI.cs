@@ -66,6 +66,8 @@ namespace MaterialEditorAPI
         private bool DoObjExport = false;
         private Renderer ObjRenderer;
 
+        internal static SelectedInterpolable selectedInterpolable;
+
         /// <summary>
         /// Initialize the MaterialEditor UI
         /// </summary>
@@ -271,7 +273,8 @@ namespace MaterialEditorAPI
                     {
                         ObjRenderer = rend;
                         DoObjExport = true;
-                    }
+                    },
+                    SelectInterpolableButtonRendererOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.Renderer, rendererName: rend.NameFormatted())
                 };
                 items.Add(rendererItem);
 
@@ -379,7 +382,8 @@ namespace MaterialEditorAPI
                     {
                         RemoveMaterialShaderName(data, mat, go);
                         StartCoroutine(PopulateListCoroutine(go, data, filter));
-                    }
+                    },
+                    SelectInterpolableButtonShaderOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.Shader, materialName)
                 };
                 items.Add(shaderItem);
 
@@ -413,7 +417,8 @@ namespace MaterialEditorAPI
                             {
                                 TextureChanged = !GetMaterialTextureValueOriginal(data, mat, propertyName, go),
                                 TextureExists = mat.GetTexture($"_{propertyName}") != null,
-                                TextureOnExport = () => ExportTexture(mat, propertyName)
+                                TextureOnExport = () => ExportTexture(mat, propertyName),
+                                SelectInterpolableButtonTextureOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.TextureProperty, materialName, propertyName)
                             };
                             textureItem.TextureOnImport = () =>
                             {
@@ -496,7 +501,8 @@ namespace MaterialEditorAPI
                                 ColorValueOnChange = value => SetMaterialColorProperty(data, mat, propertyName, value, go),
                                 ColorValueOnReset = () => RemoveMaterialColorProperty(data, mat, propertyName, go),
                                 ColorValueOnEdit = (title, value, onChanged) => SetupColorPalette(data, mat, $"Material Editor - {title}", value, onChanged, true),
-                                ColorValueSetToPalette = (title, value) => SetColorToPalette(data, mat, $"Material Editor - {title}", value)
+                                ColorValueSetToPalette = (title, value) => SetColorToPalette(data, mat, $"Material Editor - {title}", value),
+                                SelectInterpolableButtonColorOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.ColorProperty, materialName, propertyName)
                             };
                             items.Add(contentItem);
                         }
@@ -513,7 +519,8 @@ namespace MaterialEditorAPI
                             var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
                             {
                                 FloatValue = valueFloat,
-                                FloatValueOriginal = valueFloatOriginal
+                                FloatValueOriginal = valueFloatOriginal,
+                                SelectInterpolableButtonFloatOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.FloatProperty, materialName, propertyName)
                             };
                             if (property.Value.MinValue != null)
                                 contentItem.FloatValueSliderMin = (float)property.Value.MinValue;
@@ -666,6 +673,38 @@ namespace MaterialEditorAPI
                     MaterialEditorPluginBase.Logger.LogError($"Color value is out of range. ({value})");
                     ColorPalette.Close();
                 }
+            }
+        }
+
+        private void SelectInterpolableButtonOnClick(GameObject go, ItemInfo.RowItemType rowType, string materialName = "", string propertyName = "", string rendererName = "")
+        {
+            selectedInterpolable = new SelectedInterpolable(go, rowType, materialName, propertyName, rendererName);
+            MaterialEditorPluginBase.Logger.LogMessage($"Activated interpolable(s), {selectedInterpolable}");
+#if !API && !EC
+            TimelineCompatibilityHelper.RefreshInterpolablesList();
+#endif
+        }
+
+        internal class SelectedInterpolable
+        {
+            public string MaterialName;
+            public string PropertyName;
+            public string RendererName;
+            public GameObject GameObject;
+            public ItemInfo.RowItemType RowType;
+
+            public SelectedInterpolable(GameObject go, ItemInfo.RowItemType rowType, string materialName, string propertyName, string rendererName)
+            {
+                GameObject = go;
+                RowType = rowType;
+                MaterialName = materialName;
+                PropertyName = propertyName;
+                RendererName = rendererName;
+            }
+
+            public override string ToString()
+            {
+                return $"{RowType}: {string.Join(" - ", new string[] { PropertyName, MaterialName, RendererName,  }.Where(x => !x.IsNullOrEmpty()).ToArray())}";
             }
         }
     }

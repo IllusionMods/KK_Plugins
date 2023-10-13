@@ -9,6 +9,7 @@ namespace MaterialEditorAPI
         public string LabelText { get; set; }
 
         public string RendererName { get; set; }
+        public Action SelectInterpolableButtonRendererOnClick { get; set; }
         public Action ExportUVOnClick { get; set; }
         public Action ExportObjOnClick { get; set; }
 
@@ -39,6 +40,7 @@ namespace MaterialEditorAPI
 
         public string ShaderName { get; set; }
         public string ShaderNameOriginal { get; set; }
+        public Action SelectInterpolableButtonShaderOnClick { get; set; }
         public Action<string> ShaderNameOnChange { get; set; }
         public Action ShaderNameOnReset { get; set; }
 
@@ -49,6 +51,7 @@ namespace MaterialEditorAPI
 
         public bool TextureChanged { get; set; }
         public bool TextureExists { get; set; }
+        public Action SelectInterpolableButtonTextureOnClick { get; set; }
         public Action TextureOnExport { get; set; }
         public Action TextureOnImport { get; set; }
         public Action TextureOnReset { get; set; }
@@ -65,6 +68,7 @@ namespace MaterialEditorAPI
 
         public Color ColorValue { get; set; }
         public Color ColorValueOriginal { get; set; }
+        public Action SelectInterpolableButtonColorOnClick { get; set; }
         public Action<Color> ColorValueOnChange { get; set; }
         public Action ColorValueOnReset { get; set; }
         public Action<string, Color, Action<Color>> ColorValueOnEdit { get; set; }
@@ -74,6 +78,7 @@ namespace MaterialEditorAPI
         public float FloatValueOriginal { get; set; }
         public float FloatValueSliderMin { get; set; } = 0;
         public float FloatValueSliderMax { get; set; } = 1;
+        public Action SelectInterpolableButtonFloatOnClick { get; set; }
         public Action<float> FloatValueOnChange { get; set; }
         public Action FloatValueOnReset { get; set; }
 
