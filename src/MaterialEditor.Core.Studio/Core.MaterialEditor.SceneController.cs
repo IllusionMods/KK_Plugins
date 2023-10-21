@@ -671,8 +671,7 @@ namespace KK_Plugins.MaterialEditor
             for (var i = 0; i < CopyData.MaterialKeywordPropertyList.Count; i++)
             {
                 var materialKeywordProperty = CopyData.MaterialKeywordPropertyList[i];
-                if (material.HasProperty($"_{materialKeywordProperty.Property}"))
-                    SetMaterialKeywordProperty(id, material, materialKeywordProperty.Property, materialKeywordProperty.Value, setProperty);
+                SetMaterialKeywordProperty(id, material, materialKeywordProperty.Property, materialKeywordProperty.Value, setProperty);
             }
             for (var i = 0; i < CopyData.MaterialColorPropertyList.Count; i++)
             {
