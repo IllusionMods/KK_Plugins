@@ -313,15 +313,22 @@ namespace KK_Plugins.MaterialEditor
                 controller.ChangeAccessoryEvent(slotNo, type);
         }
 
+#if KK || EC || KKS
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairBack))]
+        private static void ChangeHairBack(ChaControl __instance) => ChangeHair(__instance, 0);
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairFront))]
+        private static void ChangeHairFront(ChaControl __instance) => ChangeHair(__instance, 1);
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairSide))]
+        private static void ChangeHairSide(ChaControl __instance) => ChangeHair(__instance, 2);
+        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairOption))]
+        private static void ChangeHairOption(ChaControl __instance) => ChangeHair(__instance, 3);
+#else
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairAsync), typeof(int), typeof(int), typeof(bool), typeof(bool))]
         private static void ChangeHair(ChaControl __instance, int kind, ref IEnumerator __result)
         {
             __result = __result.AppendCo(() => ChangeHair(__instance, kind));
         }
-#if KKS
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeHairNoAsync), typeof(int), typeof(int), typeof(bool))]
 #endif
         private static void ChangeHair(ChaControl __instance, int kind)
         {
