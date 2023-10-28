@@ -31,6 +31,7 @@ namespace KK_Plugins.MaterialEditor
         private readonly List<MaterialCopy> MaterialCopyList = new List<MaterialCopy>();
 
         private static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
+        private static readonly HashSet<int> ExternallyReferencedTextureIDs = new HashSet<int>();
 
         private static string FileToSet;
         private static string PropertyToSet;
@@ -46,7 +47,7 @@ namespace KK_Plugins.MaterialEditor
 
             List<int> IDsToPurge = new List<int>();
             foreach (int texID in TextureDictionary.Keys)
-                if (MaterialTexturePropertyList.All(x => x.TexID != texID))
+                if (MaterialTexturePropertyList.All(x => x.TexID != texID && ExternallyReferencedTextureIDs.Contains(texID)))
                     IDsToPurge.Add(texID);
 
             for (var i = 0; i < IDsToPurge.Count; i++)
@@ -113,6 +114,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialShaderList.Clear();
                 TextureDictionary.Clear();
                 MaterialCopyList.Clear();
+                ExternallyReferencedTextureIDs.Clear();
             }
 
             if (data == null) return;
@@ -587,7 +589,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
         /// </summary>
-        private static int SetAndGetTextureID(byte[] textureBytes)
+        public static int SetAndGetTextureID(byte[] textureBytes)
         {
             int highestID = 0;
             foreach (var tex in TextureDictionary)
@@ -599,6 +601,25 @@ namespace KK_Plugins.MaterialEditor
             highestID++;
             TextureDictionary.Add(highestID, new TextureContainer(textureBytes));
             return highestID;
+        }
+
+
+        /// <summary>
+        /// Finds the texture in the dictionary of textures by its ID. Returns null if not found.
+        /// </summary>
+        public static Texture GetTextureByDictionaryID(int id)
+        {
+            TextureDictionary.TryGetValue(id, out TextureContainer textureContainer);
+            if (textureContainer != null) return textureContainer.Texture;
+            return null;
+        }
+
+        /// <summary>
+        /// Add texture ID to a list to prevent them from being purged on save. List is cleared on scene load and reset.
+        /// </summary>
+        public static void AddExternallyReferencedTextureID(int id)
+        {
+            ExternallyReferencedTextureIDs.Add(id);
         }
 
         /// <summary>

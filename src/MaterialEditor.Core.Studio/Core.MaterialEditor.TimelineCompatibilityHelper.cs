@@ -1,5 +1,6 @@
 ﻿using KKAPI.Utilities;
 using Studio;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
@@ -7,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorUI;
+using static KK_Plugins.MaterialEditor.SceneController;
 
 namespace MaterialEditorAPI
 {
@@ -108,6 +110,28 @@ namespace MaterialEditorAPI
                    checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.Shader),
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Shader)
+               );
+
+            //Texture value
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "textureProperty",
+                   name: "Texture Property",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTexture(parameter.GetGameObject(oci), parameter.materialName, parameter.propertyName, GetTextureByDictionaryID(leftValue)),
+                   interpolateAfter: null,
+                   getValue: (oci, parameter) => SetAndGetTextureID(parameter.GetMaterial(oci).GetTexture($"_{parameter.propertyName}").ToTexture2D().EncodeToPNG()),
+                   readValueFromXml: (parameter, node) => XmlConvert.ToInt32(node.Attributes["value"].Value),
+                   writeValueToXml: (parameter, writer, value) =>
+                   {
+                       AddExternallyReferencedTextureID(value);
+                       writer.WriteAttributeString("value", XmlConvert.ToString(value));
+                   },
+                   getParameter: GetMaterialInfoParameter,
+                   readParameterFromXml: ReadMaterialInfoXml,
+                   writeParameterToXml: WriteMaterialInfoXml,
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.TextureProperty),
+                   getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName}: {parameter.materialName}",
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
                );
 
             //Texture scale value
