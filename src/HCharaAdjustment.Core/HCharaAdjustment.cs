@@ -5,6 +5,7 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace KK_Plugins
 {
@@ -44,5 +45,7 @@ namespace KK_Plugins
         }
 
         public static HCharaAdjustmentController GetController(ChaControl chaControl) => chaControl.GetComponent<HCharaAdjustmentController>();
+
+        public static IEnumerable<HCharaAdjustmentController> GetAllControllers() => GameObject.FindObjectsOfType<HCharaAdjustmentController>();
     }
 }

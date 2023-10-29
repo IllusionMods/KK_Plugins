@@ -27,9 +27,25 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.GotoPointMoveScene))]
             private static void GotoPointMoveScene(HSceneProc __instance)
             {
-                var heroines = __instance.flags.lstHeroine;
-                for (var i = 0; i < heroines.Count; i++)
-                    GetController(heroines[i].chaCtrl).HideGuideObject();
+                HideGuideObjects();
+            }
+
+#if KKS
+            /// <summary>
+            /// Hide guide objects when changing H-points due to animation changes
+            /// </summary>
+            /// <param name="__instance"></param>
+            [HarmonyPostfix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.MovePointByChangeAnim))]
+            private static void MovePointByChangeAnim(HSceneProc __instance)
+            {
+                HideGuideObjects();
+            }
+#endif
+
+            private static void HideGuideObjects()
+            {
+                foreach (var controller in GetAllControllers())
+                    controller.HideGuideObject();
             }
 
             /// <summary>
@@ -39,9 +55,8 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.ChangeCategory))]
             private static void ChangeCategory(HSceneProc __instance)
             {
-                var heroines = __instance.flags.lstHeroine;
-                for (var i = 0; i < heroines.Count; i++)
-                    GetController(heroines[i].chaCtrl).SetGuideObjectOriginalPosition();
+                foreach (var controller in GetAllControllers())
+                    controller.SetGuideObjectOriginalPosition();
             }
         }
     }
