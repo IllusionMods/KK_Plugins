@@ -118,7 +118,14 @@ namespace MaterialEditorAPI
                    name: "Texture Property",
                    interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTexture(parameter.GetGameObject(oci), parameter.materialName, parameter.propertyName, GetTextureByDictionaryID(leftValue)),
                    interpolateAfter: null,
-                   getValue: (oci, parameter) => SetAndGetTextureID(parameter.GetMaterial(oci).GetTexture($"_{parameter.propertyName}").ToTexture2D().EncodeToPNG()),
+                   getValue: (oci, parameter) =>
+                   {
+                       var tex = parameter.GetMaterial(oci).GetTexture($"_{parameter.propertyName}");
+                       //When no texture is set (by default or custom) return -1 to prevent a null reference when trying to convert the texture to bytes
+                       //-1 will never exist in the texture dictionary and null will be used as a texture, which functions the same as the default empty texture
+                       if (tex == null) return -1;
+                       return SetAndGetTextureID(tex.ToTexture2D().EncodeToPNG());
+                   },
                    readValueFromXml: (parameter, node) => XmlConvert.ToInt32(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) =>
                    {
