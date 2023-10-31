@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PluginBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.AutoScrollToCenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemTemplate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ListEntry.cs" />
