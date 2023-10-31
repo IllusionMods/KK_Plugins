@@ -589,7 +589,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
         /// </summary>
-        public static int SetAndGetTextureID(byte[] textureBytes)
+        internal static int SetAndGetTextureID(byte[] textureBytes)
         {
             int highestID = 0;
             foreach (var tex in TextureDictionary)
@@ -607,7 +607,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Finds the texture in the dictionary of textures by its ID. Returns null if not found.
         /// </summary>
-        public static Texture GetTextureByDictionaryID(int id)
+        internal static Texture GetTextureByDictionaryID(int id)
         {
             TextureDictionary.TryGetValue(id, out TextureContainer textureContainer);
             if (textureContainer != null) return textureContainer.Texture;
@@ -617,7 +617,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Add texture ID to a list to prevent them from being purged on save. List is cleared on scene load and reset.
         /// </summary>
-        public static void AddExternallyReferencedTextureID(int id)
+        internal static void AddExternallyReferencedTextureID(int id)
         {
             ExternallyReferencedTextureIDs.Add(id);
         }
