@@ -1,59 +1,52 @@
-﻿using BepInEx;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using UILib;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using static MaterialEditorAPI.MaterialAPI;
-using static MaterialEditorAPI.MaterialEditorPluginBase;
 
-namespace MaterialEditor.API.UI
+namespace MaterialEditorAPI
 {
     /// <summary>
     /// Set the initial scroll position of the dropdown to the position of the selected item.
     /// </summary>
-    class AutoScrollToSelectionWithDropdown : MonoBehaviour
+    internal class AutoScrollToSelectionWithDropdown : MonoBehaviour
     {
-        public static void Setup( Dropdown dropdown )
+        public static void Setup(Dropdown dropdown)
         {
             var scrollbar = dropdown.GetComponentInChildren<Scrollbar>(true);
 
             if (scrollbar == null)
                 return;
 
-            scrollbar.GetOrAddComponent<AutoScrollToSelectionWithDropdown>().Target = dropdown;
+            var assComp = scrollbar.GetComponent<AutoScrollToSelectionWithDropdown>();
+            if (assComp == null)
+                assComp = scrollbar.gameObject.AddComponent<AutoScrollToSelectionWithDropdown>();
+            assComp._target = dropdown;
         }
 
         [SerializeField]
-        private Dropdown Target = null;
+        private Dropdown _target;
 
-        private bool AutoScrolled = false;
+        private bool _autoScrolled;
 
-        void OnEnable()
+        private void OnEnable()
         {
             //No scrolling until LateUpdate when internal setup is complete
-            AutoScrolled = false;
+            _autoScrolled = false;
         }
 
-        void LateUpdate()
+        private void LateUpdate()
         {
-            if( !AutoScrolled )
+            if (!_autoScrolled)
             {
-                AutoScrolled = true;
+                _autoScrolled = true;
                 AutoScroll();
-            }            
+            }
         }
 
-        void AutoScroll()
+        private void AutoScroll()
         {
-            if (Target == null)
+            if (_target == null)
                 return;
 
-            int items = Target.options.Count;
+            int items = _target.options.Count;
 
             if (items <= 1)
                 return;
@@ -65,26 +58,26 @@ namespace MaterialEditor.API.UI
 
             //x = 0, y = 1
             int axis = (scrollbar.direction < Scrollbar.Direction.BottomToTop ? 0 : 1);
-            
-            var scrollRect = Target.template.GetComponent<ScrollRect>();
+
+            var scrollRect = _target.template.GetComponent<ScrollRect>();
 
             float viewSize = scrollRect.viewport.rect.size[axis];
             float itemSize = 20f;
 
-            if ( Target.itemText != null )
+            if (_target.itemText != null)
             {
-                var itemRect = (RectTransform)Target.itemText.transform.parent;
+                var itemRect = (RectTransform)_target.itemText.transform.parent;
                 itemSize = itemRect.rect.size[axis];
             }
-            else if( Target.itemImage != null )
+            else if (_target.itemImage != null)
             {
-                var itemRect = (RectTransform)Target.itemImage.transform.parent;
+                var itemRect = (RectTransform)_target.itemImage.transform.parent;
                 itemSize = itemRect.rect.size[axis];
             }
 
             float viewAreaRatio = (viewSize / itemSize) / items;
 
-            float scroll = (float)Target.value / items - viewAreaRatio * 0.5f;
+            float scroll = (float)_target.value / items - viewAreaRatio * 0.5f;
             scroll = Mathf.Clamp(scroll, 0f, 1f - viewAreaRatio);
             scroll = Mathf.InverseLerp(0, 1f - viewAreaRatio, scroll);
 

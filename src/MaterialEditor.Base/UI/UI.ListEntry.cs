@@ -264,7 +264,7 @@ namespace MaterialEditorAPI
                         SelectInterpolableShaderButton.onClick.RemoveAllListeners();
                         SelectInterpolableShaderButton.onClick.AddListener(() => item.SelectInterpolableButtonShaderOnClick());
 
-                        MaterialEditor.API.UI.AutoScrollToSelectionWithDropdown.Setup(ShaderDropdown);
+                        AutoScrollToSelectionWithDropdown.Setup(ShaderDropdown);
 
                         break;
                     case ItemInfo.RowItemType.ShaderRenderQueue:
