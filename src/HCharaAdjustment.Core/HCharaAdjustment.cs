@@ -19,7 +19,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.hcharaadjustment";
         public const string PluginName = "H Character Adjustment";
         public const string PluginNameInternal = Constants.Prefix + "_HCharaAdjustment";
-        public const string Version = "2.0";
+        public const string Version = "2.1";
         internal static new ManualLogSource Logger;
 
         public static ConfigEntry<KeyboardShortcut> Female1GuideObject { get; private set; }
