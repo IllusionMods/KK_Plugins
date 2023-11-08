@@ -18,7 +18,6 @@ namespace MaterialEditorAPI
         static private Dictionary<string, string> _persistentFilterMap = new Dictionary<string, string>();
         static readonly float _clearButtonAnchorX = 0.16f;
 
-        private List<Dropdown.OptionData> _originalOptions = null;
         private float _itemStride = 20f;
 
         /// <summary>
@@ -92,8 +91,6 @@ namespace MaterialEditorAPI
 
             _filterField.onValueChanged.AddListener( OnChangeFilter );
             _filterField.onEndEdit.AddListener(OnEndEditFilter);
-
-            _originalOptions = new List<Dropdown.OptionData>(_parent.options);
 
             if( _content.childCount >= 3 )
             {
