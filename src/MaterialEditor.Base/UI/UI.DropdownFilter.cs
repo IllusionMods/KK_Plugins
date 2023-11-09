@@ -140,7 +140,7 @@ namespace MaterialEditorAPI
             if (string.IsNullOrEmpty(filter))
                 filter = "*";
 
-            var regex = new Regex(Regex.Escape(filter.ToUpper()).Replace("\\*", ".*").Replace("\\?", "?"), RegexOptions.IgnoreCase);
+            var regex = new Regex(Regex.Escape(filter).Replace("\\*", ".*").Replace("\\?", "."), RegexOptions.IgnoreCase);
             int activeItems = 0;
 
             foreach( Transform item in _content )
@@ -157,7 +157,7 @@ namespace MaterialEditorAPI
                 if (colon < 0)
                     continue;                    
 
-                bool isShown = regex.IsMatch(name.Substring(colon));
+                bool isShown = regex.IsMatch(name.Substring(colon + 1).Trim());
                 item.gameObject.SetActive(isShown);
                 if (isShown)
                     ++activeItems;
