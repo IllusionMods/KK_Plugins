@@ -153,7 +153,7 @@ namespace KK_Plugins.MaterialEditor
             //Disable ShaderOptimization since it doesn't work properly
             ShaderOptimization.Value = false;
 #endif
-            RendererCachingEnabled = Config.Bind("Config", "Renderer Cache Enabled", true, "Turning this off will fix cache related issues but may have a negative impact on performance.");
+            RendererCachingEnabled = Config.Bind("Config", "Renderer Cache", true, "Turning this off will fix cache related issues but may have a negative impact on performance.");
         }
 
         internal void Main()
