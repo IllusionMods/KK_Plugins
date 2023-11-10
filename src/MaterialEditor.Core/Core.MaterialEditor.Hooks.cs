@@ -50,10 +50,17 @@ namespace KK_Plugins.MaterialEditor
         }
 
         private static readonly Dictionary<GameObject, List<Renderer>> _RendererLookup = new Dictionary<GameObject, List<Renderer>>();
+
+        internal static void ClearCache(GameObject gameObject = null)
+        {
+            if (gameObject == null) _RendererLookup.Clear();
+            else if (_RendererLookup.ContainsKey(gameObject)) _RendererLookup.Remove(gameObject);
+        }
+
         [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditorAPI.MaterialAPI), nameof(MaterialEditorAPI.MaterialAPI.GetRendererList))]
         private static bool MaterialAPI_GetRendererList(ref IEnumerable<Renderer> __result, GameObject gameObject)
         {
-            if (gameObject == null)
+            if (!MaterialEditorPlugin.RendererCachingEnabled.Value || gameObject == null)
                 return true;
 
             if (_RendererLookup.TryGetValue(gameObject, out var cached))
