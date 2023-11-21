@@ -58,7 +58,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.3.0";
+        public const string PluginVersion = "3.4.0";
 
         /// <summary>
         /// Material which is used in normal map conversion
@@ -80,6 +80,8 @@ namespace KK_Plugins.MaterialEditor
         internal static ConfigEntry<KeyboardShortcut> EnableReceiveShadows { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> ResetReceiveShadows { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> PasteEditsHotkey { get; private set; }
+
+        internal static ConfigEntry<bool> RendererCachingEnabled { get; private set; }
 
         /// <summary>
         /// Parts of the body
@@ -151,6 +153,7 @@ namespace KK_Plugins.MaterialEditor
             //Disable ShaderOptimization since it doesn't work properly
             ShaderOptimization.Value = false;
 #endif
+            RendererCachingEnabled = Config.Bind("Config", "Renderer Cache", true, "Turning this off will fix cache related issues but may have a negative impact on performance.");
         }
 
         internal void Main()
@@ -998,5 +1001,22 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="chaControl"></param>
         /// <returns>KKAPI character controller</returns>
         public static MaterialEditorCharaController GetCharaController(ChaControl chaControl) => chaControl == null ? null : chaControl.gameObject.GetComponent<MaterialEditorCharaController>();
+
+        /// <summary>
+        /// Clears all GameObjects from the Renderer Cache.
+        /// </summary>
+        public static void ClearCache()
+        {
+            Hooks.ClearCache();
+        }
+
+        /// <summary>
+        /// Clears a specific GameObject from the RendererCache.
+        /// </summary>
+        /// <param name="gameObject"></param>
+        public static void ClearCache(GameObject gameObject)
+        {
+            Hooks.ClearCache(gameObject);
+        }
     }
 }
