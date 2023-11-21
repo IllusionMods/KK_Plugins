@@ -54,7 +54,7 @@ namespace KK_Plugins.MaterialEditor
         internal static void ClearCache(GameObject gameObject = null)
         {
             if (gameObject == null) _RendererLookup.Clear();
-            else if (_RendererLookup.ContainsKey(gameObject)) _RendererLookup.Remove(gameObject);
+            else _RendererLookup.Remove(gameObject);
         }
 
         [HarmonyPrefix, HarmonyPatch(typeof(MaterialEditorAPI.MaterialAPI), nameof(MaterialEditorAPI.MaterialAPI.GetRendererList))]
