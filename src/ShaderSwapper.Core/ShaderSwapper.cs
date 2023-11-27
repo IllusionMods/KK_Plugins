@@ -10,6 +10,10 @@ using HarmonyLib;
 using UnityEngine;
 using static KK_Plugins.MaterialEditor.MaterialEditorCharaController;
 using static MaterialEditorAPI.MaterialAPI;
+using Studio;
+using MaterialEditorAPI;
+using System.Linq;
+using UnityEngine.UI;
 
 namespace KK_Plugins
 {
@@ -20,7 +24,7 @@ namespace KK_Plugins
         public const string PluginGUID = "com.deathweasel.bepinex.shaderswapper";
         public const string PluginName = "Shader Swapper";
         public const string PluginNameInternal = Constants.Prefix + "_ShaderSwapper";
-        public const string PluginVersion = "1.3";
+        public const string PluginVersion = "1.4";
         internal static new ManualLogSource Logger;
         private static ShaderSwapper Instance;
 
@@ -46,6 +50,10 @@ namespace KK_Plugins
             {"Koikano/main_clothes_alpha", "xukmi/MainAlphaPlus" },
             {"Shader Forge/main_item", "xukmi/MainItemPlus" },
             {"Koikano/main_clothes_item", "xukmi/MainItemPlus" },
+            {"Shader Forge/main_item_studio", "xukmi/MainItemPlus" },
+            {"Shader Forge/main_item_studio_alpha", "xukmi/MainItemAlphaPlus" },
+            {"ShaderForge/main_StandartMDK_studio", "xukmi/MainItemPlus" },
+            {"Standard", "xukmi/MainItemPlus" }
         };
 
         private readonly Dictionary<string, string> VanillaPlusTesselationShaders = new Dictionary<string, string>
@@ -67,10 +75,17 @@ namespace KK_Plugins
             {"Koikano/main_clothes_alpha", "xukmi/MainAlphaPlusTess" },
             {"Shader Forge/main_item", "xukmi/MainItemPlus" },
             {"Koikano/main_clothes_item", "xukmi/MainItemPlus" },
+            {"Shader Forge/main_item_studio", "xukmi/MainOpaquePlusTess" },
+            {"Shader Forge/main_item_studio_alpha", "xkumi/MainAlphaPlusTess" },
+            {"ShaderForge/main_StandartMDK_studio", "xukmi/MainOpaquePlusTess" },
+            {"Standard", "xukmi/MainOpaquePlusTess" }
         };
 
         internal static ConfigEntry<bool> AutoReplace { get; private set; }
         internal static ConfigEntry<bool> DebugLogging { get; private set; }
+
+        internal static ConfigEntry<bool> SwapStudioShadersOnCharacter { get; private set; }
+        internal static ConfigEntry<bool> AutoEnableOutline { get; private set; }
 
         private readonly Harmony _harmony = new Harmony(PluginGUID);
 
@@ -93,6 +108,11 @@ namespace KK_Plugins
                 "Automatically swap vanilla shaders to their Vanilla+ equivalents on ALL characters.\n" +
                 "Changes take effect after character reload.\n" +
                 "WARNING: Saving the game, cards, or scenes with this setting enabled can permanently apply the V+ shaders! You won't be able to go back to vanilla shaders without manually resetting MaterialEditor edits in the maker!");
+
+            SwapStudioShadersOnCharacter = Config.Bind("General", "Studio-shaders on characters", false, "Toggles if the following shaders should be swapped on characters: [Shader Forge/main_item_studio],[Shader Forge/main_item_studio_alpha],[ShaderForge/main_StandartMDK_studio] and [Standart]");
+
+            AutoEnableOutline = Config.Bind("General", "Auto enable outline", true, "Automatically sets the OutlineOn shaderproperty to 1");
+
             void ApplyPatches(bool enable)
             {
                 if (enable)
@@ -120,11 +140,21 @@ namespace KK_Plugins
                 }
                 else if (StudioAPI.InsideStudio)
                 {
-                    var ociChars = StudioAPI.GetSelectedCharacters();
-                    foreach (var ociChar in ociChars)
-                        UpdateCharShaders(ociChar.GetChaControl());
+                    foreach (var obj in StudioAPI.GetSelectedObjects())
+                    {
+                        if (obj is OCIChar cha) UpdateCharShaders(cha.GetChaControl());
+                        if (obj is OCIItem item) UpdateItemShader(item);
+                    }
                 }
             }
+        }
+
+        private void UpdateItemShader(OCIItem item)
+        {
+            GameObject go = item.objectItem;
+            foreach (Renderer renderer in GetRendererList(go))
+                foreach (Material material in GetMaterials(go, renderer))
+                    SwapToVanillaPlus(GetSceneController(), item.objectInfo.dicKey, material);
         }
 
         public void UpdateCharShaders(ChaControl chaControl)
@@ -146,10 +176,80 @@ namespace KK_Plugins
             return chaControl.gameObject.GetComponent<MaterialEditorCharaController>();
         }
 
+        public static SceneController GetSceneController()
+        {
+            return GameObject.Find("BepInEx_Manager/SceneCustomFunctionController Zoo")?.GetComponent<SceneController>();
+        }
+
+        private void SwapToVanillaPlus(SceneController controller, int id, Material mat)
+        {
+            if (controller.GetMaterialShader(id, mat) == null)
+            {
+                string oldShader = mat.shader.name;
+                if (TesselationSlider.Value > 0)
+                {
+                    if (VanillaPlusTesselationShaders.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
+                    {
+                        if (DebugLogging.Value)
+                            Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusTesShaderName}] on [{(Studio.Studio.Instance.dicObjectCtrl.TryGetValue(id, out var value) ? value.treeNodeObject.textName : null)}]");
+
+                        int renderQueue = mat.renderQueue;
+                        controller.SetMaterialShader(id, mat, vanillaPlusTesShaderName);
+                        controller.SetMaterialShaderRenderQueue(id, mat, renderQueue);
+                        if (mat.shader.name == "xukmi/MainAlphaPlus")
+                            controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0.1f);
+                        if (oldShader == "Standard")
+                        {
+                            controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0f);
+                        }
+
+                        SetTesselationValue(mat);
+                    }
+                }
+                else
+                {
+                    if (VanillaPlusShaders.TryGetValue(mat.shader.name, out var vanillaPlusShaderName))
+                    {
+                        if (DebugLogging.Value)
+                            Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusShaderName}] on [{(Studio.Studio.Instance.dicObjectCtrl.TryGetValue(id, out var value) ? value.treeNodeObject.textName : null)}]");
+
+                        int renderQueue = mat.renderQueue;
+                        controller.SetMaterialShader(id, mat, vanillaPlusShaderName);
+                        controller.SetMaterialShaderRenderQueue(id, mat, renderQueue);
+                        if (mat.shader.name == "xukmi/MainAlphaPlus")
+                            controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0.1f);
+                        if (oldShader == "Standard")
+                        {
+                            controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0f);
+                        }
+                    }
+                }
+
+                if (AutoEnableOutline.Value && mat.HasProperty("OutlineOn"))
+                {
+                    controller.SetMaterialFloatProperty(id, mat, "OutlineOn", 1f);
+                }
+            }
+        }
+
         private void SwapToVanillaPlus(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go)
         {
             if (controller.GetMaterialShader(slot, ObjectType.Clothing, mat, go) == null)
             {
+                string oldShader = mat.shader.name;
+                if (!SwapStudioShadersOnCharacter.Value)
+                {
+                    if (new List<string>() { 
+                        "Shader Forge/main_item_studio",
+                        "Shader Forge/main_item_studio_alpha",
+                        "ShaderForge/main_StandartMDK_studio",
+                        "Standard" }
+                    .Contains(mat.shader.name))
+                    {
+                        return;
+                    }
+                }
+
                 if (TesselationSlider.Value > 0)
                 {
                     if (VanillaPlusTesselationShaders.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
@@ -179,6 +279,11 @@ namespace KK_Plugins
                         if (mat.shader.name == "xukmi/MainAlphaPlus")
                             controller.SetMaterialFloatProperty(slot, objectType, mat, "Cutoff", 0.1f, go);
                     }
+                }
+
+                if (AutoEnableOutline.Value && mat.HasProperty("OutlineOn"))
+                {
+                    controller.SetMaterialFloatProperty(slot, objectType, mat, "OutlineOn", 1f, go);
                 }
             }
         }
