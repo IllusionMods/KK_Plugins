@@ -225,7 +225,7 @@ namespace KK_Plugins
                     }
                 }
 
-                if (AutoEnableOutline.Value && mat.HasProperty("OutlineOn"))
+                if (AutoEnableOutline.Value && mat.HasProperty("_OutlineOn"))
                 {
                     controller.SetMaterialFloatProperty(id, mat, "OutlineOn", 1f);
                 }
@@ -281,7 +281,7 @@ namespace KK_Plugins
                     }
                 }
 
-                if (AutoEnableOutline.Value && mat.HasProperty("OutlineOn"))
+                if (AutoEnableOutline.Value && mat.HasProperty("_OutlineOn"))
                 {
                     controller.SetMaterialFloatProperty(slot, objectType, mat, "OutlineOn", 1f, go);
                 }
