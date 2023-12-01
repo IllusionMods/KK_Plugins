@@ -377,6 +377,9 @@ namespace KK_Plugins
 
             private IEnumerator ReloadCharacterUncensor()
             {
+                if (_ksox == null)
+                    yield return null;  //Wait for Start()
+
                 while (ChaControl.objBody == null)
                     yield return null;
 
