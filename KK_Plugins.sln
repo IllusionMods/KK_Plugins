@@ -559,7 +559,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.AccessoriesToStudioItem
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.AccessoriesToStudioItems", "src\AccessoriesToStudioItems.Core\Core.AccessoriesToStudioItems.shproj", "{51240A4C-55D9-464D-82DF-98AD8387EE0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.AccessoriesToStudioItems", "AccessoriesToStudioItems.KK\KK.AccessoriesToStudioItems.csproj", "{DC93DDEC-8CD0-42F4-905E-6550659CCA85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.AccessoriesToStudioItems", "src\AccessoriesToStudioItems.KK\KK.AccessoriesToStudioItems.csproj", "{DC93DDEC-8CD0-42F4-905E-6550659CCA85}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.AccessoriesToStudioItems", "src\AccessoriesToStudioItems.AI\AI.AccessoriesToStudioItems.csproj", "{BE3DEE42-3526-42F9-9C2F-9D57BD43A078}"
 EndProject
