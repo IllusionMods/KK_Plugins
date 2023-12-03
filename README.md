@@ -4,10 +4,12 @@ Plugins for Koikatsu, EmotionCreators, and AI Girl
 
 ## Installation
 
-1. Install [BepInEx v5.3](https://github.com/BepInEx/BepInEx/releases)
-2. Install [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases)
-3. Install [IllusionModdingAPI](https://github.com/IllusionMods/IllusionModdingAPI)
-4. Extract the plugin .zip file to your game folder
+1. Install the latest version of: 
+    - [BepInEx v5](https://github.com/BepInEx/BepInEx/releases)
+    - [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases)
+    - [IllusionModdingAPI](https://github.com/IllusionMods/IllusionModdingAPI)
+2. Download the plugin release you want from the links below. Make sure it's a version for your game.
+3. Extract the plugin .zip file to your game folder (where the BepInEx folder and game .exe is).
 
 ## Plugin descriptions and downloads
 
@@ -647,6 +649,19 @@ v1.1.2 Fix loading outfit names when outfits aren't loaded, change outfit in Stu
 
 Allows you to freely mix two studio shades (luts), instead of one always being set to Midday (based on plugin by essu). Also adds next/previous lut buttons next to the dropdown.
 
+#### AccessoriesToStudioItems
+
+- [AI_AccessoriesToStudioItems]
+- [HS2_AccessoriesToStudioItems]
+- [KK_AccessoriesToStudioItems]
+- [KKS_AccessoriesToStudioItems]
+
+Plugin for studio that makes normal character accessories available as items.
+They are visible in the Item list and in QAB just like normal items.
+To see all accessories in QAB, search for `ao_`.
+
+Requires at least QuickAccessBox v3.1.1 and BepisPlugins r19.3.2 to work.
+
 #### Demosaic
 
 - [AI_Demosaic]
@@ -789,6 +804,10 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KK_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v132/KK_StudioSceneLoadedSound.v1.1.zip "v1.1"
 [HS2_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v156/HS2_StudioSceneLoadedSound.v1.1.zip "v1.1"
 [AI_StudioSceneLoadedSound]: https://github.com/IllusionMods/KK_Plugins/releases/download/v132/AI_StudioSceneLoadedSound.v1.1.zip "v1.1"
+[AI_AccessoriesToStudioItems]: https://a "v0"
+[HS2_AccessoriesToStudioItems]: https://a "v0"
+[KK_AccessoriesToStudioItems]: https://a "v0"
+[KKS_AccessoriesToStudioItems]: https://a "v0"
 [KKS_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v206/KKS_StudioSceneSettings.v1.3.2.zip "v1.3.2"
 [KK_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_StudioSceneSettings.v1.3.2.zip "v1.3.2"
 [HS2_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_StudioSceneSettings.v1.3.2.zip "v1.3.2"
