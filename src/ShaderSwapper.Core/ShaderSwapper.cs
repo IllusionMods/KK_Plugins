@@ -14,6 +14,10 @@ using Studio;
 using MaterialEditorAPI;
 using System.Linq;
 using UnityEngine.UI;
+using System.Xml.Linq;
+using ADV.Commands.Base;
+using ActionGame.Chara.Mover;
+using System.IO;
 
 namespace KK_Plugins
 {
@@ -24,7 +28,7 @@ namespace KK_Plugins
         public const string PluginGUID = "com.deathweasel.bepinex.shaderswapper";
         public const string PluginName = "Shader Swapper";
         public const string PluginNameInternal = Constants.Prefix + "_ShaderSwapper";
-        public const string PluginVersion = "1.4";
+        public const string PluginVersion = "1.5";
         internal static new ManualLogSource Logger;
         private static ShaderSwapper Instance;
 
@@ -52,7 +56,7 @@ namespace KK_Plugins
             {"Koikano/main_clothes_item", "xukmi/MainItemPlus" },
             {"Shader Forge/main_item_studio", "xukmi/MainItemPlus" },
             {"Shader Forge/main_item_studio_alpha", "xukmi/MainItemAlphaPlus" },
-            {"ShaderForge/main_StandartMDK_studio", "xukmi/MainItemPlus" },
+            {"ShaderForge/main_StandardMDK_studio", "xukmi/MainItemPlus" },
             {"Standard", "xukmi/MainItemPlus" }
         };
 
@@ -77,7 +81,7 @@ namespace KK_Plugins
             {"Koikano/main_clothes_item", "xukmi/MainItemPlus" },
             {"Shader Forge/main_item_studio", "xukmi/MainOpaquePlusTess" },
             {"Shader Forge/main_item_studio_alpha", "xkumi/MainAlphaPlusTess" },
-            {"ShaderForge/main_StandartMDK_studio", "xukmi/MainOpaquePlusTess" },
+            {"ShaderForge/main_StandardMDK_studio", "xukmi/MainOpaquePlusTess" },
             {"Standard", "xukmi/MainOpaquePlusTess" }
         };
 
@@ -87,7 +91,28 @@ namespace KK_Plugins
         internal static ConfigEntry<bool> SwapStudioShadersOnCharacter { get; private set; }
         internal static ConfigEntry<bool> AutoEnableOutline { get; private set; }
 
+        internal static ConfigEntry<string> NormalMapping { get; private set; }
+        internal static ConfigEntry<string> TessMapping { get; private set; }
+
         private readonly Harmony _harmony = new Harmony(PluginGUID);
+
+        private Dictionary<string, string> VanillaPlusShaderMapping { get => convertShaderMapping(false); set => setShaderMapping(false, value); }
+
+        private Dictionary<string, string> VanillaPlusTessShaderMapping { get => convertShaderMapping(true); set => setShaderMapping(true, value); }
+
+        private Dictionary<string, string> convertShaderMapping(bool tess)
+        {
+            if (tess) return XElement.Load(TessMapping.Value).Elements().ToDictionary(e => e.Attribute("From").Value, e => e.Attribute("To").Value);
+            else return XElement.Load(NormalMapping.Value).Elements().ToDictionary(e => e.Attribute("From").Value, e => e.Attribute("To").Value);
+        }
+        private void setShaderMapping(bool tess, Dictionary<string,string> value)
+        {
+            string text = new XElement("ShaderSwapper", value.Select(e => new XElement("Mapping", new XAttribute[] { new XAttribute("From", e.Key), new XAttribute("To", e.Value) }))).ToString();
+            using (StreamWriter outputFile = new StreamWriter(tess ? TessMapping.Value : NormalMapping.Value))
+            {
+                outputFile.Write(text);
+            }
+        }
 
         private void Awake()
         {
@@ -122,6 +147,38 @@ namespace KK_Plugins
             }
             AutoReplace.SettingChanged += (sender, args) => ApplyPatches(AutoReplace.Value);
             if (AutoReplace.Value) ApplyPatches(true);
+
+            // XML stuff
+            NormalMapping = Config.Bind("Mapping", "Normal Shader Mapping", "./UserData/config/shader_swapper_normal.xml", new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting = 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer}));
+            TessMapping = Config.Bind("Mapping", "Tess Shader Mapping", "./UserData/config/shader_swapper_tess.xml", new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting > 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
+            if (!File.Exists(NormalMapping.Value)) setShaderMapping(false, VanillaPlusShaders);
+            if (!File.Exists(TessMapping.Value)) setShaderMapping(true, VanillaPlusTesselationShaders);
+
+        }
+
+        internal static KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags SingleFileFlags =
+                KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags.OFN_FILEMUSTEXIST |
+                KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags.OFN_LONGNAMES |
+                KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags.OFN_EXPLORER;
+
+        static void FileInputDrawer(ConfigEntryBase entry)
+        {
+            GUILayout.BeginHorizontal();
+            string value = entry.BoxedValue.ToString();
+            value = GUILayout.TextField(value, GUILayout.MaxWidth(200), GUILayout.ExpandWidth(true));
+            if (GUILayout.Button("...", GUILayout.Width(30)))
+            {
+                string dir = Path.GetDirectoryName(value);
+                string[] file = KKAPI.Utilities.OpenFileDialog.ShowDialog("Open 3D file", dir,
+                        "XML (*.xml)|*.xml| All files (*.*)|*.*",
+                        "xml", SingleFileFlags);
+                if (file != null)
+                {
+                    value = file[0];
+                }
+            }
+            entry.BoxedValue = value;
+            GUILayout.EndHorizontal();
         }
 
         private static void LoadHook(MaterialEditorCharaController __instance)
@@ -188,7 +245,7 @@ namespace KK_Plugins
                 string oldShader = mat.shader.name;
                 if (TesselationSlider.Value > 0)
                 {
-                    if (VanillaPlusTesselationShaders.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
+                    if (VanillaPlusTessShaderMapping.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
                     {
                         if (DebugLogging.Value)
                             Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusTesShaderName}] on [{(Studio.Studio.Instance.dicObjectCtrl.TryGetValue(id, out var value) ? value.treeNodeObject.textName : null)}]");
@@ -208,7 +265,7 @@ namespace KK_Plugins
                 }
                 else
                 {
-                    if (VanillaPlusShaders.TryGetValue(mat.shader.name, out var vanillaPlusShaderName))
+                    if (VanillaPlusShaderMapping.TryGetValue(mat.shader.name, out var vanillaPlusShaderName))
                     {
                         if (DebugLogging.Value)
                             Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusShaderName}] on [{(Studio.Studio.Instance.dicObjectCtrl.TryGetValue(id, out var value) ? value.treeNodeObject.textName : null)}]");
@@ -252,7 +309,7 @@ namespace KK_Plugins
 
                 if (TesselationSlider.Value > 0)
                 {
-                    if (VanillaPlusTesselationShaders.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
+                    if (VanillaPlusTessShaderMapping.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
                     {
                         if (DebugLogging.Value)
                             Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusTesShaderName}] on [{controller.ChaControl.fileParam.fullname}]");
@@ -268,7 +325,7 @@ namespace KK_Plugins
                 }
                 else
                 {
-                    if (VanillaPlusShaders.TryGetValue(mat.shader.name, out var vanillaPlusShaderName))
+                    if (VanillaPlusShaderMapping.TryGetValue(mat.shader.name, out var vanillaPlusShaderName))
                     {
                         if (DebugLogging.Value)
                             Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusShaderName}] on [{controller.ChaControl.fileParam.fullname}]");
