@@ -174,9 +174,12 @@ namespace KK_Plugins.MaterialEditor
 #endif
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
-#if KK || EC || KKS
+#if KK || EC
             //Hooks for transferring accessories (MoreAccessories compatibility)
             foreach (var method in typeof(ChaCustom.CvsAccessoryChange).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>m__4")))
+                harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.AccessoryTransferHook), AccessTools.all)));
+#elif KKS
+            foreach (var method in typeof(ChaCustom.CvsAccessoryChange).GetMethods(AccessTools.all).Where(x => x.Name.Contains("<Start>b__25_4")))
                 harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.AccessoryTransferHook), AccessTools.all)));
 #elif AI || HS2
             //Hooks for changing clothing pattern
