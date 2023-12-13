@@ -375,7 +375,17 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         /// <param name="oci"></param>
         /// <returns>ID for the specified ObjectCtrlInfo</returns>
-        public static int GetObjectID(ObjectCtrlInfo oci) => Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
+        public static int GetObjectID(ObjectCtrlInfo oci)
+        {
+            var dicKey = oci.objectInfo.dicKey;
+#if DEBUG
+            var foundKey = Studio.Studio.Instance.dicObjectCtrl.First(x => x.Value == oci).Key;
+            if (dicKey != foundKey)
+                MaterialEditorPluginBase.Logger.LogWarning($"ObjectCtrlInfo dicKey mismatch: {dicKey} != {foundKey}");
+#endif
+            return dicKey;
+        }
+
         /// <summary>
         /// Get the KKAPI scene controller for MaterialEditor. Provides access to methods for getting and setting material properties for studio objects.
         /// </summary>
