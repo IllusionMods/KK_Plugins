@@ -16,7 +16,7 @@ namespace MaterialEditorAPI
     {
         private static bool? isTimelineAvailable;
         private static MethodInfo refreshInterpolablesList;
-        private static Regex CharacterRootRegex = new Regex(@".*?\d+", RegexOptions.Compiled);
+        private static Regex CharacterRootRegex = new Regex(@".*?\d+");
 
         internal static void PopulateTimeline()
         {
