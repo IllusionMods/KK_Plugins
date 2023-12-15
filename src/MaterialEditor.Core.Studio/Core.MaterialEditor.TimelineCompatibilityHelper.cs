@@ -8,6 +8,7 @@ using UnityEngine.Rendering;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorUI;
 using static KK_Plugins.MaterialEditor.SceneController;
+using System.Text.RegularExpressions;
 
 namespace MaterialEditorAPI
 {
@@ -15,6 +16,7 @@ namespace MaterialEditorAPI
     {
         private static bool? isTimelineAvailable;
         private static MethodInfo refreshInterpolablesList;
+        private static Regex CharacterRootRegex = new Regex(@".*?\d+");
 
         internal static void PopulateTimeline()
         {
@@ -266,8 +268,14 @@ namespace MaterialEditorAPI
 
         private static bool CheckIntegrity(ObjectCtrlInfo oci, MaterialInfo parameter, object leftValue, object rightValue, ItemInfo.RowItemType rowType)
         {
-            if (parameter != null)
+            if (oci != null && parameter != null)
+            {
+                if (oci is OCIItem ociItem && ociItem.objectItem.transform == null)
+                    return false;
+                else if (oci is OCIChar oCIChar && (oCIChar.charInfo == null || oCIChar.charInfo.transform == null || oCIChar.charInfo.transform.Find(parameter.subPath) == null))
+                    return false;
                 return parameter.CheckIntegrity(rowType);
+            }
             return false;
         }
 
@@ -286,6 +294,7 @@ namespace MaterialEditorAPI
         private class MaterialInfo
         {
             public string gameObjectPath;
+            public string subPath;
             public string materialName;
             public string propertyName;
             public string rendererName;
@@ -297,6 +306,10 @@ namespace MaterialEditorAPI
                 this.materialName = materialName;
                 this.propertyName = propertyName;
                 this.rendererName = rendererName;
+                //Done this way for backwards compatibility reasons. The root that is removed is the unique identifier for the character in a scene
+                //This identifier changes when a scene is imported or a character is copied, so we need to use the subpath instead to search the right object
+                if (gameObjectPath != null)
+                    this.subPath = CharacterRootRegex.Replace(gameObjectPath, "", 1).TrimStart('/');
 
                 unchecked
                 {
@@ -316,10 +329,10 @@ namespace MaterialEditorAPI
             {
                 if (oci is OCIItem ociItem)
                     return ociItem.objectItem;
-                else if (oci is OCIChar)
+                else if (oci is OCIChar oCIChar)
                     //Characters can reference multiple game objects depending on if the edits is on the body, clothes, accessories, etc.
                     //This makes sure we get the right one. This works because characters are always stored under a unique name within the scene, unlike objects
-                    return GameObject.Find(gameObjectPath);
+                    return oCIChar.charInfo.transform.Find(subPath).gameObject;
                 return null;
             }
 
