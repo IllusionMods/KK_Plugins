@@ -25,7 +25,7 @@ namespace AccessoriesToStudioItems
     {
         public const string GUID = "AccessoriesToStudioItems";
         public const string DisplayName = "Accessories to Studio Items";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
 
         internal static new BepInEx.Logging.ManualLogSource Logger;
 
@@ -189,7 +189,7 @@ namespace AccessoriesToStudioItems
             if (item.GroupNo != AccessoriesAsItemsGroupNumber)
                 return null;
 
-            var cacheId = item.LocalSlot + ((long)item.CategoryNo << 32);
+            var cacheId = MakeCacheId(item.LocalSlot, item.CategoryNo);
             if (!_TextureLookup.TryGetValue(cacheId, out var abInfo)) return null;
 
             return CommonLib.LoadAsset<Texture2D>(abInfo.Key, abInfo.Value)?.ToSprite();
@@ -198,9 +198,10 @@ namespace AccessoriesToStudioItems
         {
             var thumbAb = accessoryInfo.dictInfo[(int)ChaListDefine.KeyType.ThumbAB];
             var thumbTex = accessoryInfo.dictInfo[(int)ChaListDefine.KeyType.ThumbTex];
-            var cacheId = accessoryInfo.Id + ((long)accessoryInfo.Category << 32);
+            var cacheId = MakeCacheId(accessoryInfo.Id, accessoryInfo.Category);
             _TextureLookup[cacheId] = new KeyValuePair<string, string>(thumbAb, thumbTex);
         }
+        private static long MakeCacheId(int localSlot, int categoryNo) => localSlot + ((long)categoryNo << 32);
 
         #endregion
 
@@ -214,7 +215,7 @@ namespace AccessoriesToStudioItems
             private static IEnumerable<CodeInstruction> StudioLoadItemsHook(IEnumerable<CodeInstruction> instructions)
             {
                 // Doesn't matter at what part of the original coroutine we inject our code as long as it's after dictionaries are cleared and before isLoadList is set to true.
-                // Just to be safe we'll inject it right before isLoadList is set to true. Downside is that the Accessory group will be at the very bottom of the item list.
+                // Just to be safe we'll inject it right before isLoadList is set to true. Downside is that the Accessory group will be at the very bottom of the item list (in some games).
                 return new CodeMatcher(instructions).End()
                                                     .MatchBack(false, new CodeMatch(OpCodes.Call, AccessTools.PropertySetter(typeof(Info), nameof(Studio.Info.isLoadList))))
                                                     .ThrowIfInvalid("Hook point missing")
