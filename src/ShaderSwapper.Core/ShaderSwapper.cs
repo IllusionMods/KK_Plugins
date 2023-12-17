@@ -18,10 +18,12 @@ using System.Xml.Linq;
 using ADV.Commands.Base;
 using ActionGame.Chara.Mover;
 using System.IO;
+using Screencap;
 
 namespace KK_Plugins
 {
     [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
+    [BepInDependency(ScreenshotManager.GUID, ScreenshotManager.Version)]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class ShaderSwapper : BaseUnityPlugin
     {
@@ -94,6 +96,9 @@ namespace KK_Plugins
         internal static ConfigEntry<string> NormalMapping { get; private set; }
         internal static ConfigEntry<string> TessMapping { get; private set; }
 
+        internal static ConfigEntry<bool> TessMinOverrideScreenshots { get; private set; }
+        internal static ConfigEntry<bool> TessMinOverride { get; private set; }
+
         private readonly Harmony _harmony = new Harmony(PluginGUID);
 
         private Dictionary<string, string> VanillaPlusShaderMapping { get => convertShaderMapping(false); set => setShaderMapping(false, value); }
@@ -105,7 +110,7 @@ namespace KK_Plugins
             if (tess) return XElement.Load(TessMapping.Value).Elements().ToDictionary(e => e.Attribute("From").Value, e => e.Attribute("To").Value);
             else return XElement.Load(NormalMapping.Value).Elements().ToDictionary(e => e.Attribute("From").Value, e => e.Attribute("To").Value);
         }
-        private void setShaderMapping(bool tess, Dictionary<string,string> value)
+        private void setShaderMapping(bool tess, Dictionary<string, string> value)
         {
             string text = new XElement("ShaderSwapper", value.Select(e => new XElement("Mapping", new XAttribute[] { new XAttribute("From", e.Key), new XAttribute("To", e.Value) }))).ToString();
             using (StreamWriter outputFile = new StreamWriter(tess ? TessMapping.Value : NormalMapping.Value))
@@ -121,7 +126,7 @@ namespace KK_Plugins
 
             SwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl), "Swap all shaders to the equivalent Vanilla+ shader.");
 
-            TesselationSlider = Config.Bind("Tesselation", "Tesselation", 0f, 
+            TesselationSlider = Config.Bind("Tesselation", "Tesselation", 0f,
                 new ConfigDescription("The amount of tesselation to apply.  Leave at 0% to use the regular Vanilla+ shaders without tesselation.",
                     new AcceptableValueRange<float>(0f, 1f)
                 )
@@ -129,7 +134,7 @@ namespace KK_Plugins
 
             DebugLogging = Config.Bind("General", "Verbose logging", true, "Write to log every time a shader is swapped.");
 
-            AutoReplace = Config.Bind("General", "Auto swap to V+ shaders", false, 
+            AutoReplace = Config.Bind("General", "Auto swap to V+ shaders", false,
                 "Automatically swap vanilla shaders to their Vanilla+ equivalents on ALL characters.\n" +
                 "Changes take effect after character reload.\n" +
                 "WARNING: Saving the game, cards, or scenes with this setting enabled can permanently apply the V+ shaders! You won't be able to go back to vanilla shaders without manually resetting MaterialEditor edits in the maker!");
@@ -140,20 +145,28 @@ namespace KK_Plugins
 
             void ApplyPatches(bool enable)
             {
+                var autoReplacePatchTargetM = AccessTools.Method(typeof(MaterialEditorCharaController), "LoadCharacterExtSaveData");
+                var autoReplacePatchHookM = new HarmonyMethod(typeof(ShaderSwapper), nameof(ShaderSwapper.LoadHook));
                 if (enable)
-                    _harmony.Patch(AccessTools.Method(typeof(MaterialEditorCharaController), "LoadCharacterExtSaveData"), postfix: new HarmonyMethod(typeof(ShaderSwapper), nameof(ShaderSwapper.LoadHook)));
+                    _harmony.Patch(autoReplacePatchTargetM, postfix: autoReplacePatchHookM);
                 else
-                    _harmony.UnpatchSelf();
+                    _harmony.Unpatch(autoReplacePatchTargetM, autoReplacePatchHookM.method);
             }
             AutoReplace.SettingChanged += (sender, args) => ApplyPatches(AutoReplace.Value);
             if (AutoReplace.Value) ApplyPatches(true);
 
             // XML stuff
-            NormalMapping = Config.Bind("Mapping", "Normal Shader Mapping", "./UserData/config/shader_swapper_normal.xml", new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting = 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer}));
+            NormalMapping = Config.Bind("Mapping", "Normal Shader Mapping", "./UserData/config/shader_swapper_normal.xml", new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting = 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
             TessMapping = Config.Bind("Mapping", "Tess Shader Mapping", "./UserData/config/shader_swapper_tess.xml", new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting > 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
             if (!File.Exists(NormalMapping.Value)) setShaderMapping(false, VanillaPlusShaders);
             if (!File.Exists(TessMapping.Value)) setShaderMapping(true, VanillaPlusTesselationShaders);
 
+            TessMinOverride = Config.Bind("Tesselation", "TessMin Clamping", true, "Clamp the TessMin value of all xukmi *Tess shaders to 1.0 - 1.5 range to improve performance with cards that have this set way too high.\nWarning: The limited value could be saved to the card/scene (but shouldn't).");
+            TessMinOverrideScreenshots = Config.Bind("Tesselation", "TessMin Override on Screenshots", true, "Temporarily override the TessMin value of all xukmi *Tess shaders to 25 when taking screenshots to potentially improve quality (minimal speed hit but may have no perceptible effect).");
+
+            _harmony.Patch(AccessTools.Method(typeof(MaterialAPI), nameof(MaterialAPI.SetFloat)), prefix: new HarmonyMethod(typeof(ShaderSwapper), nameof(ShaderSwapper.SetFloatHook)));
+            ScreenshotManager.OnPreCapture += () => ScreenshotEvent(25);
+            ScreenshotManager.OnPostCapture += () => ScreenshotEvent(TessMinOverride.Value ? 1 : -1);
         }
 
         internal static KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags SingleFileFlags =
@@ -296,7 +309,7 @@ namespace KK_Plugins
                 string oldShader = mat.shader.name;
                 if (!SwapStudioShadersOnCharacter.Value)
                 {
-                    if (new List<string>() { 
+                    if (new List<string>() {
                         "Shader Forge/main_item_studio",
                         "Shader Forge/main_item_studio_alpha",
                         "ShaderForge/main_StandartMDK_studio",
@@ -382,5 +395,85 @@ namespace KK_Plugins
             //Adjust the weight of the tesselation
             mat.SetFloat("_TessSmooth", TesselationSlider.Value);
         }
+
+        #region TessMin override
+
+        private readonly struct SetFloatInfo : IEquatable<SetFloatInfo>
+        {
+            public readonly GameObject GameObject;
+            public readonly string MaterialName;
+            public readonly string PropertyName;
+
+            public SetFloatInfo(GameObject gameObject, string materialName, string propertyName)
+            {
+                GameObject = gameObject;
+                MaterialName = materialName;
+                PropertyName = propertyName;
+            }
+
+            public bool Equals(SetFloatInfo other)
+            {
+                return GameObject == other.GameObject && MaterialName == other.MaterialName && PropertyName == other.PropertyName;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is SetFloatInfo other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hashCode = (GameObject != null ? GameObject.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ (MaterialName != null ? MaterialName.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ (PropertyName != null ? PropertyName.GetHashCode() : 0);
+                    return hashCode;
+                }
+            }
+        }
+
+        private static readonly Dictionary<SetFloatInfo, float> _TessShaderList = new Dictionary<SetFloatInfo, float>();
+        private static bool _isCapturingScreenshot;
+
+        private static void ScreenshotEvent(float overrideValue)
+        {
+            if (!TessMinOverrideScreenshots.Value) return;
+
+            _isCapturingScreenshot = true;
+            foreach (var setFloatInfo in _TessShaderList.ToList())
+            {
+                if (setFloatInfo.Key.GameObject == null)
+                    _TessShaderList.Remove(setFloatInfo.Key);
+                else
+                    MaterialAPI.SetFloat(setFloatInfo.Key.GameObject, setFloatInfo.Key.MaterialName, setFloatInfo.Key.PropertyName, overrideValue < 0 ? setFloatInfo.Value : overrideValue);
+            }
+            _isCapturingScreenshot = false;
+        }
+
+        private static void SetFloatHook(GameObject gameObject, string materialName, string propertyName, ref float value)
+        {
+            if (!_isCapturingScreenshot && propertyName == "TessMin")
+            {
+                var origValue = value;
+
+                var floatInfo = new SetFloatInfo(gameObject, materialName, propertyName);
+
+                const float valueCutoff = 1.5f;
+                const float valueOverride = 1.5f;
+
+                if (TessMinOverride.Value && value > valueCutoff)
+                {
+                    if (DebugLogging.Value && (!_TessShaderList.TryGetValue(floatInfo, out var storedValue) || storedValue <= valueCutoff))
+                        Logger.LogDebug($"Overriding TessMin to {valueOverride} on [{gameObject.name}]");
+
+                    value = valueOverride;
+                }
+
+                _TessShaderList[floatInfo] = origValue;
+            }
+        }
+
+        #endregion
     }
 }
