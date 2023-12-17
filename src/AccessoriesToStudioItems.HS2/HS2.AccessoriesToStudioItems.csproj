@@ -61,7 +61,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="HS2_Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sideloader.HoneySelect2.19.3.2\lib\net46\HS2_Sideloader.dll</HintPath>
+      <HintPath>..\..\packages\Sideloader.HoneySelect2.19.3.3\lib\net46\HS2_Sideloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">

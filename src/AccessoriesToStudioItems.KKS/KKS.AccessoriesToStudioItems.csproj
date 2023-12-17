@@ -57,7 +57,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="KKS_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.19.3.2\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\..\packages\ExtensibleSaveFormat.KoikatsuSunshine.19.3.3\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KKS_QuickAccessBox">
@@ -65,7 +65,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="KKS_Sideloader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sideloader.KoikatsuSunshine.19.3.2\lib\net46\KKS_Sideloader.dll</HintPath>
+      <HintPath>..\..\packages\Sideloader.KoikatsuSunshine.19.3.3\lib\net46\KKS_Sideloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sirenix.Serialization, Version=2.1.13.0, Culture=neutral, processorArchitecture=MSIL">
