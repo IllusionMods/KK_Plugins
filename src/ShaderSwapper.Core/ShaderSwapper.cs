@@ -143,10 +143,10 @@ namespace KK_Plugins
 
             AutoEnableOutline = Config.Bind("General", "Auto enable outline", true, "Automatically sets the OutlineOn shaderproperty to 1");
 
-            var autoReplacePatchTargetM = AccessTools.Method(typeof(MaterialEditorCharaController), "LoadCharacterExtSaveData");
-            var autoReplacePatchHookM = new HarmonyMethod(typeof(ShaderSwapper), nameof(ShaderSwapper.LoadHook));
             void ApplyPatches(bool enable)
             {
+                var autoReplacePatchTargetM = AccessTools.Method(typeof(MaterialEditorCharaController), "LoadCharacterExtSaveData");
+                var autoReplacePatchHookM = new HarmonyMethod(typeof(ShaderSwapper), nameof(ShaderSwapper.LoadHook));
                 if (enable)
                     _harmony.Patch(autoReplacePatchTargetM, postfix: autoReplacePatchHookM);
                 else
@@ -164,7 +164,7 @@ namespace KK_Plugins
             TessMinOverride = Config.Bind("Tesselation", "TessMin Clamping", true, "Clamp the TessMin value of all xukmi *Tess shaders to 1.0 - 1.5 range to improve performance with cards that have this set way too high.\nWarning: The limited value could be saved to the card/scene (but shouldn't).");
             TessMinOverrideScreenshots = Config.Bind("Tesselation", "TessMin Override on Screenshots", true, "Temporarily override the TessMin value of all xukmi *Tess shaders to 25 when taking screenshots to potentially improve quality (minimal speed hit but may have no perceptible effect).");
 
-            _harmony.PatchAll(typeof(ShaderSwapper));
+            _harmony.Patch(AccessTools.Method(typeof(MaterialAPI), nameof(MaterialAPI.SetFloat)), prefix: new HarmonyMethod(typeof(ShaderSwapper), nameof(ShaderSwapper.SetFloatHook)));
             ScreenshotManager.OnPreCapture += () => ScreenshotEvent(25);
             ScreenshotManager.OnPostCapture += () => ScreenshotEvent(TessMinOverride.Value ? 1 : -1);
         }
@@ -451,8 +451,6 @@ namespace KK_Plugins
             _isCapturingScreenshot = false;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(MaterialAPI), nameof(MaterialAPI.SetFloat))]
         private static void SetFloatHook(GameObject gameObject, string materialName, string propertyName, ref float value)
         {
             if (!_isCapturingScreenshot && propertyName == "TessMin")
