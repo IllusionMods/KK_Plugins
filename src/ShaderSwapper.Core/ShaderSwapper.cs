@@ -125,7 +125,7 @@ namespace KK_Plugins
             Logger = base.Logger;
             Instance = this;
 
-            SwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl), "Swap all shaders to the equivalent shader from the shadermapping.");
+            SwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl), "Swap all shaders to the equivalent shader from the shadermapping, unless they are already changed in ME.");
             ForceSwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Force Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl, KeyCode.RightShift), "Swap all shaders to the equivalent shader from the shadermapping, regardless of they have been edited or not.");
             TesselationSlider = Config.Bind("Tesselation", "Tesselation", 0f,
                 new ConfigDescription("The amount of tesselation to apply.  Leave at 0% to use the regular Vanilla+ shaders without tesselation.",
