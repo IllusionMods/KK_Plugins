@@ -35,6 +35,7 @@ namespace KK_Plugins
         private static ShaderSwapper Instance;
 
         internal static ConfigEntry<KeyboardShortcut> SwapShadersHotkey { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> ForceSwapShadersHotkey { get; private set; }
         internal static ConfigEntry<float> TesselationSlider { get; private set; }
 
         private readonly Dictionary<string, string> VanillaPlusShaders = new Dictionary<string, string>
@@ -124,8 +125,8 @@ namespace KK_Plugins
             Logger = base.Logger;
             Instance = this;
 
-            SwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl), "Swap all shaders to the equivalent Vanilla+ shader.");
-
+            SwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl), "Swap all shaders to the equivalent shader from the shadermapping, unless they are already changed in ME.");
+            ForceSwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Force Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl, KeyCode.RightShift), "Swap all shaders to the equivalent shader from the shadermapping, regardless of they have been edited or not.");
             TesselationSlider = Config.Bind("Tesselation", "Tesselation", 0f,
                 new ConfigDescription("The amount of tesselation to apply.  Leave at 0% to use the regular Vanilla+ shaders without tesselation.",
                     new AcceptableValueRange<float>(0f, 1f)
@@ -217,26 +218,42 @@ namespace KK_Plugins
                     }
                 }
             }
+            if (ForceSwapShadersHotkey.Value.IsDown())
+            {
+                if (MakerAPI.InsideAndLoaded)
+                {
+                    var chaControl = MakerAPI.GetCharacterControl();
+                    UpdateCharShaders(chaControl, true);
+                }
+                else if (StudioAPI.InsideStudio)
+                {
+                    foreach (var obj in StudioAPI.GetSelectedObjects())
+                    {
+                        if (obj is OCIChar cha) UpdateCharShaders(cha.GetChaControl(), true);
+                        if (obj is OCIItem item) UpdateItemShader(item, true);
+                    }
+                }
+            }
         }
 
-        private void UpdateItemShader(OCIItem item)
+        private void UpdateItemShader(OCIItem item, bool forceUpdate = false)
         {
             GameObject go = item.objectItem;
             foreach (Renderer renderer in GetRendererList(go))
                 foreach (Material material in GetMaterials(go, renderer))
-                    SwapToVanillaPlus(GetSceneController(), item.objectInfo.dicKey, material);
+                    SwapToVanillaPlus(GetSceneController(), item.objectInfo.dicKey, material, forceUpdate);
         }
 
-        public void UpdateCharShaders(ChaControl chaControl)
+        public void UpdateCharShaders(ChaControl chaControl, bool forceUpdate = false)
         {
             var controller = GetController(chaControl);
             for (var i = 0; i < controller.ChaControl.objClothes.Length; i++)
-                SwapToVanillaPlusClothes(controller, i);
+                SwapToVanillaPlusClothes(controller, i, forceUpdate);
             for (var i = 0; i < controller.ChaControl.objHair.Length; i++)
-                SwapToVanillaPlusHair(controller, i);
+                SwapToVanillaPlusHair(controller, i, forceUpdate);
             for (var i = 0; i < controller.ChaControl.GetAccessoryObjects().Length; i++)
-                SwapToVanillaPlusAccessory(controller, i);
-            SwapToVanillaPlusBody(controller);
+                SwapToVanillaPlusAccessory(controller, i, forceUpdate);
+            SwapToVanillaPlusBody(controller, forceUpdate);
         }
 
         public static MaterialEditorCharaController GetController(ChaControl chaControl)
@@ -251,9 +268,9 @@ namespace KK_Plugins
             return GameObject.Find("BepInEx_Manager/SceneCustomFunctionController Zoo")?.GetComponent<SceneController>();
         }
 
-        private void SwapToVanillaPlus(SceneController controller, int id, Material mat)
+        private void SwapToVanillaPlus(SceneController controller, int id, Material mat, bool forceSwap)
         {
-            if (controller.GetMaterialShader(id, mat) == null)
+            if (controller.GetMaterialShader(id, mat) == null || forceSwap)
             {
                 string oldShader = mat.shader.name;
                 if (TesselationSlider.Value > 0)
@@ -302,9 +319,9 @@ namespace KK_Plugins
             }
         }
 
-        private void SwapToVanillaPlus(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go)
+        private void SwapToVanillaPlus(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go, bool forceSwap)
         {
-            if (controller.GetMaterialShader(slot, ObjectType.Clothing, mat, go) == null)
+            if (controller.GetMaterialShader(slot, ObjectType.Clothing, mat, go) == null || forceSwap)
             {
                 string oldShader = mat.shader.name;
                 if (!SwapStudioShadersOnCharacter.Value)
@@ -358,33 +375,33 @@ namespace KK_Plugins
             }
         }
 
-        private void SwapToVanillaPlusClothes(MaterialEditorCharaController controller, int slot)
+        private void SwapToVanillaPlusClothes(MaterialEditorCharaController controller, int slot, bool forceSwap)
         {
             var go = controller.ChaControl.objClothes[slot];
             foreach (var renderer in GetRendererList(go))
                 foreach (var material in GetMaterials(go, renderer))
-                    SwapToVanillaPlus(controller, slot, ObjectType.Clothing, material, go);
+                    SwapToVanillaPlus(controller, slot, ObjectType.Clothing, material, go, forceSwap);
         }
-        private void SwapToVanillaPlusHair(MaterialEditorCharaController controller, int slot)
+        private void SwapToVanillaPlusHair(MaterialEditorCharaController controller, int slot, bool forceSwap)
         {
             var go = controller.ChaControl.objHair[slot];
             foreach (var renderer in GetRendererList(go))
                 foreach (var material in GetMaterials(go, renderer))
-                    SwapToVanillaPlus(controller, slot, ObjectType.Hair, material, go);
+                    SwapToVanillaPlus(controller, slot, ObjectType.Hair, material, go, forceSwap);
         }
-        private void SwapToVanillaPlusAccessory(MaterialEditorCharaController controller, int slot)
+        private void SwapToVanillaPlusAccessory(MaterialEditorCharaController controller, int slot, bool forceSwap)
         {
             var go = controller.ChaControl.GetAccessoryObject(slot);
             if (go != null)
                 foreach (var renderer in GetRendererList(go))
                     foreach (var material in GetMaterials(go, renderer))
-                        SwapToVanillaPlus(controller, slot, ObjectType.Accessory, material, go);
+                        SwapToVanillaPlus(controller, slot, ObjectType.Accessory, material, go, forceSwap);
         }
-        private void SwapToVanillaPlusBody(MaterialEditorCharaController controller)
+        private void SwapToVanillaPlusBody(MaterialEditorCharaController controller, bool forceSwap)
         {
             foreach (var renderer in GetRendererList(controller.ChaControl.gameObject))
                 foreach (var material in GetMaterials(controller.ChaControl.gameObject, renderer))
-                    SwapToVanillaPlus(controller, 0, ObjectType.Character, material, controller.ChaControl.gameObject);
+                    SwapToVanillaPlus(controller, 0, ObjectType.Character, material, controller.ChaControl.gameObject, forceSwap);
         }
 
         private void SetTesselationValue(Material mat)
