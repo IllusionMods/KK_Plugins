@@ -43,8 +43,17 @@ namespace KK_Plugins.PoseTools
                 {
                     __instance.OnClickSelect(no);
                 };
-                component.text = PauseCtrl.LoadName(__instance.listPath[j]);
                 __instance.dicNode.Add(j, component);
+                string name;
+                try
+                {
+                    name = PauseCtrl.LoadName(__instance.listPath[j]);
+                }
+                catch
+                {
+                    name = "UNSUPPORTED: " + Path.GetFileName(__instance.listPath[j]);
+                }
+                component.text = name;
             }
             return false;
         }
