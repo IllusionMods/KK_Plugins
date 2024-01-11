@@ -565,6 +565,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.AccessoriesToStudioItems
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.AccessoriesToStudioItems", "src\AccessoriesToStudioItems.HS2\HS2.AccessoriesToStudioItems.csproj", "{D6B32AEB-1431-432E-932D-AF0E30D2EB9F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HairShadowColorControl", "HairShadowColorControl", "{267C92B3-1324-448C-A699-B0A3A4D6A1A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.HairShadowColorControl", "src\HairShadowColorControl.KKS\KKS.HairShadowColorControl.csproj", "{0FF15905-4A4E-43EE-9853-F410F0A63876}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1263,6 +1267,10 @@ Global
 		{D6B32AEB-1431-432E-932D-AF0E30D2EB9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6B32AEB-1431-432E-932D-AF0E30D2EB9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6B32AEB-1431-432E-932D-AF0E30D2EB9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FF15905-4A4E-43EE-9853-F410F0A63876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FF15905-4A4E-43EE-9853-F410F0A63876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FF15905-4A4E-43EE-9853-F410F0A63876}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FF15905-4A4E-43EE-9853-F410F0A63876}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1492,6 +1500,7 @@ Global
 		{DC93DDEC-8CD0-42F4-905E-6550659CCA85} = {F4AD3F74-B97B-40BF-AD1B-92FFE7A428FC}
 		{BE3DEE42-3526-42F9-9C2F-9D57BD43A078} = {F4AD3F74-B97B-40BF-AD1B-92FFE7A428FC}
 		{D6B32AEB-1431-432E-932D-AF0E30D2EB9F} = {F4AD3F74-B97B-40BF-AD1B-92FFE7A428FC}
+		{0FF15905-4A4E-43EE-9853-F410F0A63876} = {267C92B3-1324-448C-A699-B0A3A4D6A1A7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
