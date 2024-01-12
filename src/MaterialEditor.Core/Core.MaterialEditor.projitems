@@ -32,4 +32,7 @@
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\MaterialEditorIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Animation.cs" />
+  </ItemGroup>
 </Project>

@@ -21,7 +21,7 @@ namespace MaterialEditorAPI
         public static new ManualLogSource Logger;
         public static MaterialEditorPluginBase Instance;
 
-        internal const string FileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
+        internal const string FileFilter = "Images (*.png;.jpg;.apng;.gif)|*.png;*.jpg;*.apng;*.gif|All files|*.*";
 
         /// <summary>
         /// Path where textures will be exported
