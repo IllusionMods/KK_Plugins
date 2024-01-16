@@ -225,16 +225,29 @@ namespace KK_Plugins.PoseTools
         {
             if (texBytes == null || texBytes.Length == 0) return null;
 
-            //LoadImage automatically resizes the texture so the texture size doesn't matter here
-            var tex = new Texture2D(2, 2, format, mipmaps);
-            tex.LoadImage(texBytes);
+            Texture2D tex = null;
+            RenderTexture rt = null;
 
-            RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
-            rt.useMipMap = mipmaps;
-            RenderTexture.active = rt;
-            Graphics.Blit(tex, rt);
+            try
+            {
+                //LoadImage automatically resizes the texture so the texture size doesn't matter here
+                tex = new Texture2D(2, 2, format, mipmaps);
+                tex.LoadImage(texBytes);
 
-            return GetT2D(rt);
+                rt = new RenderTexture(tex.width, tex.height, 0);
+                rt.useMipMap = mipmaps;
+                Graphics.Blit(tex, rt);
+
+                return GetT2D(rt);
+            }
+            finally
+            {
+                if( rt != null )
+                    UnityEngine.Object.Destroy(rt);
+
+                if (tex != null)
+                    UnityEngine.Object.Destroy(tex);
+            }
         }
 
         internal static void LoadWatermark()

@@ -121,8 +121,10 @@ namespace KK_Plugins.PoseTools
 #endif
 
                     Texture2D screenshot = TextureFromBytes(buffer, mipmaps: false);
-                    screenshot = OverwriteTexture(screenshot, Watermark, 0, screenshot.height - Watermark.height);
-                    buffer = screenshot.EncodeToPNG();
+                    Texture2D overwrite = OverwriteTexture(screenshot, Watermark, 0, screenshot.height - Watermark.height);
+                    buffer = overwrite.EncodeToPNG();
+                    Texture2D.Destroy(screenshot);
+                    Texture2D.Destroy(overwrite);
 
                     binaryWriter.Write(buffer);
                     binaryWriter.Write(PauseCtrl.saveIdentifyingCode);
