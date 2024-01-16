@@ -93,15 +93,21 @@ namespace KK_Plugins
             if (texBytes == null || texBytes.Length == 0) return null;
 
             //LoadImage automatically resizes the texture so the texture size doesn't matter here
-            var tex = new Texture2D(2, 2, format, mipmaps);
-            tex.LoadImage(texBytes);
+            Texture2D tex = new Texture2D(2, 2, format, mipmaps);
 
-            RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
-            rt.useMipMap = mipmaps;
-            RenderTexture.active = rt;
-            Graphics.Blit(tex, rt);
+            try
+            {
+                tex.LoadImage(texBytes);
 
-            return rt;
+                RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
+                rt.useMipMap = mipmaps;
+                Graphics.Blit(tex, rt);
+                return rt;
+            }
+            finally
+            {
+                UnityEngine.Object.Destroy(tex);
+            }
         }
     }
 }
