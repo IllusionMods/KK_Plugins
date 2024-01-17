@@ -45,6 +45,7 @@ namespace HairShadowColorControl
             for (var hairKind = 0; hairKind < hairKinds.Length; hairKind++)
             {
                 var makerCategory = hairKinds[hairKind];
+                var hairType = (CvsHair.HairType)hairKind;
                 var control = args.AddControl(new MakerColor("Hair shadow color", false, makerCategory, _DefaultColor, this) { GroupingID = null });
                 control.ValueChanged.Subscribe(color =>
                 {
@@ -62,7 +63,7 @@ namespace HairShadowColorControl
                     }
                     else
                     {
-                        SetShadowColor(chaCtrl, color, (CvsHair.HairType)hairKind);
+                        SetShadowColor(chaCtrl, color, hairType);
                     }
                 });
                 _customControls[hairKind] = control;
