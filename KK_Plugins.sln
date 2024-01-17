@@ -569,6 +569,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HairShadowColorControl", "H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.HairShadowColorControl", "src\HairShadowColorControl.KKS\KKS.HairShadowColorControl.csproj", "{0FF15905-4A4E-43EE-9853-F410F0A63876}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.HairShadowColorControl", "src\HairShadowColorControl.KK\KK.HairShadowColorControl.csproj", "{25C47673-7B6A-4127-9E47-237B3CA991FB}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.HairShadowColorControl", "src\HairShadowColorControl.Core\Core.HairShadowColorControl.shproj", "{30F7FDB4-A1B8-41B9-8D74-E82E3099E555}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1271,6 +1275,10 @@ Global
 		{0FF15905-4A4E-43EE-9853-F410F0A63876}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FF15905-4A4E-43EE-9853-F410F0A63876}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FF15905-4A4E-43EE-9853-F410F0A63876}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25C47673-7B6A-4127-9E47-237B3CA991FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25C47673-7B6A-4127-9E47-237B3CA991FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25C47673-7B6A-4127-9E47-237B3CA991FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25C47673-7B6A-4127-9E47-237B3CA991FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1501,6 +1509,8 @@ Global
 		{BE3DEE42-3526-42F9-9C2F-9D57BD43A078} = {F4AD3F74-B97B-40BF-AD1B-92FFE7A428FC}
 		{D6B32AEB-1431-432E-932D-AF0E30D2EB9F} = {F4AD3F74-B97B-40BF-AD1B-92FFE7A428FC}
 		{0FF15905-4A4E-43EE-9853-F410F0A63876} = {267C92B3-1324-448C-A699-B0A3A4D6A1A7}
+		{25C47673-7B6A-4127-9E47-237B3CA991FB} = {267C92B3-1324-448C-A699-B0A3A4D6A1A7}
+		{30F7FDB4-A1B8-41B9-8D74-E82E3099E555} = {267C92B3-1324-448C-A699-B0A3A4D6A1A7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -1521,6 +1531,7 @@ Global
 		src\AccessoryQuickRemove.Core\AccessoryQuickRemove.Core.projitems*{0cd64f6f-4e15-4c9c-a990-4616a8a8ea82}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{0cd64f6f-4e15-4c9c-a990-4616a8a8ea82}*SharedItemsImports = 4
 		src\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems*{0f7181c7-8d52-4576-9bff-d4b7d08f42a2}*SharedItemsImports = 13
+		src\HairShadowColorControl.Core\HairShadowColorControl.Core.projitems*{0ff15905-4a4e-43ee-9853-f410f0a63876}*SharedItemsImports = 4
 		src\MaleJuice.Core\MaleJuice.Core.projitems*{11112067-cfa0-4522-be2e-0c4d1cf9e36a}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{11112067-cfa0-4522-be2e-0c4d1cf9e36a}*SharedItemsImports = 4
 		src\ForceHighPoly.Core\ForceHighPoly.Core.projitems*{123d12ea-5526-4d07-ab26-7ab9459b4aeb}*SharedItemsImports = 4
@@ -1572,6 +1583,7 @@ Global
 		src\Shared\Shared.projitems*{255b5bf8-80ff-49ea-b4fb-7b535e8c6062}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{2566acd4-b07d-4feb-aa9c-4cd1751e97fc}*SharedItemsImports = 4
 		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{2566acd4-b07d-4feb-aa9c-4cd1751e97fc}*SharedItemsImports = 4
+		src\HairShadowColorControl.Core\HairShadowColorControl.Core.projitems*{25c47673-7b6a-4127-9e47-237b3ca991fb}*SharedItemsImports = 4
 		src\MaterialEditor.Base\MaterialEditor.Base.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		src\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		src\MaterialEditor.Core\Core.MaterialEditor.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
@@ -1583,6 +1595,7 @@ Global
 		src\ItemBlacklist.Core\ItemBlacklist.Core.projitems*{3078a5da-7330-469c-ad65-7f6f2619fad7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{3078a5da-7330-469c-ad65-7f6f2619fad7}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{3078a5da-7330-469c-ad65-7f6f2619fad7}*SharedItemsImports = 4
+		src\HairShadowColorControl.Core\HairShadowColorControl.Core.projitems*{30f7fdb4-a1b8-41b9-8d74-e82e3099e555}*SharedItemsImports = 13
 		src\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems*{35366d0f-99f5-47a4-bc14-db50b58e7ef7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{35366d0f-99f5-47a4-bc14-db50b58e7ef7}*SharedItemsImports = 4
 		src\MakerDefaults.Core.AIHS2\MakerDefaults.Core.projitems*{35cf8f9c-ec35-49b6-b9e1-c1691771a49e}*SharedItemsImports = 4

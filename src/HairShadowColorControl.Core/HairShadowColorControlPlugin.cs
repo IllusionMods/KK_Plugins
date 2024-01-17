@@ -11,6 +11,7 @@ using UnityEngine;
 namespace HairShadowColorControl
 {
     [BepInPlugin(GUID, DisplayName, Version)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID, KKAPI.KoikatuAPI.VersionConst)]
     public class HairShadowColorControlPlugin : BaseUnityPlugin
     {
         public const string GUID = "HairShadowColorControl";
@@ -18,7 +19,7 @@ namespace HairShadowColorControl
         internal const string DisplayName = "HairShadowColorControl";
 
         private const string ShadowColorPropertyName = "ShadowColor";
-        private static readonly Color _DefaultColor = new Color(0.83f, 0.86f, 0.94f);
+        private static readonly Color _DefaultColor = new Color(0.83f, 0.87f, 0.94f);
 
         private static MakerColor[] _customControls;
         private static ChaControl _charaController;
