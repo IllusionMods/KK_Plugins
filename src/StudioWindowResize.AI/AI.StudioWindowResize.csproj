@@ -36,16 +36,16 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.5.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\lib\net35\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\lib\net35\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AIAPI, Version=1.32.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionModdingAPI.AIAPI.1.32.0\lib\net46\AIAPI.dll</HintPath>
+    <Reference Include="AIAPI, Version=1.38.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionModdingAPI.AIAPI.1.38.0\lib\net46\AIAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AI_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExtensibleSaveFormat.AIGirl.16.5.0\lib\net46\AI_ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\..\packages\ExtensibleSaveFormat.AIGirl.19.3.3\lib\net46\AI_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -56,8 +56,12 @@
       <HintPath>..\..\packages\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.2020.5.29.4\lib\net46\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BepInEx, Version=5.4.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.15\lib\net35\BepInEx.dll</HintPath>
+    <Reference Include="BepInEx, Version=5.4.22.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.22\lib\net35\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MessagePack, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.4\lib\net46\MessagePack.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sirenix.Serialization, Version=2.0.13.0, Culture=neutral, processorArchitecture=MSIL">
@@ -103,6 +107,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.18.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+  </ItemGroup>
   <Import Project="..\StudioWindowResize.Core\StudioWindowResize.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -123,7 +132,8 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.IMGUIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.IMGUIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.IMGUIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.IMGUIModule.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets'))" />
     <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.4\build\IllusionLibs.AIGirl.MessagePack.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.4\build\IllusionLibs.AIGirl.MessagePack.targets'))" />
+    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets'))" />
   </Target>
   <Import Project="..\..\packages\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.2020.5.29.4\build\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.2020.5.29.4\build\IllusionLibs.AIGirl.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\..\packages\IllusionLibs.AIGirl.Sirenix.Serialization.2020.5.29.4\build\IllusionLibs.AIGirl.Sirenix.Serialization.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.Sirenix.Serialization.2020.5.29.4\build\IllusionLibs.AIGirl.Sirenix.Serialization.targets')" />
@@ -132,5 +142,6 @@ IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(Tar
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.IMGUIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.IMGUIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.IMGUIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.IMGUIModule.targets')" />
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UI.targets')" />
   <Import Project="..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.4\build\IllusionLibs.AIGirl.MessagePack.targets" Condition="Exists('..\..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.4\build\IllusionLibs.AIGirl.MessagePack.targets')" />
+  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" />
 </Project>
