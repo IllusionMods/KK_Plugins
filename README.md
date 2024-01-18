@@ -662,6 +662,13 @@ To see all accessories in QAB, search for `ao_`.
 
 Requires at least QuickAccessBox v3.1.1 and BepisPlugins r19.3.2 to work.
 
+#### HairShadowColorControl
+
+- [KK_HairShadowColorControl]
+- [KKS_HairShadowColorControl]
+
+Convenient controls for changing the shadow color of character hair in maker. Uses ME underneath.
+
 #### Demosaic
 
 - [AI_Demosaic]
@@ -769,17 +776,17 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KKS_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v230/KKS_MaleJuice.v1.3.zip "v1.3"
 [HS2_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/HS2_MaleJuice.v1.3.zip "v1.3"
 [AI_MaleJuice]: https://github.com/IllusionMods/KK_Plugins/releases/download/v200/AI_MaleJuice.v1.3.zip "v1.3"
-[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v246/PH_MaterialEditor.v3.4.1.zip "v3.4.1"
-[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v246/KKS_MaterialEditor.v3.4.1.zip "v3.4.1"
-[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v246/KK_MaterialEditor.v3.4.1.zip "v3.4.1"
-[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v246/HS2_MaterialEditor.v3.4.1.zip "v3.4.1"
-[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v246/EC_MaterialEditor.v3.4.1.zip "v3.4.1"
-[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v246/AI_MaterialEditor.v3.4.1.zip "v3.4.1"
-[KKS_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/KKS_PoseTools.v1.1.1.zip "v1.1.1"
-[KK_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/KK_PoseTools.v1.1.1.zip "v1.1.1"
-[HS2_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/HS2_PoseTools.v1.1.1.zip "v1.1.1"
-[AI_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/AI_PoseTools.v1.1.1.zip "v1.1.1"
-[PH_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v225/PH_PoseTools.v1.1.1.zip "v1.1.1"
+[PH_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/PH_MaterialEditor.v3.4.2.zip "v3.4.2"
+[KKS_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/KKS_MaterialEditor.v3.4.2.zip "v3.4.2"
+[KK_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/KK_MaterialEditor.v3.4.2.zip "v3.4.2"
+[HS2_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/HS2_MaterialEditor.v3.4.2.zip "v3.4.2"
+[EC_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/EC_MaterialEditor.v3.4.2.zip "v3.4.2"
+[AI_MaterialEditor]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/AI_MaterialEditor.v3.4.2.zip "v3.4.2"
+[KKS_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/KKS_PoseTools.v1.1.2.zip "v1.1.2"
+[KK_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/KK_PoseTools.v1.1.2.zip "v1.1.2"
+[HS2_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/HS2_PoseTools.v1.1.2.zip "v1.1.2"
+[AI_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/AI_PoseTools.v1.1.2.zip "v1.1.2"
+[PH_PoseTools]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/PH_PoseTools.v1.1.2.zip "v1.1.2"
 [KKS_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v224/KKS_PoseQuickLoad.v1.1.zip "v1.1"
 [KK_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v224/KK_PoseQuickLoad.v1.1.zip "v1.1"
 [HS2_PoseQuickLoad]: https://github.com/IllusionMods/KK_Plugins/releases/download/v224/HS2_PoseQuickLoad.v1.1.zip "v1.1"
@@ -812,6 +819,8 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KK_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/KK_StudioSceneSettings.v1.3.2.zip "v1.3.2"
 [HS2_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/HS2_StudioSceneSettings.v1.3.2.zip "v1.3.2"
 [AI_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/AI_StudioSceneSettings.v1.3.2.zip "v1.3.2"
+[KKS_HairShadowColorControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/KKS_HairShadowColorControl.v1.0.0.0.zip "v1.0.0.0"
+[KK_HairShadowColorControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/KK_HairShadowColorControl.v1.0.0.0.zip "v1.0.0.0"
 [PC_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/PC_Subtitles.v2.3.2.zip "v2.3.2"
 [KKS_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KKS_Subtitles.v2.3.2.zip "v2.3.2"
 [KK_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KK_Subtitles.v2.3.2.zip "v2.3.2"
