@@ -16,7 +16,7 @@ namespace TimelineFlowControl
             var currentTime = Timeline.Timeline.playbackTime;
 
             // todo is there a more reliable way to detect playback passing over a keyframe?
-            if (!_lastPlaybackTime.Equals(currentTime) && _lastPlaybackTime < currentTime && currentTime - _lastPlaybackTime < 0.5f)
+            if (_lastPlaybackTime < currentTime && currentTime - _lastPlaybackTime < 0.5f)
             {
                 foreach (var keyframe in FlowControlPlugin.GetAllCommands(true))
                 {
@@ -93,14 +93,13 @@ namespace TimelineFlowControl
                 case FlowCommand.ConditionType.Equals:
                     return Math.Abs(a - b) < 0.0001f;
                 case FlowCommand.ConditionType.NotEquals:
-                    return Math.Abs(a - b) > 0.0001f;
+                    return Math.Abs(a - b) >= 0.0001f;
                 case FlowCommand.ConditionType.GreaterThan:
                     return a > b;
                 case FlowCommand.ConditionType.LessThan:
                     return a < b;
 
                 case FlowCommand.ConditionType.None:
-                    return true;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(command.Condition), command.Condition, "Unsupported Condition");
             }
