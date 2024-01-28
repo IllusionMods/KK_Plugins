@@ -573,6 +573,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.HairShadowColorControl",
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.HairShadowColorControl", "src\HairShadowColorControl.Core\Core.HairShadowColorControl.shproj", "{30F7FDB4-A1B8-41B9-8D74-E82E3099E555}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimelineFlowControl", "TimelineFlowControl", "{12FF93A3-5883-44E0-84D3-D65042A6E1E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.TimelineFlowControl", "src\TimelineFlowControl.KK\KK.TimelineFlowControl.csproj", "{AA8F95EE-2BB5-4EBC-A376-83B698FF2F05}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.TimelineFlowControl", "src\TimelineFlowControl.Shared\Core.TimelineFlowControl.shproj", "{81E7B9E7-E3DB-454C-87E2-3BE348558A76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.TimelineFlowControl", "src\TimelineFlowControl.KKS\KKS.TimelineFlowControl.csproj", "{9AC3E3FF-99A8-41F8-BA5D-6C305C08A7A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.TimelineFlowControl", "src\TimelineFlowControl.HS2\HS2.TimelineFlowControl.csproj", "{80D061E6-9CBC-4086-BE30-AFFF166C85AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.TimelineFlowControl", "src\TimelineFlowControl.AI\AI.TimelineFlowControl.csproj", "{2AB45B21-1B6A-40E7-B172-F9A32DD5392D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1279,6 +1291,22 @@ Global
 		{25C47673-7B6A-4127-9E47-237B3CA991FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25C47673-7B6A-4127-9E47-237B3CA991FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25C47673-7B6A-4127-9E47-237B3CA991FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA8F95EE-2BB5-4EBC-A376-83B698FF2F05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA8F95EE-2BB5-4EBC-A376-83B698FF2F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA8F95EE-2BB5-4EBC-A376-83B698FF2F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA8F95EE-2BB5-4EBC-A376-83B698FF2F05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AC3E3FF-99A8-41F8-BA5D-6C305C08A7A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AC3E3FF-99A8-41F8-BA5D-6C305C08A7A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AC3E3FF-99A8-41F8-BA5D-6C305C08A7A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AC3E3FF-99A8-41F8-BA5D-6C305C08A7A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80D061E6-9CBC-4086-BE30-AFFF166C85AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80D061E6-9CBC-4086-BE30-AFFF166C85AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80D061E6-9CBC-4086-BE30-AFFF166C85AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80D061E6-9CBC-4086-BE30-AFFF166C85AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AB45B21-1B6A-40E7-B172-F9A32DD5392D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AB45B21-1B6A-40E7-B172-F9A32DD5392D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AB45B21-1B6A-40E7-B172-F9A32DD5392D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AB45B21-1B6A-40E7-B172-F9A32DD5392D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1511,6 +1539,11 @@ Global
 		{0FF15905-4A4E-43EE-9853-F410F0A63876} = {267C92B3-1324-448C-A699-B0A3A4D6A1A7}
 		{25C47673-7B6A-4127-9E47-237B3CA991FB} = {267C92B3-1324-448C-A699-B0A3A4D6A1A7}
 		{30F7FDB4-A1B8-41B9-8D74-E82E3099E555} = {267C92B3-1324-448C-A699-B0A3A4D6A1A7}
+		{AA8F95EE-2BB5-4EBC-A376-83B698FF2F05} = {12FF93A3-5883-44E0-84D3-D65042A6E1E4}
+		{81E7B9E7-E3DB-454C-87E2-3BE348558A76} = {12FF93A3-5883-44E0-84D3-D65042A6E1E4}
+		{9AC3E3FF-99A8-41F8-BA5D-6C305C08A7A5} = {12FF93A3-5883-44E0-84D3-D65042A6E1E4}
+		{80D061E6-9CBC-4086-BE30-AFFF166C85AF} = {12FF93A3-5883-44E0-84D3-D65042A6E1E4}
+		{2AB45B21-1B6A-40E7-B172-F9A32DD5392D} = {12FF93A3-5883-44E0-84D3-D65042A6E1E4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -1591,6 +1624,7 @@ Global
 		src\Shared\Shared.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		src\UIUtility\UIUtility.projitems*{25e45f23-4d1d-4cd0-b0bc-653c8ae1c561}*SharedItemsImports = 4
 		src\TwoLut.Shared\TwoLut.Shared.projitems*{2809761d-6d92-4768-949b-fbcac3518d91}*SharedItemsImports = 13
+		src\TimelineFlowControl.Shared\Shared_TimelineButton.projitems*{2ab45b21-1b6a-40e7-b172-f9a32dd5392d}*SharedItemsImports = 4
 		src\Profile.Core\Profile.Core.projitems*{2c0b61ef-61e4-45d7-addb-27de541f62e9}*SharedItemsImports = 13
 		src\ItemBlacklist.Core\ItemBlacklist.Core.projitems*{3078a5da-7330-469c-ad65-7f6f2619fad7}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{3078a5da-7330-469c-ad65-7f6f2619fad7}*SharedItemsImports = 4
@@ -1751,6 +1785,7 @@ Global
 		src\Shared\Shared.projitems*{7e21e1cc-356e-41bb-abdd-bd0f99710361}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{808eedec-4707-45a1-929c-9e5506180204}*SharedItemsImports = 4
 		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{808eedec-4707-45a1-929c-9e5506180204}*SharedItemsImports = 4
+		src\TimelineFlowControl.Shared\Shared_TimelineButton.projitems*{80d061e6-9cbc-4086-be30-afff166c85af}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{8169b73c-be43-4ca0-87d8-db580d367d87}*SharedItemsImports = 4
 		src\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems*{8169b73c-be43-4ca0-87d8-db580d367d87}*SharedItemsImports = 4
 		src\DynamicBoneEditor.Core\DynamicBoneEditor.Core.projitems*{81c5bb6f-1182-4395-80a9-eaa47cf83a1c}*SharedItemsImports = 4
@@ -1758,6 +1793,7 @@ Global
 		src\UIUtility\UIUtility.projitems*{81c5bb6f-1182-4395-80a9-eaa47cf83a1c}*SharedItemsImports = 4
 		src\FKIK.Core\Core.FKIK.projitems*{81d88c3e-4094-436c-8eed-ba18a81a96a4}*SharedItemsImports = 13
 		src\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems*{81de7d3b-a8a0-43c2-ac9d-f65ac528b997}*SharedItemsImports = 13
+		src\TimelineFlowControl.Shared\Shared_TimelineButton.projitems*{81e7b9e7-e3db-454c-87e2-3be348558a76}*SharedItemsImports = 13
 		src\RandomCharacterGenerator.Core\RandomCharacterGenerator.Core.projitems*{825e0c5d-2125-401f-a457-54ebacd6068e}*SharedItemsImports = 13
 		src\Colliders.Core\Core.Colliders.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{83d27765-5c0a-4909-b4dc-fb6b20ece642}*SharedItemsImports = 4
@@ -1798,6 +1834,7 @@ Global
 		src\Subtitles.Core\Core.Subtitles.projitems*{94b26581-49ee-4645-aa63-46077f65b223}*SharedItemsImports = 4
 		src\Boop.Core\Boop.Core.projitems*{9a24f593-5d98-44d2-929c-1f3b9e41f048}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{9a24f593-5d98-44d2-929c-1f3b9e41f048}*SharedItemsImports = 4
+		src\TimelineFlowControl.Shared\Shared_TimelineButton.projitems*{9ac3e3ff-99a8-41f8-ba5d-6c305c08a7a5}*SharedItemsImports = 4
 		src\Subtitles.Core\Core.Subtitles.projitems*{9b492e05-5822-4bb0-be28-a468d1f318ab}*SharedItemsImports = 13
 		src\MaterialEditor.Base\MaterialEditor.Base.projitems*{9b568b1a-d28a-4afa-8ac7-b6e0009a9675}*SharedItemsImports = 13
 		src\PoseTools.Core\Core.PoseTools.projitems*{9c19b785-e8e3-4ff0-9e3f-8254355b1ce7}*SharedItemsImports = 4
@@ -1827,6 +1864,7 @@ Global
 		src\Shared\Shared.projitems*{a9af37e6-80f8-4729-89cd-59ead64b4669}*SharedItemsImports = 4
 		src\Autosave.Core\Autosave.Core.projitems*{a9db9bd1-bca5-4057-927a-8b897c9c3158}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{a9db9bd1-bca5-4057-927a-8b897c9c3158}*SharedItemsImports = 4
+		src\TimelineFlowControl.Shared\Shared_TimelineButton.projitems*{aa8f95ee-2bb5-4ebc-a376-83b698ff2f05}*SharedItemsImports = 4
 		src\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{aae2bdc4-4cab-4677-8f02-3290b6061097}*SharedItemsImports = 4
 		src\Shared\Shared.projitems*{aecdbbfb-b520-4589-ab30-edb96f5354f0}*SharedItemsImports = 4
