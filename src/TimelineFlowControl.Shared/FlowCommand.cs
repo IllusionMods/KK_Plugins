@@ -88,13 +88,14 @@ namespace TimelineFlowControl
 
         public override string ToString()
         {
-            var str = Command.ToString();
+            var str = "DO (" + Command;
             if (!string.IsNullOrEmpty(Param1) && Command != CommandType.JumpReturn && Command != CommandType.None)
                 str += $" {Param1}";
             if (!string.IsNullOrEmpty(Param2) && (Command == CommandType.SetValueToVariable || Command == CommandType.AddValueToVariable || Command == CommandType.SubtractValueFromVariable))
                 str += $" {Param2}";
+            str += ")";
             if (Condition != ConditionType.None)
-                str += $" \nif {ConditionParam1} {Condition} {ConditionParam2}";
+                str += $" IF ({ConditionParam1} {Condition} {ConditionParam2})";
             return str;
         }
 

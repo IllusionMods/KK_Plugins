@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using BepInEx;
 using BepInEx.Logging;
 using KKAPI;
+using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using Studio;
-using Timeline;
+using UnityEngine;
+using Keyframe = Timeline.Keyframe;
 
 namespace TimelineFlowControl
 {
@@ -33,10 +36,12 @@ namespace TimelineFlowControl
         private static FlowControlStateMachine _stateMachine;
         public static FlowControlStateMachine StateMachine => _stateMachine ?? (_stateMachine = new FlowControlStateMachine());
 
-        private void Start()
+        private IEnumerator Start()
         {
             Logger = base.Logger;
             Instance = this;
+
+            yield return new WaitUntil(() => StudioAPI.StudioLoaded && TimelineCompatibility.IsTimelineAvailable());
 
             StudioSaveLoadApi.SceneLoad += (sender, args) =>
             {
@@ -100,7 +105,7 @@ namespace TimelineFlowControl
         internal static IEnumerable<KeyValuePair<float, Keyframe>> GetAllKeyframes(bool onlyEnabled)
         {
             return Timeline.Timeline.GetAllInterpolables(onlyEnabled)
-                           .Where(x => (!onlyEnabled || x.enabled) && x.id == CommandId && x.owner == OwnerStr)
+                           .Where(x => x.id == CommandId && x.owner == OwnerStr)
                            .SelectMany(x => x.keyframes);
         }
     }
