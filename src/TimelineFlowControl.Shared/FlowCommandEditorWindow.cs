@@ -82,9 +82,13 @@ namespace TimelineFlowControl
                 }
                 GUILayout.EndHorizontal();
 
+                GUI.changed = false;
+
                 DrawCommandEditor();
 
                 DrawConditionEditor();
+
+                if(GUI.changed) _anyChanged = true;
 
                 GUILayout.Space(3);
 
