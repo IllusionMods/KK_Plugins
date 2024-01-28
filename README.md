@@ -669,6 +669,16 @@ Requires at least QuickAccessBox v3.1.1 and BepisPlugins r19.3.2 to work.
 
 Convenient controls for changing the shadow color of character hair in maker. Uses ME underneath.
 
+#### TimelineFlowControl
+
+- [AI_TimelineFlowControl]
+- [HS2_TimelineFlowControl]
+- [KK_TimelineFlowControl]
+- [KKS_TimelineFlowControl]
+
+Adds simple logic to Timeline that allows for controlling playback, mostly to create limited animation loops.
+Requires the latest versions of BepInEx, Timeline and ModdingAPI.
+
 #### Demosaic
 
 - [AI_Demosaic]
@@ -821,6 +831,10 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [AI_StudioSceneSettings]: https://github.com/IllusionMods/KK_Plugins/releases/download/v197/AI_StudioSceneSettings.v1.3.2.zip "v1.3.2"
 [KKS_HairShadowColorControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/KKS_HairShadowColorControl.v1.0.0.0.zip "v1.0.0.0"
 [KK_HairShadowColorControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v248/KK_HairShadowColorControl.v1.0.0.0.zip "v1.0.0.0"
+[KKS_TimelineFlowControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v249/KKS_TimelineFlowControl.v1.0.0.0.zip "v1.0.0.0"
+[KK_TimelineFlowControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v249/KK_TimelineFlowControl.v1.0.0.0.zip "v1.0.0.0"
+[HS2_TimelineFlowControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v249/HS2_TimelineFlowControl.v1.0.0.0.zip "v1.0.0.0"
+[AI_TimelineFlowControl]: https://github.com/IllusionMods/KK_Plugins/releases/download/v249/AI_TimelineFlowControl.v1.0.0.0.zip "v1.0.0.0"
 [PC_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/PC_Subtitles.v2.3.2.zip "v2.3.2"
 [KKS_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KKS_Subtitles.v2.3.2.zip "v2.3.2"
 [KK_Subtitles]: https://github.com/IllusionMods/KK_Plugins/releases/download/v226.1/KK_Subtitles.v2.3.2.zip "v2.3.2"
