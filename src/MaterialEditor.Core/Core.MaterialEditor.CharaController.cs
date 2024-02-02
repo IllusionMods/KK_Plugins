@@ -60,17 +60,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="currentGameMode"></param>
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
-            List<int> IDsToPurge = new List<int>();
-            foreach (int texID in TextureDictionary.Keys)
-                if (MaterialTexturePropertyList.All(x => x.TexID != texID))
-                    IDsToPurge.Add(texID);
-
-            for (var i = 0; i < IDsToPurge.Count; i++)
-            {
-                int texID = IDsToPurge[i];
-                if (TextureDictionary.TryGetValue(texID, out var val)) val.Dispose();
-                TextureDictionary.Remove(texID);
-            }
+            PurgeUnusedTextures();
 
             if (RendererPropertyList.Count == 0 && MaterialFloatPropertyList.Count == 0 && MaterialKeywordPropertyList.Count == 0 && MaterialColorPropertyList.Count == 0 && MaterialTexturePropertyList.Count == 0 && MaterialShaderList.Count == 0 && MaterialCopyList.Count == 0)
             {
@@ -134,12 +124,6 @@ namespace KK_Plugins.MaterialEditor
             if (!maintainState)
             {
                 RemoveMaterialCopies(ChaControl.gameObject);
-
-                List<int> IDsToPurge = new List<int>();
-                foreach (int texID in TextureDictionary.Keys)
-                    if (MaterialTexturePropertyList.All(x => x.TexID != texID))
-                        IDsToPurge.Add(texID);
-
 
                 CharacterLoading = true;
                 LoadCharacterExtSaveData();
@@ -333,20 +317,10 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 
-            List<int> IDsToPurge = new List<int>();
-            foreach (int texID in TextureDictionary.Keys)
-                if (MaterialTexturePropertyList.All(x => x.TexID != texID))
-                    IDsToPurge.Add(texID);
-
             //Don't destroy the textures in H mode because they will still be needed
             if (KoikatuAPI.GetCurrentGameMode() != GameMode.MainGame)
             {
-                for (var i = 0; i < IDsToPurge.Count; i++)
-                {
-                    int texID = IDsToPurge[i];
-                    TextureDictionary[texID].Dispose();
-                    TextureDictionary.Remove(texID);
-                }
+                PurgeUnusedTextures();
             }
 
             CharacterLoading = true;
@@ -2217,6 +2191,31 @@ namespace KK_Plugins.MaterialEditor
             if (objectType == ObjectType.Character)
                 return ChaControl.gameObject;
             return null;
+        }
+
+        /// <summary>
+        /// Purge unused textures from TextureDictionary
+        /// </summary>
+        protected void PurgeUnusedTextures()
+        {
+            if (TextureDictionary.Count <= 0)
+                return;
+
+            HashSet<int> unuseds = new HashSet<int>(TextureDictionary.Keys);
+
+            //Remove textures in use
+            for (int i = 0; i < MaterialTexturePropertyList.Count; ++i)
+            {
+                var texID = MaterialTexturePropertyList[i].TexID;
+                if (texID.HasValue)
+                    unuseds.Remove(texID.Value);
+            }
+
+            foreach (var texID in unuseds)
+            {
+                TextureDictionary[texID].Dispose();
+                TextureDictionary.Remove(texID);
+            }
         }
 
         /// <summary>
