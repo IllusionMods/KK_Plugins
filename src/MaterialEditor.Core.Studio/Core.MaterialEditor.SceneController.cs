@@ -45,13 +45,7 @@ namespace KK_Plugins.MaterialEditor
         {
             var data = new PluginData();
 
-            List<int> IDsToPurge = new List<int>();
-            foreach (int texID in TextureDictionary.Keys)
-                if (MaterialTexturePropertyList.All(x => x.TexID != texID && ExternallyReferencedTextureIDs.Contains(texID)))
-                    IDsToPurge.Add(texID);
-
-            for (var i = 0; i < IDsToPurge.Count; i++)
-                TextureDictionary.Remove(IDsToPurge[i]);
+            PurgeUnusedTextures();
 
             if (TextureDictionary.Count > 0)
                 data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
@@ -94,6 +88,34 @@ namespace KK_Plugins.MaterialEditor
                 data.data.Add(nameof(MaterialCopyList), null);
 
             SetExtendedData(data);
+        }
+
+        /// <summary>
+        /// Purge unused textures from TextureDictionary
+        /// </summary>
+        protected void PurgeUnusedTextures()
+        {
+            if (TextureDictionary.Count <= 0)
+                return;
+
+            HashSet<int> unuseds = new HashSet<int>(TextureDictionary.Keys);
+
+            //Remove textures in use
+            for (int i = 0; i < MaterialTexturePropertyList.Count; ++i)
+            {
+                var texID = MaterialTexturePropertyList[i].TexID;
+                if( texID.HasValue )
+                    unuseds.Remove(texID.Value);
+            }
+
+            //Remove textures in use
+            unuseds.RemoveWhere(texId => ExternallyReferencedTextureIDs.Contains(texId));
+
+            foreach (var texID in unuseds)
+            {
+                TextureDictionary[texID].Dispose();
+                TextureDictionary.Remove(texID);
+            }
         }
 
         /// <summary>
