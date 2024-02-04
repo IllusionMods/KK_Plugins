@@ -675,19 +675,13 @@ namespace KK_Plugins
 
                     //AssignedWeightsAndSetBounds replaces the bones of an object with the body bones
                     var objRootBone = instance.GetReferenceInfo(UniversalRefObjKey.A_ROOTBONE);
-                    foreach (var rend in chaAccessory.rendNormal.Concat(chaAccessory.rendAlpha).Concat(chaAccessory.rendHair))
+                    try
                     {
-                        if (rend)
-                        {
-                            try
-                            {
-                                instance.aaWeightsBody.AssignedWeightsAndSetBounds(rend.gameObject, "cf_j_root", instance.bounds, objRootBone.transform);
-                            }
-                            catch (Exception e)
-                            {
-                                UnityEngine.Debug.LogException(e);
-                            }
-                        }
+                        instance.aaWeightsBody.AssignedWeightsAndSetBounds(accObj, "cf_j_root", instance.bounds, objRootBone.transform);
+                    }
+                    catch (Exception e)
+                    {
+                        UnityEngine.Debug.LogException(e);
                     }
 
                     FixConflictingBoneNames(accObj);
