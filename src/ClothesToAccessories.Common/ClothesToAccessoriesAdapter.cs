@@ -117,16 +117,16 @@ namespace KK_Plugins
             var lib = InfoBase;
             var mainManifest = lib.GetInfo(ChaListDefine.KeyType.MainManifest);
             var mainTexAb = lib.GetInfo(ChaListDefine.KeyType.MainTexAB);
-            if ("0" == mainTexAb) mainTexAb = lib.GetInfo(ChaListDefine.KeyType.MainAB);
+            if (ZeroOrBlank(mainTexAb)) mainTexAb = lib.GetInfo(ChaListDefine.KeyType.MainAB);
             var mainTex = lib.GetInfo(ChaListDefine.KeyType.MainTex);
-            if ("0" == mainTexAb || "0" == mainTex) return false;
+            if (ZeroOrBlank(mainTexAb) || ZeroOrBlank(mainTex)) return false;
             var t2dMain = CommonLib.LoadAsset<Texture2D>(mainTexAb, mainTex, false, mainManifest);
             if (null == t2dMain) return false;
 
             var colorMaskAb = lib.GetInfo(ChaListDefine.KeyType.ColorMaskAB);
-            if ("0" == colorMaskAb) colorMaskAb = lib.GetInfo(ChaListDefine.KeyType.MainAB);
+            if (ZeroOrBlank(colorMaskAb)) colorMaskAb = lib.GetInfo(ChaListDefine.KeyType.MainAB);
             var colorMaskTex = lib.GetInfo(ChaListDefine.KeyType.ColorMaskTex);
-            if ("0" == colorMaskAb || "0" == colorMaskTex)
+            if (ZeroOrBlank(colorMaskAb) || ZeroOrBlank(colorMaskTex))
             {
                 Resources.UnloadAsset(t2dMain);
                 return false;
@@ -139,30 +139,30 @@ namespace KK_Plugins
             }
 
             var mainTex02Ab = lib.GetInfo(ChaListDefine.KeyType.MainTex02AB);
-            if ("0" == mainTex02Ab) mainTex02Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
+            if (ZeroOrBlank(mainTex02Ab)) mainTex02Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
             var mainTex02 = lib.GetInfo(ChaListDefine.KeyType.MainTex02);
             Texture2D t2dMainTex02 = null;
-            if ("0" != mainTex02Ab && "0" != mainTex02) t2dMainTex02 = CommonLib.LoadAsset<Texture2D>(mainTex02Ab, mainTex02, false, mainManifest);
+            if (!ZeroOrBlank(mainTex02Ab) && !ZeroOrBlank(mainTex02)) t2dMainTex02 = CommonLib.LoadAsset<Texture2D>(mainTex02Ab, mainTex02, false, mainManifest);
 
             var colorMask02Ab = lib.GetInfo(ChaListDefine.KeyType.ColorMask02AB);
-            if ("0" == colorMask02Ab) colorMask02Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
+            if (ZeroOrBlank(colorMask02Ab)) colorMask02Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
             var colorMask02Tex = lib.GetInfo(ChaListDefine.KeyType.ColorMask02Tex);
             Texture2D t2dColorMask02 = null;
-            if ("0" != colorMask02Ab && "0" != colorMask02Tex) t2dColorMask02 = CommonLib.LoadAsset<Texture2D>(colorMask02Ab, colorMask02Tex, false, mainManifest);
+            if (!ZeroOrBlank(colorMask02Ab) && !ZeroOrBlank(colorMask02Tex)) t2dColorMask02 = CommonLib.LoadAsset<Texture2D>(colorMask02Ab, colorMask02Tex, false, mainManifest);
 
 #if KKS
             var mainTex03Ab = lib.GetInfo(ChaListDefine.KeyType.MainTex03AB);
-            if ("0" == mainTex03Ab) mainTex03Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
+            if (ZeroOrBlank(mainTex03Ab)) mainTex03Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
             var mainTex03 = lib.GetInfo(ChaListDefine.KeyType.MainTex03);
 
             Texture2D t2dMainTex03 = null;
-            if ("0" != mainTex03Ab && "0" != mainTex03) t2dMainTex03 = CommonLib.LoadAsset<Texture2D>(mainTex03Ab, mainTex03, false, mainManifest, true);
+            if (!ZeroOrBlank(mainTex03Ab) && !ZeroOrBlank(mainTex03)) t2dMainTex03 = CommonLib.LoadAsset<Texture2D>(mainTex03Ab, mainTex03, false, mainManifest, true);
 
             var colorMask03Tex = lib.GetInfo(ChaListDefine.KeyType.ColorMask03Tex);
             var colorMask03Ab = lib.GetInfo(ChaListDefine.KeyType.ColorMask03AB);
-            if ("0" == colorMask03Ab) colorMask03Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
+            if (ZeroOrBlank(colorMask03Ab)) colorMask03Ab = lib.GetInfo(ChaListDefine.KeyType.MainAB);
             Texture2D t2dColorMask03 = null;
-            if ("0" != colorMask03Ab && "0" != colorMask03Tex)
+            if (!ZeroOrBlank(colorMask03Ab) && !ZeroOrBlank(colorMask03Tex))
             {
                 t2dColorMask03 = CommonLib.LoadAsset<Texture2D>(colorMask03Ab, colorMask03Tex, false, mainManifest, true);
             }
@@ -203,7 +203,7 @@ namespace KK_Plugins
 
             return true;
         }
-
+        private bool ZeroOrBlank(string input) => input.IsNullOrEmpty() || input == "0";
         public bool UpdateClothesColorAndStuff()
         {
             if (_ctcArr[0] == null)
@@ -235,7 +235,7 @@ namespace KK_Plugins
                 var assetName = listInfo.GetInfo(ChaListDefine.KeyType.MainTex);
 #endif
 
-                if (abName != "0" && assetName != "0")
+                if (!ZeroOrBlank(abName) && !ZeroOrBlank(assetName))
                 {
                     tex = CommonLib.LoadAsset<Texture2D>(abName, assetName, false, "");
 #if KK
