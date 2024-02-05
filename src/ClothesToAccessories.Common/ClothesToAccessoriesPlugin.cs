@@ -28,7 +28,7 @@ namespace KK_Plugins
         public const string GUID = "ClothesToAccessories";
         public const string PluginName = "Clothes To Accessories";
         public const string PluginNameInternal = "KKS_ClothesToAccessories";
-        public const string Version = "1.0.3";
+        public const string Version = "1.1";
 
         internal static new ManualLogSource Logger;
 

@@ -17,7 +17,7 @@ namespace KK_Plugins
         public const string GUID = "Boop";
         public const string PluginName = "Boop";
         internal const string PluginNameInternal = "Boop";
-        public const string Version = "2.0";
+        public const string Version = "2.1";
 
         private static ConfigEntry<float> ConfigDamping;
         private static ConfigEntry<int> ConfigDistance;
