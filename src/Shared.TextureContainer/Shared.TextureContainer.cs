@@ -9,7 +9,7 @@ namespace KK_Plugins
     /// </summary>
     public sealed class TextureContainer : IDisposable
     {
-        private TextureContainerManager.TextureHolder _holder;
+        private TextureContainerManager.Token _token;
 
         /// <summary>
         /// Load a byte array containing texture data.
@@ -17,7 +17,7 @@ namespace KK_Plugins
         /// <param name="data"></param>
         public TextureContainer(byte[] data)
         {
-            _holder = TextureContainerManager.Acquire(data);
+            _token = TextureContainerManager.Acquire(data);
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace KK_Plugins
         /// <param name="filePath">Path of the file to load</param>
         public TextureContainer(string filePath)
         {
-            _holder = TextureContainerManager.Acquire(filePath);
+            _token = TextureContainerManager.Acquire(filePath);
         }
 
         /// <summary>
@@ -34,13 +34,13 @@ namespace KK_Plugins
         /// </summary>
         public byte[] Data
         {
-            get => _holder.key.data;
+            get => _token.Data;
 
             set
             {
-                var newHolder = TextureContainerManager.Acquire(value);
-                TextureContainerManager.Release(_holder);
-                _holder = newHolder;
+                var newToken = TextureContainerManager.Acquire(value);
+                TextureContainerManager.Release(_token);
+                _token = newToken;
             }
         }
 
@@ -51,16 +51,16 @@ namespace KK_Plugins
         {
             get
             {
-                return _holder.Texture;
+                return _token.Texture;
             }
         }
 
         /// <summary>
-        /// Dispose of the texture data. Does not dispose of the byte array. Texture data will be recreated when accessing the Texture property, if needed.
+        /// Dispose of the texture data.
         /// </summary>
         public void Dispose()
         {
-            TextureContainerManager.Release(_holder);
+            TextureContainerManager.Release(_token);
         }
     }
 }

@@ -6,34 +6,47 @@ using UnityEngine;
 
 namespace KK_Plugins
 {
+    /// <summary>
+    /// Class that manages texture containers.
+    /// </summary>
     public sealed class TextureContainerManager
     {
-        static Dictionary<TextureHolderKey, TextureHolder> _textureHolder = new Dictionary<TextureHolderKey, TextureHolder>();
+        /// <summary>
+        /// Dictionary to hold textures
+        /// </summary>
+        static Dictionary<TextureKey, Token> _textureHolder = new Dictionary<TextureKey, Token>();
 
-        public class TextureHolderKey
+        /// <summary>
+        /// Class for using dictionary keys for information needed to generate textures
+        /// </summary>
+        internal class TextureKey
         {
             public readonly byte[] data;
-            public readonly uint dataHash;
+            public readonly int hash;
             public readonly TextureFormat format;
             public readonly bool mipmaps;
 
-            public TextureHolderKey(byte[] data, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
+            public TextureKey(byte[] data, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
             {
-                this.data = data;
                 //First part of the data is sufficient to calculate the hash.
-                dataHash = CRC32Calculator.CalculateCRC32(data, 1 << 10);
+                int hash = (int)CRC32Calculator.CalculateCRC32(data, 1 << 10);
+                hash ^= format.GetHashCode();
+                hash ^= mipmaps.GetHashCode();
+
+                this.data = data;
+                this.hash = hash;
                 this.format = format;
                 this.mipmaps = mipmaps;
             }
 
             public override bool Equals(object obj)
             {
-                if (obj is TextureHolderKey)
+                if (obj is TextureKey)
                 {
-                    var other = (TextureHolderKey)obj;
+                    var other = (TextureKey)obj;
 
                     return
-                        other.dataHash == dataHash &&
+                        other.hash == hash &&
                         other.format == format &&
                         other.mipmaps == mipmaps &&
                         other.data.SequenceEqual(data);
@@ -44,20 +57,26 @@ namespace KK_Plugins
 
             public override int GetHashCode()
             {
-                return (int)dataHash ^ format.GetHashCode() ^ mipmaps.GetHashCode();
+                return hash;
             }
         }
 
-        public class TextureHolder
+        /// <summary>
+        /// Texture holder with reference counter
+        /// </summary>
+        public class Token
         {
+            //Reference counter. when it reaches 0, the texture is released.
             internal int refCount;
-            internal TextureHolderKey key;
+            internal TextureKey key;
             private Texture _texture;
 
-            public TextureHolder(TextureHolderKey key)
+            internal Token(TextureKey key)
             {
                 this.key = key;
             }
+
+            public byte[] Data => key.data;
 
             public Texture Texture
             {
@@ -65,6 +84,7 @@ namespace KK_Plugins
                 {
                     if (_texture == null && key.data != null)
                         _texture = TextureFromBytes(key.data, key.format, key.mipmaps);
+
                     return _texture;
                 }
             }
@@ -79,25 +99,40 @@ namespace KK_Plugins
             }
         }
 
-        public static TextureHolder Acquire( string filePath )
+        /// <summary>
+        /// Acquire TextureHolder. If it already exists, return it.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static Token Acquire( string filePath )
         {
             return Acquire(LoadTextureBytes(filePath));
         }
 
-        public static TextureHolder Acquire( byte[] texBytes )
+        /// <summary>
+        /// Acquire TextureHolder. If it already exists, return it.
+        /// </summary>
+        /// <param name="texBytes"></param>
+        /// <returns></returns>
+        public static Token Acquire( byte[] texBytes )
         {
             if (texBytes == null)
                 throw new ArgumentNullException(nameof(texBytes));
 
-            TextureHolderKey key = new TextureHolderKey(texBytes);
+            TextureKey key = new TextureKey(texBytes);
             if (!_textureHolder.TryGetValue(key, out var holder))
-                holder = _textureHolder[key] = new TextureHolder(key);
+                holder = _textureHolder[key] = new Token(key);
 
             ++holder.refCount;
             return holder;
         }
 
-        public static void Release( TextureHolder holder )
+        /// <summary>
+        /// Release the TextureHolder. 
+        /// If there are zero TextureHolders with the same texture, the texture is released.
+        /// </summary>
+        /// <param name="holder"></param>
+        public static void Release( Token holder )
         {
             if (--holder.refCount > 0)
                 return;
@@ -146,6 +181,9 @@ namespace KK_Plugins
         }
     }
 
+    /// <summary>
+    /// Class for calculating CRC32 from a byte array
+    /// </summary>
     public class CRC32Calculator
     {
         private static readonly uint[] Crc32Table;
