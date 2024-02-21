@@ -142,7 +142,7 @@ namespace KK_Plugins
         }
 
         /// <summary>
-        /// Convert a byte array to Texture2D.
+        /// Convert a byte array to Texture.
         /// </summary>
         /// <param name="texBytes">Byte array containing the image</param>
         /// <param name="format">TextureFormat</param>
