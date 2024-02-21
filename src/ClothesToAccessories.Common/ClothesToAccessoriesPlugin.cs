@@ -616,14 +616,8 @@ namespace KK_Plugins
                         {
                             if (dynamicBone.m_Root)
                             {
-                                foreach (var keyValuePair in dictBone)
-                                {
-                                    if (keyValuePair.Key == dynamicBone.m_Root.name)
-                                    {
-                                        dynamicBone.m_Root = keyValuePair.Value.transform;
-                                        break;
-                                    }
-                                }
+                                if( dictBone.TryGetValue(dynamicBone.m_Root.name, out var gobj) )
+                                    dynamicBone.m_Root = gobj.transform;
                             }
 
                             if (dynamicBone.m_Exclusions != null && dynamicBone.m_Exclusions.Count != 0)
@@ -632,14 +626,8 @@ namespace KK_Plugins
                                 {
                                     if (null != dynamicBone.m_Exclusions[j])
                                     {
-                                        foreach (var keyValuePair2 in dictBone)
-                                        {
-                                            if (keyValuePair2.Key == dynamicBone.m_Exclusions[j].name)
-                                            {
-                                                dynamicBone.m_Exclusions[j] = keyValuePair2.Value.transform;
-                                                break;
-                                            }
-                                        }
+                                        if( dictBone.TryGetValue(dynamicBone.m_Exclusions[j].name, out var gobj) )
+                                            dynamicBone.m_Exclusions[j] = gobj.transform;
                                     }
                                 }
                             }
@@ -650,14 +638,8 @@ namespace KK_Plugins
                                 {
                                     if (null != dynamicBone.m_notRolls[k])
                                     {
-                                        foreach (var keyValuePair3 in dictBone)
-                                        {
-                                            if (keyValuePair3.Key == dynamicBone.m_notRolls[k].name)
-                                            {
-                                                dynamicBone.m_notRolls[k] = keyValuePair3.Value.transform;
-                                                break;
-                                            }
-                                        }
+                                        if( dictBone.TryGetValue(dynamicBone.m_notRolls[k].name, out var gobj) )
+                                            dynamicBone.m_notRolls[k] = gobj.transform;
                                     }
                                 }
                             }
@@ -665,10 +647,7 @@ namespace KK_Plugins
                             if (dynamicBone.m_Colliders != null)
                             {
                                 dynamicBone.m_Colliders.Clear();
-                                for (var l = 0; l < componentsInChildren2.Length; l++)
-                                {
-                                    dynamicBone.m_Colliders.Add(componentsInChildren2[l]);
-                                }
+                                dynamicBone.m_Colliders.AddRange(componentsInChildren2);
                             }
                         }
                     }
