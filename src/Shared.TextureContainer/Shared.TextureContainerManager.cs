@@ -159,6 +159,7 @@ namespace KK_Plugins
             {
                 tex.LoadImage(texBytes);
 
+                //Transfer to GPU memory and delete data in normal memory
                 RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
                 rt.useMipMap = mipmaps;
                 Graphics.Blit(tex, rt);
@@ -166,6 +167,7 @@ namespace KK_Plugins
             }
             finally
             {
+                // delete data in normal memory
                 UnityEngine.Object.Destroy(tex);
             }
         }
