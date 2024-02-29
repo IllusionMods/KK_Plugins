@@ -19,10 +19,14 @@ namespace MaterialEditorAPI
         /// </summary>
         public static readonly List<string> NormalMapProperties = new List<string>();
 
+        /// <summary>
+        /// Dictionary of textures and textures converted to normal maps.
+        /// </summary>
         WeakKeyDictionary<Texture, WeakReference> _convertedNormalMap = new WeakKeyDictionary<Texture, WeakReference>();
 
         void Update()
         {
+            //Sweep dead values
             _convertedNormalMap.SweepDeadValuesLittle();
         }
 
@@ -39,12 +43,12 @@ namespace MaterialEditorAPI
 
             Texture normalTex;
 
-            if ( _convertedNormalMap.TryGetValue(tex, out var normalRef) )
+            if ( _convertedNormalMap.TryGetValue(tex, out var normalMapRef) )
             {
                 //It was a texture that had been converted in the past.
-                if (normalRef != null)
+                if (normalMapRef != null)
                 {
-                    normalTex = (Texture)normalRef.Target;
+                    normalTex = (Texture)normalMapRef.Target;
 
                     if(normalTex != null)
                     {
@@ -59,7 +63,7 @@ namespace MaterialEditorAPI
                 }
             }
 
-            //Never converted or had been converted but was erased.
+            //Never converted or had been converted but was deleted.
 
             normalTex = ConvertNormalMap(tex);
 
@@ -215,7 +219,7 @@ namespace MaterialEditorAPI
 
             set
             {
-                if( _dict.TryGetValue(key, out var alreadyValue) )
+                if( _dict.ContainsKey(key) )
                 {
                     _dict[key] = value;
                 }
