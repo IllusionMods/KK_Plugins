@@ -976,26 +976,15 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-        /// <summary>
-        /// Convert a normal map texture from grey to red by setting the entire red color channel to white
-        /// </summary>
-        /// <param name="tex">Texture to convert</param>
-        /// <param name="propertyName">Name of the property. Checks against the NormalMapProperties list and will not convert unless it matches.</param>
-        /// <returns>True if the texture was converted</returns>
-        public override bool ConvertNormalMap(ref Texture tex, string propertyName)
+        protected override Texture ConvertNormalMap( Texture tex)
         {
-            if (!NormalMapProperties.Contains(propertyName))
-                return false;
-
-            var wrapMode = tex.wrapMode;
             RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
             rt.useMipMap = true;
             rt.autoGenerateMips = true;
             Graphics.Blit(tex, rt, NormalMapConvertMaterial);
-            tex = rt;
-            tex.wrapMode = wrapMode;
+            rt.wrapMode = tex.wrapMode;
 
-            return true;
+            return rt;
         }
 
         /// <summary>
