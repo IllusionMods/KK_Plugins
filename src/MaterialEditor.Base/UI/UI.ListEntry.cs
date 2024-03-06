@@ -16,7 +16,7 @@ namespace MaterialEditorAPI
 
         public CanvasGroup RendererEnabledPanel;
         public Text RendererEnabledLabel;
-        public Dropdown RendererEnabledDropdown;
+        public Toggle RendererEnabledToggle;
         public Button RendererEnabledResetButton;
 
         public CanvasGroup RendererShadowCastingModePanel;
@@ -26,12 +26,12 @@ namespace MaterialEditorAPI
 
         public CanvasGroup RendererReceiveShadowsPanel;
         public Text RendererReceiveShadowsLabel;
-        public Dropdown RendererReceiveShadowsDropdown;
+        public Toggle RendererReceiveShadowsToggle;
         public Button RendererReceiveShadowsResetButton;
 
         public CanvasGroup RendererRecalculateNormalsPanel;
         public Text RendererRecalculateNormalsLabel;
-        public Dropdown RendererRecalculateNormalsDropdown;
+        public Toggle RendererRecalculateNormalsToggle;
         public Button RendererRecalculateNormalsResetButton;
 
         public CanvasGroup MaterialPanel;
@@ -131,9 +131,9 @@ namespace MaterialEditorAPI
                     case ItemInfo.RowItemType.RendererEnabled:
                         ShowRendererEnabled();
                         SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal);
-                        RendererEnabledDropdown.onValueChanged.RemoveAllListeners();
-                        RendererEnabledDropdown.value = item.RendererEnabled;
-                        RendererEnabledDropdown.onValueChanged.AddListener(value =>
+                        RendererEnabledToggle.onValueChanged.RemoveAllListeners();
+                        RendererEnabledToggle.isOn = item.RendererEnabled;
+                        RendererEnabledToggle.onValueChanged.AddListener(value =>
                         {
                             item.RendererEnabled = value;
                             if (item.RendererEnabled != item.RendererEnabledOriginal)
@@ -144,7 +144,7 @@ namespace MaterialEditorAPI
                         });
 
                         RendererEnabledResetButton.onClick.RemoveAllListeners();
-                        RendererEnabledResetButton.onClick.AddListener(() => RendererEnabledDropdown.value = item.RendererEnabledOriginal);
+                        RendererEnabledResetButton.onClick.AddListener(() => RendererEnabledToggle.isOn = item.RendererEnabledOriginal);
 
                         break;
                     case ItemInfo.RowItemType.RendererShadowCastingMode:
@@ -169,9 +169,9 @@ namespace MaterialEditorAPI
                     case ItemInfo.RowItemType.RendererReceiveShadows:
                         ShowRendererReceiveShadows();
                         SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal);
-                        RendererReceiveShadowsDropdown.onValueChanged.RemoveAllListeners();
-                        RendererReceiveShadowsDropdown.value = item.RendererReceiveShadows;
-                        RendererReceiveShadowsDropdown.onValueChanged.AddListener(value =>
+                        RendererReceiveShadowsToggle.onValueChanged.RemoveAllListeners();
+                        RendererReceiveShadowsToggle.isOn = item.RendererReceiveShadows;
+                        RendererReceiveShadowsToggle.onValueChanged.AddListener(value =>
                         {
                             item.RendererReceiveShadows = value;
                             if (item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal)
@@ -182,15 +182,15 @@ namespace MaterialEditorAPI
                         });
 
                         RendererReceiveShadowsResetButton.onClick.RemoveAllListeners();
-                        RendererReceiveShadowsResetButton.onClick.AddListener(() => RendererReceiveShadowsDropdown.value = item.RendererReceiveShadowsOriginal);
+                        RendererReceiveShadowsResetButton.onClick.AddListener(() => RendererReceiveShadowsToggle.isOn = item.RendererReceiveShadowsOriginal);
 
                         break;
                     case ItemInfo.RowItemType.RendererRecalculateNormals:
                         ShowRendererRecalculateNormals();
                         SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal);
-                        RendererRecalculateNormalsDropdown.onValueChanged.RemoveAllListeners();
-                        RendererRecalculateNormalsDropdown.value = item.RendererRecalculateNormals;
-                        RendererRecalculateNormalsDropdown.onValueChanged.AddListener(value =>
+                        RendererRecalculateNormalsToggle.onValueChanged.RemoveAllListeners();
+                        RendererRecalculateNormalsToggle.isOn = item.RendererRecalculateNormals;
+                        RendererRecalculateNormalsToggle.onValueChanged.AddListener(value =>
                         {
                             item.RendererRecalculateNormals = value;
                             if (item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal)
@@ -201,7 +201,7 @@ namespace MaterialEditorAPI
                         });
 
                         RendererRecalculateNormalsResetButton.onClick.RemoveAllListeners();
-                        RendererRecalculateNormalsResetButton.onClick.AddListener(() => RendererRecalculateNormalsDropdown.value = item.RendererRecalculateNormalsOriginal);
+                        RendererRecalculateNormalsResetButton.onClick.AddListener(() => RendererRecalculateNormalsToggle.isOn = item.RendererRecalculateNormalsOriginal);
 
                         break;
                     case ItemInfo.RowItemType.Material:

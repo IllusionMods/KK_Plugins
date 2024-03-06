@@ -62,7 +62,7 @@ namespace MaterialEditorAPI
 
             listEntry.RendererEnabledPanel = listEntry.GetUIComponent<CanvasGroup>("RendererEnabledPanel");
             listEntry.RendererEnabledLabel = listEntry.GetUIComponent<Text>("RendererEnabledLabel");
-            listEntry.RendererEnabledDropdown = listEntry.GetUIComponent<Dropdown>("RendererEnabledDropdown");
+            listEntry.RendererEnabledToggle = listEntry.GetUIComponent<Toggle>("RendererEnabledToggle");
             listEntry.RendererEnabledResetButton = listEntry.GetUIComponent<Button>("RendererEnabledResetButton");
 
             listEntry.RendererShadowCastingModePanel = listEntry.GetUIComponent<CanvasGroup>("RendererShadowCastingModePanel");
@@ -72,12 +72,12 @@ namespace MaterialEditorAPI
 
             listEntry.RendererReceiveShadowsPanel = listEntry.GetUIComponent<CanvasGroup>("RendererReceiveShadowsPanel");
             listEntry.RendererReceiveShadowsLabel = listEntry.GetUIComponent<Text>("RendererReceiveShadowsLabel");
-            listEntry.RendererReceiveShadowsDropdown = listEntry.GetUIComponent<Dropdown>("RendererReceiveShadowsDropdown");
+            listEntry.RendererReceiveShadowsToggle = listEntry.GetUIComponent<Toggle>("RendererReceiveShadowsToggle");
             listEntry.RendererReceiveShadowsResetButton = listEntry.GetUIComponent<Button>("RendererReceiveShadowsResetButton");
 
             listEntry.RendererRecalculateNormalsPanel = listEntry.GetUIComponent<CanvasGroup>("RendererRecalculateNormalsPanel");
             listEntry.RendererRecalculateNormalsLabel = listEntry.GetUIComponent<Text>("RendererRecalculateNormalsLabel");
-            listEntry.RendererRecalculateNormalsDropdown = listEntry.GetUIComponent<Dropdown>("RendererRecalculateNormalsDropdown");
+            listEntry.RendererRecalculateNormalsToggle = listEntry.GetUIComponent<Toggle>("RendererRecalculateNormalsToggle");
             listEntry.RendererRecalculateNormalsResetButton = listEntry.GetUIComponent<Button>("RendererRecalculateNormalsResetButton");
 
             listEntry.MaterialPanel = listEntry.GetUIComponent<CanvasGroup>("MaterialPanel");
