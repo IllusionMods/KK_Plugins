@@ -308,7 +308,7 @@ namespace MaterialEditorAPI
 
                 //Renderer ReceiveShadows
                 bool valueReceiveShadowsOriginal = rend.receiveShadows;
-                temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.ShadowCastingMode, go);
+                temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.ReceiveShadows, go);
                 if (!temp.IsNullOrEmpty())
                     valueReceiveShadowsOriginal = temp == "1";
                 var rendererReceiveShadowsItem = new ItemInfo(ItemInfo.RowItemType.RendererReceiveShadows, "Receive Shadows")
