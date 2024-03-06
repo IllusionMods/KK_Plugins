@@ -13,9 +13,9 @@ namespace MaterialEditorAPI
         public Action ExportUVOnClick { get; set; }
         public Action ExportObjOnClick { get; set; }
 
-        public int RendererEnabled { get; set; }
-        public int RendererEnabledOriginal { get; set; }
-        public Action<int> RendererEnabledOnChange { get; set; }
+        public bool RendererEnabled { get; set; }
+        public bool RendererEnabledOriginal { get; set; }
+        public Action<bool> RendererEnabledOnChange { get; set; }
         public Action RendererEnabledOnReset { get; set; }
 
         public int RendererShadowCastingMode { get; set; }
@@ -23,14 +23,14 @@ namespace MaterialEditorAPI
         public Action<int> RendererShadowCastingModeOnChange { get; set; }
         public Action RendererShadowCastingModeOnReset { get; set; }
 
-        public int RendererReceiveShadows { get; set; }
-        public int RendererReceiveShadowsOriginal { get; set; }
-        public Action<int> RendererReceiveShadowsOnChange { get; set; }
+        public bool RendererReceiveShadows { get; set; }
+        public bool RendererReceiveShadowsOriginal { get; set; }
+        public Action<bool> RendererReceiveShadowsOnChange { get; set; }
         public Action RendererReceiveShadowsOnReset { get; set; }
 
-        public int RendererRecalculateNormals { get; set; }
-        public int RendererRecalculateNormalsOriginal { get; set; }
-        public Action<int> RendererRecalculateNormalsOnChange { get; set; }
+        public bool RendererRecalculateNormals { get; set; }
+        public bool RendererRecalculateNormalsOriginal { get; set; }
+        public Action<bool> RendererRecalculateNormalsOnChange { get; set; }
         public Action RendererRecalculateNormalsOnReset { get; set; }
 
         public string MaterialName { get; set; }

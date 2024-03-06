@@ -62,18 +62,11 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = LabelWidth;
 
-                Dropdown dropdownEnabled = UIUtility.CreateDropdown("RendererEnabledDropdown", itemPanel.transform);
-                dropdownEnabled.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownEnabled.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
-                dropdownEnabled.captionText.alignment = TextAnchor.MiddleLeft;
-                dropdownEnabled.options.Clear();
-                dropdownEnabled.options.Add(new Dropdown.OptionData("Off"));
-                dropdownEnabled.options.Add(new Dropdown.OptionData("On"));
-                dropdownEnabled.value = 0;
-                dropdownEnabled.captionText.text = "Off";
-                var dropdownEnabledLE = dropdownEnabled.gameObject.AddComponent<LayoutElement>();
-                dropdownEnabledLE.preferredWidth = DropdownWidth;
-                dropdownEnabledLE.flexibleWidth = 0;
+                Toggle toggleEnabled = UIUtility.CreateToggle("RendererEnabledToggle", itemPanel.transform, "");
+                var toggleEnabledLE = toggleEnabled.gameObject.AddComponent<LayoutElement>();
+                toggleEnabledLE.preferredWidth = 12;
+                toggleEnabledLE.flexibleWidth = 0;
+                toggleEnabled.isOn = true;
 
                 var reset = UIUtility.CreateButton($"RendererEnabledResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
@@ -130,18 +123,11 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = LabelWidth;
 
-                Dropdown dropdownReceiveShadows = UIUtility.CreateDropdown("RendererReceiveShadowsDropdown", itemPanel.transform);
-                dropdownReceiveShadows.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownReceiveShadows.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
-                dropdownReceiveShadows.captionText.alignment = TextAnchor.MiddleLeft;
-                dropdownReceiveShadows.options.Clear();
-                dropdownReceiveShadows.options.Add(new Dropdown.OptionData("Off"));
-                dropdownReceiveShadows.options.Add(new Dropdown.OptionData("On"));
-                dropdownReceiveShadows.value = 0;
-                dropdownReceiveShadows.captionText.text = "Off";
-                var dropdownReceiveShadowsLE = dropdownReceiveShadows.gameObject.AddComponent<LayoutElement>();
-                dropdownReceiveShadowsLE.preferredWidth = DropdownWidth;
-                dropdownReceiveShadowsLE.flexibleWidth = 0;
+                Toggle toggleReceiveShadows = UIUtility.CreateToggle("RendererReceiveShadowsToggle", itemPanel.transform, "");
+                var toggleReceiveShadowsLE = toggleReceiveShadows.gameObject.AddComponent<LayoutElement>();
+                toggleReceiveShadowsLE.preferredWidth = 12;
+                toggleReceiveShadowsLE.flexibleWidth = 0;
+                toggleReceiveShadows.isOn = true;
 
                 var reset = UIUtility.CreateButton($"RendererReceiveShadowsResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
@@ -163,18 +149,11 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = LabelWidth;
 
-                Dropdown dropdownRecalculateNormals = UIUtility.CreateDropdown("RendererRecalculateNormalsDropdown", itemPanel.transform);
-                dropdownRecalculateNormals.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
-                dropdownRecalculateNormals.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
-                dropdownRecalculateNormals.captionText.alignment = TextAnchor.MiddleLeft;
-                dropdownRecalculateNormals.options.Clear();
-                dropdownRecalculateNormals.options.Add(new Dropdown.OptionData("Off"));
-                dropdownRecalculateNormals.options.Add(new Dropdown.OptionData("On"));
-                dropdownRecalculateNormals.value = 0;
-                dropdownRecalculateNormals.captionText.text = "Off";
-                var dropdownRecalculateNormalsLE = dropdownRecalculateNormals.gameObject.AddComponent<LayoutElement>();
-                dropdownRecalculateNormalsLE.preferredWidth = DropdownWidth;
-                dropdownRecalculateNormalsLE.flexibleWidth = 0;
+                Toggle toggleRecalculateNormals = UIUtility.CreateToggle("RendererRecalculateNormalsToggle", itemPanel.transform, "");
+                var toggleRecalculateNormalsLE = toggleRecalculateNormals.gameObject.AddComponent<LayoutElement>();
+                toggleRecalculateNormalsLE.preferredWidth = 12;
+                toggleRecalculateNormalsLE.flexibleWidth = 0;
+                toggleRecalculateNormals.isOn = false;
 
                 var reset = UIUtility.CreateButton($"RendererRecalculateNormalsResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();

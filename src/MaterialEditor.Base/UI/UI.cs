@@ -285,9 +285,9 @@ namespace MaterialEditorAPI
                     valueEnabledOriginal = temp == "1";
                 var rendererEnabledItem = new ItemInfo(ItemInfo.RowItemType.RendererEnabled, "Enabled")
                 {
-                    RendererEnabled = rend.enabled ? 1 : 0,
-                    RendererEnabledOriginal = valueEnabledOriginal ? 1 : 0,
-                    RendererEnabledOnChange = value => SetRendererProperty(data, rend, RendererProperties.Enabled, value.ToString(), go),
+                    RendererEnabled = rend.enabled,
+                    RendererEnabledOriginal = valueEnabledOriginal,
+                    RendererEnabledOnChange = value => SetRendererProperty(data, rend, RendererProperties.Enabled, (value ? 1 : 0).ToString(), go),
                     RendererEnabledOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.Enabled, go)
                 };
                 items.Add(rendererEnabledItem);
@@ -313,9 +313,9 @@ namespace MaterialEditorAPI
                     valueReceiveShadowsOriginal = temp == "1";
                 var rendererReceiveShadowsItem = new ItemInfo(ItemInfo.RowItemType.RendererReceiveShadows, "Receive Shadows")
                 {
-                    RendererReceiveShadows = rend.receiveShadows ? 1 : 0,
-                    RendererReceiveShadowsOriginal = valueReceiveShadowsOriginal ? 1 : 0,
-                    RendererReceiveShadowsOnChange = value => SetRendererProperty(data, rend, RendererProperties.ReceiveShadows, value.ToString(), go),
+                    RendererReceiveShadows = rend.receiveShadows,
+                    RendererReceiveShadowsOriginal = valueReceiveShadowsOriginal,
+                    RendererReceiveShadowsOnChange = value => SetRendererProperty(data, rend, RendererProperties.ReceiveShadows, (value ? 1 : 0).ToString(), go),
                     RendererReceiveShadowsOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.ReceiveShadows, go)
                 };
                 items.Add(rendererReceiveShadowsItem);
@@ -333,9 +333,9 @@ namespace MaterialEditorAPI
                         valueRecalculateNormals = temp == "1";
                     var rendererRecalculateNormalsItem = new ItemInfo(ItemInfo.RowItemType.RendererRecalculateNormals, "Recalculate Normals")
                     {
-                        RendererRecalculateNormals = valueRecalculateNormals ? 1 : 0,
-                        RendererRecalculateNormalsOriginal = valueRecalculateNormalsOriginal ? 1 : 0,
-                        RendererRecalculateNormalsOnChange = value => SetRendererProperty(data, rend, RendererProperties.RecalculateNormals, value.ToString(), go),
+                        RendererRecalculateNormals = valueRecalculateNormals,
+                        RendererRecalculateNormalsOriginal = valueRecalculateNormalsOriginal,
+                        RendererRecalculateNormalsOnChange = value => SetRendererProperty(data, rend, RendererProperties.RecalculateNormals, (value ? 1 : 0).ToString(), go),
                         RendererRecalculateNormalsOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.RecalculateNormals, go)
                     };
                     items.Add(rendererRecalculateNormalsItem);
