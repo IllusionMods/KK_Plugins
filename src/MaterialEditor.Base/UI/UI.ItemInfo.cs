@@ -28,6 +28,11 @@ namespace MaterialEditorAPI
         public Action<bool> RendererReceiveShadowsOnChange { get; set; }
         public Action RendererReceiveShadowsOnReset { get; set; }
 
+        public bool RendererUpdateWhenOffscreen { get; set; }
+        public bool RendererUpdateWhenOffscreenOriginal { get; set; }
+        public Action<bool> RendererUpdateWhenOffscreenOnChange { get; set; }
+        public Action RendererUpdateWhenOffscreenOnReset { get; set; }
+
         public bool RendererRecalculateNormals { get; set; }
         public bool RendererRecalculateNormalsOriginal { get; set; }
         public Action<bool> RendererRecalculateNormalsOnChange { get; set; }
@@ -93,6 +98,6 @@ namespace MaterialEditorAPI
             LabelText = labelText;
         }
 
-        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, RendererRecalculateNormals, Material, Shader, ShaderRenderQueue, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
+        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, RendererUpdateWhenOffscreen, RendererRecalculateNormals, Material, Shader, ShaderRenderQueue, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
     }
 }

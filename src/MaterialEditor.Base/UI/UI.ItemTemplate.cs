@@ -135,6 +135,32 @@ namespace MaterialEditorAPI
                 resetLE.flexibleWidth = 0;
             }
 
+            //Renderer RendererUpdateWhenOffscreen
+            {
+                var itemPanel = UIUtility.CreatePanel("RendererUpdateWhenOffscreenPanel", contentList.transform);
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+                itemPanel.color = ItemColor;
+
+                var label = UIUtility.CreateText("RendererUpdateWhenOffscreenLabel", itemPanel.transform, "");
+                label.alignment = TextAnchor.MiddleLeft;
+                label.color = Color.black;
+                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                labelLE.preferredWidth = LabelWidth;
+                labelLE.flexibleWidth = LabelWidth;
+
+                Toggle toggleRendererUpdateWhenOffscreen = UIUtility.CreateToggle("RendererUpdateWhenOffscreenToggle", itemPanel.transform, "");
+                var toggleRendererUpdateWhenOffscreenLE = toggleRendererUpdateWhenOffscreen.gameObject.AddComponent<LayoutElement>();
+                toggleRendererUpdateWhenOffscreenLE.preferredWidth = 12;
+                toggleRendererUpdateWhenOffscreenLE.flexibleWidth = 0;
+                toggleRendererUpdateWhenOffscreen.isOn = false;
+
+                var reset = UIUtility.CreateButton($"RendererUpdateWhenOffscreenResetButton", itemPanel.transform, "Reset");
+                var resetLE = reset.gameObject.AddComponent<LayoutElement>();
+                resetLE.preferredWidth = ResetButtonWidth;
+                resetLE.flexibleWidth = 0;
+            }
+
             //Renderer RecalulateNormals
             {
                 var itemPanel = UIUtility.CreatePanel("RendererRecalculateNormalsPanel", contentList.transform);

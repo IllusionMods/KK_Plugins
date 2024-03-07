@@ -29,6 +29,11 @@ namespace MaterialEditorAPI
         public Toggle RendererReceiveShadowsToggle;
         public Button RendererReceiveShadowsResetButton;
 
+        public CanvasGroup RendererUpdateWhenOffscreenPanel;
+        public Text RendererUpdateWhenOffscreenLabel;
+        public Toggle RendererUpdateWhenOffscreenToggle;
+        public Button RendererUpdateWhenOffscreenResetButton;
+
         public CanvasGroup RendererRecalculateNormalsPanel;
         public Text RendererRecalculateNormalsLabel;
         public Toggle RendererRecalculateNormalsToggle;
@@ -183,6 +188,25 @@ namespace MaterialEditorAPI
 
                         RendererReceiveShadowsResetButton.onClick.RemoveAllListeners();
                         RendererReceiveShadowsResetButton.onClick.AddListener(() => RendererReceiveShadowsToggle.isOn = item.RendererReceiveShadowsOriginal);
+
+                        break;
+                    case ItemInfo.RowItemType.RendererUpdateWhenOffscreen:
+                        ShowRendererUpdateWhenOffscreen();
+                        SetLabelText(RendererUpdateWhenOffscreenLabel, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal);
+                        RendererUpdateWhenOffscreenToggle.onValueChanged.RemoveAllListeners();
+                        RendererUpdateWhenOffscreenToggle.isOn = item.RendererUpdateWhenOffscreen;
+                        RendererUpdateWhenOffscreenToggle.onValueChanged.AddListener(value =>
+                        {
+                            item.RendererUpdateWhenOffscreen = value;
+                            if (item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal)
+                                item.RendererUpdateWhenOffscreenOnChange(value);
+                            else
+                                item.RendererUpdateWhenOffscreenOnReset();
+                            SetLabelText(RendererUpdateWhenOffscreenLabel, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal);
+                        });
+
+                        RendererUpdateWhenOffscreenResetButton.onClick.RemoveAllListeners();
+                        RendererUpdateWhenOffscreenResetButton.onClick.AddListener(() => RendererUpdateWhenOffscreenToggle.isOn = item.RendererUpdateWhenOffscreenOriginal);
 
                         break;
                     case ItemInfo.RowItemType.RendererRecalculateNormals:
@@ -713,6 +737,7 @@ namespace MaterialEditorAPI
             ShowRendererEnabled(false);
             ShowRendererShadowCastingMode(false);
             ShowRendererReceiveShadows(false);
+            ShowRendererUpdateWhenOffscreen(false);
             ShowRendererRecalculateNormals(false);
             ShowMaterial(false);
             ShowShader(false);
@@ -744,6 +769,11 @@ namespace MaterialEditorAPI
         {
             RendererReceiveShadowsPanel.alpha = visible ? 1 : 0;
             RendererReceiveShadowsPanel.blocksRaycasts = visible;
+        }
+        private void ShowRendererUpdateWhenOffscreen(bool visible = true)
+        {
+            RendererUpdateWhenOffscreenPanel.alpha = visible ? 1 : 0;
+            RendererUpdateWhenOffscreenPanel.blocksRaycasts = visible;
         }
         private void ShowRendererRecalculateNormals(bool visible = true)
         {

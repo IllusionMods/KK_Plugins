@@ -75,6 +75,11 @@ namespace MaterialEditorAPI
             listEntry.RendererReceiveShadowsToggle = listEntry.GetUIComponent<Toggle>("RendererReceiveShadowsToggle");
             listEntry.RendererReceiveShadowsResetButton = listEntry.GetUIComponent<Button>("RendererReceiveShadowsResetButton");
 
+            listEntry.RendererUpdateWhenOffscreenPanel = listEntry.GetUIComponent<CanvasGroup>("RendererUpdateWhenOffscreenPanel");
+            listEntry.RendererUpdateWhenOffscreenLabel = listEntry.GetUIComponent<Text>("RendererUpdateWhenOffscreenLabel");
+            listEntry.RendererUpdateWhenOffscreenToggle = listEntry.GetUIComponent<Toggle>("RendererUpdateWhenOffscreenToggle");
+            listEntry.RendererUpdateWhenOffscreenResetButton = listEntry.GetUIComponent<Button>("RendererUpdateWhenOffscreenResetButton");
+
             listEntry.RendererRecalculateNormalsPanel = listEntry.GetUIComponent<CanvasGroup>("RendererRecalculateNormalsPanel");
             listEntry.RendererRecalculateNormalsLabel = listEntry.GetUIComponent<Text>("RendererRecalculateNormalsLabel");
             listEntry.RendererRecalculateNormalsToggle = listEntry.GetUIComponent<Toggle>("RendererRecalculateNormalsToggle");
