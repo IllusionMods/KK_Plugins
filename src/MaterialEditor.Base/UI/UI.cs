@@ -320,9 +320,23 @@ namespace MaterialEditorAPI
                 };
                 items.Add(rendererReceiveShadowsItem);
 
-                //Renderer RecalculateNormals
-                if (rend is SkinnedMeshRenderer) // recalculate normals should only exist on skinned renderers
+                if (rend is SkinnedMeshRenderer meshRenderer) // recalculate normals should only exist on skinned renderers
                 {
+                    //Renderer UpdateWhenOffscreen
+                    bool valueUpdateWhenOffscreenOriginal = meshRenderer.updateWhenOffscreen;
+                    temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.UpdateWhenOffscreen, go);
+                    if (!temp.IsNullOrEmpty())
+                        valueUpdateWhenOffscreenOriginal = temp == "1";
+                    var rendererUpdateWhenOffscreenItem = new ItemInfo(ItemInfo.RowItemType.RendererUpdateWhenOffscreen, "Update When Off-Screen")
+                    {
+                        RendererUpdateWhenOffscreen = meshRenderer.updateWhenOffscreen,
+                        RendererUpdateWhenOffscreenOriginal = valueUpdateWhenOffscreenOriginal,
+                        RendererUpdateWhenOffscreenOnChange = value => SetRendererProperty(data, rend, RendererProperties.UpdateWhenOffscreen, (value ? 1 : 0).ToString(), go),
+                        RendererUpdateWhenOffscreenOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.UpdateWhenOffscreen, go)
+                    };
+                    items.Add(rendererUpdateWhenOffscreenItem);
+
+                    //Renderer RecalculateNormals
                     bool valueRecalculateNormalsOriginal = false; // this is not a real renderproperty so I cannot be true by default
                     temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.RecalculateNormals, go);
                     if (!temp.IsNullOrEmpty())

@@ -282,6 +282,8 @@ namespace MaterialEditorAPI
                 return SetRendererShadowCastingMode(gameObject, rendererName, (UnityEngine.Rendering.ShadowCastingMode)value);
             if (propertyName == RendererProperties.ReceiveShadows)
                 return SetRendererReceiveShadows(gameObject, rendererName, value == 1);
+            if (propertyName == RendererProperties.UpdateWhenOffscreen)
+                return SetRendererUpdateWhenOffscreen(gameObject, rendererName, value == 1);
             if (propertyName == RendererProperties.RecalculateNormals)
                 return SetRendererRecalculateNormals(gameObject, rendererName, value == 1);
             return false;
@@ -344,6 +346,27 @@ namespace MaterialEditorAPI
                 if (renderer.NameFormatted() == rendererName)
                 {
                     renderer.receiveShadows = value;
+                    didSet = true;
+                }
+            }
+            return didSet;
+        }
+
+        /// <summary>
+        /// Set the ReceiveShadows property of a renderer
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="rendererName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetRendererUpdateWhenOffscreen(GameObject gameObject, string rendererName, bool value)
+        {
+            bool didSet = false;
+            foreach (var renderer in GetRendererList(gameObject))
+            {
+                if (renderer is SkinnedMeshRenderer meshRenderer && renderer.NameFormatted() == rendererName)
+                {
+                    meshRenderer.updateWhenOffscreen = value;
                     didSet = true;
                 }
             }
@@ -596,7 +619,11 @@ namespace MaterialEditorAPI
             /// <summary>
             /// Whether the renderer should recalculate the normals on itself
             /// </summary>
-            RecalculateNormals
+            RecalculateNormals,
+            /// <summary>
+            /// Whether the renderer updates while off-screen
+            /// </summary>
+            UpdateWhenOffscreen
         }
     }
 }

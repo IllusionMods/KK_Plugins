@@ -1304,6 +1304,10 @@ namespace KK_Plugins.MaterialEditor
                     valueOriginal = renderer.receiveShadows ? "1" : "0";
                 else if (property == RendererProperties.ShadowCastingMode)
                     valueOriginal = ((int)renderer.shadowCastingMode).ToString();
+                else if (property == RendererProperties.UpdateWhenOffscreen)
+                    if (renderer is SkinnedMeshRenderer meshRenderer)
+                        valueOriginal = meshRenderer.updateWhenOffscreen ? "1" : "0";
+                    else valueOriginal = "0";
                 else if (property == RendererProperties.RecalculateNormals)
                     valueOriginal = "0"; // this property cannot be set by default
 
