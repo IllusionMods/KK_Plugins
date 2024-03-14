@@ -41,6 +41,9 @@ namespace MaterialEditorAPI
             if (!NormalMapProperties.Contains(propertyName))
                 return false;
 
+            if (tex == null || !tex.GetType().IsSubclassOf(typeof(Texture)))
+                return false;   // zipmod is broken ???   I used IsSubclassOf() because [tex is Texture] couldn't determine it.
+
             Texture normalTex;
 
             if ( _convertedNormalMap.TryGetValue(tex, out var normalMapRef) )
