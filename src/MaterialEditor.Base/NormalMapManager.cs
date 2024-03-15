@@ -93,7 +93,7 @@ namespace MaterialEditorAPI
         /// </summary>
         static bool IsBrokenTexture( Texture tex )
         {
-            //This code does not check.
+            //This check does not work when dealing with corrupted Objects (a different object type is stored as Texture, which causes a crash on native side)
             //return !(tex is Texture);
 
             //If it is not a texture, return true.
