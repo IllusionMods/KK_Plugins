@@ -41,6 +41,9 @@ namespace MaterialEditorAPI
             if (!NormalMapProperties.Contains(propertyName))
                 return false;
 
+            if (tex == null || IsBrokenTexture(tex))
+                return false;
+
             Texture normalTex;
 
             if ( _convertedNormalMap.TryGetValue(tex, out var normalMapRef) )
@@ -80,6 +83,21 @@ namespace MaterialEditorAPI
 
             tex = normalTex;
             return true;
+        }
+
+        /// <summary>
+        /// Determine if the texture has been broken.
+        /// 
+        /// An object that is not a texture is set as a texture property.
+        /// zipmod is broken.
+        /// </summary>
+        static bool IsBrokenTexture( Texture tex )
+        {
+            //This check does not work when dealing with corrupted Objects (a different object type is stored as Texture, which causes a crash on native side)
+            //return !(tex is Texture);
+
+            //If it is not a texture, return true.
+            return !tex.GetType().IsSubclassOf(typeof(Texture));
         }
 
         /// <summary>
