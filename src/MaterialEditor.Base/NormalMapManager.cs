@@ -41,8 +41,8 @@ namespace MaterialEditorAPI
             if (!NormalMapProperties.Contains(propertyName))
                 return false;
 
-            if (tex == null || !tex.GetType().IsSubclassOf(typeof(Texture)))
-                return false;   // zipmod is broken ???   I used IsSubclassOf() because [tex is Texture] couldn't determine it.
+            if (tex == null || IsBrokenTexture(tex))
+                return false;
 
             Texture normalTex;
 
@@ -83,6 +83,21 @@ namespace MaterialEditorAPI
 
             tex = normalTex;
             return true;
+        }
+
+        /// <summary>
+        /// Determine if the texture has been broken.
+        /// 
+        /// An object that is not a texture is set as a texture property.
+        /// zipmod is broken.
+        /// </summary>
+        static bool IsBrokenTexture( Texture tex )
+        {
+            //This code does not check.
+            //return !(tex is Texture);
+
+            //If it is not a texture, return true.
+            return !tex.GetType().IsSubclassOf(typeof(Texture));
         }
 
         /// <summary>
