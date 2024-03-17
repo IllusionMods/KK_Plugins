@@ -39,6 +39,10 @@ namespace MaterialEditorAPI
         private static ToggleGroup RendererListToggleGroup;
         private static Renderer SelectedRenderer;
 
+        private static ScrollRect MaterialEditorMaterialList;
+        private static ToggleGroup MaterialListToggleGroup;
+        private static Material SelectedMaterial;
+
         internal static FileSystemWatcher TexChangeWatcher;
         private VirtualList VirtualList;
 
@@ -147,7 +151,7 @@ namespace MaterialEditorAPI
             VirtualList.Initialize();
 
             MaterialEditorRendererList = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
-            MaterialEditorRendererList.transform.SetRect(1f, 0f, 1.3f, 1f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
+            MaterialEditorRendererList.transform.SetRect(1f, 0.5f, 1.4f, 1f, MarginSize, MarginSize / 2f, -MarginSize, -HeaderSize - MarginSize / 2f);
             MaterialEditorRendererList.gameObject.AddComponent<Mask>();
             MaterialEditorRendererList.content.gameObject.AddComponent<VerticalLayoutGroup>();
             MaterialEditorRendererList.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
@@ -158,6 +162,19 @@ namespace MaterialEditorAPI
 
             RendererListToggleGroup = MaterialEditorRendererList.content.gameObject.AddComponent<ToggleGroup>();
             RendererListToggleGroup.allowSwitchOff = true;
+
+            MaterialEditorMaterialList = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
+            MaterialEditorMaterialList.transform.SetRect(1f, 0f, 1.4f, 0.5f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
+            MaterialEditorMaterialList.gameObject.AddComponent<Mask>();
+            MaterialEditorMaterialList.content.gameObject.AddComponent<VerticalLayoutGroup>();
+            MaterialEditorMaterialList.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            MaterialEditorMaterialList.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(ScrollOffsetX, 0f);
+            MaterialEditorMaterialList.viewport.offsetMax = new Vector2(ScrollOffsetX, 0f);
+            MaterialEditorMaterialList.movementType = ScrollRect.MovementType.Clamped;
+            MaterialEditorMaterialList.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
+
+            MaterialListToggleGroup = MaterialEditorMaterialList.content.gameObject.AddComponent<ToggleGroup>();
+            MaterialListToggleGroup.allowSwitchOff = true;
         }
 
         /// <summary>
@@ -220,6 +237,7 @@ namespace MaterialEditorAPI
         {
             if (go != CurrentGameObject)
             {
+                SelectedRenderer = null;
                 foreach (Transform child in MaterialEditorRendererList.content.transform)
                 {
                     Destroy(child.gameObject);
@@ -250,9 +268,56 @@ namespace MaterialEditorAPI
                         else if (value)
                             SelectedRenderer = rend;
                         PopulateList(go, data, CurrentFilter);
+                        PopulateMaterialList(go, data, rendListFull);
                     });
 
                     itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggleEnabled.isOn = !toggleEnabled.isOn);
+                }
+                PopulateMaterialList(go, data, rendListFull);
+            }
+        }
+
+        private void PopulateMaterialList(GameObject go, object data, IEnumerable<Renderer> rendListFull)
+        {
+            SelectedMaterial = null;
+            foreach (Transform child in MaterialEditorMaterialList.content.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            foreach (var rend in rendListFull)
+            {
+                if (SelectedRenderer == null || rend == SelectedRenderer)
+                {
+                    foreach (var mat in GetMaterials(go, rend))
+                    {
+                        var contentList = UIUtility.CreatePanel("MaterialListEntry", MaterialEditorMaterialList.content.transform);
+                        contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
+                        contentList.gameObject.AddComponent<Mask>();
+                        contentList.color = RowColor;
+
+                        var itemPanel = UIUtility.CreatePanel("MaterialListEntryPanel", contentList.transform);
+                        itemPanel.gameObject.AddComponent<CanvasGroup>();
+                        itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+                        itemPanel.color = ItemColor;
+
+                        Toggle toggleEnabled = UIUtility.CreateToggle("MaterialEnabledToggle", itemPanel.transform, mat.NameFormatted());
+                        var toggleEnabledLE = toggleEnabled.gameObject.AddComponent<LayoutElement>();
+                        toggleEnabledLE.preferredWidth = 12;
+                        toggleEnabledLE.flexibleWidth = 0;
+                        toggleEnabled.isOn = false;
+                        toggleEnabled.group = MaterialListToggleGroup;
+                        toggleEnabled.onValueChanged.AddListener(value =>
+                        {
+                            if (!MaterialListToggleGroup.AnyTogglesOn())
+                                SelectedMaterial = null;
+                            else if (value)
+                                SelectedMaterial = mat;
+                            PopulateList(go, data, CurrentFilter);
+                        });
+
+                        itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggleEnabled.isOn = !toggleEnabled.isOn);
+                    }
                 }
             }
         }
@@ -307,13 +372,16 @@ namespace MaterialEditorAPI
             else
                 foreach (var rend in rendListFull)
                 {
+                    if (SelectedRenderer != null && rend != SelectedRenderer)
+                        continue;
+
                     foreach (string filterWord in filterList)
                         if (WildCardSearch(rend.NameFormatted(), filterWord.Trim()) && !rendList.Contains(rend))
                             rendList.Add(rend);
 
                     foreach (var mat in GetMaterials(go, rend))
                         foreach (string filterWord in filterList)
-                            if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
+                            if ((SelectedMaterial != null && mat == SelectedMaterial) || WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
                                 matList[mat.NameFormatted()] = mat;
 
                     if (SelectedRenderer != null)
@@ -321,13 +389,18 @@ namespace MaterialEditorAPI
                         rendList.Clear();
                         rendList.Add(SelectedRenderer);
                     }
+                    if (SelectedMaterial != null)
+                    {
+                        matList.Clear();
+                        matList[SelectedMaterial.NameFormatted()] = SelectedMaterial;
+                    }
                 }
 
             for (var i = 0; i < rendList.Count; i++)
             {
                 var rend = rendList[i];
                 //Get materials if materials list wasn't previously built by the filter    
-                if (filterList.Count == 0)
+                if (matList.Count == 0)
                     foreach (var mat in GetMaterials(go, rend))
                         matList[mat.NameFormatted()] = mat;
 
@@ -427,6 +500,7 @@ namespace MaterialEditorAPI
                 {
                     MaterialCopyRemove(data, mat, go);
                     PopulateList(go, data, filter);
+                    PopulateMaterialList(go, data, rendListFull);
                 };
                 items.Add(materialItem);
 
