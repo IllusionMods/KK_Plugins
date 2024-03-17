@@ -35,13 +35,11 @@ namespace MaterialEditorAPI
         private static ScrollRect MaterialEditorScrollableUI;
         private static InputField FilterInputField;
 
-        private static ScrollRect MaterialEditorRendererList;
-        private static ToggleGroup RendererListToggleGroup;
+        private static SelectListEntryTemplate MaterialEditorRendererList;
         private static Renderer SelectedRenderer;
-
-        private static ScrollRect MaterialEditorMaterialList;
-        private static ToggleGroup MaterialListToggleGroup;
+        private static SelectListEntryTemplate MaterialEditorMaterialList;
         private static Material SelectedMaterial;
+
 
         internal static FileSystemWatcher TexChangeWatcher;
         private VirtualList VirtualList;
@@ -150,31 +148,10 @@ namespace MaterialEditorAPI
             VirtualList.EntryTemplate = template;
             VirtualList.Initialize();
 
-            MaterialEditorRendererList = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
-            MaterialEditorRendererList.transform.SetRect(1f, 0.5f, 1.4f, 1f, MarginSize, MarginSize / 2f, -MarginSize, -HeaderSize - MarginSize / 2f);
-            MaterialEditorRendererList.gameObject.AddComponent<Mask>();
-            MaterialEditorRendererList.content.gameObject.AddComponent<VerticalLayoutGroup>();
-            MaterialEditorRendererList.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            MaterialEditorRendererList.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(ScrollOffsetX, 0f);
-            MaterialEditorRendererList.viewport.offsetMax = new Vector2(ScrollOffsetX, 0f);
-            MaterialEditorRendererList.movementType = ScrollRect.MovementType.Clamped;
-            MaterialEditorRendererList.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
-
-            RendererListToggleGroup = MaterialEditorRendererList.content.gameObject.AddComponent<ToggleGroup>();
-            RendererListToggleGroup.allowSwitchOff = true;
-
-            MaterialEditorMaterialList = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
-            MaterialEditorMaterialList.transform.SetRect(1f, 0f, 1.4f, 0.5f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
-            MaterialEditorMaterialList.gameObject.AddComponent<Mask>();
-            MaterialEditorMaterialList.content.gameObject.AddComponent<VerticalLayoutGroup>();
-            MaterialEditorMaterialList.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            MaterialEditorMaterialList.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(ScrollOffsetX, 0f);
-            MaterialEditorMaterialList.viewport.offsetMax = new Vector2(ScrollOffsetX, 0f);
-            MaterialEditorMaterialList.movementType = ScrollRect.MovementType.Clamped;
-            MaterialEditorMaterialList.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
-
-            MaterialListToggleGroup = MaterialEditorMaterialList.content.gameObject.AddComponent<ToggleGroup>();
-            MaterialListToggleGroup.allowSwitchOff = true;
+            MaterialEditorRendererList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "RendererList");
+            MaterialEditorRendererList.ScrollRect.transform.SetRect(1f, 0.5f, 1.4f, 1f, MarginSize, MarginSize / 2f, -MarginSize, -HeaderSize - MarginSize / 2f);
+            MaterialEditorMaterialList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "MaterialList");
+            MaterialEditorMaterialList.ScrollRect.transform.SetRect(1f, 0f, 1.4f, 0.5f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
         }
 
         /// <summary>
@@ -238,41 +215,18 @@ namespace MaterialEditorAPI
             if (go != CurrentGameObject)
             {
                 SelectedRenderer = null;
-                foreach (Transform child in MaterialEditorRendererList.content.transform)
-                {
-                    Destroy(child.gameObject);
-                }
+                MaterialEditorRendererList.ClearList();
 
                 foreach (var rend in rendListFull)
-                {
-                    var contentList = UIUtility.CreatePanel("RendererListEntry", MaterialEditorRendererList.content.transform);
-                    contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
-                    contentList.gameObject.AddComponent<Mask>();
-                    contentList.color = RowColor;
-
-                    var itemPanel = UIUtility.CreatePanel("RendererListEntryPanel", contentList.transform);
-                    itemPanel.gameObject.AddComponent<CanvasGroup>();
-                    itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
-                    itemPanel.color = ItemColor;
-
-                    Toggle toggleEnabled = UIUtility.CreateToggle("RendererEnabledToggle", itemPanel.transform, rend.NameFormatted());
-                    var toggleEnabledLE = toggleEnabled.gameObject.AddComponent<LayoutElement>();
-                    toggleEnabledLE.preferredWidth = 12;
-                    toggleEnabledLE.flexibleWidth = 0;
-                    toggleEnabled.isOn = false;
-                    toggleEnabled.group = RendererListToggleGroup;
-                    toggleEnabled.onValueChanged.AddListener(value =>
+                    MaterialEditorRendererList.AddEntry(rend.NameFormatted(), value =>
                     {
-                        if (!RendererListToggleGroup.AnyTogglesOn())
+                        if (!MaterialEditorRendererList.ToggleGroup.AnyTogglesOn())
                             SelectedRenderer = null;
                         else if (value)
                             SelectedRenderer = rend;
                         PopulateList(go, data, CurrentFilter);
                         PopulateMaterialList(go, data, rendListFull);
                     });
-
-                    itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggleEnabled.isOn = !toggleEnabled.isOn);
-                }
                 PopulateMaterialList(go, data, rendListFull);
             }
         }
@@ -280,46 +234,18 @@ namespace MaterialEditorAPI
         private void PopulateMaterialList(GameObject go, object data, IEnumerable<Renderer> rendListFull)
         {
             SelectedMaterial = null;
-            foreach (Transform child in MaterialEditorMaterialList.content.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            MaterialEditorMaterialList.ClearList();
 
-            foreach (var rend in rendListFull)
-            {
-                if (SelectedRenderer == null || rend == SelectedRenderer)
-                {
-                    foreach (var mat in GetMaterials(go, rend))
+            foreach (var rend in rendListFull.Where(rend => SelectedRenderer == null || rend == SelectedRenderer))
+                foreach (var mat in GetMaterials(go, rend))
+                    MaterialEditorMaterialList.AddEntry(mat.NameFormatted(), value =>
                     {
-                        var contentList = UIUtility.CreatePanel("MaterialListEntry", MaterialEditorMaterialList.content.transform);
-                        contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
-                        contentList.gameObject.AddComponent<Mask>();
-                        contentList.color = RowColor;
-
-                        var itemPanel = UIUtility.CreatePanel("MaterialListEntryPanel", contentList.transform);
-                        itemPanel.gameObject.AddComponent<CanvasGroup>();
-                        itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
-                        itemPanel.color = ItemColor;
-
-                        Toggle toggleEnabled = UIUtility.CreateToggle("MaterialEnabledToggle", itemPanel.transform, mat.NameFormatted());
-                        var toggleEnabledLE = toggleEnabled.gameObject.AddComponent<LayoutElement>();
-                        toggleEnabledLE.preferredWidth = 12;
-                        toggleEnabledLE.flexibleWidth = 0;
-                        toggleEnabled.isOn = false;
-                        toggleEnabled.group = MaterialListToggleGroup;
-                        toggleEnabled.onValueChanged.AddListener(value =>
-                        {
-                            if (!MaterialListToggleGroup.AnyTogglesOn())
-                                SelectedMaterial = null;
-                            else if (value)
-                                SelectedMaterial = mat;
-                            PopulateList(go, data, CurrentFilter);
-                        });
-
-                        itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggleEnabled.isOn = !toggleEnabled.isOn);
-                    }
-                }
-            }
+                        if (!MaterialEditorMaterialList.ToggleGroup.AnyTogglesOn())
+                            SelectedMaterial = null;
+                        else if (value)
+                            SelectedMaterial = mat;
+                        PopulateList(go, data, CurrentFilter);
+                    });
         }
 
         /// <summary>
