@@ -35,6 +35,10 @@ namespace MaterialEditorAPI
         private static ScrollRect MaterialEditorScrollableUI;
         private static InputField FilterInputField;
 
+        private static ScrollRect MaterialEditorRendererList;
+        private static ToggleGroup RendererListToggleGroup;
+        private static Renderer SelectedRenderer;
+
         internal static FileSystemWatcher TexChangeWatcher;
         private VirtualList VirtualList;
 
@@ -141,6 +145,19 @@ namespace MaterialEditorAPI
             VirtualList.ScrollRect = MaterialEditorScrollableUI;
             VirtualList.EntryTemplate = template;
             VirtualList.Initialize();
+
+            MaterialEditorRendererList = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
+            MaterialEditorRendererList.transform.SetRect(1f, 0f, 1.3f, 1f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
+            MaterialEditorRendererList.gameObject.AddComponent<Mask>();
+            MaterialEditorRendererList.content.gameObject.AddComponent<VerticalLayoutGroup>();
+            MaterialEditorRendererList.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            MaterialEditorRendererList.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(ScrollOffsetX, 0f);
+            MaterialEditorRendererList.viewport.offsetMax = new Vector2(ScrollOffsetX, 0f);
+            MaterialEditorRendererList.movementType = ScrollRect.MovementType.Clamped;
+            MaterialEditorRendererList.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
+
+            RendererListToggleGroup = MaterialEditorRendererList.content.gameObject.AddComponent<ToggleGroup>();
+            RendererListToggleGroup.allowSwitchOff = true;
         }
 
         /// <summary>
@@ -199,6 +216,47 @@ namespace MaterialEditorAPI
             return Regex.IsMatch(text, regex, RegexOptions.IgnoreCase);
         }
 
+        private void PopulateRenderedList(GameObject go, object data, IEnumerable<Renderer> rendListFull)
+        {
+            if (go != CurrentGameObject)
+            {
+                foreach (Transform child in MaterialEditorRendererList.content.transform)
+                {
+                    Destroy(child.gameObject);
+                }
+
+                foreach (var rend in rendListFull)
+                {
+                    var contentList = UIUtility.CreatePanel("RendererListEntry", MaterialEditorRendererList.content.transform);
+                    contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
+                    contentList.gameObject.AddComponent<Mask>();
+                    contentList.color = RowColor;
+
+                    var itemPanel = UIUtility.CreatePanel("RendererListEntryPanel", contentList.transform);
+                    itemPanel.gameObject.AddComponent<CanvasGroup>();
+                    itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+                    itemPanel.color = ItemColor;
+
+                    Toggle toggleEnabled = UIUtility.CreateToggle("RendererEnabledToggle", itemPanel.transform, rend.NameFormatted());
+                    var toggleEnabledLE = toggleEnabled.gameObject.AddComponent<LayoutElement>();
+                    toggleEnabledLE.preferredWidth = 12;
+                    toggleEnabledLE.flexibleWidth = 0;
+                    toggleEnabled.isOn = false;
+                    toggleEnabled.group = RendererListToggleGroup;
+                    toggleEnabled.onValueChanged.AddListener(value =>
+                    {
+                        if (!RendererListToggleGroup.AnyTogglesOn())
+                            SelectedRenderer = null;
+                        else if (value)
+                            SelectedRenderer = rend;
+                        PopulateList(go, data, CurrentFilter);
+                    });
+
+                    itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggleEnabled.isOn = !toggleEnabled.isOn);
+                }
+            }
+        }
+
         /// <summary>
         /// Populate the MaterialEditor UI
         /// </summary>
@@ -218,10 +276,6 @@ namespace MaterialEditorAPI
             SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
             FilterInputField.Set(filter);
 
-            CurrentGameObject = go;
-            CurrentData = data;
-            CurrentFilter = filter;
-
             if (go == null) return;
 
             List<Renderer> rendList = new List<Renderer>();
@@ -230,6 +284,12 @@ namespace MaterialEditorAPI
             List<string> filterListProperties = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
+
+            PopulateRenderedList(go, data, rendListFull);
+
+            CurrentGameObject = go;
+            CurrentData = data;
+            CurrentFilter = filter;
 
             if (!filter.IsNullOrEmpty())
             {
@@ -242,7 +302,7 @@ namespace MaterialEditorAPI
             }
 
             //Get all renderers and materials matching the filter
-            if (filterList.Count == 0)
+            if (filterList.Count == 0 && SelectedRenderer == null)
                 rendList = rendListFull.ToList();
             else
                 foreach (var rend in rendListFull)
@@ -255,6 +315,12 @@ namespace MaterialEditorAPI
                         foreach (string filterWord in filterList)
                             if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
                                 matList[mat.NameFormatted()] = mat;
+
+                    if (SelectedRenderer != null)
+                    {
+                        rendList.Clear();
+                        rendList.Add(SelectedRenderer);
+                    }
                 }
 
             for (var i = 0; i < rendList.Count; i++)
