@@ -232,7 +232,7 @@ namespace MaterialEditorAPI
         /// <param name="go">GameObject for which to read the renderers</param>
         /// <param name="data">Object that will be passed through to the get/set/reset events</param>
         /// <param name="rendListFull">List of all renderers to display</param>
-        private void PopulateRenderedList(GameObject go, object data, IEnumerable<Renderer> rendListFull)
+        private void PopulateRendererList(GameObject go, object data, IEnumerable<Renderer> rendListFull)
         {
             if (go != CurrentGameObject)
             {
