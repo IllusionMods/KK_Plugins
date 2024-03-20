@@ -39,6 +39,7 @@ namespace MaterialEditorAPI
         private static Renderer SelectedRenderer;
         private static SelectListEntryTemplate MaterialEditorMaterialList;
         private static Material SelectedMaterial;
+        private static bool ListsVisible = false;
 
 
         internal static FileSystemWatcher TexChangeWatcher;
@@ -118,7 +119,7 @@ namespace MaterialEditorAPI
             persistSearchText.transform.SetRect(0f, 0.15f, 1f, 0.85f, 120f, 0f, 0, 0f);
 
             var close = UIUtility.CreateButton("CloseButton", DragPanel.transform, "");
-            close.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
+            close.transform.SetRect(1f, 0f, 1f, 1f, -40f, 1f, -21f, -1f);
             close.onClick.AddListener(() => Visible = false);
 
             //X button
@@ -130,6 +131,19 @@ namespace MaterialEditorAPI
             x2.transform.SetRect(0f, 0f, 1f, 1f, 8f, 0f, -8f);
             x2.rectTransform.eulerAngles = new Vector3(0f, 0f, -45f);
             x2.color = Color.black;
+
+            var listButton = UIUtility.CreateButton("ViewListButton", DragPanel.transform, "<");
+            listButton.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
+            listButton.onClick.AddListener(() => MaterialEditorRendererList.ToggleVisibility(!ListsVisible));
+            listButton.onClick.AddListener(() => MaterialEditorMaterialList.ToggleVisibility(!ListsVisible));
+            listButton.onClick.AddListener(() => {
+                var text = listButton.GetComponentInChildren<Text>(true);
+                ListsVisible = !ListsVisible;
+                if (ListsVisible)
+                    text.text = "<";
+                else
+                    text.text = ">";
+            });
 
             MaterialEditorScrollableUI = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
             MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
@@ -148,10 +162,10 @@ namespace MaterialEditorAPI
             VirtualList.EntryTemplate = template;
             VirtualList.Initialize();
 
-            MaterialEditorRendererList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "RendererList");
-            MaterialEditorRendererList.ScrollRect.transform.SetRect(1f, 0.5f, 1.4f, 1f, MarginSize, MarginSize / 2f, -MarginSize, -HeaderSize - MarginSize / 2f);
-            MaterialEditorMaterialList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "MaterialList");
-            MaterialEditorMaterialList.ScrollRect.transform.SetRect(1f, 0f, 1.4f, 0.5f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
+            MaterialEditorRendererList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "RendererList", "Renderers");
+            MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + 180f);
+            MaterialEditorMaterialList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "MaterialList", "Materials");
+            MaterialEditorMaterialList.Panel.transform.SetRect(1f, 0f, 1f, 0.5f, MarginSize, 0f, MarginSize + 180f, -MarginSize);
         }
 
         /// <summary>
@@ -204,7 +218,7 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="text">Text to search in</param>
         /// <param name="filter">Filter with which to search the text</param>
-        private bool WildCardSearch(string text, string filter)
+        internal static bool WildCardSearch(string text, string filter)
         {
             string regex = "^.*" + Regex.Escape(filter).Replace("\\?", ".").Replace("\\*", ".*") + ".*$";
             return Regex.IsMatch(text, regex, RegexOptions.IgnoreCase);
