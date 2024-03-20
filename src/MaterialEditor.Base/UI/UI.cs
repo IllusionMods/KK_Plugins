@@ -35,9 +35,9 @@ namespace MaterialEditorAPI
         private static ScrollRect MaterialEditorScrollableUI;
         private static InputField FilterInputField;
 
-        private static SelectListEntryTemplate MaterialEditorRendererList;
+        private static SelectListPanel MaterialEditorRendererList;
         private static Renderer SelectedRenderer;
-        private static SelectListEntryTemplate MaterialEditorMaterialList;
+        private static SelectListPanel MaterialEditorMaterialList;
         private static Material SelectedMaterial;
         private static bool ListsVisible = false;
 
@@ -162,10 +162,10 @@ namespace MaterialEditorAPI
             VirtualList.EntryTemplate = template;
             VirtualList.Initialize();
 
-            MaterialEditorRendererList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "RendererList", "Renderers");
+            MaterialEditorRendererList = new SelectListPanel(MaterialEditorMainPanel.transform, "RendererList", "Renderers");
             MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + 180f);
             MaterialEditorRendererList.ToggleVisibility(false);
-            MaterialEditorMaterialList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "MaterialList", "Materials");
+            MaterialEditorMaterialList = new SelectListPanel(MaterialEditorMainPanel.transform, "MaterialList", "Materials");
             MaterialEditorMaterialList.Panel.transform.SetRect(1f, 0f, 1f, 0.5f, MarginSize, 0f, MarginSize + 180f, -MarginSize);
             MaterialEditorMaterialList.ToggleVisibility(false);
         }
@@ -226,6 +226,12 @@ namespace MaterialEditorAPI
             return Regex.IsMatch(text, regex, RegexOptions.IgnoreCase);
         }
 
+        /// <summary>
+        /// Populate the renderer list
+        /// </summary>
+        /// <param name="go">GameObject for which to read the renderers</param>
+        /// <param name="data">Object that will be passed through to the get/set/reset events</param>
+        /// <param name="rendListFull">List of all renderers to display</param>
         private void PopulateRenderedList(GameObject go, object data, IEnumerable<Renderer> rendListFull)
         {
             if (go != CurrentGameObject)
@@ -236,7 +242,7 @@ namespace MaterialEditorAPI
                 foreach (var rend in rendListFull)
                     MaterialEditorRendererList.AddEntry(rend.NameFormatted(), value =>
                     {
-                        if (!MaterialEditorRendererList.ToggleGroup.AnyTogglesOn())
+                        if (!MaterialEditorRendererList.AnyTogglesOn())
                             SelectedRenderer = null;
                         else if (value)
                             SelectedRenderer = rend;
@@ -247,16 +253,23 @@ namespace MaterialEditorAPI
             }
         }
 
-        private void PopulateMaterialList(GameObject go, object data, IEnumerable<Renderer> rendListFull)
+
+        /// <summary>
+        /// Populate the materials list
+        /// </summary>
+        /// <param name="go">GameObject for which to read the renderers</param>
+        /// <param name="data">Object that will be passed through to the get/set/reset events</param>
+        /// <param name="materials">List of all materials to display</param>
+        private void PopulateMaterialList(GameObject go, object data, IEnumerable<Renderer> materials)
         {
             SelectedMaterial = null;
             MaterialEditorMaterialList.ClearList();
 
-            foreach (var rend in rendListFull.Where(rend => SelectedRenderer == null || rend == SelectedRenderer))
+            foreach (var rend in materials.Where(rend => SelectedRenderer == null || rend == SelectedRenderer))
                 foreach (var mat in GetMaterials(go, rend))
                     MaterialEditorMaterialList.AddEntry(mat.NameFormatted(), value =>
                     {
-                        if (!MaterialEditorMaterialList.ToggleGroup.AnyTogglesOn())
+                        if (!MaterialEditorMaterialList.AnyTogglesOn())
                             SelectedMaterial = null;
                         else if (value)
                             SelectedMaterial = mat;
