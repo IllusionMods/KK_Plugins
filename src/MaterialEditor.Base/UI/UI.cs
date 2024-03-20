@@ -132,7 +132,7 @@ namespace MaterialEditorAPI
             x2.rectTransform.eulerAngles = new Vector3(0f, 0f, -45f);
             x2.color = Color.black;
 
-            var listButton = UIUtility.CreateButton("ViewListButton", DragPanel.transform, "<");
+            var listButton = UIUtility.CreateButton("ViewListButton", DragPanel.transform, ">");
             listButton.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
             listButton.onClick.AddListener(() => MaterialEditorRendererList.ToggleVisibility(!ListsVisible));
             listButton.onClick.AddListener(() => MaterialEditorMaterialList.ToggleVisibility(!ListsVisible));
@@ -164,8 +164,10 @@ namespace MaterialEditorAPI
 
             MaterialEditorRendererList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "RendererList", "Renderers");
             MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + 180f);
+            MaterialEditorRendererList.ToggleVisibility(false);
             MaterialEditorMaterialList = new SelectListEntryTemplate(MaterialEditorMainPanel.transform, "MaterialList", "Materials");
             MaterialEditorMaterialList.Panel.transform.SetRect(1f, 0f, 1f, 0.5f, MarginSize, 0f, MarginSize + 180f, -MarginSize);
+            MaterialEditorMaterialList.ToggleVisibility(false);
         }
 
         /// <summary>
@@ -307,41 +309,29 @@ namespace MaterialEditorAPI
             }
 
             //Get all renderers and materials matching the filter
-            if (filterList.Count == 0 && SelectedRenderer == null)
+            if (SelectedRenderer != null)
+                rendList.Add(SelectedRenderer);
+            else if (filterList.Count == 0)
                 rendList = rendListFull.ToList();
             else
                 foreach (var rend in rendListFull)
                 {
-                    if (SelectedRenderer != null && rend != SelectedRenderer)
-                        continue;
-
                     foreach (string filterWord in filterList)
                         if (WildCardSearch(rend.NameFormatted(), filterWord.Trim()) && !rendList.Contains(rend))
                             rendList.Add(rend);
 
-                    foreach (var mat in GetMaterials(go, rend))
+                    foreach (var mat in SelectedMaterial == null ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => mat == SelectedMaterial))
                         foreach (string filterWord in filterList)
-                            if ((SelectedMaterial != null && mat == SelectedMaterial) || WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
+                            if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
                                 matList[mat.NameFormatted()] = mat;
-
-                    if (SelectedRenderer != null)
-                    {
-                        rendList.Clear();
-                        rendList.Add(SelectedRenderer);
-                    }
-                    if (SelectedMaterial != null)
-                    {
-                        matList.Clear();
-                        matList[SelectedMaterial.NameFormatted()] = SelectedMaterial;
-                    }
                 }
 
             for (var i = 0; i < rendList.Count; i++)
             {
                 var rend = rendList[i];
                 //Get materials if materials list wasn't previously built by the filter    
-                if (matList.Count == 0)
-                    foreach (var mat in GetMaterials(go, rend))
+                if (filterList.Count == 0)
+                    foreach (var mat in SelectedMaterial == null ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => mat == SelectedMaterial))
                         matList[mat.NameFormatted()] = mat;
 
                 var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer")
