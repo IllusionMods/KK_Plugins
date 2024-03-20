@@ -42,6 +42,7 @@ namespace MaterialEditorAPI
         public static ConfigEntry<float> UIScale { get; set; }
         public static ConfigEntry<float> UIWidth { get; set; }
         public static ConfigEntry<float> UIHeight { get; set; }
+        public static ConfigEntry<float> UIListWidth { get; set; }
         public static ConfigEntry<bool> WatchTexChanges { get; set; }
         public static ConfigEntry<bool> ShaderOptimization { get; set; }
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
@@ -59,6 +60,7 @@ namespace MaterialEditorAPI
             UIScale = Config.Bind("Config", "UI Scale", 1.75f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(1f, 3f), new ConfigurationManagerAttributes { Order = 5 }));
             UIWidth = Config.Bind("Config", "UI Width", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 4, ShowRangeAsPercent = false }));
             UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 3, ShowRangeAsPercent = false }));
+            UIListWidth = Config.Bind("Config", "UI List Width", 180f, new ConfigDescription("Controls width of the renderer/materials lists to the side of the window", new AcceptableValueRange<float>(100f, 500f), new ConfigurationManagerAttributes { Order = 2, ShowRangeAsPercent = false }));
             WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI.", null, new ConfigurationManagerAttributes { Order = 2 }));
             ShaderOptimization = Config.Bind("Config", "Shader Optimization", true, new ConfigDescription("Replaces every loaded shader with the MaterialEditor copy of the shader. Reduces the number of copies of shaders loaded which reduces RAM usage and improves performance.", null, new ConfigurationManagerAttributes { Order = 1 }));
             ExportBakedMesh = Config.Bind("Config", "Export Baked Mesh", false, new ConfigDescription("When enabled, skinned meshes will be exported in their current state with all customization applied as well as in the current pose.", null, new ConfigurationManagerAttributes { Order = 1 }));
@@ -70,6 +72,7 @@ namespace MaterialEditorAPI
             UIScale.SettingChanged += MaterialEditorUI.UISettingChanged;
             UIWidth.SettingChanged += MaterialEditorUI.UISettingChanged;
             UIHeight.SettingChanged += MaterialEditorUI.UISettingChanged;
+            UIListWidth.SettingChanged += MaterialEditorUI.UISettingChanged;
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
             ShaderOptimization.SettingChanged += ShaderOptimization_SettingChanged;
             ConfigExportPath.SettingChanged += ConfigExportPath_SettingChanged;
