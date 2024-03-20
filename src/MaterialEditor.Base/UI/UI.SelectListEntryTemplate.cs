@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UILib;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,7 +37,7 @@ namespace MaterialEditorAPI
             filterInputField.onValueChanged.AddListener(FilterList);
 
             ScrollRect = UIUtility.CreateScrollView(name, Panel.transform);
-            ScrollRect.transform.SetRect(0f, 0f, 1f, 1f, 2f, 2f, -2f, -MaterialEditorUI.HeaderSize - 2f);
+            ScrollRect.transform.SetRect(0f, 0f, 1f, 1f, 2f, 2f, -2f, -MaterialEditorUI.HeaderSize);
             ScrollRect.gameObject.AddComponent<Mask>();
             ScrollRect.content.gameObject.AddComponent<VerticalLayoutGroup>();
             ScrollRect.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
@@ -66,8 +67,7 @@ namespace MaterialEditorAPI
 
             Toggle toggle = UIUtility.CreateToggle($"{this.Name}Toggle", itemPanel.transform, name);
             var toggleLE = toggle.gameObject.AddComponent<LayoutElement>();
-            toggleLE.preferredWidth = 12;
-            toggleLE.flexibleWidth = 0;
+            toggle.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 1f, 1f, -18f, 18f, -1f);
             toggle.isOn = false;
             toggle.group = ToggleGroup;
             toggle.onValueChanged.AddListener(value => onValueChanged(value));
