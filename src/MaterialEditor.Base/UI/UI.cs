@@ -305,7 +305,7 @@ namespace MaterialEditorAPI
             List<ItemInfo> items = new List<ItemInfo>();
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
 
-            PopulateRenderedList(go, data, rendListFull);
+            PopulateRendererList(go, data, rendListFull);
 
             CurrentGameObject = go;
             CurrentData = data;
