@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UILib;
 using UnityEngine;
 using UnityEngine.UI;
+using static MaterialEditorAPI.MaterialEditorPluginBase;
 
 namespace MaterialEditorAPI
 {
@@ -69,11 +70,13 @@ namespace MaterialEditorAPI
             itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggle.isOn = !toggle.isOn);
 
             listItems[name] = contentList;
+            FilterList(filterInputField.text);
         }
 
         public void ClearList()
         {
-            filterInputField.Set("");
+            if (!PersistFilter.Value)
+                filterInputField.Set("");
             listItems.Clear();
             foreach (Transform child in scrollRect.content.transform)
                 UnityEngine.Object.Destroy(child.gameObject);
