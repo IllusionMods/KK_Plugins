@@ -9,7 +9,6 @@ namespace MaterialEditorAPI
     internal class SelectListPanel
     {
         public Image Panel { get; }
-        private ToggleGroup toggleGroup;
         private string name;
         private Transform parent;
         private ScrollRect scrollRect;
@@ -44,9 +43,6 @@ namespace MaterialEditorAPI
             scrollRect.viewport.offsetMax = new Vector2(MaterialEditorUI.ScrollOffsetX, 0f);
             scrollRect.movementType = ScrollRect.MovementType.Clamped;
             scrollRect.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
-
-            toggleGroup = scrollRect.content.gameObject.AddComponent<ToggleGroup>();
-            toggleGroup.allowSwitchOff = true;
         }
 
         public void AddEntry(string name, Action<bool> onValueChanged)
@@ -68,7 +64,6 @@ namespace MaterialEditorAPI
             var toggleLE = toggle.gameObject.AddComponent<LayoutElement>();
             toggle.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 1f, 1f, -18f, 18f, -1f);
             toggle.isOn = false;
-            toggle.group = toggleGroup;
             toggle.onValueChanged.AddListener(value => onValueChanged(value));
 
             itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggle.isOn = !toggle.isOn);
@@ -87,11 +82,6 @@ namespace MaterialEditorAPI
         public void ToggleVisibility(bool visible)
         {
             Panel.gameObject.SetActive(visible);
-        }
-
-        public bool AnyTogglesOn()
-        {
-            return toggleGroup.AnyTogglesOn();
         }
 
         private void FilterList(string filter)

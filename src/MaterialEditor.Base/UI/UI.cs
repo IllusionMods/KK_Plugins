@@ -36,9 +36,9 @@ namespace MaterialEditorAPI
         private static InputField FilterInputField;
 
         private static SelectListPanel MaterialEditorRendererList;
-        private static Renderer SelectedRenderer;
+        private static List<Renderer> SelectedRenderers = new List<Renderer>();
         private static SelectListPanel MaterialEditorMaterialList;
-        private static Material SelectedMaterial;
+        private static List<Material> SelectedMaterials = new List<Material>();
         private static bool ListsVisible = false;
 
 
@@ -240,16 +240,16 @@ namespace MaterialEditorAPI
         {
             if (go != CurrentGameObject)
             {
-                SelectedRenderer = null;
+                SelectedRenderers.Clear();
                 MaterialEditorRendererList.ClearList();
 
                 foreach (var rend in rendListFull)
                     MaterialEditorRendererList.AddEntry(rend.NameFormatted(), value =>
                     {
-                        if (!MaterialEditorRendererList.AnyTogglesOn())
-                            SelectedRenderer = null;
-                        else if (value)
-                            SelectedRenderer = rend;
+                        if (value)
+                            SelectedRenderers.Add(rend);
+                        else
+                            SelectedRenderers.Remove(rend);
                         PopulateList(go, data, CurrentFilter);
                         PopulateMaterialList(go, data, rendListFull);
                     });
@@ -266,17 +266,17 @@ namespace MaterialEditorAPI
         /// <param name="materials">List of all materials to display</param>
         private void PopulateMaterialList(GameObject go, object data, IEnumerable<Renderer> materials)
         {
-            SelectedMaterial = null;
+            SelectedMaterials.Clear();
             MaterialEditorMaterialList.ClearList();
 
-            foreach (var rend in materials.Where(rend => SelectedRenderer == null || rend == SelectedRenderer))
+            foreach (var rend in materials.Where(rend => SelectedRenderers.Count == 0 || SelectedRenderers.Contains(rend)))
                 foreach (var mat in GetMaterials(go, rend))
                     MaterialEditorMaterialList.AddEntry(mat.NameFormatted(), value =>
                     {
-                        if (!MaterialEditorMaterialList.AnyTogglesOn())
-                            SelectedMaterial = null;
-                        else if (value)
-                            SelectedMaterial = mat;
+                        if (value)
+                            SelectedMaterials.Add(mat);
+                        else
+                            SelectedMaterials.Remove(mat);
                         PopulateList(go, data, CurrentFilter);
                     });
         }
@@ -326,8 +326,8 @@ namespace MaterialEditorAPI
             }
 
             //Get all renderers and materials matching the filter
-            if (SelectedRenderer != null)
-                rendList.Add(SelectedRenderer);
+            if (SelectedRenderers.Count > 0)
+                rendList.AddRange(SelectedRenderers);
             else if (filterList.Count == 0)
                 rendList = rendListFull.ToList();
             else
@@ -337,7 +337,7 @@ namespace MaterialEditorAPI
                         if (WildCardSearch(rend.NameFormatted(), filterWord.Trim()) && !rendList.Contains(rend))
                             rendList.Add(rend);
 
-                    foreach (var mat in SelectedMaterial == null ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => mat == SelectedMaterial))
+                    foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
                         foreach (string filterWord in filterList)
                             if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
                                 matList[mat.NameFormatted()] = mat;
@@ -348,7 +348,7 @@ namespace MaterialEditorAPI
                 var rend = rendList[i];
                 //Get materials if materials list wasn't previously built by the filter    
                 if (filterList.Count == 0)
-                    foreach (var mat in SelectedMaterial == null ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => mat == SelectedMaterial))
+                    foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
                         matList[mat.NameFormatted()] = mat;
 
                 var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer")
