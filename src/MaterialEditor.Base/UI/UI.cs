@@ -35,6 +35,13 @@ namespace MaterialEditorAPI
         private static ScrollRect MaterialEditorScrollableUI;
         private static InputField FilterInputField;
 
+        private static SelectListPanel MaterialEditorRendererList;
+        private static List<Renderer> SelectedRenderers = new List<Renderer>();
+        private static SelectListPanel MaterialEditorMaterialList;
+        private static List<Material> SelectedMaterials = new List<Material>();
+        private static bool ListsVisible = false;
+
+
         internal static FileSystemWatcher TexChangeWatcher;
         private VirtualList VirtualList;
 
@@ -112,7 +119,7 @@ namespace MaterialEditorAPI
             persistSearchText.transform.SetRect(0f, 0.15f, 1f, 0.85f, 120f, 0f, 0, 0f);
 
             var close = UIUtility.CreateButton("CloseButton", DragPanel.transform, "");
-            close.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
+            close.transform.SetRect(1f, 0f, 1f, 1f, -40f, 1f, -21f, -1f);
             close.onClick.AddListener(() => Visible = false);
 
             //X button
@@ -124,6 +131,19 @@ namespace MaterialEditorAPI
             x2.transform.SetRect(0f, 0f, 1f, 1f, 8f, 0f, -8f);
             x2.rectTransform.eulerAngles = new Vector3(0f, 0f, -45f);
             x2.color = Color.black;
+
+            var listButton = UIUtility.CreateButton("ViewListButton", DragPanel.transform, ">");
+            listButton.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
+            listButton.onClick.AddListener(() => MaterialEditorRendererList.ToggleVisibility(!ListsVisible));
+            listButton.onClick.AddListener(() => MaterialEditorMaterialList.ToggleVisibility(!ListsVisible));
+            listButton.onClick.AddListener(() => {
+                var text = listButton.GetComponentInChildren<Text>(true);
+                ListsVisible = !ListsVisible;
+                if (ListsVisible)
+                    text.text = "<";
+                else
+                    text.text = ">";
+            });
 
             MaterialEditorScrollableUI = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
             MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
@@ -141,6 +161,13 @@ namespace MaterialEditorAPI
             VirtualList.ScrollRect = MaterialEditorScrollableUI;
             VirtualList.EntryTemplate = template;
             VirtualList.Initialize();
+
+            MaterialEditorRendererList = new SelectListPanel(MaterialEditorMainPanel.transform, "RendererList", "Renderers");
+            MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + UIListWidth.Value);
+            MaterialEditorRendererList.ToggleVisibility(false);
+            MaterialEditorMaterialList = new SelectListPanel(MaterialEditorMainPanel.transform, "MaterialList", "Materials");
+            MaterialEditorMaterialList.Panel.transform.SetRect(1f, 0f, 1f, 0.5f, MarginSize, 0f, MarginSize + UIListWidth.Value, -MarginSize);
+            MaterialEditorMaterialList.ToggleVisibility(false);
         }
 
         /// <summary>
@@ -186,6 +213,10 @@ namespace MaterialEditorAPI
                 MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
             if (MaterialEditorMainPanel != null)
                 SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+            if (MaterialEditorRendererList != null)
+                MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + UIListWidth.Value);
+            if (MaterialEditorMaterialList != null)
+                MaterialEditorMaterialList.Panel.transform.SetRect(1f, 0f, 1f, 0.5f, MarginSize, 0f, MarginSize + UIListWidth.Value, -MarginSize);
         }
 
         /// <summary>
@@ -193,10 +224,61 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="text">Text to search in</param>
         /// <param name="filter">Filter with which to search the text</param>
-        private bool WildCardSearch(string text, string filter)
+        internal static bool WildCardSearch(string text, string filter)
         {
             string regex = "^.*" + Regex.Escape(filter).Replace("\\?", ".").Replace("\\*", ".*") + ".*$";
             return Regex.IsMatch(text, regex, RegexOptions.IgnoreCase);
+        }
+
+        /// <summary>
+        /// Populate the renderer list
+        /// </summary>
+        /// <param name="go">GameObject for which to read the renderers</param>
+        /// <param name="data">Object that will be passed through to the get/set/reset events</param>
+        /// <param name="rendListFull">List of all renderers to display</param>
+        private void PopulateRendererList(GameObject go, object data, IEnumerable<Renderer> rendListFull)
+        {
+            if (go != CurrentGameObject)
+            {
+                SelectedRenderers.Clear();
+                MaterialEditorRendererList.ClearList();
+
+                foreach (var rend in rendListFull)
+                    MaterialEditorRendererList.AddEntry(rend.NameFormatted(), value =>
+                    {
+                        if (value)
+                            SelectedRenderers.Add(rend);
+                        else
+                            SelectedRenderers.Remove(rend);
+                        PopulateList(go, data, CurrentFilter);
+                        PopulateMaterialList(go, data, rendListFull);
+                    });
+                PopulateMaterialList(go, data, rendListFull);
+            }
+        }
+
+
+        /// <summary>
+        /// Populate the materials list
+        /// </summary>
+        /// <param name="go">GameObject for which to read the renderers</param>
+        /// <param name="data">Object that will be passed through to the get/set/reset events</param>
+        /// <param name="materials">List of all materials to display</param>
+        private void PopulateMaterialList(GameObject go, object data, IEnumerable<Renderer> materials)
+        {
+            SelectedMaterials.Clear();
+            MaterialEditorMaterialList.ClearList();
+
+            foreach (var rend in materials.Where(rend => SelectedRenderers.Count == 0 || SelectedRenderers.Contains(rend)))
+                foreach (var mat in GetMaterials(go, rend))
+                    MaterialEditorMaterialList.AddEntry(mat.NameFormatted(), value =>
+                    {
+                        if (value)
+                            SelectedMaterials.Add(mat);
+                        else
+                            SelectedMaterials.Remove(mat);
+                        PopulateList(go, data, CurrentFilter);
+                    });
         }
 
         /// <summary>
@@ -218,10 +300,6 @@ namespace MaterialEditorAPI
             SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
             FilterInputField.Set(filter);
 
-            CurrentGameObject = go;
-            CurrentData = data;
-            CurrentFilter = filter;
-
             if (go == null) return;
 
             List<Renderer> rendList = new List<Renderer>();
@@ -230,6 +308,12 @@ namespace MaterialEditorAPI
             List<string> filterListProperties = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
+
+            PopulateRendererList(go, data, rendListFull);
+
+            CurrentGameObject = go;
+            CurrentData = data;
+            CurrentFilter = filter;
 
             if (!filter.IsNullOrEmpty())
             {
@@ -242,7 +326,9 @@ namespace MaterialEditorAPI
             }
 
             //Get all renderers and materials matching the filter
-            if (filterList.Count == 0)
+            if (SelectedRenderers.Count > 0)
+                rendList.AddRange(SelectedRenderers);
+            else if (filterList.Count == 0)
                 rendList = rendListFull.ToList();
             else
                 foreach (var rend in rendListFull)
@@ -251,7 +337,7 @@ namespace MaterialEditorAPI
                         if (WildCardSearch(rend.NameFormatted(), filterWord.Trim()) && !rendList.Contains(rend))
                             rendList.Add(rend);
 
-                    foreach (var mat in GetMaterials(go, rend))
+                    foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
                         foreach (string filterWord in filterList)
                             if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
                                 matList[mat.NameFormatted()] = mat;
@@ -262,7 +348,7 @@ namespace MaterialEditorAPI
                 var rend = rendList[i];
                 //Get materials if materials list wasn't previously built by the filter    
                 if (filterList.Count == 0)
-                    foreach (var mat in GetMaterials(go, rend))
+                    foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
                         matList[mat.NameFormatted()] = mat;
 
                 var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer")
@@ -375,6 +461,7 @@ namespace MaterialEditorAPI
                 {
                     MaterialCopyRemove(data, mat, go);
                     PopulateList(go, data, filter);
+                    PopulateMaterialList(go, data, rendListFull);
                 };
                 items.Add(materialItem);
 
