@@ -912,6 +912,9 @@ namespace KK_Plugins.MaterialEditor
                         ConvertNormalMaps(material);
                     }
                 }
+                var projectors = go.GetComponentsInChildren<Projector>();
+                foreach (var projector in projectors)
+                    ReplaceShaders(projector.material);
             }
             else if (context.Asset is Material material)
             {

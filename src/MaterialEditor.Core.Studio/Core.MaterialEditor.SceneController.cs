@@ -58,6 +58,11 @@ namespace KK_Plugins.MaterialEditor
             else
                 data.data.Add(nameof(RendererPropertyList), null);
 
+            if (ProjectorPropertyList.Count > 0)
+                data.data.Add(nameof(ProjectorPropertyList), MessagePackSerializer.Serialize(ProjectorPropertyList));
+            else
+                data.data.Add(nameof(ProjectorPropertyList), null);
+
             if (MaterialFloatPropertyList.Count > 0)
                 data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(MaterialFloatPropertyList));
             else
@@ -199,6 +204,18 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 
+            if (data.data.TryGetValue(nameof(ProjectorPropertyList), out var projectorProperties) && projectorProperties != null)
+            {
+                var properties = MessagePackSerializer.Deserialize<List<ProjectorProperty>>((byte[])projectorProperties);
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var loadedProperty = properties[i];
+                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                        if (MaterialAPI.SetProjectorProperty(ociItem.objectItem, loadedProperty.ProjectorName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
+                            ProjectorPropertyList.Add(new ProjectorProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.ProjectorName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                }
+            }
+
             if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
             {
                 var properties = MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties);
@@ -275,6 +292,7 @@ namespace KK_Plugins.MaterialEditor
         protected override void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems)
         {
             List<RendererProperty> rendererPropertyListNew = new List<RendererProperty>();
+            List<ProjectorProperty> projectorPropertyListNew = new List<ProjectorProperty>();
             List<MaterialFloatProperty> materialFloatPropertyListNew = new List<MaterialFloatProperty>();
             List<MaterialKeywordProperty> materialKeywordPropertyListNew = new List<MaterialKeywordProperty>();
             List<MaterialColorProperty> materialColorPropertyListNew = new List<MaterialColorProperty>();
@@ -314,6 +332,14 @@ namespace KK_Plugins.MaterialEditor
                         if (loadedProperty.ID == copiedItem.Key)
                             if (MaterialAPI.SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value))
                                 rendererPropertyListNew.Add(new RendererProperty(copiedItem.Value.GetSceneId(), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    }
+
+                    for (var i = 0; i < ProjectorPropertyList.Count; i++)
+                    {
+                        var loadedProperty = ProjectorPropertyList[i];
+                        if (loadedProperty.ID == copiedItem.Key)
+                            if (MaterialAPI.SetProjectorProperty(ociItem.objectItem, loadedProperty.ProjectorName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
+                                projectorPropertyListNew.Add(new ProjectorProperty(copiedItem.Value.GetSceneId(), loadedProperty.ProjectorName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                     }
 
                     for (var i = 0; i < MaterialFloatPropertyList.Count; i++)
@@ -360,6 +386,7 @@ namespace KK_Plugins.MaterialEditor
             }
 
             RendererPropertyList.AddRange(rendererPropertyListNew);
+            ProjectorPropertyList.AddRange(projectorPropertyListNew);
             MaterialFloatPropertyList.AddRange(materialFloatPropertyListNew);
             MaterialKeywordPropertyList.AddRange(materialKeywordPropertyListNew);
             MaterialColorPropertyList.AddRange(materialColorPropertyListNew);
@@ -575,6 +602,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var id = item.GetSceneId();
                 RendererPropertyList.RemoveAll(x => x.ID == id);
+                ProjectorPropertyList.RemoveAll(x => x.ID == id);
                 MaterialFloatPropertyList.RemoveAll(x => x.ID == id);
                 MaterialKeywordPropertyList.RemoveAll(x => x.ID == id);
                 MaterialColorPropertyList.RemoveAll(x => x.ID == id);
@@ -590,15 +618,21 @@ namespace KK_Plugins.MaterialEditor
 
         protected override void OnObjectVisibilityToggled(ObjectCtrlInfo objectCtrlInfo, bool visible)
         {
-            if (visible && objectCtrlInfo is OCIItem item)
+            if (objectCtrlInfo is OCIItem item)
             {
                 var id = item.GetSceneId();
-                foreach (var property in RendererPropertyList.Where(x => x.ID == id && x.Property == RendererProperties.Enabled))
-                {
-                    MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
-                    // potential recalc of normals, have to test...
-                }
+                if(visible)
+                    foreach (var property in RendererPropertyList.Where(x => x.ID == id && x.Property == RendererProperties.Enabled))
+                    {
+                        MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
+                        // potential recalc of normals, have to test...
+                    }
+
+                foreach (var property in ProjectorPropertyList.Where(x => x.ID == id && x.Property == ProjectorProperties.Enabled))
+                    MaterialAPI.SetProjectorProperty(GetObjectByID(id), property.ProjectorName, property.Property, Convert.ToSingle(visible));
             }
+
+
             base.OnObjectVisibilityToggled(objectCtrlInfo, visible);
         }
 
@@ -841,17 +875,17 @@ namespace KK_Plugins.MaterialEditor
             {
                 string valueOriginal = "";
                 if (property == ProjectorProperties.FarClipPlane)
-                    valueOriginal = projector.farClipPlane.ToString();
+                    valueOriginal = projector.farClipPlane.ToString(CultureInfo.InvariantCulture);
                 else if (property == ProjectorProperties.NearClipPlane)
-                    valueOriginal = projector.nearClipPlane.ToString();
+                    valueOriginal = projector.nearClipPlane.ToString(CultureInfo.InvariantCulture);
                 else if (property == ProjectorProperties.FieldOfView)
-                    valueOriginal = projector.fieldOfView.ToString();
+                    valueOriginal = projector.fieldOfView.ToString(CultureInfo.InvariantCulture);
                 else if (property == ProjectorProperties.AspectRatio)
-                    valueOriginal = projector.aspectRatio.ToString();
+                    valueOriginal = projector.aspectRatio.ToString(CultureInfo.InvariantCulture);
                 else if (property == ProjectorProperties.Orthographic)
-                    valueOriginal = projector.orthographic.ToString();
+                    valueOriginal = Convert.ToSingle(projector.orthographic).ToString(CultureInfo.InvariantCulture);
                 else if (property == ProjectorProperties.OrthographicSize)
-                    valueOriginal = projector.orthographicSize.ToString();
+                    valueOriginal = projector.orthographicSize.ToString(CultureInfo.InvariantCulture);
 
                 if (valueOriginal != "")
                     ProjectorPropertyList.Add(new ProjectorProperty(id, projector.NameFormatted(), property, value.ToString(CultureInfo.InvariantCulture), valueOriginal));
@@ -2003,7 +2037,7 @@ namespace KK_Plugins.MaterialEditor
             /// <summary>
             /// Name of the projector
             /// </summary>
-            [Key("RendererName")]
+            [Key("ProjectorName")]
             public string ProjectorName;
             /// <summary>
             /// Property type

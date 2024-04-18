@@ -416,19 +416,36 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorProperty(GameObject gameObject, string projectorName, ProjectorProperties propertyName, float value)
         {
-            if (propertyName == ProjectorProperties.FarClipPlane)
+            if (propertyName == ProjectorProperties.Enabled)
+                return SetProjectorEnabled(gameObject, projectorName, System.Convert.ToBoolean(value));
+            else if (propertyName == ProjectorProperties.FarClipPlane)
                 return SetProjectorFarClipPlane(gameObject, projectorName, value);
-            if (propertyName == ProjectorProperties.NearClipPlane)
+            else if (propertyName == ProjectorProperties.NearClipPlane)
                 return SetProjectorNearClipPlane(gameObject, projectorName, value);
-            if (propertyName == ProjectorProperties.FieldOfView)
+            else if (propertyName == ProjectorProperties.FieldOfView)
                 return SetProjectorFieldOfView(gameObject, projectorName, value);
-            if (propertyName == ProjectorProperties.AspectRatio)
+            else if (propertyName == ProjectorProperties.AspectRatio)
                 return SetProjectorAspectRatio(gameObject, projectorName, value);
-            if (propertyName == ProjectorProperties.Orthographic)
+            else if (propertyName == ProjectorProperties.Orthographic)
                 return SetProjectorOrthographic(gameObject, projectorName, System.Convert.ToBoolean(value));
-            if (propertyName == ProjectorProperties.OrthographicSize)
+            else if (propertyName == ProjectorProperties.OrthographicSize)
                 return SetProjectorOrthographicSize(gameObject, projectorName, value);
             return false;
+        }
+
+        public static bool SetProjectorEnabled(GameObject gameObject, string projectorName, bool value)
+        {
+            bool didSet = false;
+
+            foreach (var projector in GetProjectorList(gameObject))
+            {
+                if (projector.NameFormatted() == projectorName)
+                {
+                    projector.enabled = value;
+                    didSet = true;
+                }
+            }
+            return didSet;
         }
 
         public static bool SetProjectorFarClipPlane(GameObject gameObject, string projectorName, float value)
@@ -752,6 +769,10 @@ namespace MaterialEditorAPI
         }
         public enum ProjectorProperties
         {
+            /// <summary>
+            /// Whether the projector is enabled
+            /// </summary>
+            Enabled,
             /// <summary>
             /// Near clip plane to start projecting
             /// </summary>
