@@ -625,24 +625,22 @@ namespace MaterialEditorAPI
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
-                            float valueFloat = mat.GetFloat($"_{propertyName}");
-                            float valueFloatOriginal = valueFloat;
+                            float valueFloatOriginal = mat.GetFloat($"_{propertyName}");
                             float? valueFloatOriginalTemp = GetMaterialFloatPropertyValueOriginal(data, mat, propertyName, go);
                             if (valueFloatOriginalTemp != null)
                                 valueFloatOriginal = (float)valueFloatOriginalTemp;
-                            var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
-                            {
-                                FloatValue = valueFloat,
-                                FloatValueOriginal = valueFloatOriginal,
-                                SelectInterpolableButtonFloatOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.FloatProperty, materialName, propertyName)
-                            };
-                            if (property.Value.MinValue != null)
-                                contentItem.FloatValueSliderMin = (float)property.Value.MinValue;
-                            if (property.Value.MaxValue != null)
-                                contentItem.FloatValueSliderMax = (float)property.Value.MaxValue;
-                            contentItem.FloatValueOnChange = value => SetMaterialFloatProperty(data, mat, propertyName, value, go);
-                            contentItem.FloatValueOnReset = () => RemoveMaterialFloatProperty(data, mat, propertyName, go);
-                            items.Add(contentItem);
+
+                            AddFloatslider
+                            (
+                                valueFloat: mat.GetFloat($"_{propertyName}"),
+                                propertyName: propertyName,
+                                onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.FloatProperty, materialName, propertyName),
+                                changeValue: value => SetMaterialFloatProperty(data, mat, propertyName, value, go),
+                                resetValue: value => RemoveMaterialFloatProperty(data, mat, propertyName, go),
+                                valueFloatOriginal: valueFloatOriginal,
+                                minValue: property.Value.MinValue,
+                                maxValue: property.Value.MaxValue
+                            );
                         }
                     }
                     else if (property.Value.Type == ShaderPropertyType.Keyword)
@@ -669,11 +667,12 @@ namespace MaterialEditorAPI
 
             void PopulateProjectorSettings(Projector projector)
             {
-                AddFloatslider(projector.nearClipPlane, "Near Clip Plane", null, value => projector.nearClipPlane = value, value => projector.nearClipPlane = value, 0.1f, 0.01f, 100f);
+                AddFloatslider(projector.nearClipPlane, "Near Clip Plane", null, value => projector.nearClipPlane = value, value => projector.nearClipPlane = value, 0.1f, 0.01f, 10f);
                 AddFloatslider(projector.farClipPlane, "Far Clip Plane", null, value => projector.farClipPlane = value, value => projector.farClipPlane = value, 20f, 0.01f, 100f);
                 AddFloatslider(projector.fieldOfView, "Field Of View", null, value => projector.fieldOfView = value, value => projector.fieldOfView = value, 60f, 0.01f, 180f);
-                AddFloatslider(projector.aspectRatio, "Aspect ratio", null, value => projector.aspectRatio = value, value => projector.aspectRatio = value, 1f, 0.01f, 100f);
-                AddFloatslider(projector.orthographicSize, "Orthographic Size", null, value => projector.orthographicSize = value, value => projector.orthographicSize = value, 10f, 0.01f, 100f);
+                AddFloatslider(projector.aspectRatio, "Aspect ratio", null, value => projector.aspectRatio = value, value => projector.aspectRatio = value, 1f, 0.01f, 20f);
+                AddFloatslider(Convert.ToSingle(projector.orthographic), "Orthographic", null, value => projector.orthographic = Convert.ToBoolean(value), value => projector.orthographic = Convert.ToBoolean(value), 0f, 0f, 1f);
+                AddFloatslider(projector.orthographicSize, "Orthographic Size", null, value => projector.orthographicSize = value, value => projector.orthographicSize = value, 10f, 0.01f, 20f);
             }
 
             void AddFloatslider(float valueFloat, string propertyName, Action onInteroperableClick, Action<float> changeValue, Action<float> resetValue, float valueFloatOriginal, float? minValue = null, float? maxValue = null)
