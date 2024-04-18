@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using MessagePack.Decoders;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -636,7 +635,7 @@ namespace MaterialEditorAPI
                                 propertyName: propertyName,
                                 onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.FloatProperty, materialName, propertyName),
                                 changeValue: value => SetMaterialFloatProperty(data, mat, propertyName, value, go),
-                                resetValue: value => RemoveMaterialFloatProperty(data, mat, propertyName, go),
+                                resetValue: () => RemoveMaterialFloatProperty(data, mat, propertyName, go),
                                 valueFloatOriginal: valueFloatOriginal,
                                 minValue: property.Value.MinValue,
                                 maxValue: property.Value.MaxValue
@@ -667,15 +666,75 @@ namespace MaterialEditorAPI
 
             void PopulateProjectorSettings(Projector projector)
             {
-                AddFloatslider(projector.nearClipPlane, "Near Clip Plane", null, value => projector.nearClipPlane = value, value => projector.nearClipPlane = value, 0.1f, 0.01f, 10f);
-                AddFloatslider(projector.farClipPlane, "Far Clip Plane", null, value => projector.farClipPlane = value, value => projector.farClipPlane = value, 20f, 0.01f, 100f);
-                AddFloatslider(projector.fieldOfView, "Field Of View", null, value => projector.fieldOfView = value, value => projector.fieldOfView = value, 60f, 0.01f, 180f);
-                AddFloatslider(projector.aspectRatio, "Aspect ratio", null, value => projector.aspectRatio = value, value => projector.aspectRatio = value, 1f, 0.01f, 20f);
-                AddFloatslider(Convert.ToSingle(projector.orthographic), "Orthographic", null, value => projector.orthographic = Convert.ToBoolean(value), value => projector.orthographic = Convert.ToBoolean(value), 0f, 0f, 1f);
-                AddFloatslider(projector.orthographicSize, "Orthographic Size", null, value => projector.orthographicSize = value, value => projector.orthographicSize = value, 10f, 0.01f, 20f);
+                AddFloatslider
+                (
+                    valueFloat: projector.nearClipPlane,
+                    propertyName: "Near Clip Plane",
+                    onInteroperableClick: null,
+                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.NearClipPlane, value, projector.gameObject),
+                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.NearClipPlane, projector.gameObject),
+                    valueFloatOriginal: 0.1f,
+                    minValue: 0.01f,
+                    maxValue: 10f
+                );
+                AddFloatslider
+                (
+                    valueFloat: projector.farClipPlane,
+                    propertyName: "Far Clip Plane",
+                    onInteroperableClick: null,
+                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.FarClipPlane, value, projector.gameObject),
+                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FarClipPlane, projector.gameObject),
+                    valueFloatOriginal: 20f,
+                    minValue: 0.01f,
+                    maxValue: 100f
+                );
+                AddFloatslider
+                (
+                    valueFloat: projector.fieldOfView,
+                    propertyName: "Field Of View",
+                    onInteroperableClick: null,
+                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.FieldOfView, value, projector.gameObject),
+                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FieldOfView, projector.gameObject),
+                    valueFloatOriginal: 60f,
+                    minValue: 0.01f,
+                    maxValue: 180f
+                );
+                AddFloatslider
+                (
+                    valueFloat: projector.aspectRatio,
+                    propertyName: "Aspect ratio",
+                    onInteroperableClick: null,
+                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.AspectRatio, value, projector.gameObject),
+                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.AspectRatio, projector.gameObject),
+                    valueFloatOriginal: 1f,
+                    minValue: 0.01f,
+                    maxValue: 20f
+                );
+                AddFloatslider
+                (
+                    valueFloat: Convert.ToSingle(projector.orthographic),
+                    propertyName: "Orthographic",
+                    onInteroperableClick: null,
+                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.Orthographic, value, projector.gameObject),
+                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.Orthographic, projector.gameObject),
+                    valueFloatOriginal: 0f,
+                    minValue: 0f,
+                    maxValue: 1f
+                );
+                AddFloatslider
+                (
+                    valueFloat: projector.orthographicSize,
+                    propertyName: "Orthographic Size",
+                    onInteroperableClick: null,
+                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.OrthographicSize, value, projector.gameObject),
+                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.OrthographicSize, projector.gameObject),
+                    valueFloatOriginal: 10f,
+                    minValue: 0f,
+                    maxValue: 20f
+                );
             }
 
-            void AddFloatslider(float valueFloat, string propertyName, Action onInteroperableClick, Action<float> changeValue, Action<float> resetValue, float valueFloatOriginal, float? minValue = null, float? maxValue = null)
+            void AddFloatslider(float valueFloat, string propertyName, Action onInteroperableClick, Action<float> changeValue, Action resetValue, float valueFloatOriginal, float? minValue = null, float? maxValue = null)
             {
                 var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
                 {
@@ -688,7 +747,7 @@ namespace MaterialEditorAPI
                 if (maxValue != null)
                     contentItem.FloatValueSliderMax = (float)maxValue;
                 contentItem.FloatValueOnChange = value => changeValue(value);
-                contentItem.FloatValueOnReset = () => resetValue(valueFloatOriginal);
+                contentItem.FloatValueOnReset = () => resetValue();
                 items.Add(contentItem);
             }
         }
@@ -741,6 +800,11 @@ namespace MaterialEditorAPI
         public abstract string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
         public abstract void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject gameObject);
         public abstract void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
+
+        public abstract float? GetProjectorPropertyValueOriginal(object data, Projector renderer, ProjectorProperties property, GameObject gameObject);
+        public abstract float? GetProjectorPropertyValue(object data, Projector renderer, ProjectorProperties property, GameObject gameObject);
+        public abstract void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject gameObject);
+        public abstract void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject);
 
         public abstract void MaterialCopyEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialPasteEdits(object data, Material material, GameObject gameObject);

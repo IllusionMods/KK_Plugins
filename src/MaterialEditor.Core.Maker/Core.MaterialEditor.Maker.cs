@@ -4,6 +4,7 @@ using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using MaterialEditorAPI;
+using System;
 using System.Collections;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialAPI;
@@ -317,6 +318,26 @@ namespace KK_Plugins.MaterialEditor
         {
             ObjectData objectData = (ObjectData)data;
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, go);
+        }
+
+        public override float? GetProjectorPropertyValueOriginal(object data, Projector renderer, ProjectorProperties property, GameObject gameObject)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override float? GetProjectorPropertyValue(object data, Projector renderer, ProjectorProperties property, GameObject gameObject)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject gameObject)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
+        {
+            throw new NotImplementedException();
         }
 
         public override void MaterialCopyEdits(object data, Material material, GameObject go)
