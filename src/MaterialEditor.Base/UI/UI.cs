@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using MessagePack.Decoders;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -304,6 +305,7 @@ namespace MaterialEditorAPI
 
             List<Renderer> rendList = new List<Renderer>();
             IEnumerable<Renderer> rendListFull = GetRendererList(go);
+            IEnumerable<Projector> projectorListFull = GetProjectorList(go);
             List<string> filterList = new List<string>();
             List<string> filterListProperties = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
@@ -443,6 +445,14 @@ namespace MaterialEditorAPI
             }
 
             foreach (var mat in matList.Values)
+                PopulateListMaterial(mat);
+
+            foreach (var projector in projectorListFull)
+                PopulateListMaterial(projector.material, projector);
+
+            VirtualList.SetList(items);
+
+            void PopulateListMaterial(Material mat, Projector projector = null)
             {
                 string materialName = mat.NameFormatted();
                 string shaderName = mat.shader.NameFormatted();
@@ -501,12 +511,15 @@ namespace MaterialEditorAPI
                 };
                 items.Add(shaderRenderQueueItem);
 
+                if (projector != null)
+                    PopulateProjectorSettings(projector);
+
                 foreach (var property in XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
                 {
                     string propertyName = property.Key;
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
-                    
-                    bool showProperty = filterListProperties.Count == 0 || 
+
+                    bool showProperty = filterListProperties.Count == 0 ||
                                         filterListProperties.Any(filterWord => WildCardSearch(propertyName, filterWord));
                     if (!showProperty) continue;
 
@@ -654,7 +667,31 @@ namespace MaterialEditorAPI
                 }
             }
 
-            VirtualList.SetList(items);
+            void PopulateProjectorSettings(Projector projector)
+            {
+                AddFloatslider(projector.nearClipPlane, "Near Clip Plane", null, value => projector.nearClipPlane = value, value => projector.nearClipPlane = value, 0.1f, 0.01f, 100f);
+                AddFloatslider(projector.farClipPlane, "Far Clip Plane", null, value => projector.farClipPlane = value, value => projector.farClipPlane = value, 20f, 0.01f, 100f);
+                AddFloatslider(projector.fieldOfView, "Field Of View", null, value => projector.fieldOfView = value, value => projector.fieldOfView = value, 60f, 0.01f, 180f);
+                AddFloatslider(projector.aspectRatio, "Aspect ratio", null, value => projector.aspectRatio = value, value => projector.aspectRatio = value, 1f, 0.01f, 100f);
+                AddFloatslider(projector.orthographicSize, "Orthographic Size", null, value => projector.orthographicSize = value, value => projector.orthographicSize = value, 10f, 0.01f, 100f);
+            }
+
+            void AddFloatslider(float valueFloat, string propertyName, Action onInteroperableClick, Action<float> changeValue, Action<float> resetValue, float valueFloatOriginal, float? minValue = null, float? maxValue = null)
+            {
+                var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
+                {
+                    FloatValue = valueFloat,
+                    FloatValueOriginal = valueFloatOriginal,
+                    SelectInterpolableButtonFloatOnClick = () => onInteroperableClick()
+                };
+                if (minValue != null)
+                    contentItem.FloatValueSliderMin = (float)minValue;
+                if (maxValue != null)
+                    contentItem.FloatValueSliderMax = (float)maxValue;
+                contentItem.FloatValueOnChange = value => changeValue(value);
+                contentItem.FloatValueOnReset = () => resetValue(valueFloatOriginal);
+                items.Add(contentItem);
+            }
         }
 
         /// <summary>

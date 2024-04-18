@@ -26,6 +26,14 @@ namespace MaterialEditorAPI
             return gameObject.GetComponentsInChildren<Renderer>(true);
         }
 
+        public static IEnumerable<Projector> GetProjectorList(GameObject gameObject)
+        {
+            if (gameObject == null)
+                return new List<Projector>();
+
+            return gameObject.GetComponentsInChildren<Projector>(true);
+        }
+
         /// <summary>
         /// Get a list of materials for the renderer
         /// </summary>
@@ -57,6 +65,8 @@ namespace MaterialEditorAPI
                 foreach (var material in GetMaterials(gameObject, renderer))
                     if (material.NameFormatted() == materialName)
                         materials.Add(material);
+            foreach (var projector in GetProjectorList(gameObject))
+                materials.Add(projector.material);
 
             return materials;
         }
