@@ -283,6 +283,12 @@ namespace KK_Plugins.MaterialEditor
                     }
                 }
             }
+
+            //Turn projectors off if the item (or one of its parents) is toggled off
+            foreach (var objectCtrlInfo in loadedItems.Values)
+                if (objectCtrlInfo is OCIItem item)
+                    foreach (var projector in item.objectItem.GetComponentsInChildren<Projector>())
+                        projector.enabled = item.visible;
         }
 
         /// <summary>
@@ -629,6 +635,10 @@ namespace KK_Plugins.MaterialEditor
                         MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
                         // potential recalc of normals, have to test...
                     }
+
+                //Turn projector off if the item (or one of its parents) is toggled off
+                foreach (var projector in item.objectItem.GetComponentsInChildren<Projector>())
+                    projector.enabled = item.visible;
             }
 
 
