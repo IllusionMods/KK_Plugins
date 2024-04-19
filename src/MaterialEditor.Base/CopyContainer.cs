@@ -28,6 +28,10 @@ namespace MaterialEditorAPI
         /// List of shader edits
         /// </summary>
         public List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
+        /// <summary>
+        /// List of projector edits
+        /// </summary>
+        public List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
 
         /// <summary>
         /// Whether there are any copied edits
@@ -36,7 +40,7 @@ namespace MaterialEditorAPI
         {
             get
             {
-                if (MaterialFloatPropertyList.Count == 0 && MaterialKeywordPropertyList.Count == 0 && MaterialColorPropertyList.Count == 0 && MaterialTexturePropertyList.Count == 0 && MaterialShaderList.Count == 0)
+                if (MaterialFloatPropertyList.Count == 0 && MaterialKeywordPropertyList.Count == 0 && MaterialColorPropertyList.Count == 0 && MaterialTexturePropertyList.Count == 0 && MaterialShaderList.Count == 0 && ProjectorPropertyList.Count == 0)
                     return true;
                 return false;
             }
@@ -52,6 +56,7 @@ namespace MaterialEditorAPI
             MaterialColorPropertyList = new List<MaterialColorProperty>();
             MaterialTexturePropertyList = new List<MaterialTextureProperty>();
             MaterialShaderList = new List<MaterialShader>();
+            ProjectorPropertyList = new List<ProjectorProperty>();
         }
 
         /// <summary>
@@ -216,6 +221,32 @@ namespace MaterialEditorAPI
             /// </summary>
             /// <returns></returns>
             public bool NullCheck() => ShaderName.IsNullOrEmpty() && RenderQueue == null;
+        }
+
+        /// <summary>
+        /// Data storage class for projector properties
+        /// </summary>
+        public class ProjectorProperty
+        {
+            /// <summary>
+            /// Name of the property
+            /// </summary>
+            public MaterialAPI.ProjectorProperties Property;
+            /// <summary>
+            /// Value
+            /// </summary>
+            public float Value;
+
+            /// <summary>
+            /// Data storage class for projector properties
+            /// </summary>
+            /// <param name="property">Name of the property</param>
+            /// <param name="value">Value</param>
+            public ProjectorProperty(MaterialAPI.ProjectorProperties property, float value)
+            {
+                Property = property;
+                Value = value;
+            }
         }
     }
 }

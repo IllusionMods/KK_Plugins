@@ -340,12 +340,12 @@ namespace KK_Plugins.MaterialEditor
             throw new NotImplementedException();
         }
 
-        public override void MaterialCopyEdits(object data, Material material, GameObject go)
+        public override void MaterialCopyEdits(object data, Material material, GameObject go, Projector projector = null)
         {
             ObjectData objectData = (ObjectData)data;
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialCopyEdits(objectData.Slot, objectData.ObjectType, material, go);
         }
-        public override void MaterialPasteEdits(object data, Material material, GameObject go)
+        public override void MaterialPasteEdits(object data, Material material, GameObject go, Projector projector = null)
         {
             ObjectData objectData = (ObjectData)data;
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialPasteEdits(objectData.Slot, objectData.ObjectType, material, go);

@@ -591,6 +591,8 @@ namespace KK_Plugins.MaterialEditor
                             MaterialPasteEdits(ociItem.objectInfo.dicKey, mat);
                         }
                     }
+                    foreach(var projector in GetProjectorList(ociItem.objectItem))
+                        MaterialPasteEdits(ociItem.objectInfo.dicKey, projector.material, projector: projector);
                 }
             foreach (var child in node.child)
                 PasteEditsRecursive(child, ref count);
@@ -684,7 +686,8 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
-        public void MaterialCopyEdits(int id, Material material)
+        /// <param name="projector">Projector being modified</param>
+        public void MaterialCopyEdits(int id, Material material, Projector projector = null)
         {
             CopyData.ClearAll();
 
@@ -723,6 +726,13 @@ namespace KK_Plugins.MaterialEditor
                         CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
                 }
             }
+            if (projector != null)
+                for (var i = 0; i < ProjectorPropertyList.Count; i++)
+                {
+                    var projectorProperty = ProjectorPropertyList[i];
+                    if (projectorProperty.ID == id && projectorProperty.ProjectorName == projector.NameFormatted())
+                        CopyData.ProjectorPropertyList.Add(new CopyContainer.ProjectorProperty(projectorProperty.Property, float.Parse(projectorProperty.Value)));
+                }
         }
         /// <summary>
         /// Paste any edits for the specified object
@@ -730,7 +740,8 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
-        public void MaterialPasteEdits(int id, Material material, bool setProperty = true)
+        /// <param name="projector">Projector being modified</param>
+        public void MaterialPasteEdits(int id, Material material, bool setProperty = true, Projector projector = null)
         {
             for (var i = 0; i < CopyData.MaterialShaderList.Count; i++)
             {
@@ -767,6 +778,12 @@ namespace KK_Plugins.MaterialEditor
                 if (materialTextureProperty.Scale != null)
                     SetMaterialTextureScale(id, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, setProperty);
             }
+            if(projector != null)
+                for (var i = 0; i < CopyData.ProjectorPropertyList.Count; i++)
+                {
+                    var projectorProperty = CopyData.ProjectorPropertyList[i];
+                    SetProjectorProperty(id, projector, projectorProperty.Property, projectorProperty.Value, setProperty);
+                }
         }
         public void MaterialCopyRemove(int id, Material material, GameObject go, bool setProperty = true)
         {
