@@ -74,6 +74,7 @@ namespace MaterialEditorAPI
         private Renderer ObjRenderer;
 
         internal static SelectedInterpolable selectedInterpolable;
+        internal static SelectedProjectorInterpolable selectedProjectorInterpolable;
 
         /// <summary>
         /// Initialize the MaterialEditor UI
@@ -670,7 +671,7 @@ namespace MaterialEditorAPI
                 (
                     valueFloat: projector.nearClipPlane,
                     propertyName: "Near Clip Plane",
-                    onInteroperableClick: null,
+                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.NearClipPlane, projector.NameFormatted()),
                     changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.NearClipPlane, value, projector.gameObject),
                     resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.NearClipPlane, projector.gameObject),
                     valueFloatOriginal: 0.1f,
@@ -681,7 +682,7 @@ namespace MaterialEditorAPI
                 (
                     valueFloat: projector.farClipPlane,
                     propertyName: "Far Clip Plane",
-                    onInteroperableClick: null,
+                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.FarClipPlane, projector.NameFormatted()),
                     changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.FarClipPlane, value, projector.gameObject),
                     resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FarClipPlane, projector.gameObject),
                     valueFloatOriginal: 20f,
@@ -692,7 +693,7 @@ namespace MaterialEditorAPI
                 (
                     valueFloat: projector.fieldOfView,
                     propertyName: "Field Of View",
-                    onInteroperableClick: null,
+                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.FieldOfView, projector.NameFormatted()),
                     changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.FieldOfView, value, projector.gameObject),
                     resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FieldOfView, projector.gameObject),
                     valueFloatOriginal: 60f,
@@ -703,7 +704,7 @@ namespace MaterialEditorAPI
                 (
                     valueFloat: projector.aspectRatio,
                     propertyName: "Aspect ratio",
-                    onInteroperableClick: null,
+                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.AspectRatio, projector.NameFormatted()),
                     changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.AspectRatio, value, projector.gameObject),
                     resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.AspectRatio, projector.gameObject),
                     valueFloatOriginal: 1f,
@@ -714,7 +715,7 @@ namespace MaterialEditorAPI
                 (
                     valueFloat: Convert.ToSingle(projector.orthographic),
                     propertyName: "Orthographic",
-                    onInteroperableClick: null,
+                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.Orthographic, projector.NameFormatted()),
                     changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.Orthographic, value, projector.gameObject),
                     resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.Orthographic, projector.gameObject),
                     valueFloatOriginal: 0f,
@@ -725,7 +726,7 @@ namespace MaterialEditorAPI
                 (
                     valueFloat: projector.orthographicSize,
                     propertyName: "Orthographic Size",
-                    onInteroperableClick: null,
+                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.OrthographicSize, projector.NameFormatted()),
                     changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.OrthographicSize, value, projector.gameObject),
                     resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.OrthographicSize, projector.gameObject),
                     valueFloatOriginal: 10f,
@@ -886,6 +887,15 @@ namespace MaterialEditorAPI
 #endif
         }
 
+        private void SelectInterpolableButtonOnClick(GameObject go, ProjectorProperties property, string projectorName)
+        {
+            selectedProjectorInterpolable = new SelectedProjectorInterpolable(go, property, projectorName);
+            MaterialEditorPluginBase.Logger.LogMessage($"Activated interpolable(s), {selectedProjectorInterpolable}");
+#if !API && !EC
+            TimelineCompatibilityHelper.RefreshInterpolablesList();
+#endif
+        }
+
         internal class SelectedInterpolable
         {
             public string MaterialName;
@@ -906,6 +916,25 @@ namespace MaterialEditorAPI
             public override string ToString()
             {
                 return $"{RowType}: {string.Join(" - ", new string[] { PropertyName, MaterialName, RendererName,  }.Where(x => !x.IsNullOrEmpty()).ToArray())}";
+            }
+        }
+
+        internal class SelectedProjectorInterpolable
+        {
+            public string ProjectorName;
+            public ProjectorProperties Property;
+            public GameObject GameObject;
+
+            public SelectedProjectorInterpolable(GameObject go, ProjectorProperties property, string projectorName)
+            {
+                GameObject = go;
+                Property = property;
+                ProjectorName = projectorName;
+            }
+
+            public override string ToString()
+            {
+                return $"Projector: {string.Join(" - ", new string[] { Property.ToString(), ProjectorName, }.Where(x => !x.IsNullOrEmpty()).ToArray())}";
             }
         }
     }

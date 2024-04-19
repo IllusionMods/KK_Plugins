@@ -9,6 +9,7 @@ using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorUI;
 using static KK_Plugins.MaterialEditor.SceneController;
 using System.Text.RegularExpressions;
+using System;
 
 namespace MaterialEditorAPI
 {
@@ -247,6 +248,24 @@ namespace MaterialEditorAPI
                    getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName}: {parameter.materialName}",
                    isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.FloatProperty)
                );
+
+            //Projector property
+            TimelineCompatibility.AddInterpolableModelDynamic(
+                   owner: "MaterialEditor",
+                   id: "projectorFloatProperty",
+                   name: "Projector Property",
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetProjectorProperty(parameter.GetGameObject(oci), parameter.projectorName, parameter.property, Mathf.LerpUnclamped(leftValue, rightValue, factor)),
+                   interpolateAfter: null,
+                   getValue: (oci, parameter) => parameter.GetValue(oci),
+                   readValueFromXml: (parameter, node) => XmlConvert.ToSingle(node.Attributes["value"].Value),
+                   writeValueToXml: (parameter, writer, value) => writer.WriteAttributeString("value", value.ToString()),
+                   getParameter: GetProjectorInfoParameter,
+                   readParameterFromXml: ReadProjectorInfoXml,
+                   writeParameterToXml: WriteProjectorInfoXml,
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => true,
+                   getFinalName: (currentName, oci, parameter) => $"{parameter.projectorName}: {parameter.property}",
+                   isCompatibleWithTarget: (oci) => selectedProjectorInterpolable != null
+               );
         }
 
         private static MaterialInfo GetMaterialInfoParameter(ObjectCtrlInfo oci)
@@ -264,6 +283,22 @@ namespace MaterialEditorAPI
         private static MaterialInfo ReadMaterialInfoXml(ObjectCtrlInfo oci, XmlNode node)
         {
             return new MaterialInfo(node.Attributes["gameObjectPath"].Value, node.Attributes["materialName"].Value, node.Attributes["propertyName"].Value, node.Attributes["rendererName"].Value);
+        }
+
+        private static ProjectorInfo GetProjectorInfoParameter(ObjectCtrlInfo oci)
+        {
+            return new ProjectorInfo(selectedProjectorInterpolable.GameObject.GetFullPath(), selectedProjectorInterpolable.ProjectorName, selectedProjectorInterpolable.Property);
+        }
+
+        private static void WriteProjectorInfoXml(ObjectCtrlInfo oci, XmlTextWriter writer, ProjectorInfo parameter)
+        {
+            writer.WriteAttributeString("gameObjectPath", parameter.gameObjectPath);
+            writer.WriteAttributeString("projectorName", parameter.projectorName);
+            writer.WriteAttributeString("property", parameter.property.ToString());
+        }
+        private static ProjectorInfo ReadProjectorInfoXml(ObjectCtrlInfo oci, XmlNode node)
+        {
+            return new ProjectorInfo(node.Attributes["gameObjectPath"].Value, node.Attributes["projectorName"].Value, (ProjectorProperties)Enum.Parse(typeof(ProjectorProperties), node.Attributes["property"].Value));
         }
 
         private static bool CheckIntegrity(ObjectCtrlInfo oci, MaterialInfo parameter, object leftValue, object rightValue, ItemInfo.RowItemType rowType)
@@ -343,6 +378,9 @@ namespace MaterialEditorAPI
                     foreach (var mat in GetMaterials(go, rend))
                         if (mat.NameFormatted() == materialName)
                             return mat;
+                foreach (var projector in GetProjectorList(go))
+                    if (projector.material.NameFormatted() == materialName)
+                        return projector.material;
                 return null;
             }
 
@@ -371,8 +409,77 @@ namespace MaterialEditorAPI
             {
                 return this._hashCode;
             }
+        }
+
+        private class ProjectorInfo
+        {
+            public string gameObjectPath;
+            public string projectorName;
+            public ProjectorProperties property;
+            private readonly int _hashCode;
+
+            public ProjectorInfo(string gameObjectPath, string projectorName, ProjectorProperties property)
+            {
+                this.gameObjectPath = gameObjectPath;
+                this.projectorName = projectorName;
+                this.property = property;
+
+                unchecked
+                {
+                    int hash = 17;
+                    hash = hash * 31 + this.projectorName.GetHashCode();
+                    hash = hash * 31 + this.property.GetHashCode();
+                    this._hashCode = hash * 31 + this.gameObjectPath.GetHashCode();
+                }
+            }
+
+            public GameObject GetGameObject(ObjectCtrlInfo oci)
+            {
+                if (oci is OCIItem ociItem)
+                    return ociItem.objectItem;
+                else if (oci is OCIChar oCIChar)
+                    //Characters can reference multiple game objects depending on if the edits is on the body, clothes, accessories, etc.
+                    //This makes sure we get the right one. This works because characters are always stored under a unique name within the scene, unlike objects
+                    return oCIChar.charInfo.transform.Find(gameObjectPath).gameObject;
+                return null;
+            }
+
+            public float GetValue(ObjectCtrlInfo oci)
+            {
+                Projector projector = null;
+                var go = GetGameObject(oci);
+                foreach (var _projector in GetProjectorList(go))
+                    if (_projector.NameFormatted() == projectorName) 
+                    {
+                        projector = _projector;
+                        break;
+                    }
+
+                if (projector == null) return 0;
+
+                if (property == ProjectorProperties.FarClipPlane)
+                    return projector.farClipPlane;
+                else if (property == ProjectorProperties.NearClipPlane)
+                    return projector.nearClipPlane;
+                else if (property == ProjectorProperties.FieldOfView)
+                    return projector.fieldOfView;
+                else if (property == ProjectorProperties.AspectRatio)
+                    return projector.aspectRatio;
+                else if (property == ProjectorProperties.Orthographic)
+                    return System.Convert.ToSingle(projector.orthographic);
+                else if (property == ProjectorProperties.OrthographicSize)
+                    return projector.orthographicSize;
+
+                return 0;
+            }
+
+            public override int GetHashCode()
+            {
+                return this._hashCode;
+            }
 #endif
         }
+
         private static System.Type GetKkapiType()
         {
 #if KK
