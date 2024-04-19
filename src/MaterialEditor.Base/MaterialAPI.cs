@@ -10,6 +10,8 @@ namespace MaterialEditorAPI
     /// </summary>
     public static class MaterialAPI
     {
+        internal static readonly Dictionary<Projector, Material> ProjectorMaterialInstances = new Dictionary<Projector, Material>();
+
         /// <summary>
         /// Postfix added to the name of a material when copied
         /// </summary>
@@ -31,7 +33,14 @@ namespace MaterialEditorAPI
             if (gameObject == null)
                 return new List<Projector>();
 
-            return gameObject.GetComponentsInChildren<Projector>(true);
+            var projectors = gameObject.GetComponentsInChildren<Projector>(true);
+            foreach (var projector in projectors)
+                if (!ProjectorMaterialInstances.ContainsKey(projector))
+                {
+                    projector.material = new Material(projector.material);
+                    ProjectorMaterialInstances[projector] = projector.material;
+                }
+            return projectors;
         }
 
         /// <summary>
