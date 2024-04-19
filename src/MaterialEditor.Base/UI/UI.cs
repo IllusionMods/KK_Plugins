@@ -467,12 +467,14 @@ namespace MaterialEditorAPI
                         PopulateList(go, data, filter);
                     }
                 };
-                materialItem.MaterialOnCopyRemove = () =>
-                {
-                    MaterialCopyRemove(data, mat, go);
-                    PopulateList(go, data, filter);
-                    PopulateMaterialList(go, data, rendListFull);
-                };
+                //Projectors only support 1 material. Copy button is hidden the function is null
+                if (projector == null)
+                    materialItem.MaterialOnCopyRemove = () =>
+                    {
+                        MaterialCopyRemove(data, mat, go);
+                        PopulateList(go, data, filter);
+                        PopulateMaterialList(go, data, rendListFull);
+                    };
                 items.Add(materialItem);
 
                 //Shader
