@@ -629,9 +629,6 @@ namespace KK_Plugins.MaterialEditor
                         MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
                         // potential recalc of normals, have to test...
                     }
-
-                foreach (var property in ProjectorPropertyList.Where(x => x.ID == id && x.Property == ProjectorProperties.Enabled))
-                    MaterialAPI.SetProjectorProperty(GetObjectByID(id), property.ProjectorName, property.Property, Convert.ToSingle(visible));
             }
 
 
@@ -870,15 +867,11 @@ namespace KK_Plugins.MaterialEditor
             GameObject go = GetObjectByID(id);
             if (setProperty)
             {
-                MaterialEditorPluginBase.Logger.LogInfo("Removing property");
                 var original = GetProjectorPropertyValueOriginal(id, projector, property);
-                MaterialEditorPluginBase.Logger.LogInfo($"Original: {original}");
                 if (original != null)
                 {
-                    MaterialEditorPluginBase.Logger.LogInfo($"Original not null");
                     MaterialAPI.SetProjectorProperty(go, projector.NameFormatted(), property, (float)original);
-                } else
-                    MaterialEditorPluginBase.Logger.LogInfo($"Original null");
+                }
             }
 
             ProjectorPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.ProjectorName == projector.NameFormatted());
