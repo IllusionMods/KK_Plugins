@@ -8,14 +8,11 @@ using MaterialEditorAPI;
 using Studio;
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using UILib;
-using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static Illusion.Utils;
 using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
 using AIChara;
