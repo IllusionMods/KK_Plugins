@@ -620,18 +620,15 @@ namespace KK_Plugins.MaterialEditor
 
         protected override void OnObjectVisibilityToggled(ObjectCtrlInfo objectCtrlInfo, bool visible)
         {
-            if (objectCtrlInfo is OCIItem item)
+            if (visible && objectCtrlInfo is OCIItem item)
             {
                 var id = item.GetSceneId();
-                if(visible)
-                    foreach (var property in RendererPropertyList.Where(x => x.ID == id && x.Property == RendererProperties.Enabled))
-                    {
-                        MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
-                        // potential recalc of normals, have to test...
-                    }
+                foreach (var property in RendererPropertyList.Where(x => x.ID == id && x.Property == RendererProperties.Enabled))
+                {
+                    MaterialAPI.SetRendererProperty(GetObjectByID(id), property.RendererName, property.Property, property.Value);
+                    // potential recalc of normals, have to test...
+                }
             }
-
-
             base.OnObjectVisibilityToggled(objectCtrlInfo, visible);
         }
 
