@@ -10,6 +10,10 @@ namespace MaterialEditorAPI
     /// </summary>
     public static class MaterialAPI
     {
+        /// <summary>
+        /// Projector materials share an instance by default, unlike renderers which get a unique one by default.
+        /// This list keeps track of every projector and it's new unique material instance
+        /// </summary>
         internal static readonly Dictionary<Projector, Material> ProjectorMaterialInstances = new Dictionary<Projector, Material>();
 
         /// <summary>
@@ -28,12 +32,17 @@ namespace MaterialEditorAPI
             return gameObject.GetComponentsInChildren<Renderer>(true);
         }
 
+        /// <summary>
+        /// Get a list of all the projectors of a GameObject
+        /// </summary>
         public static IEnumerable<Projector> GetProjectorList(GameObject gameObject)
         {
             if (gameObject == null)
                 return new List<Projector>();
 
             var projectors = gameObject.GetComponentsInChildren<Projector>(true);
+
+            //Assign a unique copy of the material if the projector didn't have one already
             foreach (var projector in projectors)
                 if (!ProjectorMaterialInstances.ContainsKey(projector))
                 {
@@ -442,6 +451,13 @@ namespace MaterialEditorAPI
             return false;
         }
 
+        /// <summary>
+        /// Set the enabled property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorEnabled(GameObject gameObject, string projectorName, bool value)
         {
             bool didSet = false;
@@ -457,6 +473,13 @@ namespace MaterialEditorAPI
             return didSet;
         }
 
+        /// <summary>
+        /// Set the farclipPlane property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorFarClipPlane(GameObject gameObject, string projectorName, float value)
         {
             bool didSet = false;
@@ -472,6 +495,13 @@ namespace MaterialEditorAPI
             return didSet;
         }
 
+        /// <summary>
+        /// Set the nearClipPlane property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorNearClipPlane(GameObject gameObject, string projectorName, float value)
         {
             bool didSet = false;
@@ -487,6 +517,13 @@ namespace MaterialEditorAPI
             return didSet;
         }
 
+        /// <summary>
+        /// Set the fieldOfView property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorFieldOfView(GameObject gameObject, string projectorName, float value)
         {
             bool didSet = false;
@@ -502,6 +539,13 @@ namespace MaterialEditorAPI
             return didSet;
         }
 
+        /// <summary>
+        /// Set the aspectRatio property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorAspectRatio(GameObject gameObject, string projectorName, float value)
         {
             bool didSet = false;
@@ -517,6 +561,13 @@ namespace MaterialEditorAPI
             return didSet;
         }
 
+        /// <summary>
+        /// Set the orthographic property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorOrthographic(GameObject gameObject, string projectorName, bool value)
         {
             bool didSet = false;
@@ -532,6 +583,13 @@ namespace MaterialEditorAPI
             return didSet;
         }
 
+        /// <summary>
+        /// Set the orthoGraphicSize property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorOrthographicSize(GameObject gameObject, string projectorName, float value)
         {
             bool didSet = false;
@@ -776,6 +834,9 @@ namespace MaterialEditorAPI
             /// </summary>
             UpdateWhenOffscreen
         }
+        /// <summary>
+        /// Properties of a projector that can be set
+        /// </summary>
         public enum ProjectorProperties
         {
             /// <summary>
