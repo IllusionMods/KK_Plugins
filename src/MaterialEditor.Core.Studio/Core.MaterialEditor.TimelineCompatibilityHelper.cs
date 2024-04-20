@@ -264,7 +264,7 @@ namespace MaterialEditorAPI
                    writeParameterToXml: WriteProjectorInfoXml,
                    checkIntegrity: (oci, parameter, leftValue, rightValue) => true,
                    getFinalName: (currentName, oci, parameter) => $"{parameter.projectorName}: {parameter.property}",
-                   isCompatibleWithTarget: (oci) => selectedProjectorInterpolable != null
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithProjectorTarget()
                );
         }
 
@@ -323,6 +323,13 @@ namespace MaterialEditorAPI
                     return true;
                 else if ((rowtype == ItemInfo.RowItemType.TextureProperty || rowtype == ItemInfo.RowItemType.ColorProperty || rowtype == ItemInfo.RowItemType.FloatProperty) && !selectedInterpolable.MaterialName.IsNullOrEmpty() && !selectedInterpolable.PropertyName.IsNullOrEmpty())
                     return true;
+            return false;
+        }
+
+        private static bool IsCompatibleWithProjectorTarget()
+        {
+            if (selectedProjectorInterpolable != null && !selectedProjectorInterpolable.ProjectorName.IsNullOrEmpty())
+                return true;
             return false;
         }
 
