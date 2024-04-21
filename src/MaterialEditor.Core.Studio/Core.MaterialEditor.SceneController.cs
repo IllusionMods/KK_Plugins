@@ -721,7 +721,7 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 
-            if (GetProjectorList(GetObjectByID(id)).First(x => x.material == material) != null)
+            if (GetProjectorList(GetObjectByID(id)).FirstOrDefault(x => x.material == material) != null)
                 for (var i = 0; i < ProjectorPropertyList.Count; i++)
                 {
                     var projectorProperty = ProjectorPropertyList[i];
@@ -774,7 +774,7 @@ namespace KK_Plugins.MaterialEditor
                     SetMaterialTextureScale(id, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, setProperty);
             }
 
-            var projector = GetProjectorList(GetObjectByID(id)).First(x => x.material == material);
+            var projector = GetProjectorList(GetObjectByID(id)).FirstOrDefault(x => x.material == material);
             if (projector != null)
                 for (var i = 0; i < CopyData.ProjectorPropertyList.Count; i++)
                 {
