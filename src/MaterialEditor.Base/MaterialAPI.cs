@@ -460,17 +460,15 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorEnabled(GameObject gameObject, string projectorName, bool value)
         {
-            bool didSet = false;
-
             foreach (var projector in GetProjectorList(gameObject))
             {
                 if (projector.NameFormatted() == projectorName)
                 {
                     projector.enabled = value;
-                    didSet = true;
+                    return true;
                 }
             }
-            return didSet;
+            return false;
         }
 
         /// <summary>
@@ -482,17 +480,15 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorFarClipPlane(GameObject gameObject, string projectorName, float value)
         {
-            bool didSet = false;
-
             foreach(var projector in GetProjectorList(gameObject))
             {
                 if(projector.NameFormatted() == projectorName)
                 {
                     projector.farClipPlane = value;
-                    didSet = true;
+                    return true;
                 }
             }
-            return didSet;
+            return false;
         }
 
         /// <summary>
@@ -504,17 +500,15 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorNearClipPlane(GameObject gameObject, string projectorName, float value)
         {
-            bool didSet = false;
-
             foreach (var projector in GetProjectorList(gameObject))
             {
                 if (projector.NameFormatted() == projectorName)
                 {
                     projector.nearClipPlane = value;
-                    didSet = true;
+                    return true;
                 }
             }
-            return didSet;
+            return false;
         }
 
         /// <summary>
@@ -526,17 +520,15 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorFieldOfView(GameObject gameObject, string projectorName, float value)
         {
-            bool didSet = false;
-
             foreach (var projector in GetProjectorList(gameObject))
             {
                 if (projector.NameFormatted() == projectorName)
                 {
                     projector.fieldOfView = value;
-                    didSet = true;
+                    return true;
                 }
             }
-            return didSet;
+            return false;
         }
 
         /// <summary>
@@ -548,17 +540,15 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorAspectRatio(GameObject gameObject, string projectorName, float value)
         {
-            bool didSet = false;
-
             foreach (var projector in GetProjectorList(gameObject))
             {
                 if (projector.NameFormatted() == projectorName)
                 {
                     projector.aspectRatio = value;
-                    didSet = true;
+                    return true;
                 }
             }
-            return didSet;
+            return false;
         }
 
         /// <summary>
@@ -570,17 +560,15 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorOrthographic(GameObject gameObject, string projectorName, bool value)
         {
-            bool didSet = false;
-
             foreach (var projector in GetProjectorList(gameObject))
             {
                 if (projector.NameFormatted() == projectorName)
                 {
                     projector.orthographic = value;
-                    didSet = true;
+                    return true;
                 }
             }
-            return didSet;
+            return false;
         }
 
         /// <summary>
@@ -592,17 +580,15 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorOrthographicSize(GameObject gameObject, string projectorName, float value)
         {
-            bool didSet = false;
-
             foreach (var projector in GetProjectorList(gameObject))
             {
                 if (projector.NameFormatted() == projectorName)
                 {
                     projector.orthographicSize = value;
-                    didSet = true;
+                    return true;
                 }
             }
-            return didSet;
+            return false;
         }
 
         /// <summary>
