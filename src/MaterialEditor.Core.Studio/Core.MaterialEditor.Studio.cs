@@ -475,7 +475,7 @@ namespace KK_Plugins.MaterialEditor
                 GetSceneController().RemoveProjectorProperty((int)data, projector, property);
         }
 
-        public override void MaterialCopyEdits(object data, Material material, GameObject go, Projector projector = null)
+        public override void MaterialCopyEdits(object data, Material material, GameObject go)
         {
             if (data is ObjectData objectData)
             {
@@ -483,9 +483,9 @@ namespace KK_Plugins.MaterialEditor
                 MaterialEditorPlugin.GetCharaController(chaControl).MaterialCopyEdits(objectData.Slot, objectData.ObjectType, material, go);
             }
             else
-                GetSceneController().MaterialCopyEdits((int)data, material, projector);
+                GetSceneController().MaterialCopyEdits((int)data, material);
         }
-        public override void MaterialPasteEdits(object data, Material material, GameObject go, Projector projector = null)
+        public override void MaterialPasteEdits(object data, Material material, GameObject go)
         {
             if (data is ObjectData objectData)
             {
@@ -493,7 +493,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialEditorPlugin.GetCharaController(chaControl).MaterialPasteEdits(objectData.Slot, objectData.ObjectType, material, go);
             }
             else
-                GetSceneController().MaterialPasteEdits((int)data, material, projector: projector);
+                GetSceneController().MaterialPasteEdits((int)data, material);
         }
         public override void MaterialCopyRemove(object data, Material material, GameObject go)
         {

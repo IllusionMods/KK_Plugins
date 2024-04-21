@@ -460,14 +460,14 @@ namespace MaterialEditorAPI
                 var materialItem = new ItemInfo(ItemInfo.RowItemType.Material, "Material")
                 {
                     MaterialName = materialName,
-                    MaterialOnCopy = () => MaterialCopyEdits(data, mat, go, projector),
+                    MaterialOnCopy = () => MaterialCopyEdits(data, mat, go),
                     MaterialOnPaste = () =>
                     {
-                        MaterialPasteEdits(data, mat, go, projector);
+                        MaterialPasteEdits(data, mat, go);
                         PopulateList(go, data, filter);
                     }
                 };
-                //Projectors only support 1 material. Copy button is hidden the function is null
+                //Projectors only support 1 material. Copy button is hidden if the function is null
                 if (projector == null)
                     materialItem.MaterialOnCopyRemove = () =>
                     {
@@ -809,8 +809,8 @@ namespace MaterialEditorAPI
         public abstract void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject gameObject);
         public abstract void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject);
 
-        public abstract void MaterialCopyEdits(object data, Material material, GameObject gameObject, Projector projector = null);
-        public abstract void MaterialPasteEdits(object data, Material material, GameObject gameObject, Projector projector = null);
+        public abstract void MaterialCopyEdits(object data, Material material, GameObject gameObject);
+        public abstract void MaterialPasteEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialCopyRemove(object data, Material material, GameObject gameObject);
 
         public abstract string GetMaterialShaderNameOriginal(object data, Material material, GameObject gameObject);
