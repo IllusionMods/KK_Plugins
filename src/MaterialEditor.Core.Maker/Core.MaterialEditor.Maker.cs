@@ -320,24 +320,28 @@ namespace KK_Plugins.MaterialEditor
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, go);
         }
 
-        public override float? GetProjectorPropertyValueOriginal(object data, Projector renderer, ProjectorProperties property, GameObject gameObject)
+        public override float? GetProjectorPropertyValueOriginal(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
         {
-            throw new NotImplementedException();
+            ObjectData objectData = (ObjectData)data;
+            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetProjectorPropertyValueOriginal(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
         }
 
-        public override float? GetProjectorPropertyValue(object data, Projector renderer, ProjectorProperties property, GameObject gameObject)
+        public override float? GetProjectorPropertyValue(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
         {
-            throw new NotImplementedException();
+            ObjectData objectData = (ObjectData)data;
+            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetProjectorPropertyValue(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
         }
 
         public override void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject gameObject)
         {
-            throw new NotImplementedException();
+            ObjectData objectData = (ObjectData)data;
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetProjectorProperty(objectData.Slot, objectData.ObjectType, projector, property, value, gameObject);
         }
 
         public override void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
         {
-            throw new NotImplementedException();
+            ObjectData objectData = (ObjectData)data;
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveProjectorProperty(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
         }
 
         public override void MaterialCopyEdits(object data, Material material, GameObject go)

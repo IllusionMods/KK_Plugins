@@ -30,6 +30,7 @@ namespace KK_Plugins.MaterialEditor
     public class MaterialEditorCharaController : CharaCustomFunctionController
     {
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
+        private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
         private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
         private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
         private readonly List<MaterialKeywordProperty> MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
@@ -79,6 +80,11 @@ namespace KK_Plugins.MaterialEditor
                     data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
                 else
                     data.data.Add(nameof(RendererPropertyList), null);
+
+                if (ProjectorPropertyList.Count > 0)
+                    data.data.Add(nameof(ProjectorPropertyList), MessagePackSerializer.Serialize(ProjectorPropertyList));
+                else
+                    data.data.Add(nameof(ProjectorPropertyList), null);
 
                 if (MaterialFloatPropertyList.Count > 0)
                     data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(MaterialFloatPropertyList));
@@ -164,6 +170,7 @@ namespace KK_Plugins.MaterialEditor
         {
 
             var coordinateRendererPropertyList = RendererPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
+            var coordinateProjectorPropertyList = ProjectorPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
             var coordinateMaterialFloatPropertyList = MaterialFloatPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
 
             var coordinateMaterialKeywordPropertyList = MaterialKeywordPropertyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
@@ -193,6 +200,11 @@ namespace KK_Plugins.MaterialEditor
                     data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(coordinateRendererPropertyList));
                 else
                     data.data.Add(nameof(RendererPropertyList), null);
+
+                if (coordinateProjectorPropertyList.Count > 0)
+                    data.data.Add(nameof(ProjectorPropertyList), MessagePackSerializer.Serialize(coordinateProjectorPropertyList));
+                else
+                    data.data.Add(nameof(ProjectorPropertyList), null);
 
                 if (coordinateMaterialFloatPropertyList.Count > 0)
                     data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(coordinateMaterialFloatPropertyList));
@@ -258,6 +270,7 @@ namespace KK_Plugins.MaterialEditor
             if (loadFlags == null)
             {
                 RendererPropertyList.Clear();
+                ProjectorPropertyList.Clear();
                 MaterialFloatPropertyList.Clear();
                 MaterialKeywordPropertyList.Clear();
                 MaterialColorPropertyList.Clear();
@@ -275,6 +288,7 @@ namespace KK_Plugins.MaterialEditor
                 if (loadFlags.Face || loadFlags.Body)
                 {
                     RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Character);
+                    ProjectorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Character);
                     MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Character);
                     MaterialKeywordPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Character);
                     MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Character);
@@ -287,6 +301,7 @@ namespace KK_Plugins.MaterialEditor
                 if (loadFlags.Clothes)
                 {
                     RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing);
+                    ProjectorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing);
                     MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing);
                     MaterialKeywordPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing);
                     MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing);
@@ -296,6 +311,7 @@ namespace KK_Plugins.MaterialEditor
                     objectTypesToLoad.Add(ObjectType.Clothing);
 
                     RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory);
+                    ProjectorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory);
                     MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory);
                     MaterialKeywordPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory);
                     MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory);
@@ -307,6 +323,7 @@ namespace KK_Plugins.MaterialEditor
                 if (loadFlags.Hair)
                 {
                     RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair);
+                    ProjectorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair);
                     MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair);
                     MaterialKeywordPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair);
                     MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Hair);
@@ -365,6 +382,18 @@ namespace KK_Plugins.MaterialEditor
                         int coordinateIndex = loadedProperty.ObjectType == ObjectType.Character ? 0 : loadedProperty.CoordinateIndex;
                         if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
                             RendererPropertyList.Add(new RendererProperty(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    }
+                }
+
+                if (data.data.TryGetValue(nameof(ProjectorPropertyList), out var projectorProperties) && projectorProperties != null)
+                {
+                    var properties = MessagePackSerializer.Deserialize<List<ProjectorProperty>>((byte[])projectorProperties);
+                    for (var i = 0; i < properties.Count; i++)
+                    {
+                        var loadedProperty = properties[i];
+                        int coordinateIndex = loadedProperty.ObjectType == ObjectType.Character ? 0 : loadedProperty.CoordinateIndex;
+                        if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
+                            ProjectorPropertyList.Add(new ProjectorProperty(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.ProjectorName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                     }
                 }
 
@@ -691,6 +720,16 @@ namespace KK_Plugins.MaterialEditor
                 }
                 SetTextureOffset(go, property.MaterialName, property.Property, property.Offset);
                 SetTextureScale(go, property.MaterialName, property.Property, property.Scale);
+            }
+            for (var i = 0; i < ProjectorPropertyList.Count; i++)
+            {
+                var property = ProjectorPropertyList[i];
+                if (property.ObjectType == ObjectType.Clothing && !clothes) continue;
+                if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
+                if (property.ObjectType == ObjectType.Hair && !hair) continue;
+                if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+
+                MaterialAPI.SetProjectorProperty(FindGameObject(property.ObjectType, property.Slot), property.ProjectorName, property.Property, float.Parse(property.Value));
             }
 
 
@@ -1192,6 +1231,10 @@ namespace KK_Plugins.MaterialEditor
                 else
                     CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
             }
+            if(GetProjectorList(go).FirstOrDefault(x => x.material == material) != null)
+            foreach (var projectorProperty in ProjectorPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.ProjectorName == material.NameFormatted()))
+                    CopyData.ProjectorPropertyList.Add(new CopyContainer.ProjectorProperty(projectorProperty.Property, float.Parse(projectorProperty.Value)));
+
         }
         /// <summary>
         /// Paste any edits for the specified object
@@ -1237,6 +1280,14 @@ namespace KK_Plugins.MaterialEditor
                 if (materialTextureProperty.Scale != null)
                     SetMaterialTextureScale(slot, objectType, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, go, setProperty);
             }
+
+            var projector = GetProjectorList(go).FirstOrDefault(x => x.material == material);
+            if (projector != null)
+                for (var i = 0; i < CopyData.MaterialTexturePropertyList.Count; i++)
+                {
+                    var projectorProperty = CopyData.ProjectorPropertyList[i];
+                    SetProjectorProperty(slot, objectType, projector, projectorProperty.Property, projectorProperty.Value, go, setProperty);
+                }
         }
 
         public void MaterialCopyRemove(int slot, ObjectType objectType, Material material, GameObject go)
@@ -1283,6 +1334,96 @@ namespace KK_Plugins.MaterialEditor
         }
 
         #region Set, Get, Remove methods
+        /// <summary>
+        /// Get the original value of the saved projector property value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="projector">Projector being modified</param>
+        /// <param name="property">Property of the projector</param>
+        /// <param name="go">GameObject the projector belongs to</param>
+        /// <returns>Saved projector property value</returns>
+        public float? GetProjectorPropertyValueOriginal(int slot, ObjectType objectType, Projector projector, ProjectorProperties property, GameObject go)
+        {
+            var valueOriginal = ProjectorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.ProjectorName == projector.NameFormatted())?.ValueOriginal;
+            if (valueOriginal.IsNullOrEmpty())
+                return null;
+            return float.Parse(valueOriginal);
+        }
+        /// <summary>
+        /// Get the value of the saved projector property value or null if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="projector">Projector being modified</param>
+        /// <param name="property">Property of the projector</param>
+        /// <param name="go">GameObject the projector belongs to</param>
+        /// <returns>Saved projector property value</returns>
+        public float? GetProjectorPropertyValue(int slot, ObjectType objectType, Projector projector, ProjectorProperties property, GameObject go)
+        {
+            var valueOriginal = ProjectorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.ProjectorName == projector.NameFormatted())?.Value;
+            if (valueOriginal.IsNullOrEmpty())
+                return null;
+            return float.Parse(valueOriginal);
+        }
+        /// <summary>
+        /// Remove the saved projector property value if one is saved and optionally also update the projector
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="projector">Projector being modified</param>
+        /// <param name="property">Property of the projector</param>
+        /// <param name="go">GameObject the projector belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the projector</param>
+        public void RemoveProjectorProperty(int slot, ObjectType objectType, Projector projector, ProjectorProperties property, GameObject go, bool setProperty = true)
+        {
+            if (setProperty)
+            {
+                var original = GetProjectorPropertyValueOriginal(slot, objectType, projector, property, go);
+                if (original != null)
+                    MaterialAPI.SetProjectorProperty(go, projector.NameFormatted(), property, (float)original);
+            }
+            ProjectorPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.ProjectorName == projector.NameFormatted());
+        }
+        /// <summary>
+        /// Add a renderer property to be saved and loaded with the card and optionally also update the renderer.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="renderer">Renderer being modified</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <param name="value">Value</param>
+        /// <param name="go">GameObject the renderer belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the renderer</param>
+        public void SetProjectorProperty(int slot, ObjectType objectType, Projector projector, ProjectorProperties property, float value, GameObject go, bool setProperty = true)
+        {
+            ProjectorProperty projectorProperty = ProjectorPropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.ProjectorName == projector.NameFormatted());
+            if (projectorProperty == null)
+            {
+                string valueOriginal = "";
+                if (property == ProjectorProperties.FarClipPlane)
+                    valueOriginal = projector.farClipPlane.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.NearClipPlane)
+                    valueOriginal = projector.nearClipPlane.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.FieldOfView)
+                    valueOriginal = projector.fieldOfView.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.AspectRatio)
+                    valueOriginal = projector.aspectRatio.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.Orthographic)
+                    valueOriginal = Convert.ToSingle(projector.orthographic).ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.OrthographicSize)
+                    valueOriginal = projector.orthographicSize.ToString(CultureInfo.InvariantCulture);
+
+                if (valueOriginal != "")
+                    ProjectorPropertyList.Add(new ProjectorProperty(objectType, GetCoordinateIndex(objectType), slot, projector.NameFormatted(), property, value.ToString(CultureInfo.InvariantCulture), valueOriginal));
+            }
+            else
+            {
+                if (value.ToString(CultureInfo.InvariantCulture) == projectorProperty.ValueOriginal)
+                    RemoveProjectorProperty(slot, objectType, projector, property, go, false);
+                else
+                    projectorProperty.Value = value.ToString(CultureInfo.InvariantCulture);
+            }
+
+            if (setProperty)
+                MaterialAPI.SetProjectorProperty(go, projector.NameFormatted(), property, value);
+        }
         /// <summary>
         /// Add a renderer property to be saved and loaded with the card and optionally also update the renderer.
         /// </summary>
@@ -2756,6 +2897,69 @@ namespace KK_Plugins.MaterialEditor
                 Slot = slot;
                 MaterialName = materialName.Replace("(Instance)", "").Trim();
                 MaterialCopyName = materialCopyName;
+            }
+        }
+
+        /// <summary>
+        /// Data storage class for projector properties
+        /// </summary>
+        [Serializable]
+        [MessagePackObject]
+        public class ProjectorProperty
+        {
+            /// <summary>
+            /// Type of the object
+            /// </summary>
+            [Key("ObjectType")]
+            public ObjectType ObjectType;
+            /// <summary>
+            /// Coordinate index, always 0 except in Koikatsu
+            /// </summary>
+            [Key("CoordinateIndex")]
+            public int CoordinateIndex;
+            /// <summary>
+            /// Slot of the accessory, hair, or clothing
+            /// </summary>
+            [Key("Slot")]
+            public int Slot;
+            /// <summary>
+            /// Name of the projector
+            /// </summary>
+            [Key("ProjectorName")]
+            public string ProjectorName;
+            /// <summary>
+            /// Property type
+            /// </summary>
+            [Key("Property")]
+            public ProjectorProperties Property;
+            /// <summary>
+            /// Value
+            /// </summary>
+            [Key("Value")]
+            public string Value;
+            /// <summary>
+            /// Original value
+            /// </summary>
+            [Key("ValueOriginal")]
+            public string ValueOriginal;
+
+            /// <summary>
+            /// Data storage class for projector properties
+            /// </summary>
+            /// <param name="id">ID of the item</param>
+            /// <param name="ProjectorName">Name of the projector</param>
+            /// <param name="property">Property type</param>
+            /// <param name="value">Value</param>
+            /// <param name="valueOriginal">Original</param>
+            public ProjectorProperty(ObjectType objectType, int coordinateIndex, int slot, string projectorName, ProjectorProperties property, string value, string valueOriginal)
+            {
+                ObjectType = objectType;
+                CoordinateIndex = coordinateIndex;
+                Slot = slot;
+                ProjectorName = projectorName.Replace("(Instance)", "").Trim();
+                Property = property;
+                Value = value;
+                ValueOriginal = valueOriginal;
             }
         }
     }
