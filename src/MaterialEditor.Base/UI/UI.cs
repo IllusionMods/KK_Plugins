@@ -305,10 +305,8 @@ namespace MaterialEditorAPI
 
             List<Renderer> rendList = new List<Renderer>();
             IEnumerable<Renderer> rendListFull = GetRendererList(go);
-            MaterialEditorPluginBase.Logger.LogInfo($"rendlistFul count: {rendListFull.Count()}");
             List<Projector> projectorList = new List<Projector>();
             IEnumerable<Projector> projectorListFull = GetProjectorList(go);
-            MaterialEditorPluginBase.Logger.LogInfo($"projectorList count: {projectorListFull.Count()}");
             List<string> filterList = new List<string>();
             List<string> filterListProperties = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
@@ -355,17 +353,13 @@ namespace MaterialEditorAPI
                             projectorList.Add(projector);
             }
 
-            MaterialEditorPluginBase.Logger.LogInfo($"rendList count: {rendList.Count()}");
             for (var i = 0; i < rendList.Count; i++)
             {
                 var rend = rendList[i];
-                MaterialEditorPluginBase.Logger.LogInfo($"rendList count: {rend.NameFormatted()}");
                 //Get materials if materials list wasn't previously built by the filter    
                 if (filterList.Count == 0)
-                {
                     foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
                         matList[mat.NameFormatted()] = mat;
-                }
 
                 var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer")
                 {
