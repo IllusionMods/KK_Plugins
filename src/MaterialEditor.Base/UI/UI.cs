@@ -305,7 +305,10 @@ namespace MaterialEditorAPI
 
             List<Renderer> rendList = new List<Renderer>();
             IEnumerable<Renderer> rendListFull = GetRendererList(go);
+            MaterialEditorPluginBase.Logger.LogInfo($"rendlistFul count: {rendListFull.Count()}");
+            List<Projector> projectorList = new List<Projector>();
             IEnumerable<Projector> projectorListFull = GetProjectorList(go);
+            MaterialEditorPluginBase.Logger.LogInfo($"projectorList count: {projectorListFull.Count()}");
             List<string> filterList = new List<string>();
             List<string> filterListProperties = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
@@ -333,6 +336,7 @@ namespace MaterialEditorAPI
             else if (filterList.Count == 0)
                 rendList = rendListFull.ToList();
             else
+            {
                 foreach (var rend in rendListFull)
                 {
                     foreach (string filterWord in filterList)
@@ -343,15 +347,25 @@ namespace MaterialEditorAPI
                         foreach (string filterWord in filterList)
                             if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
                                 matList[mat.NameFormatted()] = mat;
-                }
 
+                }
+                foreach (var projector in projectorListFull)
+                    foreach (string filterWord in filterList)
+                        if (WildCardSearch(projector.NameFormatted(), filterWord.Trim()))
+                            projectorList.Add(projector);
+            }
+
+            MaterialEditorPluginBase.Logger.LogInfo($"rendList count: {rendList.Count()}");
             for (var i = 0; i < rendList.Count; i++)
             {
                 var rend = rendList[i];
+                MaterialEditorPluginBase.Logger.LogInfo($"rendList count: {rend.NameFormatted()}");
                 //Get materials if materials list wasn't previously built by the filter    
                 if (filterList.Count == 0)
+                {
                     foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
                         matList[mat.NameFormatted()] = mat;
+                }
 
                 var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer")
                 {
@@ -447,7 +461,7 @@ namespace MaterialEditorAPI
             foreach (var mat in matList.Values)
                 PopulateListMaterial(mat);
 
-            foreach (var projector in projectorListFull)
+            foreach (var projector in filterList.Count == 0 ? projectorListFull : projectorList)
                 PopulateListMaterial(projector.material, projector);
 
             VirtualList.SetList(items);
@@ -669,72 +683,78 @@ namespace MaterialEditorAPI
 
             void PopulateProjectorSettings(Projector projector)
             {
-                AddFloatslider
-                (
-                    valueFloat: projector.nearClipPlane,
-                    propertyName: "Near Clip Plane",
-                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.NearClipPlane, projector.NameFormatted()),
-                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.NearClipPlane, value, projector.gameObject),
-                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.NearClipPlane, projector.gameObject),
-                    valueFloatOriginal: 0.1f,
-                    minValue: 0.01f,
-                    maxValue: 10f
-                );
-                AddFloatslider
-                (
-                    valueFloat: projector.farClipPlane,
-                    propertyName: "Far Clip Plane",
-                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.FarClipPlane, projector.NameFormatted()),
-                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.FarClipPlane, value, projector.gameObject),
-                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FarClipPlane, projector.gameObject),
-                    valueFloatOriginal: 20f,
-                    minValue: 0.01f,
-                    maxValue: 100f
-                );
-                AddFloatslider
-                (
-                    valueFloat: projector.fieldOfView,
-                    propertyName: "Field Of View",
-                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.FieldOfView, projector.NameFormatted()),
-                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.FieldOfView, value, projector.gameObject),
-                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FieldOfView, projector.gameObject),
-                    valueFloatOriginal: 60f,
-                    minValue: 0.01f,
-                    maxValue: 180f
-                );
-                AddFloatslider
-                (
-                    valueFloat: projector.aspectRatio,
-                    propertyName: "Aspect ratio",
-                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.AspectRatio, projector.NameFormatted()),
-                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.AspectRatio, value, projector.gameObject),
-                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.AspectRatio, projector.gameObject),
-                    valueFloatOriginal: 1f,
-                    minValue: 0.01f,
-                    maxValue: 20f
-                );
-                AddFloatslider
-                (
-                    valueFloat: Convert.ToSingle(projector.orthographic),
-                    propertyName: "Orthographic",
-                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.Orthographic, projector.NameFormatted()),
-                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.Orthographic, value, projector.gameObject),
-                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.Orthographic, projector.gameObject),
-                    valueFloatOriginal: 0f,
-                    minValue: 0f,
-                    maxValue: 1f
-                );
-                AddFloatslider
-                (
-                    valueFloat: projector.orthographicSize,
-                    propertyName: "Orthographic Size",
-                    onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.OrthographicSize, projector.NameFormatted()),
-                    changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.OrthographicSize, value, projector.gameObject),
-                    resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.OrthographicSize, projector.gameObject),
-                    valueFloatOriginal: 10f,
-                    minValue: 0f,
-                    maxValue: 20f
-                );
+                if(filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Near Clip Plane", filterWord)))
+                    AddFloatslider
+                    (
+                        valueFloat: projector.nearClipPlane,
+                        propertyName: "Near Clip Plane",
+                        onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.NearClipPlane, projector.NameFormatted()),
+                        changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.NearClipPlane, value, projector.gameObject),
+                        resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.NearClipPlane, projector.gameObject),
+                        valueFloatOriginal: 0.1f,
+                        minValue: 0.01f,
+                        maxValue: 10f
+                    );
+                if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Far Clip Plane", filterWord)))
+                    AddFloatslider
+                    (
+                        valueFloat: projector.farClipPlane,
+                        propertyName: "Far Clip Plane",
+                        onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.FarClipPlane, projector.NameFormatted()),
+                        changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.FarClipPlane, value, projector.gameObject),
+                        resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FarClipPlane, projector.gameObject),
+                        valueFloatOriginal: 20f,
+                        minValue: 0.01f,
+                        maxValue: 100f
+                    );
+                if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Field Of View", filterWord)))
+                    AddFloatslider
+                    (
+                        valueFloat: projector.fieldOfView,
+                        propertyName: "Field Of View",
+                        onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.FieldOfView, projector.NameFormatted()),
+                        changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.FieldOfView, value, projector.gameObject),
+                        resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FieldOfView, projector.gameObject),
+                        valueFloatOriginal: 60f,
+                        minValue: 0.01f,
+                        maxValue: 180f
+                    );
+                if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Aspect ratio", filterWord)))
+                    AddFloatslider
+                    (
+                        valueFloat: projector.aspectRatio,
+                        propertyName: "Aspect ratio",
+                        onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.AspectRatio, projector.NameFormatted()),
+                        changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.AspectRatio, value, projector.gameObject),
+                        resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.AspectRatio, projector.gameObject),
+                        valueFloatOriginal: 1f,
+                        minValue: 0.01f,
+                        maxValue: 20f
+                    );
+                if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Orthographic", filterWord)))
+                    AddFloatslider
+                    (
+                        valueFloat: Convert.ToSingle(projector.orthographic),
+                        propertyName: "Orthographic",
+                        onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.Orthographic, projector.NameFormatted()),
+                        changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.Orthographic, value, projector.gameObject),
+                        resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.Orthographic, projector.gameObject),
+                        valueFloatOriginal: 0f,
+                        minValue: 0f,
+                        maxValue: 1f
+                    );
+                if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Orthographic Size", filterWord)))
+                    AddFloatslider
+                    (
+                        valueFloat: projector.orthographicSize,
+                        propertyName: "Orthographic Size",
+                        onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ProjectorProperties.OrthographicSize, projector.NameFormatted()),
+                        changeValue: value => SetProjectorProperty(data, projector, ProjectorProperties.OrthographicSize, value, projector.gameObject),
+                        resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.OrthographicSize, projector.gameObject),
+                        valueFloatOriginal: 10f,
+                        minValue: 0f,
+                        maxValue: 20f
+                    );
             }
 
             void AddFloatslider(float valueFloat, string propertyName, Action onInteroperableClick, Action<float> changeValue, Action resetValue, float valueFloatOriginal, float? minValue = null, float? maxValue = null)
