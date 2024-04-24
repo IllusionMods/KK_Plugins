@@ -687,7 +687,7 @@ namespace MaterialEditorAPI
                         resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.NearClipPlane, projector.gameObject),
                         valueFloatOriginal: 0.1f,
                         minValue: 0.01f,
-                        maxValue: 10f
+                        maxValue: ProjectorNearClipPlaneMax.Value
                     );
                 if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Far Clip Plane", filterWord)))
                     AddFloatslider
@@ -699,7 +699,7 @@ namespace MaterialEditorAPI
                         resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FarClipPlane, projector.gameObject),
                         valueFloatOriginal: 20f,
                         minValue: 0.01f,
-                        maxValue: 100f
+                        maxValue: ProjectorFarClipPlaneMax.Value
                     );
                 if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Field Of View", filterWord)))
                     AddFloatslider
@@ -711,7 +711,7 @@ namespace MaterialEditorAPI
                         resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.FieldOfView, projector.gameObject),
                         valueFloatOriginal: 60f,
                         minValue: 0.01f,
-                        maxValue: 180f
+                        maxValue: ProjectorFieldOfViewMax.Value
                     );
                 if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Aspect ratio", filterWord)))
                     AddFloatslider
@@ -723,7 +723,7 @@ namespace MaterialEditorAPI
                         resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.AspectRatio, projector.gameObject),
                         valueFloatOriginal: 1f,
                         minValue: 0.01f,
-                        maxValue: 20f
+                        maxValue: ProjectorAspectRatioMax.Value
                     );
                 if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch("Orthographic", filterWord)))
                     AddFloatslider
@@ -747,7 +747,7 @@ namespace MaterialEditorAPI
                         resetValue: () => RemoveProjectorProperty(data, projector, ProjectorProperties.OrthographicSize, projector.gameObject),
                         valueFloatOriginal: 10f,
                         minValue: 0f,
-                        maxValue: 20f
+                        maxValue: ProjectorOrthographicSizeMax.Value
                     );
             }
 
