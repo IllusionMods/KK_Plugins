@@ -677,7 +677,7 @@ namespace MaterialEditorAPI
 
             void PopulateProjectorSettings(Projector projector)
             {
-                foreach (var property in Enum.GetValues(typeof(ProjectorProperties)).Cast<ProjectorProperties>().Where(prop => prop != ProjectorProperties.Enabled))
+                foreach (var property in Enum.GetValues(typeof(ProjectorProperties)).Cast<ProjectorProperties>())
                 {
                     float maxValue = 100f;
                     string name = "";
@@ -686,6 +686,11 @@ namespace MaterialEditorAPI
 
                     switch (property)
                     {
+                        case ProjectorProperties.Enabled:
+                            name = "Enabled";
+                            valueFloat = Convert.ToSingle(projector.enabled);
+                            maxValue = 1f;
+                            break;
                         case ProjectorProperties.NearClipPlane:
                             name = "Near Clip Plane";
                             valueFloat = projector.nearClipPlane;
