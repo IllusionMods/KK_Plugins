@@ -1409,6 +1409,10 @@ namespace KK_Plugins.MaterialEditor
                     valueOriginal = Convert.ToSingle(projector.orthographic).ToString(CultureInfo.InvariantCulture);
                 else if (property == ProjectorProperties.OrthographicSize)
                     valueOriginal = projector.orthographicSize.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.IgnoreCharaLayer)
+                    valueOriginal = Convert.ToSingle(projector.ignoreLayers == (projector.ignoreLayers | (1 << 10))).ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.IgnoreMapLayer)
+                    valueOriginal = Convert.ToSingle(projector.ignoreLayers == (projector.ignoreLayers | (1 << 11))).ToString(CultureInfo.InvariantCulture);
 
                 if (valueOriginal != "")
                     ProjectorPropertyList.Add(new ProjectorProperty(objectType, GetCoordinateIndex(objectType), slot, projector.NameFormatted(), property, value.ToString(CultureInfo.InvariantCulture), valueOriginal));

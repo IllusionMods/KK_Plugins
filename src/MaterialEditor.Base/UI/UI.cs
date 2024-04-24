@@ -721,6 +721,16 @@ namespace MaterialEditorAPI
                             valueFloat = projector.orthographicSize;
                             maxValue = ProjectorOrthographicSizeMax.Value;
                             break;
+                        case ProjectorProperties.IgnoreMapLayer:
+                            name = "Ignore Map layer";
+                            valueFloat = Convert.ToSingle(projector.ignoreLayers == (projector.ignoreLayers | (1 << 11)));
+                            maxValue = 1f;
+                            break;
+                        case ProjectorProperties.IgnoreCharaLayer:
+                            name = "Ignore Chara Layer";
+                            valueFloat = Convert.ToSingle(projector.ignoreLayers == (projector.ignoreLayers | (1 << 10)));
+                            maxValue = 1f;
+                            break;
                     }
 
                     if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch(name, filterWord)))

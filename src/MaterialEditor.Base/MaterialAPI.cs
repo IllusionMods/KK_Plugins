@@ -451,6 +451,10 @@ namespace MaterialEditorAPI
                 return SetProjectorOrthographic(gameObject, projectorName, System.Convert.ToBoolean(value));
             else if (propertyName == ProjectorProperties.OrthographicSize)
                 return SetProjectorOrthographicSize(gameObject, projectorName, value);
+            else if (propertyName == ProjectorProperties.IgnoreCharaLayer)
+                return SetProjectorIgnoreLayers(gameObject, projectorName, System.Convert.ToBoolean(value), 10);
+            else if (propertyName == ProjectorProperties.IgnoreMapLayer)
+                return SetProjectorIgnoreLayers(gameObject, projectorName, System.Convert.ToBoolean(value), 11);
             return false;
         }
 
@@ -589,6 +593,33 @@ namespace MaterialEditorAPI
                 {
                     projector.orthographicSize = value;
                     return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Add or remove the given layer to/from the ignored layers property.
+        /// Ensures it's not removed/added that was already the case
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
+        /// <param name="ignore">If the given layer should be ignored or not</param>
+        /// <param name="layer">The index of the layer to be added/removed</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorIgnoreLayers(GameObject gameObject, string projectorName, bool ignore, int layer)
+        {
+            foreach (var projector in GetProjectorList(gameObject))
+            {
+                if (projector.NameFormatted() == projectorName)
+                {
+                    bool inMask = projector.ignoreLayers == (projector.ignoreLayers | (1 << layer));
+                    //Remove layer from mask
+                    if (inMask && !ignore)
+                        projector.ignoreLayers &= ~(1 << layer);
+                    //Add layer to mask
+                    else if(!inMask && ignore)
+                        projector.ignoreLayers |= (1 << layer);
                 }
             }
             return false;
@@ -855,7 +886,15 @@ namespace MaterialEditorAPI
             /// <summary>
             /// The size of the orthographic projection
             /// </summary>
-            OrthographicSize
+            OrthographicSize,
+            /// <summary>
+            /// If the projector should ignore objects on the chara layer
+            /// </summary>
+            IgnoreCharaLayer,
+            /// <summary>
+            /// If the projector should ignore objects on the map layer
+            /// </summary>
+            IgnoreMapLayer
         }
     }
 }
