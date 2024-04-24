@@ -1231,8 +1231,8 @@ namespace KK_Plugins.MaterialEditor
                 else
                     CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
             }
-            if(GetProjectorList(go).FirstOrDefault(x => x.material == material) != null)
-            foreach (var projectorProperty in ProjectorPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.ProjectorName == material.NameFormatted()))
+            if(GetProjectorList(objectType, go).FirstOrDefault(x => x.material == material) != null)
+                foreach (var projectorProperty in ProjectorPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.ProjectorName == material.NameFormatted()))
                     CopyData.ProjectorPropertyList.Add(new CopyContainer.ProjectorProperty(projectorProperty.Property, float.Parse(projectorProperty.Value)));
 
         }
@@ -1281,7 +1281,7 @@ namespace KK_Plugins.MaterialEditor
                     SetMaterialTextureScale(slot, objectType, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, go, setProperty);
             }
 
-            var projector = GetProjectorList(go).FirstOrDefault(x => x.material == material);
+            var projector = GetProjectorList(objectType, go).FirstOrDefault(x => x.material == material);
             if (projector != null)
                 for (var i = 0; i < CopyData.MaterialTexturePropertyList.Count; i++)
                 {
@@ -1424,6 +1424,15 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 MaterialAPI.SetProjectorProperty(go, projector.NameFormatted(), property, value);
         }
+        public IEnumerable<Projector> GetProjectorList(ObjectType objectType, GameObject gameObject)
+        {
+            //The body will never have a projector component attached
+            //And returning all components from children will return every projector on a character
+            if (objectType == ObjectType.Character)
+                return new List<Projector>();
+            return MaterialAPI.GetProjectorList(gameObject, true);
+        }
+
         /// <summary>
         /// Add a renderer property to be saved and loaded with the card and optionally also update the renderer.
         /// </summary>

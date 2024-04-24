@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace MaterialEditorAPI
@@ -35,12 +34,16 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Get a list of all the projectors of a GameObject
         /// </summary>
-        public static IEnumerable<Projector> GetProjectorList(GameObject gameObject)
+        public static IEnumerable<Projector> GetProjectorList(GameObject gameObject, bool inChildren = false)
         {
             if (gameObject == null)
                 return new List<Projector>();
 
-            var projectors = gameObject.GetComponentsInChildren<Projector>(true);
+            IEnumerable<Projector> projectors;
+            if(inChildren)
+                projectors = gameObject.GetComponentsInChildren<Projector>(true);
+            else
+                projectors = gameObject.GetComponents<Projector>();
 
             //Assign a unique copy of the material if the projector didn't have one already
             foreach (var projector in projectors)

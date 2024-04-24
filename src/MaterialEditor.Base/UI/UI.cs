@@ -10,7 +10,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
-using static RootMotion.FinalIK.GrounderQuadruped;
 
 namespace MaterialEditorAPI
 {
@@ -307,7 +306,7 @@ namespace MaterialEditorAPI
             List<Renderer> rendList = new List<Renderer>();
             IEnumerable<Renderer> rendListFull = GetRendererList(go);
             List<Projector> projectorList = new List<Projector>();
-            IEnumerable<Projector> projectorListFull = GetProjectorList(go);
+            IEnumerable<Projector> projectorListFull = GetProjectorList(data, go);
             List<string> filterList = new List<string>();
             List<string> filterListProperties = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
@@ -805,6 +804,7 @@ namespace MaterialEditorAPI
         public abstract float? GetProjectorPropertyValue(object data, Projector renderer, ProjectorProperties property, GameObject gameObject);
         public abstract void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject gameObject);
         public abstract void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject);
+        public abstract IEnumerable<Projector> GetProjectorList(object data, GameObject gameObject);
 
         public abstract void MaterialCopyEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialPasteEdits(object data, Material material, GameObject gameObject);

@@ -7,6 +7,7 @@ using KKAPI.Studio.SaveLoad;
 using MaterialEditorAPI;
 using Studio;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UILib;
@@ -469,6 +470,16 @@ namespace KK_Plugins.MaterialEditor
             }
             else
                 GetSceneController().RemoveProjectorProperty((int)data, projector, property);
+        }
+        public override IEnumerable<Projector> GetProjectorList(object data, GameObject gameObject)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = gameObject.GetComponentInParent<ChaControl>();
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetProjectorList(objectData.ObjectType, gameObject);
+            }
+            else
+                return GetSceneController().GetProjectorList(gameObject);
         }
 
         public override void MaterialCopyEdits(object data, Material material, GameObject go)

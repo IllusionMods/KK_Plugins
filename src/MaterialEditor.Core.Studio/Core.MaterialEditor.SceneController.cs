@@ -912,6 +912,13 @@ namespace KK_Plugins.MaterialEditor
                 MaterialAPI.SetProjectorProperty(go, projector.NameFormatted(), property, value);
         }
 
+        public IEnumerable<Projector> GetProjectorList(GameObject gameObject)
+        {
+            //Assume the projector component will always be attached to the root object
+            //Otherwise no distinction can be made between projectors and editing them will not work properly
+            return MaterialAPI.GetProjectorList(gameObject, false);
+        }
+
         #region Set, Get, Remove methods
         /// <summary>
         /// Add a renderer property to be saved and loaded with the scene and optionally also update the renderer.

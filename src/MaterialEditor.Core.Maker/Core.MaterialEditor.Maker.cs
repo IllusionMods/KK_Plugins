@@ -4,8 +4,8 @@ using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using MaterialEditorAPI;
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
@@ -342,6 +342,11 @@ namespace KK_Plugins.MaterialEditor
         {
             ObjectData objectData = (ObjectData)data;
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveProjectorProperty(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
+        }
+        public override IEnumerable<Projector> GetProjectorList(object data, GameObject gameObject)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetProjectorList(objectData.ObjectType, gameObject);
         }
 
         public override void MaterialCopyEdits(object data, Material material, GameObject go)
