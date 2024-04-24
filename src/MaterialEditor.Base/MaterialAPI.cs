@@ -481,8 +481,8 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Set the farclipPlane property of a projector
         /// </summary>
-        /// <param name="gameObject">GameObject to search for the renderer</param>
-        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorFarClipPlane(GameObject gameObject, string projectorName, float value)
@@ -501,8 +501,8 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Set the nearClipPlane property of a projector
         /// </summary>
-        /// <param name="gameObject">GameObject to search for the renderer</param>
-        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorNearClipPlane(GameObject gameObject, string projectorName, float value)
@@ -521,8 +521,8 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Set the fieldOfView property of a projector
         /// </summary>
-        /// <param name="gameObject">GameObject to search for the renderer</param>
-        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorFieldOfView(GameObject gameObject, string projectorName, float value)
@@ -541,8 +541,8 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Set the aspectRatio property of a projector
         /// </summary>
-        /// <param name="gameObject">GameObject to search for the renderer</param>
-        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorAspectRatio(GameObject gameObject, string projectorName, float value)
@@ -561,8 +561,8 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Set the orthographic property of a projector
         /// </summary>
-        /// <param name="gameObject">GameObject to search for the renderer</param>
-        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorOrthographic(GameObject gameObject, string projectorName, bool value)
@@ -581,8 +581,8 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Set the orthoGraphicSize property of a projector
         /// </summary>
-        /// <param name="gameObject">GameObject to search for the renderer</param>
-        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorOrthographicSize(GameObject gameObject, string projectorName, float value)
