@@ -485,6 +485,9 @@ namespace MaterialEditorAPI
                     };
                 items.Add(materialItem);
 
+                if (projector != null)
+                    PopulateProjectorSettings(projector);
+
                 //Shader
                 string shaderNameOriginal = shaderName;
                 var temp = GetMaterialShaderNameOriginal(data, mat, go);
@@ -520,9 +523,6 @@ namespace MaterialEditorAPI
                     ShaderRenderQueueOnReset = () => RemoveMaterialShaderRenderQueue(data, mat, go)
                 };
                 items.Add(shaderRenderQueueItem);
-
-                if (projector != null)
-                    PopulateProjectorSettings(projector);
 
                 foreach (var property in XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
                 {
