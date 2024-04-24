@@ -723,7 +723,7 @@ namespace MaterialEditorAPI
                         (
                             valueFloat: valueFloat,
                             propertyName: name,
-                            onInteroperableClick: () => SelectInterpolableButtonOnClick(go, property, projector.NameFormatted()),
+                            onInteroperableClick: () => SelectProjectorInterpolableButtonOnClick(go, property, projector.NameFormatted()),
                             changeValue: value => SetProjectorProperty(data, projector, property, value, projector.gameObject),
                             resetValue: () => RemoveProjectorProperty(data, projector, property, projector.gameObject),
                             valueFloatOriginal: originalValueTemp != null ? (float)originalValueTemp : valueFloat,
@@ -886,7 +886,7 @@ namespace MaterialEditorAPI
 #endif
         }
 
-        private void SelectInterpolableButtonOnClick(GameObject go, ProjectorProperties property, string projectorName)
+        private void SelectProjectorInterpolableButtonOnClick(GameObject go, ProjectorProperties property, string projectorName)
         {
             selectedProjectorInterpolable = new SelectedProjectorInterpolable(go, property, projectorName);
             MaterialEditorPluginBase.Logger.LogMessage($"Activated interpolable(s), {selectedProjectorInterpolable}");
