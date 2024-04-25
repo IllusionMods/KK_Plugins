@@ -86,6 +86,7 @@ namespace MaterialEditorAPI
                 foreach (var material in GetMaterials(gameObject, renderer))
                     if (material.NameFormatted() == materialName)
                         materials.Add(material);
+
             foreach (var projector in GetProjectorList(gameObject))
                 materials.Add(projector.material);
 
