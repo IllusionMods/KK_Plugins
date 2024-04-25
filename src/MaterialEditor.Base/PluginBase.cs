@@ -78,13 +78,14 @@ namespace MaterialEditorAPI
 #if AI || HS2 || PH
             ProjectorNearClipPlaneMax = Config.Bind("Projector", "Max Near Clip Plane", 100f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 1000f), new ConfigurationManagerAttributes { Order = 5 }));
             ProjectorFarClipPlaneMax = Config.Bind("Projector", "Max Far Clip Plane", 1000f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 1000f), new ConfigurationManagerAttributes { Order = 4 }));
+            ProjectorOrthographicSizeMax = Config.Bind("Projector", "Max Orthographic Size", 20f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 100f), new ConfigurationManagerAttributes { Order = 1 }));
 #else
             ProjectorNearClipPlaneMax = Config.Bind("Projector", "Max Near Clip Plane", 10f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 100f), new ConfigurationManagerAttributes { Order = 5 }));
             ProjectorFarClipPlaneMax = Config.Bind("Projector", "Max Far Clip Plane", 100f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 100f), new ConfigurationManagerAttributes { Order = 4 }));
+            ProjectorOrthographicSizeMax = Config.Bind("Projector", "Max Orthographic Size", 2f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 100f), new ConfigurationManagerAttributes { Order = 1 }));
 #endif
             ProjectorFieldOfViewMax = Config.Bind("Projector", "Max Field Of View", 180f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 180f), new ConfigurationManagerAttributes { Order = 3 }));
             ProjectorAspectRatioMax = Config.Bind("Projector", "Max Aspect Ratio", 2f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 100f), new ConfigurationManagerAttributes { Order = 2 }));
-            ProjectorOrthographicSizeMax = Config.Bind("Projector", "Max Orthographic Size", 2f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 100f), new ConfigurationManagerAttributes { Order = 1 }));
 
             UIScale.SettingChanged += MaterialEditorUI.UISettingChanged;
             UIWidth.SettingChanged += MaterialEditorUI.UISettingChanged;
