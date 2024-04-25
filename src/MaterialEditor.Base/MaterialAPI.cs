@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace MaterialEditorAPI
@@ -10,6 +9,12 @@ namespace MaterialEditorAPI
     /// </summary>
     public static class MaterialAPI
     {
+        /// <summary>
+        /// Projector materials share an instance by default, unlike renderers which get a unique one by default.
+        /// This list keeps track of every projector and it's new unique material instance
+        /// </summary>
+        internal static readonly Dictionary<Projector, Material> ProjectorMaterialInstances = new Dictionary<Projector, Material>();
+
         /// <summary>
         /// Postfix added to the name of a material when copied
         /// </summary>
@@ -24,6 +29,30 @@ namespace MaterialEditorAPI
                 return new List<Renderer>();
 
             return gameObject.GetComponentsInChildren<Renderer>(true);
+        }
+
+        /// <summary>
+        /// Get a list of all the projectors of a GameObject
+        /// </summary>
+        public static IEnumerable<Projector> GetProjectorList(GameObject gameObject, bool inChildren = false)
+        {
+            if (gameObject == null)
+                return new List<Projector>();
+
+            IEnumerable<Projector> projectors;
+            if(inChildren)
+                projectors = gameObject.GetComponentsInChildren<Projector>(true);
+            else
+                projectors = gameObject.GetComponents<Projector>();
+
+            //Assign a unique copy of the material if the projector didn't have one already
+            foreach (var projector in projectors)
+                if (!ProjectorMaterialInstances.ContainsKey(projector))
+                {
+                    projector.material = new Material(projector.material);
+                    ProjectorMaterialInstances[projector] = projector.material;
+                }
+            return projectors;
         }
 
         /// <summary>
@@ -57,6 +86,9 @@ namespace MaterialEditorAPI
                 foreach (var material in GetMaterials(gameObject, renderer))
                     if (material.NameFormatted() == materialName)
                         materials.Add(material);
+
+            foreach (var projector in GetProjectorList(gameObject))
+                materials.Add(projector.material);
 
             return materials;
         }
@@ -397,6 +429,204 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
+        /// Set the value of the specified projector property
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
+        /// <param name="propertyName">Property of the projector being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorProperty(GameObject gameObject, string projectorName, ProjectorProperties propertyName, float value)
+        {
+            if (propertyName == ProjectorProperties.Enabled)
+                return SetProjectorEnabled(gameObject, projectorName, System.Convert.ToBoolean(value));
+            else if (propertyName == ProjectorProperties.FarClipPlane)
+                return SetProjectorFarClipPlane(gameObject, projectorName, value);
+            else if (propertyName == ProjectorProperties.NearClipPlane)
+                return SetProjectorNearClipPlane(gameObject, projectorName, value);
+            else if (propertyName == ProjectorProperties.FieldOfView)
+                return SetProjectorFieldOfView(gameObject, projectorName, value);
+            else if (propertyName == ProjectorProperties.AspectRatio)
+                return SetProjectorAspectRatio(gameObject, projectorName, value);
+            else if (propertyName == ProjectorProperties.Orthographic)
+                return SetProjectorOrthographic(gameObject, projectorName, System.Convert.ToBoolean(value));
+            else if (propertyName == ProjectorProperties.OrthographicSize)
+                return SetProjectorOrthographicSize(gameObject, projectorName, value);
+            else if (propertyName == ProjectorProperties.IgnoreCharaLayer)
+                return SetProjectorIgnoreLayers(gameObject, projectorName, System.Convert.ToBoolean(value), 10);
+            else if (propertyName == ProjectorProperties.IgnoreMapLayer)
+                return SetProjectorIgnoreLayers(gameObject, projectorName, System.Convert.ToBoolean(value), 11);
+            return false;
+        }
+
+        /// <summary>
+        /// Set the enabled property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the renderer</param>
+        /// <param name="projectorName">Name of the renderer being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorEnabled(GameObject gameObject, string projectorName, bool value)
+        {
+            foreach (var projector in GetProjectorList(gameObject))
+            {
+                if (projector.NameFormatted() == projectorName)
+                {
+                    projector.enabled = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Set the farclipPlane property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorFarClipPlane(GameObject gameObject, string projectorName, float value)
+        {
+            foreach(var projector in GetProjectorList(gameObject))
+            {
+                if(projector.NameFormatted() == projectorName)
+                {
+                    projector.farClipPlane = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Set the nearClipPlane property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorNearClipPlane(GameObject gameObject, string projectorName, float value)
+        {
+            foreach (var projector in GetProjectorList(gameObject))
+            {
+                if (projector.NameFormatted() == projectorName)
+                {
+                    projector.nearClipPlane = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Set the fieldOfView property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorFieldOfView(GameObject gameObject, string projectorName, float value)
+        {
+            foreach (var projector in GetProjectorList(gameObject))
+            {
+                if (projector.NameFormatted() == projectorName)
+                {
+                    projector.fieldOfView = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Set the aspectRatio property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorAspectRatio(GameObject gameObject, string projectorName, float value)
+        {
+            foreach (var projector in GetProjectorList(gameObject))
+            {
+                if (projector.NameFormatted() == projectorName)
+                {
+                    projector.aspectRatio = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Set the orthographic property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorOrthographic(GameObject gameObject, string projectorName, bool value)
+        {
+            foreach (var projector in GetProjectorList(gameObject))
+            {
+                if (projector.NameFormatted() == projectorName)
+                {
+                    projector.orthographic = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Set the orthoGraphicSize property of a projector
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorOrthographicSize(GameObject gameObject, string projectorName, float value)
+        {
+            foreach (var projector in GetProjectorList(gameObject))
+            {
+                if (projector.NameFormatted() == projectorName)
+                {
+                    projector.orthographicSize = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Add or remove the given layer to/from the ignored layers property.
+        /// Ensures it's not removed/added that was already the case
+        /// </summary>
+        /// <param name="gameObject">GameObject to search for the projector</param>
+        /// <param name="projectorName">Name of the projector being modified</param>
+        /// <param name="ignore">If the given layer should be ignored or not</param>
+        /// <param name="layer">The index of the layer to be added/removed</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        public static bool SetProjectorIgnoreLayers(GameObject gameObject, string projectorName, bool ignore, int layer)
+        {
+            foreach (var projector in GetProjectorList(gameObject))
+            {
+                if (projector.NameFormatted() == projectorName)
+                {
+                    bool inMask = projector.ignoreLayers == (projector.ignoreLayers | (1 << layer));
+                    //Remove layer from mask
+                    if (inMask && !ignore)
+                        projector.ignoreLayers &= ~(1 << layer);
+                    //Add layer to mask
+                    else if(!inMask && ignore)
+                        projector.ignoreLayers |= (1 << layer);
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Set the texture property of a material
         /// </summary>
         /// <param name="gameObject">GameObject to search for the renderer</param>
@@ -624,6 +854,48 @@ namespace MaterialEditorAPI
             /// Whether the renderer updates while off-screen
             /// </summary>
             UpdateWhenOffscreen
+        }
+        /// <summary>
+        /// Properties of a projector that can be set
+        /// </summary>
+        public enum ProjectorProperties
+        {
+            /// <summary>
+            /// Whether the projector is enabled
+            /// </summary>
+            Enabled,
+            /// <summary>
+            /// Near clip plane to start projecting
+            /// </summary>
+            NearClipPlane,
+            /// <summary>
+            /// Far clip plane to stop projecting
+            /// </summary>
+            FarClipPlane,
+            /// <summary>
+            /// Field of View of projection
+            /// </summary>
+            FieldOfView,
+            /// <summary>
+            /// Aspect ratio of the projection
+            /// </summary>
+            AspectRatio,
+            /// <summary>
+            /// Whether the projector should project in orthographic mode
+            /// </summary>
+            Orthographic,
+            /// <summary>
+            /// The size of the orthographic projection
+            /// </summary>
+            OrthographicSize,
+            /// <summary>
+            /// If the projector should ignore objects on the chara layer
+            /// </summary>
+            IgnoreCharaLayer,
+            /// <summary>
+            /// If the projector should ignore objects on the map layer
+            /// </summary>
+            IgnoreMapLayer
         }
     }
 }

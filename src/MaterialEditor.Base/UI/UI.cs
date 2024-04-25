@@ -74,6 +74,7 @@ namespace MaterialEditorAPI
         private Renderer ObjRenderer;
 
         internal static SelectedInterpolable selectedInterpolable;
+        internal static SelectedProjectorInterpolable selectedProjectorInterpolable;
 
         /// <summary>
         /// Initialize the MaterialEditor UI
@@ -304,6 +305,8 @@ namespace MaterialEditorAPI
 
             List<Renderer> rendList = new List<Renderer>();
             IEnumerable<Renderer> rendListFull = GetRendererList(go);
+            List<Projector> projectorList = new List<Projector>();
+            IEnumerable<Projector> projectorListFull = GetProjectorList(data, go);
             List<string> filterList = new List<string>();
             List<string> filterListProperties = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
@@ -331,6 +334,7 @@ namespace MaterialEditorAPI
             else if (filterList.Count == 0)
                 rendList = rendListFull.ToList();
             else
+            {
                 foreach (var rend in rendListFull)
                 {
                     foreach (string filterWord in filterList)
@@ -341,7 +345,13 @@ namespace MaterialEditorAPI
                         foreach (string filterWord in filterList)
                             if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
                                 matList[mat.NameFormatted()] = mat;
+
                 }
+                foreach (var projector in projectorListFull)
+                    foreach (string filterWord in filterList)
+                        if (WildCardSearch(projector.NameFormatted(), filterWord.Trim()))
+                            projectorList.Add(projector);
+            }
 
             for (var i = 0; i < rendList.Count; i++)
             {
@@ -443,6 +453,14 @@ namespace MaterialEditorAPI
             }
 
             foreach (var mat in matList.Values)
+                PopulateListMaterial(mat);
+
+            foreach (var projector in filterList.Count == 0 ? projectorListFull : projectorList)
+                PopulateListMaterial(projector.material, projector);
+
+            VirtualList.SetList(items);
+
+            void PopulateListMaterial(Material mat, Projector projector = null)
             {
                 string materialName = mat.NameFormatted();
                 string shaderName = mat.shader.NameFormatted();
@@ -457,13 +475,18 @@ namespace MaterialEditorAPI
                         PopulateList(go, data, filter);
                     }
                 };
-                materialItem.MaterialOnCopyRemove = () =>
-                {
-                    MaterialCopyRemove(data, mat, go);
-                    PopulateList(go, data, filter);
-                    PopulateMaterialList(go, data, rendListFull);
-                };
+                //Projectors only support 1 material. Copy button is hidden if the function is null
+                if (projector == null)
+                    materialItem.MaterialOnCopyRemove = () =>
+                    {
+                        MaterialCopyRemove(data, mat, go);
+                        PopulateList(go, data, filter);
+                        PopulateMaterialList(go, data, rendListFull);
+                    };
                 items.Add(materialItem);
+
+                if (projector != null)
+                    PopulateProjectorSettings(projector);
 
                 //Shader
                 string shaderNameOriginal = shaderName;
@@ -505,8 +528,8 @@ namespace MaterialEditorAPI
                 {
                     string propertyName = property.Key;
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
-                    
-                    bool showProperty = filterListProperties.Count == 0 || 
+
+                    bool showProperty = filterListProperties.Count == 0 ||
                                         filterListProperties.Any(filterWord => WildCardSearch(propertyName, filterWord));
                     if (!showProperty) continue;
 
@@ -612,24 +635,22 @@ namespace MaterialEditorAPI
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
-                            float valueFloat = mat.GetFloat($"_{propertyName}");
-                            float valueFloatOriginal = valueFloat;
+                            float valueFloatOriginal = mat.GetFloat($"_{propertyName}");
                             float? valueFloatOriginalTemp = GetMaterialFloatPropertyValueOriginal(data, mat, propertyName, go);
                             if (valueFloatOriginalTemp != null)
                                 valueFloatOriginal = (float)valueFloatOriginalTemp;
-                            var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
-                            {
-                                FloatValue = valueFloat,
-                                FloatValueOriginal = valueFloatOriginal,
-                                SelectInterpolableButtonFloatOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.FloatProperty, materialName, propertyName)
-                            };
-                            if (property.Value.MinValue != null)
-                                contentItem.FloatValueSliderMin = (float)property.Value.MinValue;
-                            if (property.Value.MaxValue != null)
-                                contentItem.FloatValueSliderMax = (float)property.Value.MaxValue;
-                            contentItem.FloatValueOnChange = value => SetMaterialFloatProperty(data, mat, propertyName, value, go);
-                            contentItem.FloatValueOnReset = () => RemoveMaterialFloatProperty(data, mat, propertyName, go);
-                            items.Add(contentItem);
+
+                            AddFloatslider
+                            (
+                                valueFloat: mat.GetFloat($"_{propertyName}"),
+                                propertyName: propertyName,
+                                onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.FloatProperty, materialName, propertyName),
+                                changeValue: value => SetMaterialFloatProperty(data, mat, propertyName, value, go),
+                                resetValue: () => RemoveMaterialFloatProperty(data, mat, propertyName, go),
+                                valueFloatOriginal: valueFloatOriginal,
+                                minValue: property.Value.MinValue,
+                                maxValue: property.Value.MaxValue
+                            );
                         }
                     }
                     else if (property.Value.Type == ShaderPropertyType.Keyword)
@@ -654,7 +675,95 @@ namespace MaterialEditorAPI
                 }
             }
 
-            VirtualList.SetList(items);
+            void PopulateProjectorSettings(Projector projector)
+            {
+                foreach (var property in Enum.GetValues(typeof(ProjectorProperties)).Cast<ProjectorProperties>())
+                {
+                    float maxValue = 100f;
+                    string name = "";
+                    float valueFloat = 0f;
+                    float? originalValueTemp = GetProjectorPropertyValueOriginal(data, projector, property, go);
+
+                    switch (property)
+                    {
+                        case ProjectorProperties.Enabled:
+                            name = "Enabled";
+                            valueFloat = Convert.ToSingle(projector.enabled);
+                            maxValue = 1f;
+                            break;
+                        case ProjectorProperties.NearClipPlane:
+                            name = "Near Clip Plane";
+                            valueFloat = projector.nearClipPlane;
+                            maxValue = ProjectorNearClipPlaneMax.Value;
+                            break;
+                        case ProjectorProperties.FarClipPlane:
+                            name = "Far Clip Plane";
+                            valueFloat = projector.farClipPlane;
+                            maxValue = ProjectorFarClipPlaneMax.Value;
+                            break;
+                        case ProjectorProperties.FieldOfView:
+                            name = "Field Of View";
+                            valueFloat = projector.fieldOfView;
+                            maxValue = ProjectorFieldOfViewMax.Value;
+                            break;
+                        case ProjectorProperties.AspectRatio:
+                            name = "Aspect Ratio";
+                            valueFloat = projector.aspectRatio;
+                            maxValue = ProjectorAspectRatioMax.Value;
+                            break;
+                        case ProjectorProperties.Orthographic:
+                            name = "Orthographic";
+                            valueFloat = Convert.ToSingle(projector.orthographic);
+                            maxValue = 1f;
+                            break;
+                        case ProjectorProperties.OrthographicSize:
+                            name = "Orthographic Size";
+                            valueFloat = projector.orthographicSize;
+                            maxValue = ProjectorOrthographicSizeMax.Value;
+                            break;
+                        case ProjectorProperties.IgnoreMapLayer:
+                            name = "Ignore Map layer";
+                            valueFloat = Convert.ToSingle(projector.ignoreLayers == (projector.ignoreLayers | (1 << 11)));
+                            maxValue = 1f;
+                            break;
+                        case ProjectorProperties.IgnoreCharaLayer:
+                            name = "Ignore Chara Layer";
+                            valueFloat = Convert.ToSingle(projector.ignoreLayers == (projector.ignoreLayers | (1 << 10)));
+                            maxValue = 1f;
+                            break;
+                    }
+
+                    if (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch(name, filterWord)))
+                        AddFloatslider
+                        (
+                            valueFloat: valueFloat,
+                            propertyName: name,
+                            onInteroperableClick: () => SelectProjectorInterpolableButtonOnClick(go, property, projector.NameFormatted()),
+                            changeValue: value => SetProjectorProperty(data, projector, property, value, projector.gameObject),
+                            resetValue: () => RemoveProjectorProperty(data, projector, property, projector.gameObject),
+                            valueFloatOriginal: originalValueTemp != null ? (float)originalValueTemp : valueFloat,
+                            minValue: 0f,
+                            maxValue: maxValue
+                        );
+                }
+            }
+
+            void AddFloatslider(float valueFloat, string propertyName, Action onInteroperableClick, Action<float> changeValue, Action resetValue, float valueFloatOriginal, float? minValue = null, float? maxValue = null)
+            {
+                var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
+                {
+                    FloatValue = valueFloat,
+                    FloatValueOriginal = valueFloatOriginal,
+                    SelectInterpolableButtonFloatOnClick = () => onInteroperableClick()
+                };
+                if (minValue != null)
+                    contentItem.FloatValueSliderMin = (float)minValue;
+                if (maxValue != null)
+                    contentItem.FloatValueSliderMax = (float)maxValue;
+                contentItem.FloatValueOnChange = value => changeValue(value);
+                contentItem.FloatValueOnReset = () => resetValue();
+                items.Add(contentItem);
+            }
         }
 
         /// <summary>
@@ -705,6 +814,12 @@ namespace MaterialEditorAPI
         public abstract string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
         public abstract void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject gameObject);
         public abstract void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject gameObject);
+
+        public abstract float? GetProjectorPropertyValueOriginal(object data, Projector renderer, ProjectorProperties property, GameObject gameObject);
+        public abstract float? GetProjectorPropertyValue(object data, Projector renderer, ProjectorProperties property, GameObject gameObject);
+        public abstract void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject gameObject);
+        public abstract void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject);
+        public abstract IEnumerable<Projector> GetProjectorList(object data, GameObject gameObject);
 
         public abstract void MaterialCopyEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialPasteEdits(object data, Material material, GameObject gameObject);
@@ -786,6 +901,15 @@ namespace MaterialEditorAPI
 #endif
         }
 
+        private void SelectProjectorInterpolableButtonOnClick(GameObject go, ProjectorProperties property, string projectorName)
+        {
+            selectedProjectorInterpolable = new SelectedProjectorInterpolable(go, property, projectorName);
+            MaterialEditorPluginBase.Logger.LogMessage($"Activated interpolable(s), {selectedProjectorInterpolable}");
+#if !API && !EC
+            TimelineCompatibilityHelper.RefreshInterpolablesList();
+#endif
+        }
+
         internal class SelectedInterpolable
         {
             public string MaterialName;
@@ -806,6 +930,25 @@ namespace MaterialEditorAPI
             public override string ToString()
             {
                 return $"{RowType}: {string.Join(" - ", new string[] { PropertyName, MaterialName, RendererName,  }.Where(x => !x.IsNullOrEmpty()).ToArray())}";
+            }
+        }
+
+        internal class SelectedProjectorInterpolable
+        {
+            public string ProjectorName;
+            public ProjectorProperties Property;
+            public GameObject GameObject;
+
+            public SelectedProjectorInterpolable(GameObject go, ProjectorProperties property, string projectorName)
+            {
+                GameObject = go;
+                Property = property;
+                ProjectorName = projectorName;
+            }
+
+            public override string ToString()
+            {
+                return $"Projector: {string.Join(" - ", new string[] { Property.ToString(), ProjectorName, }.Where(x => !x.IsNullOrEmpty()).ToArray())}";
             }
         }
     }

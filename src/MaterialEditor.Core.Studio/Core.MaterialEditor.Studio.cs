@@ -7,11 +7,10 @@ using KKAPI.Studio.SaveLoad;
 using MaterialEditorAPI;
 using Studio;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using UILib;
-using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -431,6 +430,56 @@ namespace KK_Plugins.MaterialEditor
             }
             else
                 GetSceneController().RemoveRendererProperty((int)data, renderer, property);
+        }
+        public override float? GetProjectorPropertyValueOriginal(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = gameObject.GetComponentInParent<ChaControl>();
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetProjectorPropertyValueOriginal(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
+            }
+            else
+                return GetSceneController().GetProjectorPropertyValueOriginal((int)data, projector, property);
+        }
+        public override float? GetProjectorPropertyValue(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = gameObject.GetComponentInParent<ChaControl>();
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetProjectorPropertyValue(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
+            }
+            else
+                return GetSceneController().GetProjectorPropertyValue((int)data, projector, property);
+        }
+        public override void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject go)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = go.GetComponentInParent<ChaControl>();
+                MaterialEditorPlugin.GetCharaController(chaControl).SetProjectorProperty(objectData.Slot, objectData.ObjectType, projector, property, value, gameObject);
+            }
+            else
+                GetSceneController().SetProjectorProperty((int)data, projector, property, value);
+        }
+        public override void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = gameObject.GetComponentInParent<ChaControl>();
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveProjectorProperty(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
+            }
+            else
+                GetSceneController().RemoveProjectorProperty((int)data, projector, property);
+        }
+        public override IEnumerable<Projector> GetProjectorList(object data, GameObject gameObject)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = gameObject.GetComponentInParent<ChaControl>();
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetProjectorList(objectData.ObjectType, gameObject);
+            }
+            else
+                return GetSceneController().GetProjectorList(gameObject);
         }
 
         public override void MaterialCopyEdits(object data, Material material, GameObject go)
