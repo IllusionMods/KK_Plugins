@@ -23,6 +23,7 @@ namespace KK_Plugins.MaterialEditor
     public class SceneController : SceneCustomFunctionController
     {
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
+        private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
         private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
         private readonly List<MaterialKeywordProperty> MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
         private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
@@ -56,6 +57,11 @@ namespace KK_Plugins.MaterialEditor
                 data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
             else
                 data.data.Add(nameof(RendererPropertyList), null);
+
+            if (ProjectorPropertyList.Count > 0)
+                data.data.Add(nameof(ProjectorPropertyList), MessagePackSerializer.Serialize(ProjectorPropertyList));
+            else
+                data.data.Add(nameof(ProjectorPropertyList), null);
 
             if (MaterialFloatPropertyList.Count > 0)
                 data.data.Add(nameof(MaterialFloatPropertyList), MessagePackSerializer.Serialize(MaterialFloatPropertyList));
@@ -198,6 +204,18 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 
+            if (data.data.TryGetValue(nameof(ProjectorPropertyList), out var projectorProperties) && projectorProperties != null)
+            {
+                var properties = MessagePackSerializer.Deserialize<List<ProjectorProperty>>((byte[])projectorProperties);
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var loadedProperty = properties[i];
+                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                        if (MaterialAPI.SetProjectorProperty(ociItem.objectItem, loadedProperty.ProjectorName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
+                            ProjectorPropertyList.Add(new ProjectorProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.ProjectorName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                }
+            }
+
             if (data.data.TryGetValue(nameof(MaterialFloatPropertyList), out var materialFloatProperties) && materialFloatProperties != null)
             {
                 var properties = MessagePackSerializer.Deserialize<List<MaterialFloatProperty>>((byte[])materialFloatProperties);
@@ -274,6 +292,7 @@ namespace KK_Plugins.MaterialEditor
         protected override void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems)
         {
             List<RendererProperty> rendererPropertyListNew = new List<RendererProperty>();
+            List<ProjectorProperty> projectorPropertyListNew = new List<ProjectorProperty>();
             List<MaterialFloatProperty> materialFloatPropertyListNew = new List<MaterialFloatProperty>();
             List<MaterialKeywordProperty> materialKeywordPropertyListNew = new List<MaterialKeywordProperty>();
             List<MaterialColorProperty> materialColorPropertyListNew = new List<MaterialColorProperty>();
@@ -313,6 +332,14 @@ namespace KK_Plugins.MaterialEditor
                         if (loadedProperty.ID == copiedItem.Key)
                             if (MaterialAPI.SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value))
                                 rendererPropertyListNew.Add(new RendererProperty(copiedItem.Value.GetSceneId(), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    }
+
+                    for (var i = 0; i < ProjectorPropertyList.Count; i++)
+                    {
+                        var loadedProperty = ProjectorPropertyList[i];
+                        if (loadedProperty.ID == copiedItem.Key)
+                            if (MaterialAPI.SetProjectorProperty(ociItem.objectItem, loadedProperty.ProjectorName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
+                                projectorPropertyListNew.Add(new ProjectorProperty(copiedItem.Value.GetSceneId(), loadedProperty.ProjectorName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                     }
 
                     for (var i = 0; i < MaterialFloatPropertyList.Count; i++)
@@ -359,6 +386,7 @@ namespace KK_Plugins.MaterialEditor
             }
 
             RendererPropertyList.AddRange(rendererPropertyListNew);
+            ProjectorPropertyList.AddRange(projectorPropertyListNew);
             MaterialFloatPropertyList.AddRange(materialFloatPropertyListNew);
             MaterialKeywordPropertyList.AddRange(materialKeywordPropertyListNew);
             MaterialColorPropertyList.AddRange(materialColorPropertyListNew);
@@ -563,6 +591,8 @@ namespace KK_Plugins.MaterialEditor
                             MaterialPasteEdits(ociItem.objectInfo.dicKey, mat);
                         }
                     }
+                    foreach(var projector in GetProjectorList(ociItem.objectItem))
+                        MaterialPasteEdits(ociItem.objectInfo.dicKey, projector.material);
                 }
             foreach (var child in node.child)
                 PasteEditsRecursive(child, ref count);
@@ -574,6 +604,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var id = item.GetSceneId();
                 RendererPropertyList.RemoveAll(x => x.ID == id);
+                ProjectorPropertyList.RemoveAll(x => x.ID == id);
                 MaterialFloatPropertyList.RemoveAll(x => x.ID == id);
                 MaterialKeywordPropertyList.RemoveAll(x => x.ID == id);
                 MaterialColorPropertyList.RemoveAll(x => x.ID == id);
@@ -649,6 +680,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
+        /// <param name="projector">Projector being modified</param>
         public void MaterialCopyEdits(int id, Material material)
         {
             CopyData.ClearAll();
@@ -688,6 +720,14 @@ namespace KK_Plugins.MaterialEditor
                         CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
                 }
             }
+
+            if (GetProjectorList(GetObjectByID(id)).FirstOrDefault(x => x.material == material) != null)
+                for (var i = 0; i < ProjectorPropertyList.Count; i++)
+                {
+                    var projectorProperty = ProjectorPropertyList[i];
+                    if (projectorProperty.ID == id)
+                        CopyData.ProjectorPropertyList.Add(new CopyContainer.ProjectorProperty(projectorProperty.Property, float.Parse(projectorProperty.Value)));
+                }
         }
         /// <summary>
         /// Paste any edits for the specified object
@@ -695,6 +735,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
+        /// <param name="projector">Projector being modified</param>
         public void MaterialPasteEdits(int id, Material material, bool setProperty = true)
         {
             for (var i = 0; i < CopyData.MaterialShaderList.Count; i++)
@@ -732,6 +773,14 @@ namespace KK_Plugins.MaterialEditor
                 if (materialTextureProperty.Scale != null)
                     SetMaterialTextureScale(id, material, materialTextureProperty.Property, (Vector2)materialTextureProperty.Scale, setProperty);
             }
+
+            var projector = GetProjectorList(GetObjectByID(id)).FirstOrDefault(x => x.material == material);
+            if (projector != null)
+                for (var i = 0; i < CopyData.ProjectorPropertyList.Count; i++)
+                {
+                    var projectorProperty = CopyData.ProjectorPropertyList[i];
+                    SetProjectorProperty(id, projector, projectorProperty.Property, projectorProperty.Value, setProperty);
+                }
         }
         public void MaterialCopyRemove(int id, Material material, GameObject go, bool setProperty = true)
         {
@@ -774,6 +823,104 @@ namespace KK_Plugins.MaterialEditor
                 MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
             }
+        }
+
+        /// <summary>
+        /// Get the saved renderer property's original value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="projector">Renderer being modified</param>
+        /// <param name="property">Property of the renderer</param>
+        /// <returns>Saved renderer property's original value</returns>
+        public float? GetProjectorPropertyValueOriginal(int id, Projector projector, ProjectorProperties property)
+        {
+            var valueOriginal = ProjectorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.ProjectorName == projector.NameFormatted())?.ValueOriginal;
+            if (valueOriginal.IsNullOrEmpty())
+                return null;
+            return float.Parse(valueOriginal);
+        }
+
+        /// <summary>
+        /// Get the saved projector property value or null if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="projector">Projector being modified</param>
+        /// <param name="property">Property of the projector</param>
+        /// <returns>Saved projector property value</returns>
+        public float? GetProjectorPropertyValue(int id, Projector projector, ProjectorProperties property)
+        {
+            var valueOriginal = ProjectorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.ProjectorName == projector.NameFormatted())?.Value;
+            if (valueOriginal.IsNullOrEmpty())
+                return null;
+            return float.Parse(valueOriginal);
+        }
+
+        /// <summary>
+        /// Remove the saved projector property value if one is saved and optionally also update the projector
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="projector">projector being modified</param>
+        /// <param name="property">Property of the projector</param>
+        /// <param name="setProperty">Whether to also apply the value to the projector</param>
+        public void RemoveProjectorProperty(int id, Projector projector, ProjectorProperties property, bool setProperty = true)
+        {
+            GameObject go = GetObjectByID(id);
+            if (setProperty)
+            {
+                var original = GetProjectorPropertyValueOriginal(id, projector, property);
+                if (original != null)
+                {
+                    MaterialAPI.SetProjectorProperty(go, projector.NameFormatted(), property, (float)original);
+                }
+            }
+
+            ProjectorPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.ProjectorName == projector.NameFormatted());
+        }
+
+        public void SetProjectorProperty(int id, Projector projector, ProjectorProperties property, float value, bool setProperty = true)
+        {
+            GameObject go = GetObjectByID(id);
+            var projectorProperty = ProjectorPropertyList.FirstOrDefault(x => x.ID == id && x.Property == property && x.ProjectorName == projector.NameFormatted());
+            if (projectorProperty == null)
+            {
+                string valueOriginal = "";
+                if (property == ProjectorProperties.FarClipPlane)
+                    valueOriginal = projector.farClipPlane.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.NearClipPlane)
+                    valueOriginal = projector.nearClipPlane.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.FieldOfView)
+                    valueOriginal = projector.fieldOfView.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.AspectRatio)
+                    valueOriginal = projector.aspectRatio.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.Orthographic)
+                    valueOriginal = Convert.ToSingle(projector.orthographic).ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.OrthographicSize)
+                    valueOriginal = projector.orthographicSize.ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.IgnoreCharaLayer)
+                    valueOriginal = Convert.ToSingle(projector.ignoreLayers == (projector.ignoreLayers | (1 << 10))).ToString(CultureInfo.InvariantCulture);
+                else if (property == ProjectorProperties.IgnoreMapLayer)
+                    valueOriginal = Convert.ToSingle(projector.ignoreLayers == (projector.ignoreLayers | (1 << 11))).ToString(CultureInfo.InvariantCulture);
+
+                if (valueOriginal != "")
+                    ProjectorPropertyList.Add(new ProjectorProperty(id, projector.NameFormatted(), property, value.ToString(CultureInfo.InvariantCulture), valueOriginal));
+            }
+            else
+            {
+                if (value.ToString(CultureInfo.InvariantCulture) == projectorProperty.ValueOriginal)
+                    RemoveProjectorProperty(id, projector, property, false);
+                else
+                    projectorProperty.Value = value.ToString(CultureInfo.InvariantCulture);
+            }
+
+            if (setProperty)
+                MaterialAPI.SetProjectorProperty(go, projector.NameFormatted(), property, value);
+        }
+
+        public IEnumerable<Projector> GetProjectorList(GameObject gameObject)
+        {
+            //Assume the projector component will always be attached to the root object
+            //Otherwise no distinction can be made between projectors and editing them will not work properly
+            return MaterialAPI.GetProjectorList(gameObject, false);
         }
 
         #region Set, Get, Remove methods
@@ -1893,6 +2040,57 @@ namespace KK_Plugins.MaterialEditor
                 ID = id;
                 MaterialName = materialName.Replace("(Instance)", "").Trim();
                 MaterialCopyName = materialCopyName;
+            }
+        }
+
+        /// <summary>
+        /// Data storage class for projector properties
+        /// </summary>
+        [Serializable]
+        [MessagePackObject]
+        public class ProjectorProperty
+        {
+            /// <summary>
+            /// ID of the item
+            /// </summary>
+            [Key("ID")]
+            public int ID;
+            /// <summary>
+            /// Name of the projector
+            /// </summary>
+            [Key("ProjectorName")]
+            public string ProjectorName;
+            /// <summary>
+            /// Property type
+            /// </summary>
+            [Key("Property")]
+            public ProjectorProperties Property;
+            /// <summary>
+            /// Value
+            /// </summary>
+            [Key("Value")]
+            public string Value;
+            /// <summary>
+            /// Original value
+            /// </summary>
+            [Key("ValueOriginal")]
+            public string ValueOriginal;
+
+            /// <summary>
+            /// Data storage class for renderer properties
+            /// </summary>
+            /// <param name="id">ID of the item</param>
+            /// <param name="ProjectorName">Name of the renderer</param>
+            /// <param name="property">Property type</param>
+            /// <param name="value">Value</param>
+            /// <param name="valueOriginal">Original</param>
+            public ProjectorProperty(int id, string projectorName, ProjectorProperties property, string value, string valueOriginal)
+            {
+                ID = id;
+                ProjectorName = projectorName.Replace("(Instance)", "").Trim();
+                Property = property;
+                Value = value;
+                ValueOriginal = valueOriginal;
             }
         }
     }

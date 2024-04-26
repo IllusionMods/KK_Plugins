@@ -259,8 +259,13 @@ namespace MaterialEditorAPI
                             Text text = MaterialCopyRemove.GetComponentInChildren<Text>();
                             text.text = "Copy Material";
                         }
-                        MaterialCopyRemove.onClick.RemoveAllListeners();
-                        MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
+                        if (item.MaterialOnCopyRemove != null)
+                        {
+                            MaterialCopyRemove.onClick.RemoveAllListeners();
+                            MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
+                        }
+                        else
+                            MaterialCopyRemove.gameObject.SetActive(false);
 
                         break;
                     case ItemInfo.RowItemType.Shader:

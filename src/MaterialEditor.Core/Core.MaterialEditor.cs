@@ -58,7 +58,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.5.0";
+        public const string PluginVersion = "3.6.0";
 
         /// <summary>
         /// Material which is used in normal map conversion
@@ -912,6 +912,9 @@ namespace KK_Plugins.MaterialEditor
                         ConvertNormalMaps(material);
                     }
                 }
+                var projectors = go.GetComponentsInChildren<Projector>();
+                foreach (var projector in projectors)
+                    ReplaceShaders(projector.material);
             }
             else if (context.Asset is Material material)
             {
