@@ -33,5 +33,6 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\normal_convert.unity3d">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Include="$(MSBuildThisFileDirectory)normal_convert_opengl.shader" />
   </ItemGroup>
 </Project>

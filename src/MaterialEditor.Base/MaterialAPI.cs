@@ -421,7 +421,11 @@ namespace MaterialEditorAPI
                         else
                             value.wrapMode = tex.wrapMode;
                     }
+#if API
                     material.SetTexture($"_{propertyName}", value);
+#else
+                    material.SetTexture($"_{propertyName}", ConvertNormalMap(value, propertyName));
+#endif
                     didSet = true;
                 }
             }
@@ -576,6 +580,43 @@ namespace MaterialEditorAPI
             bundle.Unload(false);
             return tex;
         }
+
+#if !API
+        private static Material normalMapOpenGLConvertMaterial;
+        private static Material NormalMapOpenGLConvertMaterial
+        {
+            get
+            {
+                if (normalMapOpenGLConvertMaterial == null)
+                {
+                    AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_Plugins)}.Resources.normal_convert.unity3d"));
+                    var shader_opengl = bundle.LoadAsset<Shader>("normal_convert_opengl");
+                    normalMapOpenGLConvertMaterial = new Material(shader_opengl);
+                }
+                return normalMapOpenGLConvertMaterial;
+            }
+        }
+        private static Texture ConvertNormalMap(Texture tex, string propertyName)
+        {
+            if (!MaterialEditorPluginBase.NormalMapProperties.Contains(propertyName))
+                return tex;
+
+            Texture2D readableTex = MaterialEditorPluginBase.MakeTextureReadable(tex);
+            Color c = readableTex.GetPixel(0, 0);
+            //OpenGL normals have no alpha channel, while the converted ones do
+            //So if there is any alpha, it's safe to assume a converted normalmap is used and no conversion is needed
+            if (!Mathf.Approximately(c.a, 1))
+                return tex;
+
+            RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
+            rt.useMipMap = true;
+            rt.autoGenerateMips = true;
+            Graphics.Blit(tex, rt, NormalMapOpenGLConvertMaterial);
+            rt.wrapMode = tex.wrapMode;
+
+            return rt;
+        }
+#endif
 
         /// <summary>
         /// Type of the shader property

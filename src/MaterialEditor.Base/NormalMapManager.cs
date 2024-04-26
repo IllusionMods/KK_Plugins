@@ -141,7 +141,7 @@ namespace MaterialEditorAPI
             }
         }
 
-        private static Texture2D MakeTextureReadable(Texture tex, RenderTextureFormat rtf = RenderTextureFormat.Default, RenderTextureReadWrite cs = RenderTextureReadWrite.Default)
+        internal static Texture2D MakeTextureReadable(Texture tex, RenderTextureFormat rtf = RenderTextureFormat.Default, RenderTextureReadWrite cs = RenderTextureReadWrite.Default)
         {
             var tmp = RenderTexture.GetTemporary(tex.width, tex.height, 0, rtf, cs);
             var currentActiveRT = RenderTexture.active;
