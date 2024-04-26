@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace MaterialEditorAPI
         /// <returns>True if the texture was converted</returns>
         public bool ConvertNormalMap(ref Texture tex, string propertyName)
         {
-            if (!NormalMapProperties.Contains(propertyName))
+            if (!NormalMapProperties.Any(x => propertyName.Contains(x)))
                 return false;
 
             if (tex == null || IsBrokenTexture(tex))

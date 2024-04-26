@@ -828,7 +828,7 @@ namespace MaterialEditorAPI
         }
         private static Texture ConvertNormalMap(Texture tex, string propertyName)
         {
-            if (!MaterialEditorPluginBase.NormalMapProperties.Contains(propertyName) || tex == null)
+            if (!MaterialEditorPluginBase.NormalMapProperties.Any(x => propertyName.Contains(x)) || tex == null)
                 return tex;
 
             Texture2D readableTex = MaterialEditorPluginBase.MakeTextureReadable(tex);
