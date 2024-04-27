@@ -652,6 +652,7 @@ namespace MaterialEditorAPI
                             value.wrapMode = tex.wrapMode;
                     }
                     material.SetTexture($"_{propertyName}", value);
+                    didSet = true;
                 }
             }
             return didSet;
