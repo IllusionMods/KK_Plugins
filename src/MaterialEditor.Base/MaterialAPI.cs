@@ -835,7 +835,7 @@ namespace MaterialEditorAPI
             Color c = readableTex.GetPixel(0, 0);
             //OpenGL normals have no alpha channel, while the converted ones do
             //So if there is any alpha, it's safe to assume a converted normalmap is used and no conversion is needed
-            if (!Mathf.Approximately(c.a, 1))
+            if (MaterialEditorPluginBase.Approximately(c.a, 1))
                 return tex;
 
             RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);

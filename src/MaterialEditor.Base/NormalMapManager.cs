@@ -42,7 +42,7 @@ namespace MaterialEditorAPI
             if (!NormalMapProperties.Any(x => propertyName.Contains(x)))
                 return false;
 
-            if (tex == null || IsBrokenTexture(tex) || IsUncompressedNormalMap(tex))
+            if (tex == null || IsBrokenTexture(tex))
                 return false;
 
             Texture normalTex;
@@ -113,6 +113,8 @@ namespace MaterialEditorAPI
             try
             {
                 Color[] c = readableTex.GetPixels(0);
+                //No conversion needed, but let it still cache the result
+                if (IsUncompressedNormalMap(c[0])) return src;
                 if (c[0].r != 1f) //Sample one pixel and don't covert normal maps that are already red
                 {
                     //Set the entire red color channel to white
@@ -162,12 +164,25 @@ namespace MaterialEditorAPI
             }
         }
 
-        internal bool IsUncompressedNormalMap(Texture tex)
+        internal static bool IsUncompressedNormalMap(Texture tex)
         {
             Texture2D readableTex = MakeTextureReadable(tex);
             if (Mathf.Approximately(readableTex.GetPixel(0, 0).a, 1))
                 return true;
             return false;
+        }
+
+        internal static bool IsUncompressedNormalMap(Color color)
+        {
+            return Approximately(color.a, 1);
+        }
+
+        internal static bool Approximately(float a, float b)
+        {
+            const float e = 1e-05f * 8f;
+            var x = a - b;
+            return !(x >= 0 ? x > e : -x > e);
+
         }
     }
 
