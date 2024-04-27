@@ -276,7 +276,7 @@ namespace KK_Plugins.MaterialEditor
                         {
                             var tex = TextureDictionary[(int)newTextureProperty.TexID].Texture;
                             MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, newTextureProperty.Property);
-                            setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, TextureDictionary[(int)newTextureProperty.TexID].Texture);
+                            setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, tex);
                         }
 
                         bool setOffset = SetTextureOffset(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
@@ -1248,7 +1248,7 @@ namespace KK_Plugins.MaterialEditor
 
                 var tex = TextureDictionary[texID].Texture;
                 Instance.ConvertNormalMap(ref tex, propertyName);
-                SetTexture(go, material.NameFormatted(), propertyName, TextureDictionary[texID].Texture);
+                SetTexture(go, material.NameFormatted(), propertyName, tex);
 
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
                 if (textureProperty == null)
@@ -1276,7 +1276,7 @@ namespace KK_Plugins.MaterialEditor
 
             var tex = TextureDictionary[texID].Texture;
             Instance.ConvertNormalMap(ref tex, propertyName);
-            SetTexture(go, material.NameFormatted(), propertyName, TextureDictionary[texID].Texture);
+            SetTexture(go, material.NameFormatted(), propertyName, tex);
 
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty == null)
