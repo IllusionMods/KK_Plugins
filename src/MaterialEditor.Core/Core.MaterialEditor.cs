@@ -981,6 +981,7 @@ namespace KK_Plugins.MaterialEditor
 
         protected override Texture ConvertNormalMap( Texture tex)
         {
+            if (IsUncompressedNormalMap(tex)) return tex;
             RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
             rt.useMipMap = true;
             rt.autoGenerateMips = true;

@@ -42,7 +42,7 @@ namespace MaterialEditorAPI
             if (!NormalMapProperties.Any(x => propertyName.Contains(x)))
                 return false;
 
-            if (tex == null || IsBrokenTexture(tex))
+            if (tex == null || IsBrokenTexture(tex) || IsUncompressedNormalMap(tex))
                 return false;
 
             Texture normalTex;
@@ -68,7 +68,6 @@ namespace MaterialEditorAPI
             }
 
             //Never converted or had been converted but was deleted.
-
             normalTex = ConvertNormalMap(tex);
 
             if (normalTex == null )
@@ -161,6 +160,14 @@ namespace MaterialEditorAPI
                 RenderTexture.active = currentActiveRT;
                 RenderTexture.ReleaseTemporary(tmp);
             }
+        }
+
+        internal bool IsUncompressedNormalMap(Texture tex)
+        {
+            Texture2D readableTex = MakeTextureReadable(tex);
+            if (Mathf.Approximately(readableTex.GetPixel(0, 0).a, 1))
+                return true;
+            return false;
         }
     }
 
