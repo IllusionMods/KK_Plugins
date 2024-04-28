@@ -167,7 +167,14 @@ namespace MaterialEditorAPI
         internal static bool IsUncompressedNormalMap(Texture tex)
         {
             Texture2D readableTex = MakeTextureReadable(tex);
-            return IsUncompressedNormalMap(readableTex.GetPixel(0, 0));
+            try
+            {
+                return IsUncompressedNormalMap(readableTex.GetPixel(0, 0));
+            }
+            finally
+            {
+                UnityEngine.Object.Destroy(readableTex);
+            }
         }
 
         internal static bool IsUncompressedNormalMap(Color color)
