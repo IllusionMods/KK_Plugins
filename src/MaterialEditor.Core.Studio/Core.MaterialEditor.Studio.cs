@@ -82,6 +82,7 @@ namespace KK_Plugins.MaterialEditor
             ItemTypeDropDown.captionText.transform.SetRect(0.05f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
             ItemTypeDropDown.captionText.alignment = TextAnchor.MiddleLeft;
             ItemTypeDropDown.gameObject.SetActive(false);
+            AutoScrollToSelectionWithDropdown.Setup(ItemTypeDropDown);
 
 #if PH
             RectTransform original = GameObject.Find("StudioScene").transform.Find("Canvas Object List/Image Bar/Button Folder").GetComponent<RectTransform>();
@@ -179,7 +180,11 @@ namespace KK_Plugins.MaterialEditor
             var accessories = chaControl.GetAccessoryObjects();
             for (var i = 0; i < accessories.Length; i++)
                 if (accessories[i] != null)
+#if !PH
+                    ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(i)} {chaControl.infoAccessory[i].Name}"));
+#else
                     ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(i)}"));
+#endif
         }
 
         private void ChangeItemType(int selectedItem, ChaControl chaControl)
