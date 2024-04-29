@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace MaterialEditorAPI
         /// <returns>True if the texture was converted</returns>
         public bool ConvertNormalMap(ref Texture tex, string propertyName)
         {
-            if (!NormalMapProperties.Contains(propertyName))
+            if (!NormalMapProperties.Any(x => propertyName.Contains(x)))
                 return false;
 
             if (tex == null || IsBrokenTexture(tex))
@@ -67,7 +68,6 @@ namespace MaterialEditorAPI
             }
 
             //Never converted or had been converted but was deleted.
-
             normalTex = ConvertNormalMap(tex);
 
             if (normalTex == null )
@@ -113,6 +113,8 @@ namespace MaterialEditorAPI
             try
             {
                 Color[] c = readableTex.GetPixels(0);
+                //No conversion needed, but let it still cache the result
+                if (IsUncompressedNormalMap(c[0])) return src;
                 if (c[0].r != 1f) //Sample one pixel and don't covert normal maps that are already red
                 {
                     //Set the entire red color channel to white
@@ -160,6 +162,32 @@ namespace MaterialEditorAPI
                 RenderTexture.active = currentActiveRT;
                 RenderTexture.ReleaseTemporary(tmp);
             }
+        }
+
+        internal static bool IsUncompressedNormalMap(Texture tex)
+        {
+            Texture2D readableTex = MakeTextureReadable(tex);
+            try
+            {
+                return IsUncompressedNormalMap(readableTex.GetPixel(0, 0));
+            }
+            finally
+            {
+                UnityEngine.Object.Destroy(readableTex);
+            }
+        }
+
+        internal static bool IsUncompressedNormalMap(Color color)
+        {
+            return Approximately(color.a, 1);
+        }
+
+        internal static bool Approximately(float a, float b)
+        {
+            const float e = 1e-05f * 8f;
+            var x = a - b;
+            return !(x >= 0 ? x > e : -x > e);
+
         }
     }
 
