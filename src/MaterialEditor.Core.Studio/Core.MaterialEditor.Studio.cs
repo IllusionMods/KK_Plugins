@@ -81,6 +81,7 @@ namespace KK_Plugins.MaterialEditor
             ItemTypeDropDown.captionText.transform.SetRect(0.05f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
             ItemTypeDropDown.captionText.alignment = TextAnchor.MiddleLeft;
             ItemTypeDropDown.gameObject.SetActive(false);
+            AutoScrollToSelectionWithDropdown.Setup(ItemTypeDropDown);
 
 #if PH
             RectTransform original = GameObject.Find("StudioScene").transform.Find("Canvas Object List/Image Bar/Button Folder").GetComponent<RectTransform>();
