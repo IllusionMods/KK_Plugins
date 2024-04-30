@@ -61,6 +61,9 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="currentGameMode"></param>
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
+#if KK || KKS
+            PurgeUnusedCoordinates();
+#endif
             PurgeUnusedTextures();
 
             if (RendererPropertyList.Count == 0 && MaterialFloatPropertyList.Count == 0 && MaterialKeywordPropertyList.Count == 0 && MaterialColorPropertyList.Count == 0 && MaterialTexturePropertyList.Count == 0 && MaterialShaderList.Count == 0 && MaterialCopyList.Count == 0)
@@ -2375,6 +2378,20 @@ namespace KK_Plugins.MaterialEditor
                 TextureDictionary.Remove(texID);
             }
         }
+
+#if KK || KKS
+        internal void PurgeUnusedCoordinates()
+        {
+            RendererPropertyList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);
+            ProjectorPropertyList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);
+            MaterialFloatPropertyList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);
+            MaterialColorPropertyList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);
+            MaterialKeywordPropertyList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);
+            MaterialTexturePropertyList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);
+            MaterialShaderList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);
+            MaterialCopyList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);
+        }
+#endif
 
         /// <summary>
         /// Type of object, used for saving MaterialEditor data.
