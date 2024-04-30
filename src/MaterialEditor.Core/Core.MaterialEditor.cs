@@ -42,6 +42,8 @@ namespace KK_Plugins.MaterialEditor
     [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
 #if !PH
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
+#elif KK || KKS
+    [BepInDependency("com.deathweasel.bepinex.moreoutfits", BepInDependency.DependencyFlags.SoftDependency)]
 #endif
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public partial class MaterialEditorPlugin : MaterialEditorAPI.MaterialEditorPluginBase
@@ -216,6 +218,17 @@ namespace KK_Plugins.MaterialEditor
                 if (method != null)
                     harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHookStudio), AccessTools.all)));
             }
+
+#if KK || KKS
+            //Hook to delete properties of an outfit that gets removed
+            var moreOutfitsType = Type.GetType($"KK_Plugins.MoreOutfits.Plugin, {Constants.Prefix}_MoreOutfits");
+            if(moreOutfitsType != null)
+            {
+                var method = moreOutfitsType.GetMethod("RemoveCoordinateSlot", AccessTools.all);
+                if (method != null)
+                    harmony.Patch(method, postfix: new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.RemoveCoordinateSlotHook), AccessTools.all)));
+            }
+#endif
 
             StartCoroutine(LoadXML());
             StartCoroutine(GetUncensorSelectorParts());
