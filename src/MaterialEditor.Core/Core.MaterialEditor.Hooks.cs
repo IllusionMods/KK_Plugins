@@ -592,6 +592,7 @@ namespace KK_Plugins.MaterialEditor
             chaControl.StartCoroutine(MaterialEditorPlugin.GetCharaController(chaControl).LoadData(false, false, false));
         }
 
+#if KK || KKS
         internal static void RemoveCoordinateSlotHook()
         {
             if (MakerAPI.InsideAndLoaded)
@@ -600,5 +601,6 @@ namespace KK_Plugins.MaterialEditor
                 controller.PurgeUnusedCoordinates();
             }
         }
+#endif
     }
 }

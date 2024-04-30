@@ -218,6 +218,7 @@ namespace KK_Plugins.MaterialEditor
                     harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHookStudio), AccessTools.all)));
             }
 
+#if KK || KKS
             //Hook to delete properties of an outfit that gets removed
             var moreOutfitsType = Type.GetType($"KK_Plugins.MoreOutfits.Plugin, {Constants.Prefix}_MoreOutfits");
             if(moreOutfitsType != null)
@@ -226,6 +227,7 @@ namespace KK_Plugins.MaterialEditor
                 if (method != null)
                     harmony.Patch(method, postfix: new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.RemoveCoordinateSlotHook), AccessTools.all)));
             }
+#endif
 
             StartCoroutine(LoadXML());
             StartCoroutine(GetUncensorSelectorParts());
