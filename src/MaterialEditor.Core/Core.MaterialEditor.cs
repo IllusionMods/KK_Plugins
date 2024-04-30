@@ -83,6 +83,7 @@ namespace KK_Plugins.MaterialEditor
         internal static ConfigEntry<KeyboardShortcut> EnableReceiveShadows { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> ResetReceiveShadows { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> PasteEditsHotkey { get; private set; }
+        internal static ConfigEntry<KeyboardShortcut> PurgeOrphanedPropertiesHotkey { get; private set; }
 
         internal static ConfigEntry<bool> RendererCachingEnabled { get; private set; }
 
@@ -152,6 +153,7 @@ namespace KK_Plugins.MaterialEditor
             EnableReceiveShadows = Config.Bind("Keyboard Shortcuts", "Enable ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftAlt), "Enable ReceiveShadows for all selected items and their child items in Studio");
             ResetReceiveShadows = Config.Bind("Keyboard Shortcuts", "Reset ReceiveShadows", new KeyboardShortcut(KeyCode.N, KeyCode.LeftControl, KeyCode.LeftAlt), "Reset ReceiveShadows for all selected items and their child items in Studio");
             PasteEditsHotkey = Config.Bind("Keyboard Shortcuts", "Paste Edits", new KeyboardShortcut(KeyCode.N), "Paste any copied edits for all selected items and their child items in Studio");
+            PurgeOrphanedPropertiesHotkey = Config.Bind("Keyboard Shortcuts", "Purge Orphaned Properties", new KeyboardShortcut(KeyCode.R, KeyCode.LeftShift, KeyCode.LeftControl), "Remove any properties no longer associated with anything on the current outfit");
 #if PH
             //Disable ShaderOptimization since it doesn't work properly
             ShaderOptimization.Value = false;
@@ -995,7 +997,7 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-        protected override Texture ConvertNormalMap( Texture tex)
+        protected override Texture ConvertNormalMap(Texture tex)
         {
             var material = NormalMapConvertMaterial;
             if (IsUncompressedNormalMap(tex))

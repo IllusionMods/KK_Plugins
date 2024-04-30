@@ -164,6 +164,8 @@ namespace KK_Plugins.MaterialEditor
                 GameObjectToSet = null;
             }
             base.Update();
+            if (MaterialEditorPlugin.PurgeOrphanedPropertiesHotkey.Value.IsDown())
+                PurgeOrphanedProperties();
         }
 
         /// <summary>
@@ -2358,10 +2360,10 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Purge unused textures from TextureDictionary
         /// </summary>
-        protected void PurgeUnusedTextures()
+        protected int PurgeUnusedTextures()
         {
             if (TextureDictionary.Count <= 0)
-                return;
+                return 0;
 
             HashSet<int> unuseds = new HashSet<int>(TextureDictionary.Keys);
 
@@ -2378,6 +2380,7 @@ namespace KK_Plugins.MaterialEditor
                 TextureDictionary[texID].Dispose();
                 TextureDictionary.Remove(texID);
             }
+            return unuseds.Count;
         }
 
 #if KK || KKS
@@ -2397,6 +2400,113 @@ namespace KK_Plugins.MaterialEditor
             MaterialCopyList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);
         }
 #endif
+
+        internal void PurgeOrphanedProperties()
+        {
+            int removedCount = 0;
+            MaterialEditorPluginBase.Logger.LogInfo(100);
+            for (var i = 0; i < ChaControl.objClothes.Length; i++)
+                removeProperties(ObjectType.Clothing, i, ChaControl.objClothes[i]);
+            MaterialEditorPluginBase.Logger.LogInfo(200);
+            for (var i = 0; i < ChaControl.objAccessory.Length; i++)
+                removeProperties(ObjectType.Accessory, i, ChaControl.objAccessory[i]);
+            MaterialEditorPluginBase.Logger.LogInfo(300);
+            for (var i = 0; i < ChaControl.objHair.Length; i++)
+                removeProperties(ObjectType.Hair, i, ChaControl.objHair[i]);
+            //The same is not done for the body because some properties are exposed, while technically still there and used
+            //An example would be the face alpha mask not being exposed in koikatsu's v+ shaders, while still being applied if set in a shader that does expose it
+
+            void removeProperties(ObjectType objectType, int slot, GameObject go)
+            {
+                if (go == null) return;
+                MaterialEditorPluginBase.Logger.LogInfo(1);
+                var renderers = GetRendererList(go);
+                if (renderers == null) return;
+
+                MaterialEditorPluginBase.Logger.LogInfo(2);
+                var rendererNames = renderers.Select(x => x.NameFormatted());
+                MaterialEditorPluginBase.Logger.LogInfo(3);
+                var materialNames = renderers.SelectMany(x => x.materials).Select(x => x.NameFormatted()).ToList();
+                MaterialEditorPluginBase.Logger.LogInfo(4);
+                var materialPropertiesDict = renderers
+                    .SelectMany(x => x.materials)
+                    .GroupBy(x => x.NameFormatted())
+                    .Select(x => x.First())
+                    .ToDictionary(
+                        x => x.NameFormatted(),
+                        x => XMLShaderProperties[XMLShaderProperties.ContainsKey(x.shader.NameFormatted()) ? x.shader.NameFormatted() : "default"].Select(i => i.Key)
+                );
+
+                MaterialEditorPluginBase.Logger.LogInfo(5);
+                removedCount += RendererPropertyList.RemoveAll(
+                    x => x.CoordinateIndex == CurrentCoordinateIndex
+                    && x.Slot == slot
+                    && x.ObjectType == objectType
+                    && !rendererNames.Contains(x.RendererName)
+                );
+                MaterialEditorPluginBase.Logger.LogInfo(6);
+                removedCount += MaterialFloatPropertyList.RemoveAll(
+                    x => x.CoordinateIndex == CurrentCoordinateIndex
+                    && x.Slot == slot
+                    && x.ObjectType == objectType
+                    && (
+                        !materialNames.Contains(x.MaterialName)
+                        || !materialPropertiesDict.ContainsKey(x.MaterialName)
+                        || !materialPropertiesDict[x.MaterialName].Contains(x.Property)
+                    )
+                );
+                MaterialEditorPluginBase.Logger.LogInfo(7);
+                removedCount += MaterialColorPropertyList.RemoveAll(
+                    x => x.CoordinateIndex == CurrentCoordinateIndex
+                    && x.Slot == slot
+                    && x.ObjectType == objectType
+                    && (
+                        !materialNames.Contains(x.MaterialName)
+                        || !materialPropertiesDict.ContainsKey(x.MaterialName)
+                        || !materialPropertiesDict[x.MaterialName].Contains(x.Property)
+                    )
+                );
+                MaterialEditorPluginBase.Logger.LogInfo(8);
+                removedCount += MaterialKeywordPropertyList.RemoveAll(
+                    x => x.CoordinateIndex == CurrentCoordinateIndex
+                    && x.Slot == slot
+                    && x.ObjectType == objectType
+                    && (
+                        !materialNames.Contains(x.MaterialName)
+                        || !materialPropertiesDict.ContainsKey(x.MaterialName)
+                        || !materialPropertiesDict[x.MaterialName].Contains(x.Property)
+                    )
+                );
+                MaterialEditorPluginBase.Logger.LogInfo(9);
+                removedCount += MaterialTexturePropertyList.RemoveAll(
+                    x => x.CoordinateIndex == CurrentCoordinateIndex
+                    && x.Slot == slot
+                    && x.ObjectType == objectType
+                    && (
+                        !materialNames.Contains(x.MaterialName)
+                        || !materialPropertiesDict.ContainsKey(x.MaterialName)
+                        || !materialPropertiesDict[x.MaterialName].Contains(x.Property)
+                    )
+                );
+                MaterialEditorPluginBase.Logger.LogInfo(10);
+                removedCount += MaterialShaderList.RemoveAll(
+                    x => x.CoordinateIndex == CurrentCoordinateIndex
+                    && x.Slot == slot
+                    && x.ObjectType == objectType
+                    && !materialNames.Contains(x.MaterialName)
+                );
+                MaterialEditorPluginBase.Logger.LogInfo(11);
+                removedCount += MaterialCopyList.RemoveAll(
+                    x => x.CoordinateIndex == CurrentCoordinateIndex
+                    && x.Slot == slot
+                    && x.ObjectType == objectType
+                    && !materialNames.Contains(x.MaterialName)
+                );
+            }
+            MaterialEditorPluginBase.Logger.LogMessage($"Removed {removedCount} orphaned propertie(s)");
+            var purgedTextures = PurgeUnusedTextures();
+            MaterialEditorPluginBase.Logger.LogMessage($"Removed {purgedTextures} orphaned texture(s)");
+        }
 
         /// <summary>
         /// Type of object, used for saving MaterialEditor data.
@@ -2555,7 +2665,7 @@ namespace KK_Plugins.MaterialEditor
                 ValueOriginal = valueOriginal;
             }
         }
-        
+
         /// <summary>
         /// Data storage class for float properties
         /// </summary>
