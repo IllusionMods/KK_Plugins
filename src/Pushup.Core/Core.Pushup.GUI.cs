@@ -335,7 +335,7 @@ namespace KK_Plugins
                 studioEditBra = value == 1;
                 if (change) Singleton<Studio.Studio>.Instance?.manipulatePanelCtrl?.charaPanelInfo?.m_MPCharCtrl?.OnClickRoot(0);
             });
-            EditCategory.AddControl(new CurrentStateCategorySlider("Firmess", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Firmness)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Firmness)));
+            EditCategory.AddControl(new CurrentStateCategorySlider("Firmness", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Firmness)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Firmness)));
             EditCategory.AddControl(new CurrentStateCategorySlider("Lift", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Lift)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Lift)));
             EditCategory.AddControl(new CurrentStateCategorySlider("Push Together", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.PushTogether)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.PushTogether)));
             EditCategory.AddControl(new CurrentStateCategorySlider("Squeeze", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Squeeze)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Squeeze)));
