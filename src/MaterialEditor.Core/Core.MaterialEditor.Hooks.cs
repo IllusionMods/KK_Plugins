@@ -591,5 +591,14 @@ namespace KK_Plugins.MaterialEditor
         {
             chaControl.StartCoroutine(MaterialEditorPlugin.GetCharaController(chaControl).LoadData(false, false, false));
         }
+
+        internal static void RemoveCoordinateSlotHook()
+        {
+            if (MakerAPI.InsideAndLoaded)
+            {
+                var controller = MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl());
+                controller.PurgeUnusedCoordinates();
+            }
+        }
     }
 }

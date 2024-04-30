@@ -37,6 +37,7 @@ namespace KK_Plugins.MaterialEditor
     /// <summary>
     /// MaterialEditor plugin base
     /// </summary>
+    [BepInDependency("com.deathweasel.bepinex.moreoutfits", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
     [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
@@ -198,7 +199,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var method = uncensorSelectorType.GetMethod("BodyDropdownChanged", AccessTools.all);
                 if (method != null)
-                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHook), AccessTools.all)));
+                    harmony.Patch(method, postfix: new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHook), AccessTools.all)));
                 method = uncensorSelectorType.GetMethod("PenisDropdownChanged", AccessTools.all);
                 if (method != null)
                     harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHook), AccessTools.all)));
@@ -215,6 +216,14 @@ namespace KK_Plugins.MaterialEditor
                 method = uncensorSelectorType.GetMethod("BallsDropdownChangedStudio", AccessTools.all);
                 if (method != null)
                     harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHookStudio), AccessTools.all)));
+            }
+
+            var moreOutfitsType = Type.GetType($"KK_Plugins.MoreOutfits.Plugin, {Constants.Prefix}_MoreOutfits");
+            if(moreOutfitsType != null)
+            {
+                var method = moreOutfitsType.GetMethod("RemoveCoordinateSlot", AccessTools.all);
+                if (method != null)
+                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.RemoveCoordinateSlotHook), AccessTools.all)));
             }
 
             StartCoroutine(LoadXML());
