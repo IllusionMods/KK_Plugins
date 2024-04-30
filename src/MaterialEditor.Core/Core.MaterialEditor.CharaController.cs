@@ -2380,6 +2380,10 @@ namespace KK_Plugins.MaterialEditor
         }
 
 #if KK || KKS
+
+        /// <summary>
+        /// Purge coordinate properties that reference a coordinate that no longer exists
+        /// </summary>
         internal void PurgeUnusedCoordinates()
         {
             RendererPropertyList.RemoveAll(x => ChaControl.chaFile.coordinate.ElementAtOrDefault(x.CoordinateIndex) == null);

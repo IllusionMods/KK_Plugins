@@ -218,6 +218,7 @@ namespace KK_Plugins.MaterialEditor
                     harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHookStudio), AccessTools.all)));
             }
 
+            //Hook to delete properties of an outfit that gets removed
             var moreOutfitsType = Type.GetType($"KK_Plugins.MoreOutfits.Plugin, {Constants.Prefix}_MoreOutfits");
             if(moreOutfitsType != null)
             {
