@@ -2420,8 +2420,10 @@ namespace KK_Plugins.MaterialEditor
                 var renderers = GetRendererList(go);
                 if (renderers == null) return;
 
-                var rendererNames = renderers.Select(x => x.NameFormatted());
                 var materialNames = renderers.SelectMany(x => x.materials).Select(x => x.NameFormatted()).ToList();
+                var projectors = GetProjectorList(objectType, go);
+                materialNames.AddRange(projectors.Select(x => x.material.NameFormatted()));
+
                 var materialPropertiesDict = renderers
                     .SelectMany(x => x.materials)
                     .GroupBy(x => x.NameFormatted())
@@ -2431,11 +2433,17 @@ namespace KK_Plugins.MaterialEditor
                         x => XMLShaderProperties[XMLShaderProperties.ContainsKey(x.shader.NameFormatted()) ? x.shader.NameFormatted() : "default"].Select(i => i.Key)
                 );
 
+                removedCount += ProjectorPropertyList.RemoveAll(
+                    x => x.CoordinateIndex == CurrentCoordinateIndex
+                    && x.Slot == slot
+                    && x.ObjectType == objectType
+                    && !projectors.Select(projector => projector.NameFormatted()).Contains(x.ProjectorName)
+                );
                 removedCount += RendererPropertyList.RemoveAll(
                     x => x.CoordinateIndex == CurrentCoordinateIndex
                     && x.Slot == slot
                     && x.ObjectType == objectType
-                    && !rendererNames.Contains(x.RendererName)
+                    && !renderers.Select(rend => rend.NameFormatted()).Contains(x.RendererName)
                 );
                 removedCount += MaterialFloatPropertyList.RemoveAll(
                     x => x.CoordinateIndex == CurrentCoordinateIndex
