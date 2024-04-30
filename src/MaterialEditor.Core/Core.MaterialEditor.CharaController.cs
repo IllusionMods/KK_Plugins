@@ -2411,7 +2411,7 @@ namespace KK_Plugins.MaterialEditor
                 removeProperties(ObjectType.Accessory, i, ChaControl.GetAccessoryObjects()[i]);
             for (var i = 0; i < ChaControl.GetHair().Length; i++)
                 removeProperties(ObjectType.Hair, i, ChaControl.GetHair()[i]);
-            //The same is not done for the body because some properties are exposed, while technically still there and used
+            //The same is not done for the body because some properties are not exposed, while technically still there and used
             //An example would be the face alpha mask not being exposed in koikatsu's v+ shaders, while still being applied if set in a shader that does expose it
 
             void removeProperties(ObjectType objectType, int slot, GameObject go)
