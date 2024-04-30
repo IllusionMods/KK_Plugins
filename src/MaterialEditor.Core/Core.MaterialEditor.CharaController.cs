@@ -2405,12 +2405,12 @@ namespace KK_Plugins.MaterialEditor
         {
             int removedCount = 0;
 
-            for (var i = 0; i < ChaControl.objClothes.Length; i++)
-                removeProperties(ObjectType.Clothing, i, ChaControl.objClothes[i]);
-            for (var i = 0; i < ChaControl.objAccessory.Length; i++)
-                removeProperties(ObjectType.Accessory, i, ChaControl.objAccessory[i]);
-            for (var i = 0; i < ChaControl.objHair.Length; i++)
-                removeProperties(ObjectType.Hair, i, ChaControl.objHair[i]);
+            for (var i = 0; i < ChaControl.GetClothes().Length; i++)
+                removeProperties(ObjectType.Clothing, i, ChaControl.GetClothes()[i]);
+            for (var i = 0; i < ChaControl.GetAccessoryObjects().Length; i++)
+                removeProperties(ObjectType.Accessory, i, ChaControl.GetAccessoryObjects()[i]);
+            for (var i = 0; i < ChaControl.GetHair().Length; i++)
+                removeProperties(ObjectType.Hair, i, ChaControl.GetHair()[i]);
             //The same is not done for the body because some properties are exposed, while technically still there and used
             //An example would be the face alpha mask not being exposed in koikatsu's v+ shaders, while still being applied if set in a shader that does expose it
 
