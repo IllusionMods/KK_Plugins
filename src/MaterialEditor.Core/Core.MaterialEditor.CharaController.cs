@@ -62,6 +62,7 @@ namespace KK_Plugins.MaterialEditor
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
 #if KK || KKS
+            //Always run on save to also purge them for cards made before this purging was implemented
             PurgeUnusedCoordinates();
 #endif
             PurgeUnusedTextures();
