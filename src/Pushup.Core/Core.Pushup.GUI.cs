@@ -6,6 +6,10 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static Illusion.Utils;
+using KKAPI.Utilities;
+using System.Collections;
+using System.Collections.Generic;
 #if KK || KKS
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
@@ -180,8 +184,7 @@ namespace KK_Plugins
             PushNippleWidthSlider = MakeSlider(category, "Nipple Width", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleWidth], true);
             PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleDepth], true);
 
-#if KK || KKS
-            //Only one outfit in EC
+#if KK || KKS //Only one outfit in EC
             var coordinateList = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).ToList();
             coordinateList.Add("All");
             ev.AddControl(new MakerSeparator(category, this));
@@ -271,14 +274,21 @@ namespace KK_Plugins
             return pushUpSlider;
         }
 
-#if KK || KKS
-        //No studio for EC
+#if KK || KKS //No studio for EC
+        private static bool studioEditAdvanced = false;
+        private static bool studioEditBra = false;
+
+        private List<CurrentStateCategorySubItemBase> EditCategoryItems = new List<CurrentStateCategorySubItemBase>();
+        private List<CurrentStateCategorySubItemBase> AdvancedChategroyitems = new List<CurrentStateCategorySubItemBase>();
+
         private static void RegisterStudioControls()
         {
             if (!StudioAPI.InsideStudio) return;
 
+            var MainCategory = StudioAPI.GetOrCreateCurrentStateCategory("Pushup");
+
             var pushupBraToggle = new CurrentStateCategorySwitch("Pushup Bra", ocichar => ocichar.charInfo.GetComponent<PushupController>().CurrentBraData.EnablePushup);
-            StudioAPI.GetOrCreateCurrentStateCategory("Pushup").AddControl(pushupBraToggle);
+            MainCategory.AddControl(pushupBraToggle);
             pushupBraToggle.Value.Subscribe(value =>
             {
                 bool first = true;
@@ -294,7 +304,7 @@ namespace KK_Plugins
             });
 
             var pushupTopToggle = new CurrentStateCategorySwitch("Pushup Top", ocichar => ocichar.charInfo.GetComponent<PushupController>().CurrentTopData.EnablePushup);
-            StudioAPI.GetOrCreateCurrentStateCategory("Pushup").AddControl(pushupTopToggle);
+            MainCategory.AddControl(pushupTopToggle);
             pushupTopToggle.Value.Subscribe(value =>
             {
                 bool first = true;
@@ -308,7 +318,97 @@ namespace KK_Plugins
                     controller.RecalculateBody();
                 }
             });
+
+            var EditCategory = StudioAPI.GetOrCreateCurrentStateCategory("Edit Pushup");
+
+            EditCategory.AddControl(new CurrentStateCategorySwitch("Show Advanced", ocichar => studioEditAdvanced)).Value.Subscribe(value => ToggleAdvanced(value));
+            EditCategory.AddControl(new CurrentStateCategoryDropdown("Configure", new string[] { "Pushup Top", "Pushup Bra" }, ocichar => studioEditBra ? 1 : 0)).Value.Subscribe(value =>
+            {
+                bool change = studioEditBra != (value == 1);
+                studioEditBra = value == 1;
+                if (change) Singleton<Studio.Studio>.Instance?.manipulatePanelCtrl?.charaPanelInfo?.m_MPCharCtrl?.OnClickRoot(0);
+            });
+            EditCategory.AddControl(new CurrentStateCategorySlider("Firmness", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Firmness)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Firmness)));
+            EditCategory.AddControl(new CurrentStateCategorySlider("Lift", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Lift)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Lift)));
+            EditCategory.AddControl(new CurrentStateCategorySlider("Push Together", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.PushTogether)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.PushTogether)));
+            EditCategory.AddControl(new CurrentStateCategorySlider("Squeeze", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Squeeze)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Squeeze)));
+            EditCategory.AddControl(new CurrentStateCategorySlider("Center", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.CenterNipples)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.CenterNipples)));
+            EditCategory.AddControl(new CurrentStateCategorySwitch("Flatten Nipples", c => CurrentStateControllGetBoolProperty(c, nameof(ClothData.FlattenNipples)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.FlattenNipples)));
+
+            var AdvancedCategory = StudioAPI.GetOrCreateCurrentStateCategory("Edit Pushup Advanced");
+
+            AdvancedCategory.AddControl(new CurrentStateCategorySwitch("Use Advanced", c => CurrentStateControllGetBoolProperty(c, nameof(ClothData.UseAdvanced)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.UseAdvanced)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Size", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Size)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Size)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Vertical Pos", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.VerticalPosition)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.VerticalPosition)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Vertical Angle", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.VerticalAngle)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.VerticalAngle)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Horizontal Pos", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.HorizontalPosition)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.HorizontalPosition)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Horizontal Angle", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.HorizontalAngle)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.HorizontalAngle)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Depth", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Depth)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Depth)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Roundness", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Roundness)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Roundness)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Softness", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Softness)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Softness)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Weight", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.Weight)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.Weight)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Areola Depth", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.AreolaDepth)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.AreolaDepth)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Nipple Width", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.NippleWidth)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.NippleWidth)));
+            AdvancedCategory.AddControl(new CurrentStateCategorySlider("Nipple Depth", c => CurrentStateControllGetFloatProperty(c, nameof(ClothData.NippleDepth)))).Value.Subscribe(v => CurrentStateControllLambda(v, nameof(ClothData.NippleDepth)));
         }
+
+        private void StudioInterfaceInitialised(object sender, System.EventArgs e)
+        {
+            IEnumerator DisableAdancedCategoryDelayed()
+            {
+                yield return null;
+                yield return null;
+                ToggleAdvanced(false);
+            }
+            
+            StartCoroutine(DisableAdancedCategoryDelayed());
+        }
+
+        private static void ToggleAdvanced(bool value)
+        {
+            GameObject uiRoot = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content");
+            if (uiRoot == null) return;
+
+            GameObject c = uiRoot.transform.Find("Edit Pushup Advanced_Items_SAPI").gameObject;
+            GameObject ch = uiRoot.transform.Find("Edit Pushup Advanced_Header_SAPI").gameObject;
+            if (c != null && ch != null)
+            {
+                ch.SetActive(value);
+                c.SetActive(value);
+                studioEditAdvanced = value;
+            }
+        }
+
+        private static void CurrentStateControllLambda(object value, string fieldName)
+        {
+            bool first = true;
+            foreach (var controller in StudioAPI.GetSelectedControllers<PushupController>())
+            {
+                ClothData data = studioEditBra ? controller.CurrentBraData : controller.CurrentTopData;
+                if (first && data.GetPropertyValue(fieldName, out object fieldValue) && value.Equals(fieldValue))
+                    break;
+
+
+                first = false;
+                data.SetPropertyValue(fieldName, value);
+                controller.RecalculateBody();
+            }
+        }
+
+        private static float CurrentStateControllGetFloatProperty(OCIChar ocichar, string propertyName)
+        {
+            if (studioEditBra && ocichar.charInfo.GetComponent<PushupController>().CurrentBraData.GetPropertyValue(propertyName, out object v1) && v1 is float f1) return f1;
+            if (ocichar.charInfo.GetComponent<PushupController>().CurrentTopData.GetPropertyValue(propertyName, out object v2) && v2 is float f2) return f2;
+            return 0.5f;
+        }
+
+        private static bool CurrentStateControllGetBoolProperty(OCIChar ocichar, string propertyName)
+        {
+            if (studioEditBra && ocichar.charInfo.GetComponent<PushupController>().CurrentBraData.GetPropertyValue(propertyName, out object v1) && v1 is bool f1) return f1;
+            if (ocichar.charInfo.GetComponent<PushupController>().CurrentTopData.GetPropertyValue(propertyName, out object v2) && v2 is bool f2) return f2;
+            return false;
+        }
+
 #endif
     }
 }
