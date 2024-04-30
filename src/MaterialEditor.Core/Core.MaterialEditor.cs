@@ -199,7 +199,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var method = uncensorSelectorType.GetMethod("BodyDropdownChanged", AccessTools.all);
                 if (method != null)
-                    harmony.Patch(method, postfix: new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHook), AccessTools.all)));
+                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHook), AccessTools.all)));
                 method = uncensorSelectorType.GetMethod("PenisDropdownChanged", AccessTools.all);
                 if (method != null)
                     harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.UncensorSelectorHook), AccessTools.all)));
@@ -223,7 +223,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var method = moreOutfitsType.GetMethod("RemoveCoordinateSlot", AccessTools.all);
                 if (method != null)
-                    harmony.Patch(method, new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.RemoveCoordinateSlotHook), AccessTools.all)));
+                    harmony.Patch(method, postfix: new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.RemoveCoordinateSlotHook), AccessTools.all)));
             }
 
             StartCoroutine(LoadXML());
