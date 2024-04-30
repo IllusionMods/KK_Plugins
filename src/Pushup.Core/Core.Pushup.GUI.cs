@@ -184,8 +184,7 @@ namespace KK_Plugins
             PushNippleWidthSlider = MakeSlider(category, "Nipple Width", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleWidth], true);
             PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleDepth], true);
 
-#if KK || KKS
-            //Only one outfit in EC
+#if KK || KKS //Only one outfit in EC
             var coordinateList = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).ToList();
             coordinateList.Add("All");
             ev.AddControl(new MakerSeparator(category, this));
@@ -275,9 +274,7 @@ namespace KK_Plugins
             return pushUpSlider;
         }
 
-#if KK || KKS
-        //No studio for EC
-
+#if KK || KKS //No studio for EC
         private static bool studioEditAdvanced = false;
         private static bool studioEditBra = false;
 
@@ -324,7 +321,7 @@ namespace KK_Plugins
 
             var EditCategory = StudioAPI.GetOrCreateCurrentStateCategory("Edit Pushup");
 
-            EditCategory.AddControl(new CurrentStateCategorySwitch("Show Advanced", ocichar => studioEditAdvanced)).Value.Subscribe(value => toggleAdvanced(value));
+            EditCategory.AddControl(new CurrentStateCategorySwitch("Show Advanced", ocichar => studioEditAdvanced)).Value.Subscribe(value => ToggleAdvanced(value));
             EditCategory.AddControl(new CurrentStateCategoryDropdown("Configure", new string[] { "Pushup Top", "Pushup Bra" }, ocichar => studioEditBra ? 1 : 0)).Value.Subscribe(value =>
             {
                 bool change = studioEditBra != (value == 1);
@@ -357,17 +354,17 @@ namespace KK_Plugins
 
         private void StudioInterfaceInitialised(object sender, System.EventArgs e)
         {
-            StartCoroutine(disableAdancedCategoryDelayed());
+            IEnumerator DisableAdancedCategoryDelayed()
+            {
+                yield return null;
+                yield return null;
+                ToggleAdvanced(false);
+            }
+            
+            StartCoroutine(DisableAdancedCategoryDelayed());
         }
 
-        private IEnumerator disableAdancedCategoryDelayed()
-        {
-            yield return null;
-            yield return null;
-            toggleAdvanced(false);
-        }
-
-        private static void toggleAdvanced(bool value)
+        private static void ToggleAdvanced(bool value)
         {
             GameObject uiRoot = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content");
             if (uiRoot == null) return;
