@@ -37,12 +37,13 @@ namespace KK_Plugins.MaterialEditor
     /// <summary>
     /// MaterialEditor plugin base
     /// </summary>
-    [BepInDependency("com.deathweasel.bepinex.moreoutfits", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
     [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
 #if !PH
     [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
+#elif KK || KKS
+    [BepInDependency("com.deathweasel.bepinex.moreoutfits", BepInDependency.DependencyFlags.SoftDependency)]
 #endif
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public partial class MaterialEditorPlugin : MaterialEditorAPI.MaterialEditorPluginBase
