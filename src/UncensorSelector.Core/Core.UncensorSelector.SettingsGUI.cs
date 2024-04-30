@@ -25,6 +25,8 @@ namespace KK_Plugins
             private bool _visible;
             private readonly List<Entry> AllValues;
             private Rect GUIRect;
+            private Vector2 ScrollPosition;
+            private string SearchText = string.Empty;
             private readonly bool Initialized;
 
             private int LastScreenHeight = -1;
@@ -34,7 +36,7 @@ namespace KK_Plugins
 
             private ConfigEntry<string> Setting;
 
-            internal SettingsGUI(IDictionary<string, T> uncensors, byte sex, string part, bool studio=false)
+            internal SettingsGUI(IDictionary<string, T> uncensors, byte sex, string part, bool studio = false)
             {
                 WindowID = $"{GUID}.{nameof(SettingsGUI<T>)}.{sex}.{part}".GetHashCode();
                 //Deal with duplicate display names (it happens)
@@ -92,7 +94,7 @@ namespace KK_Plugins
 
                 var width = Math.Min(300f, Screen.width / 4f);
 
-                var height = Math.Min(Screen.height * 0.9f, (valueCountChanged || GUIRect.height < 60) ? (AllValues.Count + 4) * 22f : GUIRect.height);
+                var height = Math.Min(Screen.height * 0.9f, (valueCountChanged || GUIRect.height < 60) ? (AllValues.Count + 6) * 22f : GUIRect.height);
                 GUIRect = new Rect(
                     // make sure it's not off screen and try not to overlap settings GUI
                     Screen.width > 1600 ? Screen.width * 0.75f - width * 0.5f : Screen.width - width,
@@ -107,12 +109,37 @@ namespace KK_Plugins
 
             private void DoSettingsGUI(int id)
             {
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-                GUILayout.Label("Select uncensors to exclude from random selection");
+                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false));
+                GUILayout.Label("Select uncensors to *exclude* from random selection");
                 GUILayout.EndHorizontal();
 
+                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false));
+                GUILayout.Label("Search: ", GUILayout.ExpandWidth(false));
+                SearchText = GUILayout.TextField(SearchText, GUILayout.ExpandWidth(true));
+                var isSearch = !string.IsNullOrEmpty(SearchText);
+                if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false))) SearchText = string.Empty;
+                if (GUILayout.Button("Toggle all", GUILayout.ExpandWidth(false)))
+                {
+                    foreach (var value in AllValues)
+                    {
+                        if (isSearch && !value.Name.Contains(SearchText))
+                            continue;
+
+                        if (SelectedGUIDS.Contains(value.GUID))
+                            SelectedGUIDS.Remove(value.GUID);
+                        else
+                            SelectedGUIDS.Add(value.GUID);
+                    }
+                }
+                GUILayout.EndHorizontal();
+
+                ScrollPosition = GUILayout.BeginScrollView(ScrollPosition, false, false);
+                var any = false;
                 foreach (var value in AllValues)
                 {
+                    if (isSearch && !value.Name.Contains(SearchText))
+                        continue;
+
                     GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
                     {
                         GUI.changed = false;
@@ -132,7 +159,15 @@ namespace KK_Plugins
                         }
                     }
                     GUILayout.EndHorizontal();
+                    any = true;
                 }
+                if (!any)
+                {
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Label(isSearch ? "No search results! Clear your search string to see all available uncensors." : "No uncensors were found! Install uncensors by putting their .zipmod files inside of your mods folder.", GUILayout.ExpandWidth(true));
+                }
+                GUILayout.FlexibleSpace();
+                GUILayout.EndScrollView();
 
                 GUI.changed = false;
 
