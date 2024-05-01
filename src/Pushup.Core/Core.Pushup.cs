@@ -6,7 +6,6 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
-using KKAPI.Studio;
 using MessagePack;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +59,7 @@ namespace KK_Plugins
 #if KK || KKS
             //No studio for EC
             RegisterStudioControls();
-            StudioAPI.StudioLoadedChanged += StudioInterfaceInitialised;
+            KKAPI.Studio.StudioAPI.StudioLoadedChanged += StudioInterfaceInitialised;
 #endif
             var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
 
