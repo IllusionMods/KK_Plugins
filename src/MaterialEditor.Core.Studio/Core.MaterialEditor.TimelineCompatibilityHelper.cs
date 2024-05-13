@@ -119,7 +119,12 @@ namespace MaterialEditorAPI
                    owner: "MaterialEditor",
                    id: "textureProperty",
                    name: "Texture Property",
-                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) => SetTexture(parameter.GetGameObject(oci), parameter.materialName, parameter.propertyName, GetTextureByDictionaryID(leftValue)),
+                   interpolateBefore: (oci, parameter, leftValue, rightValue, factor) =>
+                   {
+                       var tex = GetTextureByDictionaryID(leftValue);
+                       MaterialEditorPluginBase.Instance.ConvertNormalMap(ref tex, parameter.propertyName);
+                       SetTexture(parameter.GetGameObject(oci), parameter.materialName, parameter.propertyName, tex);
+                   },
                    interpolateAfter: null,
                    getValue: (oci, parameter) =>
                    {
