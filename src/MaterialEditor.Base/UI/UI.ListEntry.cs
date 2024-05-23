@@ -1,4 +1,8 @@
 ﻿using System;
+#if !API
+using UniRx;
+using UniRx.Triggers;
+#endif
 using UnityEngine;
 using UnityEngine.UI;
 using static UILib.Extensions;
@@ -389,6 +393,11 @@ namespace MaterialEditorAPI
                         ScaleXInput.text = item.Scale.x.ToString();
                         ScaleYInput.text = item.Scale.y.ToString();
 
+                        SubscribeToOnDragUpdateInput(OffsetXText, OffsetXInput, OffsetYInput);
+                        SubscribeToOnDragUpdateInput(OffsetYText, OffsetYInput, OffsetXInput);
+                        SubscribeToOnDragUpdateInput(ScaleXText, ScaleXInput, ScaleYInput);
+                        SubscribeToOnDragUpdateInput(ScaleYText, ScaleYInput, ScaleXInput);
+
                         OffsetXInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
@@ -495,6 +504,11 @@ namespace MaterialEditorAPI
                         ColorGInput.text = item.ColorValue.g.ToString();
                         ColorBInput.text = item.ColorValue.b.ToString();
                         ColorAInput.text = item.ColorValue.a.ToString();
+
+                        SubscribeToOnDragUpdateInput(ColorRText, ColorRInput);
+                        SubscribeToOnDragUpdateInput(ColorGText, ColorGInput);
+                        SubscribeToOnDragUpdateInput(ColorBText, ColorBInput);
+                        SubscribeToOnDragUpdateInput(ColorAText, ColorAInput);
 
                         ColorEditButton.image.color = item.ColorValue;
 
@@ -840,6 +854,28 @@ namespace MaterialEditorAPI
             if (component == null)
                 throw new ArgumentException($"Couldn't find {gameObjectName}");
             return component;
+        }
+
+        /// <summary>
+        /// Subscribes to the on onDrag event on the given Text object, and updates the given input field(s) according to the drag
+        /// </summary>
+        /// <param name="dragText">The text that should be draggable</param>
+        /// <param name="inputField">The InputField that should be updated upon dragging</param>
+        /// <param name="pairedInputField">This InputField will also be updated if alt is held while dragging (e.g. pairing X and Y fields)</param>
+        public void SubscribeToOnDragUpdateInput(Text dragText, InputField inputField, InputField pairedInputField = null)
+        {
+#if !API
+            dragText.OnDragAsObservable().Subscribe(drag =>
+            {
+                float delta = drag.delta.x * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f) / 1000;
+                if (float.TryParse(inputField.text, out float input))
+                {
+                    inputField.onEndEdit.Invoke((input + delta).ToString());
+                }
+                if (pairedInputField != null && Input.GetKey(KeyCode.LeftAlt) && float.TryParse(pairedInputField.text, out float pairedInput))
+                    pairedInputField.onEndEdit.Invoke((pairedInput + delta).ToString());
+            });
+#endif
         }
     }
 }
