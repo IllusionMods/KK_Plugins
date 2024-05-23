@@ -873,7 +873,10 @@ namespace MaterialEditorAPI
                 float multiplier = 0f;
                 float delta = drag.delta.x * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f) / 1000;
                 if (float.TryParse(inputField.text, out float input))
+                {
+                    multiplier = delta / input + 1;
                     inputField.onEndEdit.Invoke((input + delta).ToString());
+                }
                 if (pairedInputFields?.Length > 0 && Input.GetKey(KeyCode.LeftAlt))
                     foreach (var pairedInputField in pairedInputFields)
                         if (float.TryParse(pairedInputField.text, out float pairedInput))
