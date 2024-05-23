@@ -655,6 +655,8 @@ namespace MaterialEditorAPI
                         FloatSlider.value = item.FloatValue;
                         FloatInputField.text = item.FloatValue.ToString();
 
+                        SubscribeToOnDragUpdateInput(FloatLabel, FloatInputField);
+
                         FloatSlider.onValueChanged.AddListener(value =>
                         {
                             FloatInputField.text = value.ToString();
@@ -669,6 +671,7 @@ namespace MaterialEditorAPI
                                 return;
                             }
                             item.FloatValue = input;
+                            FloatInputField.text = item.FloatValue.ToString();
 
                             FloatSlider.Set(item.FloatValue, sendCallback: false);
 
@@ -856,13 +859,13 @@ namespace MaterialEditorAPI
             return component;
         }
 
-        /// <summary>
-        /// Subscribes to the on onDrag event on the given Text object, and updates the given input field(s) according to the drag
-        /// </summary>
-        /// <param name="dragText">The text that should be draggable</param>
-        /// <param name="inputField">The InputField that should be updated upon dragging</param>
-        /// <param name="pairedInputFields">This InputField will also be updated if alt is held while dragging (e.g. pairing X and Y fields)</param>
-        public void SubscribeToOnDragUpdateInput(Text dragText, InputField inputField, InputField[] pairedInputFields = null)
+    /// <summary>
+    /// Subscribes to the on onDrag event on the given Text object, and updates the given input field(s) according to the drag
+    /// </summary>
+    /// <param name="dragText">The text that should be draggable</param>
+    /// <param name="inputField">The InputField that should be updated upon dragging</param>
+    /// <param name="pairedInputFields">This InputField will also be updated if alt is held while dragging (e.g. pairing X and Y fields)</param>
+    public void SubscribeToOnDragUpdateInput(Text dragText, InputField inputField, InputField[] pairedInputFields = null)
         {
 #if !API
             dragText.OnDragAsObservable().Subscribe(drag =>
@@ -870,10 +873,7 @@ namespace MaterialEditorAPI
                 float multiplier = 0f;
                 float delta = drag.delta.x * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f) / 1000;
                 if (float.TryParse(inputField.text, out float input))
-                {
-                    multiplier = delta / input + 1;
                     inputField.onEndEdit.Invoke((input + delta).ToString());
-                }
                 if (pairedInputFields?.Length > 0 && Input.GetKey(KeyCode.LeftAlt))
                     foreach (var pairedInputField in pairedInputFields)
                         if (float.TryParse(pairedInputField.text, out float pairedInput))
