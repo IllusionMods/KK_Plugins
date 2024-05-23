@@ -867,15 +867,23 @@ namespace MaterialEditorAPI
 #if !API
             dragText.OnDragAsObservable().Subscribe(drag =>
             {
+                float multiplier = 0f;
                 float delta = drag.delta.x * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f) / 1000;
                 if (float.TryParse(inputField.text, out float input))
                 {
+                    multiplier = delta / input + 1;
                     inputField.onEndEdit.Invoke((input + delta).ToString());
                 }
                 if (pairedInputFields?.Length > 0 && Input.GetKey(KeyCode.LeftAlt))
-                    foreach(var pairedInputField in pairedInputFields)
-                        if(float.TryParse(pairedInputField.text, out float pairedInput))
-                            pairedInputField.onEndEdit.Invoke((pairedInput + delta).ToString());
+                    foreach (var pairedInputField in pairedInputFields)
+                        if (float.TryParse(pairedInputField.text, out float pairedInput))
+                        {
+                            if (Input.GetKey(KeyCode.Mouse1) && !float.IsInfinity(multiplier) && !float.IsNaN(multiplier))
+                                pairedInputField.onEndEdit.Invoke((pairedInput * multiplier).ToString());
+                            else
+                                pairedInputField.onEndEdit.Invoke((pairedInput + delta).ToString());
+                        }
+
             });
 #endif
         }
