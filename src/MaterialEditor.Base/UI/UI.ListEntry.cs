@@ -393,10 +393,10 @@ namespace MaterialEditorAPI
                         ScaleXInput.text = item.Scale.x.ToString();
                         ScaleYInput.text = item.Scale.y.ToString();
 
-                        SubscribeToOnDragUpdateInput(OffsetXText, OffsetXInput, OffsetYInput);
-                        SubscribeToOnDragUpdateInput(OffsetYText, OffsetYInput, OffsetXInput);
-                        SubscribeToOnDragUpdateInput(ScaleXText, ScaleXInput, ScaleYInput);
-                        SubscribeToOnDragUpdateInput(ScaleYText, ScaleYInput, ScaleXInput);
+                        SubscribeToOnDragUpdateInput(OffsetXText, OffsetXInput, new[] { OffsetYInput });
+                        SubscribeToOnDragUpdateInput(OffsetYText, OffsetYInput, new[] { OffsetXInput });
+                        SubscribeToOnDragUpdateInput(ScaleXText, ScaleXInput, new[] { ScaleYInput });
+                        SubscribeToOnDragUpdateInput(ScaleYText, ScaleYInput, new[] { ScaleXInput });
 
                         OffsetXInput.onEndEdit.AddListener(value =>
                         {
@@ -505,9 +505,9 @@ namespace MaterialEditorAPI
                         ColorBInput.text = item.ColorValue.b.ToString();
                         ColorAInput.text = item.ColorValue.a.ToString();
 
-                        SubscribeToOnDragUpdateInput(ColorRText, ColorRInput);
-                        SubscribeToOnDragUpdateInput(ColorGText, ColorGInput);
-                        SubscribeToOnDragUpdateInput(ColorBText, ColorBInput);
+                        SubscribeToOnDragUpdateInput(ColorRText, ColorRInput, new[] { ColorGInput, ColorBInput });
+                        SubscribeToOnDragUpdateInput(ColorGText, ColorGInput, new[] { ColorRInput, ColorBInput });
+                        SubscribeToOnDragUpdateInput(ColorBText, ColorBInput, new[] { ColorRInput, ColorGInput });
                         SubscribeToOnDragUpdateInput(ColorAText, ColorAInput);
 
                         ColorEditButton.image.color = item.ColorValue;
@@ -861,8 +861,8 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="dragText">The text that should be draggable</param>
         /// <param name="inputField">The InputField that should be updated upon dragging</param>
-        /// <param name="pairedInputField">This InputField will also be updated if alt is held while dragging (e.g. pairing X and Y fields)</param>
-        public void SubscribeToOnDragUpdateInput(Text dragText, InputField inputField, InputField pairedInputField = null)
+        /// <param name="pairedInputFields">This InputField will also be updated if alt is held while dragging (e.g. pairing X and Y fields)</param>
+        public void SubscribeToOnDragUpdateInput(Text dragText, InputField inputField, InputField[] pairedInputFields = null)
         {
 #if !API
             dragText.OnDragAsObservable().Subscribe(drag =>
@@ -872,8 +872,10 @@ namespace MaterialEditorAPI
                 {
                     inputField.onEndEdit.Invoke((input + delta).ToString());
                 }
-                if (pairedInputField != null && Input.GetKey(KeyCode.LeftAlt) && float.TryParse(pairedInputField.text, out float pairedInput))
-                    pairedInputField.onEndEdit.Invoke((pairedInput + delta).ToString());
+                if (pairedInputFields?.Length > 0 && Input.GetKey(KeyCode.LeftAlt))
+                    foreach(var pairedInputField in pairedInputFields)
+                        if(float.TryParse(pairedInputField.text, out float pairedInput))
+                            pairedInputField.onEndEdit.Invoke((pairedInput + delta).ToString());
             });
 #endif
         }
