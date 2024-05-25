@@ -1329,9 +1329,19 @@ namespace KK_Plugins.MaterialEditor
                 if (displayMessage)
                     MaterialEditorPlugin.Logger.LogMessage("Save and reload scene to refresh textures.");
                 textureProperty.TexID = null;
-                if (textureProperty.NullCheck())
-                    MaterialTexturePropertyList.Remove(textureProperty);
+                RemoveTexturePropertyIfNull(textureProperty);
             }
+        }
+
+        /// <summary>
+        /// If TextureProperty is null, delete it.
+        /// </summary>
+        /// <param name="textureProperty"></param>
+        void RemoveTexturePropertyIfNull(MaterialTextureProperty textureProperty)
+        {
+            if (!textureProperty.NullCheck())
+                return;
+            MaterialTexturePropertyList.Remove(textureProperty);
         }
 
         /// <summary>
@@ -1406,8 +1416,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 textureProperty.Offset = null;
                 textureProperty.OffsetOriginal = null;
-                if (textureProperty.NullCheck())
-                    MaterialTexturePropertyList.Remove(textureProperty);
+                RemoveTexturePropertyIfNull(textureProperty);
             }
         }
 
@@ -1484,8 +1493,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 textureProperty.Scale = null;
                 textureProperty.ScaleOriginal = null;
-                if (textureProperty.NullCheck())
-                    MaterialTexturePropertyList.Remove(textureProperty);
+                RemoveTexturePropertyIfNull(textureProperty);
             }
         }
 
