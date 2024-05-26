@@ -147,6 +147,17 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         internal new void Update()
         {
+            SetMaterialTextureFromFileByUpdate();
+            base.Update();
+            if (MaterialEditorPlugin.PurgeOrphanedPropertiesHotkey.Value.IsDown())
+                PurgeOrphanedProperties();
+        }
+
+        /// <summary>
+        /// Used by SetMaterialTextureFromFile if setTexInUpdate is true, needed for loading files via file dialogue
+        /// </summary>
+        void SetMaterialTextureFromFileByUpdate()
+        {
             try
             {
                 if (FileToSet != null)
@@ -163,9 +174,6 @@ namespace KK_Plugins.MaterialEditor
                 MatToSet = null;
                 GameObjectToSet = null;
             }
-            base.Update();
-            if (MaterialEditorPlugin.PurgeOrphanedPropertiesHotkey.Value.IsDown())
-                PurgeOrphanedProperties();
         }
 
         /// <summary>
