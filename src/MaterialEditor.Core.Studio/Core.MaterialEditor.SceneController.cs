@@ -125,6 +125,24 @@ namespace KK_Plugins.MaterialEditor
         }
 
         /// <summary>
+        /// Return GameObject from ObjectCtrlInfo ID
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="id"></param>
+        /// <returns>GameObject with OCI</returns>
+        protected static GameObject ExtractGameObject(ReadOnlyDictionary<int, ObjectCtrlInfo> items, int id, out int objectId )
+        {
+            if (!items.TryGetValue(id, out ObjectCtrlInfo objectCtrlInfo) || objectCtrlInfo == null || !(objectCtrlInfo is OCIItem ociItem))
+            {
+                objectId = -1;
+                return null;
+            }
+
+            objectId = MEStudio.GetObjectID(ociItem);
+            return ociItem.objectItem;
+        }
+
+        /// <summary>
         /// Loads saved data
         /// </summary>
         /// <param name="operation"></param>
@@ -165,13 +183,13 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var loadedProperty = properties[i];
-                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                    GameObject go = ExtractGameObject(loadedItems, loadedProperty.ID, out var objID);
+                    if (go != null)
                     {
-                        CopyMaterial(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.MaterialCopyName);
-                        var id = MEStudio.GetObjectID(objectCtrlInfo);
-                        if (MaterialCopyList.Any(x => x.ID == id && x.MaterialName == loadedProperty.MaterialName && x.MaterialCopyName == loadedProperty.MaterialCopyName))
+                        CopyMaterial(go, loadedProperty.MaterialName, loadedProperty.MaterialCopyName);
+                        if (MaterialCopyList.Any(x => x.ID == objID && x.MaterialName == loadedProperty.MaterialName && x.MaterialCopyName == loadedProperty.MaterialCopyName))
                             continue;
-                        MaterialCopyList.Add(new MaterialCopy(id, loadedProperty.MaterialName, loadedProperty.MaterialCopyName));
+                        MaterialCopyList.Add(new MaterialCopy(objID, loadedProperty.MaterialName, loadedProperty.MaterialCopyName));
                     }
                 }
             }
@@ -182,12 +200,13 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var loadedProperty = properties[i];
-                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                    GameObject go = ExtractGameObject(loadedItems, loadedProperty.ID, out var objID);
+                    if (go != null)
                     {
-                        bool setShader = SetShader(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.ShaderName);
-                        bool setRenderQueue = SetRenderQueue(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.RenderQueue);
+                        bool setShader = SetShader(go, loadedProperty.MaterialName, loadedProperty.ShaderName);
+                        bool setRenderQueue = SetRenderQueue(go, loadedProperty.MaterialName, loadedProperty.RenderQueue);
                         if (setShader || setRenderQueue)
-                            MaterialShaderList.Add(new MaterialShader(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
+                            MaterialShaderList.Add(new MaterialShader(objID, loadedProperty.MaterialName, loadedProperty.ShaderName, loadedProperty.ShaderNameOriginal, loadedProperty.RenderQueue, loadedProperty.RenderQueueOriginal));
                     }
                 }
             }
@@ -198,9 +217,10 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var loadedProperty = properties[i];
-                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        if (MaterialAPI.SetRendererProperty(ociItem.objectItem, loadedProperty.RendererName, loadedProperty.Property, int.Parse(loadedProperty.Value)))
-                            RendererPropertyList.Add(new RendererProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    GameObject go = ExtractGameObject(loadedItems, loadedProperty.ID, out var objID);
+                    if (go != null)
+                        if (MaterialAPI.SetRendererProperty(go, loadedProperty.RendererName, loadedProperty.Property, int.Parse(loadedProperty.Value)))
+                            RendererPropertyList.Add(new RendererProperty(objID, loadedProperty.RendererName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                 }
             }
 
@@ -210,9 +230,10 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var loadedProperty = properties[i];
-                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        if (MaterialAPI.SetProjectorProperty(ociItem.objectItem, loadedProperty.ProjectorName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
-                            ProjectorPropertyList.Add(new ProjectorProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.ProjectorName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    GameObject go = ExtractGameObject(loadedItems, loadedProperty.ID, out var objID);
+                    if (go != null)
+                        if (MaterialAPI.SetProjectorProperty(go, loadedProperty.ProjectorName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
+                            ProjectorPropertyList.Add(new ProjectorProperty(objID, loadedProperty.ProjectorName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                 }
             }
 
@@ -222,9 +243,10 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var loadedProperty = properties[i];
-                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        if (SetFloat(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
-                            MaterialFloatPropertyList.Add(new MaterialFloatProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    GameObject go = ExtractGameObject(loadedItems, loadedProperty.ID, out var objID);
+                    if (go != null)
+                        if (SetFloat(go, loadedProperty.MaterialName, loadedProperty.Property, float.Parse(loadedProperty.Value)))
+                            MaterialFloatPropertyList.Add(new MaterialFloatProperty(objID, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                 }
             }
 
@@ -234,9 +256,10 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var loadedProperty = properties[i];
-                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        if (SetKeyword(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
-                            MaterialKeywordPropertyList.Add(new MaterialKeywordProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    GameObject go = ExtractGameObject(loadedItems, loadedProperty.ID, out var objID);
+                    if (go != null)
+                        if (SetKeyword(go, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                            MaterialKeywordPropertyList.Add(new MaterialKeywordProperty(objID, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                 }
             }
 
@@ -246,9 +269,10 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var loadedProperty = properties[i];
-                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
-                        if (SetColor(ociItem.objectItem, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
-                            MaterialColorPropertyList.Add(new MaterialColorProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
+                    GameObject go = ExtractGameObject(loadedItems, loadedProperty.ID, out var objID);
+                    if (go != null)
+                        if (SetColor(go, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value))
+                            MaterialColorPropertyList.Add(new MaterialColorProperty(objID, loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.Value, loadedProperty.ValueOriginal));
                 }
             }
 
@@ -258,7 +282,8 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var loadedProperty = properties[i];
-                    if (loadedItems.TryGetValue(loadedProperty.ID, out ObjectCtrlInfo objectCtrlInfo) && objectCtrlInfo is OCIItem ociItem)
+                    GameObject go = ExtractGameObject(loadedItems, loadedProperty.ID, out var objID);
+                    if (go != null)
                     {
                         int? texID = null;
                         if (operation == SceneOperationKind.Import)
@@ -269,14 +294,14 @@ namespace KK_Plugins.MaterialEditor
                         else
                             texID = loadedProperty.TexID;
 
-                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(MEStudio.GetObjectID(objectCtrlInfo), loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(objID, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
 
                         bool setTex = false;
                         if (newTextureProperty.TexID != null)
-                            setTex = SetTextureWithProperty(ociItem.objectItem, newTextureProperty);
+                            setTex = SetTextureWithProperty(go, newTextureProperty);
 
-                        bool setOffset = SetTextureOffset(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
-                        bool setScale = SetTextureScale(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Scale);
+                        bool setOffset = SetTextureOffset(go, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
+                        bool setScale = SetTextureScale(go, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Scale);
 
                         if (setTex || setOffset || setScale)
                             MaterialTexturePropertyList.Add(newTextureProperty);
