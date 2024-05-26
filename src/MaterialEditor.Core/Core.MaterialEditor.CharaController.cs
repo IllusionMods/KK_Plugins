@@ -147,6 +147,17 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         internal new void Update()
         {
+            SetMaterialTextureFromFileByUpdate();
+            base.Update();
+            if (MaterialEditorPlugin.PurgeOrphanedPropertiesHotkey.Value.IsDown())
+                PurgeOrphanedProperties();
+        }
+
+        /// <summary>
+        /// Used by SetMaterialTextureFromFile if setTexInUpdate is true, needed for loading files via file dialogue
+        /// </summary>
+        void SetMaterialTextureFromFileByUpdate()
+        {
             try
             {
                 if (FileToSet != null)
@@ -163,9 +174,6 @@ namespace KK_Plugins.MaterialEditor
                 MatToSet = null;
                 GameObjectToSet = null;
             }
-            base.Update();
-            if (MaterialEditorPlugin.PurgeOrphanedPropertiesHotkey.Value.IsDown())
-                PurgeOrphanedProperties();
         }
 
         /// <summary>
@@ -718,12 +726,7 @@ namespace KK_Plugins.MaterialEditor
                 var go = FindGameObject(property.ObjectType, property.Slot);
                 if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
-                if (property.TexID != null && TextureDictionary.TryGetValue((int)property.TexID, out var textureContainer))
-                {
-                    var tex = textureContainer.Texture;
-                    MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, property.Property);
-                    SetTexture(go, property.MaterialName, property.Property, tex);
-                }
+                SetTextureWithProperty(go, property);
                 SetTextureOffset(go, property.MaterialName, property.Property, property.Offset);
                 SetTextureScale(go, property.MaterialName, property.Property, property.Scale);
             }
@@ -1182,6 +1185,25 @@ namespace KK_Plugins.MaterialEditor
             }
         }
         /// <summary>
+        /// Sets the texture indicated by TexID to texture of Material indicated by TextureProperty
+        /// </summary>
+        /// <param name="go">GameObject to search for the renderer</param>
+        /// <param name="textureProperty">TextureProperty with TexID to set for Material</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        private bool SetTextureWithProperty(GameObject go, MaterialTextureProperty textureProperty)
+        {
+            if (!textureProperty.TexID.HasValue)
+                return false;
+
+            int texID = textureProperty.TexID.Value;
+            if (!TextureDictionary.TryGetValue(texID, out var container))
+                return false;
+
+            var tex = container.Texture;
+            MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, textureProperty.Property);
+            return SetTexture(go, textureProperty.MaterialName, textureProperty.Property, tex);
+        }
+        /// <summary>
         /// Refresh the body MainTex, typically called after editing colors in the character maker
         /// </summary>
         public void RefreshBodyMainTex() => StartCoroutine(RefreshBodyMainTexCoroutine());
@@ -1196,12 +1218,7 @@ namespace KK_Plugins.MaterialEditor
                     continue;
 
                 if (property.ObjectType == ObjectType.Character && property.Property == "MainTex")
-                    if (property.TexID != null)
-                    {
-                        var tex = TextureDictionary[(int)property.TexID].Texture;
-                        Instance.ConvertNormalMap(ref tex, property.Property);
-                        SetTexture(ChaControl.gameObject, property.MaterialName, property.Property, tex);
-                    }
+                    SetTextureWithProperty(ChaControl.gameObject, property);
             }
         }
         /// <summary>
@@ -1772,18 +1789,17 @@ namespace KK_Plugins.MaterialEditor
                 var texBytes = File.ReadAllBytes(filePath);
                 var texID = SetAndGetTextureID(texBytes);
 
-                var tex = TextureDictionary[texID].Texture;
-                Instance.ConvertNormalMap(ref tex, propertyName);
-                SetTexture(go, material.NameFormatted(), propertyName, tex);
-
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
 
                 if (textureProperty == null)
                     MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, texID));
                 else
                     textureProperty.TexID = texID;
+
+                SetTextureWithProperty(go, textureProperty);
             }
         }
+
         /// <summary>
         /// Add a texture property to be saved and loaded with the card.
         /// </summary>
@@ -1797,15 +1813,13 @@ namespace KK_Plugins.MaterialEditor
             if (data == null) return;
 
             var texID = SetAndGetTextureID(data);
-            var tex = TextureDictionary[texID].Texture;
-            MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, propertyName);
-            SetTexture(go, material.NameFormatted(), propertyName, tex);
-
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty == null)
                 MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, texID));
             else
                 textureProperty.TexID = texID;
+
+            SetTextureWithProperty(go, textureProperty);
         }
         /// <summary>
         /// Get the saved material property value or null if none is saved
@@ -1850,9 +1864,18 @@ namespace KK_Plugins.MaterialEditor
                 if (displayMessage)
                     MaterialEditorPlugin.Logger.LogMessage("Save and reload character or change outfits to refresh textures.");
                 textureProperty.TexID = null;
-                if (textureProperty.NullCheck())
-                    MaterialTexturePropertyList.Remove(textureProperty);
+                RemoveTexturePropertyIfNull(textureProperty);
             }
+        }
+        /// <summary>
+        /// If TextureProperty is null, delete it.
+        /// </summary>
+        /// <param name="textureProperty"></param>
+        void RemoveTexturePropertyIfNull(MaterialTextureProperty textureProperty)
+        {
+            if (!textureProperty.NullCheck())
+                return;
+            MaterialTexturePropertyList.Remove(textureProperty);
         }
 
         /// <summary>
@@ -1932,8 +1955,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 textureProperty.Offset = null;
                 textureProperty.OffsetOriginal = null;
-                if (textureProperty.NullCheck())
-                    MaterialTexturePropertyList.Remove(textureProperty);
+                RemoveTexturePropertyIfNull(textureProperty);
             }
         }
 
@@ -2015,8 +2037,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 textureProperty.Scale = null;
                 textureProperty.ScaleOriginal = null;
-                if (textureProperty.NullCheck())
-                    MaterialTexturePropertyList.Remove(textureProperty);
+                RemoveTexturePropertyIfNull(textureProperty);
             }
         }
 
