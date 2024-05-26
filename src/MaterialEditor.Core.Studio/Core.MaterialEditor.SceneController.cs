@@ -273,11 +273,7 @@ namespace KK_Plugins.MaterialEditor
 
                         bool setTex = false;
                         if (newTextureProperty.TexID != null)
-                        {
-                            var tex = TextureDictionary[(int)newTextureProperty.TexID].Texture;
-                            MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, newTextureProperty.Property);
-                            setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, tex);
-                        }
+                            setTex = SetTextureWithProperty(ociItem.objectItem, newTextureProperty);
 
                         bool setOffset = SetTextureOffset(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
                         bool setScale = SetTextureScale(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Scale);
@@ -378,10 +374,8 @@ namespace KK_Plugins.MaterialEditor
                             MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
 
                             bool setTex = false;
-
-                            var tex = TextureDictionary[(int)newTextureProperty.TexID].Texture;
-                            Instance.ConvertNormalMap(ref tex, newTextureProperty.Property);
-                            if (loadedProperty.TexID != null) setTex = SetTexture(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, tex);
+                            if (loadedProperty.TexID != null) 
+                                setTex = SetTextureWithProperty(ociItem.objectItem, newTextureProperty);
 
                             bool setOffset = SetTextureOffset(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
                             bool setScale = SetTextureScale(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Scale);
@@ -1249,10 +1243,6 @@ namespace KK_Plugins.MaterialEditor
                 var texBytes = File.ReadAllBytes(filePath);
                 var texID = SetAndGetTextureID(texBytes);
 
-                var tex = TextureDictionary[texID].Texture;
-                Instance.ConvertNormalMap(ref tex, propertyName);
-                SetTexture(go, material.NameFormatted(), propertyName, tex);
-
                 var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
                 if (textureProperty == null)
                 {
@@ -1261,7 +1251,28 @@ namespace KK_Plugins.MaterialEditor
                 }
                 else
                     textureProperty.TexID = texID;
+
+                SetTextureWithProperty(go, textureProperty);
             }
+        }
+        /// <summary>
+        /// Sets the texture indicated by TexID to texture of Material indicated by TextureProperty
+        /// </summary>
+        /// <param name="go">GameObject to search for the renderer</param>
+        /// <param name="textureProperty">TextureProperty with TexID to set for Material</param>
+        /// <returns>True if the value was set, false if it could not be set</returns>
+        private bool SetTextureWithProperty(GameObject go, MaterialTextureProperty textureProperty)
+        {
+            if (!textureProperty.TexID.HasValue)
+                return false;
+
+            int texID = textureProperty.TexID.Value;
+            if (!TextureDictionary.TryGetValue(texID, out var container))
+                return false;
+
+            var tex = container.Texture;
+            MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, textureProperty.Property);
+            return SetTexture(go, textureProperty.MaterialName, textureProperty.Property, tex);
         }
         /// <summary>
         /// Add a texture property to be saved and loaded with the card.
@@ -1277,10 +1288,6 @@ namespace KK_Plugins.MaterialEditor
 
             var texID = SetAndGetTextureID(data);
 
-            var tex = TextureDictionary[texID].Texture;
-            Instance.ConvertNormalMap(ref tex, propertyName);
-            SetTexture(go, material.NameFormatted(), propertyName, tex);
-
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty == null)
             {
@@ -1289,6 +1296,8 @@ namespace KK_Plugins.MaterialEditor
             }
             else
                 textureProperty.TexID = texID;
+
+            SetTextureWithProperty(go, textureProperty);
         }
         /// <summary>
         /// Get the saved material property value or null if none is saved
