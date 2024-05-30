@@ -423,7 +423,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Least Common Multiple
         /// </summary>
-        static int LCM( IEnumerable<int> values )
+        private static int LCM( IEnumerable<int> values )
         {
             long x = 1;
             foreach (var y in values)
@@ -434,7 +434,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Greatest Common Divisor
         /// </summary>
-        static long GCD(long a, long b)
+        private static long GCD(long a, long b)
         {
             while (b != 0)
             {

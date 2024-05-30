@@ -163,7 +163,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Used by SetMaterialTextureFromFile if setTexInUpdate is true, needed for loading files via file dialogue
         /// </summary>
-        void SetMaterialTextureFromFileByUpdate()
+        private void SetMaterialTextureFromFileByUpdate()
         {
             try
             {
@@ -1939,7 +1939,7 @@ namespace KK_Plugins.MaterialEditor
         /// If TextureProperty is null, delete it.
         /// </summary>
         /// <param name="textureProperty"></param>
-        void RemoveTexturePropertyIfNull(MaterialTextureProperty textureProperty)
+        private void RemoveTexturePropertyIfNull(MaterialTextureProperty textureProperty)
         {
             if (!textureProperty.NullCheck())
                 return;
@@ -2614,7 +2614,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Initialization of animation controllers
         /// </summary>
-        static void InitAnimationController()
+        private static void InitAnimationController()
         {
             MEAnimationController.UpdateTexture = SetTextureForAnimation;
             MEAnimationController.GetTexID = GetTexIDWithAnimation;
@@ -2623,7 +2623,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Get texture ID from MaterialTextureProperty
         /// </summary>
-        static int? GetTexIDWithAnimation(MaterialTextureProperty property)
+        private static int? GetTexIDWithAnimation(MaterialTextureProperty property)
         {
             return property.TexID;
         }
@@ -2631,7 +2631,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Set of textures for animation
         /// </summary>
-        static void SetTextureForAnimation(MaterialEditorCharaController controller, GameObject go, MaterialTextureProperty property, int texID)
+        private static void SetTextureForAnimation(MaterialEditorCharaController controller, GameObject go, MaterialTextureProperty property, int texID)
         {
             if (!controller.TextureDictionary.TryGetValue(texID, out var tex))
                 return;
