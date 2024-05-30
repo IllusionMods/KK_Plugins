@@ -14,6 +14,20 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.ObjectData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\APNG.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\acTLChunk.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\Chunk.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\fcTLChunk.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\fdATChunk.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\IDATChunk.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\IENDChunk.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\IHDRChunk.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\OtherChunk.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\CrcHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Frame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Helper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\StreamExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)mgGif\mgGif.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\MaterialEditorIcon.png" />
