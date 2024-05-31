@@ -1334,6 +1334,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 if (AnimationControllerMap.TryGetValue(textureProperty, out var controller))
                 {
+                    controller.go = go;
                     if (textureProperty.TexAnimationDef != controller.def)
                         controller.Reset(textureProperty.TexAnimationDef);
                 }
