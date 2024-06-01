@@ -41,19 +41,17 @@ namespace KK_Plugins
 
             public override bool Equals(object obj)
             {
-                if (obj is TextureKey)
+                if (obj is TextureKey other)
                 {
-                    var other = (TextureKey)obj;
-
-                    return
-                        other.hash == hash &&
+                    return other.hash == hash &&
                         other.format == format &&
                         other.mipmaps == mipmaps &&
-                        other.data.SequenceEqual(data);
+                        Utility.SequenceEqualFast(other.data, data);
                 }
 
                 return false;
             }
+
 
             public override int GetHashCode()
             {
