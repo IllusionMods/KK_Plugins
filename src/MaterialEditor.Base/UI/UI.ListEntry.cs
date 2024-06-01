@@ -389,11 +389,6 @@ namespace MaterialEditorAPI
                         ScaleXInput.text = item.Scale.x.ToString();
                         ScaleYInput.text = item.Scale.y.ToString();
 
-                        OffsetXText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(OffsetXInput, new[] { OffsetYInput });
-                        OffsetYText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(OffsetYInput, new[] { OffsetXInput });
-                        ScaleXText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ScaleXInput, new[] { ScaleYInput });
-                        ScaleYText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ScaleYInput, new[] { ScaleXInput });
-
                         OffsetXInput.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
@@ -500,11 +495,6 @@ namespace MaterialEditorAPI
                         ColorGInput.text = item.ColorValue.g.ToString();
                         ColorBInput.text = item.ColorValue.b.ToString();
                         ColorAInput.text = item.ColorValue.a.ToString();
-
-                        ColorRText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ColorRInput, new[] { ColorGInput, ColorBInput });
-                        ColorGText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ColorGInput, new[] { ColorRInput, ColorBInput });
-                        ColorBText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ColorBInput, new[] { ColorRInput, ColorGInput });
-                        ColorAText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ColorAInput);
 
                         ColorEditButton.image.color = item.ColorValue;
 
@@ -650,8 +640,6 @@ namespace MaterialEditorAPI
                         FloatSlider.maxValue = item.FloatValueSliderMax;
                         FloatSlider.value = item.FloatValue;
                         FloatInputField.text = item.FloatValue.ToString();
-
-                        FloatLabel.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(FloatInputField);
 
                         FloatSlider.onValueChanged.AddListener(value =>
                         {
