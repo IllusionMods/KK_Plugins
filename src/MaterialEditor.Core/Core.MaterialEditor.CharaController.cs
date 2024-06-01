@@ -12,7 +12,6 @@ using System.IO;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using static HFlag;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
 #if AI || HS2
