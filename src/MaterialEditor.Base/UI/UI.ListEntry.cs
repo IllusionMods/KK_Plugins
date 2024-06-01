@@ -1,8 +1,4 @@
 ﻿using System;
-#if !API
-using UniRx;
-using UniRx.Triggers;
-#endif
 using UnityEngine;
 using UnityEngine.UI;
 using static UILib.Extensions;
@@ -393,10 +389,10 @@ namespace MaterialEditorAPI
                         ScaleXInput.text = item.Scale.x.ToString();
                         ScaleYInput.text = item.Scale.y.ToString();
 
-                        SubscribeToOnDragUpdateInput(OffsetXText, OffsetXInput, new[] { OffsetYInput });
-                        SubscribeToOnDragUpdateInput(OffsetYText, OffsetYInput, new[] { OffsetXInput });
-                        SubscribeToOnDragUpdateInput(ScaleXText, ScaleXInput, new[] { ScaleYInput });
-                        SubscribeToOnDragUpdateInput(ScaleYText, ScaleYInput, new[] { ScaleXInput });
+                        OffsetXText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(OffsetXInput, new[] { OffsetYInput });
+                        OffsetYText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(OffsetYInput, new[] { OffsetXInput });
+                        ScaleXText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ScaleXInput, new[] { ScaleYInput });
+                        ScaleYText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ScaleYInput, new[] { ScaleXInput });
 
                         OffsetXInput.onEndEdit.AddListener(value =>
                         {
@@ -505,10 +501,10 @@ namespace MaterialEditorAPI
                         ColorBInput.text = item.ColorValue.b.ToString();
                         ColorAInput.text = item.ColorValue.a.ToString();
 
-                        SubscribeToOnDragUpdateInput(ColorRText, ColorRInput, new[] { ColorGInput, ColorBInput });
-                        SubscribeToOnDragUpdateInput(ColorGText, ColorGInput, new[] { ColorRInput, ColorBInput });
-                        SubscribeToOnDragUpdateInput(ColorBText, ColorBInput, new[] { ColorRInput, ColorGInput });
-                        SubscribeToOnDragUpdateInput(ColorAText, ColorAInput);
+                        ColorRText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ColorRInput, new[] { ColorGInput, ColorBInput });
+                        ColorGText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ColorGInput, new[] { ColorRInput, ColorBInput });
+                        ColorBText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ColorBInput, new[] { ColorRInput, ColorGInput });
+                        ColorAText.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(ColorAInput);
 
                         ColorEditButton.image.color = item.ColorValue;
 
@@ -655,7 +651,7 @@ namespace MaterialEditorAPI
                         FloatSlider.value = item.FloatValue;
                         FloatInputField.text = item.FloatValue.ToString();
 
-                        SubscribeToOnDragUpdateInput(FloatLabel, FloatInputField);
+                        FloatLabel.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(FloatInputField);
 
                         FloatSlider.onValueChanged.AddListener(value =>
                         {
@@ -857,38 +853,6 @@ namespace MaterialEditorAPI
             if (component == null)
                 throw new ArgumentException($"Couldn't find {gameObjectName}");
             return component;
-        }
-
-    /// <summary>
-    /// Subscribes to the on onDrag event on the given Text object, and updates the given input field(s) according to the drag
-    /// </summary>
-    /// <param name="dragText">The text that should be draggable</param>
-    /// <param name="inputField">The InputField that should be updated upon dragging</param>
-    /// <param name="pairedInputFields">This InputField will also be updated if alt is held while dragging (e.g. pairing X and Y fields)</param>
-    public void SubscribeToOnDragUpdateInput(Text dragText, InputField inputField, InputField[] pairedInputFields = null)
-        {
-#if !API
-            dragText.OnDragAsObservable().Subscribe(drag =>
-            {
-                float multiplier = 0f;
-                float delta = drag.delta.x / Screen.dpi * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f) * (MaterialEditorPluginBase.DragSensitivity.Value / 100f);
-                if (float.TryParse(inputField.text, out float input))
-                {
-                    multiplier = delta / input + 1;
-                    inputField.onEndEdit.Invoke((input + delta).ToString());
-                }
-                if (pairedInputFields?.Length > 0 && Input.GetKey(KeyCode.LeftAlt))
-                    foreach (var pairedInputField in pairedInputFields)
-                        if (float.TryParse(pairedInputField.text, out float pairedInput))
-                        {
-                            if (Input.GetKey(KeyCode.Mouse1) && !float.IsInfinity(multiplier) && !float.IsNaN(multiplier))
-                                pairedInputField.onEndEdit.Invoke((pairedInput * multiplier).ToString());
-                            else
-                                pairedInputField.onEndEdit.Invoke((pairedInput + delta).ToString());
-                        }
-
-            });
-#endif
         }
     }
 }
