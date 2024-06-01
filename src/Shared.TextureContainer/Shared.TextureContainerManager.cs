@@ -41,17 +41,73 @@ namespace KK_Plugins
 
             public override bool Equals(object obj)
             {
-                if (obj is TextureKey)
+                if (obj is TextureKey other)
                 {
-                    var other = (TextureKey)obj;
-
-                    return
-                        other.hash == hash &&
+                    return other.hash == hash &&
                         other.format == format &&
                         other.mipmaps == mipmaps &&
-                        other.data.SequenceEqual(data);
+                        SequenceEqual(data, other.data);
                 }
 
+                return false;
+            }
+
+            static private bool SequenceEqual( byte[] a, byte[] b )
+            {
+                if (System.Object.ReferenceEquals(a, b))
+                    return true;
+
+                int bytes = a.Length;
+
+                if (bytes != b.Length)
+                    return false;
+
+                if (bytes <= 0)
+                    return true;
+
+                unsafe
+                {
+                    fixed (byte* s = &a[0])
+                    fixed (byte* t = &b[0])
+                    {
+                        int offset = 0;
+
+                        if (((int)s & 7) == 0 && ((int)t & 7) == 0)
+                        {
+                            ulong* x = (ulong*)s;
+                            ulong* y = (ulong*)t;
+                            offset = bytes & ~7;
+                            int len = offset >> 3;
+
+                            for( int i = 0; i < len; ++i )
+                            {
+                                if (x[i] != y[i])
+                                    goto NotEquals;
+                            }
+                        }
+                        else if (((int)s & 3) == 0 && ((int)t & 3) == 0)
+                        {
+                            uint* x = (uint*)s;
+                            uint* y = (uint*)t;
+                            offset = bytes & ~3;
+                            int len = offset >> 2;
+
+                            for (int i = 0; i < len; ++i)
+                            {
+                                if (x[i] != y[i])
+                                    goto NotEquals;
+                            }
+                        }
+
+                        for (int i = offset; i < bytes; ++i)
+                            if (s[i] != t[i])
+                                goto NotEquals;
+                    }
+                }
+
+                return true;
+
+NotEquals:
                 return false;
             }
 
