@@ -871,7 +871,7 @@ namespace MaterialEditorAPI
             dragText.OnDragAsObservable().Subscribe(drag =>
             {
                 float multiplier = 0f;
-                float delta = drag.delta.x * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f) / 10000;
+                float delta = drag.delta.x / Screen.dpi * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f) * (MaterialEditorPluginBase.DragSensitivity.Value / 100f);
                 if (float.TryParse(inputField.text, out float input))
                 {
                     multiplier = delta / input + 1;
