@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using UniRx;
 using UnityEngine;
+using static HFlag;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
 #if AI || HS2
@@ -158,6 +159,106 @@ namespace KK_Plugins.MaterialEditor
             base.Update();
             if (MaterialEditorPlugin.PurgeOrphanedPropertiesHotkey.Value.IsDown())
                 PurgeOrphanedProperties();
+            else if (MaterialEditorPlugin.DisableShadowCastingHotkey.Value.IsDown())
+            {
+                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "0");
+                MaterialEditorPlugin.Logger.LogMessage($"Disabled ShadowCasting");
+            }
+            else if (MaterialEditorPlugin.EnableShadowCastingHotkey.Value.IsDown())
+            {
+                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "1");
+                MaterialEditorPlugin.Logger.LogMessage($"Enabled ShadowCasting");
+            }
+            else if (MaterialEditorPlugin.TwoSidedShadowCastingHotkey.Value.IsDown())
+            {
+                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "2");
+                MaterialEditorPlugin.Logger.LogMessage($"Two Sided ShadowCasting");
+            }
+            else if (MaterialEditorPlugin.ShadowsOnlyShadowCastingHotkey.Value.IsDown())
+            {
+                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "3");
+                MaterialEditorPlugin.Logger.LogMessage($"Shadows Only ShadowCasting");
+            }
+            else if (MaterialEditorPlugin.ResetShadowCastingHotkey.Value.IsDown())
+            {
+                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "-1");
+                MaterialEditorPlugin.Logger.LogMessage($"Reset ShadowCasting ShadowCasting");
+            }
+            else if (MaterialEditorPlugin.DisableReceiveShadows.Value.IsDown())
+            {
+                SetRendererPropertyRecursive(RendererProperties.ReceiveShadows, "0");
+                MaterialEditorPlugin.Logger.LogMessage($"Disabled ReceiveShadows");
+            }
+            else if (MaterialEditorPlugin.EnableReceiveShadows.Value.IsDown())
+            {
+                SetRendererPropertyRecursive(RendererProperties.ReceiveShadows, "1");
+                MaterialEditorPlugin.Logger.LogMessage($"Enabled ReceiveShadows");
+            }
+            else if (MaterialEditorPlugin.ResetReceiveShadows.Value.IsDown())
+            {
+                SetRendererPropertyRecursive(RendererProperties.ReceiveShadows, "-1");
+                MaterialEditorPlugin.Logger.LogMessage($"Reset ReceiveShadows");
+            }
+        }
+
+        public void SetRendererPropertyRecursive(RendererProperties property, string value, bool affectBody = false)
+        {
+            if (affectBody)
+                foreach (var rend in GetRendererList(ChaControl.gameObject))
+                {
+                    //Disable the shadowcaster renderer instead of changing the shadowcasting mode
+                    if (property == RendererProperties.ShadowCastingMode && (rend.name == "o_shadowcaster" || rend.name == "o_shadowcaster_cm"))
+                    {
+                        if (value == "-1")
+                            RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, ChaControl.gameObject);
+                        //keep consistency in the casted shadow with how it would normally look
+                        else if (value == "2" | value == "3")
+                            {
+                                RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, ChaControl.gameObject);
+                                SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, ChaControl.gameObject);
+                            }
+                            else
+                                SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, value, ChaControl.gameObject);
+                    }
+                    else
+                    {
+                        if (value == "-1")
+                            RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, ChaControl.gameObject);
+                        else
+                            SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, ChaControl.gameObject);
+                    }
+                }
+            var clothes = ChaControl.GetClothes();
+            for (var i = 0; i < clothes.Length; i++)
+            {
+                var gameObj = clothes[i];
+                foreach (var renderer in GetRendererList(gameObj))
+                    if (value == "-1")
+                        RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, gameObj);
+                    else
+                        SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, value, gameObj);
+            }
+            var hair = ChaControl.GetHair();
+            for (var i = 0; i < hair.Length; i++)
+            {
+                var gameObj = hair[i];
+                foreach (var renderer in GetRendererList(gameObj))
+                    if (value == "-1")
+                        RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Hair, renderer, property, gameObj);
+                    else
+                        SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Hair, renderer, property, value, gameObj);
+            }
+            var accessories = ChaControl.GetAccessoryObjects();
+            for (var i = 0; i < accessories.Length; i++)
+            {
+                var gameObj = accessories[i];
+                if (gameObj != null)
+                    foreach (var renderer in GetRendererList(gameObj))
+                        if (value == "-1")
+                            RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, gameObj);
+                        else
+                            SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, value, gameObj);
+            }
         }
 
         /// <summary>
