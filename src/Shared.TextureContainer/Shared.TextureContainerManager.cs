@@ -46,7 +46,7 @@ namespace KK_Plugins
                     return other.hash == hash &&
                         other.format == format &&
                         other.mipmaps == mipmaps &&
-                        Utility.FastSequenceEqual(other.data, data);
+                        Utility.SequenceEqualFast(other.data, data);
                 }
 
                 return false;

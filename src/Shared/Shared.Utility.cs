@@ -13,7 +13,7 @@ namespace KK_Plugins
         /// <param name="a">The first byte array to compare.</param>
         /// <param name="b">The second byte array to compare.</param>
         /// <returns>True if the byte arrays are equal, false otherwise.</returns>
-        static public bool FastSequenceEqual(byte[] a, byte[] b)
+        static public bool SequenceEqualFast(byte[] a, byte[] b)
         {
             // Check if both references are the same, if so, return true.
             if (System.Object.ReferenceEquals(a, b))
