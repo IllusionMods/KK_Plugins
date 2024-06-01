@@ -46,83 +46,12 @@ namespace KK_Plugins
                     return other.hash == hash &&
                         other.format == format &&
                         other.mipmaps == mipmaps &&
-                        SequenceEqual(other.data, data);
+                        Utility.FastSequenceEqual(other.data, data);
                 }
 
                 return false;
             }
 
-            /// <summary>
-            /// Compares two byte arrays for equality in a high-performance manner using unsafe code.
-            /// </summary>
-            /// <param name="a">The first byte array to compare.</param>
-            /// <param name="b">The second byte array to compare.</param>
-            /// <returns>True if the byte arrays are equal, false otherwise.</returns>
-            static private bool SequenceEqual(byte[] a, byte[] b)
-            {
-                // Check if both references are the same, if so, return true.
-                if (System.Object.ReferenceEquals(a, b))
-                    return true;
-
-                int bytes = a.Length;
-
-                if (bytes != b.Length)
-                    return false;
-
-                if (bytes <= 0)
-                    return true;
-
-                unsafe
-                {
-                    // Fix the memory locations of the arrays to prevent the garbage collector from moving them.
-                    fixed (byte* pA = &a[0])
-                    fixed (byte* pB = &b[0])
-                    {
-                        int offset = 0;
-
-                        // If both pointers are 8-byte aligned, use 64-bit comparison.
-                        if (((int)pA & 7) == 0 && ((int)pB & 7) == 0)
-                        {
-                            ulong* ulongA = (ulong*)pA;
-                            ulong* ulongB = (ulong*)pB;
-                            offset = bytes & ~7;       // Round down to the nearest multiple of 8.
-                            int count = offset >> 3;    // Divide by 8 to get the number of 64-bit blocks.
-
-                            for (int i = 0; i < count; ++i)
-                            {
-                                if (ulongA[i] != ulongB[i])
-                                    goto NotEquals;
-                            }
-                        }
-                        // If both pointers are 4-byte aligned, use 32-bit comparison.
-                        else if (((int)pA & 3) == 0 && ((int)pB & 3) == 0)
-                        {
-                            uint* uintA = (uint*)pA;
-                            uint* uintB = (uint*)pB;
-                            offset = bytes & ~3;       // Round down to the nearest multiple of 4.
-                            int count = offset >> 2;    // Divide by 4 to get the number of 32-bit blocks.
-
-                            for (int i = 0; i < count; ++i)
-                            {
-                                if (uintA[i] != uintB[i])
-                                    goto NotEquals;
-                            }
-                        }
-
-                        // Compare remaining bytes one by one.
-                        for (int i = offset; i < bytes; ++i)
-                            if (pA[i] != pB[i])
-                                goto NotEquals;
-                    }
-                }
-
-                return true;
-
-NotEquals:
-                // Return false indicating arrays are not equal.
-                // Note: Using a return statement in the loop can potentially degrade performance due to the generated binary code, 
-                return false;
-            }
 
             public override int GetHashCode()
             {
