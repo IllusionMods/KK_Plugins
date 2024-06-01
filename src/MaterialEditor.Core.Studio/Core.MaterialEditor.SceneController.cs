@@ -17,6 +17,8 @@ using static MaterialEditorAPI.MaterialEditorPluginBase;
 
 namespace KK_Plugins.MaterialEditor
 {
+    using MEAnimationController = MEAnimationController<SceneController, SceneController.MaterialTextureProperty>;
+
     /// <summary>
     /// KKAPI scene controller which provides access for getting and setting properties to be saved and loaded with the scene data
     /// </summary>
@@ -31,6 +33,8 @@ namespace KK_Plugins.MaterialEditor
         private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
         private readonly List<MaterialCopy> MaterialCopyList = new List<MaterialCopy>();
 
+        private readonly Dictionary<MaterialTextureProperty, MEAnimationController> AnimationControllerMap = new Dictionary<MaterialTextureProperty, MEAnimationController>();
+
         private static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
         private static readonly HashSet<int> ExternallyReferencedTextureIDs = new HashSet<int>();
 
@@ -38,6 +42,11 @@ namespace KK_Plugins.MaterialEditor
         private static string PropertyToSet;
         private static Material MatToSet;
         private static int IDToSet;
+
+        static SceneController()
+        {
+            InitAnimationController();
+        }
 
         /// <summary>
         /// Saves data
@@ -109,9 +118,17 @@ namespace KK_Plugins.MaterialEditor
             //Remove textures in use
             for (int i = 0; i < MaterialTexturePropertyList.Count; ++i)
             {
-                var texID = MaterialTexturePropertyList[i].TexID;
-                if( texID.HasValue )
+                var prop = MaterialTexturePropertyList[i];
+                var texID = prop.TexID;
+                if (texID.HasValue)
                     unuseds.Remove(texID.Value);
+
+                if (prop.TexAnimationDef != null)
+                {
+                    var frames = prop.TexAnimationDef.frames;
+                    for (int j = 0; j < frames.Length; ++j)
+                        unuseds.Remove(frames[j].texID);
+                }
             }
 
             //Remove textures in use
@@ -130,7 +147,7 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="items"></param>
         /// <param name="id"></param>
         /// <returns>GameObject with OCI</returns>
-        protected static GameObject ExtractGameObject(ReadOnlyDictionary<int, ObjectCtrlInfo> items, int id, out int objectId )
+        protected static GameObject ExtractGameObject(ReadOnlyDictionary<int, ObjectCtrlInfo> items, int id, out int objectId)
         {
             if (!items.TryGetValue(id, out ObjectCtrlInfo objectCtrlInfo) || objectCtrlInfo == null || !(objectCtrlInfo is OCIItem ociItem))
             {
@@ -161,6 +178,7 @@ namespace KK_Plugins.MaterialEditor
                 TextureDictionary.Clear();
                 MaterialCopyList.Clear();
                 ExternallyReferencedTextureIDs.Clear();
+                AnimationControllerMap.Clear();
             }
 
             if (data == null) return;
@@ -290,11 +308,12 @@ namespace KK_Plugins.MaterialEditor
                         {
                             if (loadedProperty.TexID != null)
                                 texID = importDictionary[(int)loadedProperty.TexID];
+                            MEAnimationUtil.RemapTexID(loadedProperty.TexAnimationDef, importDictionary);
                         }
                         else
                             texID = loadedProperty.TexID;
 
-                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(objID, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+                        MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(objID, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal, loadedProperty.TexAnimationDef);
 
                         bool setTex = false;
                         if (newTextureProperty.TexID != null)
@@ -396,10 +415,10 @@ namespace KK_Plugins.MaterialEditor
                         var loadedProperty = MaterialTexturePropertyList[i];
                         if (loadedProperty.ID == copiedItem.Key)
                         {
-                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(copiedItem.Value.GetSceneId(), loadedProperty.MaterialName, loadedProperty.Property, loadedProperty.TexID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal, loadedProperty.TexAnimationDef);
 
                             bool setTex = false;
-                            if (loadedProperty.TexID != null) 
+                            if (loadedProperty.TexID != null)
                                 setTex = SetTextureWithProperty(ociItem.objectItem, newTextureProperty);
 
                             bool setOffset = SetTextureOffset(ociItem.objectItem, newTextureProperty.MaterialName, newTextureProperty.Property, newTextureProperty.Offset);
@@ -523,6 +542,8 @@ namespace KK_Plugins.MaterialEditor
                 PropertyToSet = null;
                 MatToSet = null;
             }
+
+            MEAnimationController.UpdateAnimations(AnimationControllerMap);
         }
 
         private void SetRendererPropertyRecursive(TreeNodeObject node, RendererProperties property, string value, ref int count)
@@ -617,7 +638,7 @@ namespace KK_Plugins.MaterialEditor
                             MaterialPasteEdits(ociItem.objectInfo.dicKey, mat);
                         }
                     }
-                    foreach(var projector in GetProjectorList(ociItem.objectItem))
+                    foreach (var projector in GetProjectorList(ociItem.objectItem))
                         MaterialPasteEdits(ociItem.objectInfo.dicKey, projector.material);
                 }
             foreach (var child in node.child)
@@ -642,6 +663,7 @@ namespace KK_Plugins.MaterialEditor
             else if (objectCtrlInfo is OCIChar)
                 MaterialEditorUI.Visible = false;
             base.OnObjectDeleted(objectCtrlInfo);
+            PurgeUnusedAnimation();
         }
 
         protected override void OnObjectVisibilityToggled(ObjectCtrlInfo objectCtrlInfo, bool visible)
@@ -841,7 +863,7 @@ namespace KK_Plugins.MaterialEditor
                 foreach (var property in MaterialColorPropertyList.Where(x => x.ID == id && x.MaterialName == matName))
                     newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(id, newMatName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialTexturePropertyList.Where(x => x.ID == id && x.MaterialName == matName))
-                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(id, newMatName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal));
+                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(id, newMatName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal, property.TexAnimationDef));
 
                 MaterialShaderList.AddRange(newAccessoryMaterialShaderList);
                 MaterialFloatPropertyList.AddRange(newAccessoryMaterialFloatPropertyList);
@@ -849,6 +871,8 @@ namespace KK_Plugins.MaterialEditor
                 MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
             }
+
+            PurgeUnusedAnimation();
         }
 
         /// <summary>
@@ -1277,6 +1301,7 @@ namespace KK_Plugins.MaterialEditor
                 else
                     textureProperty.TexID = texID;
 
+                textureProperty.TexAnimationDef = MEAnimationUtil.LoadAnimationDefFromBytes(texID, texBytes, SetAndGetTextureID);
                 SetTextureWithProperty(go, textureProperty);
             }
         }
@@ -1295,9 +1320,33 @@ namespace KK_Plugins.MaterialEditor
             if (!TextureDictionary.TryGetValue(texID, out var container))
                 return false;
 
-            var tex = container.Texture;
-            MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, textureProperty.Property);
-            return SetTexture(go, textureProperty.MaterialName, textureProperty.Property, tex);
+            if (textureProperty.TexAnimationDef == null)
+            {
+                //Does not have animation
+
+                AnimationControllerMap.Remove(textureProperty); //If have animation, delete it.
+
+                var tex = container.Texture;
+                MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, textureProperty.Property);
+                return SetTexture(go, textureProperty.MaterialName, textureProperty.Property, tex);
+            }
+            else
+            {
+                if (AnimationControllerMap.TryGetValue(textureProperty, out var controller))
+                {
+                    controller.go = go;
+                    if (textureProperty.TexAnimationDef != controller.def)
+                        controller.Reset(textureProperty.TexAnimationDef);
+                }
+                else
+                {
+                    controller = new MEAnimationController(this, go, textureProperty.TexAnimationDef);
+                    AnimationControllerMap[textureProperty] = controller;
+                }
+
+                controller.UpdateAnimation(textureProperty);
+                return true;
+            }
         }
         /// <summary>
         /// Add a texture property to be saved and loaded with the card.
@@ -1322,6 +1371,7 @@ namespace KK_Plugins.MaterialEditor
             else
                 textureProperty.TexID = texID;
 
+            textureProperty.TexAnimationDef = MEAnimationUtil.LoadAnimationDefFromBytes(texID, data, SetAndGetTextureID);
             SetTextureWithProperty(go, textureProperty);
         }
         /// <summary>
@@ -1376,7 +1426,9 @@ namespace KK_Plugins.MaterialEditor
             if (!textureProperty.NullCheck())
                 return;
             MaterialTexturePropertyList.Remove(textureProperty);
+            AnimationControllerMap.Remove(textureProperty);
         }
+
 
         /// <summary>
         /// Add a texture offset property to be saved and loaded with the scene and optionally also update the materials.
@@ -1694,6 +1746,42 @@ namespace KK_Plugins.MaterialEditor
         }
 
         /// <summary>
+        /// Purge unused animation
+        /// </summary>
+        private void PurgeUnusedAnimation()
+        {
+            MEAnimationUtil.PurgeUnusedAnimation(AnimationControllerMap, MaterialTexturePropertyList);
+        }
+
+        /// <summary>
+        /// Initialization of animation controllers
+        /// </summary>
+        static void InitAnimationController()
+        {
+            MEAnimationController.UpdateTexture = SetTextureForAnimation;
+            MEAnimationController.GetTexID = GetTexIDWithAnimation;
+        }
+
+        /// <summary>
+        /// Get texture ID from MaterialTextureProperty
+        /// </summary>
+        static int? GetTexIDWithAnimation(MaterialTextureProperty property)
+        {
+            return property.TexID;
+        }
+
+        /// <summary>
+        /// Set of textures for animation
+        /// </summary>
+        static void SetTextureForAnimation(SceneController controller, GameObject go, MaterialTextureProperty property, int texID)
+        {
+            if (!TextureDictionary.TryGetValue(texID, out var tex))
+                return;
+
+            SetTexture(go, property.MaterialName, property.Property, tex.Texture);
+        }
+
+        /// <summary>
         /// Data storage class for renderer properties
         /// </summary>
         [Serializable]
@@ -1944,6 +2032,11 @@ namespace KK_Plugins.MaterialEditor
             /// </summary>
             [Key("ScaleOriginal")]
             public Vector2? ScaleOriginal;
+            /// <summary>
+            /// Texture Animation Definition
+            /// </summary>
+            [Key("TexAnimationDef")]
+            public MEAnimationDefine TexAnimationDef;
 
             /// <summary>
             /// Data storage class for texture properties
@@ -1956,7 +2049,7 @@ namespace KK_Plugins.MaterialEditor
             /// <param name="offsetOriginal">Texture offset original value</param>
             /// <param name="scale">Texture scale value</param>
             /// <param name="scaleOriginal">Texture scale original value</param>
-            public MaterialTextureProperty(int id, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null)
+            public MaterialTextureProperty(int id, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null, MEAnimationDefine texAnimationDef = null)
             {
                 ID = id;
                 MaterialName = materialName.Replace("(Instance)", "").Trim();
@@ -1966,6 +2059,7 @@ namespace KK_Plugins.MaterialEditor
                 OffsetOriginal = offsetOriginal;
                 Scale = scale;
                 ScaleOriginal = scaleOriginal;
+                TexAnimationDef = texAnimationDef;
             }
 
             /// <summary>

@@ -24,6 +24,8 @@ using ChaControl = Human;
 
 namespace KK_Plugins.MaterialEditor
 {
+    using MEAnimationController = MEAnimationController<MaterialEditorCharaController, MaterialEditorCharaController.MaterialTextureProperty>;
+
     /// <summary>
     /// KKAPI character controller that handles saving and loading character data as well as provides methods to get or set the saved data
     /// </summary>
@@ -39,6 +41,13 @@ namespace KK_Plugins.MaterialEditor
         private readonly List<MaterialCopy> MaterialCopyList = new List<MaterialCopy>();
 
         private readonly Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
+
+        private readonly Dictionary<MaterialTextureProperty, MEAnimationController> AnimationControllerMap = new Dictionary<MaterialTextureProperty, MEAnimationController>();
+
+        static MaterialEditorCharaController()
+        {
+            InitAnimationController();
+        }
 
         /// <summary>
         /// Index of the currently worn coordinate. Always 0 except for in Koikatsu
@@ -142,12 +151,10 @@ namespace KK_Plugins.MaterialEditor
             ChaControl.StartCoroutine(LoadData(true, true, true));
         }
 
-        /// <summary>
-        /// Used by SetMaterialTextureFromFile if setTexInUpdate is true, needed for loading files via file dialogue
-        /// </summary>
         internal new void Update()
         {
             SetMaterialTextureFromFileByUpdate();
+            MEAnimationController.UpdateAnimations(AnimationControllerMap);
             base.Update();
             if (MaterialEditorPlugin.PurgeOrphanedPropertiesHotkey.Value.IsDown())
                 PurgeOrphanedProperties();
@@ -156,7 +163,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Used by SetMaterialTextureFromFile if setTexInUpdate is true, needed for loading files via file dialogue
         /// </summary>
-        void SetMaterialTextureFromFileByUpdate()
+        private void SetMaterialTextureFromFileByUpdate()
         {
             try
             {
@@ -194,9 +201,13 @@ namespace KK_Plugins.MaterialEditor
             var coordinateMaterialCopyList = MaterialCopyList.Where(x => x.CoordinateIndex == CurrentCoordinateIndex && x.ObjectType != ObjectType.Hair && x.ObjectType != ObjectType.Character).ToList();
             var coordinateTextureDictionary = new Dictionary<int, byte[]>();
 
+            var usedTexIDMap = MEAnimationController.GetUsedTexIDSet(AnimationControllerMap, coordinateMaterialTexturePropertyList);
+
             foreach (var tex in TextureDictionary)
-                if (coordinateMaterialTexturePropertyList.Any(x => x.TexID == tex.Key))
+            {
+                if (usedTexIDMap.Contains(tex.Key))
                     coordinateTextureDictionary.Add(tex.Key, tex.Value.Data);
+            }
 
             if (coordinateRendererPropertyList.Count == 0 && coordinateMaterialFloatPropertyList.Count == 0 && coordinateMaterialKeywordPropertyList.Count == 0 && coordinateMaterialColorPropertyList.Count == 0 && coordinateMaterialTexturePropertyList.Count == 0 && coordinateMaterialShaderList.Count == 0 && coordinateMaterialCopyList.Count == 0)
             {
@@ -291,6 +302,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialTexturePropertyList.Clear();
                 MaterialShaderList.Clear();
                 MaterialCopyList.Clear();
+                AnimationControllerMap.Clear();
 
                 objectTypesToLoad.Add(ObjectType.Accessory);
                 objectTypesToLoad.Add(ObjectType.Character);
@@ -299,6 +311,8 @@ namespace KK_Plugins.MaterialEditor
             }
             else
             {
+                bool changed = false;
+
                 if (loadFlags.Face || loadFlags.Body)
                 {
                     RendererPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Character);
@@ -311,6 +325,8 @@ namespace KK_Plugins.MaterialEditor
                     MaterialCopyList.RemoveAll(x => x.ObjectType == ObjectType.Character);
 
                     objectTypesToLoad.Add(ObjectType.Character);
+
+                    changed = true;
                 }
                 if (loadFlags.Clothes)
                 {
@@ -333,6 +349,8 @@ namespace KK_Plugins.MaterialEditor
                     MaterialShaderList.RemoveAll(x => x.ObjectType == ObjectType.Accessory);
                     MaterialCopyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory);
                     objectTypesToLoad.Add(ObjectType.Accessory);
+
+                    changed = true;
                 }
                 if (loadFlags.Hair)
                 {
@@ -345,6 +363,13 @@ namespace KK_Plugins.MaterialEditor
                     MaterialShaderList.RemoveAll(x => x.ObjectType == ObjectType.Hair);
                     MaterialCopyList.RemoveAll(x => x.ObjectType == ObjectType.Hair);
                     objectTypesToLoad.Add(ObjectType.Hair);
+
+                    changed = true;
+                }
+
+                if (changed)
+                {
+                    PurgeUnusedAnimation();
                 }
             }
 
@@ -459,8 +484,9 @@ namespace KK_Plugins.MaterialEditor
                             int? texID = null;
                             if (loadedProperty.TexID != null && importDictionary.TryGetValue((int)loadedProperty.TexID, out var importTextID))
                                 texID = importTextID;
+                            MEAnimationUtil.RemapTexID(loadedProperty.TexAnimationDef, importDictionary);
                             int coordinateIndex = loadedProperty.ObjectType == ObjectType.Character ? 0 : loadedProperty.CoordinateIndex;
-                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(loadedProperty.ObjectType, coordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal, loadedProperty.TexAnimationDef);
                             MaterialTexturePropertyList.Add(newTextureProperty);
                         }
                     }
@@ -497,6 +523,8 @@ namespace KK_Plugins.MaterialEditor
 
                 objectTypesToLoad.Add(ObjectType.Accessory);
                 objectTypesToLoad.Add(ObjectType.Clothing);
+
+                PurgeUnusedAnimation();
             }
             else
             {
@@ -521,6 +549,11 @@ namespace KK_Plugins.MaterialEditor
                     MaterialShaderList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex);
                     MaterialCopyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex);
                     objectTypesToLoad.Add(ObjectType.Accessory);
+                }
+
+                if (loadFlags.Clothes || loadFlags.Accessories)
+                {
+                    PurgeUnusedAnimation();
                 }
             }
 
@@ -599,8 +632,8 @@ namespace KK_Plugins.MaterialEditor
                             int? texID = null;
                             if (loadedProperty.TexID != null)
                                 texID = importDictionary[(int)loadedProperty.TexID];
-
-                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal);
+                            MEAnimationUtil.RemapTexID(loadedProperty.TexAnimationDef, importDictionary);
+                            MaterialTextureProperty newTextureProperty = new MaterialTextureProperty(loadedProperty.ObjectType, CurrentCoordinateIndex, loadedProperty.Slot, loadedProperty.MaterialName, loadedProperty.Property, texID, loadedProperty.Offset, loadedProperty.OffsetOriginal, loadedProperty.Scale, loadedProperty.ScaleOriginal, loadedProperty.TexAnimationDef);
                             MaterialTexturePropertyList.Add(newTextureProperty);
                         }
                     }
@@ -914,7 +947,7 @@ namespace KK_Plugins.MaterialEditor
                 foreach (var property in MaterialColorPropertyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
                     newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialTexturePropertyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
-                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal));
+                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal, property.TexAnimationDef));
                 foreach (var property in MaterialCopyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
                     newMaterialCopyList.Add(new MaterialCopy(property.ObjectType, copyDestination, slot, property.MaterialName, property.MaterialCopyName));
 
@@ -930,6 +963,8 @@ namespace KK_Plugins.MaterialEditor
 
                 ChaControl.StartCoroutine(LoadData(true, true, false));
             }
+
+            PurgeUnusedAnimation();
         }
 #endif
 
@@ -954,6 +989,8 @@ namespace KK_Plugins.MaterialEditor
             if (MaterialEditorPlugin.RimRemover.Value)
                 RemoveRimAccessory(e.SlotIndex);
 #endif
+
+            PurgeUnusedAnimation();
         }
 
         internal void AccessorySelectedSlotChangeEvent(object sender, AccessorySlotEventArgs e)
@@ -1008,7 +1045,7 @@ namespace KK_Plugins.MaterialEditor
             foreach (var property in MaterialColorPropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SourceSlotIndex))
                 newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(property.ObjectType, CurrentCoordinateIndex, e.DestinationSlotIndex, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
             foreach (var property in MaterialTexturePropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SourceSlotIndex))
-                newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, CurrentCoordinateIndex, e.DestinationSlotIndex, property.MaterialName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal));
+                newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, CurrentCoordinateIndex, e.DestinationSlotIndex, property.MaterialName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal, property.TexAnimationDef));
             foreach (var property in MaterialCopyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == e.SourceSlotIndex))
                 newAccessoryMaterialCopyList.Add(new MaterialCopy(property.ObjectType, CurrentCoordinateIndex, e.DestinationSlotIndex, property.MaterialName, property.MaterialCopyName));
 
@@ -1022,6 +1059,8 @@ namespace KK_Plugins.MaterialEditor
 
             if (MakerAPI.InsideAndLoaded)
                 MaterialEditorUI.Visible = false;
+
+            PurgeUnusedAnimation();
 
             ChaControl.StartCoroutine(LoadData(true, true, false));
         }
@@ -1054,7 +1093,7 @@ namespace KK_Plugins.MaterialEditor
                 foreach (var property in MaterialColorPropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
                     newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialTexturePropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
-                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal));
+                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal, property.TexAnimationDef));
                 foreach (var property in MaterialCopyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
                     newAccessoryMaterialCopyList.Add(new MaterialCopy(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.MaterialCopyName));
 
@@ -1069,6 +1108,8 @@ namespace KK_Plugins.MaterialEditor
                     if ((int)e.CopyDestination == CurrentCoordinateIndex)
                         MaterialEditorUI.Visible = false;
             }
+
+            PurgeUnusedAnimation();
         }
 #endif
 
@@ -1100,6 +1141,8 @@ namespace KK_Plugins.MaterialEditor
 
             if (MakerAPI.InsideAndLoaded)
                 MaterialEditorUI.Visible = false;
+
+            PurgeUnusedAnimation();
         }
 
         internal void ChangeCustomClothesEvent(int slot)
@@ -1136,6 +1179,8 @@ namespace KK_Plugins.MaterialEditor
             //Reapply edits for other clothes since they will have been undone
             ChaControl.StartCoroutine(LoadData(true, true, false));
 #endif
+
+            PurgeUnusedAnimation();
         }
 
         internal void ChangeHairEvent(int slot)
@@ -1161,6 +1206,8 @@ namespace KK_Plugins.MaterialEditor
             //Reapply edits for other hairs since they will have been undone
             ChaControl.StartCoroutine(LoadData(false, false, true));
 #endif
+
+            PurgeUnusedAnimation();
         }
         /// <summary>
         /// Refresh the clothes MainTex, typically called after editing colors in the character maker
@@ -1175,15 +1222,18 @@ namespace KK_Plugins.MaterialEditor
                 if (Instance.CheckBlacklist(property.MaterialName, property.Property))
                     continue;
 
-                if (property.ObjectType == ObjectType.Clothing && property.CoordinateIndex == CurrentCoordinateIndex && property.Property == "MainTex")
-                    if (property.TexID != null)
-                    {
-                        var tex = TextureDictionary[(int)property.TexID].Texture;
-                        MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, property.Property);
-                        SetTexture(FindGameObject(ObjectType.Clothing, property.Slot), property.MaterialName, property.Property, tex);
-                    }
+                if (property.ObjectType != ObjectType.Clothing || property.CoordinateIndex != CurrentCoordinateIndex || property.Property != "MainTex")
+                    continue;
+
+                if (property.TexID != null)
+                {
+                    var tex = TextureDictionary[(int)property.TexID].Texture;
+                    MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, property.Property);
+                    SetTexture(FindGameObject(ObjectType.Clothing, property.Slot), property.MaterialName, property.Property, tex);
+                }
             }
         }
+
         /// <summary>
         /// Sets the texture indicated by TexID to texture of Material indicated by TextureProperty
         /// </summary>
@@ -1199,10 +1249,35 @@ namespace KK_Plugins.MaterialEditor
             if (!TextureDictionary.TryGetValue(texID, out var container))
                 return false;
 
-            var tex = container.Texture;
-            MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, textureProperty.Property);
-            return SetTexture(go, textureProperty.MaterialName, textureProperty.Property, tex);
+            if (textureProperty.TexAnimationDef == null)
+            {
+                //Does not have animation
+
+                AnimationControllerMap.Remove(textureProperty); //If have animation, delete it.
+
+                var tex = container.Texture;
+                MaterialEditorPlugin.Instance.ConvertNormalMap(ref tex, textureProperty.Property);
+                return SetTexture(go, textureProperty.MaterialName, textureProperty.Property, tex);
+            }
+            else
+            {
+                if (AnimationControllerMap.TryGetValue(textureProperty, out var controller))
+                {
+                    controller.go = go;
+                    if (textureProperty.TexAnimationDef != controller.def)
+                        controller.Reset(textureProperty.TexAnimationDef);
+                }
+                else
+                {
+                    controller = new MEAnimationController(this, go, textureProperty.TexAnimationDef);
+                    AnimationControllerMap[textureProperty] = controller;
+                }
+
+                controller.UpdateAnimation(textureProperty);
+                return true;
+            }
         }
+
         /// <summary>
         /// Refresh the body MainTex, typically called after editing colors in the character maker
         /// </summary>
@@ -1254,7 +1329,7 @@ namespace KK_Plugins.MaterialEditor
                 else
                     CopyData.MaterialTexturePropertyList.Add(new CopyContainer.MaterialTextureProperty(materialTextureProperty.Property, null, materialTextureProperty.Offset, materialTextureProperty.Scale));
             }
-            if(GetProjectorList(objectType, go).FirstOrDefault(x => x.material == material) != null)
+            if (GetProjectorList(objectType, go).FirstOrDefault(x => x.material == material) != null)
                 foreach (var projectorProperty in ProjectorPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.ProjectorName == material.NameFormatted()))
                     CopyData.ProjectorPropertyList.Add(new CopyContainer.ProjectorProperty(projectorProperty.Property, float.Parse(projectorProperty.Value)));
 
@@ -1346,7 +1421,7 @@ namespace KK_Plugins.MaterialEditor
                 foreach (var property in MaterialColorPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == matName))
                     newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(property.ObjectType, property.CoordinateIndex, slot, newMatName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialTexturePropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == CurrentCoordinateIndex && x.Slot == slot && x.MaterialName == matName))
-                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, property.CoordinateIndex, slot, newMatName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal));
+                    newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, property.CoordinateIndex, slot, newMatName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal, property.TexAnimationDef));
 
                 MaterialShaderList.AddRange(newAccessoryMaterialShaderList);
                 MaterialFloatPropertyList.AddRange(newAccessoryMaterialFloatPropertyList);
@@ -1354,6 +1429,8 @@ namespace KK_Plugins.MaterialEditor
                 MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
             }
+
+            PurgeUnusedAnimation();
         }
 
         #region Set, Get, Remove methods
@@ -1787,16 +1864,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 var texBytes = File.ReadAllBytes(filePath);
-                var texID = SetAndGetTextureID(texBytes);
-
-                var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
-
-                if (textureProperty == null)
-                    MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, texID));
-                else
-                    textureProperty.TexID = texID;
-
-                SetTextureWithProperty(go, textureProperty);
+                SetMaterialTexture(slot, objectType, material, propertyName, texBytes, go);
             }
         }
 
@@ -1815,10 +1883,11 @@ namespace KK_Plugins.MaterialEditor
             var texID = SetAndGetTextureID(data);
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (textureProperty == null)
-                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, texID));
+                MaterialTexturePropertyList.Add(textureProperty = new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, texID));
             else
                 textureProperty.TexID = texID;
 
+            textureProperty.TexAnimationDef = MEAnimationUtil.LoadAnimationDefFromBytes(texID, data, SetAndGetTextureID);
             SetTextureWithProperty(go, textureProperty);
         }
         /// <summary>
@@ -1871,11 +1940,12 @@ namespace KK_Plugins.MaterialEditor
         /// If TextureProperty is null, delete it.
         /// </summary>
         /// <param name="textureProperty"></param>
-        void RemoveTexturePropertyIfNull(MaterialTextureProperty textureProperty)
+        private void RemoveTexturePropertyIfNull(MaterialTextureProperty textureProperty)
         {
             if (!textureProperty.NullCheck())
                 return;
             MaterialTexturePropertyList.Remove(textureProperty);
+            AnimationControllerMap.Remove(textureProperty);
         }
 
         /// <summary>
@@ -2391,9 +2461,17 @@ namespace KK_Plugins.MaterialEditor
             //Remove textures in use
             for (int i = 0; i < MaterialTexturePropertyList.Count; ++i)
             {
-                var texID = MaterialTexturePropertyList[i].TexID;
+                var prop = MaterialTexturePropertyList[i];
+                var texID = prop.TexID;
                 if (texID.HasValue)
                     unuseds.Remove(texID.Value);
+
+                if (prop.TexAnimationDef != null)
+                {
+                    var frames = prop.TexAnimationDef.frames;
+                    for (int j = 0; j < frames.Length; ++j)
+                        unuseds.Remove(frames[j].texID);
+                }
             }
 
             foreach (var texID in unuseds)
@@ -2520,10 +2598,46 @@ namespace KK_Plugins.MaterialEditor
                 );
             }
             var purgedTextures = PurgeUnusedTextures();
-            if(purgedTextures == 0)
+            if (purgedTextures == 0)
                 MaterialEditorPluginBase.Logger.LogMessage($"Removed {removedCount} orphaned propertie(s)");
             else
                 MaterialEditorPluginBase.Logger.LogMessage($"Removed {removedCount} orphaned propertie(s) and {purgedTextures} orphaned texture(s)");
+        }
+
+        /// <summary>
+        /// Purge unused animation
+        /// </summary>
+        private void PurgeUnusedAnimation()
+        {
+            MEAnimationUtil.PurgeUnusedAnimation(AnimationControllerMap, MaterialTexturePropertyList);
+        }
+
+        /// <summary>
+        /// Initialization of animation controllers
+        /// </summary>
+        private static void InitAnimationController()
+        {
+            MEAnimationController.UpdateTexture = SetTextureForAnimation;
+            MEAnimationController.GetTexID = GetTexIDWithAnimation;
+        }
+
+        /// <summary>
+        /// Get texture ID from MaterialTextureProperty
+        /// </summary>
+        private static int? GetTexIDWithAnimation(MaterialTextureProperty property)
+        {
+            return property.TexID;
+        }
+
+        /// <summary>
+        /// Set of textures for animation
+        /// </summary>
+        private static void SetTextureForAnimation(MaterialEditorCharaController controller, GameObject go, MaterialTextureProperty property, int texID)
+        {
+            if (!controller.TextureDictionary.TryGetValue(texID, out var tex))
+                return;
+
+            SetTexture(go, property.MaterialName, property.Property, tex.Texture);
         }
 
         /// <summary>
@@ -2871,6 +2985,11 @@ namespace KK_Plugins.MaterialEditor
             /// </summary>
             [Key("ScaleOriginal")]
             public Vector2? ScaleOriginal;
+            /// <summary>
+            /// Texture Animation Definition
+            /// </summary>
+            [Key("TexAnimationDef")]
+            public MEAnimationDefine TexAnimationDef;
 
             /// <summary>
             /// Data storage class for texture properties
@@ -2885,7 +3004,8 @@ namespace KK_Plugins.MaterialEditor
             /// <param name="offsetOriginal">Texture offset original value</param>
             /// <param name="scale">Texture scale value</param>
             /// <param name="scaleOriginal">Texture scale original value</param>
-            public MaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null)
+            /// <param name="texAnimationDef">Texture animation define</param>
+            public MaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null, MEAnimationDefine texAnimationDef = null)
             {
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
@@ -2897,6 +3017,7 @@ namespace KK_Plugins.MaterialEditor
                 OffsetOriginal = offsetOriginal;
                 Scale = scale;
                 ScaleOriginal = scaleOriginal;
+                TexAnimationDef = texAnimationDef;
             }
 
             /// <summary>
