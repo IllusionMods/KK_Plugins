@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PluginBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.AutoScrollToCenter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.FloatLabelDragTrigger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.DropdownFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemTemplate.cs" />

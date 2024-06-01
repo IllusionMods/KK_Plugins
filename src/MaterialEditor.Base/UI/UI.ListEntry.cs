@@ -655,6 +655,7 @@ namespace MaterialEditorAPI
                                 return;
                             }
                             item.FloatValue = input;
+                            FloatInputField.text = item.FloatValue.ToString();
 
                             FloatSlider.Set(item.FloatValue, sendCallback: false);
 

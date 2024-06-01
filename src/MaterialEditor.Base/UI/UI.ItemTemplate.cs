@@ -357,6 +357,9 @@ namespace MaterialEditorAPI
                 textBoxOffsetYLE.preferredWidth = TextBoxXYWidth;
                 textBoxOffsetYLE.flexibleWidth = 0;
 
+                labelOffsetX.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxOffsetX, new[] { textBoxOffsetY });
+                labelOffsetY.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxOffsetY, new[] { textBoxOffsetX });
+
                 //Scale
                 Text labelScaleX = UIUtility.CreateText("ScaleXText", itemPanel.transform, "Scale X");
                 labelScaleX.alignment = TextAnchor.MiddleLeft;
@@ -388,6 +391,9 @@ namespace MaterialEditorAPI
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
+
+                labelScaleX.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxScaleX, new[] { textBoxScaleY });
+                labelScaleY.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxScaleY, new[] { textBoxScaleX });
             }
 
             //Color properties
@@ -467,6 +473,11 @@ namespace MaterialEditorAPI
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
+
+                labelR.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxR, new[] { textBoxG, textBoxB });
+                labelG.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxG, new[] { textBoxR, textBoxB });
+                labelB.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxB, new[] { textBoxR, textBoxG });
+                labelA.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxA);
             }
 
             //Float properties
@@ -500,6 +511,7 @@ namespace MaterialEditorAPI
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
+                label.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxFloat);
             }
 
             //Keyword properties
