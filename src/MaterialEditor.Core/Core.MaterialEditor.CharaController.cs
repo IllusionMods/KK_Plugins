@@ -201,7 +201,7 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        public void SetRendererPropertyRecursive(RendererProperties property, string value, bool affectBody = false)
+        internal void SetRendererPropertyRecursive(RendererProperties property, string value, bool affectBody = false)
         {
             if (affectBody)
                 foreach (var rend in GetRendererList(ChaControl.gameObject))
