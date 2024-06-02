@@ -7,6 +7,12 @@ namespace KK_Plugins
     //Shamelessly stolen from https://stackoverflow.com/a/1246008
     public static class ImageHelper
     {
+        /// <summary>
+        /// Read the file signature from a byte array to deterimine its file format.
+        /// https://www.garykessler.net/library/file_sigs.html
+        /// </summary>
+        /// <param name="imageBytes">Byte array containing the image</param>
+        /// <returns>ImageFormat</returns>
         public static ImageFormat GetContentType(byte[] imageBytes)
         {
             MemoryStream ms = new MemoryStream(imageBytes);

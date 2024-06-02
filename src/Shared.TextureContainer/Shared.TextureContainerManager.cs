@@ -158,6 +158,7 @@ namespace KK_Plugins
 
             try
             {
+                //Only use magic numbers for custom supported image formats. Let LoadImage handle png/jpg/unknown
                 if (imageFormat == ImageHelper.ImageFormat.WebP)
                     tex = WebP.Texture2DExt.CreateTexture2DFromWebP(texBytes, mipmaps, false, out var error);
                 else
