@@ -565,61 +565,7 @@ namespace KK_Plugins.MaterialEditor
                     count++;
                     var chaControl = ociChar.GetChaControl();
                     var controller = MaterialEditorPlugin.GetCharaController(chaControl);
-                    foreach (var rend in GetRendererList(chaControl.gameObject))
-                    {
-                        //Disable the shadowcaster renderer instead of changing the shadowcasting mode
-                        if (property == RendererProperties.ShadowCastingMode && (rend.name == "o_shadowcaster" || rend.name == "o_shadowcaster_cm"))
-                        {
-                            if (value == "-1")
-                                controller.RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
-                            //keep consistency in the casted shadow with how it would normally look
-                            else if (value == "2" | value == "3")
-                            {
-                                controller.RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, chaControl.gameObject);
-                                controller.SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, chaControl.gameObject);
-                            }
-                            else
-                                controller.SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, RendererProperties.Enabled, value, chaControl.gameObject);
-                        }
-                        else
-                        {
-                            if (value == "-1")
-                                controller.RemoveRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, chaControl.gameObject);
-                            else
-                                controller.SetRendererProperty(0, MaterialEditorCharaController.ObjectType.Character, rend, property, value, chaControl.gameObject);
-                        }
-                    }
-                    var clothes = chaControl.GetClothes();
-                    for (var i = 0; i < clothes.Length; i++)
-                    {
-                        var gameObj = clothes[i];
-                        foreach (var renderer in GetRendererList(gameObj))
-                            if (value == "-1")
-                                controller.RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, gameObj);
-                            else
-                                controller.SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Clothing, renderer, property, value, gameObj);
-                    }
-                    var hair = chaControl.GetHair();
-                    for (var i = 0; i < hair.Length; i++)
-                    {
-                        var gameObj = hair[i];
-                        foreach (var renderer in GetRendererList(gameObj))
-                            if (value == "-1")
-                                controller.RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Hair, renderer, property, gameObj);
-                            else
-                                controller.SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Hair, renderer, property, value, gameObj);
-                    }
-                    var accessories = chaControl.GetAccessoryObjects();
-                    for (var i = 0; i < accessories.Length; i++)
-                    {
-                        var gameObj = accessories[i];
-                        if (gameObj != null)
-                            foreach (var renderer in GetRendererList(gameObj))
-                                if (value == "-1")
-                                    controller.RemoveRendererProperty(i, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, gameObj);
-                                else
-                                    controller.SetRendererProperty(i, MaterialEditorCharaController.ObjectType.Accessory, renderer, property, value, gameObj);
-                    }
+                    controller.SetRendererPropertyRecursive(property, value, true);
                 }
             foreach (var child in node.child)
                 SetRendererPropertyRecursive(child, property, value, ref count);
