@@ -546,7 +546,7 @@ namespace MaterialEditorAPI
                             };
                             textureItem.TextureOnImport = () =>
                             {
-                                OpenFileDialog.Show(OnFileAccept, "Open image", Application.dataPath, FileFilter);
+                                OpenFileDialog.Show(OnFileAccept, "Open image", ExportPath, FileFilter);
 
                                 void OnFileAccept(string[] strings)
                                 {
