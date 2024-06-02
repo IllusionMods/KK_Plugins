@@ -271,9 +271,8 @@ namespace WebP
             finally
             {
                 NativeBindings.WebPSafeFree(lResult);
+                lPinnedArray.Free();
             }
-
-            lPinnedArray.Free();
 
             return lOutputBuffer;
         }
