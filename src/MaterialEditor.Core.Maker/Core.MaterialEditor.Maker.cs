@@ -458,7 +458,7 @@ namespace KK_Plugins.MaterialEditor
         public override void RemoveMaterialTextureWrapMode(object data, Material material, string propertyName, GameObject go)
         {
             ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureWrapMode(objectData.Slot, objectData.ObjectType, material, propertyName, go);
         }
 
         public override Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
