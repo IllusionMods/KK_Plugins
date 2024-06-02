@@ -15,29 +15,10 @@ namespace KK_Plugins
         /// <returns>ImageFormat</returns>
         public static ImageFormat GetContentType(byte[] imageBytes)
         {
-            MemoryStream ms = new MemoryStream(imageBytes);
-
-            using (BinaryReader br = new BinaryReader(ms))
-            {
-                int maxMagicBytesLength = imageFormatDecoders.Keys.OrderByDescending(x => x.Length).First().Length;
-
-                byte[] magicBytes = new byte[maxMagicBytesLength];
-
-                for (int i = 0; i < maxMagicBytesLength; i += 1)
-                {
-                    magicBytes[i] = br.ReadByte();
-
-                    foreach (var kvPair in imageFormatDecoders)
-                    {
-                        if (magicBytes.StartsWith(kvPair.Key))
-                        {
-                            return kvPair.Value;
-                        }
-                    }
-                }
-
-                return ImageFormat.Unrecognized;
-            }
+            foreach (var kvPair in imageFormatDecoders.OrderByDescending(x => x.Key.Length))
+                if (kvPair.Key.Length <= imageBytes.Length && imageBytes.StartsWith(kvPair.Key))
+                    return kvPair.Value;
+            return ImageFormat.Unrecognized;
         }
 
         private static bool StartsWith(this byte[] thisBytes, byte[] thatBytes)
