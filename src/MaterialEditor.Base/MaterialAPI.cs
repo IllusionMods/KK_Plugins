@@ -710,6 +710,33 @@ namespace MaterialEditorAPI
             return didSet;
         }
 
+        public static bool SetTextureWrapMode(GameObject gameObject, string materialName, string propertyName, TextureWrapMode? value)
+        {
+            if (value == null) return false;
+            bool didSet = false;
+
+            var materials = GetObjectMaterials(gameObject, materialName);
+            for (var i = 0; i < materials.Count; i++)
+            {
+                var material = materials[i];
+                if (material.HasProperty($"_{propertyName}"))
+                {
+                    var tex = material.GetTexture($"_{propertyName}");
+                    if (tex)
+                    {
+                        tex.wrapMode = (TextureWrapMode)value;
+                        MaterialEditorPluginBase.Logger.LogInfo($"Set {propertyName} wrap mode to {value}, {material.GetTexture($"_{propertyName}").wrapMode}");
+                        didSet = true;
+                    }
+                    else
+                    {
+                        MaterialEditorPluginBase.Logger.LogInfo("Texture not set");
+                    }
+                }
+            }
+            return didSet;
+        }
+
         /// <summary>
         /// Set the shader of a material. Can only be set to a shader that has been loaded by MaterialEditor
         /// </summary>

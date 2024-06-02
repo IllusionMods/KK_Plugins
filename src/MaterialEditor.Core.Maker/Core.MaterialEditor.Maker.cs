@@ -445,6 +445,22 @@ namespace KK_Plugins.MaterialEditor
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, go);
         }
 
+        public override TextureWrapMode? GetMaterialTextureWrapModeOriginal(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureWrapModeOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
+        public override void SetMaterialTextureWrapMode(object data, Material material, string propertyName, TextureWrapMode value, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureWrapMode(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
+        }
+        public override void RemoveMaterialTextureWrapMode(object data, Material material, string propertyName, GameObject go)
+        {
+            ObjectData objectData = (ObjectData)data;
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, go);
+        }
+
         public override Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
         {
             ObjectData objectData = (ObjectData)data;

@@ -390,6 +390,48 @@ namespace MaterialEditorAPI
                 resetLE.flexibleWidth = 0;
             }
 
+            //Texture wrap mode
+            {
+                var itemPanel = UIUtility.CreatePanel("WrapModePanel", contentList.transform);
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+                itemPanel.color = ItemColor;
+
+                var label = UIUtility.CreateText("WrapModeLabel", itemPanel.transform, "");
+                label.alignment = TextAnchor.MiddleLeft;
+                label.color = Color.black;
+                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                labelLE.preferredWidth = LabelWidth;
+                labelLE.flexibleWidth = LabelWidth;
+
+                Text labelWrapMode = UIUtility.CreateText("WrapModeText", itemPanel.transform, "Wrap Mode");
+                labelWrapMode.alignment = TextAnchor.MiddleLeft;
+                labelWrapMode.color = Color.black;
+                var labelWrapModeLE = labelWrapMode.gameObject.AddComponent<LayoutElement>();
+                labelWrapModeLE.preferredWidth = LabelXWidth;
+                labelWrapModeLE.flexibleWidth = 0;
+
+                Dropdown dropdownWrapMode = UIUtility.CreateDropdown("WrapModeDropdown", itemPanel.transform);
+                dropdownWrapMode.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
+                dropdownWrapMode.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
+                dropdownWrapMode.captionText.alignment = TextAnchor.MiddleLeft;
+                dropdownWrapMode.options.Clear();
+                dropdownWrapMode.options.Add(new Dropdown.OptionData("Repeat"));
+                dropdownWrapMode.options.Add(new Dropdown.OptionData("Clamp"));
+                dropdownWrapMode.options.Add(new Dropdown.OptionData("Mirror"));
+                dropdownWrapMode.options.Add(new Dropdown.OptionData("MirrorOnce"));
+                dropdownWrapMode.value = 0;
+                dropdownWrapMode.captionText.text = "Repeat";
+                var dropdownWrapModeLE = dropdownWrapMode.gameObject.AddComponent<LayoutElement>();
+                dropdownWrapModeLE.preferredWidth = DropdownWidth;
+                dropdownWrapModeLE.flexibleWidth = 0;
+
+                var reset = UIUtility.CreateButton($"WrapModeResetButton", itemPanel.transform, "Reset");
+                var resetLE = reset.gameObject.AddComponent<LayoutElement>();
+                resetLE.preferredWidth = ResetButtonWidth;
+                resetLE.flexibleWidth = 0;
+            }
+
             //Color properties
             {
                 var itemPanel = UIUtility.CreatePanel("ColorPanel", contentList.transform);

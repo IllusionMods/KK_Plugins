@@ -77,6 +77,12 @@ namespace MaterialEditorAPI
         public InputField ScaleYInput;
         public Button OffsetScaleResetButton;
 
+        public CanvasGroup WrapModePanel;
+        public Text WrapModeLabel;
+        public Text WrapModeText;
+        public Dropdown WrapModeDropdown;
+        public Button WrapModeResetButton;
+
         public CanvasGroup ColorPanel;
         public Text ColorLabel;
         public Text ColorRText;
@@ -482,6 +488,25 @@ namespace MaterialEditorAPI
                         });
 
                         break;
+                    case ItemInfo.RowItemType.TextureWrapMode:
+                        ShowWrapMode();
+                        SetLabelText(WrapModeLabel, item.LabelText, item.TextureWrapMode != item.TextureWrapModeOriginal);
+                        WrapModeDropdown.onValueChanged.RemoveAllListeners();
+                        WrapModeDropdown.value = item.TextureWrapMode;
+                        WrapModeDropdown.onValueChanged.AddListener(value =>
+                        {
+                            item.TextureWrapMode = value;
+                            if (item.TextureWrapMode != item.TextureWrapModeOriginal)
+                                item.TextureWrapModeOnChange(value);
+                            else
+                                item.TextureWrapModeOnReset();
+                            SetLabelText(WrapModeLabel, item.LabelText, item.TextureWrapMode != item.TextureWrapModeOriginal);
+                        });
+
+                        WrapModeResetButton.onClick.RemoveAllListeners();
+                        WrapModeResetButton.onClick.AddListener(() => WrapModeDropdown.value = item.TextureWrapModeOriginal);
+
+                        break;
                     case ItemInfo.RowItemType.ColorProperty:
                         ShowColor();
                         SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
@@ -749,6 +774,7 @@ namespace MaterialEditorAPI
             ShowShaderRenderQueue(false);
             ShowTexture(false);
             ShowOffsetScale(false);
+            ShowWrapMode(false);
             ShowColor(false);
             ShowFloat(false);
             ShowKeyword(false);
@@ -811,6 +837,12 @@ namespace MaterialEditorAPI
         {
             OffsetScalePanel.alpha = visible ? 1 : 0;
             OffsetScalePanel.blocksRaycasts = visible;
+        }
+
+        private void ShowWrapMode(bool visible = true)
+        {
+            WrapModePanel.alpha = visible ? 1 : 0;
+            WrapModePanel.blocksRaycasts = visible;
         }
 
         private void ShowColor(bool visible = true)

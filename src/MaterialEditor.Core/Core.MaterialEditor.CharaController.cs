@@ -729,6 +729,7 @@ namespace KK_Plugins.MaterialEditor
                 SetTextureWithProperty(go, property);
                 SetTextureOffset(go, property.MaterialName, property.Property, property.Offset);
                 SetTextureScale(go, property.MaterialName, property.Property, property.Scale);
+                SetTextureWrapMode(go, property.MaterialName, property.Property, property.WrapMode);
             }
             for (var i = 0; i < ProjectorPropertyList.Count; i++)
             {
@@ -2041,6 +2042,55 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        public void SetMaterialTextureWrapMode(int slot, ObjectType objectType, Material material, string propertyName, TextureWrapMode value, GameObject go, bool setProperty = true)
+        {
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
+            if (textureProperty == null)
+            {
+                var valueOriginal = material.GetTexture($"_{propertyName}").wrapMode;
+                MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, wrapMode: value, wrapModeOriginal: valueOriginal));
+            }
+            else
+            {
+                if (value == textureProperty.WrapModeOriginal)
+                    RemoveMaterialTextureWrapMode(slot, objectType, material, propertyName, go, false);
+                else
+                {
+                    textureProperty.WrapMode = value;
+                    if (textureProperty.WrapModeOriginal == null)
+                        textureProperty.WrapModeOriginal = material.GetTexture($"_{propertyName}").wrapMode;
+                }
+            }
+
+            if (setProperty)
+                SetTextureWrapMode(go, material.NameFormatted(), propertyName, value);
+        }
+        public TextureWrapMode? GetMaterialTextureWrapMode(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
+        {
+            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.WrapMode;
+        }
+        public TextureWrapMode? GetMaterialTextureWrapModeOriginal(int slot, ObjectType objectType, Material material, string propertyName, GameObject go)
+        {
+            return MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.WrapModeOriginal;
+        }
+        public void RemoveMaterialTextureWrapMode(int slot, ObjectType objectType, Material material, string propertyName, GameObject go, bool setProperty = true)
+        {
+            if (setProperty)
+            {
+                var original = GetMaterialTextureWrapModeOriginal(slot, objectType, material, propertyName, go);
+                if (original != null)
+                    SetTextureWrapMode(go, material.NameFormatted(), propertyName, original);
+            }
+
+            var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == propertyName && x.MaterialName == material.NameFormatted());
+            if (textureProperty != null)
+            {
+                textureProperty.WrapMode = null;
+                textureProperty.WrapModeOriginal = null;
+                RemoveTexturePropertyIfNull(textureProperty);
+            }
+        }
+
         /// <summary>
         /// Add a shader to be saved and loaded with the card and optionally also update the materials.
         /// </summary>
@@ -2871,6 +2921,16 @@ namespace KK_Plugins.MaterialEditor
             /// </summary>
             [Key("ScaleOriginal")]
             public Vector2? ScaleOriginal;
+            /// <summary>
+            /// Texture wrap mode
+            /// </summary>
+            [Key("WrapMode")]
+            public TextureWrapMode? WrapMode;
+            /// <summary>
+            /// Texture wrap mode original value
+            /// </summary>
+            [Key("WrapModeOriginal")]
+            public TextureWrapMode? WrapModeOriginal;
 
             /// <summary>
             /// Data storage class for texture properties
@@ -2885,7 +2945,9 @@ namespace KK_Plugins.MaterialEditor
             /// <param name="offsetOriginal">Texture offset original value</param>
             /// <param name="scale">Texture scale value</param>
             /// <param name="scaleOriginal">Texture scale original value</param>
-            public MaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null)
+            /// <param name="wrapMode">Texture wrap mode</param>
+            /// <param name="wrapModeOriginal">Texture wrap mode original value</param>
+            public MaterialTextureProperty(ObjectType objectType, int coordinateIndex, int slot, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null, TextureWrapMode? wrapMode = null, TextureWrapMode? wrapModeOriginal = null)
             {
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
@@ -2897,13 +2959,15 @@ namespace KK_Plugins.MaterialEditor
                 OffsetOriginal = offsetOriginal;
                 Scale = scale;
                 ScaleOriginal = scaleOriginal;
+                WrapMode = wrapMode;
+                WrapModeOriginal = wrapModeOriginal;
             }
 
             /// <summary>
             /// Check if the TexID, Offset, and Scale are all null. Safe to remove this data if true.
             /// </summary>
             /// <returns></returns>
-            public bool NullCheck() => TexID == null && Offset == null && Scale == null;
+            public bool NullCheck() => TexID == null && Offset == null && Scale == null && WrapMode == null;
         }
 
         /// <summary>

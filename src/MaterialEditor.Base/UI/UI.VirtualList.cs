@@ -122,6 +122,12 @@ namespace MaterialEditorAPI
             listEntry.ScaleYInput = listEntry.GetUIComponent<InputField>("ScaleYInput");
             listEntry.OffsetScaleResetButton = listEntry.GetUIComponent<Button>("OffsetScaleResetButton");
 
+            listEntry.WrapModePanel = listEntry.GetUIComponent<CanvasGroup>("WrapModePanel");
+            listEntry.WrapModeLabel = listEntry.GetUIComponent<Text>("WrapModeLabel");
+            listEntry.WrapModeText = listEntry.GetUIComponent<Text>("WrapModeText");
+            listEntry.WrapModeDropdown = listEntry.GetUIComponent<Dropdown>("WrapModeDropdown");
+            listEntry.WrapModeResetButton = listEntry.GetUIComponent<Button>("WrapModeResetButton");
+
             listEntry.ColorPanel = listEntry.GetUIComponent<CanvasGroup>("ColorPanel");
             listEntry.SelectInterpolableColorButton = listEntry.GetUIComponent<Button>("SelectInterpolableColorButton");
             listEntry.ColorLabel = listEntry.GetUIComponent<Text>("ColorLabel");

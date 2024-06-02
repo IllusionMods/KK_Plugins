@@ -674,6 +674,19 @@ namespace KK_Plugins.MaterialEditor
                 GetSceneController().RemoveMaterialTextureScale((int)data, material, propertyName);
         }
 
+        public override TextureWrapMode? GetMaterialTextureWrapModeOriginal(object data, Material material, string propertyName, GameObject go)
+        {
+            throw new NotImplementedException();
+        }
+        public override void SetMaterialTextureWrapMode(object data, Material material, string propertyName, TextureWrapMode value, GameObject go)
+        {
+            throw new NotImplementedException();
+        }
+        public override void RemoveMaterialTextureWrapMode(object data, Material material, string propertyName, GameObject go)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
         {
             if (data is ObjectData objectData)

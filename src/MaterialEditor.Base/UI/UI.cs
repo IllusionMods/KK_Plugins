@@ -606,6 +606,26 @@ namespace MaterialEditorAPI
                                 ScaleOnReset = () => RemoveMaterialTextureScale(data, mat, propertyName, go)
                             };
                             items.Add(textureItemOffsetScale);
+
+                            //Texture Wrap Mode
+                            var tex = mat.GetTexture($"_{propertyName}");
+                            if (tex)
+                            {
+                                var wrapMode = tex.wrapMode;
+                                var wrapModeOriginal = wrapMode;
+                                var wrapModeOriginalTemp = GetMaterialTextureWrapModeOriginal(data, mat, propertyName, go);
+                                if (wrapModeOriginalTemp != null)
+                                    wrapModeOriginal = (TextureWrapMode)wrapModeOriginalTemp;
+
+                                var textureWrapModeItem = new ItemInfo(ItemInfo.RowItemType.TextureWrapMode)
+                                {
+                                    TextureWrapMode = (int)wrapMode,
+                                    TextureWrapModeOriginal = (int)wrapModeOriginal,
+                                    TextureWrapModeOnChange = value => SetMaterialTextureWrapMode(data, mat, propertyName, (TextureWrapMode)value, go),
+                                    TextureWrapModeOnReset = () => RemoveMaterialTextureWrapMode(data, mat, propertyName, go)
+                                };
+                                items.Add(textureWrapModeItem);
+                            }
                         }
 
                     }
@@ -844,6 +864,10 @@ namespace MaterialEditorAPI
         public abstract Vector2? GetMaterialTextureScaleOriginal(object data, Material material, string propertyName, GameObject gameObject);
         public abstract void SetMaterialTextureScale(object data, Material material, string propertyName, Vector2 value, GameObject gameObject);
         public abstract void RemoveMaterialTextureScale(object data, Material material, string propertyName, GameObject gameObject);
+
+        public abstract TextureWrapMode? GetMaterialTextureWrapModeOriginal(object data, Material material, string propertyName, GameObject gameObject);
+        public abstract void SetMaterialTextureWrapMode(object data, Material material, string propertyName, TextureWrapMode value, GameObject gameObject);
+        public abstract void RemoveMaterialTextureWrapMode(object data, Material material, string propertyName, GameObject gameObject);
 
         public abstract Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject gameObject);
         public abstract void SetMaterialColorProperty(object data, Material material, string propertyName, Color value, GameObject gameObject);

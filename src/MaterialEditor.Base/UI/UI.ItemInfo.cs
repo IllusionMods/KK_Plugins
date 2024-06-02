@@ -71,6 +71,11 @@ namespace MaterialEditorAPI
         public Action<Vector2> ScaleOnChange { get; set; }
         public Action ScaleOnReset { get; set; }
 
+        public int TextureWrapMode { get; set; }
+        public int TextureWrapModeOriginal { get; set; }
+        public Action<int> TextureWrapModeOnChange { get; set; }
+        public Action TextureWrapModeOnReset { get; set; }
+
         public Color ColorValue { get; set; }
         public Color ColorValueOriginal { get; set; }
         public Action SelectInterpolableButtonColorOnClick { get; set; }
@@ -98,6 +103,6 @@ namespace MaterialEditorAPI
             LabelText = labelText;
         }
 
-        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, RendererUpdateWhenOffscreen, RendererRecalculateNormals, Material, Shader, ShaderRenderQueue, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
+        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, RendererUpdateWhenOffscreen, RendererRecalculateNormals, Material, Shader, ShaderRenderQueue, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty, TextureWrapMode }
     }
 }
