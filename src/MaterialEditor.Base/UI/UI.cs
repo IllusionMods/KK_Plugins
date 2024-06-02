@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
+using KKAPI.Utilities;
 
 namespace MaterialEditorAPI
 {
@@ -546,7 +547,7 @@ namespace MaterialEditorAPI
                             };
                             textureItem.TextureOnImport = () =>
                             {
-                                OpenFileDialog.Show(OnFileAccept, "Open image", ExportPath, FileFilter);
+                                OpenFileDialog.Show(OnFileAccept, "Open image", ExportPath, FileFilter, ".png");
 
                                 void OnFileAccept(string[] strings)
                                 {
