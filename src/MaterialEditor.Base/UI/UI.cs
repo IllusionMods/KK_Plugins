@@ -546,7 +546,12 @@ namespace MaterialEditorAPI
                             };
                             textureItem.TextureOnImport = () =>
                             {
-                                OpenFileDialog.Show(OnFileAccept, "Open image", Application.dataPath, FileFilter);
+#if !API
+                                string fileFilter = KK_Plugins.ImageHelper.FileFilter;
+#else
+                                string fileFilter = ""
+#endif
+                                OpenFileDialog.Show(OnFileAccept, "Open image", Application.dataPath, fileFilter);
 
                                 void OnFileAccept(string[] strings)
                                 {

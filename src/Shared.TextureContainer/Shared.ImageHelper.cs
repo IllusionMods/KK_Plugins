@@ -1,12 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace KK_Plugins
 {
     //Shamelessly stolen from https://stackoverflow.com/a/1246008
     public static class ImageHelper
     {
+        /// <summary>
+        /// File filter for all the supported images
+        /// </summary>
+        public const string FileFilter = "Images (*.png;.jpg;.apng;.gif;.webp)|*.png;*.jpg;*.apng;*.gif;*.webp|All files|*.*";
+
         /// <summary>
         /// Read the file signature from a byte array to deterimine its file format.
         /// https://www.garykessler.net/library/file_sigs.html
@@ -19,6 +24,16 @@ namespace KK_Plugins
                 if (kvPair.Key.Length <= imageBytes.Length && imageBytes.StartsWith(kvPair.Key))
                     return kvPair.Value;
             return ImageFormat.Unrecognized;
+        }
+
+        public static void LoadTexture2DFromBytes(byte[] texBytes, ref Texture2D tex)
+        {
+            var imageFormat = GetContentType(texBytes);
+            //Only use magic numbers for custom supported image formats. Let LoadImage handle png/jpg/unknown
+            if (imageFormat == ImageFormat.WebP)
+                tex = WebP.Texture2DExt.CreateTexture2DFromWebP(texBytes, tex.mipmapCount > 1, false, out var error);
+            else
+                tex.LoadImage(texBytes);
         }
 
         private static bool StartsWith(this byte[] thisBytes, byte[] thatBytes)

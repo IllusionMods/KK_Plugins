@@ -151,18 +151,13 @@ namespace KK_Plugins
         private static Texture TextureFromBytes(byte[] texBytes, TextureFormat format, bool mipmaps)
         {
             if (texBytes == null || texBytes.Length == 0) return null;
-            var imageFormat = ImageHelper.GetContentType(texBytes);
 
             //LoadImage automatically resizes the texture so the texture size doesn't matter here
             Texture2D tex = new Texture2D(2, 2, format, mipmaps);
 
             try
             {
-                //Only use magic numbers for custom supported image formats. Let LoadImage handle png/jpg/unknown
-                if (imageFormat == ImageHelper.ImageFormat.WebP)
-                    tex = WebP.Texture2DExt.CreateTexture2DFromWebP(texBytes, mipmaps, false, out var error);
-                else
-                    tex.LoadImage(texBytes);
+                ImageHelper.LoadTexture2DFromBytes(texBytes, ref tex);
 
                 //Transfer to GPU memory and delete data in normal memory
                 RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
