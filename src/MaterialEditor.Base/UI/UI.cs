@@ -549,7 +549,7 @@ namespace MaterialEditorAPI
 #if !API
                                 string fileFilter = KK_Plugins.ImageHelper.FileFilter;
 #else
-                                string fileFilter = ""
+                                string fileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
 #endif
                                 OpenFileDialog.Show(OnFileAccept, "Open image", Application.dataPath, fileFilter);
 
