@@ -1,7 +1,8 @@
-﻿using Microsoft.SqlServer.Server;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -50,6 +51,19 @@ namespace KK_Plugins
             return tex;
         }
 
+        internal static void LoadDependencies(Type pluginType)
+        {
+            foreach(string dependency in new string[]{ "libwebp"} )
+                try
+                {
+                    LoadDependency(dependency, pluginType);
+                }
+                catch
+                {
+                    System.Console.WriteLine($"Failed to load {dependency}");
+                }
+        }
+
         private static bool StartsWith(this byte[] thisBytes, byte[] thatBytes)
         {
             for (int i = 0; i < thatBytes.Length; i += 1)
@@ -79,6 +93,25 @@ namespace KK_Plugins
             WebP,
             Avif,
             Unrecognized
+        }
+
+
+        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern IntPtr LoadLibrary(string fileName);
+        [DllImport("__Internal", CharSet = CharSet.Ansi)]
+        private static extern void mono_dllmap_insert(IntPtr assembly, string dll, string func, string tdll, string tfunc);
+
+        private static void LoadDependency(string dllName, Type pluginType)
+        {
+            var assemblyPath = Path.GetDirectoryName(pluginType.Assembly.Location);
+
+            // Don't use .dll to avoid bepinex trying to load it and throwing an error
+            var nativeLibFileName = $"{dllName}.lib";
+            var nativeDllPath = Path.Combine(assemblyPath, nativeLibFileName);
+            if (LoadLibrary(nativeDllPath) == IntPtr.Zero)
+                throw new IOException($"Failed to load {nativeDllPath}, verify that the file exists and is not corrupted.");
+            // Needed to let the non-standard extension to work with dllimport
+            mono_dllmap_insert(IntPtr.Zero, dllName, null, nativeLibFileName, null);
         }
     }
 }

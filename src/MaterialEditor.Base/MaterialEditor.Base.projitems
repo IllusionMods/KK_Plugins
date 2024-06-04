@@ -35,5 +35,8 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="$(MSBuildThisFileDirectory)normal_convert_opengl.shader" />
+    <None Include="$(MSBuildThisFileDirectory)Resources\libwebp.lib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
