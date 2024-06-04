@@ -331,5 +331,57 @@ namespace KK_Plugins
             // Note: Using a return statement in the loop can potentially degrade performance due to the generated binary code, 
             return false;
         }
+
+        /// <summary>
+        /// Compares two Vector2 arrays for equality in a high-performance manner using unsafe code.
+        /// </summary>
+        /// <param name="a">The first Vector2 array to compare.</param>
+        /// <param name="b">The second Vector2 array to compare.</param>
+        /// <returns>True if the Vector2 arrays are equal, false otherwise.</returns>
+        public static bool SequenceEqualFast(this Vector2[] a, Vector2[] b)
+        {
+            // Check if both references are the same, if so, return true.
+            if (System.Object.ReferenceEquals(a, b))
+                return true;
+
+            if (a == null || b == null)
+                return false;
+
+            int length = a.Length;
+
+            if (length != b.Length)
+                return false;
+
+            if (length <= 0)
+                return true;
+
+            unsafe
+            {
+                fixed (Vector2* pA = &a[0])
+                fixed (Vector2* pB = &b[0])
+                {
+                    Vector2* pA_ = pA;
+                    Vector2* pB_ = pB;
+                    Vector2* pAEnd = pA + length;
+
+                    do
+                    {
+                        if (*pA_ != *pB_)
+                            goto NotEquals;
+
+                        ++pA_;
+                        ++pB_;
+                    }
+                    while (pA_ != pAEnd);
+                }
+            }
+
+            return true;
+
+        NotEquals:
+            // Return false indicating arrays are not equal.
+            // Note: Using a return statement in the loop can potentially degrade performance due to the generated binary code, 
+            return false;
+        }
     }
 }
