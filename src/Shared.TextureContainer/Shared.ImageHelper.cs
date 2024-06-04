@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.SqlServer.Server;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -26,14 +28,26 @@ namespace KK_Plugins
             return ImageFormat.Unrecognized;
         }
 
-        public static void LoadTexture2DFromBytes(byte[] texBytes, ref Texture2D tex)
+        public static Texture2D LoadTexture2DFromBytes(byte[] texBytes, TextureFormat format, bool mipmaps)
         {
+            Texture2D tex = null;
             var imageFormat = GetContentType(texBytes);
+
             //Only use magic numbers for custom supported image formats. Let LoadImage handle png/jpg/unknown
             if (imageFormat == ImageFormat.WebP)
-                tex = WebP.Texture2DExt.CreateTexture2DFromWebP(texBytes, tex.mipmapCount > 1, false, out var error);
-            else
+            {
+                tex = WebP.Texture2DExt.CreateTexture2DFromWebP(texBytes, mipmaps, false, out var error);
+                if (error != WebP.Error.Success) tex = null;
+            }
+
+            //Always fall back to default load method if all others were skipped/failed
+            if (tex == null)
+            {
+                //LoadImage automatically resizes the texture so the texture size doesn't matter here
+                tex = new Texture2D(2, 2, format, mipmaps);
                 tex.LoadImage(texBytes);
+            }
+            return tex;
         }
 
         private static bool StartsWith(this byte[] thisBytes, byte[] thatBytes)
