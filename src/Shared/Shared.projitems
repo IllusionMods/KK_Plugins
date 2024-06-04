@@ -15,6 +15,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)Shared.Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shared.Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shared.TimelineCompatibility.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Shared.Utility.cs" />
   </ItemGroup>
 </Project>
