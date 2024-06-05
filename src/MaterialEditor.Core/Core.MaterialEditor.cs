@@ -138,6 +138,9 @@ namespace KK_Plugins.MaterialEditor
         {
             base.Awake();
 
+            //Load any image loading dependencies before any images are actually ever loaded
+            ImageHelper.LoadDependencies(typeof(MaterialEditorPlugin));
+
 #if KK || EC || KKS
             RimRemover = Config.Bind("Config", "Remove Rim Lighting", false, new ConfigDescription("Remove rim lighting for all characters clothes, hair, accessories, etc. Will save modified values to the card.\n\nUse with caution as it cannot be undone except by manually resetting all the changes.", null, new ConfigurationManagerAttributes { Order = 0, IsAdvanced = true }));
 #endif

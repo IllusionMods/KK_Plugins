@@ -9,7 +9,12 @@
     <Import_RootNamespace>Shared.TextureContainer</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Shared.ImageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shared.TextureContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shared.TextureContainerManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebP\Error.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebP\Info.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebP\NativeBindings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebP\Texture2DExt.cs" />
   </ItemGroup>
 </Project>

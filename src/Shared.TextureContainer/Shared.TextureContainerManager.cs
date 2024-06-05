@@ -149,13 +149,11 @@ namespace KK_Plugins
         private static Texture TextureFromBytes(byte[] texBytes, TextureFormat format, bool mipmaps)
         {
             if (texBytes == null || texBytes.Length == 0) return null;
-
-            //LoadImage automatically resizes the texture so the texture size doesn't matter here
-            Texture2D tex = new Texture2D(2, 2, format, mipmaps);
+            Texture2D tex = null;
 
             try
             {
-                tex.LoadImage(texBytes);
+                tex = ImageHelper.LoadTexture2DFromBytes(texBytes, format, mipmaps);
 
                 //Transfer to GPU memory and delete data in normal memory
                 RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
