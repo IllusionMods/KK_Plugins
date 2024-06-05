@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,14 @@ namespace KK_Plugins
         /// File filter for all the supported images
         /// </summary>
         public const string FileFilter = "Images (*.png;.jpg;.apng;.gif;.webp)|*.png;*.jpg;*.apng;*.gif;*.webp|All files|*.*";
+
+        /// <summary>
+        /// Dict containing the dll and dll file for all external dependencies needed to load all supported file formats
+        /// </summary>
+        private static readonly Dictionary<string, string> dllDependencies = new Dictionary<string, string> 
+        {
+            { "webp", "libwebp.lib" }
+        };
 
         /// <summary>
         /// Read the file signature from a byte array to deterimine its file format.
@@ -51,16 +60,20 @@ namespace KK_Plugins
             return tex;
         }
 
+        /// <summary>
+        /// Load all needed dependencies for loading all the supported file formats.
+        /// Needs to be to be run before any classes using these dependencies are loaded!
+        /// </summary>
         internal static void LoadDependencies(Type pluginType)
         {
-            foreach(string dependency in new string[]{ "libwebp"} )
+            foreach(var dependency in dllDependencies)
                 try
                 {
-                    LoadDependency(dependency, pluginType);
+                    LoadDependency(dependency.Key, dependency.Value, pluginType);
                 }
                 catch
                 {
-                    System.Console.WriteLine($"Failed to load {dependency}");
+                    System.Console.WriteLine($"Failed to load {dependency.Value}");
                 }
         }
 
@@ -101,17 +114,14 @@ namespace KK_Plugins
         [DllImport("__Internal", CharSet = CharSet.Ansi)]
         private static extern void mono_dllmap_insert(IntPtr assembly, string dll, string func, string tdll, string tfunc);
 
-        private static void LoadDependency(string dllName, Type pluginType)
+        private static void LoadDependency(string dllName, string dllFileName, Type pluginType)
         {
             var assemblyPath = Path.GetDirectoryName(pluginType.Assembly.Location);
-
-            // Don't use .dll to avoid bepinex trying to load it and throwing an error
-            var nativeLibFileName = $"{dllName}.lib";
-            var nativeDllPath = Path.Combine(assemblyPath, nativeLibFileName);
+            var nativeDllPath = Path.Combine(assemblyPath, dllFileName);
             if (LoadLibrary(nativeDllPath) == IntPtr.Zero)
                 throw new IOException($"Failed to load {nativeDllPath}, verify that the file exists and is not corrupted.");
             // Needed to let the non-standard extension to work with dllimport
-            mono_dllmap_insert(IntPtr.Zero, dllName, null, nativeLibFileName, null);
+            mono_dllmap_insert(IntPtr.Zero, dllName, null, dllFileName, null);
         }
     }
 }
