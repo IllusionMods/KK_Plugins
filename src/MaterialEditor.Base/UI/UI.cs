@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
+using KKAPI.Utilities;
 
 namespace MaterialEditorAPI
 {
@@ -551,7 +552,7 @@ namespace MaterialEditorAPI
 #else
                                 string fileFilter = "Images (*.png;.jpg)|*.png;*.jpg|All files|*.*";
 #endif
-                                OpenFileDialog.Show(OnFileAccept, "Open image", Application.dataPath, fileFilter);
+                                OpenFileDialog.Show(OnFileAccept, "Open image", ExportPath, fileFilter, ".png");
 
                                 void OnFileAccept(string[] strings)
                                 {
