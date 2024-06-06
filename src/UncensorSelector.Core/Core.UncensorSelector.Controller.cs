@@ -716,13 +716,13 @@ namespace KK_Plugins
                 DoHandleUVCorrupions = true;
 
                 // Check if UVs got corrupted after moving the mesh, most common fail point
-                if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
+                if (!dst.sharedMesh.uv.SequenceEqualFast(uvCopy))
                 {
                     Logger.LogWarning($"UVs got corrupted when changing uncensor mesh {dst.sharedMesh.name}, attempting to fix");
                     dst.sharedMesh.uv = uvCopy;
                     yield return null;
 
-                    if (!dst.sharedMesh.uv.SequenceEqual(uvCopy))
+                    if (!dst.sharedMesh.uv.SequenceEqualFast(uvCopy))
                         Logger.LogError("Failed to fix UVs, body textures might be displayed corrupted. Consider updating your GPU drivers.");
                 }
             }

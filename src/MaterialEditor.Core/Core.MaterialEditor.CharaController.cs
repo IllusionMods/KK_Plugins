@@ -988,7 +988,7 @@ namespace KK_Plugins.MaterialEditor
         {
             int highestID = 0;
             foreach (var tex in TextureDictionary)
-                if (Utility.SequenceEqualFast(tex.Value.Data,textureBytes))
+                if (tex.Value.Data.SequenceEqualFast(textureBytes))
                     return tex.Key;
                 else if (tex.Key > highestID)
                     highestID = tex.Key;
