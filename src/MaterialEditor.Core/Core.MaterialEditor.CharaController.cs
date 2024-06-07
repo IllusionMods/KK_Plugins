@@ -158,45 +158,48 @@ namespace KK_Plugins.MaterialEditor
             base.Update();
             if (MaterialEditorPlugin.PurgeOrphanedPropertiesHotkey.Value.IsDown())
                 PurgeOrphanedProperties();
-            else if (MaterialEditorPlugin.DisableShadowCastingHotkey.Value.IsDown())
+            if (MakerAPI.InsideMaker)
             {
-                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "0");
-                MaterialEditorPlugin.Logger.LogMessage($"Disabled ShadowCasting");
-            }
-            else if (MaterialEditorPlugin.EnableShadowCastingHotkey.Value.IsDown())
-            {
-                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "1");
-                MaterialEditorPlugin.Logger.LogMessage($"Enabled ShadowCasting");
-            }
-            else if (MaterialEditorPlugin.TwoSidedShadowCastingHotkey.Value.IsDown())
-            {
-                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "2");
-                MaterialEditorPlugin.Logger.LogMessage($"Two Sided ShadowCasting");
-            }
-            else if (MaterialEditorPlugin.ShadowsOnlyShadowCastingHotkey.Value.IsDown())
-            {
-                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "3");
-                MaterialEditorPlugin.Logger.LogMessage($"Shadows Only ShadowCasting");
-            }
-            else if (MaterialEditorPlugin.ResetShadowCastingHotkey.Value.IsDown())
-            {
-                SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "-1");
-                MaterialEditorPlugin.Logger.LogMessage($"Reset ShadowCasting ShadowCasting");
-            }
-            else if (MaterialEditorPlugin.DisableReceiveShadows.Value.IsDown())
-            {
-                SetRendererPropertyRecursive(RendererProperties.ReceiveShadows, "0");
-                MaterialEditorPlugin.Logger.LogMessage($"Disabled ReceiveShadows");
-            }
-            else if (MaterialEditorPlugin.EnableReceiveShadows.Value.IsDown())
-            {
-                SetRendererPropertyRecursive(RendererProperties.ReceiveShadows, "1");
-                MaterialEditorPlugin.Logger.LogMessage($"Enabled ReceiveShadows");
-            }
-            else if (MaterialEditorPlugin.ResetReceiveShadows.Value.IsDown())
-            {
-                SetRendererPropertyRecursive(RendererProperties.ReceiveShadows, "-1");
-                MaterialEditorPlugin.Logger.LogMessage($"Reset ReceiveShadows");
+                if (MaterialEditorPlugin.DisableShadowCastingHotkey.Value.IsDown())
+                {
+                    SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "0");
+                    MaterialEditorPlugin.Logger.LogMessage($"Disabled ShadowCasting");
+                }
+                else if (MaterialEditorPlugin.EnableShadowCastingHotkey.Value.IsDown())
+                {
+                    SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "1");
+                    MaterialEditorPlugin.Logger.LogMessage($"Enabled ShadowCasting");
+                }
+                else if (MaterialEditorPlugin.TwoSidedShadowCastingHotkey.Value.IsDown())
+                {
+                    SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "2");
+                    MaterialEditorPlugin.Logger.LogMessage($"Two Sided ShadowCasting");
+                }
+                else if (MaterialEditorPlugin.ShadowsOnlyShadowCastingHotkey.Value.IsDown())
+                {
+                    SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "3");
+                    MaterialEditorPlugin.Logger.LogMessage($"Shadows Only ShadowCasting");
+                }
+                else if (MaterialEditorPlugin.ResetShadowCastingHotkey.Value.IsDown())
+                {
+                    SetRendererPropertyRecursive(RendererProperties.ShadowCastingMode, "-1");
+                    MaterialEditorPlugin.Logger.LogMessage($"Reset ShadowCasting ShadowCasting");
+                }
+                else if (MaterialEditorPlugin.DisableReceiveShadows.Value.IsDown())
+                {
+                    SetRendererPropertyRecursive(RendererProperties.ReceiveShadows, "0");
+                    MaterialEditorPlugin.Logger.LogMessage($"Disabled ReceiveShadows");
+                }
+                else if (MaterialEditorPlugin.EnableReceiveShadows.Value.IsDown())
+                {
+                    SetRendererPropertyRecursive(RendererProperties.ReceiveShadows, "1");
+                    MaterialEditorPlugin.Logger.LogMessage($"Enabled ReceiveShadows");
+                }
+                else if (MaterialEditorPlugin.ResetReceiveShadows.Value.IsDown())
+                {
+                    SetRendererPropertyRecursive(RendererProperties.ReceiveShadows, "-1");
+                    MaterialEditorPlugin.Logger.LogMessage($"Reset ReceiveShadows");
+                }
             }
         }
 
