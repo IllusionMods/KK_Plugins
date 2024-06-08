@@ -1,10 +1,10 @@
 # KK_Plugins
 
-Plugins for Koikatsu, EmotionCreators, and AI Girl
+Plugins for Koikatu, Koikatsu Sunshine, EmotionCreators, AI Girl, HoneySelect2, and some other games.
 
 ## Installation
 
-1. Install the latest version of: 
+1. Install the latest versions of: 
     - [BepInEx v5](https://github.com/BepInEx/BepInEx/releases)
     - [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases)
     - [IllusionModdingAPI](https://github.com/IllusionMods/IllusionModdingAPI)
