@@ -35,6 +35,11 @@ foreach ($element in $array)
 			{
 				Copy-Item -Path ($filepathxml) -Destination ($copy + "/BepInEx/plugins/" + $element + "_Plugins/") -Force
 			}
+            
+            if($filename.EndsWith("MaterialEditor.dll"))
+            {
+				Copy-Item -Path ($dir + "libwebp.lib") -Destination ($copy + "/BepInEx/plugins/" + $element + "_Plugins/") -Force
+            }
 			
 			$version = "v" + (Get-ChildItem -Path ($filepath) -Filter "*.dll" -Force)[0].VersionInfo.FileVersion.ToString()
 			$zipfilename = $filename.Replace(".dll", " " + $version + ".zip")
