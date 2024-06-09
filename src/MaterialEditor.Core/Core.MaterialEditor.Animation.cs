@@ -273,6 +273,14 @@ namespace KK_Plugins.MaterialEditor
                     if (delayDen == 0) delayDen = 100;
                     int delay = ticks * delayNum / delayDen;
 
+                    if(delay == 0)
+                    {
+                        /* https://wiki.mozilla.org/APNG_Specification
+                         * If the the value of the numerator is 0 the decoder should render the next frame as quickly as possible, though viewers may impose a reasonable lower bound.
+                         */
+                        delay = Mathf.Max(ticks / 100, 1);
+                    }
+
                     MEAnimationFrame meaf = new MEAnimationFrame();
                     meaf.frames = delay;
                     meaf.beginFrame = totalFrames;
@@ -359,8 +367,9 @@ namespace KK_Plugins.MaterialEditor
                     }
                 }
             }
-            catch
+            catch( System.Exception e )
             {
+                System.Console.WriteLine(e);
                 return null;
             }
             finally
