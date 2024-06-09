@@ -368,9 +368,8 @@ namespace KK_Plugins.MaterialEditor
                     }
                 }
             }
-            catch( System.Exception e )
+            catch
             {
-                System.Console.WriteLine(e);
                 return null;
             }
             finally
