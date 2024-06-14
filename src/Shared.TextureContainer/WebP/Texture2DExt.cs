@@ -1,12 +1,11 @@
 ﻿//https://github.com/octo-code/webp-unity3d
 using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using UnityEngine;
 
 using WebP.Extern;
+using KK_Plugins;
 
 namespace WebP
 {
@@ -112,13 +111,8 @@ namespace WebP
 				{
 					scalingFunction(ref lWidth, ref lHeight);
 				}
-				
-				// If mipmaps are requested we need to create 1/3 more memory for the mipmaps to be generated in.
-				int numBytesRequired = lWidth * lHeight * 4;
-				if (lMipmaps)
-				{
-					numBytesRequired = Mathf.CeilToInt((numBytesRequired * 4.0f) / 3.0f);
-				}
+
+				int numBytesRequired = ImageHelper.CalculateTextureBytes(lWidth, lHeight, lMipmaps);
 				
 				lRawData = new byte[numBytesRequired];
 				fixed (byte* lRawDataPtr = lRawData)

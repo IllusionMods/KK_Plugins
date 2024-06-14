@@ -60,6 +60,23 @@ namespace KK_Plugins
             return tex;
         }
 
+        internal static int CalculateTextureBytes(int width, int height, bool mipmap)
+        {
+            int bytes = width * height * 4;
+
+            if (!mipmap)
+                return bytes;
+
+            while (width > 1 || height > 1)
+            {
+                width = (width + 1) >> 1;
+                height = (height + 1) >> 1;
+                bytes += width * height * 4;
+            }
+
+            return bytes;
+        }
+
         /// <summary>
         /// Load all needed dependencies for loading all the supported file formats.
         /// Needs to be to be run before any classes using these dependencies are loaded!
