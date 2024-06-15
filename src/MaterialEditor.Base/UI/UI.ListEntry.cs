@@ -725,16 +725,28 @@ namespace MaterialEditorAPI
             if (text.IsNullOrEmpty())
             {
                 if (valueChanged)
+                {
                     label.text = "*";
+                    label.fontStyle = FontStyle.Bold;
+                }
                 else
+                {
                     label.text = "";
+                    label.fontStyle = FontStyle.Normal;
+                }
             }
             else
             {
                 if (valueChanged)
+                {
                     label.text = text + ":*";
+                    label.fontStyle = FontStyle.Bold;
+                }
                 else
+                {
                     label.text = text + ":";
+                    label.fontStyle = FontStyle.Normal;
+                }
             }
         }
         private void HideAll()
