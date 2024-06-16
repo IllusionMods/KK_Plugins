@@ -63,6 +63,7 @@ namespace MaterialEditorAPI
         internal static RectOffset Padding;
         internal static readonly Color RowColor = new Color(1f, 1f, 1f, 0.6f);
         internal static readonly Color ItemColor = new Color(1f, 1f, 1f, 0f);
+        internal static readonly Color ItemColorChanged = new Color(0f, 0f, 0f, 0.3f);
         internal static readonly Color SeparatorItemColor = new Color(0.9f, 0.9f, 0.9f, 0.55f);
 
         private protected IMaterialEditorColorPalette ColorPalette;

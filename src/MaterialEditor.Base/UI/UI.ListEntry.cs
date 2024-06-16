@@ -124,7 +124,7 @@ namespace MaterialEditorAPI
                 {
                     case ItemInfo.RowItemType.Renderer:
                         ShowRenderer();
-                        SetLabelText(RendererLabel, item.LabelText);
+                        SetLabelText(RendererLabel, item.LabelText, false, null, RendererPanel);
                         ExportUVButton.onClick.RemoveAllListeners();
                         ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
                         ExportObjButton.onClick.RemoveAllListeners();
@@ -135,7 +135,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.RendererEnabled:
                         ShowRendererEnabled();
-                        SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal);
+                        SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal, RendererEnabledResetButton, RendererEnabledPanel);
                         RendererEnabledToggle.onValueChanged.RemoveAllListeners();
                         RendererEnabledToggle.isOn = item.RendererEnabled;
                         RendererEnabledToggle.onValueChanged.AddListener(value =>
@@ -145,7 +145,7 @@ namespace MaterialEditorAPI
                                 item.RendererEnabledOnChange(value);
                             else
                                 item.RendererEnabledOnReset();
-                            SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal);
+                            SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal, RendererEnabledResetButton, RendererEnabledPanel);
                         });
 
                         RendererEnabledResetButton.onClick.RemoveAllListeners();
@@ -154,7 +154,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.RendererShadowCastingMode:
                         ShowRendererShadowCastingMode();
-                        SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal);
+                        SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal, RendererShadowCastingModeResetButton, RendererShadowCastingModePanel);
                         RendererShadowCastingModeDropdown.onValueChanged.RemoveAllListeners();
                         RendererShadowCastingModeDropdown.value = item.RendererShadowCastingMode;
                         RendererShadowCastingModeDropdown.onValueChanged.AddListener(value =>
@@ -164,7 +164,7 @@ namespace MaterialEditorAPI
                                 item.RendererShadowCastingModeOnChange(value);
                             else
                                 item.RendererShadowCastingModeOnReset();
-                            SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal);
+                            SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal, RendererShadowCastingModeResetButton, RendererShadowCastingModePanel);
                         });
 
                         RendererShadowCastingModeResetButton.onClick.RemoveAllListeners();
@@ -173,7 +173,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.RendererReceiveShadows:
                         ShowRendererReceiveShadows();
-                        SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal);
+                        SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal, RendererReceiveShadowsResetButton, RendererReceiveShadowsPanel);
                         RendererReceiveShadowsToggle.onValueChanged.RemoveAllListeners();
                         RendererReceiveShadowsToggle.isOn = item.RendererReceiveShadows;
                         RendererReceiveShadowsToggle.onValueChanged.AddListener(value =>
@@ -183,7 +183,7 @@ namespace MaterialEditorAPI
                                 item.RendererReceiveShadowsOnChange(value);
                             else
                                 item.RendererReceiveShadowsOnReset();
-                            SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal);
+                            SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal, RendererReceiveShadowsResetButton, RendererReceiveShadowsPanel);
                         });
 
                         RendererReceiveShadowsResetButton.onClick.RemoveAllListeners();
@@ -192,7 +192,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.RendererUpdateWhenOffscreen:
                         ShowRendererUpdateWhenOffscreen();
-                        SetLabelText(RendererUpdateWhenOffscreenLabel, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal);
+                        SetLabelText(RendererUpdateWhenOffscreenLabel, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal, RendererUpdateWhenOffscreenResetButton, RendererUpdateWhenOffscreenPanel);
                         RendererUpdateWhenOffscreenToggle.onValueChanged.RemoveAllListeners();
                         RendererUpdateWhenOffscreenToggle.isOn = item.RendererUpdateWhenOffscreen;
                         RendererUpdateWhenOffscreenToggle.onValueChanged.AddListener(value =>
@@ -202,7 +202,7 @@ namespace MaterialEditorAPI
                                 item.RendererUpdateWhenOffscreenOnChange(value);
                             else
                                 item.RendererUpdateWhenOffscreenOnReset();
-                            SetLabelText(RendererUpdateWhenOffscreenLabel, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal);
+                            SetLabelText(RendererUpdateWhenOffscreenLabel, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal, RendererUpdateWhenOffscreenResetButton, RendererUpdateWhenOffscreenPanel);
                         });
 
                         RendererUpdateWhenOffscreenResetButton.onClick.RemoveAllListeners();
@@ -211,7 +211,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.RendererRecalculateNormals:
                         ShowRendererRecalculateNormals();
-                        SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal);
+                        SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal, RendererRecalculateNormalsResetButton, RendererRecalculateNormalsPanel);
                         RendererRecalculateNormalsToggle.onValueChanged.RemoveAllListeners();
                         RendererRecalculateNormalsToggle.isOn = item.RendererRecalculateNormals;
                         RendererRecalculateNormalsToggle.onValueChanged.AddListener(value =>
@@ -221,7 +221,7 @@ namespace MaterialEditorAPI
                                 item.RendererRecalculateNormalsOnChange(value);
                             else
                                 item.RendererRecalculateNormalsOnReset();
-                            SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal);
+                            SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal, RendererRecalculateNormalsResetButton, RendererRecalculateNormalsPanel);
                         });
 
                         RendererRecalculateNormalsResetButton.onClick.RemoveAllListeners();
@@ -230,7 +230,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.Material:
                         ShowMaterial();
-                        SetLabelText(MaterialLabel, item.LabelText);
+                        SetLabelText(MaterialLabel, item.LabelText, false, null, MaterialPanel);
                         MaterialText.text = item.MaterialName;
                         MaterialCopyButton.onClick.RemoveAllListeners();
                         MaterialCopyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
@@ -270,7 +270,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.Shader:
                         ShowShader();
-                        SetLabelText(ShaderLabel, item.LabelText, item.ShaderName != item.ShaderNameOriginal);
+                        SetLabelText(ShaderLabel, item.LabelText, item.ShaderName != item.ShaderNameOriginal, ShaderResetButton, ShaderPanel);
                         ShaderDropdown.onValueChanged.RemoveAllListeners();
                         ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderName);
                         ShaderDropdown.captionText.text = item.ShaderName;
@@ -285,7 +285,7 @@ namespace MaterialEditorAPI
                                 item.ShaderNameOnChange(item.ShaderName);
                             else
                                 item.ShaderNameOnReset();
-                            SetLabelText(ShaderLabel, item.LabelText, item.ShaderName != item.ShaderNameOriginal);
+                            SetLabelText(ShaderLabel, item.LabelText, item.ShaderName != item.ShaderNameOriginal, ShaderResetButton, ShaderPanel);
                         });
 
                         ShaderResetButton.onClick.RemoveAllListeners();
@@ -299,7 +299,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.ShaderRenderQueue:
                         ShowShaderRenderQueue();
-                        SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
+                        SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, ShaderRenderQueueResetButton, ShaderRenderQueuePanel);
                         ShaderRenderQueueInput.onEndEdit.RemoveAllListeners();
                         ShaderRenderQueueInput.text = item.ShaderRenderQueue.ToString();
                         ShaderRenderQueueInput.onEndEdit.AddListener(value =>
@@ -317,7 +317,7 @@ namespace MaterialEditorAPI
                                 item.ShaderRenderQueueOnChange(item.ShaderRenderQueue);
                             else
                                 item.ShaderRenderQueueOnReset();
-                            SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
+                            SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, ShaderRenderQueueResetButton, ShaderRenderQueuePanel);
                         });
 
                         ShaderRenderQueueResetButton.onClick.RemoveAllListeners();
@@ -326,13 +326,13 @@ namespace MaterialEditorAPI
                             ShaderRenderQueueInput.text = item.ShaderRenderQueueOriginal.ToString();
                             item.ShaderRenderQueue = item.ShaderRenderQueueOriginal;
                             item.ShaderRenderQueueOnReset();
-                            SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal);
+                            SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, ShaderRenderQueueResetButton, ShaderRenderQueuePanel);
                         });
 
                         break;
                     case ItemInfo.RowItemType.TextureProperty:
                         ShowTexture();
-                        SetLabelText(TextureLabel, item.LabelText, item.TextureChanged);
+                        SetLabelText(TextureLabel, item.LabelText, item.TextureChanged, TextureResetButton, TexturePanel);
 
                         ConfigureExportButton();
                         void ConfigureExportButton()
@@ -362,7 +362,7 @@ namespace MaterialEditorAPI
                             item.TextureExists = true;
                             item.TextureOnImport();
                             ConfigureExportButton();
-                            SetLabelText(TextureLabel, item.LabelText, item.TextureChanged);
+                            SetLabelText(TextureLabel, item.LabelText, item.TextureChanged, TextureResetButton, TexturePanel);
                         });
 
                         TextureResetButton.onClick.RemoveAllListeners();
@@ -370,14 +370,14 @@ namespace MaterialEditorAPI
                         {
                             item.TextureChanged = false;
                             item.TextureOnReset();
-                            SetLabelText(TextureLabel, item.LabelText, item.TextureChanged);
+                            SetLabelText(TextureLabel, item.LabelText, item.TextureChanged, TextureResetButton, TexturePanel);
                         });
                         SelectInterpolableTextureButton.onClick.RemoveAllListeners();
                         SelectInterpolableTextureButton.onClick.AddListener(() => item.SelectInterpolableButtonTextureOnClick());
                         break;
                     case ItemInfo.RowItemType.TextureOffsetScale:
                         ShowOffsetScale();
-                        SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                        SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
 
                         OffsetXInput.onEndEdit.RemoveAllListeners();
                         OffsetYInput.onEndEdit.RemoveAllListeners();
@@ -405,7 +405,7 @@ namespace MaterialEditorAPI
                             else
                                 item.OffsetOnChange(item.Offset);
 
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
                         });
 
                         OffsetYInput.onEndEdit.AddListener(value =>
@@ -424,7 +424,7 @@ namespace MaterialEditorAPI
                             else
                                 item.OffsetOnChange(item.Offset);
 
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
                         });
 
                         ScaleXInput.onEndEdit.AddListener(value =>
@@ -443,7 +443,7 @@ namespace MaterialEditorAPI
                             else
                                 item.ScaleOnChange(item.Scale);
 
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
                         });
 
                         ScaleYInput.onEndEdit.AddListener(value =>
@@ -462,7 +462,7 @@ namespace MaterialEditorAPI
                             else
                                 item.ScaleOnChange(item.Scale);
 
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
                         });
 
                         OffsetScaleResetButton.onClick.RemoveAllListeners();
@@ -478,13 +478,13 @@ namespace MaterialEditorAPI
 
                             item.OffsetOnReset();
                             item.ScaleOnReset();
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal);
+                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
                         });
 
                         break;
                     case ItemInfo.RowItemType.ColorProperty:
                         ShowColor();
-                        SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
+                        SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
 
                         ColorRInput.onEndEdit.RemoveAllListeners();
                         ColorGInput.onEndEdit.RemoveAllListeners();
@@ -517,7 +517,7 @@ namespace MaterialEditorAPI
                             ColorEditButton.image.color = item.ColorValue;
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
                         });
 
                         ColorGInput.onEndEdit.AddListener(value =>
@@ -539,7 +539,7 @@ namespace MaterialEditorAPI
                             ColorEditButton.image.color = item.ColorValue;
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
                         });
 
                         ColorBInput.onEndEdit.AddListener(value =>
@@ -561,7 +561,7 @@ namespace MaterialEditorAPI
                             ColorEditButton.image.color = item.ColorValue;
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
                         });
 
                         ColorAInput.onEndEdit.AddListener(value =>
@@ -583,7 +583,7 @@ namespace MaterialEditorAPI
                             ColorEditButton.image.color = item.ColorValue;
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
                         });
 
                         ColorResetButton.onClick.RemoveAllListeners();
@@ -600,7 +600,7 @@ namespace MaterialEditorAPI
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
                             item.ColorValueOnReset();
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
+                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
                         });
 
                         ColorEditButton.onClick.RemoveAllListeners();
@@ -623,7 +623,7 @@ namespace MaterialEditorAPI
                                 else
                                     item.ColorValueOnChange(item.ColorValue);
 
-                                SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal);
+                                SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
                             }
                         });
                         SelectInterpolableColorButton.onClick.RemoveAllListeners();
@@ -632,7 +632,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.FloatProperty:
                         ShowFloat();
-                        SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal);
+                        SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal, FloatResetButton, FloatPanel);
                         FloatSlider.onValueChanged.RemoveAllListeners();
                         FloatInputField.onEndEdit.RemoveAllListeners();
 
@@ -664,7 +664,7 @@ namespace MaterialEditorAPI
                             else
                                 item.FloatValueOnChange(item.FloatValue);
 
-                            SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal);
+                            SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal, FloatResetButton, FloatPanel);
                         });
 
                         FloatResetButton.onClick.RemoveAllListeners();
@@ -676,14 +676,14 @@ namespace MaterialEditorAPI
                             FloatInputField.text = item.FloatValue.ToString();
 
                             item.FloatValueOnReset();
-                            SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal);
+                            SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal, FloatResetButton, FloatPanel);
                         });
                         SelectInterpolableFloatButton.onClick.RemoveAllListeners();
                         SelectInterpolableFloatButton.onClick.AddListener(() => item.SelectInterpolableButtonFloatOnClick());
                         break;
                     case ItemInfo.RowItemType.KeywordProperty:
                         ShowKeyword();
-                        SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal);
+                        SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, KeywordResetButton, KeywordPanel);
                         KeywordToggle.onValueChanged.RemoveAllListeners();
 
                         KeywordToggle.isOn = item.KeywordValue;
@@ -696,7 +696,7 @@ namespace MaterialEditorAPI
                             else
                                 item.KeywordValueOnChange(item.KeywordValue);
 
-                            SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal);
+                            SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, KeywordResetButton, KeywordPanel);
                         });
 
                         KeywordResetButton.onClick.RemoveAllListeners();
@@ -707,7 +707,7 @@ namespace MaterialEditorAPI
                             KeywordToggle.Set(item.KeywordValue);
 
                             item.KeywordValueOnReset();
-                            SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal);
+                            SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, KeywordResetButton, KeywordPanel);
                         });
                         break;
                 }
@@ -720,33 +720,21 @@ namespace MaterialEditorAPI
                 gameObject.SetActive(visible);
         }
 
-        private static void SetLabelText(Text label, string text, bool valueChanged = false)
+        private static void SetLabelText(Text label, string text, bool valueChanged, Button resetBtn, CanvasGroup panel)
         {
-            if (text.IsNullOrEmpty())
+            label.text = text ?? "";
+
+            if (valueChanged)
             {
-                if (valueChanged)
-                {
-                    label.text = "*";
-                    label.fontStyle = FontStyle.Bold;
-                }
-                else
-                {
-                    label.text = "";
-                    label.fontStyle = FontStyle.Normal;
-                }
+                panel.gameObject.GetComponent<Image>().color = MaterialEditorUI.ItemColorChanged;
+                if (resetBtn)
+                    resetBtn.interactable = true;
             }
             else
             {
-                if (valueChanged)
-                {
-                    label.text = text + ":*";
-                    label.fontStyle = FontStyle.Bold;
-                }
-                else
-                {
-                    label.text = text + ":";
-                    label.fontStyle = FontStyle.Normal;
-                }
+                panel.gameObject.GetComponent<Image>().color = MaterialEditorUI.ItemColor;
+                if (resetBtn)
+                    resetBtn.interactable = false;
             }
         }
         private void HideAll()
