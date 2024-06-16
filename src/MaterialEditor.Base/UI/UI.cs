@@ -54,7 +54,7 @@ namespace MaterialEditorAPI
         internal const float DropdownWidth = 100f;
         internal const float TextBoxWidth = 75f;
         internal const float ColorLabelWidth = 10f;
-        internal const float ResetButtonWidth = 50f;
+        internal const float ResetButtonWidth = 30f;
         internal const float ColorEditButtonWidth = 20f;
         internal const float SliderWidth = 150f;
         internal const float LabelXWidth = 60f;
