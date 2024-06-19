@@ -1,11 +1,8 @@
 ﻿//https://github.com/octo-code/webp-unity3d
 using System;
 using System.Runtime.InteropServices;
-
 using UnityEngine;
-
 using WebP.Extern;
-using KK_Plugins;
 
 namespace WebP
 {
