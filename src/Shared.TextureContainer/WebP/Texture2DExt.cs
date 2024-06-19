@@ -112,7 +112,7 @@ namespace WebP
 					scalingFunction(ref lWidth, ref lHeight);
 				}
 
-				int numBytesRequired = ImageHelper.CalculateTextureBytes(lWidth, lHeight, lMipmaps);
+				int numBytesRequired = CalculateTextureBytes(lWidth, lHeight, lMipmaps);
 				
 				lRawData = new byte[numBytesRequired];
 				fixed (byte* lRawDataPtr = lRawData)
@@ -269,6 +269,23 @@ namespace WebP
             }
 
             return lOutputBuffer;
+        }
+
+        internal static int CalculateTextureBytes(int width, int height, bool mipmap)
+        {
+            int bytes = width * height * 4;
+
+            if (!mipmap)
+                return bytes;
+
+            while (width > 1 || height > 1)
+            {
+                width = (width + 1) >> 1;
+                height = (height + 1) >> 1;
+                bytes += width * height * 4;
+            }
+
+            return bytes;
         }
     }
 }
