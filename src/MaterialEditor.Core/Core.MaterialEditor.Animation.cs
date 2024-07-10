@@ -293,16 +293,15 @@ namespace KK_Plugins.MaterialEditor
 
                     Color32[] previous = null;
 
-                    if(fctl.DisposeOp == LibAPNG.DisposeOps.APNGDisposeOpPrevious)
-                    {
-                        previous = new Color32[pixels.Length];
-                        System.Array.Copy(pixels, previous, previous.Length);
-                    }
-
                     uint frameWidth = fctl.Width;
                     uint frameHeight = fctl.Height;
                     uint offsetX = fctl.XOffset;
                     uint offsetY = (uint)height - (fctl.YOffset + frameHeight);
+
+                    if (fctl.DisposeOp == LibAPNG.DisposeOps.APNGDisposeOpPrevious)
+                    {
+                        previous = new Color32[frameWidth * frameHeight];
+                    }
 
                     switch (fctl.BlendOp)
                     {
@@ -312,6 +311,8 @@ namespace KK_Plugins.MaterialEditor
                                 {
                                     for (uint x = 0; x < frameWidth; ++x)
                                     {
+                                        if (previous != null)
+                                            previous[offset] = pixels[(y + offsetY) * width + x + offsetX];
                                         pixels[(y + offsetY) * width + x + offsetX] = addPixels[offset++];
                                     }
                                 }
@@ -325,6 +326,8 @@ namespace KK_Plugins.MaterialEditor
                                     for (uint x = 0; x < frameWidth; ++x)
                                     {
                                         long offset0 = (y + offsetY) * width + x + offsetX;
+                                        if(previous != null)
+                                            previous[offset] = pixels[offset0];
                                         Color32 p = pixels[offset0];
                                         Color32 q = addPixels[offset++];
 
@@ -358,12 +361,27 @@ namespace KK_Plugins.MaterialEditor
 
                         case LibAPNG.DisposeOps.APNGDisposeOpBackground:
                             //Clear black
-                            System.Array.Clear(pixels, 0, pixels.Length);
+                            Color32 clear = new Color32(0, 0, 0, 0);
+                            for (uint y = 0; y < frameHeight; ++y)
+                            {
+                                for (uint x = 0; x < frameWidth; ++x)
+                                {
+                                    long offset0 = (y + offsetY) * width + x + offsetX;
+                                    pixels[offset0] = clear;
+                                }
+                            }
                             break;
 
                         case LibAPNG.DisposeOps.APNGDisposeOpPrevious:
                             //Prev frame
-                            System.Array.Copy(previous, pixels, previous.Length);
+                            for (uint y = 0, offset = 0; y < frameHeight; ++y)
+                            {
+                                for (uint x = 0; x < frameWidth; ++x)
+                                {
+                                    long offset0 = (y + offsetY) * width + x + offsetX;
+                                    pixels[offset0] = previous[offset++];
+                                }
+                            }
                             break;
                     }
                 }
