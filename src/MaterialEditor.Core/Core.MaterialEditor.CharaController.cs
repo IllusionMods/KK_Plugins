@@ -582,7 +582,7 @@ namespace KK_Plugins.MaterialEditor
                     for (var i = 0; i < properties.Count; i++)
                     {
                         var loadedProperty = properties[i];
-                        if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
+                        if (objectTypesToLoad.Contains(loadedProperty.ObjectType) && !loadedProperty.NullCheck())
                         {
                             int? texID = null;
                             if (loadedProperty.TexID != null && importDictionary.TryGetValue((int)loadedProperty.TexID, out var importTextID))
@@ -1345,7 +1345,7 @@ namespace KK_Plugins.MaterialEditor
         /// <returns>True if the value was set, false if it could not be set</returns>
         private bool SetTextureWithProperty(GameObject go, MaterialTextureProperty textureProperty)
         {
-            if (!textureProperty.TexID.HasValue)
+            if (!textureProperty.TexID.HasValue || !textureProperty.NullCheck())
                 return false;
 
             int texID = textureProperty.TexID.Value;
@@ -3127,7 +3127,7 @@ namespace KK_Plugins.MaterialEditor
             /// Check if the TexID, Offset, and Scale are all null. Safe to remove this data if true.
             /// </summary>
             /// <returns></returns>
-            public bool NullCheck() => TexID == null && Offset == null && Scale == null;
+            public bool NullCheck() => (TexID == null && Offset == null && Scale == null) || Property == null || MaterialName == null;
         }
 
         /// <summary>
