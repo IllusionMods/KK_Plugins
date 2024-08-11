@@ -86,8 +86,9 @@ namespace MaterialEditorAPI
                 tex = normalTex;
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Logger.LogError(ex);
                 return false;
             }
         }
