@@ -582,7 +582,7 @@ namespace KK_Plugins.MaterialEditor
                     for (var i = 0; i < properties.Count; i++)
                     {
                         var loadedProperty = properties[i];
-                        if (objectTypesToLoad.Contains(loadedProperty.ObjectType))
+                        if (objectTypesToLoad.Contains(loadedProperty.ObjectType) && !loadedProperty.NullCheck())
                         {
                             int? texID = null;
                             if (loadedProperty.TexID != null && importDictionary.TryGetValue((int)loadedProperty.TexID, out var importTextID))
@@ -1345,7 +1345,7 @@ namespace KK_Plugins.MaterialEditor
         /// <returns>True if the value was set, false if it could not be set</returns>
         private bool SetTextureWithProperty(GameObject go, MaterialTextureProperty textureProperty)
         {
-            if (!textureProperty.TexID.HasValue)
+            if (!textureProperty.TexID.HasValue || !textureProperty.NullCheck())
                 return false;
 
             int texID = textureProperty.TexID.Value;
@@ -3124,10 +3124,18 @@ namespace KK_Plugins.MaterialEditor
             }
 
             /// <summary>
-            /// Check if the TexID, Offset, and Scale are all null. Safe to remove this data if true.
+            /// Check if any of a subset of properties is null. Which either make it safe to remove or a broken property.
+            /// Both cases make the TextureProperty safe for removal
             /// </summary>
             /// <returns></returns>
-            public bool NullCheck() => TexID == null && Offset == null && Scale == null;
+            public bool NullCheck() 
+            {
+                // These become null when an animated texture is removed
+                var safeToRemove = TexID == null && Offset == null && Scale == null;
+                // These should never be null, and the property will never work if they are (and can cause issues)
+                var brokenProperty = Property == null || MaterialName == null;
+                return safeToRemove || brokenProperty;
+            }
         }
 
         /// <summary>

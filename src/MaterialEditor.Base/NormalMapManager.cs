@@ -39,50 +39,58 @@ namespace MaterialEditorAPI
         /// <returns>True if the texture was converted</returns>
         public bool ConvertNormalMap(ref Texture tex, string propertyName)
         {
-            if (!NormalMapProperties.Any(x => propertyName.Contains(x)))
-                return false;
-
-            if (tex == null || IsBrokenTexture(tex))
-                return false;
-
-            Texture normalTex;
-
-            if ( _convertedNormalMap.TryGetValue(tex, out var normalMapRef) )
+            try
             {
-                //It was a texture that had been converted in the past.
-                if (normalMapRef != null)
-                {
-                    normalTex = (Texture)normalMapRef.Target;
+                if (!NormalMapProperties.Any(x => propertyName.Contains(x)))
+                    return false;
 
-                    if(normalTex != null)
+                if (tex == null || IsBrokenTexture(tex))
+                    return false;
+
+                Texture normalTex;
+
+                if (_convertedNormalMap.TryGetValue(tex, out var normalMapRef))
+                {
+                    //It was a texture that had been converted in the past.
+                    if (normalMapRef != null)
                     {
-                        tex = normalTex;
-                        return true;
+                        normalTex = (Texture)normalMapRef.Target;
+
+                        if (normalTex != null)
+                        {
+                            tex = normalTex;
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        // Unsupported textures
+                        return false;
                     }
                 }
-                else
+
+                //Never converted or had been converted but was deleted.
+                normalTex = ConvertNormalMap(tex);
+
+                if (normalTex == null)
                 {
                     // Unsupported textures
+                    _convertedNormalMap[tex] = null;
                     return false;
                 }
+
+                var weakref = new WeakReference(normalTex);
+                _convertedNormalMap[tex] = weakref;         //If the same conversion comes in, return this texture.
+                _convertedNormalMap[normalTex] = weakref;   //If a converted texture comes in, return this texture.
+
+                tex = normalTex;
+                return true;
             }
-
-            //Never converted or had been converted but was deleted.
-            normalTex = ConvertNormalMap(tex);
-
-            if (normalTex == null )
+            catch(Exception ex)
             {
-                // Unsupported textures
-                _convertedNormalMap[tex] = null;
+                Logger.LogError(ex);
                 return false;
             }
-
-            var weakref = new WeakReference(normalTex);
-            _convertedNormalMap[tex] = weakref;         //If the same conversion comes in, return this texture.
-            _convertedNormalMap[normalTex] = weakref;   //If a converted texture comes in, return this texture.
-
-            tex = normalTex;
-            return true;
         }
 
         /// <summary>
