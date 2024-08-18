@@ -3124,10 +3124,18 @@ namespace KK_Plugins.MaterialEditor
             }
 
             /// <summary>
-            /// Check if the TexID, Offset, and Scale are all null. Safe to remove this data if true.
+            /// Check if any of a subset of properties is null. Which either make it safe to remove or a broken property.
+            /// Both cases make the TextureProperty safe for removal
             /// </summary>
             /// <returns></returns>
-            public bool NullCheck() => (TexID == null && Offset == null && Scale == null) || Property == null || MaterialName == null;
+            public bool NullCheck() 
+            {
+                // These become null when an animated texture is removed
+                var safeToRemove = TexID == null && Offset == null && Scale == null;
+                // These should never be null, and the property will never work if they are (and can cause issues)
+                var brokenProperty = Property == null || MaterialName == null;
+                return safeToRemove || brokenProperty;
+            }
         }
 
         /// <summary>
