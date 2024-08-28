@@ -402,7 +402,7 @@ namespace KK_Plugins
             static public IEnumerable<ColliderController> GetAllColliderControllers()
             {
                 foreach (var controller in allControllers)
-                    if (controller && controller.enabled)
+                    if (controller && controller.gameObject.activeInHierarchy)
                         yield return controller;
             }
         }
