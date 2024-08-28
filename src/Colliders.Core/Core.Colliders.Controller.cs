@@ -33,10 +33,24 @@ namespace KK_Plugins
 
             private bool didSetStates;
 
+            private static HashSet<ColliderController> allControllers = new HashSet<ColliderController>();
+
             private float BreastSize => ChaControl.chaFile.custom.body.shapeValueBody[(int)BodyShapeIdx.BustSize];
             public bool BreastCollidersEnabled { get; set; }
             public bool SkirtCollidersEnabled { get; set; }
             public bool FloorColliderEnabled { get; set; }
+
+            protected override void Awake()
+            {
+                base.Awake();
+                allControllers.Add(this);
+            }
+
+            protected override void OnDestroy()
+            {
+                allControllers.Remove(this);
+                base.OnDestroy();
+            }
 
             internal void Main()
             {
@@ -263,12 +277,13 @@ namespace KK_Plugins
             }
             private void UpdateArmCollidersBreastDBAll()
             {
-                var controllers = FindObjectsOfType<ColliderController>();
                 var dynamicBones = GetComponentsInChildren<DynamicBone_Ver02>(true);
 
-                for (var i = 0; i < controllers.Length; i++)
-                    for (var j = 0; j < dynamicBones.Length; j++)
-                        UpdateArmCollidersBreastDB(dynamicBones[j], controllers[i].ArmColliders);
+                foreach ( var controller in GetAllColliderControllers() )
+                {
+                    for (var i = 0; i < dynamicBones.Length; i++)
+                        UpdateArmCollidersBreastDB(dynamicBones[i], controller.ArmColliders);
+                }   
             }
 
             /// <summary>
@@ -380,6 +395,16 @@ namespace KK_Plugins
                 }
             }
 #endif
+
+            /// <summary>
+            /// Get all active controllers
+            /// </summary>
+            public static IEnumerable<ColliderController> GetAllColliderControllers()
+            {
+                foreach (var controller in allControllers)
+                    if (controller && controller.gameObject.activeInHierarchy)
+                        yield return controller;
+            }
         }
     }
 }

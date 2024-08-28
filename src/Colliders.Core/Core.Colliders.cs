@@ -180,9 +180,8 @@ namespace KK_Plugins
             protected override void OnSceneSave() { }
             protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
             {
-                var controllers = FindObjectsOfType<ColliderController>();
-                for (var i = 0; i < controllers.Length; i++)
-                    controllers[i].ApplyColliders();
+                foreach( var controller in ColliderController.GetAllColliderControllers())
+                    controller.ApplyColliders();
             }
         }
     }
