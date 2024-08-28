@@ -399,7 +399,7 @@ namespace KK_Plugins
             /// <summary>
             /// Get all active controllers
             /// </summary>
-            static public IEnumerable<ColliderController> GetAllColliderControllers()
+            public static IEnumerable<ColliderController> GetAllColliderControllers()
             {
                 foreach (var controller in allControllers)
                     if (controller && controller.gameObject.activeInHierarchy)
