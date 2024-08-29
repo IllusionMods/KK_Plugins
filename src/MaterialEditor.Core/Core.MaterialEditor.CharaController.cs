@@ -1345,7 +1345,7 @@ namespace KK_Plugins.MaterialEditor
         /// <returns>True if the value was set, false if it could not be set</returns>
         private bool SetTextureWithProperty(GameObject go, MaterialTextureProperty textureProperty)
         {
-            if (!textureProperty.TexID.HasValue || !textureProperty.NullCheck())
+            if (!textureProperty.TexID.HasValue || textureProperty.NullCheck())
                 return false;
 
             int texID = textureProperty.TexID.Value;
