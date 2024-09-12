@@ -106,6 +106,10 @@
     <Property Name="WeatheringMap" Type="Texture" />
     <Property Name="WeatheringMask" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
+    <Property Name="VERTEXCOLOR_ON" Type="Keyword" />
+    <Property Name="DITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="YABUREDITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="EMISSIONCOLORTEXBASE_ON" Type="Keyword" />
   </Shader>
   <Shader Name="AIT/Clothes Alpha" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes_alpha" ShaderOptimization="False">
     <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
@@ -182,6 +186,10 @@
     <Property Name="texcoord2" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
+    <Property Name="VERTEXCOLOR_ON" Type="Keyword" />
+    <Property Name="DITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="YABUREDITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="EMISSIONCOLORTEXBASE_ON" Type="Keyword" />
   </Shader>
   <Shader Name="AIT/Clothes Alpha True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes_alpha_true" ShaderOptimization="False">
     <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
@@ -239,6 +247,10 @@
     <Property Name="WeatheringMask" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
     <Property Name="texcoord2" Type="Texture" />
+    <Property Name="VERTEXCOLOR_ON" Type="Keyword" />
+    <Property Name="DITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="YABUREDITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="EMISSIONCOLORTEXBASE_ON" Type="Keyword" />
   </Shader>
   <Shader Name="AIT/Clothes" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_clothes" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
@@ -318,6 +330,10 @@
     <Property Name="WeatheringMap" Type="Texture" />
     <Property Name="WeatheringMask" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
+    <Property Name="VERTEXCOLOR_ON" Type="Keyword" />
+    <Property Name="DITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="YABUREDITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="EMISSIONCOLORTEXBASE_ON" Type="Keyword" />
   </Shader>
   <Shader Name="Shader Forge/hair_07" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_hair_07" ShaderOptimization="False">
     <Property Name="TopGradation" Type="Float" Range="0,5"/>
@@ -438,6 +454,10 @@
     <Property Name="PatternMask2" Type="Texture" />
     <Property Name="PatternMask3" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
+    <Property Name="VERTEXCOLOR_ON" Type="Keyword" />
+    <Property Name="DITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="YABUREDITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="EMISSIONCOLORTEXBASE_ON" Type="Keyword" />
   </Shader>
   <Shader Name="AIT/Skin True" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_skin_true" ShaderOptimization="False">
     <Property Name="NailMask" Type="Texture" />
@@ -725,6 +745,10 @@
     <Property Name="TransShadow" Type="Float" Range="0,1"/>
     <Property Name="texcoord" Type="Texture" />
     <Property Name="_dirty" Type="Float" Range="0,1"/>
+    <Property Name="VERTEXCOLOR_ON" Type="Keyword" />
+    <Property Name="DITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="YABUREDITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="EMISSIONCOLORTEXBASE_ON" Type="Keyword" />
   </Shader>
   <Shader Name="AIT/Liquid" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_liquid" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
@@ -1038,6 +1062,10 @@
     <Property Name="PatternMask2" Type="Texture" />
     <Property Name="PatternMask3" Type="Texture" />
     <Property Name="texcoord" Type="Texture" />
+    <Property Name="VERTEXCOLOR_ON" Type="Keyword" />
+    <Property Name="DITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="YABUREDITHERSWITCH_ON" Type="Keyword" />
+    <Property Name="EMISSIONCOLORTEXBASE_ON" Type="Keyword" />
   </Shader>
   <Shader Name="AIT/main standard2" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_main_standard2" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
