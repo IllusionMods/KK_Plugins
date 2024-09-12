@@ -370,7 +370,7 @@
   <Shader Name="AIT/Item" AssetBundle="Resources.AI_Shaders.unity3d" Asset="asset_item" ShaderOptimization="False">
     <Property Name="Cutoff" Type="Float" Range="0,1"/>
     <Property Name="FresnelScale" Type="Float" Range="0,1"/>
-    <Property Name="bitangentrim" Type="Float" Range="0,1"/>
+    <Property Name="BitangentRim" Type="Float" Range="0,1"/>
     <Property Name="DitherSwitch" Type="Float" Range="0,1"/>
     <Property Name="VertexColor" Type="Float" Range="0,1"/>
     <Property Name="EmissionRim" Type="Float" Range="0,3"/>
