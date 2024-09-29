@@ -34,10 +34,27 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
         private static ShaderSwapper Instance;
 
+        /// <summary>
+        /// Represents a sequence of rules on what shader should be used as a replacement.
+        /// <para/>
+        /// Rules are evaluated in order; preceding rules will be evaluated first,
+        /// and the first valid rule will be used.
+        /// </summary>
         internal class SwapTargetList
         {
+            /// <summary>
+            /// Represents a rule on whether a shader should be used as a replacement.
+            /// <para/>
+            /// Each rule has an include and exclude list, defining the names of materials
+            /// that should not have their shaders replaced.
+            /// </summary>
             internal class Rule
             {
+                /// <summary>
+                /// Represents a list of string entries.
+                /// <para/>
+                /// Used for easier conversion between in memory List and serialized XElements.
+                /// </summary>
                 internal class EntryList
                 {
                     public static string EntryElementName { get; } = "Entry";
@@ -106,6 +123,15 @@ namespace KK_Plugins
                     return element;
                 }
 
+                /// <summary>
+                /// Gets the replacement shader for a material according to the predefined rules.
+                /// </summary>
+                /// <param name="material">The material whose shader to replace.</param>
+                /// <param name="toShader">
+                /// When this method returns, contains the name of the replacement shader,
+                /// if the material's shader is to be replaced; otherwise, the value is undefined.
+                /// </param>
+                /// <returns><c>true</c> if the specified material should have its shader replaced; otherwise, <c>false</c>.</returns>
                 public bool TryGetReplacementShader(Material material, out string toShader)
                 {
                     toShader = "";
@@ -150,6 +176,15 @@ namespace KK_Plugins
                 return Rules.Select(e => e.ToElement());
             }
 
+            /// <summary>
+            /// Gets the replacement shader for a material according to the predefined rules.
+            /// </summary>
+            /// <param name="material">The material whose shader to replace.</param>
+            /// <param name="toShader">
+            /// When this method returns, contains the name of the replacement shader,
+            /// if the material's shader is to be replaced; otherwise, the value is undefined.
+            /// </param>
+            /// <returns><c>true</c> if the specified material should have its shader replaced; otherwise, <c>false</c>.</returns>
             public bool TryGetReplacementShader(Material material, out string toShader)
             {
                 toShader = "";
