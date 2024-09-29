@@ -106,7 +106,7 @@ namespace KK_Plugins
                     return element;
                 }
 
-                public bool TryGetToShader(Material material, out string toShader)
+                public bool TryGetReplacementShader(Material material, out string toShader)
                 {
                     toShader = "";
                     if (material == null)
@@ -150,12 +150,12 @@ namespace KK_Plugins
                 return Rules.Select(e => e.ToElement());
             }
 
-            public bool TryGetToShader(Material material, out string toShader)
+            public bool TryGetReplacementShader(Material material, out string toShader)
             {
                 toShader = "";
                 foreach (var rule in Rules)
                 {
-                    if (rule.TryGetToShader(material, out toShader))
+                    if (rule.TryGetReplacementShader(material, out toShader))
                         return true;
                 }
                 return false;
@@ -408,7 +408,7 @@ namespace KK_Plugins
                 if (mapping.TryGetValue(mat.shader.name, out var swapTargetList))
                 {
                     string newShader;
-                    if (!swapTargetList.TryGetToShader(mat, out newShader))
+                    if (!swapTargetList.TryGetReplacementShader(mat, out newShader))
                         return;
 
                     if (DebugLogging.Value)
@@ -455,7 +455,7 @@ namespace KK_Plugins
                 if (mapping.TryGetValue(mat.shader.name, out var swapTargetList))
                 {
                     string newShader;
-                    if (!swapTargetList.TryGetToShader(mat, out newShader))
+                    if (!swapTargetList.TryGetReplacementShader(mat, out newShader))
                         return;
 
                     if (DebugLogging.Value)
