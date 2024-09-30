@@ -717,7 +717,49 @@ Boop the character by moving mouse over parts of their body, hair and clothes. U
 - [KK_ShaderSwapper]
 - [KKS_ShaderSwapper]
 
-Swap all shaders to the equivalent Vanilla Plus shader in the character maker or studio by pressing right ctrl + P
+Swap all shaders to the equivalent Vanilla Plus shader in the character maker or studio by pressing right ctrl + P.
+
+Custom rules for swapping shaders can be provided in xml files. Check the "Mapping" category in plugin's settings. 
+
+<details>
+<summary>Explanation of the xml file format</summary>
+
+```xml
+<ShaderSwapper>
+  <!-- Old structure for "Mapping" element, still supported -->
+  <Mapping From="Shader Forge/main_skin" To="xukmi/SkinPlus">
+
+  <!-- New structure for "Mapping" element, keep the old "From" attribute... -->
+  <Mapping From="Shader Forge/main_skin">
+    <!-- ...but introduce a "Rule" element to replace the "To" attribute -->
+    <Rule Name="xukmi/SkinPlus" />
+  </Mapping>
+
+  <!-- Advanced usage, with includes and excludes -->
+  <Mapping From="original_shader">
+    <!-- Change to shader_0 if the material name is material_0 or material_1... -->
+    <Rule Name="shader_0">
+      <Include>
+        <Entry>material_0</Entry>
+        <Entry>material_1</Entry>
+      </Include>
+    </Rule>
+
+    <!-- ...else, change to shader_1 if the material name is NOT material_2 or material_3... -->
+    <Rule Name="shader_1">
+      <Exclude>
+        <Entry>material_2</Entry>
+        <Entry>material_3</Entry>
+      </Exclude>
+    </Rule>
+
+    <!-- ...else, change to shader_2 -->
+    <Rule Name="shader_2" />
+  </Mapping>
+</ShaderSwapper>
+```
+
+</details>
 
 #### FreeHStudioSceneLoader
 
