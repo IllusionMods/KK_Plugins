@@ -34,58 +34,221 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
         private static ShaderSwapper Instance;
 
+        /// <summary>
+        /// Represents a sequence of rules on what shader should be used as a replacement.
+        /// <para/>
+        /// Rules are evaluated in order; preceding rules will be evaluated first,
+        /// and the first valid rule will be used.
+        /// </summary>
+        internal class SwapTargetList
+        {
+            /// <summary>
+            /// Represents a rule on whether a shader should be used as a replacement.
+            /// <para/>
+            /// Each rule has an include and exclude list, defining the names of materials
+            /// that should not have their shaders replaced.
+            /// </summary>
+            internal class Rule
+            {
+                /// <summary>
+                /// Represents a list of string entries.
+                /// <para/>
+                /// Used for easier conversion between in memory List and serialized XElements.
+                /// </summary>
+                internal class EntryList
+                {
+                    public static string EntryElementName { get; } = "Entry";
+
+                    public List<string> Entries { get; set; } = new List<string>();
+
+                    public EntryList() { }
+
+                    public EntryList(IEnumerable<string> entries)
+                    {
+                        Entries = new List<string>(entries);
+                    }
+
+                    public EntryList(IEnumerable<XElement> collection)
+                    {
+                        Entries = new List<string>(collection.Select(e => e.Value));
+                    }
+
+                    public IEnumerable<XElement> ToElements()
+                    {
+                        return Entries.Select(e => new XElement(EntryElementName, e));
+                    }
+                }
+
+                public static string ElementName { get; } = "Rule";
+                public static string ShaderAttributeName { get; } = "Name";
+                public static string IncludeElementName { get; } = "Include";
+                public static string ExcludeElementName { get; } = "Exclude";
+
+                public string Shader { get; set; } = "MISSING SHADER NAME";
+                public EntryList Include { get; set; } = new EntryList();
+                public EntryList Exclude { get; set; } = new EntryList();
+
+                public Rule(string shader)
+                {
+                    Shader = shader;
+                }
+
+                public Rule(string shader, IEnumerable<string> include, IEnumerable<string> exclude)
+                {
+                    Shader = shader;
+                    Include = new EntryList(include);
+                    Exclude = new EntryList(exclude);
+                }
+
+                public Rule(XElement element)
+                {
+                    if (element == null || element.Name != ElementName)
+                        return;
+
+                    if (element.Attribute(ShaderAttributeName) != null)
+                        Shader = element.Attribute(ShaderAttributeName).Value;
+                    if (element.Element(IncludeElementName) != null)
+                        Include = new EntryList(element.Element(IncludeElementName).Elements());
+                    if (element.Element(ExcludeElementName) != null)
+                        Exclude = new EntryList(element.Element(ExcludeElementName).Elements());
+                }
+
+                public XElement ToElement()
+                {
+                    var element = new XElement(ElementName, new XAttribute(ShaderAttributeName, Shader));
+                    if (Include.Entries.Count > 0)
+                        element.Add(new XElement(IncludeElementName, Include.ToElements()));
+                    if (Exclude.Entries.Count > 0)
+                        element.Add(new XElement(ExcludeElementName, Exclude.ToElements()));
+                    return element;
+                }
+
+                /// <summary>
+                /// Gets the replacement shader for a material according to the predefined rules.
+                /// </summary>
+                /// <param name="material">The material whose shader to replace.</param>
+                /// <param name="toShader">
+                /// When this method returns, contains the name of the replacement shader,
+                /// if the material's shader is to be replaced; otherwise, the value is undefined.
+                /// </param>
+                /// <returns><c>true</c> if the specified material should have its shader replaced; otherwise, <c>false</c>.</returns>
+                public bool TryGetReplacementShader(Material material, out string toShader)
+                {
+                    toShader = "";
+                    if (material == null)
+                        return false;
+
+                    string nonInstMatName = material.name.Replace(" (Instance)", "");
+                    bool inIncludes = Include.Entries.Contains(nonInstMatName);
+                    bool inExcludes = Exclude.Entries.Contains(nonInstMatName);
+
+                    // filter exclusions
+                    if (inExcludes && !inIncludes)
+                        return false;
+
+                    // filter inclusions without exclusions
+                    if ((Exclude.Entries.Count == 0) && (Include.Entries.Count > 0) && !inIncludes)
+                        return false;
+
+                    toShader = Shader;
+                    return true;
+                }
+            }
+
+            public List<Rule> Rules { get; set; } = new List<Rule>();
+
+            public SwapTargetList() { }
+
+            public SwapTargetList(string shader) : this(new string[] { shader }) { }
+
+            public SwapTargetList(IEnumerable<string> shaders)
+            {
+                Rules = shaders.Select(e => new Rule(e)).ToList();
+            }
+
+            public SwapTargetList(IEnumerable<XElement> collection)
+            {
+                Rules = new List<Rule>(collection.Select(e => new Rule(e)));
+            }
+
+            public IEnumerable<XElement> ToElements()
+            {
+                return Rules.Select(e => e.ToElement());
+            }
+
+            /// <summary>
+            /// Gets the replacement shader for a material according to the predefined rules.
+            /// </summary>
+            /// <param name="material">The material whose shader to replace.</param>
+            /// <param name="toShader">
+            /// When this method returns, contains the name of the replacement shader,
+            /// if the material's shader is to be replaced; otherwise, the value is undefined.
+            /// </param>
+            /// <returns><c>true</c> if the specified material should have its shader replaced; otherwise, <c>false</c>.</returns>
+            public bool TryGetReplacementShader(Material material, out string toShader)
+            {
+                toShader = "";
+                foreach (var rule in Rules)
+                {
+                    if (rule.TryGetReplacementShader(material, out toShader))
+                        return true;
+                }
+                return false;
+            }
+        }
+
         internal static ConfigEntry<KeyboardShortcut> SwapShadersHotkey { get; private set; }
         internal static ConfigEntry<KeyboardShortcut> ForceSwapShadersHotkey { get; private set; }
         internal static ConfigEntry<float> TesselationSlider { get; private set; }
 
-        private readonly Dictionary<string, string> VanillaPlusShaders = new Dictionary<string, string>
+        private readonly Dictionary<string, SwapTargetList> VanillaPlusShaders = new Dictionary<string, SwapTargetList>
         {
-            {"Shader Forge/main_skin", "xukmi/SkinPlus" },
-            {"Koikano/main_skin", "xukmi/SkinPlus" },
-            {"Shader Forge/main_hair", "xukmi/HairPlus" },
-            {"Koikano/hair_main_sun", "xukmi/HairPlus" },
-            {"Shader Forge/main_hair_front", "xukmi/HairFrontPlus" },
-            {"Koikano/hair_main_sun_front", "xukmi/HairFrontPlus" },
-            {"Shader Forge/toon_eye_lod0", "xukmi/EyePlus" },
-            {"Koikano/main_eye", "xukmi/EyePlus" },
-            {"Shader Forge/toon_eyew_lod0", "xukmi/EyeWPlus" },
-            {"Koikano/main_eyew", "xukmi/EyeWPlus" },
-            {"Shader Forge/main_opaque", "xukmi/MainOpaquePlus" },
-            {"Shader Forge/main_opaque2", "xukmi/MainOpaquePlus" },
-            {"Koikano/main_clothes_opaque", "xukmi/MainOpaquePlus" },
-            {"Shader Forge/main_alpha", "xukmi/MainAlphaPlus" },
-            {"Koikano/main_clothes_alpha", "xukmi/MainAlphaPlus" },
-            {"Shader Forge/main_item", "xukmi/MainItemPlus" },
-            {"Koikano/main_clothes_item", "xukmi/MainItemPlus" },
-            {"Shader Forge/main_item_studio", "xukmi/MainItemPlus" },
-            {"Shader Forge/main_item_studio_alpha", "xukmi/MainItemAlphaPlus" },
-            {"ShaderForge/main_StandardMDK_studio", "xukmi/MainItemPlus" },
-            {"Standard", "xukmi/MainItemPlus" }
+            {"Shader Forge/main_skin", new SwapTargetList("xukmi/SkinPlus") },
+            {"Koikano/main_skin", new SwapTargetList("xukmi/SkinPlus") },
+            {"Shader Forge/main_hair", new SwapTargetList("xukmi/HairPlus") },
+            {"Koikano/hair_main_sun", new SwapTargetList("xukmi/HairPlus") },
+            {"Shader Forge/main_hair_front", new SwapTargetList("xukmi/HairFrontPlus") },
+            {"Koikano/hair_main_sun_front", new SwapTargetList("xukmi/HairFrontPlus") },
+            {"Shader Forge/toon_eye_lod0", new SwapTargetList("xukmi/EyePlus") },
+            {"Koikano/main_eye", new SwapTargetList("xukmi/EyePlus") },
+            {"Shader Forge/toon_eyew_lod0", new SwapTargetList("xukmi/EyeWPlus") },
+            {"Koikano/main_eyew", new SwapTargetList("xukmi/EyeWPlus") },
+            {"Shader Forge/main_opaque", new SwapTargetList("xukmi/MainOpaquePlus") },
+            {"Shader Forge/main_opaque2", new SwapTargetList("xukmi/MainOpaquePlus") },
+            {"Koikano/main_clothes_opaque", new SwapTargetList("xukmi/MainOpaquePlus") },
+            {"Shader Forge/main_alpha", new SwapTargetList("xukmi/MainAlphaPlus") },
+            {"Koikano/main_clothes_alpha", new SwapTargetList("xukmi/MainAlphaPlus") },
+            {"Shader Forge/main_item", new SwapTargetList("xukmi/MainItemPlus") },
+            {"Koikano/main_clothes_item", new SwapTargetList("xukmi/MainItemPlus") },
+            {"Shader Forge/main_item_studio", new SwapTargetList("xukmi/MainItemPlus") },
+            {"Shader Forge/main_item_studio_alpha", new SwapTargetList("xukmi/MainItemAlphaPlus") },
+            {"ShaderForge/main_StandardMDK_studio", new SwapTargetList("xukmi/MainItemPlus") },
+            {"Standard", new SwapTargetList("xukmi/MainItemPlus") },
         };
 
-        private readonly Dictionary<string, string> VanillaPlusTesselationShaders = new Dictionary<string, string>
+        private readonly Dictionary<string, SwapTargetList> VanillaPlusTesselationShaders = new Dictionary<string, SwapTargetList>
         {
-            {"Shader Forge/main_skin", "xukmi/SkinPlusTess" },
-            {"Koikano/main_skin", "xukmi/SkinPlusTess" },
-            {"Shader Forge/main_hair", "xukmi/HairPlus" },
-            {"Koikano/hair_main_sun", "xukmi/HairPlus" },
-            {"Shader Forge/main_hair_front", "xukmi/HairFrontPlus" },
-            {"Koikano/hair_main_sun_front", "xukmi/HairFrontPlus" },
-            {"Shader Forge/toon_eye_lod0", "xukmi/EyePlus" },
-            {"Koikano/main_eye", "xukmi/EyePlus" },
-            {"Shader Forge/toon_eyew_lod0", "xukmi/EyeWPlus" },
-            {"Koikano/main_eyew", "xukmi/EyeWPlus" },
-            {"Shader Forge/main_opaque", "xukmi/MainOpaquePlusTess" },
-            {"Shader Forge/main_opaque2", "xukmi/MainOpaquePlusTess" },
-            {"Koikano/main_clothes_opaque", "xukmi/MainOpaquePlusTess" },
-            {"Shader Forge/main_alpha", "xukmi/MainAlphaPlusTess" },
-            {"Koikano/main_clothes_alpha", "xukmi/MainAlphaPlusTess" },
-            {"Shader Forge/main_item", "xukmi/MainItemPlus" },
-            {"Koikano/main_clothes_item", "xukmi/MainItemPlus" },
-            {"Shader Forge/main_item_studio", "xukmi/MainOpaquePlusTess" },
-            {"Shader Forge/main_item_studio_alpha", "xkumi/MainAlphaPlusTess" },
-            {"ShaderForge/main_StandardMDK_studio", "xukmi/MainOpaquePlusTess" },
-            {"Standard", "xukmi/MainOpaquePlusTess" }
+            {"Shader Forge/main_skin", new SwapTargetList("xukmi/SkinPlusTess") },
+            {"Koikano/main_skin", new SwapTargetList("xukmi/SkinPlusTess") },
+            {"Shader Forge/main_hair", new SwapTargetList("xukmi/HairPlus") },
+            {"Koikano/hair_main_sun", new SwapTargetList("xukmi/HairPlus") },
+            {"Shader Forge/main_hair_front", new SwapTargetList("xukmi/HairFrontPlus") },
+            {"Koikano/hair_main_sun_front", new SwapTargetList("xukmi/HairFrontPlus") },
+            {"Shader Forge/toon_eye_lod0", new SwapTargetList("xukmi/EyePlus") },
+            {"Koikano/main_eye", new SwapTargetList("xukmi/EyePlus") },
+            {"Shader Forge/toon_eyew_lod0", new SwapTargetList("xukmi/EyeWPlus") },
+            {"Koikano/main_eyew", new SwapTargetList("xukmi/EyeWPlus") },
+            {"Shader Forge/main_opaque", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            {"Shader Forge/main_opaque2", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            {"Koikano/main_clothes_opaque", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            {"Shader Forge/main_alpha", new SwapTargetList("xukmi/MainAlphaPlusTess") },
+            {"Koikano/main_clothes_alpha", new SwapTargetList("xukmi/MainAlphaPlusTess") },
+            {"Shader Forge/main_item", new SwapTargetList("xukmi/MainItemPlus") },
+            {"Koikano/main_clothes_item", new SwapTargetList("xukmi/MainItemPlus") },
+            {"Shader Forge/main_item_studio", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            {"Shader Forge/main_item_studio_alpha", new SwapTargetList("xkumi/MainAlphaPlusTess") },
+            {"ShaderForge/main_StandardMDK_studio", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            {"Standard", new SwapTargetList("xukmi/MainOpaquePlusTess") },
         };
 
         internal static ConfigEntry<bool> AutoReplace { get; private set; }
@@ -102,18 +265,21 @@ namespace KK_Plugins
 
         private readonly Harmony _harmony = new Harmony(PluginGUID);
 
-        private Dictionary<string, string> VanillaPlusShaderMapping { get => convertShaderMapping(false); set => setShaderMapping(false, value); }
+        private Dictionary<string, SwapTargetList> VanillaPlusShaderMapping { get => convertShaderMapping(false); set => setShaderMapping(false, value); }
 
-        private Dictionary<string, string> VanillaPlusTessShaderMapping { get => convertShaderMapping(true); set => setShaderMapping(true, value); }
+        private Dictionary<string, SwapTargetList> VanillaPlusTessShaderMapping { get => convertShaderMapping(true); set => setShaderMapping(true, value); }
 
-        private Dictionary<string, string> convertShaderMapping(bool tess)
+        private Dictionary<string, SwapTargetList> convertShaderMapping(bool tess)
         {
-            if (tess) return XElement.Load(TessMapping.Value).Elements().ToDictionary(e => e.Attribute("From").Value, e => e.Attribute("To").Value);
-            else return XElement.Load(NormalMapping.Value).Elements().ToDictionary(e => e.Attribute("From").Value, e => e.Attribute("To").Value);
+            return XElement.Load(tess ? TessMapping.Value : NormalMapping.Value).Elements().ToDictionary(
+                e => e.Attribute("From").Value,
+                e => e.HasElements ? new SwapTargetList(e.Elements()) : new SwapTargetList(e.Attribute("To").Value)); // support backwards compat
         }
-        private void setShaderMapping(bool tess, Dictionary<string, string> value)
+        private void setShaderMapping(bool tess, Dictionary<string, SwapTargetList> value)
         {
-            string text = new XElement("ShaderSwapper", value.Select(e => new XElement("Mapping", new XAttribute[] { new XAttribute("From", e.Key), new XAttribute("To", e.Value) }))).ToString();
+            string text = new XElement("ShaderSwapper",
+                value.Select(e => new XElement("Mapping", new XAttribute("From", e.Key), e.Value.ToElements()))
+            ).ToString();
             using (StreamWriter outputFile = new StreamWriter(tess ? TessMapping.Value : NormalMapping.Value))
             {
                 outputFile.Write(text);
@@ -273,43 +439,26 @@ namespace KK_Plugins
             if (controller.GetMaterialShader(id, mat) == null || forceSwap)
             {
                 string oldShader = mat.shader.name;
-                if (TesselationSlider.Value > 0)
+                Dictionary<string, SwapTargetList> mapping = (TesselationSlider.Value > 0) ? VanillaPlusTessShaderMapping : VanillaPlusShaderMapping;
+                if (mapping.TryGetValue(mat.shader.name, out var swapTargetList))
                 {
-                    if (VanillaPlusTessShaderMapping.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
-                    {
-                        if (DebugLogging.Value)
-                            Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusTesShaderName}] on [{(Studio.Studio.Instance.dicObjectCtrl.TryGetValue(id, out var value) ? value.treeNodeObject.textName : null)}]");
+                    string newShader;
+                    if (!swapTargetList.TryGetReplacementShader(mat, out newShader))
+                        return;
 
-                        int renderQueue = mat.renderQueue;
-                        controller.SetMaterialShader(id, mat, vanillaPlusTesShaderName);
-                        controller.SetMaterialShaderRenderQueue(id, mat, renderQueue);
-                        if (mat.shader.name == "xukmi/MainAlphaPlus")
-                            controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0.1f);
-                        if (oldShader == "Standard")
-                        {
-                            controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0f);
-                        }
+                    if (DebugLogging.Value)
+                        Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{newShader}] on [{(Studio.Studio.Instance.dicObjectCtrl.TryGetValue(id, out var value) ? value.treeNodeObject.textName : null)}]");
 
+                    int renderQueue = mat.renderQueue;
+                    controller.SetMaterialShader(id, mat, newShader);
+                    controller.SetMaterialShaderRenderQueue(id, mat, renderQueue);
+                    if (mat.shader.name == "xukmi/MainAlphaPlus")
+                        controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0.1f);
+                    if (oldShader == "Standard")
+                        controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0f);
+
+                    if (TesselationSlider.Value > 0)
                         SetTesselationValue(mat);
-                    }
-                }
-                else
-                {
-                    if (VanillaPlusShaderMapping.TryGetValue(mat.shader.name, out var vanillaPlusShaderName))
-                    {
-                        if (DebugLogging.Value)
-                            Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusShaderName}] on [{(Studio.Studio.Instance.dicObjectCtrl.TryGetValue(id, out var value) ? value.treeNodeObject.textName : null)}]");
-
-                        int renderQueue = mat.renderQueue;
-                        controller.SetMaterialShader(id, mat, vanillaPlusShaderName);
-                        controller.SetMaterialShaderRenderQueue(id, mat, renderQueue);
-                        if (mat.shader.name == "xukmi/MainAlphaPlus")
-                            controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0.1f);
-                        if (oldShader == "Standard")
-                        {
-                            controller.SetMaterialFloatProperty(id, mat, "Cutoff", 0f);
-                        }
-                    }
                 }
 
                 if (AutoEnableOutline.Value && mat.HasProperty("_OutlineOn"))
@@ -321,7 +470,7 @@ namespace KK_Plugins
 
         private void SwapToVanillaPlus(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go, bool forceSwap)
         {
-            if (controller.GetMaterialShader(slot, ObjectType.Clothing, mat, go) == null || forceSwap)
+            if (controller.GetMaterialShader(slot, ObjectType.Clothing, mat, go) == null || forceSwap)
             {
                 string oldShader = mat.shader.name;
                 if (!SwapStudioShadersOnCharacter.Value)
@@ -337,35 +486,24 @@ namespace KK_Plugins
                     }
                 }
 
-                if (TesselationSlider.Value > 0)
+                Dictionary<string, SwapTargetList> mapping = (TesselationSlider.Value > 0) ? VanillaPlusTessShaderMapping : VanillaPlusShaderMapping;
+                if (mapping.TryGetValue(mat.shader.name, out var swapTargetList))
                 {
-                    if (VanillaPlusTessShaderMapping.TryGetValue(mat.shader.name, out var vanillaPlusTesShaderName))
-                    {
-                        if (DebugLogging.Value)
-                            Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusTesShaderName}] on [{controller.ChaControl.fileParam.fullname}]");
+                    string newShader;
+                    if (!swapTargetList.TryGetReplacementShader(mat, out newShader))
+                        return;
 
-                        int renderQueue = mat.renderQueue;
-                        controller.SetMaterialShader(slot, objectType, mat, vanillaPlusTesShaderName, go);
-                        controller.SetMaterialShaderRenderQueue(slot, objectType, mat, renderQueue, go);
-                        if (mat.shader.name == "xukmi/MainAlphaPlus")
-                            controller.SetMaterialFloatProperty(slot, objectType, mat, "Cutoff", 0.1f, go);
+                    if (DebugLogging.Value)
+                        Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{newShader}] on [{controller.ChaControl.fileParam.fullname}]");
 
+                    int renderQueue = mat.renderQueue;
+                    controller.SetMaterialShader(slot, objectType, mat, newShader, go);
+                    controller.SetMaterialShaderRenderQueue(slot, objectType, mat, renderQueue, go);
+                    if (mat.shader.name == "xukmi/MainAlphaPlus")
+                        controller.SetMaterialFloatProperty(slot, objectType, mat, "Cutoff", 0.1f, go);
+
+                    if (TesselationSlider.Value > 0)
                         SetTesselationValue(mat);
-                    }
-                }
-                else
-                {
-                    if (VanillaPlusShaderMapping.TryGetValue(mat.shader.name, out var vanillaPlusShaderName))
-                    {
-                        if (DebugLogging.Value)
-                            Logger.LogDebug($"Replacing shader [{mat.shader.name}] with [{vanillaPlusShaderName}] on [{controller.ChaControl.fileParam.fullname}]");
-
-                        int renderQueue = mat.renderQueue;
-                        controller.SetMaterialShader(slot, objectType, mat, vanillaPlusShaderName, go);
-                        controller.SetMaterialShaderRenderQueue(slot, objectType, mat, renderQueue, go);
-                        if (mat.shader.name == "xukmi/MainAlphaPlus")
-                            controller.SetMaterialFloatProperty(slot, objectType, mat, "Cutoff", 0.1f, go);
-                    }
                 }
 
                 if (AutoEnableOutline.Value && mat.HasProperty("_OutlineOn"))
