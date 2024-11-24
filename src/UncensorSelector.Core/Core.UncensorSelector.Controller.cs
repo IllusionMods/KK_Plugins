@@ -397,6 +397,8 @@ namespace KK_Plugins
 
 #if KK || EC || KKS
                     ChaControl.customMatBody.SetTexture(ChaShader._AlphaMask, ChaControl.texBodyAlphaMask);
+#elif AI || HS2
+                    ChaControl.customMatBody.SetTexture(ChaShader.AlphaMask, ChaControl.texBodyAlphaMask);
 #endif
                     ChaControl.updateAlphaMask = true;
                 }
