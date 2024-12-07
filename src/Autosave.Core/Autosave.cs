@@ -120,10 +120,8 @@ namespace KK_Plugins
                 while (!Input.anyKey)
                     yield return null;
 
-                var waitForSeconds = AutosaveInterval.Value * 60;
                 var startTime = Time.realtimeSinceStartup;
-
-                while (Time.realtimeSinceStartup - startTime < waitForSeconds)
+                while (Time.realtimeSinceStartup - startTime < AutosaveInterval.Value * 60)
                 {
 #if !HS && !PH && !SBPR && !PC
                     if (!Application.isFocused)
@@ -218,12 +216,10 @@ namespace KK_Plugins
                 while (!Input.anyKey)
                     yield return null;
 
-                var waitForSeconds = AutosaveInterval.Value * 60;
                 var startTime = Time.realtimeSinceStartup;
-
-                while (Time.realtimeSinceStartup - startTime < waitForSeconds)
+                while (Time.realtimeSinceStartup - startTime < AutosaveInterval.Value * 60)
                 {
-#if !HS && !PH
+#if !HS && !PH && !SBPR && !PC
                     if (!Application.isFocused)
                         startTime = Time.realtimeSinceStartup;
 #endif
