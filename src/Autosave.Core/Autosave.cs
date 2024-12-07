@@ -117,7 +117,21 @@ namespace KK_Plugins
         {
             while (true)
             {
-                yield return new WaitForSeconds(AutosaveInterval.Value * 60);
+                while (!Input.anyKey)
+                    yield return null;
+
+                var waitForSeconds = AutosaveInterval.Value * 60;
+                var startTime = Time.realtimeSinceStartup;
+
+                while (Time.realtimeSinceStartup - startTime < waitForSeconds)
+                {
+#if !HS && !PH && !SBPR && !PC
+                    if (!Application.isFocused)
+                        startTime = Time.realtimeSinceStartup;
+#endif
+                    yield return null;
+                }
+
 #if HS
                 if (CustomControlInstance == null)
                 {
@@ -201,7 +215,20 @@ namespace KK_Plugins
         {
             while (true)
             {
-                yield return new WaitForSeconds(AutosaveInterval.Value * 60);
+                while (!Input.anyKey)
+                    yield return null;
+
+                var waitForSeconds = AutosaveInterval.Value * 60;
+                var startTime = Time.realtimeSinceStartup;
+
+                while (Time.realtimeSinceStartup - startTime < waitForSeconds)
+                {
+#if !HS && !PH
+                    if (!Application.isFocused)
+                        startTime = Time.realtimeSinceStartup;
+#endif
+                    yield return null;
+                }
 
                 //Studio not loaded yet
                 if (!Studio.Studio.IsInstance())
@@ -214,15 +241,15 @@ namespace KK_Plugins
                         for (int countdown = AutosaveCountdown.Value; countdown > 0; countdown--)
                         {
                             SetText($"Autosaving in {countdown}");
-                            yield return new WaitForSeconds(1);
+                            yield return new WaitForSecondsRealtime(1);
                         }
 
                     SetText("Saving...");
-                    yield return new WaitForSeconds(1);
+                    yield return new WaitForSecondsRealtime(1);
 
                     //Don't save if the user is in the middle of clicking and dragging
                     while (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
-                        yield return new WaitForSeconds(1);
+                        yield return new WaitForSecondsRealtime(1);
 
                     //Needed so the thumbnail is correct
                     yield return new WaitForEndOfFrame();
@@ -241,7 +268,7 @@ namespace KK_Plugins
 
                     SetText("Saved!");
                     Autosaving = false;
-                    yield return new WaitForSeconds(2);
+                    yield return new WaitForSecondsRealtime(2);
                     SetText("");
                 }
             }
