@@ -1,0 +1,67 @@
+<MaterialEditor>
+
+  <!-- A shader is defined by the following xml structure. -->
+  <!-- Example: <Shader Name="My/ShaderA" AssetBundle="my_shaders/shader_a.unity3d" Asset="asset_shader_a"> -->
+  <Shader Name="{{ShaderName}}" AssetBundle="{{asset_bundle_path.unity3d}}" Asset="{{asset_name}}">
+
+    <!-- Begin float property -->
+    <Property Name="{{PropertyName}}" Type="Float"/>
+
+    <!-- Optional `Range` attribute -->
+    <Property Name="{{PropertyName}}" Type="Float" Range="{{min_value,max_value}}"/>
+    <!-- Example: <Property Name="PropertyName" Type="Float" Range="-1,1"/> -->
+
+    <!-- Optional `DefaultValue` attribute -->
+    <Property Name="{{PropertyName}}" Type="Float" DefaultValue="{{value}}"/>
+    <!-- Example: <Property Name="PropertyName" Type="Float" DefaultValue="0"/> -->
+
+    <!-- Optional `Hidden` attribute -->
+    <Property Name="{{PropertyName}}" Type="Float" Hidden="{{boolean}}"/>
+    <!-- Example: <Property Name="PropertyName" Type="Float" Hidden="True"/> -->
+    <!-- End float property -->
+
+
+    <!-- Begin color or vector property -->
+    <Property Name="{{PropertyName}}" Type="Color"/>
+
+    <!-- Optional `DefaultValue` attribute -->
+    <Property Name="{{PropertyName}}" Type="Color" DefaultValue="{{value}}"/>
+    <!-- Example: <Property Name="PropertyName" Type="Color" DefaultValue="0,0.5,0.5,1"/> -->
+
+    <!-- Optional `Hidden` attribute -->
+    <Property Name="{{PropertyName}}" Type="Color" Hidden="{{boolean}}"/>
+    <!-- Example: <Property Name="PropertyName" Type="Color" Hidden="True"/> -->
+    <!-- End color or vector property -->
+
+
+    <!-- Begin texture property -->
+    <Property Name="{{PropertyName}}" Type="Texture"/>
+
+    <!-- Optional `DefaultValue` and `DefaultValueAssetBundle` attributes -->
+    <Property Name="{{PropertyName}}" Type="Texture" DefaultValueAssetBundle="{{default_texture_asset_bundle_path.unity3d}}" DefaultValue="{{default_texture_asset_name}}"/>
+    <!-- Example: <Property Name="PropertyName" Type="Texture" DefaultValueAssetBundle="shader_assets.unity3d" DefaultValue="default_texture_a"/> -->
+
+    <!-- Optional `Hidden` attribute -->
+    <Property Name="{{PropertyName}}" Type="Texture" Hidden="{{boolean}}"/>
+    <!-- Example: <Property Name="PropertyName" Type="Texture" Hidden="True"/> -->
+    <!-- End texture property -->
+
+
+    <!-- Begin keyword -->
+    <Property Name="{{KEYWORD_NAME}}" Type="Keyword"/>
+
+    <!-- Optional `DefaultValue` attribute -->
+    <Property Name="{{KEYWORD_NAME}}" Type="Keyword" DefaultValue="{boolean}"/>
+    <!-- Example: <Property Name="KEYWORD_NAME" Type="Keyword" DefaultValue="True"/> -->
+
+    <!-- Optional `Hidden` attribute -->
+    <Property Name="{{KEYWORD_NAME}}" Type="Keyword" Hidden="{{boolean}}"/>
+    <!-- Example: <Property Name="KEYWORD_NAME" Type="Keyword" Hidden="True"/> -->
+    <!-- End keyword -->
+
+
+    <!-- Notes -->
+    <!-- - "True", "TRUE", "true" are all acceptable values for boolean fields. -->
+  </Shader>
+
+</MaterialEditor>
