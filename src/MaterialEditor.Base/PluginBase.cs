@@ -301,7 +301,7 @@ namespace MaterialEditorAPI
                 Type = type;
                 DefaultValue = defaultValue.IsNullOrEmpty() ? null : defaultValue;
                 DefaultValueAssetBundle = defaultValueAB.IsNullOrEmpty() ? null : defaultValueAB;
-                Hidden = bool.TryParse(hidden, out bool result);
+                Hidden = bool.TryParse(hidden, out bool result) && result;
                 if (!minValue.IsNullOrWhiteSpace() && !maxValue.IsNullOrWhiteSpace())
                 {
                     if (float.TryParse(minValue, out float min) && float.TryParse(maxValue, out float max))
