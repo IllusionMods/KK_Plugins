@@ -11,6 +11,17 @@ Plugins for Koikatu, Koikatsu Sunshine, EmotionCreators, AI Girl, HoneySelect2, 
 2. Download the plugin release you want from the links below. Make sure it's a version for your game.
 3. Extract the plugin .zip file to your game folder (where the BepInEx folder and game .exe is).
 
+## If you are a modder
+
+If you'd like to create a mod that is compatible with various plugins in this repo, check [the Guides folder](https://github.com/IllusionMods/KK_Plugins/tree/master/Guides) and [the wiki](https://github.com/IllusionMods/KK_Plugins/wiki).
+
+If you'd like to contribute code fixes and improvements: fork this repository, create a new branch, push your changes, and open a new PR.
+
+To build this repository you will need VisualStudio2022+ with the `.NET desktop development` and `Game development for Unity` workloads, and `.NET Framework 3.5 development tools` + targetting packs and SDKs for at least `.NET Framework 4.6` (best to just install them all).
+All dependencies are downloaded via nuget on first build of the solution.
+
+You can discuss modding on the Koikatsu Discord server in the modding channels.
+
 ## Plugin descriptions and downloads
 
 Make sure you download the version for your game (the first part before _ is the initials of the game, e.g. HS2 = HoneySelect2).
@@ -108,7 +119,7 @@ Requirements:
 * Marco's [Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods/releases)
 * [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat and Sideloader.
 
-For makers of uncensors, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/src/UncensorSelector.Core/Template.xml) for how to configure your uncensor for UncensorSelector compatibility.
+For makers of uncensors, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/Guides/Guides/UncensorSelector%20Guide/uncensor_manifest_template.xml) for how to configure your uncensor for UncensorSelector compatibility.
 
 Make sure to remove any sideloader uncensors and replace your oo_base with a clean, unmodified one to prevent incompatibilities!
 
@@ -325,6 +336,8 @@ Features:
 * Duplicate textures are saved to the card once. 100 accessories with the same texture have the same file size as one accessory with a texture
 
 Access the Material Editor by pressing the "Open Material Editor" button on clothes, hair, or accessories in the character maker. Access it in Studio by pressing the "Mat. Editor" button on the Workspace with a studio item selected.
+
+For makers of shaders, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/Guides/Material%20Editor%20Guide/shader_manifest_template.xml) for how to configure your shader zipmod for MaterialEditor compatibility.
 
 <details><summary>Change Log</summary>
 v1.1 Fixed errors loading coordinates, errors loading scenes with multiple characters<br/>
