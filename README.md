@@ -119,7 +119,7 @@ Requirements:
 * Marco's [Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods/releases)
 * [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat and Sideloader.
 
-For makers of uncensors, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/Guides/Guides/UncensorSelector%20Guide/uncensor_manifest_template.xml) for how to configure your uncensor for UncensorSelector compatibility.
+For makers of uncensors, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/Guides/UncensorSelector%20Guide/uncensor_manifest_template.xml) for how to configure your uncensor for UncensorSelector compatibility.
 
 Make sure to remove any sideloader uncensors and replace your oo_base with a clean, unmodified one to prevent incompatibilities!
 
