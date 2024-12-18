@@ -531,9 +531,7 @@ namespace MaterialEditorAPI
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
 
                     bool showProperty = !property.Value.Hidden;
-                    showProperty = showProperty
-                        ||filterListProperties.Count == 0
-                        ||filterListProperties.Any(filterWord => WildCardSearch(propertyName, filterWord));
+                    showProperty = showProperty && (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch(propertyName, filterWord)));
 
                     if (!showProperty) continue;
 
