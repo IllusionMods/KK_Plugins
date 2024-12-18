@@ -176,6 +176,7 @@ namespace MaterialEditorAPI
                                                 ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), shaderPropertyElement.GetAttribute("Type"));
                                                 string defaultValue = shaderPropertyElement.GetAttribute("DefaultValue");
                                                 string defaultValueAB = shaderPropertyElement.GetAttribute("DefaultValueAssetBundle");
+                                                string hidden = shaderPropertyElement.GetAttribute("Hidden");
                                                 string range = shaderPropertyElement.GetAttribute("Range");
                                                 string min = null;
                                                 string max = null;
@@ -188,7 +189,7 @@ namespace MaterialEditorAPI
                                                         max = rangeSplit[1];
                                                     }
                                                 }
-                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, min, max);
+                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max);
 
                                                 XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                                             }
@@ -290,15 +291,17 @@ namespace MaterialEditorAPI
             public ShaderPropertyType Type;
             public string DefaultValue;
             public string DefaultValueAssetBundle;
+            public bool Hidden;
             public float? MinValue;
             public float? MaxValue;
 
-            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string minValue = null, string maxValue = null)
+            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string hidden = null, string minValue = null, string maxValue = null)
             {
                 Name = name;
                 Type = type;
                 DefaultValue = defaultValue.IsNullOrEmpty() ? null : defaultValue;
                 DefaultValueAssetBundle = defaultValueAB.IsNullOrEmpty() ? null : defaultValueAB;
+                Hidden = bool.TryParse(hidden, out bool result) && result;
                 if (!minValue.IsNullOrWhiteSpace() && !maxValue.IsNullOrWhiteSpace())
                 {
                     if (float.TryParse(minValue, out float min) && float.TryParse(maxValue, out float max))

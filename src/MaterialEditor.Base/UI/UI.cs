@@ -530,8 +530,9 @@ namespace MaterialEditorAPI
                     string propertyName = property.Key;
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
 
-                    bool showProperty = filterListProperties.Count == 0 ||
-                                        filterListProperties.Any(filterWord => WildCardSearch(propertyName, filterWord));
+                    bool showProperty = !property.Value.Hidden;
+                    showProperty = showProperty && (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch(propertyName, filterWord)));
+
                     if (!showProperty) continue;
 
                     if (property.Value.Type == ShaderPropertyType.Texture)
@@ -858,7 +859,7 @@ namespace MaterialEditorAPI
         public abstract float? GetMaterialFloatPropertyValueOriginal(object data, Material material, string propertyName, GameObject gameObject);
         public abstract void SetMaterialFloatProperty(object data, Material material, string propertyName, float value, GameObject gameObject);
         public abstract void RemoveMaterialFloatProperty(object data, Material material, string propertyName, GameObject gameObject);
-        
+
         public abstract bool? GetMaterialKeywordPropertyValueOriginal(object data, Material material, string propertyName, GameObject gameObject);
         public abstract void SetMaterialKeywordProperty(object data, Material material, string propertyName, bool value, GameObject gameObject);
         public abstract void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject gameObject);
@@ -935,7 +936,7 @@ namespace MaterialEditorAPI
 
             public override string ToString()
             {
-                return $"{RowType}: {string.Join(" - ", new string[] { PropertyName, MaterialName, RendererName,  }.Where(x => !x.IsNullOrEmpty()).ToArray())}";
+                return $"{RowType}: {string.Join(" - ", new string[] { PropertyName, MaterialName, RendererName, }.Where(x => !x.IsNullOrEmpty()).ToArray())}";
             }
         }
 

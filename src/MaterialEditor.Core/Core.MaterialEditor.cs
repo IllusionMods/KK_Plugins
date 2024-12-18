@@ -768,6 +768,7 @@ namespace KK_Plugins.MaterialEditor
                             ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), shaderPropertyElement.GetAttribute("Type"));
                             string defaultValue = shaderPropertyElement.GetAttribute("DefaultValue");
                             string defaultValueAB = shaderPropertyElement.GetAttribute("DefaultValueAssetBundle");
+                            string hidden = shaderPropertyElement.GetAttribute("Hidden");
                             string range = shaderPropertyElement.GetAttribute("Range");
                             string min = null;
                             string max = null;
@@ -780,7 +781,7 @@ namespace KK_Plugins.MaterialEditor
                                     max = rangeSplit[1];
                                 }
                             }
-                            ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, min, max);
+                            ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max);
 
                             XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                             XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;
