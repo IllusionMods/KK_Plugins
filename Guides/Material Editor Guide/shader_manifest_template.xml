@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest schema-ver="1">
-  <guid>{{Shader mod GUID}}</guid>
-  <!-- Example: <guid>my.shader.mod</guid> -->
-  <name>{{Shader mod name}}</name>
-  <!-- Example: <name>My Shader Mod</name> -->
+  <guid>{{Mod GUID}}</guid>
+  <!-- Example: <guid>my.mod</guid> -->
+  <name>{{Mod name}}</name>
+  <!-- Example: <name>My Mod</name> -->
   <version>{{Mod version}}</version>
   <!-- Example: <version>1.2.3</version> -->
   <author>{{Mod author}}</author>
