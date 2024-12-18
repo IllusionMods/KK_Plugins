@@ -19,6 +19,11 @@ using KKAPI;
 using Studio;
 #endif
 
+#if PC || SBPR
+// Too old Unity version, fall back to WaitForSeconds since it doesn't cause any major issues in these games
+using WaitForSecondsRealtime = UnityEngine.WaitForSeconds;
+#endif
+
 namespace KK_Plugins
 {
     /// <summary>
