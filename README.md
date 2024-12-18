@@ -20,7 +20,7 @@ If you'd like to contribute code fixes and improvements: fork this repository, c
 To build this repository you will need VisualStudio2022+ with the `.NET desktop development` and `Game development for Unity` workloads, and `.NET Framework 3.5 development tools` + targetting packs and SDKs for at least `.NET Framework 4.6` (best to just install them all).
 All dependencies are downloaded via nuget on first build of the solution. Check the wiki if you are having issues with build steps failing.
 
-You can discuss modding on the Koikatsu Discord server in the modding channels.
+You can discuss modding on the Koikatsu Discord server in the modding channels. There are also various modding guides linked in the pins of these channels you may want to check out.
 
 ## Plugin descriptions and downloads
 
