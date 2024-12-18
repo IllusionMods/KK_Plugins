@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<manifest schema-ver="1">
+  <guid>{{Shader mod GUID}}</guid>
+  <!-- Example: <guid>my.shader.mod</guid> -->
+  <name>{{Shader mod name}}</name>
+  <!-- Example: <name>My Shader Mod</name> -->
+  <version>{{Mod version}}</version>
+  <!-- Example: <version>1.2.3</version> -->
+  <author>{{Mod author}}</author>
+  <!-- Optional but recommended, example: <author>My Name</author> -->
+  <description>{{Mod description}}</description>
+  <!-- Optional, example: <description>A long text to introduce my mod.</description> -->
+  <website>{{Mod website}}</website>
+  <!-- Optional, example: <website>https://my.website.com</website> -->
+
+  <!-- Optional, game tag, if your mod can only run in a certain game, specify it. Otherwise, it is not necessary. -->
+  <!-- <game>Koikatsu Sunshine</game> -->
+  <!-- <game>Koikatsu</game> -->
+
+  <KK_UncensorSelector>
+    <!--Specify a body for it to show up in the character maker. Penis and balls can be specified separately.-->
+    <body>
+      <!--Required - GUID of this uncensor, must be unique-->
+      <guid>Name</guid>
+      <!--Required - Name that will display in the character creator-->
+      <displayName>Display Name</displayName>
+      <!--Required - Sex of the body type - Male/Female-->
+      <sex>Male</sex>
+      <!--Optional - Whether the uncensor is allowed to be chosen randomly - Defaults to True-->
+      <allowRandom>True</allowRandom>
+      <oo_base>
+        <!--Required - oo_base.unity3d file-->
+        <file></file>
+        <!--Optional - Defaults to p_cm_body_00/p_cf_body_00 - A matching _low asset is expected to exist-->
+        <asset></asset>
+        <!--Optional - Defaults to cf_body_00_t-->
+        <mainTex></mainTex>
+        <!--Optional - Defaults to cm_body_00_mc/cf_body_00_mc-->
+        <colorMask></colorMask>
+        <!--Optional - Defaults to p_cf_body_00_Nml-->
+        <normals></normals>
+        <!--Optional - List of all body parts additional body parts attached to the body.-->
+        <!--Any other than the standard parts must be specified or they will not load.-->
+        <additionalPart></additionalPart>
+        <!--Optional - List of all body parts that need color matching-->
+        <colorMatch>
+          <object></object>
+          <material></material>
+          <materialCreate></materialCreate>
+          <mainTex></mainTex>
+          <colorMask></colorMask>
+        </colorMatch>
+        <!--Optional - Overlay texture, applied by the overlay plugin-->
+        <uncensorOverlay></uncensorOverlay>
+        <!--Optional - Underlay texture, applied by the overlay plugin-->
+        <uncensorUnderlay></uncensorUnderlay>
+      </oo_base>
+      <!--Optional-->
+      <mm_base>
+        <!--Optional - Defaults to chara/mm_base.unity3d-->
+        <file>chara/mm_base.unity3d</file>
+        <!--Optional - Defaults to cm_m_body for uncensors with male body type, cf_m_body for female body types-->
+        <material>cm_m_body</material>
+        <!--Optional - Defaults to cf_m_body_create-->
+        <materialCreate>cf_m_body_create</materialCreate>
+      </mm_base>
+    </body>
+    <!--Specify a penis for it to show up in the character maker. A penis can be applied to any body.-->
+    <!--To create an UncensorSelector compatible penis, create it as normal and then delete every mesh except for o_dankon and o_gomu.-->
+    <penis>
+      <!--Required - GUID of this uncensor, must be unique-->
+      <guid>Name</guid>
+      <!--Required - Name that will display in the character creator-->
+      <displayName>Display Name</displayName>
+      <!--Required - unity3d file containing the penis-->
+      <file>chara/xxx.unity3d</file>
+      <!--Required - Asset within the unity3d file. Must have a similar structure to a normal body, only the o_dankon and o_gomu meshes will be used.-->
+      <asset></asset>
+      <!--Optional - If the penis requires color matching, list it here-->
+      <!--Example setup:-->
+      <colorMatch>
+        <object>o_dankon</object>
+        <material>cm_m_dankon</material>
+        <materialCreate>cm_m_dankon_create</materialCreate>
+        <mainTex>cm_dankon_00_t</mainTex>
+        <colorMask>cm_dankon_00_mc</colorMask>
+      </colorMatch>
+    </penis>
+    <!--Specify balls for it to show up in the character maker. Balls can be applied to any body but will only show if the penis is also shown.-->
+    <!--To create UncensorSelector compatible balls, create it as normal and then delete every mesh except for o_dan_f.-->
+    <balls>
+      <!--Required - GUID of this uncensor, must be unique-->
+      <guid>Name</guid>
+      <!--Required - Name that will display in the character creator-->
+      <displayName>Display Name</displayName>
+      <!--Required - unity3d file containing the balls-->
+      <file>chara/xxx.unity3d</file>
+      <!--Required - Asset within the unity3d file. Must have a similar structure to a normal body, only the o_dan_f mesh will be used.-->
+      <asset></asset>
+      <!--Optional - If the balls requires color matching, list it here-->
+      <!--Example setup:-->
+      <colorMatch>
+        <object>o_dan_f</object>
+        <material>cm_m_dan_f</material>
+        <materialCreate>cm_m_dan_f_create</materialCreate>
+        <mainTex>cm_dan_f_00_t</mainTex>
+        <colorMask>cm_dan_f_00_mc</colorMask>
+      </colorMatch>
+    </balls>
+    <!--For migrating older uncensors to the new format-->
+    <migration>
+      <!--Required - The old uncensor GUID-->
+      <guidUncensor></guidUncensor>
+      <!--Required - The new body GUID-->
+      <guidBody></guidBody>
+      <!--Optional - GUID of the penis, if the old uncensor had one-->
+      <guidPenis></guidPenis>
+      <!--Optional - GUID of the balls, if the old uncensor had one-->
+      <guidBalls></guidBalls>
+    </migration>
+  </KK_UncensorSelector>
+</manifest>
