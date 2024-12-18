@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<manifest schema-ver="1">
+  <guid>{{Shader mod GUID}}</guid>
+  <!-- Example: <guid>my.shader.mod</guid> -->
+  <name>{{Shader mod name}}</name>
+  <!-- Example: <name>My Shader Mod</name> -->
+  <version>{{Mod version}}</version>
+  <!-- Example: <version>1.2.3</version> -->
+  <author>{{Mod author}}</author>
+  <!-- Optional but recommended, example: <author>My Name</author> -->
+  <description>{{Mod description}}</description>
+  <!-- Optional, example: <description>A long text to introduce my mod.</description> -->
+  <website>{{Mod website}}</website>
+  <!-- Optional, example: <website>https://my.website.com</website> -->
+
+  <!-- Optional, game tag, if your mod can only run in a certain game, specify it. Otherwise, it is not necessary. -->
+  <!-- <game>Koikatsu Sunshine</game> -->
+  <!-- <game>Koikatsu</game> -->
+
+  <MaterialEditor>
+    <!-- A shader is defined by the following xml structure. -->
+    <!-- Example: <Shader Name="My/ShaderA" AssetBundle="my_shaders/shader_a.unity3d" Asset="asset_shader_a"> -->
+    <Shader Name="{{ShaderName}}" AssetBundle="{{asset_bundle_path.unity3d}}" Asset="{{asset_name}}">
+
+      <!-- Float property -->
+      <Property Name="{{PropertyName}}" Type="Float"/>
+      <!-- -->
+      <!-- Optional `Range` attribute -->
+      <Property Name="{{PropertyName}}" Type="Float" Range="{{min_value,max_value}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Float" Range="-1,1"/> -->
+      <!-- -->
+      <!-- Optional `DefaultValue` attribute -->
+      <Property Name="{{PropertyName}}" Type="Float" DefaultValue="{{value}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Float" DefaultValue="0"/> -->
+      <!-- -->
+      <!-- Optional `Hidden` attribute -->
+      <Property Name="{{PropertyName}}" Type="Float" Hidden="{{boolean}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Float" Hidden="True"/> -->
+
+      <!-- Color or vector property -->
+      <Property Name="{{PropertyName}}" Type="Color"/>
+      <!-- -->
+      <!-- Optional `DefaultValue` attribute -->
+      <Property Name="{{PropertyName}}" Type="Color" DefaultValue="{{value}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Color" DefaultValue="0,0.5,0.5,1"/> -->
+      <!-- -->
+      <!-- Optional `Hidden` attribute -->
+      <Property Name="{{PropertyName}}" Type="Color" Hidden="{{boolean}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Color" Hidden="True"/> -->
+
+      <!-- Texture property -->
+      <Property Name="{{PropertyName}}" Type="Texture"/>
+      <!-- -->
+      <!-- Optional `DefaultValue` and `DefaultValueAssetBundle` attributes -->
+      <Property Name="{{PropertyName}}" Type="Texture" DefaultValueAssetBundle="{{default_texture_asset_bundle_path.unity3d}}" DefaultValue="{{default_texture_asset_name}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Texture" DefaultValueAssetBundle="shader_assets.unity3d" DefaultValue="default_texture_a"/> -->
+      <!-- -->
+      <!-- Optional `Hidden` attribute -->
+      <Property Name="{{PropertyName}}" Type="Texture" Hidden="{{boolean}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Texture" Hidden="True"/> -->
+
+      <!-- Keyword -->
+      <Property Name="{{KEYWORD_NAME}}" Type="Keyword"/>
+      <!-- -->
+      <!-- Optional `DefaultValue` attribute -->
+      <Property Name="{{KEYWORD_NAME}}" Type="Keyword" DefaultValue="{boolean}"/>
+      <!-- Example: <Property Name="KEYWORD_NAME" Type="Keyword" DefaultValue="True"/> -->
+      <!-- -->
+      <!-- Optional `Hidden` attribute -->
+      <Property Name="{{KEYWORD_NAME}}" Type="Keyword" Hidden="{{boolean}}"/>
+      <!-- Example: <Property Name="KEYWORD_NAME" Type="Keyword" Hidden="True"/> -->
+
+
+      <!-- Notes -->
+      <!-- - "True", "TRUE", "true" are all acceptable values for boolean fields. -->
+    </Shader>
+  </MaterialEditor>
+</manifest>
