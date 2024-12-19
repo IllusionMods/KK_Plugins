@@ -10,6 +10,7 @@ using Studio;
 using System;
 using System.Collections;
 using System.Xml;
+using KKAPI.Utilities;
 using UniRx;
 
 namespace KK_Plugins
@@ -56,7 +57,7 @@ namespace KK_Plugins
         {
             for (int i = 0; i < 10; ++i)
                 yield return null;
-            if (TimelineCompatibility.Init())
+            if (TimelineCompatibility.IsTimelineAvailable())
                 PopulateTimeline();
         }
 
