@@ -890,7 +890,7 @@ namespace KK_Plugins.MaterialEditor
         {
             if (propertyName == "alpha_a" || propertyName == "alpha_b") return true;
 
-            if (Regex.IsMatch(materialName, @"^c[mf]_m_body(\.MECopy\d+)?$") && propertyName == "AlphaMask") return true;
+            if (Regex.IsMatch(materialName, @"^c[mf]_m_body(" + Regex.Escape(MaterialCopyPostfix) + @"\d+)?$") && propertyName == "AlphaMask") return true;
 
             return false;
         }
