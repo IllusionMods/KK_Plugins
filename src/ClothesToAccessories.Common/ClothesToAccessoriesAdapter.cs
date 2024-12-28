@@ -508,12 +508,11 @@ namespace KK_Plugins
 
             var any = false;
             foreach (var renderer in AccessoryComponent.rendNormal.Concat(AccessoryComponent.rendAlpha))
-            {
-                var material = renderer.material;
-                if (material != null)
+            { 
+                foreach (var mat in renderer.materials)
                 {
-                    material.SetFloat(ChaShader._alpha_a, state0);
-                    material.SetFloat(ChaShader._alpha_b, state1);
+                    mat.SetFloat(ChaShader._alpha_a, state0);
+                    mat.SetFloat(ChaShader._alpha_b, state1);
                     any = true;
                 }
             }
