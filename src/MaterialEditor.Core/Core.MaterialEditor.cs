@@ -18,6 +18,7 @@ using System.Xml;
 using UniRx;
 using UnityEngine;
 using XUnity.ResourceRedirector;
+using System.Text.RegularExpressions;
 using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
 using AIChara;
@@ -888,6 +889,10 @@ namespace KK_Plugins.MaterialEditor
         public override bool CheckBlacklist(string materialName, string propertyName)
         {
             if (propertyName == "alpha_a" || propertyName == "alpha_b") return true;
+
+            string pattern = @"^c[mf]_m_body(\.MECopy\d+)?$";
+            if (Regex.IsMatch(materialName, pattern) && propertyName == "AlphaMask") return true;
+
             return false;
         }
 #endif
