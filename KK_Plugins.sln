@@ -440,6 +440,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core.MoreOutfits", "src\Mor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0Solution Items", "0Solution Items", "{ABF81409-9E50-48BE-B11F-8D97CCE183BE}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		README.md = README.md
 		release.ps1 = release.ps1
 		update_READMEs.ps1 = update_READMEs.ps1
