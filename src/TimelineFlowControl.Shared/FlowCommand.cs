@@ -39,11 +39,7 @@ namespace TimelineFlowControl
 
         public static FlowCommand MakeCommand()
         {
-            return new FlowCommand
-            {
-                Command = CommandType.MakeLabel,
-                Param1 = "Label"
-            };
+            return new FlowCommand { Command = CommandType.MakeLabel, Param1 = "Label" };
         }
 
         public void WriteToXml(XmlTextWriter xmlTextWriter)

@@ -36,18 +36,18 @@ namespace KK_Plugins
             private static void DisplayHSubtitle(Manager.Voice.Loader loader, AudioSource audioSource)
             {
                 foreach (Dictionary<int, Dictionary<int, HVoiceCtrl.VoiceList>> a in HSceneInstance.ctrlVoice.dicdiclstVoiceList)
-                    foreach (Dictionary<int, HVoiceCtrl.VoiceList> b in a.Values)
-                        foreach (HVoiceCtrl.VoiceList c in b.Values)
-                            foreach (Dictionary<int, HVoiceCtrl.VoiceListInfo> d in c.dicdicVoiceList)
-                                foreach (var e in d.Values)
-                                    if (e.nameFile == loader.asset && e.pathAsset == loader.bundle)
-                                    {
-                                        if (Application.productName == Constants.VRProcessName)
-                                            Caption.DisplayVRSubtitle(audioSource.gameObject, e.word);
-                                        else
-                                            Caption.DisplaySubtitle(audioSource.gameObject, e.word);
-                                        return;
-                                    }
+                foreach (Dictionary<int, HVoiceCtrl.VoiceList> b in a.Values)
+                foreach (HVoiceCtrl.VoiceList c in b.Values)
+                foreach (Dictionary<int, HVoiceCtrl.VoiceListInfo> d in c.dicdicVoiceList)
+                foreach (var e in d.Values)
+                    if (e.nameFile == loader.asset && e.pathAsset == loader.bundle)
+                    {
+                        if (Application.productName == Constants.VRProcessName)
+                            Caption.DisplayVRSubtitle(audioSource.gameObject, e.word);
+                        else
+                            Caption.DisplaySubtitle(audioSource.gameObject, e.word);
+                        return;
+                    }
             }
         }
     }

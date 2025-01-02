@@ -38,9 +38,9 @@ namespace KK_Plugins
 
         public static byte[,] alphaState =
 #if KKS
-        ChaFileDefine.alphaState;
+            ChaFileDefine.alphaState;
 #elif KK
-        { { 1, 1 }, { 0, 1 }, { 0, 1 }, { 0, 0 } };
+            { { 1, 1 }, { 0, 1 }, { 0, 1 }, { 0, 0 } };
 #endif
 
         private void Start()
@@ -67,7 +67,7 @@ namespace KK_Plugins
 
                 hi.PatchMoveNext(
                     original: AccessTools.Method(typeof(ChaControl), nameof(ChaControl.ChangeAccessoryAsync),
-                        new[] { typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool), typeof(bool) }),
+                                                 new[] { typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool), typeof(bool) }),
                     transpiler: new HarmonyMethod(typeof(ClothesToAccessoriesPlugin), nameof(UnlockAccessoryItemTypesTpl)));
 
                 hi.Patch(
@@ -302,12 +302,12 @@ namespace KK_Plugins
         private static IEnumerable<CodeInstruction> ConvertAccTypeTpl(IEnumerable<CodeInstruction> instructions)
         {
             return new CodeMatcher(instructions)
-                .MatchForward(true,
-                    new CodeMatch(OpCodes.Ldloc_1),
-                    new CodeMatch(OpCodes.Callvirt, AccessTools.PropertySetter(typeof(TMP_Dropdown), nameof(TMP_Dropdown.value))))
-                .ThrowIfInvalid("set_value not found")
-                .Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(ConvertTypeToDropdownIndex)) ?? throw new Exception("ConvertTypeToDropdownIndex")))
-                .Instructions();
+                   .MatchForward(true,
+                                 new CodeMatch(OpCodes.Ldloc_1),
+                                 new CodeMatch(OpCodes.Callvirt, AccessTools.PropertySetter(typeof(TMP_Dropdown), nameof(TMP_Dropdown.value))))
+                   .ThrowIfInvalid("set_value not found")
+                   .Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(ConvertTypeToDropdownIndex)) ?? throw new Exception("ConvertTypeToDropdownIndex")))
+                   .Instructions();
         }
 
         private static int ConvertTypeToDropdownIndex(int accTypeSubtracted)
@@ -329,11 +329,11 @@ namespace KK_Plugins
             var replacement = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(CustomGetDefault)) ?? throw new Exception("CustomGetDefault");
 
             return new CodeMatcher(instructions)
-                .MatchForward(false,
-                    new CodeMatch(OpCodes.Ldc_I4_0),
-                    new CodeMatch(OpCodes.Callvirt, AccessTools.PropertySetter(typeof(ChaFileAccessory.PartsInfo), nameof(ChaFileAccessory.PartsInfo.id))))
-                .Repeat(matcher => matcher.SetAndAdvance(OpCodes.Ldarg_1, null).Insert(new CodeInstruction(OpCodes.Call, replacement)), s => throw new Exception("match fail - " + s))
-                .Instructions();
+                   .MatchForward(false,
+                                 new CodeMatch(OpCodes.Ldc_I4_0),
+                                 new CodeMatch(OpCodes.Callvirt, AccessTools.PropertySetter(typeof(ChaFileAccessory.PartsInfo), nameof(ChaFileAccessory.PartsInfo.id))))
+                   .Repeat(matcher => matcher.SetAndAdvance(OpCodes.Ldarg_1, null).Insert(new CodeInstruction(OpCodes.Call, replacement)), s => throw new Exception("match fail - " + s))
+                   .Instructions();
         }
 
         private static int CustomGetDefault(int index)
@@ -356,12 +356,12 @@ namespace KK_Plugins
             var replacement = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(CustomGetDefault)) ?? throw new Exception("CustomGetDefault");
 
             return new CodeMatcher(instructions)
-                .MatchForward(true,
-                    new CodeMatch(OpCodes.Ldfld),
-                    new CodeMatch(OpCodes.Ldarg_1),
-                    new CodeMatch(OpCodes.Ldelem_I4))
-                .Repeat(matcher => matcher.Set(OpCodes.Call, replacement), s => throw new Exception("match fail - " + s))
-                .Instructions();
+                   .MatchForward(true,
+                                 new CodeMatch(OpCodes.Ldfld),
+                                 new CodeMatch(OpCodes.Ldarg_1),
+                                 new CodeMatch(OpCodes.Ldelem_I4))
+                   .Repeat(matcher => matcher.Set(OpCodes.Call, replacement), s => throw new Exception("match fail - " + s))
+                   .Instructions();
         }
 
         private static int CustomGetDefault(int[] defaultAcsId, int index)
@@ -390,12 +390,12 @@ namespace KK_Plugins
         private static IEnumerable<CodeInstruction> GetAccessoryParentOverrideTpl(IEnumerable<CodeInstruction> instructions)
         {
             return new CodeMatcher(instructions)
-                .MatchForward(true,
-                    new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)0x36),
-                    new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(ListInfoBase), nameof(ListInfoBase.GetInfo))))
-                .ThrowIfInvalid("GetInfo not found")
-                .Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(GetParentOverride)) ?? throw new Exception("GetParentOverride"))
-                .Instructions();
+                   .MatchForward(true,
+                                 new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)0x36),
+                                 new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(ListInfoBase), nameof(ListInfoBase.GetInfo))))
+                   .ThrowIfInvalid("GetInfo not found")
+                   .Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(GetParentOverride)) ?? throw new Exception("GetParentOverride"))
+                   .Instructions();
         }
 
 #if KKS
@@ -409,34 +409,35 @@ namespace KK_Plugins
 
             var replacement1 = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(CustomAccessoryTypeCheck)) ?? throw new Exception("CustomAccessoryTypeCheck");
             cm.MatchForward(true,
-                    // Filter by the max value. Only replace the two necessary calls to avoid interfering with moreaccs patches
-                    new CodeMatch(ins => ins.opcode == OpCodes.Ldc_I4 && ((int)ins.operand == 129 || (int)ins.operand == 130)),
-                    new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(MathfEx), nameof(MathfEx.RangeEqualOn))?.MakeGenericMethod(typeof(int)) ?? throw new Exception("RangeEqualOn")))
-                .Repeat(matcher => matcher.Operand = replacement1, s => throw new InvalidOperationException("Replacement failed - " + s));
+                            // Filter by the max value. Only replace the two necessary calls to avoid interfering with moreaccs patches
+                            new CodeMatch(ins => ins.opcode == OpCodes.Ldc_I4 && ((int)ins.operand == 129 || (int)ins.operand == 130)),
+                            new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(MathfEx), nameof(MathfEx.RangeEqualOn))?.MakeGenericMethod(typeof(int)) ?? throw new Exception("RangeEqualOn")))
+              .Repeat(matcher => matcher.Operand = replacement1, s => throw new InvalidOperationException("Replacement failed - " + s));
 
             cm.End()
-               .MatchBack(false, new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(ChaControl), nameof(ChaControl.LoadCharaFbxData)) ?? throw new Exception("LoadCharaFbxData")))
-               .ThrowIfInvalid("LoadCharaFbxData not found").Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(LoadCharaFbxDataLeech)) ?? throw new Exception("LoadCharaFbxDataLeech"));
+              .MatchBack(false, new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(ChaControl), nameof(ChaControl.LoadCharaFbxData)) ?? throw new Exception("LoadCharaFbxData")))
+              .ThrowIfInvalid("LoadCharaFbxData not found")
+              .Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(LoadCharaFbxDataLeech)) ?? throw new Exception("LoadCharaFbxDataLeech"));
 
             //if (!__originalMethod.Name.EndsWith("NoAsync"))
             {
                 cm.MatchBack(false, new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(ChaControl), nameof(ChaControl.LoadCharaFbxDataAsync)) ?? throw new Exception("LoadCharaFbxDataAsync")));
                 //.ThrowIfInvalid("LoadCharaFbxDataAsync not found")
-                if (cm.IsValid) cm
-                 .Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(LoadCharaFbxDataAsyncLeech)) ?? throw new Exception("LoadCharaFbxDataAsyncLeech"));
+                if (cm.IsValid)
+                    cm.Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(LoadCharaFbxDataAsyncLeech)) ?? throw new Exception("LoadCharaFbxDataAsyncLeech"));
             }
 
             cm.End()
-                .MatchBack(false, new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(ChaControl), nameof(ChaControl.UpdateAccessoryMoveFromInfo)) ?? throw new Exception("UpdateAccessoryMoveFromInfo")))
-                .ThrowIfInvalid("UpdateAccessoryMoveFromInfo not found")
-                .Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(UpdateAccessoryMoveFromInfoAndReassignBones)));
+              .MatchBack(false, new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(ChaControl), nameof(ChaControl.UpdateAccessoryMoveFromInfo)) ?? throw new Exception("UpdateAccessoryMoveFromInfo")))
+              .ThrowIfInvalid("UpdateAccessoryMoveFromInfo not found")
+              .Set(OpCodes.Call, AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(UpdateAccessoryMoveFromInfoAndReassignBones)));
 
             var replacement2 = AccessTools.Method(typeof(ClothesToAccessoriesPlugin), nameof(GetParentOverride)) ?? throw new Exception("GetParentOverride");
             cm.Start()
-                .MatchForward(true,
-                    new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)0x36),
-                    new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(ListInfoBase), nameof(ListInfoBase.GetInfo))))
-                .Repeat(matcher => matcher.Set(OpCodes.Call, replacement2), s => throw new Exception("GetInfo not found - " + s));
+              .MatchForward(true,
+                            new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)0x36),
+                            new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(ListInfoBase), nameof(ListInfoBase.GetInfo))))
+              .Repeat(matcher => matcher.Set(OpCodes.Call, replacement2), s => throw new Exception("GetInfo not found - " + s));
 
             return cm.Instructions();
         }
@@ -517,9 +518,9 @@ namespace KK_Plugins
                 cac.rendAlpha = ccc.rendAlpha01.Concat(ccc.rendAlpha02).Where(x => x != null).ToArray();
                 cac.rendNormal = ccc.rendNormal01.Concat(ccc.rendNormal02)
 #if KKS
-                    .Concat(ccc.rendNormal03)
+                                    .Concat(ccc.rendNormal03)
 #endif
-                    .AddItem(ccc.rendAccessory).Where(x => x != null).ToArray();
+                                    .AddItem(ccc.rendAccessory).Where(x => x != null).ToArray();
                 cac.rendHair = new Renderer[0];
 
                 if (listInfoBase == null)
@@ -616,7 +617,7 @@ namespace KK_Plugins
                         {
                             if (dynamicBone.m_Root)
                             {
-                                if( dictBone.TryGetValue(dynamicBone.m_Root.name, out var gobj) )
+                                if (dictBone.TryGetValue(dynamicBone.m_Root.name, out var gobj))
                                     dynamicBone.m_Root = gobj.transform;
                             }
 
@@ -626,7 +627,7 @@ namespace KK_Plugins
                                 {
                                     if (null != dynamicBone.m_Exclusions[j])
                                     {
-                                        if( dictBone.TryGetValue(dynamicBone.m_Exclusions[j].name, out var gobj) )
+                                        if (dictBone.TryGetValue(dynamicBone.m_Exclusions[j].name, out var gobj))
                                             dynamicBone.m_Exclusions[j] = gobj.transform;
                                     }
                                 }
@@ -638,7 +639,7 @@ namespace KK_Plugins
                                 {
                                     if (null != dynamicBone.m_notRolls[k])
                                     {
-                                        if( dictBone.TryGetValue(dynamicBone.m_notRolls[k].name, out var gobj) )
+                                        if (dictBone.TryGetValue(dynamicBone.m_notRolls[k].name, out var gobj))
                                             dynamicBone.m_notRolls[k] = gobj.transform;
                                     }
                                 }

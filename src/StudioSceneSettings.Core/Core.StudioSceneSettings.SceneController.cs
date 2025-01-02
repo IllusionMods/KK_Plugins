@@ -36,7 +36,6 @@ namespace KK_Plugins.StudioSceneSettings
         /// </summary>
         protected override void OnSceneSave()
         {
-
             var data = new PluginData();
             data.data["MapMasking"] = MapMasking.Value;
 
@@ -117,7 +116,7 @@ namespace KK_Plugins.StudioSceneSettings
 
 #if KK || KKS
             CameraLayerDefault = Camera.main.gameObject.layer;
-#else 
+#else
             CameraLayerDefault = 1;
 #endif
 

@@ -68,7 +68,16 @@ namespace UILib
                 }
             }
             defaultFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
-            resources = new DefaultControls.Resources { background = backgroundSprite, checkmark = checkMark, dropdown = dropdownArrow, inputField = inputFieldBackground, knob = knob, mask = mask, standard = standardSprite };
+            resources = new DefaultControls.Resources
+            {
+                background = backgroundSprite,
+                checkmark = checkMark,
+                dropdown = dropdownArrow,
+                inputField = inputFieldBackground,
+                knob = knob,
+                mask = mask,
+                standard = standardSprite
+            };
             defaultFontSize = 16;
             bundle.Unload(false);
         }
@@ -394,7 +403,6 @@ namespace UILib
             if (onValueChanged != null)
                 b.onValueChanged.AddListener(onValueChanged);
             return b;
-
         }
 
         public static InputField LinkInputFieldTo(this Transform root, string path, UnityAction<string> onValueChanged, UnityAction<string> onEndEdit)
@@ -405,7 +413,6 @@ namespace UILib
             if (onEndEdit != null)
                 b.onEndEdit.AddListener(onEndEdit);
             return b;
-
         }
 
         public static ScrollRect LinkScrollViewTo(this Transform root, string path, UnityAction<Vector2> onValueChanged)
@@ -414,7 +421,6 @@ namespace UILib
             if (onValueChanged != null)
                 b.onValueChanged.AddListener(onValueChanged);
             return b;
-
         }
 
         public static Scrollbar LinkScrollbarTo(this Transform root, string path, UnityAction<float> onValueChanged)
@@ -423,7 +429,6 @@ namespace UILib
             if (onValueChanged != null)
                 b.onValueChanged.AddListener(onValueChanged);
             return b;
-
         }
 
         public static Slider LinkSliderTo(this Transform root, string path, UnityAction<float> onValueChanged)
@@ -432,7 +437,6 @@ namespace UILib
             if (onValueChanged != null)
                 b.onValueChanged.AddListener(onValueChanged);
             return b;
-
         }
 
         public static Toggle LinkToggleTo(this Transform root, string path, UnityAction<bool> onValueChanged)
@@ -441,7 +445,6 @@ namespace UILib
             if (onValueChanged != null)
                 b.onValueChanged.AddListener(onValueChanged);
             return b;
-
         }
     }
 }

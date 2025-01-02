@@ -43,7 +43,6 @@ namespace KK_Plugins
                     categoryInfo = chaListCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.bo_hair_o);
                     hair.parts[3].id = categoryInfo.Keys.ElementAt(Rand.Next(categoryInfo.Keys.Count));
                 }
-
             }
 
             public static void RandomizeColor()

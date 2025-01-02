@@ -181,7 +181,7 @@ namespace KK_Plugins
                 var loadM = Traverse.Create(hSceneObject).Method("LoadDarkList");
                 var list = loadM.GetValue<ICollection>();
                 var availableDarknessPersonalities = list.Cast<object>().Select(x => Traverse.Create(x).Field<int>("personal").Value).ToList();
-                
+
                 loadCharasUntilSuccess = loadCharasUntilSuccess.Where(filePath => availableDarknessPersonalities.Contains(chaFileControl.parameter.personality));
             }
 #endif
@@ -225,7 +225,6 @@ namespace KK_Plugins
                         ReactiveProperty<SaveData.Heroine> resultDarkHeroine = (ReactiveProperty<SaveData.Heroine>)Traverse.Create(member).Field("resultDarkHeroine").GetValue();
                         resultDarkHeroine.SetValueAndForceNotify(new SaveData.Heroine(chaFileControl, false));
                         break;
-
                 }
             }
             else

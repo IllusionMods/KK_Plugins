@@ -44,9 +44,9 @@ namespace KK_Plugins
                 if (obj is TextureKey other)
                 {
                     return other.hash == hash &&
-                        other.format == format &&
-                        other.mipmaps == mipmaps &&
-                        other.data.SequenceEqualFast(data);
+                           other.format == format &&
+                           other.mipmaps == mipmaps &&
+                           other.data.SequenceEqualFast(data);
                 }
 
                 return false;
@@ -86,14 +86,14 @@ namespace KK_Plugins
                     return _texture;
                 }
             }
-            
+
             public void Destroy()
             {
                 if (_texture != null)
                 {
                     UnityEngine.Object.Destroy(_texture);
                     _texture = null;
-                }   
+                }
             }
         }
 
@@ -102,7 +102,7 @@ namespace KK_Plugins
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static Token Acquire( string filePath )
+        public static Token Acquire(string filePath)
         {
             return Acquire(LoadTextureBytes(filePath));
         }
@@ -112,7 +112,7 @@ namespace KK_Plugins
         /// </summary>
         /// <param name="texBytes"></param>
         /// <returns></returns>
-        public static Token Acquire( byte[] texBytes )
+        public static Token Acquire(byte[] texBytes)
         {
             if (texBytes == null)
                 throw new ArgumentNullException(nameof(texBytes));
@@ -130,7 +130,7 @@ namespace KK_Plugins
         /// If there are zero TextureHolders with the same texture, the texture is released.
         /// </summary>
         /// <param name="holder"></param>
-        public static void Release( Token holder )
+        public static void Release(Token holder)
         {
             if (--holder.refCount > 0)
                 return;
@@ -197,7 +197,7 @@ namespace KK_Plugins
             uint crc32 = 0xFFFFFFFF; // Set initial value
             size = Mathf.Min(data.Length, size);
 
-            for( int i = 0; i < size; ++i )
+            for (int i = 0; i < size; ++i)
             {
                 crc32 = (crc32 >> 8) ^ Crc32Table[(crc32 ^ data[i]) & 0xFF];
             }

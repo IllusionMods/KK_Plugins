@@ -378,7 +378,7 @@ namespace KK_Plugins
             private IEnumerator ReloadCharacterUncensor()
             {
                 if (_ksox == null)
-                    yield return null;  //Wait for Start()
+                    yield return null; //Wait for Start()
 
                 while (ChaControl.objBody == null)
                     yield return null;
@@ -423,7 +423,6 @@ namespace KK_Plugins
                         var renderer = renderers[i];
                         if (PenisParts.Contains(renderer.name))
                         {
-
                             var renderers2 = ChaControl.objBody.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                             for (var j = 0; j < renderers2.Length; j++)
                             {

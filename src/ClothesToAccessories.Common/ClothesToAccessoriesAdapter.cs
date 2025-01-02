@@ -62,7 +62,9 @@ namespace KK_Plugins
             if (_kind == ChaListDefine.CategoryNo.co_gloves || _kind == ChaListDefine.CategoryNo.co_shoes || _kind == ChaListDefine.CategoryNo.co_socks)
                 AllObjects = AccessoryComponent.rendNormal.Select(x => x.transform.parent.gameObject).Distinct().ToArray();
 
-            _colorRend = AccessoryComponent.rendNormal.FirstOrDefault(x => x != null) ?? AccessoryComponent.rendAlpha.FirstOrDefault(x => x != null) ?? AccessoryComponent.rendHair.FirstOrDefault(x => x != null);
+            _colorRend = AccessoryComponent.rendNormal.FirstOrDefault(x => x != null) ??
+                         AccessoryComponent.rendAlpha.FirstOrDefault(x => x != null) ?? 
+                         AccessoryComponent.rendHair.FirstOrDefault(x => x != null);
 
             if (!InitializeCreateTextures())
                 ClothesToAccessoriesPlugin.Logger.LogWarning($"InitializeCreateTextures failed for kind={kind} id={listInfoBase.Id}");
@@ -228,7 +230,7 @@ namespace KK_Plugins
 
 #if KKS
                 Owner.lstCtrl.GetFilePath(ChaListDefine.CategoryNo.mt_pattern, partsInfo.colorInfo[i].pattern,
-                    ChaListDefine.KeyType.MainTexAB, ChaListDefine.KeyType.MainTex, out var abName, out var assetName);
+                                          ChaListDefine.KeyType.MainTexAB, ChaListDefine.KeyType.MainTex, out var abName, out var assetName);
 #elif KK
                 var listInfo = Owner.lstCtrl.GetListInfo(ChaListDefine.CategoryNo.mt_pattern, partsInfo.colorInfo[i].pattern);
                 var abName = listInfo.GetInfo(ChaListDefine.KeyType.MainTexAB);
@@ -389,16 +391,16 @@ namespace KK_Plugins
 
         static Vector2[] braOffset =
 #if KKS
-        ChaListDefine.braOffset;
+            ChaListDefine.braOffset;
 #elif KK
-        new Vector2[] { new Vector2(0f, 0f), new Vector2(0f, -1f) };
+            new Vector2[] { new Vector2(0f, 0f), new Vector2(0f, -1f) };
 #endif
 
         static Vector2[] braTiling =
 #if KKS
-        ChaListDefine.braTiling;
+            ChaListDefine.braTiling;
 #elif KK
-        new Vector2[] { new Vector2(1f, 1f), new Vector2(1f, 2f) };
+            new Vector2[] { new Vector2(1f, 1f), new Vector2(1f, 2f) };
 #endif
 
         private void ApplyChaControlMasksToThis()
@@ -508,7 +510,7 @@ namespace KK_Plugins
 
             var any = false;
             foreach (var renderer in AccessoryComponent.rendNormal.Concat(AccessoryComponent.rendAlpha))
-            { 
+            {
                 foreach (var mat in renderer.materials)
                 {
                     mat.SetFloat(ChaShader._alpha_a, state0);

@@ -10,14 +10,11 @@ namespace KK_Plugins.MaterialEditor
     [MessagePackObject(false)]
     public class MEAnimationFrame
     {
-        [Key(0)]
-        public int texID;
+        [Key(0)] public int texID;
 
-        [Key(1)]
-        public int beginFrame;
+        [Key(1)] public int beginFrame;
 
-        [Key(2)]
-        public int frames;
+        [Key(2)] public int frames;
     }
 
     [Serializable]
@@ -47,7 +44,7 @@ namespace KK_Plugins.MaterialEditor
         public float playTime;
         public int curTexID = -1;
 
-        public MEAnimationController( Controller parent, GameObject go, MEAnimationDefine def)
+        public MEAnimationController(Controller parent, GameObject go, MEAnimationDefine def)
         {
             this.parent = parent;
             this.def = def;
@@ -56,7 +53,7 @@ namespace KK_Plugins.MaterialEditor
             Reset(def);
         }
 
-        public void Reset( MEAnimationDefine newAnime )
+        public void Reset(MEAnimationDefine newAnime)
         {
             def = newAnime;
             playTime = 0f;
@@ -66,20 +63,20 @@ namespace KK_Plugins.MaterialEditor
         /// Let Time.deltaTime seconds elapse and set the texture.
         /// </summary>
         /// <param name="controllerMap"></param>
-        public static void UpdateAnimations( Dictionary<Property,MEAnimationController<Controller, Property>> controllerMap )
+        public static void UpdateAnimations(Dictionary<Property, MEAnimationController<Controller, Property>> controllerMap)
         {
             List<Property> removed = new List<Property>();
             float dt = Time.deltaTime;
 
-            foreach( var pair in controllerMap )
+            foreach (var pair in controllerMap)
             {
                 Property prop = pair.Key;
                 MEAnimationController<Controller, Property> controller = pair.Value;
 
-                if( controller.def.parentTexID == GetTexID(prop) )
+                if (controller.def.parentTexID == GetTexID(prop))
                 {
-                    if( controller.go != null )
-                       controller.UpdateAnimation(prop, dt);
+                    if (controller.go != null)
+                        controller.UpdateAnimation(prop, dt);
                 }
                 else
                 {
@@ -92,7 +89,7 @@ namespace KK_Plugins.MaterialEditor
                 controllerMap.Remove(key);
         }
 
-        public void UpdateAnimation( Property property, float dt = 0f )
+        public void UpdateAnimation(Property property, float dt = 0f)
         {
             float time = playTime;
             float totalTime = def.totalTime;
@@ -107,7 +104,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 time = 0f;
             }
-            
+
             playTime = time;
 
             int frameCount = Mathf.FloorToInt(time * def.framePerSecond);
@@ -126,7 +123,7 @@ namespace KK_Plugins.MaterialEditor
 
             var texID = frames[left].texID;
 
-            if( texID != curTexID )
+            if (texID != curTexID)
             {
                 UpdateTexture(parent, go, property, texID);
                 curTexID = texID;
@@ -141,13 +138,13 @@ namespace KK_Plugins.MaterialEditor
         {
             HashSet<int> used = new HashSet<int>();
 
-            foreach( var prop in usedProperties )
+            foreach (var prop in usedProperties)
             {
                 var texID = GetTexID(prop);
                 if (texID.HasValue)
                     used.Add(texID.Value);
 
-                if( controllerMap.TryGetValue(prop, out var controller) )
+                if (controllerMap.TryGetValue(prop, out var controller))
                 {
                     foreach (var frame in controller.def.frames)
                         used.Add(frame.texID);
@@ -164,7 +161,7 @@ namespace KK_Plugins.MaterialEditor
         /// Loads animation definition from a gif/apng byte array.
         /// If byte array is not gif/apng, null is returned.
         /// </summary>
-        public static MEAnimationDefine LoadAnimationDefFromBytes( int texID, byte[] bytes, System.Func<byte[], int> setAndGetTextureID)
+        public static MEAnimationDefine LoadAnimationDefFromBytes(int texID, byte[] bytes, System.Func<byte[], int> setAndGetTextureID)
         {
             if (bytes == null)
                 return null;
@@ -174,7 +171,7 @@ namespace KK_Plugins.MaterialEditor
                 LoadAnimationDefFromGifBytes(texID, bytes, setAndGetTextureID);
         }
 
-        private static MEAnimationDefine LoadAnimationDefFromGifBytes( int texID, byte[] bytes, System.Func<byte[], int> setAndGetTextureID)
+        private static MEAnimationDefine LoadAnimationDefFromGifBytes(int texID, byte[] bytes, System.Func<byte[], int> setAndGetTextureID)
         {
             int totalFrames = 0;
             List<MEAnimationFrame> animationFrames = new List<MEAnimationFrame>();
@@ -186,7 +183,7 @@ namespace KK_Plugins.MaterialEditor
                 {
                     var image = gif.NextImage();
 
-                    while ( image != null )
+                    while (image != null)
                     {
                         MEAnimationFrame meaf = new MEAnimationFrame();
                         meaf.frames = image.Delay;
@@ -202,10 +199,10 @@ namespace KK_Plugins.MaterialEditor
                         }
                         finally
                         {
-                            if(tex != null)
+                            if (tex != null)
                                 Texture2D.Destroy(tex);
                         }
-                        
+
                         animationFrames.Add(meaf);
                         image = gif.NextImage();
                     }
@@ -221,10 +218,10 @@ namespace KK_Plugins.MaterialEditor
             if (animationFrames.Count == 0)
                 return null;
 
-            for( int i = 0; i < animationFrames.Count; ++i )
+            for (int i = 0; i < animationFrames.Count; ++i)
                 animationFrames[i].texID = setAndGetTextureID(framePngs[i]);
 
-            const int ticks = 1000;   //constant. mgGif spec.
+            const int ticks = 1000; //constant. mgGif spec.
 
             MEAnimationDefine animation = new MEAnimationDefine();
             animation.frames = animationFrames.ToArray();
@@ -236,7 +233,7 @@ namespace KK_Plugins.MaterialEditor
             return animation;
         }
 
-        private static MEAnimationDefine LoadAnimationDefFromApngBytes( int texID, byte[] bytes, System.Func<byte[], int> setAndGetTextureID)
+        private static MEAnimationDefine LoadAnimationDefFromApngBytes(int texID, byte[] bytes, System.Func<byte[], int> setAndGetTextureID)
         {
             int ticks = 1;
             int totalFrames = 0;
@@ -263,8 +260,8 @@ namespace KK_Plugins.MaterialEditor
                 tex.Resize(width, height, TextureFormat.ARGB32, false);
 
                 ticks = LCM(apng.Frames.Select(frame => frame.fcTLChunk.DelayDen == 0 ? 100 : frame.fcTLChunk.DelayDen));
-                
-                foreach ( var frame in apng.Frames )
+
+                foreach (var frame in apng.Frames)
                 {
                     var fctl = frame.fcTLChunk;
 
@@ -273,10 +270,10 @@ namespace KK_Plugins.MaterialEditor
                     if (delayDen == 0) delayDen = 100;
                     int delay = ticks * delayNum / delayDen;
 
-                    if(delay == 0)
+                    if (delay == 0)
                     {
                         /* https://wiki.mozilla.org/APNG_Specification
-                         * The `delay_num` and `delay_den` parameters together specify a fraction indicating the time to display the current frame, in seconds. 
+                         * The `delay_num` and `delay_den` parameters together specify a fraction indicating the time to display the current frame, in seconds.
                          * If the denominator is 0, it is to be treated as if it were 100 (that is, `delay_num` then specifies 1/100ths of a second). If the the value of the numerator is 0 the decoder should render the next frame as quickly as possible, though viewers may impose a reasonable lower bound.
                          */
                         delay = Mathf.Max(ticks / 100, 1);
@@ -326,7 +323,7 @@ namespace KK_Plugins.MaterialEditor
                                     for (uint x = 0; x < frameWidth; ++x)
                                     {
                                         long offset0 = (y + offsetY) * width + x + offsetX;
-                                        if(previous != null)
+                                        if (previous != null)
                                             previous[offset] = pixels[offset0];
                                         Color32 p = pixels[offset0];
                                         Color32 q = addPixels[offset++];
@@ -352,7 +349,7 @@ namespace KK_Plugins.MaterialEditor
 
                     meaf.texID = setAndGetTextureID(tex.EncodeToPNG());
                     animationFrames.Add(meaf);
-                    
+
                     switch (fctl.DisposeOp)
                     {
                         case LibAPNG.DisposeOps.APNGDisposeOpNone:
@@ -392,10 +389,10 @@ namespace KK_Plugins.MaterialEditor
             }
             finally
             {
-                if( tex != null )
+                if (tex != null)
                     Texture2D.Destroy(tex);
 
-                if( add != null )
+                if (add != null)
                     Texture2D.Destroy(add);
             }
 
@@ -415,7 +412,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Remaps TextureID contained in the MEAnimationDefine
         /// </summary>
-        public static void RemapTexID(MEAnimationDefine def, Dictionary<int,int> texIDRemapping )
+        public static void RemapTexID(MEAnimationDefine def, Dictionary<int, int> texIDRemapping)
         {
             if (def == null)
                 return;
@@ -424,7 +421,7 @@ namespace KK_Plugins.MaterialEditor
             if (texIDRemapping.TryGetValue(def.parentTexID, out newTexID))
                 def.parentTexID = newTexID;
 
-            foreach( var frame in def.frames )
+            foreach (var frame in def.frames)
             {
                 if (texIDRemapping.TryGetValue(frame.texID, out newTexID))
                     frame.texID = newTexID;
@@ -434,7 +431,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Purge unused texture properties from animation dictionary
         /// </summary>
-        public static void PurgeUnusedAnimation<Controller, Property>(Dictionary<Property, MEAnimationController<Controller, Property>> controllerMap, IList<Property> usedProperties )
+        public static void PurgeUnusedAnimation<Controller, Property>(Dictionary<Property, MEAnimationController<Controller, Property>> controllerMap, IList<Property> usedProperties)
         {
             if (controllerMap == null || usedProperties == null || controllerMap.Count <= 0)
                 return;
@@ -443,14 +440,14 @@ namespace KK_Plugins.MaterialEditor
             foreach (var used in usedProperties)
                 unuseds.Remove(used);
 
-            foreach( var prop in unuseds )
+            foreach (var prop in unuseds)
                 controllerMap.Remove(prop);
         }
 
         /// <summary>
         /// Least Common Multiple
         /// </summary>
-        private static int LCM( IEnumerable<int> values )
+        private static int LCM(IEnumerable<int> values)
         {
             long x = 1;
             foreach (var y in values)

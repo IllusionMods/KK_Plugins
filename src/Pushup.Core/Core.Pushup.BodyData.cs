@@ -9,32 +9,20 @@ namespace KK_Plugins
         [MessagePackObject]
         public class BodyData
         {
-            [Key("Size")]
-            public float Size { get; set; }
-            [Key("VerticalPosition")]
-            public float VerticalPosition { get; set; }
-            [Key("HorizontalAngle")]
-            public float HorizontalAngle { get; set; }
-            [Key("HorizontalPosition")]
-            public float HorizontalPosition { get; set; }
-            [Key("VerticalAngle")]
-            public float VerticalAngle { get; set; }
-            [Key("Depth")]
-            public float Depth { get; set; }
-            [Key("Roundness")]
-            public float Roundness { get; set; }
+            [Key("Size")] public float Size { get; set; }
+            [Key("VerticalPosition")] public float VerticalPosition { get; set; }
+            [Key("HorizontalAngle")] public float HorizontalAngle { get; set; }
+            [Key("HorizontalPosition")] public float HorizontalPosition { get; set; }
+            [Key("VerticalAngle")] public float VerticalAngle { get; set; }
+            [Key("Depth")] public float Depth { get; set; }
+            [Key("Roundness")] public float Roundness { get; set; }
 
-            [Key("Softness")]
-            public float Softness { get; set; }
-            [Key("Weight")]
-            public float Weight { get; set; }
+            [Key("Softness")] public float Softness { get; set; }
+            [Key("Weight")] public float Weight { get; set; }
 
-            [Key("AreolaDepth")]
-            public float AreolaDepth { get; set; }
-            [Key("NippleWidth")]
-            public float NippleWidth { get; set; }
-            [Key("NippleDepth")]
-            public float NippleDepth { get; set; }
+            [Key("AreolaDepth")] public float AreolaDepth { get; set; }
+            [Key("NippleWidth")] public float NippleWidth { get; set; }
+            [Key("NippleDepth")] public float NippleDepth { get; set; }
 
             public BodyData() { }
             public BodyData(ChaFileBody baseBody)

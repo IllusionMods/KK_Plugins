@@ -26,7 +26,7 @@ namespace KK_Plugins.PoseTools
         public const string PluginNameInternal = Constants.Prefix + "_PoseTools";
         public const string PluginVersion = "1.1.2";
 
-        internal static readonly int UserdataRoot = new DirectoryInfo(UserdataFolder).FullName.Length + 1;  //+1 for slash
+        internal static readonly int UserdataRoot = new DirectoryInfo(UserdataFolder).FullName.Length + 1; //+1 for slash
         internal static DirectoryInfo CurrentDirectory = new DirectoryInfo(UserdataFolder + "/" + PoseFolder);
         internal static readonly int DefaultRootLength = CurrentDirectory.FullName.Length;
         internal static GameObject v_prefabNode;
@@ -242,7 +242,7 @@ namespace KK_Plugins.PoseTools
             }
             finally
             {
-                if( rt != null )
+                if (rt != null)
                     UnityEngine.Object.Destroy(rt);
 
                 if (tex != null)

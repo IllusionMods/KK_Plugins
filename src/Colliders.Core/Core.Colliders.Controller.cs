@@ -279,11 +279,11 @@ namespace KK_Plugins
             {
                 var dynamicBones = GetComponentsInChildren<DynamicBone_Ver02>(true);
 
-                foreach ( var controller in GetAllColliderControllers() )
+                foreach (var controller in GetAllColliderControllers())
                 {
                     for (var i = 0; i < dynamicBones.Length; i++)
                         UpdateArmCollidersBreastDB(dynamicBones[i], controller.ArmColliders);
-                }   
+                }
             }
 
             /// <summary>

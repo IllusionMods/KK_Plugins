@@ -8,10 +8,7 @@ namespace KK_Plugins
     {
         internal static class Hooks
         {
-            private static readonly HashSet<string> AssetTypesToSkip = new HashSet<string>(new[]
-            {
-                "op", "r", "ed"
-            });
+            private static readonly HashSet<string> AssetTypesToSkip = new HashSet<string>(new[] { "op", "r", "ed" });
 
             private static string GetAssetType(string assetName)
             {

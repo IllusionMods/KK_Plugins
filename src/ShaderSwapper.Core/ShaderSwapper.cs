@@ -203,52 +203,52 @@ namespace KK_Plugins
 
         private readonly Dictionary<string, SwapTargetList> VanillaPlusShaders = new Dictionary<string, SwapTargetList>
         {
-            {"Shader Forge/main_skin", new SwapTargetList("xukmi/SkinPlus") },
-            {"Koikano/main_skin", new SwapTargetList("xukmi/SkinPlus") },
-            {"Shader Forge/main_hair", new SwapTargetList("xukmi/HairPlus") },
-            {"Koikano/hair_main_sun", new SwapTargetList("xukmi/HairPlus") },
-            {"Shader Forge/main_hair_front", new SwapTargetList("xukmi/HairFrontPlus") },
-            {"Koikano/hair_main_sun_front", new SwapTargetList("xukmi/HairFrontPlus") },
-            {"Shader Forge/toon_eye_lod0", new SwapTargetList("xukmi/EyePlus") },
-            {"Koikano/main_eye", new SwapTargetList("xukmi/EyePlus") },
-            {"Shader Forge/toon_eyew_lod0", new SwapTargetList("xukmi/EyeWPlus") },
-            {"Koikano/main_eyew", new SwapTargetList("xukmi/EyeWPlus") },
-            {"Shader Forge/main_opaque", new SwapTargetList("xukmi/MainOpaquePlus") },
-            {"Shader Forge/main_opaque2", new SwapTargetList("xukmi/MainOpaquePlus") },
-            {"Koikano/main_clothes_opaque", new SwapTargetList("xukmi/MainOpaquePlus") },
-            {"Shader Forge/main_alpha", new SwapTargetList("xukmi/MainAlphaPlus") },
-            {"Koikano/main_clothes_alpha", new SwapTargetList("xukmi/MainAlphaPlus") },
-            {"Shader Forge/main_item", new SwapTargetList("xukmi/MainItemPlus") },
-            {"Koikano/main_clothes_item", new SwapTargetList("xukmi/MainItemPlus") },
-            {"Shader Forge/main_item_studio", new SwapTargetList("xukmi/MainItemPlus") },
-            {"Shader Forge/main_item_studio_alpha", new SwapTargetList("xukmi/MainItemAlphaPlus") },
-            {"ShaderForge/main_StandardMDK_studio", new SwapTargetList("xukmi/MainItemPlus") },
-            {"Standard", new SwapTargetList("xukmi/MainItemPlus") },
+            { "Shader Forge/main_skin", new SwapTargetList("xukmi/SkinPlus") },
+            { "Koikano/main_skin", new SwapTargetList("xukmi/SkinPlus") },
+            { "Shader Forge/main_hair", new SwapTargetList("xukmi/HairPlus") },
+            { "Koikano/hair_main_sun", new SwapTargetList("xukmi/HairPlus") },
+            { "Shader Forge/main_hair_front", new SwapTargetList("xukmi/HairFrontPlus") },
+            { "Koikano/hair_main_sun_front", new SwapTargetList("xukmi/HairFrontPlus") },
+            { "Shader Forge/toon_eye_lod0", new SwapTargetList("xukmi/EyePlus") },
+            { "Koikano/main_eye", new SwapTargetList("xukmi/EyePlus") },
+            { "Shader Forge/toon_eyew_lod0", new SwapTargetList("xukmi/EyeWPlus") },
+            { "Koikano/main_eyew", new SwapTargetList("xukmi/EyeWPlus") },
+            { "Shader Forge/main_opaque", new SwapTargetList("xukmi/MainOpaquePlus") },
+            { "Shader Forge/main_opaque2", new SwapTargetList("xukmi/MainOpaquePlus") },
+            { "Koikano/main_clothes_opaque", new SwapTargetList("xukmi/MainOpaquePlus") },
+            { "Shader Forge/main_alpha", new SwapTargetList("xukmi/MainAlphaPlus") },
+            { "Koikano/main_clothes_alpha", new SwapTargetList("xukmi/MainAlphaPlus") },
+            { "Shader Forge/main_item", new SwapTargetList("xukmi/MainItemPlus") },
+            { "Koikano/main_clothes_item", new SwapTargetList("xukmi/MainItemPlus") },
+            { "Shader Forge/main_item_studio", new SwapTargetList("xukmi/MainItemPlus") },
+            { "Shader Forge/main_item_studio_alpha", new SwapTargetList("xukmi/MainItemAlphaPlus") },
+            { "ShaderForge/main_StandardMDK_studio", new SwapTargetList("xukmi/MainItemPlus") },
+            { "Standard", new SwapTargetList("xukmi/MainItemPlus") },
         };
 
         private readonly Dictionary<string, SwapTargetList> VanillaPlusTesselationShaders = new Dictionary<string, SwapTargetList>
         {
-            {"Shader Forge/main_skin", new SwapTargetList("xukmi/SkinPlusTess") },
-            {"Koikano/main_skin", new SwapTargetList("xukmi/SkinPlusTess") },
-            {"Shader Forge/main_hair", new SwapTargetList("xukmi/HairPlus") },
-            {"Koikano/hair_main_sun", new SwapTargetList("xukmi/HairPlus") },
-            {"Shader Forge/main_hair_front", new SwapTargetList("xukmi/HairFrontPlus") },
-            {"Koikano/hair_main_sun_front", new SwapTargetList("xukmi/HairFrontPlus") },
-            {"Shader Forge/toon_eye_lod0", new SwapTargetList("xukmi/EyePlus") },
-            {"Koikano/main_eye", new SwapTargetList("xukmi/EyePlus") },
-            {"Shader Forge/toon_eyew_lod0", new SwapTargetList("xukmi/EyeWPlus") },
-            {"Koikano/main_eyew", new SwapTargetList("xukmi/EyeWPlus") },
-            {"Shader Forge/main_opaque", new SwapTargetList("xukmi/MainOpaquePlusTess") },
-            {"Shader Forge/main_opaque2", new SwapTargetList("xukmi/MainOpaquePlusTess") },
-            {"Koikano/main_clothes_opaque", new SwapTargetList("xukmi/MainOpaquePlusTess") },
-            {"Shader Forge/main_alpha", new SwapTargetList("xukmi/MainAlphaPlusTess") },
-            {"Koikano/main_clothes_alpha", new SwapTargetList("xukmi/MainAlphaPlusTess") },
-            {"Shader Forge/main_item", new SwapTargetList("xukmi/MainItemPlus") },
-            {"Koikano/main_clothes_item", new SwapTargetList("xukmi/MainItemPlus") },
-            {"Shader Forge/main_item_studio", new SwapTargetList("xukmi/MainOpaquePlusTess") },
-            {"Shader Forge/main_item_studio_alpha", new SwapTargetList("xkumi/MainAlphaPlusTess") },
-            {"ShaderForge/main_StandardMDK_studio", new SwapTargetList("xukmi/MainOpaquePlusTess") },
-            {"Standard", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            { "Shader Forge/main_skin", new SwapTargetList("xukmi/SkinPlusTess") },
+            { "Koikano/main_skin", new SwapTargetList("xukmi/SkinPlusTess") },
+            { "Shader Forge/main_hair", new SwapTargetList("xukmi/HairPlus") },
+            { "Koikano/hair_main_sun", new SwapTargetList("xukmi/HairPlus") },
+            { "Shader Forge/main_hair_front", new SwapTargetList("xukmi/HairFrontPlus") },
+            { "Koikano/hair_main_sun_front", new SwapTargetList("xukmi/HairFrontPlus") },
+            { "Shader Forge/toon_eye_lod0", new SwapTargetList("xukmi/EyePlus") },
+            { "Koikano/main_eye", new SwapTargetList("xukmi/EyePlus") },
+            { "Shader Forge/toon_eyew_lod0", new SwapTargetList("xukmi/EyeWPlus") },
+            { "Koikano/main_eyew", new SwapTargetList("xukmi/EyeWPlus") },
+            { "Shader Forge/main_opaque", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            { "Shader Forge/main_opaque2", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            { "Koikano/main_clothes_opaque", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            { "Shader Forge/main_alpha", new SwapTargetList("xukmi/MainAlphaPlusTess") },
+            { "Koikano/main_clothes_alpha", new SwapTargetList("xukmi/MainAlphaPlusTess") },
+            { "Shader Forge/main_item", new SwapTargetList("xukmi/MainItemPlus") },
+            { "Koikano/main_clothes_item", new SwapTargetList("xukmi/MainItemPlus") },
+            { "Shader Forge/main_item_studio", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            { "Shader Forge/main_item_studio_alpha", new SwapTargetList("xkumi/MainAlphaPlusTess") },
+            { "ShaderForge/main_StandardMDK_studio", new SwapTargetList("xukmi/MainOpaquePlusTess") },
+            { "Standard", new SwapTargetList("xukmi/MainOpaquePlusTess") },
         };
 
         internal static ConfigEntry<bool> AutoReplace { get; private set; }
@@ -278,7 +278,7 @@ namespace KK_Plugins
         private void setShaderMapping(bool tess, Dictionary<string, SwapTargetList> value)
         {
             string text = new XElement("ShaderSwapper",
-                value.Select(e => new XElement("Mapping", new XAttribute("From", e.Key), e.Value.ToElements()))
+                                       value.Select(e => new XElement("Mapping", new XAttribute("From", e.Key), e.Value.ToElements()))
             ).ToString();
             using (StreamWriter outputFile = new StreamWriter(tess ? TessMapping.Value : NormalMapping.Value))
             {
@@ -294,17 +294,17 @@ namespace KK_Plugins
             SwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl), "Swap all shaders to the equivalent shader from the shadermapping, unless they are already changed in ME.");
             ForceSwapShadersHotkey = Config.Bind("Keyboard Shortcuts", "Force Swap Shaders", new KeyboardShortcut(KeyCode.P, KeyCode.RightControl, KeyCode.RightShift), "Swap all shaders to the equivalent shader from the shadermapping, regardless of they have been edited or not.");
             TesselationSlider = Config.Bind("Tesselation", "Tesselation", 0f,
-                new ConfigDescription("The amount of tesselation to apply.  Leave at 0% to use the regular Vanilla+ shaders without tesselation.",
-                    new AcceptableValueRange<float>(0f, 1f)
-                )
+                                            new ConfigDescription("The amount of tesselation to apply.  Leave at 0% to use the regular Vanilla+ shaders without tesselation.",
+                                                                  new AcceptableValueRange<float>(0f, 1f)
+                                            )
             );
 
             DebugLogging = Config.Bind("General", "Verbose logging", true, "Write to log every time a shader is swapped.");
 
             AutoReplace = Config.Bind("General", "Auto swap to V+ shaders", false,
-                "Automatically swap vanilla shaders to their Vanilla+ equivalents on ALL characters.\n" +
-                "Changes take effect after character reload.\n" +
-                "WARNING: Saving the game, cards, or scenes with this setting enabled can permanently apply the V+ shaders! You won't be able to go back to vanilla shaders without manually resetting MaterialEditor edits in the maker!");
+                                      "Automatically swap vanilla shaders to their Vanilla+ equivalents on ALL characters.\n" +
+                                      "Changes take effect after character reload.\n" +
+                                      "WARNING: Saving the game, cards, or scenes with this setting enabled can permanently apply the V+ shaders! You won't be able to go back to vanilla shaders without manually resetting MaterialEditor edits in the maker!");
 
             SwapStudioShadersOnCharacter = Config.Bind("General", "Studio-shaders on characters", false, "Toggles if the following shaders should be swapped on characters: [Shader Forge/main_item_studio],[Shader Forge/main_item_studio_alpha],[ShaderForge/main_StandartMDK_studio] and [Standart]");
 
@@ -337,9 +337,9 @@ namespace KK_Plugins
         }
 
         internal static KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags SingleFileFlags =
-                KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags.OFN_FILEMUSTEXIST |
-                KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags.OFN_LONGNAMES |
-                KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags.OFN_EXPLORER;
+            KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags.OFN_FILEMUSTEXIST |
+            KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags.OFN_LONGNAMES |
+            KKAPI.Utilities.OpenFileDialog.OpenSaveFileDialgueFlags.OFN_EXPLORER;
 
         static void FileInputDrawer(ConfigEntryBase entry)
         {
@@ -350,8 +350,8 @@ namespace KK_Plugins
             {
                 string dir = Path.GetDirectoryName(value);
                 string[] file = KKAPI.Utilities.OpenFileDialog.ShowDialog("Open 3D file", dir,
-                        "XML (*.xml)|*.xml| All files (*.*)|*.*",
-                        "xml", SingleFileFlags);
+                                                                          "XML (*.xml)|*.xml| All files (*.*)|*.*",
+                                                                          "xml", SingleFileFlags);
                 if (file != null)
                 {
                     value = file[0];
@@ -406,8 +406,8 @@ namespace KK_Plugins
         {
             GameObject go = item.objectItem;
             foreach (Renderer renderer in GetRendererList(go))
-                foreach (Material material in GetMaterials(go, renderer))
-                    SwapToVanillaPlus(GetSceneController(), item.objectInfo.dicKey, material, forceUpdate);
+            foreach (Material material in GetMaterials(go, renderer))
+                SwapToVanillaPlus(GetSceneController(), item.objectInfo.dicKey, material, forceUpdate);
         }
 
         public void UpdateCharShaders(ChaControl chaControl, bool forceUpdate = false)
@@ -480,7 +480,7 @@ namespace KK_Plugins
                         "Shader Forge/main_item_studio_alpha",
                         "ShaderForge/main_StandartMDK_studio",
                         "Standard" }
-                    .Contains(mat.shader.name))
+                        .Contains(mat.shader.name))
                     {
                         return;
                     }
@@ -517,29 +517,29 @@ namespace KK_Plugins
         {
             var go = controller.ChaControl.objClothes[slot];
             foreach (var renderer in GetRendererList(go))
-                foreach (var material in GetMaterials(go, renderer))
-                    SwapToVanillaPlus(controller, slot, ObjectType.Clothing, material, go, forceSwap);
+            foreach (var material in GetMaterials(go, renderer))
+                SwapToVanillaPlus(controller, slot, ObjectType.Clothing, material, go, forceSwap);
         }
         private void SwapToVanillaPlusHair(MaterialEditorCharaController controller, int slot, bool forceSwap)
         {
             var go = controller.ChaControl.objHair[slot];
             foreach (var renderer in GetRendererList(go))
-                foreach (var material in GetMaterials(go, renderer))
-                    SwapToVanillaPlus(controller, slot, ObjectType.Hair, material, go, forceSwap);
+            foreach (var material in GetMaterials(go, renderer))
+                SwapToVanillaPlus(controller, slot, ObjectType.Hair, material, go, forceSwap);
         }
         private void SwapToVanillaPlusAccessory(MaterialEditorCharaController controller, int slot, bool forceSwap)
         {
             var go = controller.ChaControl.GetAccessoryObject(slot);
             if (go != null)
                 foreach (var renderer in GetRendererList(go))
-                    foreach (var material in GetMaterials(go, renderer))
-                        SwapToVanillaPlus(controller, slot, ObjectType.Accessory, material, go, forceSwap);
+                foreach (var material in GetMaterials(go, renderer))
+                    SwapToVanillaPlus(controller, slot, ObjectType.Accessory, material, go, forceSwap);
         }
         private void SwapToVanillaPlusBody(MaterialEditorCharaController controller, bool forceSwap)
         {
             foreach (var renderer in GetRendererList(controller.ChaControl.gameObject))
-                foreach (var material in GetMaterials(controller.ChaControl.gameObject, renderer))
-                    SwapToVanillaPlus(controller, 0, ObjectType.Character, material, controller.ChaControl.gameObject, forceSwap);
+            foreach (var material in GetMaterials(controller.ChaControl.gameObject, renderer))
+                SwapToVanillaPlus(controller, 0, ObjectType.Character, material, controller.ChaControl.gameObject, forceSwap);
         }
 
         private void SetTesselationValue(Material mat)

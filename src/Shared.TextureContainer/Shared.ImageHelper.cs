@@ -66,7 +66,7 @@ namespace KK_Plugins
         /// </summary>
         internal static void LoadDependencies(Type pluginType)
         {
-            foreach(var dependency in dllDependencies)
+            foreach (var dependency in dllDependencies)
                 try
                 {
                     LoadDependency(dependency.Key, dependency.Value, pluginType);
@@ -92,11 +92,11 @@ namespace KK_Plugins
         //Site that lists magic numbers for file formats https://www.garykessler.net/library/file_sigs.html
         private static Dictionary<byte[], ImageFormat> imageFormatDecoders = new Dictionary<byte[], ImageFormat>()
         {
-            { new byte[]{ 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }, ImageFormat.Png },
-            { new byte[]{ 0xff, 0xd8 }, ImageFormat.Jpeg },
-            { new byte[]{ 0x52, 0x49, 0x46, 0x46 }, ImageFormat.WebP },
-            { new byte[]{ 0x00, 0x00, 0x00 }, ImageFormat.Avif },
-            { new byte[]{ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff }, ImageFormat.Unrecognized},
+            { new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }, ImageFormat.Png },
+            { new byte[] { 0xff, 0xd8 }, ImageFormat.Jpeg },
+            { new byte[] { 0x52, 0x49, 0x46, 0x46 }, ImageFormat.WebP },
+            { new byte[] { 0x00, 0x00, 0x00 }, ImageFormat.Avif },
+            { new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff }, ImageFormat.Unrecognized },
         };
 
         public enum ImageFormat

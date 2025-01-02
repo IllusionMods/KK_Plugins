@@ -395,7 +395,6 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(CharaCustomMode), nameof(CharaCustomMode.End))]
             private static void CharaCustomMode_End() => StopMakerCoroutine();
 #elif HS
-
             [HarmonyPostfix, HarmonyPatch(typeof(CustomControl), "Start")]
             private static void CustomControl_Start(CustomControl __instance)
             {

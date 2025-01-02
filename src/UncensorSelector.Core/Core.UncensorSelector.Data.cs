@@ -5,13 +5,13 @@ namespace KK_Plugins
 {
     public partial class UncensorSelector
     {
-
         public interface IUncensorData
         {
             string GUID { get; }
             string DisplayName { get; }
             bool AllowRandom { get; }
         }
+
         public class BodyData : IUncensorData
         {
             public string BodyGUID;

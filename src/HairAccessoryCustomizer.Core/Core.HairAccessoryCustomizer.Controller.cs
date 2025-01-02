@@ -533,19 +533,13 @@ namespace KK_Plugins
             [MessagePackObject]
             public class HairAccessoryInfo
             {
-                [Key("HairGloss")]
-                public bool HairGloss = ColorMatchDefault;
-                [Key("ColorMatch")]
-                public bool ColorMatch = HairGlossDefault;
-                [Key("OutlineColor")]
-                public Color OutlineColor = OutlineColorDefault;
-                [Key("AccessoryColor")]
-                public Color AccessoryColor = AccessoryColorDefault;
-                [Key("HairLength")]
-                public float HairLength = HairLengthDefault;
+                [Key("HairGloss")] public bool HairGloss = ColorMatchDefault;
+                [Key("ColorMatch")] public bool ColorMatch = HairGlossDefault;
+                [Key("OutlineColor")] public Color OutlineColor = OutlineColorDefault;
+                [Key("AccessoryColor")] public Color AccessoryColor = AccessoryColorDefault;
+                [Key("HairLength")] public float HairLength = HairLengthDefault;
 #if KKS
-                [Key("GlossColor")]
-                public Color GlossColor = GlossColorDefault;
+                [Key("GlossColor")] public Color GlossColor = GlossColorDefault;
 #endif
             }
         }

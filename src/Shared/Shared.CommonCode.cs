@@ -60,6 +60,7 @@ namespace KK_Plugins
             try { NativeMethods.OpenFolderAndSelectFile(filename); }
             catch (Exception) { Process.Start("explorer.exe", $"/select, \"{filename}\""); }
         }
+
         internal static class NativeMethods
         {
             /// <summary>

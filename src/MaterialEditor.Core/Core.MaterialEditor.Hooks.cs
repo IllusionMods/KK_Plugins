@@ -20,6 +20,7 @@ using Map;
 #else
 using Studio;
 #endif
+
 #if PH
 using ChaControl = Human;
 #endif
@@ -117,9 +118,9 @@ namespace KK_Plugins.MaterialEditor
                         if (itemComponent.rendGlass[i] && !rendList.Contains(itemComponent.rendGlass[i]))
                             rendList.Add(itemComponent.rendGlass[i]);
 #elif EC
-                for (int i = 0; i < itemComponent.renderers.Length; i++)
-                    if (itemComponent.renderers[i] && !rendList.Contains(itemComponent.renderers[i]))
-                        rendList.Add(itemComponent.renderers[i]);
+                    for (int i = 0; i < itemComponent.renderers.Length; i++)
+                        if (itemComponent.renderers[i] && !rendList.Contains(itemComponent.renderers[i]))
+                            rendList.Add(itemComponent.renderers[i]);
 #else
                     for (int i = 0; i < itemComponent.rendererInfos.Length; i++)
                         if (itemComponent.rendererInfos[i].renderer && !rendList.Contains(itemComponent.rendererInfos[i].renderer))
@@ -161,9 +162,9 @@ namespace KK_Plugins.MaterialEditor
 
             List<Renderer> newRenderers = __result.ToList();
             newRenderers.RemoveAll(renderer => renderer.sharedMaterial == null ||
-                                   renderer.sharedMaterial.name == "Default-Material" ||
-                                   renderer.sharedMaterial.name == "cf_m_body_CustomMaterial" ||
-                                   renderer.sharedMaterial.name == "cm_m_body_CustomMaterial");
+                                               renderer.sharedMaterial.name == "Default-Material" ||
+                                               renderer.sharedMaterial.name == "cf_m_body_CustomMaterial" ||
+                                               renderer.sharedMaterial.name == "cm_m_body_CustomMaterial");
             __result = newRenderers;
         }
 #endif
@@ -571,7 +572,9 @@ namespace KK_Plugins.MaterialEditor
 #endif
 
 #if EC || KKS
-        [HarmonyPostfix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeTexture), typeof(Material), typeof(ChaListDefine.CategoryNo), typeof(int), typeof(ChaListDefine.KeyType), typeof(ChaListDefine.KeyType), typeof(int), typeof(string))]
+        [HarmonyPostfix,
+         HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeTexture), typeof(Material), typeof(ChaListDefine.CategoryNo), typeof(int), typeof(ChaListDefine.KeyType), typeof(ChaListDefine.KeyType),
+                      typeof(int), typeof(string))]
         private static void ChaControl_ChangeTexture(Material mat, ChaListDefine.KeyType assetKey)
         {
             if (assetKey == ChaListDefine.KeyType.NormallMapDetail)

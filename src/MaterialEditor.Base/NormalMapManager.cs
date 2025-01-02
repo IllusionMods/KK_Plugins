@@ -86,7 +86,7 @@ namespace MaterialEditorAPI
                 tex = normalTex;
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.LogError(ex);
                 return false;
@@ -99,7 +99,7 @@ namespace MaterialEditorAPI
         /// An object that is not a texture is set as a texture property.
         /// zipmod is broken.
         /// </summary>
-        static bool IsBrokenTexture( Texture tex )
+        static bool IsBrokenTexture(Texture tex)
         {
             //This check does not work when dealing with corrupted Objects (a different object type is stored as Texture, which causes a crash on native side)
             //return !(tex is Texture);
@@ -114,7 +114,7 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="src">Texture to convert</param>
         /// <returns>Converted Texture</returns>
-        protected virtual Texture ConvertNormalMap( Texture src )
+        protected virtual Texture ConvertNormalMap(Texture src)
         {
             Texture2D readableTex = MakeTextureReadable(src);
 
@@ -195,7 +195,6 @@ namespace MaterialEditorAPI
             const float e = 1e-05f * 8f;
             var x = a - b;
             return !(x >= 0 ? x > e : -x > e);
-
         }
     }
 
@@ -273,7 +272,7 @@ namespace MaterialEditorAPI
 
             set
             {
-                if( _dict.ContainsKey(key) )
+                if (_dict.ContainsKey(key))
                 {
                     _dict[key] = value;
                 }
@@ -291,12 +290,12 @@ namespace MaterialEditorAPI
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            for( int i = 0; i < _weakKeys.Count; )
+            for (int i = 0; i < _weakKeys.Count;)
             {
                 var weakKey = _weakKeys[i];
                 var key = weakKey.Target;
 
-                if( key != null )
+                if (key != null)
                 {
                     yield return new KeyValuePair<TKey, TValue>(key, _dict[key]);
                     ++i;
@@ -355,7 +354,7 @@ namespace MaterialEditorAPI
                 var isOtherAlive = otherKey != null;
 
                 if (isAlive != isOtherAlive)
-                    return false;          //Alive and dead values are not equal.
+                    return false; //Alive and dead values are not equal.
 
                 if (isAlive)
                 {

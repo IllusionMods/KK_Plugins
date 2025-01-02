@@ -40,7 +40,7 @@ namespace MaterialEditorAPI
                 return new List<Projector>();
 
             IEnumerable<Projector> projectors;
-            if(inChildren)
+            if (inChildren)
                 projectors = gameObject.GetComponentsInChildren<Projector>(true);
             else
                 projectors = gameObject.GetComponents<Projector>();
@@ -83,9 +83,9 @@ namespace MaterialEditorAPI
 
             List<Material> materials = new List<Material>();
             foreach (var renderer in GetRendererList(gameObject))
-                foreach (var material in GetMaterials(gameObject, renderer))
-                    if (material.NameFormatted() == materialName)
-                        materials.Add(material);
+            foreach (var material in GetMaterials(gameObject, renderer))
+                if (material.NameFormatted() == materialName)
+                    materials.Add(material);
 
             foreach (var projector in GetProjectorList(gameObject))
                 materials.Add(projector.material);
@@ -236,7 +236,7 @@ namespace MaterialEditorAPI
         /// <returns>True if the material was found and the value set</returns>
         public static bool SetKeyword(GameObject gameObject, string materialName, string propertyName, bool value)
         {
-            bool didSet = false; 
+            bool didSet = false;
 
             var list = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < list.Count; i++)
@@ -254,7 +254,7 @@ namespace MaterialEditorAPI
             }
             return didSet;
         }
-        
+
         /// <summary>
         /// Set the value of the specified material property
         /// </summary>
@@ -297,7 +297,8 @@ namespace MaterialEditorAPI
         /// <param name="propertyName">Property of the renderer being modified</param>
         /// <param name="value">Value to be set</param>
         /// <returns>True if the value was set, false if it could not be set</returns>
-        public static bool SetRendererProperty(GameObject gameObject, string rendererName, RendererProperties propertyName, string value) => SetRendererProperty(gameObject, rendererName, propertyName, int.Parse(value));
+        public static bool SetRendererProperty(GameObject gameObject, string rendererName, RendererProperties propertyName, string value) =>
+            SetRendererProperty(gameObject, rendererName, propertyName, int.Parse(value));
         /// <summary>
         /// Set the value of the specified renderer property
         /// </summary>
@@ -488,9 +489,9 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetProjectorFarClipPlane(GameObject gameObject, string projectorName, float value)
         {
-            foreach(var projector in GetProjectorList(gameObject))
+            foreach (var projector in GetProjectorList(gameObject))
             {
-                if(projector.NameFormatted() == projectorName)
+                if (projector.NameFormatted() == projectorName)
                 {
                     projector.farClipPlane = value;
                     return true;
@@ -619,7 +620,7 @@ namespace MaterialEditorAPI
                     if (inMask && !ignore)
                         projector.ignoreLayers &= ~(1 << layer);
                     //Add layer to mask
-                    else if(!inMask && ignore)
+                    else if (!inMask && ignore)
                         projector.ignoreLayers |= (1 << layer);
                 }
             }
@@ -766,7 +767,7 @@ namespace MaterialEditorAPI
                                     MaterialEditorPluginBase.Logger.LogWarning($"Could not load default texture:{shaderPropertyData.DefaultValueAssetBundle}:{shaderPropertyData.DefaultValue}");
                                 }
                                 break;
-                           case ShaderPropertyType.Keyword:
+                            case ShaderPropertyType.Keyword:
                                 SetKeyword(gameObject, materialName, shaderPropertyData.Name, bool.Parse(shaderPropertyData.DefaultValue));
                                 break;
                         }
@@ -829,6 +830,7 @@ namespace MaterialEditorAPI
             /// </summary>
             Keyword
         }
+
         /// <summary>
         /// Properties of a renderer that can be set
         /// </summary>
@@ -855,6 +857,7 @@ namespace MaterialEditorAPI
             /// </summary>
             UpdateWhenOffscreen
         }
+
         /// <summary>
         /// Properties of a projector that can be set
         /// </summary>

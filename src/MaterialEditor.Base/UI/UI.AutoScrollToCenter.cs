@@ -21,8 +21,7 @@ namespace MaterialEditorAPI
             assComp._target = dropdown;
         }
 
-        [SerializeField]
-        private Dropdown _target;
+        [SerializeField] private Dropdown _target;
 
         private bool _autoScrolled;
 

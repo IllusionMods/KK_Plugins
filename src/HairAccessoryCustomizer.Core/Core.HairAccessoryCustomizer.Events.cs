@@ -179,14 +179,15 @@ namespace KK_Plugins
                 }
             }
         }
-#elif  KKS
+#elif KKS
         private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData, Dictionary<int, int?> coordinateMapping)
         {
             if (importedExtendedData.TryGetValue(GUID, out var pluginData))
             {
                 if (pluginData != null && pluginData.data.TryGetValue("HairAccessories", out var loadedHairAccessories) && loadedHairAccessories != null)
                 {
-                    Dictionary<int, Dictionary<int, HairAccessoryController.HairAccessoryInfo>> hairAccessories = MessagePackSerializer.Deserialize<Dictionary<int, Dictionary<int, HairAccessoryController.HairAccessoryInfo>>>((byte[])loadedHairAccessories);
+                    Dictionary<int, Dictionary<int, HairAccessoryController.HairAccessoryInfo>> hairAccessories =
+                        MessagePackSerializer.Deserialize<Dictionary<int, Dictionary<int, HairAccessoryController.HairAccessoryInfo>>>((byte[])loadedHairAccessories);
                     Dictionary<int, Dictionary<int, HairAccessoryController.HairAccessoryInfo>> hairAccessoriesNew = new Dictionary<int, Dictionary<int, HairAccessoryController.HairAccessoryInfo>>();
 
                     foreach (var entry in hairAccessories)

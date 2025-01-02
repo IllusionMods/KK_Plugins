@@ -15,7 +15,7 @@ namespace UILib
 
         private static readonly FieldInfo DropdownValueField;
 #if KK
-        private static readonly MethodInfo DropdownRefreshMethod;  // Unity 5.2 <= only
+        private static readonly MethodInfo DropdownRefreshMethod; // Unity 5.2 <= only
 #endif
 
         static Extensions()
@@ -32,7 +32,7 @@ namespace UILib
             // Find the Dropdown's value field and its' Refresh method
             DropdownValueField = typeof(Dropdown).GetField("m_Value", AccessTools.all);
 #if KK
-            DropdownRefreshMethod = typeof(Dropdown).GetMethod("RefreshShownValue", AccessTools.all);  // Unity 5.2 <= only
+            DropdownRefreshMethod = typeof(Dropdown).GetMethod("RefreshShownValue", AccessTools.all); // Unity 5.2 <= only
 #endif
         }
 

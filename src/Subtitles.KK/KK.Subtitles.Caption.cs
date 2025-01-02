@@ -13,17 +13,17 @@ namespace KK_Plugins
             internal static void DisplayDialogueSubtitle(LoadAudioBase voice)
             {
                 foreach (var a in ActionGameInfoInstance.dicTalkInfo)
-                    foreach (var b in a.Value)
-                        foreach (var c in b.Value)
-                            foreach (var d in c.Value.OfType<Info.GenericInfo>())
-                            {
-                                var text = d.talk.Where(x => x.assetbundle == voice.assetBundleName && x.file == voice.assetName).Select(x => x.text).FirstOrDefault();
-                                if (!text.IsNullOrEmpty())
-                                {
-                                    DisplaySubtitle(voice.gameObject, text);
-                                    return;
-                                }
-                            }
+                foreach (var b in a.Value)
+                foreach (var c in b.Value)
+                foreach (var d in c.Value.OfType<Info.GenericInfo>())
+                {
+                    var text = d.talk.Where(x => x.assetbundle == voice.assetBundleName && x.file == voice.assetName).Select(x => x.text).FirstOrDefault();
+                    if (!text.IsNullOrEmpty())
+                    {
+                        DisplaySubtitle(voice.gameObject, text);
+                        return;
+                    }
+                }
             }
 
             internal static void DisplayHSubtitle(LoadAudioBase voice)
@@ -35,19 +35,19 @@ namespace KK_Plugins
 
                 //At the start of the H scene, all the text was loaded. Look through the loaded stuff and find the text for the current spoken voice.
                 foreach (var a in voicectrl.dicVoiceIntos)
-                    foreach (var b in a)
-                        foreach (var c in b.Value)
-                        {
-                            var text = c.Value.Where(x => x.Value.pathAsset == voice.assetBundleName && x.Value.nameFile == voice.assetName).Select(x => x.Value.word).FirstOrDefault();
-                            if (!text.IsNullOrEmpty())
-                            {
-                                if (HSceneType == typeof(HSceneProc))
-                                    DisplaySubtitle(voice.gameObject, text);
-                                else
-                                    DisplayVRSubtitle(voice.gameObject, text);
-                                return;
-                            }
-                        }
+                foreach (var b in a)
+                foreach (var c in b.Value)
+                {
+                    var text = c.Value.Where(x => x.Value.pathAsset == voice.assetBundleName && x.Value.nameFile == voice.assetName).Select(x => x.Value.word).FirstOrDefault();
+                    if (!text.IsNullOrEmpty())
+                    {
+                        if (HSceneType == typeof(HSceneProc))
+                            DisplaySubtitle(voice.gameObject, text);
+                        else
+                            DisplayVRSubtitle(voice.gameObject, text);
+                        return;
+                    }
+                }
             }
         }
     }

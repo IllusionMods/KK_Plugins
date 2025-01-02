@@ -34,7 +34,6 @@ namespace KK_Plugins
                 if (OriginalPosition == new Vector3(0, 0, 0))
                     SetGuideObjectOriginalPosition();
                 GuideObject.gameObject.SetActive(true);
-
             }
             /// <summary>
             /// Hide the guide object associated with this character

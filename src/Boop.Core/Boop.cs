@@ -62,17 +62,17 @@ namespace KK_Plugins
 
             var dynamicBonesEditorType = FindTypeInAllAssemblies("HSPE.AMModules.DynamicBonesEditor");
 
-            if(dynamicBonesEditorType != null)
+            if (dynamicBonesEditorType != null)
             {
                 harmony.Patch(
                     dynamicBonesEditorType.GetMethod("GUILogic", AccessTools.all),
                     null,
                     new HarmonyMethod(typeof(Boop), nameof(Boop.DynamicBonesEditorGUIPostfix))
-                    );
+                );
             }
         }
 
-        static void DynamicBonesEditorGUIPostfix( UnityEngine.Object __instance )
+        static void DynamicBonesEditorGUIPostfix(UnityEngine.Object __instance)
         {
             _dbEditorRunFrame = Time.frameCount;
         }

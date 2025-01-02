@@ -53,7 +53,7 @@ namespace AccessoriesToStudioItems
             if (accGroupInfo == null)
             {
                 accGroupInfo = new Info.GroupInfo();
-                accGroupInfo.name = "アクセサリー";//"Accessories";
+                accGroupInfo.name = "アクセサリー"; //"Accessories";
                 Studio.Info.Instance.dicItemGroupCategory[AccessoriesAsItemsGroupNumber] = accGroupInfo;
             }
 

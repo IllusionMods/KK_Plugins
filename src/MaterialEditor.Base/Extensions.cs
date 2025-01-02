@@ -66,7 +66,7 @@ namespace MaterialEditorAPI
         public static bool IsNullOrEmpty(this string[] args, int index)
         {
             bool ret = false;
-            args.SafeGet(index).SafeProc(delegate (string s)
+            args.SafeGet(index).SafeProc(delegate(string s)
             {
                 ret = !s.IsNullOrEmpty();
             });
@@ -76,7 +76,7 @@ namespace MaterialEditorAPI
         public static bool IsNullOrEmpty(this List<string> args, int index)
         {
             bool ret = false;
-            args.SafeGet(index).SafeProc(delegate (string s)
+            args.SafeGet(index).SafeProc(delegate(string s)
             {
                 ret = !s.IsNullOrEmpty();
             });

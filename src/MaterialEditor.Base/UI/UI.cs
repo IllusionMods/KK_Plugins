@@ -138,7 +138,8 @@ namespace MaterialEditorAPI
             listButton.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
             listButton.onClick.AddListener(() => MaterialEditorRendererList.ToggleVisibility(!ListsVisible));
             listButton.onClick.AddListener(() => MaterialEditorMaterialList.ToggleVisibility(!ListsVisible));
-            listButton.onClick.AddListener(() => {
+            listButton.onClick.AddListener(() =>
+            {
                 var text = listButton.GetComponentInChildren<Text>(true);
                 ListsVisible = !ListsVisible;
                 if (ListsVisible)
@@ -272,15 +273,15 @@ namespace MaterialEditorAPI
             MaterialEditorMaterialList.ClearList();
 
             foreach (var rend in materials.Where(rend => SelectedRenderers.Count == 0 || SelectedRenderers.Contains(rend)))
-                foreach (var mat in GetMaterials(go, rend))
-                    MaterialEditorMaterialList.AddEntry(mat.NameFormatted(), value =>
-                    {
-                        if (value)
-                            SelectedMaterials.Add(mat);
-                        else
-                            SelectedMaterials.Remove(mat);
-                        PopulateList(go, data, CurrentFilter);
-                    });
+            foreach (var mat in GetMaterials(go, rend))
+                MaterialEditorMaterialList.AddEntry(mat.NameFormatted(), value =>
+                {
+                    if (value)
+                        SelectedMaterials.Add(mat);
+                    else
+                        SelectedMaterials.Remove(mat);
+                    PopulateList(go, data, CurrentFilter);
+                });
         }
 
         /// <summary>
@@ -343,15 +344,14 @@ namespace MaterialEditorAPI
                             rendList.Add(rend);
 
                     foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
-                        foreach (string filterWord in filterList)
-                            if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
-                                matList[mat.NameFormatted()] = mat;
-
+                    foreach (string filterWord in filterList)
+                        if (WildCardSearch(mat.NameFormatted(), filterWord.Trim()))
+                            matList[mat.NameFormatted()] = mat;
                 }
                 foreach (var projector in projectorListFull)
-                    foreach (string filterWord in filterList)
-                        if (WildCardSearch(projector.NameFormatted(), filterWord.Trim()))
-                            projectorList.Add(projector);
+                foreach (string filterWord in filterList)
+                    if (WildCardSearch(projector.NameFormatted(), filterWord.Trim()))
+                        projectorList.Add(projector);
             }
 
             for (var i = 0; i < rendList.Count; i++)
@@ -614,7 +614,6 @@ namespace MaterialEditorAPI
                             };
                             items.Add(textureItemOffsetScale);
                         }
-
                     }
                     else if (property.Value.Type == ShaderPropertyType.Color)
                     {
@@ -661,7 +660,8 @@ namespace MaterialEditorAPI
                         }
                     }
                     else if (property.Value.Type == ShaderPropertyType.Keyword)
-                    { // Since there's no way to check if a Keyword exists, we'll have to trust the XML.
+                    {
+                        // Since there's no way to check if a Keyword exists, we'll have to trust the XML.
                         bool valueKeyword = mat.IsKeywordEnabled($"_{propertyName}");
                         bool valueKeywordOriginal = valueKeyword;
                         bool? valueKeywordOriginalTemp = GetMaterialKeywordPropertyValueOriginal(data, mat, propertyName, go);
@@ -755,13 +755,19 @@ namespace MaterialEditorAPI
                 }
             }
 
-            void AddFloatslider(float valueFloat, string propertyName, Action onInteroperableClick, Action<float> changeValue, Action resetValue, float valueFloatOriginal, float? minValue = null, float? maxValue = null)
+            void AddFloatslider(
+                float valueFloat,
+                string propertyName,
+                Action onInteroperableClick,
+                Action<float> changeValue,
+                Action resetValue,
+                float valueFloatOriginal,
+                float? minValue = null,
+                float? maxValue = null)
             {
                 var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
                 {
-                    FloatValue = valueFloat,
-                    FloatValueOriginal = valueFloatOriginal,
-                    SelectInterpolableButtonFloatOnClick = () => onInteroperableClick()
+                    FloatValue = valueFloat, FloatValueOriginal = valueFloatOriginal, SelectInterpolableButtonFloatOnClick = () => onInteroperableClick()
                 };
                 if (minValue != null)
                     contentItem.FloatValueSliderMin = (float)minValue;

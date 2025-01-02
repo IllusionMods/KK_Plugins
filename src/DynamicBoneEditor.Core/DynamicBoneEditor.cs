@@ -105,7 +105,6 @@ namespace KK_Plugins.DynamicBoneEditor
 #if EC
         private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData)
         {
-
             if (importedExtendedData.TryGetValue(PluginGUID, out var pluginData))
             {
                 if (pluginData != null && pluginData.data.ContainsKey("AccessoryDynamicBoneData"))
@@ -133,7 +132,6 @@ namespace KK_Plugins.DynamicBoneEditor
 #elif KKS
         private void ExtendedSave_CardBeingImported(Dictionary<string, PluginData> importedExtendedData, Dictionary<int, int?> coordinateMapping)
         {
-
             if (importedExtendedData.TryGetValue(PluginGUID, out var pluginData))
             {
                 if (pluginData != null && pluginData.data.ContainsKey("AccessoryDynamicBoneData"))

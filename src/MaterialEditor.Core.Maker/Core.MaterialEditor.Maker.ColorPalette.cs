@@ -46,10 +46,10 @@ namespace KK_Plugins.MaterialEditor
             var mui_all = (hscene != null) ? MUI_H : MUI;
 
             return
-            mccui_all.isOpen
-            && mui_all.title.text == title
-            && _slot == ((ObjectData)data).Slot
-            && _materialName == materialName;
+                mccui_all.isOpen
+                && mui_all.title.text == title
+                && _slot == ((ObjectData)data).Slot
+                && _materialName == materialName;
         }
 
         public void SetColor(Color value)
@@ -104,9 +104,9 @@ namespace KK_Plugins.MaterialEditor
             var cvs = CvsColor;
 
             return cvs.isOpen
-                && cvs.connectColorKind == kind
-                && _slot == ((ObjectData)data).Slot
-                && _materialName == materialName;
+                   && cvs.connectColorKind == kind
+                   && _slot == ((ObjectData)data).Slot
+                   && _materialName == materialName;
         }
 
         public void SetColor(Color value)
@@ -158,10 +158,10 @@ namespace KK_Plugins.MaterialEditor
             var ctrl = ColorCtrl;
 
             return ctrl.isOpen
-                && set.title.text == title
-                && ctrl.linkCustomColorSet == set
-                && _slot == ((ObjectData)data).Slot
-                && _materialName == materialName;
+                   && set.title.text == title
+                   && ctrl.linkCustomColorSet == set
+                   && _slot == ((ObjectData)data).Slot
+                   && _materialName == materialName;
         }
 
         public void SetColor(Color value)

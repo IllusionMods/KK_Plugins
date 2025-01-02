@@ -108,7 +108,7 @@ namespace KK_Plugins
                 bool first = true;
                 foreach (var controller in StudioAPI.GetSelectedControllers<UncensorSelectorController>())
                 {
-                    if (value == 0)//"None"
+                    if (value == 0) //"None"
                     {
                         //Prevent changing other characters when the value did not actually change
                         if (first && controller.DisplayBalls == false)

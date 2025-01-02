@@ -323,7 +323,6 @@ namespace KK_Plugins
             }
 
             InfoButton.onClick.AddListener(() => PrintInfo(index));
-
         }
 
         public void SetMenuVisibility(bool visible)

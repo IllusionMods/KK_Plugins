@@ -51,7 +51,6 @@ namespace KK_Plugins
                 body.nailColor = RandomColor();
                 body.nailGlossPower = RandomFloat();
                 body.drawAddLine = RandomBool();
-
             }
 
             public void RandomizeSliders()

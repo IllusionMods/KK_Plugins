@@ -330,7 +330,6 @@ namespace KK_Plugins
                     UpdateScene(scene);
             }
 #endif
-
         }
     }
 }

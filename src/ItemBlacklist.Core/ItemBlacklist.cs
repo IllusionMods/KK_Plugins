@@ -67,7 +67,8 @@ namespace KK_Plugins
                 ShowMenu();
         }
 
-        private static bool CheckGroup(ItemGroup group, string guid, int category, int id) {
+        private static bool CheckGroup(ItemGroup group, string guid, int category, int id)
+        {
             if (group.TryGetValue(guid, out var x))
                 if (x.TryGetValue(category, out var y))
                     if (y.Contains(id))
@@ -298,10 +299,12 @@ namespace KK_Plugins
                 ChangeListFilter(ListVisibilityType.Filtered);
             SetMenuVisibility(false);
         }
-        private void UnfavoriteItem(string guid, int category, int id, int index) {
+        private void UnfavoriteItem(string guid, int category, int id, int index)
+        {
             UngroupItem(Favorites, ListVisibilityType.Favorites, guid, category, id, index);
         }
-        private void UnblacklistItem(string guid, int category, int id, int index) {
+        private void UnblacklistItem(string guid, int category, int id, int index)
+        {
             UngroupItem(Blacklist, ListVisibilityType.Hidden, guid, category, id, index);
         }
 

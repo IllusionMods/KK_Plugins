@@ -245,7 +245,7 @@ namespace KK_Plugins
                     // If both pointers are 8-byte aligned, use 64-bit comparison.
                     if (((int)pA & 7) == 0 && ((int)pB & 7) == 0 && bytes >= 32)
                     {
-                        offset = bytes & ~31;       // Round down to the nearest multiple of 32.
+                        offset = bytes & ~31; // Round down to the nearest multiple of 32.
 
                         byte* pA_ = pA;
                         byte* pB_ = pB;
@@ -276,13 +276,12 @@ namespace KK_Plugins
 
                             pA_ += 8;
                             pB_ += 8;
-                        }
-                        while (pA_ != pALast);
+                        } while (pA_ != pALast);
                     }
                     // If both pointers are 4-byte aligned, use 32-bit comparison.
                     else if (((int)pA & 3) == 0 && ((int)pB & 3) == 0 && bytes >= 16)
                     {
-                        offset = bytes & ~15;       // Round down to the nearest multiple of 16.
+                        offset = bytes & ~15; // Round down to the nearest multiple of 16.
 
                         byte* pA_ = pA;
                         byte* pB_ = pB;
@@ -313,8 +312,7 @@ namespace KK_Plugins
 
                             pA_ += 4;
                             pB_ += 4;
-                        }
-                        while (pA_ != pALast);
+                        } while (pA_ != pALast);
                     }
 
                     // Compare remaining bytes one by one.
@@ -371,8 +369,7 @@ namespace KK_Plugins
 
                         ++pA_;
                         ++pB_;
-                    }
-                    while (pA_ != pAEnd);
+                    } while (pA_ != pAEnd);
                 }
             }
 

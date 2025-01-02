@@ -9,24 +9,16 @@ namespace KK_Plugins
         [MessagePackObject]
         public class ClothData : BodyData
         {
-            [Key("Firmness")]
-            public float Firmness { get; set; } = ConfigFirmnessDefault.Value;
-            [Key("Lift")]
-            public float Lift { get; set; } = ConfigLiftDefault.Value;
-            [Key("PushTogether")]
-            public float PushTogether { get; set; } = ConfigPushTogetherDefault.Value;
-            [Key("Squeeze")]
-            public float Squeeze { get; set; } = ConfigSqueezeDefault.Value;
-            [Key("CenterNipples")]
-            public float CenterNipples { get; set; } = ConfigNippleCenteringDefault.Value;
+            [Key("Firmness")] public float Firmness { get; set; } = ConfigFirmnessDefault.Value;
+            [Key("Lift")] public float Lift { get; set; } = ConfigLiftDefault.Value;
+            [Key("PushTogether")] public float PushTogether { get; set; } = ConfigPushTogetherDefault.Value;
+            [Key("Squeeze")] public float Squeeze { get; set; } = ConfigSqueezeDefault.Value;
+            [Key("CenterNipples")] public float CenterNipples { get; set; } = ConfigNippleCenteringDefault.Value;
 
-            [Key("EnablePushup")]
-            public bool EnablePushup { get; set; } = ConfigEnablePushup.Value;
-            [Key("FlattenNipples")]
-            public bool FlattenNipples { get; set; } = ConfigFlattenNipplesDefault.Value;
+            [Key("EnablePushup")] public bool EnablePushup { get; set; } = ConfigEnablePushup.Value;
+            [Key("FlattenNipples")] public bool FlattenNipples { get; set; } = ConfigFlattenNipplesDefault.Value;
 
-            [Key("UseAdvanced")]
-            public bool UseAdvanced { get; set; }
+            [Key("UseAdvanced")] public bool UseAdvanced { get; set; }
 
             public ClothData() { }
             public ClothData(ChaFileBody baseBody) : base(baseBody) { }

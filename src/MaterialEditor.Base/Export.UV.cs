@@ -15,10 +15,7 @@ namespace MaterialEditorAPI
         {
             bool openedFile = false;
             Shader shader = Shader.Find("Hidden/Internal-Colored");
-            var lineMaterial = new Material(shader)
-            {
-                hideFlags = HideFlags.HideAndDontSave
-            };
+            var lineMaterial = new Material(shader) { hideFlags = HideFlags.HideAndDontSave };
             lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);

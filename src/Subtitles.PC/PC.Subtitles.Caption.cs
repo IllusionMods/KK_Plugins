@@ -17,16 +17,15 @@ namespace KK_Plugins
             private static readonly Dictionary<string, Color> TextColors = new Dictionary<string, Color>
             {
                 // Asae
-                {"c01", new Color(0f, 0.4f, 1f)},
+                { "c01", new Color(0f, 0.4f, 1f) },
                 // Yayoi
-                {"c02", new Color(1f, 1f, 0.6f)},
+                { "c02", new Color(1f, 1f, 0.6f) },
                 // Akane
-                {"c03", new Color(1f, 0.6f, 0.4f)},
+                { "c03", new Color(1f, 0.6f, 0.4f) },
                 // Momiji
-                {"c04", new Color(0.5f, 0.89f, 1f)},
+                { "c04", new Color(0.5f, 0.89f, 1f) },
                 // Rinko
-                {"c05", new Color(0f, 0f, 1f)}
-
+                { "c05", new Color(0f, 0f, 1f) }
             };
 
             /// <summary>

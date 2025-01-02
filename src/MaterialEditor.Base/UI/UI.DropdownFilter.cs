@@ -25,7 +25,7 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="target">Target dropdown</param>
         /// <param name="persistentKeyword">Name for persistent filter. A persisted filter will continue to hold the filter after it is closed.</param>
-        public static void AddFilterUI( Dropdown target, string persistentKeyword = null )
+        public static void AddFilterUI(Dropdown target, string persistentKeyword = null)
         {
             var menuTemplate = target.transform.Find("Template");
 
@@ -89,10 +89,10 @@ namespace MaterialEditorAPI
 
             SetUIPosition();
 
-            _filterField.onValueChanged.AddListener( OnChangeFilter );
+            _filterField.onValueChanged.AddListener(OnChangeFilter);
             _filterField.onEndEdit.AddListener(OnEndEditFilter);
 
-            if( _content.childCount >= 3 )
+            if (_content.childCount >= 3)
             {
                 var item1 = (RectTransform)_content.GetChild(1);
                 var item2 = (RectTransform)_content.GetChild(2);
@@ -130,12 +130,12 @@ namespace MaterialEditorAPI
             SaveFilter();
         }
 
-        private void OnEndEditFilter( string filter )
+        private void OnEndEditFilter(string filter)
         {
             SaveFilter();
         }
 
-        private void OnChangeFilter( string filter )
+        private void OnChangeFilter(string filter)
         {
             if (string.IsNullOrEmpty(filter))
                 filter = "*";
@@ -143,7 +143,7 @@ namespace MaterialEditorAPI
             var regex = new Regex(Regex.Escape(filter).Replace("\\*", ".*").Replace("\\?", "."), RegexOptions.IgnoreCase);
             int activeItems = 0;
 
-            foreach( Transform item in _content )
+            foreach (Transform item in _content)
             {
                 var name = item.name;
 
@@ -151,11 +151,11 @@ namespace MaterialEditorAPI
                 {
                     ++activeItems;
                     continue;
-                }                    
+                }
 
                 int colon = name.IndexOf(":");
                 if (colon < 0)
-                    continue;                    
+                    continue;
 
                 bool isShown = regex.IsMatch(name.Substring(colon + 1).Trim());
                 item.gameObject.SetActive(isShown);
@@ -168,11 +168,11 @@ namespace MaterialEditorAPI
             _content.sizeDelta = sizeDelta;
 
             var scrollbar = GetComponentInChildren<Scrollbar>();
-            if( scrollbar != null )
+            if (scrollbar != null)
             {
                 scrollbar.value = 1f;
                 scrollbar.Rebuild(CanvasUpdate.Prelayout);
-            }   
+            }
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace MaterialEditorAPI
             float offset = 2f;
             var dropdownRect = (RectTransform)transform;
 
-            if (dropdownRect.offsetMax.y > 0 )
+            if (dropdownRect.offsetMax.y > 0)
             {
                 _filterRect.anchorMin = new Vector2(_clearButtonAnchorX, 0f);
                 _filterRect.anchorMax = new Vector2(1f, 0f);
@@ -212,13 +212,13 @@ namespace MaterialEditorAPI
             }
         }
 
-        private static float GetItemSize( Dropdown dropdown )
+        private static float GetItemSize(Dropdown dropdown)
         {
-            if( dropdown.itemText != null )
+            if (dropdown.itemText != null)
             {
                 return dropdown.itemText.rectTransform.rect.height;
             }
-            else if(dropdown.itemImage != null)
+            else if (dropdown.itemImage != null)
             {
                 return dropdown.itemImage.rectTransform.rect.height;
             }
