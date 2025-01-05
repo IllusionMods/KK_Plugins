@@ -310,7 +310,7 @@ namespace MaterialEditorAPI
         /// Populate the rename list
         /// </summary>
         /// <param name="go">GameObject for which to read the renderers</param>
-        /// <param name="matName">Material name</param>
+        /// <param name="material">Material to be renamed</param>
         private void PopulateRenameList(GameObject go, Material material)
         {
             SelectedMaterialRenderers.Clear();
