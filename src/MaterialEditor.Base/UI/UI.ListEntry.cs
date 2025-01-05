@@ -46,6 +46,7 @@ namespace MaterialEditorAPI
         public Button MaterialCopyButton;
         public Button MaterialPasteButton;
         public Button MaterialCopyRemove;
+        public Button MaterialRename;
 
         public CanvasGroup ShaderPanel;
         public Text ShaderLabel;
@@ -266,6 +267,14 @@ namespace MaterialEditorAPI
                         }
                         else
                             MaterialCopyRemove.gameObject.SetActive(false);
+                        if (item.MaterialOnRename != null)
+                        {
+                            MaterialRename.gameObject.SetActive(true);
+                            MaterialRename.onClick.RemoveAllListeners();
+                            MaterialRename.onClick.AddListener(delegate { item.MaterialOnRename.Invoke(); });
+                        }
+                        else
+                            MaterialRename.gameObject.SetActive(false);
 
                         break;
                     case ItemInfo.RowItemType.Shader:
