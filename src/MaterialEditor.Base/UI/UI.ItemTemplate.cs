@@ -551,7 +551,7 @@ namespace MaterialEditorAPI
             interpolableButton.gameObject.SetActive(false);
 
 #if !API && !EC
-            if (MaterialEditorPluginBase.ShowTimelineButtons.Value && TimelineCompatibilityHelper.IsTimelineAvailable())
+            if (TimelineCompatibilityHelper.IsTimelineAvailable())
                 interpolableButton.gameObject.SetActive(true);
 #endif
         }
