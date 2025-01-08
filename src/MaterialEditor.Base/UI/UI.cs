@@ -35,6 +35,8 @@ namespace MaterialEditorAPI
         private static ScrollRect MaterialEditorScrollableUI;
         private static InputField FilterInputField;
 
+        internal static Tooltip MaterialEditorTooltip;
+
         private static SelectListPanel MaterialEditorRendererList;
         private static List<Renderer> SelectedRenderers = new List<Renderer>();
         private static SelectListPanel MaterialEditorMaterialList;
@@ -93,6 +95,8 @@ namespace MaterialEditorAPI
             MaterialEditorMainPanel = UIUtility.CreatePanel("Panel", MaterialEditorWindow.transform);
             MaterialEditorMainPanel.color = Color.white;
             MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+
+            Tooltip.Instance.SetParent(MaterialEditorWindow);
 
             UIUtility.AddOutlineToObject(MaterialEditorMainPanel.transform, Color.black);
 

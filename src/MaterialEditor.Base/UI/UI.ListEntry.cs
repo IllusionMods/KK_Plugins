@@ -629,6 +629,8 @@ namespace MaterialEditorAPI
                         SelectInterpolableColorButton.onClick.RemoveAllListeners();
                         SelectInterpolableColorButton.onClick.AddListener(() => item.SelectInterpolableButtonColorOnClick());
 
+                        Tooltip.AddTooltip(SelectInterpolableColorButton.gameObject, item.LabelText);
+
                         break;
                     case ItemInfo.RowItemType.FloatProperty:
                         ShowFloat();
