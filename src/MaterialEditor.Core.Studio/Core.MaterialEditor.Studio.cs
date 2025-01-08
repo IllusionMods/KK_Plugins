@@ -15,6 +15,7 @@ using UILib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Illusion.Utils;
 using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
 using AIChara;
@@ -517,6 +518,37 @@ namespace KK_Plugins.MaterialEditor
             }
             else
                 GetSceneController().MaterialCopyRemove((int)data, material, go);
+        }
+
+        public override string GetMaterialNameOriginal(object data, Renderer renderer, Material material, GameObject gameObject)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = gameObject.GetComponentInParent<ChaControl>();
+                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialNamePropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, material, gameObject);
+            }
+            else
+                return GetSceneController().GetMaterialNamePropertyValueOriginal((int)data, renderer, material);
+        }
+        public override void SetMaterialName(object data, Renderer renderer, Material material, string value, GameObject gameObject)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = gameObject.GetComponentInParent<ChaControl>();
+                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialNameProperty(objectData.Slot, objectData.ObjectType, renderer, material, value, gameObject);
+            }
+            else
+                GetSceneController().SetMaterialNameProperty((int)data, renderer, material, value);
+        }
+        public override void RemoveMaterialName(object data, Renderer renderer, Material material, GameObject gameObject)
+        {
+            if (data is ObjectData objectData)
+            {
+                var chaControl = gameObject.GetComponentInParent<ChaControl>();
+                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialNameProperty(objectData.Slot, objectData.ObjectType, renderer, material, gameObject);
+            }
+            else
+                GetSceneController().RemoveMaterialNameProperty((int)data, renderer, material);
         }
 
         public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go)

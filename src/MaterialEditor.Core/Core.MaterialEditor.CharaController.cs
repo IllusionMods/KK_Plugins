@@ -33,6 +33,7 @@ namespace KK_Plugins.MaterialEditor
     {
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
         private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
+        private readonly List<MaterialNameProperty> MaterialNamePropertyList = new List<MaterialNameProperty>();
         private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
         private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
         private readonly List<MaterialKeywordProperty> MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
@@ -1312,6 +1313,52 @@ namespace KK_Plugins.MaterialEditor
 
             PurgeUnusedAnimation();
         }
+
+        internal void HandleMaterialNameChange(int slot, ObjectType objectType, Renderer renderer, Material material, string value, GameObject go)
+        {
+            value = value.Replace("(Instance)", "").Replace(" Instance", "").Trim();
+            Material existing = null;
+            foreach (var rend in GetRendererList(go))
+            {
+                foreach (var mat in GetMaterials(go, rend))
+                {
+                    if (mat.NameFormatted() == value)
+                    {
+                        if (rend == renderer) return;
+                        existing = mat;
+                        break;
+                    }
+                }
+                if (existing != null)
+                    break;
+            }
+
+            if (existing == null)
+            {
+                int idx = GetCoordinateIndex(objectType);
+                var shader = MaterialShaderList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == idx && x.Slot == slot && x.MaterialName == material.NameFormatted()).ToList();
+                var textures = MaterialTexturePropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == idx && x.Slot == slot && x.MaterialName == material.NameFormatted()).ToList();
+                var colors = MaterialColorPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == idx && x.Slot == slot && x.MaterialName == material.NameFormatted()).ToList();
+                var floats = MaterialFloatPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == idx && x.Slot == slot && x.MaterialName == material.NameFormatted()).ToList();
+                var keywords = MaterialKeywordPropertyList.Where(x => x.ObjectType == objectType && x.CoordinateIndex == idx && x.Slot == slot && x.MaterialName == material.NameFormatted()).ToList();
+                if (shader.Count == 1) MaterialShaderList.Add(new MaterialShader(objectType, idx, slot, value, shader[0].ShaderName, shader[0].ShaderNameOriginal, shader[0].RenderQueue, shader[0].RenderQueueOriginal));
+                foreach (var tex in textures) MaterialTexturePropertyList.Add(new MaterialTextureProperty(objectType, idx, slot, value, tex.Property, tex.TexID, tex.Offset, tex.OffsetOriginal, tex.Scale, tex.ScaleOriginal, tex.TexAnimationDef));
+                foreach (var col in colors) MaterialColorPropertyList.Add(new MaterialColorProperty(objectType, idx, slot, value, col.Property, col.Value, col.ValueOriginal));
+                foreach (var _float in floats) MaterialFloatPropertyList.Add(new MaterialFloatProperty(objectType, idx, slot, value, _float.Property, _float.Value, _float.ValueOriginal));
+                foreach (var kw in keywords) MaterialKeywordPropertyList.Add(new MaterialKeywordProperty(objectType, idx, slot, value, kw.Property, kw.Value, kw.ValueOriginal));
+            }
+            else
+            {
+                material.shader = existing.shader;
+                material.shaderKeywords = existing.shaderKeywords;
+                material.color = existing.color;
+                material.mainTexture = existing.mainTexture;
+                material.mainTextureOffset = existing.mainTextureOffset;
+                material.mainTextureScale = existing.mainTextureScale;
+                material.renderQueue = existing.renderQueue;
+            }
+        }
+
         /// <summary>
         /// Refresh the clothes MainTex, typically called after editing colors in the character maker
         /// </summary>
@@ -1724,6 +1771,79 @@ namespace KK_Plugins.MaterialEditor
                     MaterialEditorPlugin.Logger.LogMessage("Save and reload character or change outfits to reset normals.");
             }
             RendererPropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Property == property && x.RendererName == renderer.NameFormatted());
+        }
+
+        /// <summary>
+        /// Add a rename entry to be saved and loaded with the card and optionally also update the materials.
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="renderer">Renderer for which to rename the material</param>
+        /// <param name="material">Material being modified</param>
+        /// <param name="value">New name for the material</param>
+        /// <param name="go">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
+        public void SetMaterialNameProperty(int slot, ObjectType objectType, Renderer renderer, Material material, string value, GameObject go, bool setProperty = true)
+        {
+            var materialProperty = MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == renderer.NameFormatted() && x.Value == material.name);
+            if (materialProperty == null)
+            {
+                MaterialNamePropertyList.Add(new MaterialNameProperty(objectType, GetCoordinateIndex(objectType), slot, renderer, material, value));
+                HandleMaterialNameChange(slot, objectType, renderer, material, value, go);
+            }
+            else
+            {
+                if (value == materialProperty.ValueOriginal)
+                    RemoveMaterialNameProperty(slot, objectType, renderer, material, go, false);
+                else
+                {
+                    materialProperty.Value = value;
+                    HandleMaterialNameChange(slot, objectType, renderer, material, value, go);
+                }
+            }
+            if (setProperty)
+                MaterialAPI.SetName(go, renderer.NameFormatted(), material.name, value);
+        }
+        /// <summary>
+        /// Remove the saved material property value if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="renderer">Renderer for which to restore the original material name</param>
+        /// <param name="material">Material to restore the name for</param>
+        /// <param name="go">GameObject the material belongs to</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
+        public void RemoveMaterialNameProperty(int slot, ObjectType objectType, Renderer renderer, Material material, GameObject go, bool setProperty = true)
+        {
+            if (setProperty)
+            {
+                var original = GetMaterialNamePropertyValueOriginal(slot, objectType, renderer, material, go);
+                if (original != string.Empty)
+                    MaterialAPI.SetName(go, renderer.NameFormatted(), material.name, original);
+            }
+            MaterialNamePropertyList.RemoveAll(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == renderer.NameFormatted() && x.Value == material.name);
+        }
+        /// <summary>
+        /// Get the saved material property's current name or empty string if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="renderer">Renderer for which to check existence of modified material name</param>
+        /// <param name="material">Material to check if it's been renamed</param>
+        /// <param name="go">GameObject the material belongs to</param>
+        /// <returns>Saved material property's current name or empty string if none is saved</returns>
+        public string GetMaterialNamePropertyValue(int slot, ObjectType objectType, Renderer renderer, Material material, GameObject go)
+        {
+            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == renderer.NameFormatted() && x.Value == material.name)?.Value ?? "";
+        }
+        /// <summary>
+        /// Get the saved material property's original name or empty string if none is saved
+        /// </summary>
+        /// <param name="slot">Slot of the clothing (0=tops, 1=bottoms, etc.), the hair (0=back, 1=front, etc.), or of the accessory. Ignored for other object types.</param>
+        /// <param name="renderer">Renderer for which to check existence of modified material name</param>
+        /// <param name="material">Material to check if it's been renamed</param>
+        /// <param name="go">GameObject the material belongs to</param>
+        /// <returns>Saved material property's original value or null if none is saved</returns>
+        public string GetMaterialNamePropertyValueOriginal(int slot, ObjectType objectType, Renderer renderer, Material material, GameObject go)
+        {
+            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == renderer.NameFormatted() && x.Value == material.name)?.ValueOriginal ?? "";
         }
 
         /// <summary>
@@ -2832,6 +2952,67 @@ namespace KK_Plugins.MaterialEditor
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
+            }
+        }
+
+        [Serializable]
+        [MessagePackObject]
+        public class MaterialNameProperty
+        {
+            /// <summary>
+            /// Type of the object
+            /// </summary>
+            [Key("ObjectType")]
+            public ObjectType ObjectType;
+            /// <summary>
+            /// Coordinate index, always 0 except in Koikatsu
+            /// </summary>
+            [Key("CoordinateIndex")]
+            public int CoordinateIndex;
+            /// <summary>
+            /// Slot of the accessory, hair, or clothing
+            /// </summary>
+            [Key("Slot")]
+            public int Slot;
+            /// <summary>
+            /// Name of the renderer
+            /// </summary>
+            [Key("Renderer")]
+            public string Renderer;
+            /// <summary>
+            /// Name of the material
+            /// </summary>
+            [Key("MaterialName")]
+            public string MaterialName;
+            /// <summary>
+            /// Value
+            /// </summary>
+            [Key("Value")]
+            public string Value;
+            /// <summary>
+            /// Original value
+            /// </summary>
+            [Key("ValueOriginal")]
+            public string ValueOriginal;
+
+            /// <summary>
+            /// Data storage class for float properties
+            /// </summary>
+            /// <param name="objectType">Type of the object</param>
+            /// <param name="coordinateIndex">Coordinate index, always 0 except in Koikatsu</param>
+            /// <param name="slot">Slot of the accessory, hair, or clothing</param>
+            /// <param name="renderer">Renderer being modified</param>
+            /// <param name="material">Material being renamed</param>
+            /// <param name="value">New name for the material</param>
+            public MaterialNameProperty(ObjectType objectType, int coordinateIndex, int slot, Renderer renderer, Material material, string value)
+            {
+                ObjectType = objectType;
+                CoordinateIndex = coordinateIndex;
+                Slot = slot;
+                Renderer = renderer.NameFormatted();
+                MaterialName = material.name;
+                Value = value;
+                ValueOriginal = material.name;
             }
         }
 

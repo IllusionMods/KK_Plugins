@@ -202,6 +202,32 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
+        /// Remove any material copies added by MaterialEditor for the specified GameObject
+        /// </summary>
+        /// <param name="gameObject">GameObject to which the material belongs</param>
+        /// <param name="rendererName">NameFormatted() name of the renderer</param>
+        /// <param name="materialName">Raw name of the material</param>
+        /// <param name="value">New name of the material</param>
+        public static bool SetName(GameObject gameObject, string rendererName, string materialName, string value)
+        {
+            bool didSet = false;
+
+            foreach (var renderer in GetRendererList(gameObject))
+            {
+                if (renderer.NameFormatted() == rendererName)
+                {
+                    var materials = GetMaterials(gameObject, renderer).Where(mat => mat.name == materialName);
+                    foreach (var mat in materials)
+                    {
+                        mat.name = value;
+                        didSet = true;
+                    }
+                }
+            }
+            return didSet;
+        }
+
+        /// <summary>
         /// Set the value of the specified material property
         /// </summary>
         /// <param name="gameObject">GameObject to search for the material. If this GameObject is a ChaControl, only parts comprising the body and face will be searched, not clothes, accessories, etc.</param>

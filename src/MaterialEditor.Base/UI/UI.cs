@@ -311,22 +311,25 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="go">GameObject for which to read the renderers</param>
         /// <param name="material">Material to be renamed</param>
-        private void PopulateRenameList(GameObject go, Material material)
+        private void PopulateRenameList(GameObject go, Material material, object data)
         {
             SelectedMaterialRenderers.Clear();
             MaterialEditorRenameList.ClearList();
 
             // Setup text field
-            string original = material.name;
             string formattedName = material.NameFormatted().Split(new[] { MaterialCopyPostfix }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-            string suffix = material.NameFormatted().Replace(formattedName, "");
             MaterialEditorRenameField.text = formattedName;
 
             // Setup button
+            string original = material.name;
+            string suffix = material.NameFormatted().Replace(formattedName, "");
             MaterialEditorRenameButton.onClick.RemoveAllListeners();
             MaterialEditorRenameButton.onClick.AddListener(() =>
             {
-                // TODO
+                string safeNewName = MaterialEditorRenameField.text.Replace(MaterialCopyPostfix, "").Trim() + suffix;
+                foreach (var renderer in SelectedMaterialRenderers)
+                    SetMaterialName(data, renderer, material, safeNewName, go);
+                RefreshUI();
             });
 
             // Setup renderer list
@@ -339,6 +342,7 @@ namespace MaterialEditorAPI
                         SelectedMaterialRenderers.Add(renderer);
                     else
                         SelectedMaterialRenderers.Remove(renderer);
+                    MaterialEditorRenameButton.interactable = SelectedMaterialRenderers.Count > 0;
                 });
             }
         }
@@ -553,7 +557,7 @@ namespace MaterialEditorAPI
                     }
                     ViewListButton.GetComponentInChildren<Text>().text = "<";
                     MaterialEditorRenameList.ToggleVisibility(true);
-                    PopulateRenameList(go, mat);
+                    PopulateRenameList(go, mat, data);
                     RenameListVisible = true;
                 };
                 items.Add(materialItem);
@@ -909,6 +913,10 @@ namespace MaterialEditorAPI
         public abstract void MaterialCopyEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialPasteEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialCopyRemove(object data, Material material, GameObject gameObject);
+
+        public abstract string GetMaterialNameOriginal(object data, Renderer renderer, Material material, GameObject gameObject);
+        public abstract void SetMaterialName(object data, Renderer renderer, Material material, string value, GameObject gameObject);
+        public abstract void RemoveMaterialName(object data, Renderer renderer, Material material, GameObject gameObject);
 
         public abstract string GetMaterialShaderNameOriginal(object data, Material material, GameObject gameObject);
         public abstract void SetMaterialShaderName(object data, Material material, string value, GameObject gameObject);

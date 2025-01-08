@@ -26,6 +26,7 @@ namespace KK_Plugins.MaterialEditor
     {
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
         private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
+        private readonly List<MaterialNameProperty> MaterialNamePropertyList = new List<MaterialNameProperty>();
         private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
         private readonly List<MaterialKeywordProperty> MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
         private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
@@ -633,6 +634,50 @@ namespace KK_Plugins.MaterialEditor
             base.OnObjectsSelected(objectCtrlInfo);
         }
 
+        internal void HandleMaterialNameChange(int id, Renderer renderer, Material material, string value, GameObject go)
+        {
+            value = value.Replace("(Instance)", "").Replace(" Instance", "").Trim();
+            Material existing = null;
+            foreach (var rend in GetRendererList(go))
+            {
+                foreach (var mat in GetMaterials(go, rend))
+                {
+                    if (mat.NameFormatted() == value)
+                    {
+                        if (rend == renderer) return;
+                        existing = mat;
+                        break;
+                    }
+                }
+                if (existing != null)
+                    break;
+            }
+
+            if (existing == null)
+            {
+                var shader = MaterialShaderList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()).ToList();
+                var textures = MaterialTexturePropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()).ToList();
+                var colors = MaterialColorPropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()).ToList();
+                var floats = MaterialFloatPropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()).ToList();
+                var keywords = MaterialKeywordPropertyList.Where(x => x.ID == id && x.MaterialName == material.NameFormatted()).ToList();
+                if (shader.Count == 1) MaterialShaderList.Add(new MaterialShader(id, value, shader[0].ShaderName, shader[0].ShaderNameOriginal, shader[0].RenderQueue, shader[0].RenderQueueOriginal));
+                foreach (var tex in textures) MaterialTexturePropertyList.Add(new MaterialTextureProperty(id, value, tex.Property, tex.TexID, tex.Offset, tex.OffsetOriginal, tex.Scale, tex.ScaleOriginal, tex.TexAnimationDef));
+                foreach (var col in colors) MaterialColorPropertyList.Add(new MaterialColorProperty(id, value, col.Property, col.Value, col.ValueOriginal));
+                foreach (var _float in floats) MaterialFloatPropertyList.Add(new MaterialFloatProperty(id, value, _float.Property, _float.Value, _float.ValueOriginal));
+                foreach (var kw in keywords) MaterialKeywordPropertyList.Add(new MaterialKeywordProperty(id, value, kw.Property, kw.Value, kw.ValueOriginal));
+            }
+            else
+            {
+                material.shader = existing.shader;
+                material.shaderKeywords = existing.shaderKeywords;
+                material.color = existing.color;
+                material.mainTexture = existing.mainTexture;
+                material.mainTextureOffset = existing.mainTextureOffset;
+                material.mainTextureScale = existing.mainTextureScale;
+                material.renderQueue = existing.renderQueue;
+            }
+        }
+
         /// <summary>
         /// Finds the texture bytes in the dictionary of textures and returns its ID. If not found, adds the texture to the dictionary and returns the ID of the added texture.
         /// </summary>
@@ -1001,6 +1046,81 @@ namespace KK_Plugins.MaterialEditor
             }
 
             RendererPropertyList.RemoveAll(x => x.ID == id && x.Property == property && x.RendererName == renderer.NameFormatted());
+        }
+
+        /// <summary>
+        /// Add a name property to be saved and loaded with the scene and optionally also update the materials.
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="renderer">Renderer being modified</param>
+        /// <param name="material">Material being renamed</param>
+        /// <param name="value">New name for the material</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
+        public void SetMaterialNameProperty(int id, Renderer renderer, Material material, string value, bool setProperty = true)
+        {
+            GameObject go = GetObjectByID(id);
+            var materialProperty = MaterialNamePropertyList.FirstOrDefault(x => x.ID == id && x.Renderer == renderer.NameFormatted() && x.Value == material.name);
+            if (materialProperty == null)
+            {
+                MaterialNamePropertyList.Add(new MaterialNameProperty(id, renderer, material, value));
+                HandleMaterialNameChange(id, renderer, material, value, go);
+            }
+            else
+            {
+                if (value == materialProperty.MaterialName.Replace("(Instance)", "").Replace(" Instance", "").Trim())
+                    RemoveMaterialNameProperty(id, renderer, material, false);
+                else
+                {
+                    materialProperty.Value = value;
+                    HandleMaterialNameChange(id, renderer, material, value, go);
+                }
+            }
+
+            if (setProperty)
+                MaterialAPI.SetName(go, renderer.NameFormatted(), material.name, value);
+        }
+        /// <summary>
+        /// Get the saved material name or an empty string if none is saved
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="renderer">Renderer that the material belongs to</param>
+        /// <param name="material">Material to check for existing name property</param>
+        /// <returns>Saved material name or empty string if none is saved</returns>
+        public string GetMaterialNamePropertyValue(int id, Renderer renderer, Material material)
+        {
+            return MaterialNamePropertyList.FirstOrDefault(x => x.ID == id && x.Renderer == renderer.NameFormatted() && x.Value == material.name)?.Value ?? string.Empty;
+        }
+        /// <summary>
+        /// Get the original material name or an empty string if the material isn't renamed
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="renderer">Renderer that the material belongs to</param>
+        /// <param name="material">Material to check for an original name</param>
+        /// <returns>Original material name or empty string if the material isn't renamed</returns>
+        public string GetMaterialNamePropertyValueOriginal(int id, Renderer renderer, Material material)
+        {
+            return MaterialNamePropertyList.FirstOrDefault(x => x.ID == id && x.Renderer == renderer.NameFormatted() && x.Value == material.name)?.ValueOriginal ?? string.Empty;
+        }
+        /// <summary>
+        /// Remove the saved material name property if one is saved and optionally also update the materials
+        /// </summary>
+        /// <param name="id">Item ID as found in studio's dicObjectCtrl</param>
+        /// <param name="renderer">Renderer that the material belongs to</param>
+        /// <param name="material">Material to check for an original name</param>
+        /// <param name="setProperty">Whether to also apply the value to the materials</param>
+        public void RemoveMaterialNameProperty(int id, Renderer renderer, Material material, bool setProperty = true)
+        {
+            GameObject go = GetObjectByID(id);
+            if (setProperty)
+            {
+                var original = GetMaterialNamePropertyValueOriginal(id, renderer, material);
+                if (original != string.Empty)
+                {
+                    MaterialAPI.SetName(go, renderer.NameFormatted(), material.name, original);
+                }
+            }
+
+            MaterialNamePropertyList.RemoveAll(x => x.ID == id && x.Renderer == renderer.NameFormatted() && x.Value == material.name);
         }
 
         /// <summary>
@@ -1775,6 +1895,56 @@ namespace KK_Plugins.MaterialEditor
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
+            }
+        }
+
+        /// <summary>
+        /// Data storage class for name properties
+        /// </summary>
+        [Serializable]
+        [MessagePackObject]
+        public class MaterialNameProperty
+        {
+            /// <summary>
+            /// ID of the item
+            /// </summary>
+            [Key("ID")]
+            public int ID;
+            /// <summary>
+            /// Name of the renderer
+            /// </summary>
+            [Key("Property")]
+            public string Renderer;
+            /// <summary>
+            /// Name of the material
+            /// </summary>
+            [Key("MaterialName")]
+            public string MaterialName;
+            /// <summary>
+            /// Value
+            /// </summary>
+            [Key("Value")]
+            public string Value;
+            /// <summary>
+            /// Original value
+            /// </summary>
+            [Key("ValueOriginal")]
+            public string ValueOriginal;
+
+            /// <summary>
+            /// Data storage class for float properties
+            /// </summary>
+            /// <param name="id">ID of the item</param>
+            /// <param name="renderer">Renderer being modified</param>
+            /// <param name="material">Material being renamed</param>
+            /// <param name="value">New name for the material</param>
+            public MaterialNameProperty(int id, Renderer renderer, Material material, string value)
+            {
+                ID = id;
+                Renderer = renderer.NameFormatted();
+                MaterialName = material.name;
+                Value = value;
+                ValueOriginal = material.name;
             }
         }
 
