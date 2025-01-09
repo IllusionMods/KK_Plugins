@@ -1316,7 +1316,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal void HandleMaterialNameChange(int slot, ObjectType objectType, Renderer renderer, Material material, string value, GameObject go)
         {
-            value = value.Replace("(Instance)", "").Replace(" Instance", "").Trim();
+            value = value.FormatShadingObjectName();
             Material existing = null;
             foreach (var rend in GetRendererList(go))
             {
@@ -1792,7 +1792,7 @@ namespace KK_Plugins.MaterialEditor
             }
             else
             {
-                if (value == materialProperty.ValueOriginal)
+                if (value.FormatShadingObjectName() == materialProperty.ValueOriginal.FormatShadingObjectName())
                     RemoveMaterialNameProperty(slot, objectType, renderer, material, go, false);
                 else
                 {
@@ -2948,7 +2948,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                RendererName = rendererName.Replace("(Instance)", "").Trim();
+                RendererName = rendererName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
@@ -3075,7 +3075,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
@@ -3140,7 +3140,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
@@ -3205,7 +3205,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
@@ -3294,7 +3294,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 Property = property;
                 TexID = texID;
                 Offset = offset;
@@ -3383,7 +3383,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 ShaderName = shaderName;
                 ShaderNameOriginal = shaderNameOriginal;
                 RenderQueue = renderQueue;
@@ -3403,7 +3403,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 ShaderName = shaderName;
                 ShaderNameOriginal = shaderNameOriginal;
             }
@@ -3421,7 +3421,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 RenderQueue = renderQueue;
                 RenderQueueOriginal = renderQueueOriginal;
             }
@@ -3471,7 +3471,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 MaterialCopyName = materialCopyName;
             }
         }
@@ -3532,7 +3532,7 @@ namespace KK_Plugins.MaterialEditor
                 ObjectType = objectType;
                 CoordinateIndex = coordinateIndex;
                 Slot = slot;
-                ProjectorName = projectorName.Replace("(Instance)", "").Trim();
+                ProjectorName = projectorName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;

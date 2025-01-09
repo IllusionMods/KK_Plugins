@@ -636,7 +636,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal void HandleMaterialNameChange(int id, Renderer renderer, Material material, string value, GameObject go)
         {
-            value = value.Replace("(Instance)", "").Replace(" Instance", "").Trim();
+            value = value.FormatShadingObjectName();
             Material existing = null;
             foreach (var rend in GetRendererList(go))
             {
@@ -1067,7 +1067,7 @@ namespace KK_Plugins.MaterialEditor
             }
             else
             {
-                if (value == materialProperty.MaterialName.Replace("(Instance)", "").Replace(" Instance", "").Trim())
+                if (value.FormatShadingObjectName() == materialProperty.MaterialName.FormatShadingObjectName())
                     RemoveMaterialNameProperty(id, renderer, material, false);
                 else
                 {
@@ -1891,7 +1891,7 @@ namespace KK_Plugins.MaterialEditor
             public RendererProperty(int id, string rendererName, RendererProperties property, string value, string valueOriginal)
             {
                 ID = id;
-                RendererName = rendererName.Replace("(Instance)", "").Trim();
+                RendererName = rendererName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
@@ -1992,7 +1992,7 @@ namespace KK_Plugins.MaterialEditor
             public MaterialFloatProperty(int id, string materialName, string property, string value, string valueOriginal)
             {
                 ID = id;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
@@ -2043,7 +2043,7 @@ namespace KK_Plugins.MaterialEditor
             public MaterialKeywordProperty(int id, string materialName, string property, bool value, bool valueOriginal)
             {
                 ID = id;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
@@ -2094,7 +2094,7 @@ namespace KK_Plugins.MaterialEditor
             public MaterialColorProperty(int id, string materialName, string property, Color value, Color valueOriginal)
             {
                 ID = id;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
@@ -2168,7 +2168,7 @@ namespace KK_Plugins.MaterialEditor
             public MaterialTextureProperty(int id, string materialName, string property, int? texID = null, Vector2? offset = null, Vector2? offsetOriginal = null, Vector2? scale = null, Vector2? scaleOriginal = null, MEAnimationDefine texAnimationDef = null)
             {
                 ID = id;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 Property = property;
                 TexID = texID;
                 Offset = offset;
@@ -2235,7 +2235,7 @@ namespace KK_Plugins.MaterialEditor
             public MaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal, int? renderQueue, int? renderQueueOriginal)
             {
                 ID = id;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 ShaderName = shaderName;
                 ShaderNameOriginal = shaderNameOriginal;
                 RenderQueue = renderQueue;
@@ -2251,7 +2251,7 @@ namespace KK_Plugins.MaterialEditor
             public MaterialShader(int id, string materialName, string shaderName, string shaderNameOriginal)
             {
                 ID = id;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 ShaderName = shaderName;
                 ShaderNameOriginal = shaderNameOriginal;
             }
@@ -2265,7 +2265,7 @@ namespace KK_Plugins.MaterialEditor
             public MaterialShader(int id, string materialName, int renderQueue, int renderQueueOriginal)
             {
                 ID = id;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 RenderQueue = renderQueue;
                 RenderQueueOriginal = renderQueueOriginal;
             }
@@ -2303,7 +2303,7 @@ namespace KK_Plugins.MaterialEditor
             public MaterialCopy(int id, string materialName, string materialCopyName)
             {
                 ID = id;
-                MaterialName = materialName.Replace("(Instance)", "").Trim();
+                MaterialName = materialName.FormatShadingObjectName();
                 MaterialCopyName = materialCopyName;
             }
         }
@@ -2352,7 +2352,7 @@ namespace KK_Plugins.MaterialEditor
             public ProjectorProperty(int id, string projectorName, ProjectorProperties property, string value, string valueOriginal)
             {
                 ID = id;
-                ProjectorName = projectorName.Replace("(Instance)", "").Trim();
+                ProjectorName = projectorName.FormatShadingObjectName();
                 Property = property;
                 Value = value;
                 ValueOriginal = valueOriginal;
