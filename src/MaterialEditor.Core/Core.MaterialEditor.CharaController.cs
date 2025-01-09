@@ -775,7 +775,7 @@ namespace KK_Plugins.MaterialEditor
                 CorrectFace();
 #endif
 
-            //Instantiate all material copies before applying any edits to endure edits are applied to copies
+            //Instantiate all material copies before applying any edits to ensure edits are applied to copies
             for (var i = 0; i < MaterialCopyList.Count; i++)
             {
                 var property = MaterialCopyList[i];
