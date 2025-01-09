@@ -202,7 +202,7 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
-        /// Remove any material copies added by MaterialEditor for the specified GameObject
+        /// Rename the material specified by GameObject, Renderer name, and Material name
         /// </summary>
         /// <param name="gameObject">GameObject to which the material belongs</param>
         /// <param name="rendererName">NameFormatted() name of the renderer</param>
