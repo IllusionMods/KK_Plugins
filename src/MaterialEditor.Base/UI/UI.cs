@@ -45,6 +45,7 @@ namespace MaterialEditorAPI
         private static SelectListPanel MaterialEditorRenameList;
         private static InputField MaterialEditorRenameField;
         private static Button MaterialEditorRenameButton;
+        private static Text MaterialEditorRenameMaterial;
         private static List<Renderer> SelectedMaterialRenderers = new List<Renderer>();
         private static bool RenameListVisible = false;
 
@@ -193,6 +194,12 @@ namespace MaterialEditorAPI
             MaterialEditorRenameField.transform.SetRect(0, 0, 1, 0, 0, -(PanelHeight + MarginSize / 2), 0, -(MarginSize / 2));
             MaterialEditorRenameButton = UIUtility.CreateButton("MaterialEditorRenameButton", MaterialEditorRenameList.Panel.transform, "Rename");
             MaterialEditorRenameButton.transform.SetRect(0, 0, 1, 0, 0, -(2 * PanelHeight + MarginSize), 0, -(PanelHeight + MarginSize));
+            MaterialEditorRenameList.Panel.transform.GetChild(0).SetRect(0, 1, 0.4f, 1, 5, -40, -2, -27.5f);
+            MaterialEditorRenameList.Panel.transform.GetChild(1).SetRect(0.4f, 1, 1, 1, 2, -42.5f, -2, -25);
+            MaterialEditorRenameList.Panel.transform.GetChild(2).SetRect(0, 0, 1, 1, 2, 2, -2, -42.5f);
+            MaterialEditorRenameMaterial = Instantiate(MaterialEditorRenameList.Panel.transform.GetChild(0), MaterialEditorRenameList.Panel.transform).GetComponent<Text>();
+            MaterialEditorRenameMaterial.gameObject.name = nameof(MaterialEditorRenameMaterial);
+            MaterialEditorRenameMaterial.transform.SetRect(0, 1, 1, 1, 5, -20, -2, -5);
         }
 
         /// <summary>
@@ -315,6 +322,9 @@ namespace MaterialEditorAPI
         {
             SelectedMaterialRenderers.Clear();
             MaterialEditorRenameList.ClearList();
+
+            // Setup title
+            MaterialEditorRenameMaterial.text = material.NameFormatted();
 
             // Setup text field
             string formattedName = material.NameFormatted().Split(new[] { MaterialCopyPostfix }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
