@@ -61,9 +61,7 @@ namespace MaterialEditorAPI
 
         public void SetActive(bool active) 
         {
-            if(MaterialEditorPluginBase.Showtooltips.Value)
-                Panel.gameObject.SetActive(active);
-            else if(!MaterialEditorPluginBase.Showtooltips.Value && !active)
+            if (MaterialEditorPluginBase.Showtooltips.Value || !active)
                 Panel.gameObject.SetActive(active);
         }
 
