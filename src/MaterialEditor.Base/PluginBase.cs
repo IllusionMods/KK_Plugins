@@ -49,7 +49,6 @@ namespace MaterialEditorAPI
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
         public static ConfigEntry<bool> PersistFilter { get; set; }
         public static ConfigEntry<bool> Showtooltips { get; set; }
-        public static ConfigEntry<bool> ShowTimelineButtons { get; set; }
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFarClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFieldOfViewMax { get; set; }
@@ -74,7 +73,6 @@ namespace MaterialEditorAPI
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
             PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
-            ShowTimelineButtons = Config.Bind("Config", "Show Timeline Buttons", false, "Show buttons in the UI (in studio only) to add interpolables to the timeline. Requires game restart to take effect");
 
             //Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
