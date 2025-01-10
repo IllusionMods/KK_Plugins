@@ -355,6 +355,12 @@ namespace MaterialEditorAPI
         /// <param name="filter">Comma separated list of text to filter the results</param>
         protected void PopulateList(GameObject go, object data, string filter = null)
         {
+            if (RenameListVisible)
+            {
+                MaterialEditorRenameList.ToggleVisibility(false);
+                RenameListVisible = false;
+            }
+
             if (filter == null)
             {
                 if (PersistFilter.Value) filter = CurrentFilter;
