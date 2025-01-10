@@ -58,7 +58,8 @@ namespace MaterialEditorAPI
 
         public void SetActive(bool active) 
         {
-            Panel.gameObject.SetActive(active);
+            if(MaterialEditorPluginBase.Showtooltips.Value)
+                Panel.gameObject.SetActive(active);
         }
 
         public static PointerEnterHandler AddTooltip(GameObject go, string text)
