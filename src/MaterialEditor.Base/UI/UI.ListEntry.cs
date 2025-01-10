@@ -127,10 +127,10 @@ namespace MaterialEditorAPI
                         SetLabelText(RendererLabel, item.LabelText, false, null, RendererPanel);
                         ExportUVButton.onClick.RemoveAllListeners();
                         ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
-                        TooltipManager.AddTooltip(ExportUVButton.gameObject, "Export the UV map of this renderer.\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model");
+                        TooltipManager.AddTooltip(ExportUVButton.gameObject, "Export the UV map of this renderer.\n\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model");
                         ExportObjButton.onClick.RemoveAllListeners();
                         ExportObjButton.onClick.AddListener(() => item.ExportObjOnClick());
-                        TooltipManager.AddTooltip(ExportObjButton.gameObject, "Export the renderer as a .obj.\nYou can use the <i>ExportBakedMesh</i> and <i>ExportBakedWorldPosition</i> config options to change the exporting behaviour");
+                        TooltipManager.AddTooltip(ExportObjButton.gameObject, "Export the renderer as a .obj.\n\nYou can use the <i>ExportBakedMesh</i> and <i>ExportBakedWorldPosition</i> config options to change the exporting behaviour");
                         SelectInterpolableRendererButton.onClick.RemoveAllListeners();
                         SelectInterpolableRendererButton.onClick.AddListener(() => item.SelectInterpolableButtonRendererOnClick());
                         TooltipManager.AddTooltip(SelectInterpolableRendererButton.gameObject, "Select the properties (Enabled, Shadow casting mode and Receive shadows) of the currently selected renderer as interpolables in timeline");
@@ -150,6 +150,7 @@ namespace MaterialEditorAPI
                                 item.RendererEnabledOnReset();
                             SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal, RendererEnabledResetButton, RendererEnabledPanel);
                         });
+                        TooltipManager.AddTooltip(RendererEnabledToggle.gameObject, "Toggle the visibility of this renderer on/off");
 
                         RendererEnabledResetButton.onClick.RemoveAllListeners();
                         RendererEnabledResetButton.onClick.AddListener(() => RendererEnabledToggle.isOn = item.RendererEnabledOriginal);
@@ -170,6 +171,10 @@ namespace MaterialEditorAPI
                                 item.RendererShadowCastingModeOnReset();
                             SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal, RendererShadowCastingModeResetButton, RendererShadowCastingModePanel);
                         });
+                        TooltipManager.AddTooltip(RendererShadowCastingModeDropdown.gameObject, @"- Off: Renderer casts no shadows
+- On: Renderer casts shadows
+- Two Sided: Always cast shadows from any direction, even for single sided objects
+- Shadows Only: Renderer is invisible but still casts shadows");
 
                         RendererShadowCastingModeResetButton.onClick.RemoveAllListeners();
                         RendererShadowCastingModeResetButton.onClick.AddListener(() => RendererShadowCastingModeDropdown.value = item.RendererShadowCastingModeOriginal);
@@ -190,6 +195,7 @@ namespace MaterialEditorAPI
                                 item.RendererReceiveShadowsOnReset();
                             SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal, RendererReceiveShadowsResetButton, RendererReceiveShadowsPanel);
                         });
+                        TooltipManager.AddTooltip(RendererReceiveShadowsToggle.gameObject, "Toggle if the renderer can have shadows cast on it on/off");
 
                         RendererReceiveShadowsResetButton.onClick.RemoveAllListeners();
                         RendererReceiveShadowsResetButton.onClick.AddListener(() => RendererReceiveShadowsToggle.isOn = item.RendererReceiveShadowsOriginal);
@@ -210,6 +216,7 @@ namespace MaterialEditorAPI
                                 item.RendererUpdateWhenOffscreenOnReset();
                             SetLabelText(RendererUpdateWhenOffscreenLabel, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal, RendererUpdateWhenOffscreenResetButton, RendererUpdateWhenOffscreenPanel);
                         });
+                        TooltipManager.AddTooltip(RendererUpdateWhenOffscreenToggle.gameObject, "When on, a renderer will always stay renderer, even when considered to be off-screen.\n\n This is handy for when the bounding box of an object is configured improperly and dissapears when it should still be visible");
 
                         RendererUpdateWhenOffscreenResetButton.onClick.RemoveAllListeners();
                         RendererUpdateWhenOffscreenResetButton.onClick.AddListener(() => RendererUpdateWhenOffscreenToggle.isOn = item.RendererUpdateWhenOffscreenOriginal);
@@ -230,6 +237,7 @@ namespace MaterialEditorAPI
                                 item.RendererRecalculateNormalsOnReset();
                             SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal, RendererRecalculateNormalsResetButton, RendererRecalculateNormalsPanel);
                         });
+                        TooltipManager.AddTooltip(RendererRecalculateNormalsToggle.gameObject, "Recalculate the normals of this renderer based on its current shape, instead of its original shape.\n\nOnly available on skinned mesh renderers");
 
                         RendererRecalculateNormalsResetButton.onClick.RemoveAllListeners();
                         RendererRecalculateNormalsResetButton.onClick.AddListener(() => RendererRecalculateNormalsToggle.isOn = item.RendererRecalculateNormalsOriginal);
@@ -242,8 +250,10 @@ namespace MaterialEditorAPI
                         MaterialText.text = item.MaterialName;
                         MaterialCopyButton.onClick.RemoveAllListeners();
                         MaterialCopyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
+                        TooltipManager.AddTooltip(MaterialCopyButton.gameObject, "Copy all the <b>edits</b> of this material");
                         MaterialPasteButton.onClick.RemoveAllListeners();
                         MaterialPasteButton.onClick.AddListener(() => item.MaterialOnPaste.Invoke());
+                        TooltipManager.AddTooltip(MaterialPasteButton.gameObject, "Paste all the copied edits");
                         if (MaterialEditorPluginBase.CopyData.IsEmpty)
                         {
                             MaterialPasteButton.enabled = false;
@@ -261,11 +271,13 @@ namespace MaterialEditorAPI
                         {
                             Text text = MaterialCopyRemove.GetComponentInChildren<Text>();
                             text.text = "Remove Material";
+                            TooltipManager.AddTooltip(MaterialCopyRemove.gameObject, "Remove this copied material");
                         }
                         else
                         {
                             Text text = MaterialCopyRemove.GetComponentInChildren<Text>();
                             text.text = "Copy Material";
+                            TooltipManager.AddTooltip(MaterialCopyRemove.gameObject, "Make a copy of this material.\n\nUseful for overlaying different effects onto an object with different material shaders/properties");
                         }
                         if (item.MaterialOnCopyRemove != null)
                         {
@@ -329,6 +341,7 @@ namespace MaterialEditorAPI
                                 item.ShaderRenderQueueOnReset();
                             SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, ShaderRenderQueueResetButton, ShaderRenderQueuePanel);
                         });
+                        TooltipManager.AddTooltip(ShaderRenderQueueInput.gameObject, "The order in which a material is rendered. Higher render queues get rendered later");
 
                         ShaderRenderQueueResetButton.onClick.RemoveAllListeners();
                         ShaderRenderQueueResetButton.onClick.AddListener(() =>

@@ -114,12 +114,20 @@ namespace MaterialEditorAPI
             FilterInputField.text = CurrentFilter;
             FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 1f, 1f, 100f, -1f);
             FilterInputField.onValueChanged.AddListener(RefreshUI);
+            TooltipManager.AddTooltip(FilterInputField.gameObject, @"Filter visible items in the window.
+
+- Searches for renderers, materials and projectors
+- Searches starting with '_' will search for material properties
+- Combine multiple statements using a comma (an entry just has to match any of the search terms)
+- Use a '*' as a wildcard for any amount of characters (e.g. ""_pattern*1"" will find the ""PatternMask1"" property)
+- Use a '?' as a wildcard for a single character");
 
             var persistSearch = UIUtility.CreateToggle("PersistSearch", DragPanel.transform, "");
             persistSearch.transform.SetRect(0f, 1f, 1f, 0.5f, 100f, 0f, 0, 10f);
             persistSearch.Set(PersistFilter.Value);
             persistSearch.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 0f, 0f, -19f, 19f, -1f);
             persistSearch.onValueChanged.AddListener((value) => PersistFilter.Value = value);
+            TooltipManager.AddTooltip(persistSearch.gameObject, "Keeps the filter between instances of this window instead of resetting them");
 
             //Don't use text withing the toggle itself to prevent weird scaling issues
             var persistSearchText = UIUtility.CreateText("PersistSearchText", DragPanel.transform, "Persist search");
