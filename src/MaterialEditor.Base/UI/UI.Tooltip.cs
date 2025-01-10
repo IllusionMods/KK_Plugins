@@ -7,45 +7,38 @@ using static MaterialEditorAPI.MaterialEditorPluginBase;
 
 namespace MaterialEditorAPI
 {
-    internal class Tooltip
+    internal class TooltipManager : MonoBehaviour
     {
-        private static Tooltip instance;
-        public static Tooltip Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new Tooltip();
-                }
-                return instance;
-            }
-        }
+        private static TooltipManager Instance;
         public Image Panel { get; private set; } = null;
         private RectTransform panelTransform = null;
-        private Canvas parent = null;
-        private readonly Text tooltipText;
+        private Text tooltipText;
 
-        private Tooltip()
+        internal static void Init(Transform parent)
         {
-            Panel = UIUtility.CreatePanel($"TooltipPanel");
-            panelTransform = (RectTransform)Panel.transform;
-            Panel.color = new Color(0.42f, 0.42f, 0.42f);
+            var tooltip = parent.gameObject.AddComponent<TooltipManager>();
 
-            tooltipText = UIUtility.CreateText($"ToolTipText", Panel.transform, "");
-            //tooltipText.transform.SetRect(0f, 1f, 0.4f, 1f, 5f, -MaterialEditorUI.HeaderSize, -2f, -2f);
+            var panel = UIUtility.CreatePanel($"TooltipPanel", parent);
+            panel.color = new Color(0.42f, 0.42f, 0.42f);
+
+            var tooltipText = UIUtility.CreateText($"ToolTipText", panel.transform, "");
             tooltipText.alignment = TextAnchor.MiddleCenter;
             tooltipText.resizeTextForBestFit = false;
             tooltipText.resizeTextMaxSize = 11;
             tooltipText.resizeTextMinSize = 11;
 
-            var layout = Panel.gameObject.AddComponent<HorizontalLayoutGroup>();
+            var layout = panel.gameObject.AddComponent<HorizontalLayoutGroup>();
             layout.padding = new RectOffset(4, 4, 2, 2);
-            var contentSizeFitter = Panel.gameObject.AddComponent<ContentSizeFitter>();
+            var contentSizeFitter = panel.gameObject.AddComponent<ContentSizeFitter>();
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
             contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            Panel.gameObject.SetActive(false);
+            panel.gameObject.SetActive(false);
+
+            tooltip.Panel = panel;
+            tooltip.panelTransform = (RectTransform)panel.transform;
+            tooltip.tooltipText = tooltipText;
+            Instance = tooltip;
         }
 
         public void SetToolTipText(string text, bool setActive = false)
@@ -59,19 +52,6 @@ namespace MaterialEditorAPI
         public void SetActive(bool active) 
         {
             Panel.gameObject.SetActive(active);
-        }
-
-
-        public void SetParent(Canvas parent)
-        {
-            var transform = parent.transform;
-                Panel.transform.SetParent(transform, false);
-            this.parent = parent;
-        }
-
-        public bool IsActive()
-        {
-            return Panel.gameObject.activeInHierarchy;
         }
 
         public void SetPosition(GameObject go)
