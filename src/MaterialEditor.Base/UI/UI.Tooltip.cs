@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using UILib;
+﻿using UILib;
 using UnityEngine;
 using UnityEngine.UI;
-using static MaterialEditorAPI.MaterialEditorPluginBase;
 
 namespace MaterialEditorAPI
 {
@@ -14,29 +11,39 @@ namespace MaterialEditorAPI
         private RectTransform panelTransform = null;
         private Text tooltipText;
 
+        private void Update()
+        {
+            var newPos = Input.mousePosition / panelTransform.localScale.x;
+            panelTransform.position = new Vector3(newPos.x + 5, newPos.y + 5, newPos.z);
+        }
+
         internal static void Init(Transform parent)
         {
             var tooltip = parent.gameObject.AddComponent<TooltipManager>();
 
             var panel = UIUtility.CreatePanel($"TooltipPanel", parent);
-            panel.color = new Color(0.42f, 0.42f, 0.42f);
+            var panelTransform = (RectTransform)panel.transform;
+
+            panel.color = new Color(0.2f, 0.2f, 0.2f, 0.98f);
+            panelTransform.pivot = Vector3.zero;
+            panelTransform.anchorMax = Vector3.zero;
+            panelTransform.anchorMin = Vector3.zero;
+            panelTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 200);
 
             var tooltipText = UIUtility.CreateText($"ToolTipText", panel.transform, "");
             tooltipText.alignment = TextAnchor.MiddleCenter;
             tooltipText.resizeTextForBestFit = false;
-            tooltipText.resizeTextMaxSize = 11;
-            tooltipText.resizeTextMinSize = 11;
-
+            tooltipText.fontSize = 11;
             var layout = panel.gameObject.AddComponent<HorizontalLayoutGroup>();
             layout.padding = new RectOffset(4, 4, 2, 2);
             var contentSizeFitter = panel.gameObject.AddComponent<ContentSizeFitter>();
-            contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
             contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             panel.gameObject.SetActive(false);
 
             tooltip.Panel = panel;
-            tooltip.panelTransform = (RectTransform)panel.transform;
+            tooltip.panelTransform = panelTransform;
             tooltip.tooltipText = tooltipText;
             Instance = tooltip;
         }
@@ -54,42 +61,11 @@ namespace MaterialEditorAPI
             Panel.gameObject.SetActive(active);
         }
 
-        public void SetPosition(GameObject go)
-        {
-            if (go.transform is RectTransform transform)
-            {
-                var newPos = new Vector3(transform.position.x, transform.position.y + transform.rect.height + 15);
-                var leftX = newPos.x - panelTransform.rect.width / 2;
-                var rightX = newPos.x + panelTransform.rect.width / 2;
-                var topY = newPos.y + panelTransform.rect.height / 2;
-
-                MaterialEditorPluginBase.Logger.LogInfo(transform.position);
-                if (leftX < 0)
-                {
-                    MaterialEditorPluginBase.Logger.LogInfo("Shift right");
-                    newPos.x += leftX * -1 + 15;
-                }
-                else if (rightX > Screen.width)
-                {
-                    MaterialEditorPluginBase.Logger.LogInfo("Shift left");
-                    newPos.x -= rightX - Screen.width + 15;
-                }
-                if (topY > Screen.height)
-                {
-                    MaterialEditorPluginBase.Logger.LogInfo("Shift down");
-                    newPos.y = transform.position.y - transform.rect.height - 15;
-                }
-
-                Panel.transform.position = newPos;
-            }
-        }
-
         public static PointerEnterHandler AddTooltip(GameObject go, string text)
         {
             var pointerEnter = go.AddComponent<PointerEnterHandler>();
             pointerEnter.onPointerEnter = (e) => {
                 Instance.SetToolTipText(text, true);
-                Instance.SetPosition(go);
             };
             pointerEnter.onPointerExit = (e) => { Instance.SetActive(false); };
             return pointerEnter;
