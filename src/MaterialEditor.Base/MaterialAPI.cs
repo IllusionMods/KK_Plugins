@@ -205,8 +205,8 @@ namespace MaterialEditorAPI
         /// Rename the material specified by GameObject, Renderer name, and Material name
         /// </summary>
         /// <param name="gameObject">GameObject to which the material belongs</param>
-        /// <param name="rendererName">NameFormatted() name of the renderer</param>
-        /// <param name="materialName">Raw name of the material</param>
+        /// <param name="rendererName">Name of the renderer</param>
+        /// <param name="materialName">Name of the material</param>
         /// <param name="value">New name of the material</param>
         public static bool SetName(GameObject gameObject, string rendererName, string materialName, string value)
         {
@@ -214,9 +214,9 @@ namespace MaterialEditorAPI
 
             foreach (var renderer in GetRendererList(gameObject))
             {
-                if (renderer.NameFormatted() == rendererName)
+                if (renderer.NameFormatted() == rendererName.FormatShadingObjectName())
                 {
-                    var materials = GetMaterials(gameObject, renderer).Where(mat => mat.name == materialName);
+                    var materials = GetMaterials(gameObject, renderer).Where(mat => mat.NameFormatted() == materialName.FormatShadingObjectName());
                     foreach (var mat in materials)
                     {
                         mat.name = value;

@@ -321,8 +321,8 @@ namespace MaterialEditorAPI
             MaterialEditorRenameField.text = formattedName;
 
             // Setup button
-            string original = material.name;
             string suffix = material.NameFormatted().Replace(formattedName, "");
+            MaterialEditorRenameButton.interactable = false;
             MaterialEditorRenameButton.onClick.RemoveAllListeners();
             MaterialEditorRenameButton.onClick.AddListener(() =>
             {
@@ -333,9 +333,9 @@ namespace MaterialEditorAPI
             });
 
             // Setup renderer list
-            var renderers = GetRendererList(go).Where(rend => rend.materials.Where(mat => mat.name == material.name).Count() > 0);
-            foreach (var renderer in renderers)
+            foreach (var renderer in GetRendererList(go))
             {
+                if (!renderer.materials.Any(mat => mat.name.Contains(formattedName))) continue;
                 MaterialEditorRenameList.AddEntry(renderer.NameFormatted(), value =>
                 {
                     if (value)
