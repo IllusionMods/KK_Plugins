@@ -13,8 +13,11 @@ namespace MaterialEditorAPI
 
         private void Update()
         {
-            var newPos = Input.mousePosition / panelTransform.localScale.x;
-            panelTransform.position = new Vector3(newPos.x + 5, newPos.y + 5, newPos.z);
+            if (MaterialEditorPluginBase.Showtooltips.Value)
+            {
+                var newPos = Input.mousePosition / panelTransform.localScale.x;
+                panelTransform.position = new Vector3(newPos.x + 5, newPos.y + 5, newPos.z);
+            }
         }
 
         internal static void Init(Transform parent)
@@ -65,9 +68,7 @@ namespace MaterialEditorAPI
         public static PointerEnterHandler AddTooltip(GameObject go, string text)
         {
             var pointerEnter = go.AddComponent<PointerEnterHandler>();
-            pointerEnter.onPointerEnter = (e) => {
-                Instance.SetToolTipText(text, true);
-            };
+            pointerEnter.onPointerEnter = (e) => { Instance.SetToolTipText(text, true); };
             pointerEnter.onPointerExit = (e) => { Instance.SetActive(false); };
             return pointerEnter;
         }

@@ -97,7 +97,6 @@ namespace MaterialEditorAPI
             MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
 
             TooltipManager.Init(MaterialEditorWindow.transform);
-            //Tooltip.SetParent(MaterialEditorWindow);
 
             UIUtility.AddOutlineToObject(MaterialEditorMainPanel.transform, Color.black);
 

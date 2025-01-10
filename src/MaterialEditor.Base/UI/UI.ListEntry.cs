@@ -127,7 +127,7 @@ namespace MaterialEditorAPI
                         SetLabelText(RendererLabel, item.LabelText, false, null, RendererPanel);
                         ExportUVButton.onClick.RemoveAllListeners();
                         ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
-                        TooltipManager.AddTooltip(ExportUVButton.gameObject, "Export the UV map of this renderer.\n\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model");
+                        TooltipManager.AddTooltip(ExportUVButton.gameObject, "Export the UV map of this renderer.\n\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model. You can use this UV map as a guide to drawing on textures");
                         ExportObjButton.onClick.RemoveAllListeners();
                         ExportObjButton.onClick.AddListener(() => item.ExportObjOnClick());
                         TooltipManager.AddTooltip(ExportObjButton.gameObject, "Export the renderer as a .obj.\n\nYou can use the <i>ExportBakedMesh</i> and <i>ExportBakedWorldPosition</i> config options to change the exporting behaviour");
