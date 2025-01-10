@@ -127,10 +127,13 @@ namespace MaterialEditorAPI
                         SetLabelText(RendererLabel, item.LabelText, false, null, RendererPanel);
                         ExportUVButton.onClick.RemoveAllListeners();
                         ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
+                        Tooltip.AddTooltip(ExportUVButton.gameObject, "Export the UV map of this renderer.\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model");
                         ExportObjButton.onClick.RemoveAllListeners();
                         ExportObjButton.onClick.AddListener(() => item.ExportObjOnClick());
+                        Tooltip.AddTooltip(ExportObjButton.gameObject, "Export the renderer as a .obj.\nYou can use the <i>ExportBakedMesh</i> and <i>ExportBakedWorldPosition</i> config options to change the exporting behaviour");
                         SelectInterpolableRendererButton.onClick.RemoveAllListeners();
                         SelectInterpolableRendererButton.onClick.AddListener(() => item.SelectInterpolableButtonRendererOnClick());
+                        Tooltip.AddTooltip(SelectInterpolableRendererButton.gameObject, "Select the properties (Enabled, Shadow casting mode and Receive shadows) of the currently selected renderer as interpolables in timeline");
                         RendererText.text = item.RendererName;
                         break;
                     case ItemInfo.RowItemType.RendererEnabled:
@@ -150,6 +153,7 @@ namespace MaterialEditorAPI
 
                         RendererEnabledResetButton.onClick.RemoveAllListeners();
                         RendererEnabledResetButton.onClick.AddListener(() => RendererEnabledToggle.isOn = item.RendererEnabledOriginal);
+                        Tooltip.AddTooltip(RendererEnabledResetButton.gameObject, "Reset this property to its original value");
 
                         break;
                     case ItemInfo.RowItemType.RendererShadowCastingMode:
@@ -169,6 +173,7 @@ namespace MaterialEditorAPI
 
                         RendererShadowCastingModeResetButton.onClick.RemoveAllListeners();
                         RendererShadowCastingModeResetButton.onClick.AddListener(() => RendererShadowCastingModeDropdown.value = item.RendererShadowCastingModeOriginal);
+                        Tooltip.AddTooltip(RendererShadowCastingModeResetButton.gameObject, "Reset this property to its original value");
 
                         break;
                     case ItemInfo.RowItemType.RendererReceiveShadows:
@@ -188,6 +193,7 @@ namespace MaterialEditorAPI
 
                         RendererReceiveShadowsResetButton.onClick.RemoveAllListeners();
                         RendererReceiveShadowsResetButton.onClick.AddListener(() => RendererReceiveShadowsToggle.isOn = item.RendererReceiveShadowsOriginal);
+                        Tooltip.AddTooltip(RendererReceiveShadowsResetButton.gameObject, "Reset this property to its original value");
 
                         break;
                     case ItemInfo.RowItemType.RendererUpdateWhenOffscreen:
@@ -207,6 +213,7 @@ namespace MaterialEditorAPI
 
                         RendererUpdateWhenOffscreenResetButton.onClick.RemoveAllListeners();
                         RendererUpdateWhenOffscreenResetButton.onClick.AddListener(() => RendererUpdateWhenOffscreenToggle.isOn = item.RendererUpdateWhenOffscreenOriginal);
+                        Tooltip.AddTooltip(RendererUpdateWhenOffscreenResetButton.gameObject, "Reset this property to its original value");
 
                         break;
                     case ItemInfo.RowItemType.RendererRecalculateNormals:
@@ -226,6 +233,7 @@ namespace MaterialEditorAPI
 
                         RendererRecalculateNormalsResetButton.onClick.RemoveAllListeners();
                         RendererRecalculateNormalsResetButton.onClick.AddListener(() => RendererRecalculateNormalsToggle.isOn = item.RendererRecalculateNormalsOriginal);
+                        Tooltip.AddTooltip(RendererRecalculateNormalsResetButton.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
 
                         break;
                     case ItemInfo.RowItemType.Material:
@@ -290,8 +298,10 @@ namespace MaterialEditorAPI
 
                         ShaderResetButton.onClick.RemoveAllListeners();
                         ShaderResetButton.onClick.AddListener(() => ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderNameOriginal));
+                        Tooltip.AddTooltip(ShaderResetButton.gameObject, "Reset this property to its original value.\n\nIf the original shader is not one known by Material Editor, it will not be able to reset the shader to its original value. In order for the reset to take effect you to either save and re-load the scene, or copy the object and delete the old one");
                         SelectInterpolableShaderButton.onClick.RemoveAllListeners();
                         SelectInterpolableShaderButton.onClick.AddListener(() => item.SelectInterpolableButtonShaderOnClick());
+                        Tooltip.AddTooltip(SelectInterpolableShaderButton.gameObject, "Select the currently selected shader property and its render queue as interpolables in timeline");
 
                         AutoScrollToSelectionWithDropdown.Setup(ShaderDropdown);
                         DropdownFilter.AddFilterUI(ShaderDropdown, "ShaderDropDown");
@@ -328,6 +338,7 @@ namespace MaterialEditorAPI
                             item.ShaderRenderQueueOnReset();
                             SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, ShaderRenderQueueResetButton, ShaderRenderQueuePanel);
                         });
+                        Tooltip.AddTooltip(ShaderRenderQueueResetButton.gameObject, "Reset this property to its original value");
 
                         break;
                     case ItemInfo.RowItemType.TextureProperty:
@@ -372,8 +383,10 @@ namespace MaterialEditorAPI
                             item.TextureOnReset();
                             SetLabelText(TextureLabel, item.LabelText, item.TextureChanged, TextureResetButton, TexturePanel);
                         });
+                        Tooltip.AddTooltip(TextureResetButton.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
                         SelectInterpolableTextureButton.onClick.RemoveAllListeners();
                         SelectInterpolableTextureButton.onClick.AddListener(() => item.SelectInterpolableButtonTextureOnClick());
+                        Tooltip.AddTooltip(SelectInterpolableTextureButton.gameObject, "Select the currently selected texture property and its offset and scale properties as interpolables in timeline");
                         break;
                     case ItemInfo.RowItemType.TextureOffsetScale:
                         ShowOffsetScale();
@@ -480,6 +493,7 @@ namespace MaterialEditorAPI
                             item.ScaleOnReset();
                             SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
                         });
+                        Tooltip.AddTooltip(OffsetScaleResetButton.gameObject, "Reset both the scale and offset properties to their original values");
 
                         break;
                     case ItemInfo.RowItemType.ColorProperty:
@@ -602,6 +616,7 @@ namespace MaterialEditorAPI
                             item.ColorValueOnReset();
                             SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
                         });
+                        Tooltip.AddTooltip(ColorResetButton.gameObject, "Reset the selected property to its original value");
 
                         ColorEditButton.onClick.RemoveAllListeners();
                         ColorEditButton.onClick.AddListener(() =>
@@ -628,8 +643,7 @@ namespace MaterialEditorAPI
                         });
                         SelectInterpolableColorButton.onClick.RemoveAllListeners();
                         SelectInterpolableColorButton.onClick.AddListener(() => item.SelectInterpolableButtonColorOnClick());
-
-                        Tooltip.AddTooltip(SelectInterpolableColorButton.gameObject, item.LabelText);
+                        Tooltip.AddTooltip(SelectInterpolableColorButton.gameObject, "Select currently selected color property as interpolable in timeline");
 
                         break;
                     case ItemInfo.RowItemType.FloatProperty:
@@ -680,8 +694,10 @@ namespace MaterialEditorAPI
                             item.FloatValueOnReset();
                             SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal, FloatResetButton, FloatPanel);
                         });
+                        Tooltip.AddTooltip(FloatResetButton.gameObject, "Reset the selected property to its original value");
                         SelectInterpolableFloatButton.onClick.RemoveAllListeners();
                         SelectInterpolableFloatButton.onClick.AddListener(() => item.SelectInterpolableButtonFloatOnClick());
+                        Tooltip.AddTooltip(SelectInterpolableFloatButton.gameObject, "Select currently selected float property as interpolable in timeline");
                         break;
                     case ItemInfo.RowItemType.KeywordProperty:
                         ShowKeyword();
@@ -711,6 +727,7 @@ namespace MaterialEditorAPI
                             item.KeywordValueOnReset();
                             SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, KeywordResetButton, KeywordPanel);
                         });
+                        Tooltip.AddTooltip(KeywordResetButton.gameObject, "Reset the selected property to its original value");
                         break;
                 }
             }
