@@ -22,12 +22,14 @@ namespace MaterialEditorAPI
             }
         }
         public Image Panel { get; private set; } = null;
+        private RectTransform panelTransform = null;
         private Canvas parent = null;
         private readonly Text tooltipText;
 
         private Tooltip()
         {
             Panel = UIUtility.CreatePanel($"TooltipPanel");
+            panelTransform = (RectTransform)Panel.transform;
             Panel.color = new Color(0.42f, 0.42f, 0.42f);
 
             tooltipText = UIUtility.CreateText($"ToolTipText", Panel.transform, "");
@@ -49,6 +51,7 @@ namespace MaterialEditorAPI
             tooltipText.text = text;
             if (setActive)
                 SetActive(true);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(panelTransform);
         }
 
         public void SetActive(bool active) 
@@ -59,12 +62,8 @@ namespace MaterialEditorAPI
 
         public void SetParent(Canvas parent)
         {
-            MaterialEditorPluginBase.Logger.LogInfo("1");
             var transform = parent.transform;
-            MaterialEditorPluginBase.Logger.LogInfo("2");
-            MaterialEditorPluginBase.Logger.LogInfo(Panel == null);
                 Panel.transform.SetParent(transform, false);
-            MaterialEditorPluginBase.Logger.LogInfo("3");
             this.parent = parent;
         }
 
@@ -73,21 +72,33 @@ namespace MaterialEditorAPI
             return Panel.gameObject.activeInHierarchy;
         }
 
-        public void UpdatePosition()
-        {
-            if (parent != null)
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)parent.transform, Input.mousePosition, parent.worldCamera, out Vector2 localPoint))
-                {
-                    Panel.transform.position = parent.transform.TransformPoint(localPoint);
-                    Panel.transform.position += new Vector3(0, Screen.height / 60);
-                }
-        }
-
         public void SetPosition(GameObject go)
         {
             if (go.transform is RectTransform transform)
             {
-                Panel.transform.position = new Vector3(transform.position.x, transform.position.y + transform.rect.height + 15);
+                var newPos = new Vector3(transform.position.x, transform.position.y + transform.rect.height + 15);
+                var leftX = newPos.x - panelTransform.rect.width / 2;
+                var rightX = newPos.x + panelTransform.rect.width / 2;
+                var topY = newPos.y + panelTransform.rect.height / 2;
+
+                MaterialEditorPluginBase.Logger.LogInfo(transform.position);
+                if (leftX < 0)
+                {
+                    MaterialEditorPluginBase.Logger.LogInfo("Shift right");
+                    newPos.x += leftX * -1 + 15;
+                }
+                else if (rightX > Screen.width)
+                {
+                    MaterialEditorPluginBase.Logger.LogInfo("Shift left");
+                    newPos.x -= rightX - Screen.width + 15;
+                }
+                if (topY > Screen.height)
+                {
+                    MaterialEditorPluginBase.Logger.LogInfo("Shift down");
+                    newPos.y = transform.position.y - transform.rect.height - 15;
+                }
+
+                Panel.transform.position = newPos;
             }
         }
 
