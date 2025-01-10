@@ -35,7 +35,9 @@ namespace MaterialEditorAPI
             tooltipText = UIUtility.CreateText($"ToolTipText", Panel.transform, "");
             //tooltipText.transform.SetRect(0f, 1f, 0.4f, 1f, 5f, -MaterialEditorUI.HeaderSize, -2f, -2f);
             tooltipText.alignment = TextAnchor.MiddleCenter;
-            tooltipText.fontSize = 16;
+            tooltipText.resizeTextForBestFit = false;
+            tooltipText.resizeTextMaxSize = 11;
+            tooltipText.resizeTextMinSize = 11;
 
             var layout = Panel.gameObject.AddComponent<HorizontalLayoutGroup>();
             layout.padding = new RectOffset(4, 4, 2, 2);
