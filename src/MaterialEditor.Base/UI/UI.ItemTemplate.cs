@@ -222,6 +222,11 @@ namespace MaterialEditorAPI
                 var copyLE = copy.gameObject.AddComponent<LayoutElement>();
                 copyLE.preferredWidth = ButtonWidth;
                 copyLE.flexibleWidth = 0;
+
+                var rename = UIUtility.CreateButton($"MaterialRename", itemPanel.transform, ">");
+                var renameLE = rename.gameObject.AddComponent<LayoutElement>();
+                renameLE.preferredWidth = ButtonWidth / 4;
+                renameLE.flexibleWidth = 0;
             }
 
             //Material Shader
@@ -551,7 +556,7 @@ namespace MaterialEditorAPI
             interpolableButton.gameObject.SetActive(false);
 
 #if !API && !EC
-            if (MaterialEditorPluginBase.ShowTimelineButtons.Value && TimelineCompatibilityHelper.IsTimelineAvailable())
+            if (TimelineCompatibilityHelper.IsTimelineAvailable())
                 interpolableButton.gameObject.SetActive(true);
 #endif
         }

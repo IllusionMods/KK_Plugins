@@ -7,6 +7,7 @@ using MaterialEditorAPI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Illusion.Utils;
 using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
 using AIChara;
@@ -363,6 +364,22 @@ namespace KK_Plugins.MaterialEditor
         {
             ObjectData objectData = (ObjectData)data;
             MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialCopyRemove(objectData.Slot, objectData.ObjectType, material, go);
+        }
+
+        public override string GetMaterialNameOriginal(object data, Renderer renderer, Material material, GameObject gameObject)
+        {
+            ObjectData objectData = (ObjectData)data;
+            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialNamePropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, material, gameObject);
+        }
+        public override void SetMaterialName(object data, Renderer renderer, Material material, string value, GameObject gameObject)
+        {
+            ObjectData objectData = (ObjectData)data;
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialNameProperty(objectData.Slot, objectData.ObjectType, renderer, material, value, gameObject);
+        }
+        public override void RemoveMaterialName(object data, Renderer renderer, Material material, GameObject gameObject)
+        {
+            ObjectData objectData = (ObjectData)data;
+            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialNameProperty(objectData.Slot, objectData.ObjectType, renderer, material, gameObject);
         }
 
         public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go)
