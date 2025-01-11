@@ -295,6 +295,7 @@ namespace MaterialEditorAPI
                         }
                         else
                             MaterialRename.gameObject.SetActive(false);
+                        TooltipManager.AddTooltip(MaterialRename.gameObject, "Rename material instances");
 
                         break;
                     case ItemInfo.RowItemType.Shader:
