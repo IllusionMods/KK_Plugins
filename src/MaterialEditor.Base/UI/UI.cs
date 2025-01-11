@@ -36,13 +36,19 @@ namespace MaterialEditorAPI
         private static InputField FilterInputField;
 
         internal static TooltipManager MaterialEditorTooltip;
-
+        private static Button ViewListButton;
         private static SelectListPanel MaterialEditorRendererList;
         private static List<Renderer> SelectedRenderers = new List<Renderer>();
         private static SelectListPanel MaterialEditorMaterialList;
         private static List<Material> SelectedMaterials = new List<Material>();
         private static bool ListsVisible = false;
 
+        private static SelectListPanel MaterialEditorRenameList;
+        private static InputField MaterialEditorRenameField;
+        private static Button MaterialEditorRenameButton;
+        private static Text MaterialEditorRenameMaterial;
+        private static List<Renderer> SelectedMaterialRenderers = new List<Renderer>();
+        private static bool RenameListVisible = false;
 
         internal static FileSystemWatcher TexChangeWatcher;
         private VirtualList VirtualList;
@@ -146,18 +152,26 @@ namespace MaterialEditorAPI
             x2.rectTransform.eulerAngles = new Vector3(0f, 0f, -45f);
             x2.color = Color.black;
 
-            var listButton = UIUtility.CreateButton("ViewListButton", DragPanel.transform, ">");
-            listButton.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
-            listButton.onClick.AddListener(() => MaterialEditorRendererList.ToggleVisibility(!ListsVisible));
-            listButton.onClick.AddListener(() => MaterialEditorMaterialList.ToggleVisibility(!ListsVisible));
-            listButton.onClick.AddListener(() =>
+            ViewListButton = UIUtility.CreateButton("ViewListButton", DragPanel.transform, ">");
+            ViewListButton.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
+            ViewListButton.onClick.AddListener(() =>
             {
-                var text = listButton.GetComponentInChildren<Text>(true);
-                ListsVisible = !ListsVisible;
-                if (ListsVisible)
-                    text.text = "<";
+                if (RenameListVisible)
+                {
+                    MaterialEditorRenameList.ToggleVisibility(false);
+                    ViewListButton.GetComponentInChildren<Text>().text = ">";
+                    RenameListVisible = false;
+                }
                 else
-                    text.text = ">";
+                {
+                    MaterialEditorRendererList.ToggleVisibility(!ListsVisible);
+                    MaterialEditorMaterialList.ToggleVisibility(!ListsVisible);
+                    ListsVisible = !ListsVisible;
+                    if (ListsVisible)
+                        ViewListButton.GetComponentInChildren<Text>().text = "<";
+                    else
+                        ViewListButton.GetComponentInChildren<Text>().text = ">";
+                }
             });
 
             MaterialEditorScrollableUI = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
@@ -183,6 +197,20 @@ namespace MaterialEditorAPI
             MaterialEditorMaterialList = new SelectListPanel(MaterialEditorMainPanel.transform, "MaterialList", "Materials");
             MaterialEditorMaterialList.Panel.transform.SetRect(1f, 0f, 1f, 0.5f, MarginSize, 0f, MarginSize + UIListWidth.Value, -MarginSize);
             MaterialEditorMaterialList.ToggleVisibility(false);
+
+            MaterialEditorRenameList = new SelectListPanel(MaterialEditorMainPanel.transform, "MaterialRenameList", "Mat. Renderers");
+            MaterialEditorRenameList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + UIListWidth.Value);
+            MaterialEditorRenameList.ToggleVisibility(false);
+            MaterialEditorRenameField = UIUtility.CreateInputField("MaterialEditorRenameField", MaterialEditorRenameList.Panel.transform, "");
+            MaterialEditorRenameField.transform.SetRect(0, 0, 1, 0, 0, -(PanelHeight + MarginSize / 2), 0, -(MarginSize / 2));
+            MaterialEditorRenameButton = UIUtility.CreateButton("MaterialEditorRenameButton", MaterialEditorRenameList.Panel.transform, "Rename");
+            MaterialEditorRenameButton.transform.SetRect(0, 0, 1, 0, 0, -(2 * PanelHeight + MarginSize), 0, -(PanelHeight + MarginSize));
+            MaterialEditorRenameList.Panel.transform.GetChild(0).SetRect(0, 1, 0.4f, 1, 5, -40, -2, -27.5f);
+            MaterialEditorRenameList.Panel.transform.GetChild(1).SetRect(0.4f, 1, 1, 1, 2, -42.5f, -2, -25);
+            MaterialEditorRenameList.Panel.transform.GetChild(2).SetRect(0, 0, 1, 1, 2, 2, -2, -42.5f);
+            MaterialEditorRenameMaterial = Instantiate(MaterialEditorRenameList.Panel.transform.GetChild(0), MaterialEditorRenameList.Panel.transform).GetComponent<Text>();
+            MaterialEditorRenameMaterial.gameObject.name = nameof(MaterialEditorRenameMaterial);
+            MaterialEditorRenameMaterial.transform.SetRect(0, 1, 1, 1, 5, -20, -2, -5);
         }
 
         /// <summary>
@@ -297,6 +325,50 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
+        /// Populate the rename list
+        /// </summary>
+        /// <param name="go">GameObject for which to read the renderers</param>
+        /// <param name="material">Material to be renamed</param>
+        private void PopulateRenameList(GameObject go, Material material, object data)
+        {
+            SelectedMaterialRenderers.Clear();
+            MaterialEditorRenameList.ClearList();
+
+            // Setup title
+            MaterialEditorRenameMaterial.text = material.NameFormatted();
+
+            // Setup text field
+            string formattedName = material.NameFormatted().Split(new[] { MaterialCopyPostfix }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            MaterialEditorRenameField.text = formattedName;
+
+            // Setup button
+            string suffix = material.NameFormatted().Replace(formattedName, "");
+            MaterialEditorRenameButton.interactable = false;
+            MaterialEditorRenameButton.onClick.RemoveAllListeners();
+            MaterialEditorRenameButton.onClick.AddListener(() =>
+            {
+                string safeNewName = MaterialEditorRenameField.text.Replace(MaterialCopyPostfix, "").Trim() + suffix;
+                foreach (var renderer in SelectedMaterialRenderers)
+                    SetMaterialName(data, renderer, material, safeNewName, go);
+                RefreshUI();
+            });
+
+            // Setup renderer list
+            foreach (var renderer in GetRendererList(go))
+            {
+                if (!renderer.materials.Any(mat => mat.NameFormatted() == material.NameFormatted())) continue;
+                MaterialEditorRenameList.AddEntry(renderer.NameFormatted(), value =>
+                {
+                    if (value)
+                        SelectedMaterialRenderers.Add(renderer);
+                    else
+                        SelectedMaterialRenderers.Remove(renderer);
+                    MaterialEditorRenameButton.interactable = SelectedMaterialRenderers.Count > 0;
+                });
+            }
+        }
+
+        /// <summary>
         /// Populate the MaterialEditor UI
         /// </summary>
         /// <param name="go">GameObject for which to read the renderers and materials</param>
@@ -304,6 +376,13 @@ namespace MaterialEditorAPI
         /// <param name="filter">Comma separated list of text to filter the results</param>
         protected void PopulateList(GameObject go, object data, string filter = null)
         {
+            if (RenameListVisible)
+            {
+                MaterialEditorRenameList.ToggleVisibility(false);
+                ViewListButton.GetComponentInChildren<Text>().text = ">";
+                RenameListVisible = false;
+            }
+
             if (filter == null)
             {
                 if (PersistFilter.Value) filter = CurrentFilter;
@@ -496,6 +575,19 @@ namespace MaterialEditorAPI
                         PopulateList(go, data, filter);
                         PopulateMaterialList(go, data, rendListFull);
                     };
+                materialItem.MaterialOnRename = () =>
+                {
+                    if (ListsVisible)
+                    {
+                        MaterialEditorRendererList.ToggleVisibility(false);
+                        MaterialEditorMaterialList.ToggleVisibility(false);
+                        ListsVisible = false;
+                    }
+                    ViewListButton.GetComponentInChildren<Text>().text = "<";
+                    MaterialEditorRenameList.ToggleVisibility(true);
+                    PopulateRenameList(go, mat, data);
+                    RenameListVisible = true;
+                };
                 items.Add(materialItem);
 
                 if (projector != null)
@@ -849,6 +941,10 @@ namespace MaterialEditorAPI
         public abstract void MaterialCopyEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialPasteEdits(object data, Material material, GameObject gameObject);
         public abstract void MaterialCopyRemove(object data, Material material, GameObject gameObject);
+
+        public abstract string GetMaterialNameOriginal(object data, Renderer renderer, Material material, GameObject gameObject);
+        public abstract void SetMaterialName(object data, Renderer renderer, Material material, string value, GameObject gameObject);
+        public abstract void RemoveMaterialName(object data, Renderer renderer, Material material, GameObject gameObject);
 
         public abstract string GetMaterialShaderNameOriginal(object data, Material material, GameObject gameObject);
         public abstract void SetMaterialShaderName(object data, Material material, string value, GameObject gameObject);
