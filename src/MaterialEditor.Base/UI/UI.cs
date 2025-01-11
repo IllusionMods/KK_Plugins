@@ -368,6 +368,7 @@ namespace MaterialEditorAPI
             if (RenameListVisible)
             {
                 MaterialEditorRenameList.ToggleVisibility(false);
+                ViewListButton.GetComponentInChildren<Text>().text = ">";
                 RenameListVisible = false;
             }
 
