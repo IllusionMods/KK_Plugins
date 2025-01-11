@@ -356,7 +356,7 @@ namespace MaterialEditorAPI
             // Setup renderer list
             foreach (var renderer in GetRendererList(go))
             {
-                if (!renderer.materials.Any(mat => mat.name.Contains(formattedName))) continue;
+                if (!renderer.materials.Any(mat => mat.NameFormatted() == material.NameFormatted())) continue;
                 MaterialEditorRenameList.AddEntry(renderer.NameFormatted(), value =>
                 {
                     if (value)
