@@ -48,7 +48,7 @@ namespace MaterialEditorAPI
         public static ConfigEntry<bool> ExportBakedWorldPosition { get; set; }
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
         public static ConfigEntry<bool> PersistFilter { get; set; }
-        public static ConfigEntry<bool> ShowTimelineButtons { get; set; }
+        public static ConfigEntry<bool> Showtooltips { get; set; }
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFarClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFieldOfViewMax { get; set; }
@@ -72,7 +72,7 @@ namespace MaterialEditorAPI
             ExportBakedWorldPosition = Config.Bind("Config", "Export Baked World Position", false, new ConfigDescription("When enabled, objects will be exported with their position changes intact so that, i.e. when exporting two objects they retain their position relative to each other.\nOnly works when Export Baked Mesh is also enabled.", null, new ConfigurationManagerAttributes { Order = 1 }));
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
             PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
-            ShowTimelineButtons = Config.Bind("Config", "Show Timeline Buttons", false, "Show buttons in the UI (in studio only) to add interpolables to the timeline. Requires game restart to take effect");
+            Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
 
             //Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
