@@ -56,7 +56,6 @@ namespace MaterialEditorAPI
             tooltipText.text = text;
             if (setActive)
                 SetActive(true);
-            LayoutRebuilder.ForceRebuildLayoutImmediate(panelTransform);
         }
 
         public void SetActive(bool active) 
