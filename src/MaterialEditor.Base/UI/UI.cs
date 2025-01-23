@@ -637,33 +637,32 @@ namespace MaterialEditorAPI
                 // Shader Property Category
                 var categories = XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"]
                     .Where(v =>
+                        // Should show the property?
                         !v.Value.Hidden
                         && (filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(v.Key, fw)))
                     )
-                    .GroupBy(kv => string.IsNullOrEmpty(kv.Value.Category) ? "Uncategorized" : kv.Value.Category)
+                    .GroupBy(kv => string.IsNullOrEmpty(kv.Value.Category) ? "Uncategorized" : char.ToUpper(kv.Value.Category[0]) + kv.Value.Category.Substring(1))
+                    .OrderBy(g => g.Key == "Uncategorized" ? 1 : 0)  // Ensure "Uncategorized" goes to the end
                     .ToDictionary(
                         g => g.Key,
                         g =>
                         {
                             var vs = g.AsEnumerable();
-
-                            if (MaterialEditorPluginBase.SortPropertiesByType.Value && MaterialEditorPluginBase.SortPropertiesByAlphabet.Value)
+                            if (SortPropertiesByType.Value && SortPropertiesByAlphabet.Value)
                             {
                                 vs = vs.OrderBy(v => v.Value.Type).ThenBy(v => v.Value.Name);
                             }
-                            else if (MaterialEditorPluginBase.SortPropertiesByType.Value)
+                            else if (SortPropertiesByType.Value)
                             {
                                 vs = vs.OrderBy(v => v.Value.Type);
                             }
-                            else if (MaterialEditorPluginBase.SortPropertiesByAlphabet.Value)
+                            else if (SortPropertiesByAlphabet.Value)
                             {
                                 vs = vs.OrderBy(v => v.Value.Name);
                             }
-                            return vs.ToDictionary(kv => kv.Key, kv => kv.Value);
+                            return vs.ToList();
                         }
                 );
-
-
 
                 foreach (var category in categories)
                 {
