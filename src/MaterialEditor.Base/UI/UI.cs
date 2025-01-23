@@ -70,9 +70,14 @@ namespace MaterialEditorAPI
         internal const float TextBoxXYWidth = 50f;
         internal static RectOffset Padding;
         internal static readonly Color RowColor = new Color(1f, 1f, 1f, 0.6f);
+
+        // https://simplified.com/blog/colors/triadic-colors
+        internal static readonly Color RendererColor = new Color(0.984f, 0.600f, 0.008f, 0.5f);
+        internal static readonly Color MaterialColor = new Color(0.400f, 0.690f, 0.196f, 0.5f);
+        internal static readonly Color CategoryColor = new Color(0.627f, 0.004f, 0.812f, 0.5f);
+
         internal static readonly Color ItemColor = new Color(1f, 1f, 1f, 0f);
         internal static readonly Color ItemColorChanged = new Color(0f, 0f, 0f, 0.3f);
-        internal static readonly Color SeparatorItemColor = new Color(0.9f, 0.9f, 0.9f, 0.55f);
 
         private protected IMaterialEditorColorPalette ColorPalette;
 

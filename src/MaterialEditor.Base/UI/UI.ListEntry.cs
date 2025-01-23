@@ -128,7 +128,7 @@ namespace MaterialEditorAPI
                 {
                     case ItemInfo.RowItemType.Renderer:
                         ShowRenderer();
-                        SetLabelText(RendererLabel, item.LabelText, false, null, RendererPanel);
+                        SetLabelText(RendererLabel, item.LabelText);
                         ExportUVButton.onClick.RemoveAllListeners();
                         ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
                         TooltipManager.AddTooltip(ExportUVButton.gameObject, "Export the UV map of this renderer.\n\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model. You can use this UV map as a guide to drawing on textures");
@@ -250,7 +250,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.Material:
                         ShowMaterial();
-                        SetLabelText(MaterialLabel, item.LabelText, false, null, MaterialPanel);
+                        SetLabelText(MaterialLabel, item.LabelText);
                         MaterialText.text = item.MaterialName;
                         MaterialCopyButton.onClick.RemoveAllListeners();
                         MaterialCopyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
@@ -369,7 +369,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.PropertyCategory:
                         ShowPropertyCategory();
-                        PropertyCategoryLabel.text = item.LabelText;
+                        SetLabelText(PropertyCategoryLabel, item.LabelText);
                         break;
                     case ItemInfo.RowItemType.TextureProperty:
                         ShowTexture();
@@ -767,6 +767,10 @@ namespace MaterialEditorAPI
         {
             if (gameObject.activeSelf != visible)
                 gameObject.SetActive(visible);
+        }
+
+        private static void SetLabelText(Text label, string text) { 
+            label.text = text ?? "";
         }
 
         private static void SetLabelText(Text label, string text, bool valueChanged, Button resetBtn, CanvasGroup panel)
