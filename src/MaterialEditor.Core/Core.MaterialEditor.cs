@@ -773,6 +773,7 @@ namespace KK_Plugins.MaterialEditor
                             string range = shaderPropertyElement.GetAttribute("Range");
                             string min = null;
                             string max = null;
+                            string category = shaderPropertyElement.GetAttribute("Category");
                             if (!range.IsNullOrWhiteSpace())
                             {
                                 var rangeSplit = range.Split(',');
@@ -782,7 +783,7 @@ namespace KK_Plugins.MaterialEditor
                                     max = rangeSplit[1];
                                 }
                             }
-                            ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max);
+                            ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max, category);
 
                             XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                             XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;

@@ -290,6 +290,21 @@ namespace MaterialEditorAPI
                 resetLE.flexibleWidth = 0;
             }
 
+            // Property Category
+            {
+                var itemPanel = UIUtility.CreatePanel("PropertyCategoryPanel", contentList.transform);
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+                itemPanel.color = Color.cyan;
+
+                var label = UIUtility.CreateText("PropertyCategoryLabel", itemPanel.transform, "");
+                label.alignment = TextAnchor.MiddleLeft;
+                label.color = Color.black;
+                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                labelLE.preferredWidth = LabelWidth;
+                labelLE.flexibleWidth = LabelWidth;
+            }
+
             //Texture properties
             {
                 var itemPanel = UIUtility.CreatePanel("TexturePanel", contentList.transform);

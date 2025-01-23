@@ -104,6 +104,9 @@ namespace MaterialEditorAPI
             listEntry.ShaderRenderQueueInput = listEntry.GetUIComponent<InputField>("ShaderRenderQueueInput");
             listEntry.ShaderRenderQueueResetButton = listEntry.GetUIComponent<Button>("ShaderRenderQueueResetButton");
 
+            listEntry.PropertyCategoryPanel = listEntry.GetUIComponent<CanvasGroup>("PropertyCategoryPanel");
+            listEntry.PropertyCategoryLabel = listEntry.GetUIComponent<Text>("PropertyCategoryLabel");
+
             listEntry.TexturePanel = listEntry.GetUIComponent<CanvasGroup>("TexturePanel");
             listEntry.TextureLabel = listEntry.GetUIComponent<Text>("TextureLabel");
             listEntry.SelectInterpolableTextureButton = listEntry.GetUIComponent<Button>("SelectInterpolableTextureButton");

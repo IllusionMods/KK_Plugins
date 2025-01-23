@@ -629,15 +629,46 @@ namespace MaterialEditorAPI
                 };
                 items.Add(shaderRenderQueueItem);
 
-                foreach (var property in XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"].OrderBy(x => x.Value.Type).ThenBy(x => x.Key))
+                // Shader Property Category
+                var categories = XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"]
+                    .Where(v =>
+                        !v.Value.Hidden
+                        && (filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(v.Key, fw)))
+                    )
+                    .GroupBy(kv => string.IsNullOrEmpty(kv.Value.Category) ? "Uncategorized" : kv.Value.Category)
+                    .ToDictionary(
+                        g => g.Key,
+                        g =>
+                        {
+                            var vs = g.AsEnumerable();
+
+                            if (MaterialEditorPluginBase.SortPropertiesByType.Value && MaterialEditorPluginBase.SortPropertiesByAlphabet.Value)
+                            {
+                                vs = vs.OrderBy(v => v.Value.Type).ThenBy(v => v.Value.Name);
+                            }
+                            else if (MaterialEditorPluginBase.SortPropertiesByType.Value)
+                            {
+                                vs = vs.OrderBy(v => v.Value.Type);
+                            }
+                            else if (MaterialEditorPluginBase.SortPropertiesByAlphabet.Value)
+                            {
+                                vs = vs.OrderBy(v => v.Value.Name);
+                            }
+                            return vs.ToDictionary(kv => kv.Key, kv => kv.Value);
+                        }
+                );
+
+
+
+                foreach (var category in categories)
+                {
+                    var categoryItem = new ItemInfo(ItemInfo.RowItemType.PropertyCategory, category.Key) { };
+                    items.Add(categoryItem);
+
+                foreach (var property in category.Value)
                 {
                     string propertyName = property.Key;
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
-
-                    bool showProperty = !property.Value.Hidden;
-                    showProperty = showProperty && (filterListProperties.Count == 0 || filterListProperties.Any(filterWord => WildCardSearch(propertyName, filterWord)));
-
-                    if (!showProperty) continue;
 
                     if (property.Value.Type == ShaderPropertyType.Texture)
                     {
@@ -783,6 +814,7 @@ namespace MaterialEditorAPI
 
                         items.Add(contentItem);
                     }
+                }
                 }
             }
 

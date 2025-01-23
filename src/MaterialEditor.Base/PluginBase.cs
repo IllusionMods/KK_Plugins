@@ -49,6 +49,8 @@ namespace MaterialEditorAPI
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
         public static ConfigEntry<bool> PersistFilter { get; set; }
         public static ConfigEntry<bool> Showtooltips { get; set; }
+        public static ConfigEntry<bool> SortPropertiesByType { get; set; }
+        public static ConfigEntry<bool> SortPropertiesByAlphabet{ get; set; }
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFarClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFieldOfViewMax { get; set; }
@@ -73,6 +75,8 @@ namespace MaterialEditorAPI
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
             PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
+            SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by the type.");
+            SortPropertiesByAlphabet = Config.Bind("Config", "Sort Properties by Alphabet", true, "Whether to sort shader properties by the alphabet.");
 
             //Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
@@ -180,6 +184,7 @@ namespace MaterialEditorAPI
                                                 string range = shaderPropertyElement.GetAttribute("Range");
                                                 string min = null;
                                                 string max = null;
+                                                string category = shaderPropertyElement.GetAttribute("Category");
                                                 if (!range.IsNullOrWhiteSpace())
                                                 {
                                                     var rangeSplit = range.Split(',');
@@ -189,7 +194,7 @@ namespace MaterialEditorAPI
                                                         max = rangeSplit[1];
                                                     }
                                                 }
-                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max);
+                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max, category);
 
                                                 XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                                             }
@@ -294,8 +299,9 @@ namespace MaterialEditorAPI
             public bool Hidden;
             public float? MinValue;
             public float? MaxValue;
+            public string Category;
 
-            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string hidden = null, string minValue = null, string maxValue = null)
+            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string hidden = null, string minValue = null, string maxValue = null, string category = null)
             {
                 Name = name;
                 Type = type;
@@ -310,6 +316,7 @@ namespace MaterialEditorAPI
                         MaxValue = max;
                     }
                 }
+                Category = category;
             }
         }
     }

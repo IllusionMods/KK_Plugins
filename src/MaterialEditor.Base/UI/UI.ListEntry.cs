@@ -59,6 +59,9 @@ namespace MaterialEditorAPI
         public InputField ShaderRenderQueueInput;
         public Button ShaderRenderQueueResetButton;
 
+        public CanvasGroup PropertyCategoryPanel;
+        public Text PropertyCategoryLabel;
+
         public CanvasGroup TexturePanel;
         public Text TextureLabel;
         public Button SelectInterpolableTextureButton;
@@ -363,6 +366,10 @@ namespace MaterialEditorAPI
                         });
                         TooltipManager.AddTooltip(ShaderRenderQueueResetButton.gameObject, "Reset this property to its original value");
 
+                        break;
+                    case ItemInfo.RowItemType.PropertyCategory:
+                        ShowPropertyCategory();
+                        PropertyCategoryLabel.text = item.LabelText;
                         break;
                     case ItemInfo.RowItemType.TextureProperty:
                         ShowTexture();
@@ -790,6 +797,7 @@ namespace MaterialEditorAPI
             ShowMaterial(false);
             ShowShader(false);
             ShowShaderRenderQueue(false);
+            ShowPropertyCategory(false);
             ShowTexture(false);
             ShowOffsetScale(false);
             ShowColor(false);
@@ -842,6 +850,11 @@ namespace MaterialEditorAPI
         {
             ShaderRenderQueuePanel.alpha = visible ? 1 : 0;
             ShaderRenderQueuePanel.blocksRaycasts = visible;
+        }
+
+        private void ShowPropertyCategory(bool visible = true) {
+            PropertyCategoryPanel.alpha = visible ? 1 : 0;
+            PropertyCategoryPanel.blocksRaycasts = visible;
         }
 
         private void ShowTexture(bool visible = true)
