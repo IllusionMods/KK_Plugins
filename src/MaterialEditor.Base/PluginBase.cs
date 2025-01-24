@@ -50,7 +50,7 @@ namespace MaterialEditorAPI
         public static ConfigEntry<bool> PersistFilter { get; set; }
         public static ConfigEntry<bool> Showtooltips { get; set; }
         public static ConfigEntry<bool> SortPropertiesByType { get; set; }
-        public static ConfigEntry<bool> SortPropertiesByName{ get; set; }
+        public static ConfigEntry<bool> SortPropertiesByName { get; set; }
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFarClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFieldOfViewMax { get; set; }
