@@ -634,47 +634,25 @@ namespace MaterialEditorAPI
                 };
                 items.Add(shaderRenderQueueItem);
 
-                // Shader Property Category
-                var categories = XMLShaderProperties[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"]
-                    .Where(v =>
-                        // Should show the property?
-                        !v.Value.Hidden
-                        && (filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(v.Key, fw)))
-                    )
-                    .GroupBy(kv => string.IsNullOrEmpty(kv.Value.Category) ? "Uncategorized" : char.ToUpper(kv.Value.Category[0]) + kv.Value.Category.Substring(1))
-                    .OrderBy(g => g.Key == "Uncategorized" ? 1 : 0)  // Ensure "Uncategorized" goes to the end
-                    .ToDictionary(
-                        g => g.Key,
-                        g =>
-                        {
-                            var vs = g.AsEnumerable();
-                            if (SortPropertiesByType.Value && SortPropertiesByName.Value)
-                            {
-                                vs = vs.OrderBy(v => v.Value.Type).ThenBy(v => v.Value.Name);
-                            }
-                            else if (SortPropertiesByType.Value)
-                            {
-                                vs = vs.OrderBy(v => v.Value.Type);
-                            }
-                            else if (SortPropertiesByName.Value)
-                            {
-                                vs = vs.OrderBy(v => v.Value.Name);
-                            }
-                            return vs.ToList();
-                        }
-                );
+                // Shader property organizer
+                var categories = PropertyOrganizer.PropertyOrganization[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"];
 
                 foreach (var category in categories)
                 {
-                    var categoryItem = new ItemInfo(ItemInfo.RowItemType.PropertyCategory, category.Key) { };
-                    items.Add(categoryItem);
+                    if (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName) {
+                        var categoryItem = new ItemInfo(ItemInfo.RowItemType.PropertyCategory, category.Key);
+                        items.Add(categoryItem);
+                    }
 
                 foreach (var property in category.Value)
                 {
-                    string propertyName = property.Key;
+                    string propertyName = property.Name;
+                    // Blacklist
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
+                    // Filter
+                    if (filterListProperties.Count != 0 && !filterListProperties.Any(fw => WildCardSearch(propertyName, fw))) continue;
 
-                    if (property.Value.Type == ShaderPropertyType.Texture)
+                    if (property.Type == ShaderPropertyType.Texture)
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
@@ -754,7 +732,7 @@ namespace MaterialEditorAPI
                             items.Add(textureItemOffsetScale);
                         }
                     }
-                    else if (property.Value.Type == ShaderPropertyType.Color)
+                    else if (property.Type == ShaderPropertyType.Color)
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
@@ -776,7 +754,7 @@ namespace MaterialEditorAPI
                             items.Add(contentItem);
                         }
                     }
-                    else if (property.Value.Type == ShaderPropertyType.Float)
+                    else if (property.Type == ShaderPropertyType.Float)
                     {
                         if (mat.HasProperty($"_{propertyName}"))
                         {
@@ -793,12 +771,12 @@ namespace MaterialEditorAPI
                                 changeValue: value => SetMaterialFloatProperty(data, mat, propertyName, value, go),
                                 resetValue: () => RemoveMaterialFloatProperty(data, mat, propertyName, go),
                                 valueFloatOriginal: valueFloatOriginal,
-                                minValue: property.Value.MinValue,
-                                maxValue: property.Value.MaxValue
+                                minValue: property.MinValue,
+                                maxValue: property.MaxValue
                             );
                         }
                     }
-                    else if (property.Value.Type == ShaderPropertyType.Keyword)
+                    else if (property.Type == ShaderPropertyType.Keyword)
                     {
                         // Since there's no way to check if a Keyword exists, we'll have to trust the XML.
                         bool valueKeyword = mat.IsKeywordEnabled($"_{propertyName}");

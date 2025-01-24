@@ -733,6 +733,7 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 #endif
+            RefreshPropertyOrganization();
         }
 
         private static void LoadXML(XmlElement materialEditorElement)

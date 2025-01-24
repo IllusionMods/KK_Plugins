@@ -98,6 +98,9 @@ namespace MaterialEditorAPI
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
             ShaderOptimization.SettingChanged += ShaderOptimization_SettingChanged;
             ConfigExportPath.SettingChanged += ConfigExportPath_SettingChanged;
+            SortPropertiesByType.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
+            SortPropertiesByName.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
+
             SetExportPath();
 
             ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerResourceLoaded, AssetLoadedHook);
@@ -262,6 +265,11 @@ namespace MaterialEditorAPI
             SaveTexR(tmp, path);
             RenderTexture.active = currentActiveRT;
             RenderTexture.ReleaseTemporary(tmp);
+        }
+
+        protected static void RefreshPropertyOrganization()
+        {
+            PropertyOrganizer.Refresh();
         }
 
         public class ShaderData
