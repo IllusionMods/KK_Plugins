@@ -648,7 +648,7 @@ namespace MaterialEditorAPI
                         g =>
                         {
                             var vs = g.AsEnumerable();
-                            if (SortPropertiesByType.Value && SortPropertiesByAlphabet.Value)
+                            if (SortPropertiesByType.Value && SortPropertiesByName.Value)
                             {
                                 vs = vs.OrderBy(v => v.Value.Type).ThenBy(v => v.Value.Name);
                             }
@@ -656,7 +656,7 @@ namespace MaterialEditorAPI
                             {
                                 vs = vs.OrderBy(v => v.Value.Type);
                             }
-                            else if (SortPropertiesByAlphabet.Value)
+                            else if (SortPropertiesByName.Value)
                             {
                                 vs = vs.OrderBy(v => v.Value.Name);
                             }

@@ -50,7 +50,7 @@ namespace MaterialEditorAPI
         public static ConfigEntry<bool> PersistFilter { get; set; }
         public static ConfigEntry<bool> Showtooltips { get; set; }
         public static ConfigEntry<bool> SortPropertiesByType { get; set; }
-        public static ConfigEntry<bool> SortPropertiesByAlphabet{ get; set; }
+        public static ConfigEntry<bool> SortPropertiesByName{ get; set; }
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFarClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFieldOfViewMax { get; set; }
@@ -75,8 +75,8 @@ namespace MaterialEditorAPI
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
             PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
-            SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by the type.");
-            SortPropertiesByAlphabet = Config.Bind("Config", "Sort Properties by Alphabet", true, "Whether to sort shader properties by the alphabet.");
+            SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by their types.");
+            SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
 
             //Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
