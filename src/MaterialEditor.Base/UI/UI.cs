@@ -639,6 +639,12 @@ namespace MaterialEditorAPI
 
                 foreach (var category in categories)
                 {
+                    // Blacklist and filter
+                    if (!category.Value.Any(p =>
+                        !Instance.CheckBlacklist(materialName, p.Name)
+                        && (filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(p.Name, fw))))
+                    ) continue;
+
                     if (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName) {
                         var categoryItem = new ItemInfo(ItemInfo.RowItemType.PropertyCategory, category.Key);
                         items.Add(categoryItem);
@@ -650,7 +656,7 @@ namespace MaterialEditorAPI
                     // Blacklist
                     if (Instance.CheckBlacklist(materialName, propertyName)) continue;
                     // Filter
-                    if (filterListProperties.Count != 0 && !filterListProperties.Any(fw => WildCardSearch(propertyName, fw))) continue;
+                    if (!(filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(propertyName, fw)))) continue;
 
                     if (property.Type == ShaderPropertyType.Texture)
                     {
