@@ -42,6 +42,7 @@ namespace MaterialEditorAPI
         public static ConfigEntry<float> UIHeight { get; set; }
         public static ConfigEntry<float> UIListWidth { get; set; }
         public static ConfigEntry<float> DragSensitivity { get; set; }
+        public static ConfigEntry<int> FilterDelay { get; set; }
         public static ConfigEntry<bool> WatchTexChanges { get; set; }
         public static ConfigEntry<bool> ShaderOptimization { get; set; }
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
@@ -77,6 +78,7 @@ namespace MaterialEditorAPI
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
             SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by their types.");
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
+            FilterDelay = Config.Bind("Config", "Filter search delay (in ms)", 200, new ConfigDescription("Time to wait until the filter actually refreshes the UI when stopped typing", new AcceptableValueRange<int>(1, 2000)));
 
             //Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
@@ -100,7 +102,7 @@ namespace MaterialEditorAPI
             ConfigExportPath.SettingChanged += ConfigExportPath_SettingChanged;
             SortPropertiesByType.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             SortPropertiesByName.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
-
+            FilterDelay.SettingChanged += (sender, e) => MaterialEditorUI.filterTimer.Interval = FilterDelay.Value;
             SetExportPath();
 
             ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerResourceLoaded, AssetLoadedHook);
