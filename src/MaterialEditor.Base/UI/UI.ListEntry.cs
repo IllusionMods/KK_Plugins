@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using static UILib.Extensions;
@@ -58,6 +58,9 @@ namespace MaterialEditorAPI
         public Text ShaderRenderQueueLabel;
         public InputField ShaderRenderQueueInput;
         public Button ShaderRenderQueueResetButton;
+
+        public CanvasGroup PropertyCategoryPanel;
+        public Text PropertyCategoryLabel;
 
         public CanvasGroup TexturePanel;
         public Text TextureLabel;
@@ -125,7 +128,7 @@ namespace MaterialEditorAPI
                 {
                     case ItemInfo.RowItemType.Renderer:
                         ShowRenderer();
-                        SetLabelText(RendererLabel, item.LabelText, false, null, RendererPanel);
+                        SetLabelText(RendererLabel, item.LabelText);
                         ExportUVButton.onClick.RemoveAllListeners();
                         ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
                         TooltipManager.AddTooltip(ExportUVButton.gameObject, "Export the UV map of this renderer.\n\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model. You can use this UV map as a guide to drawing on textures");
@@ -247,7 +250,7 @@ namespace MaterialEditorAPI
                         break;
                     case ItemInfo.RowItemType.Material:
                         ShowMaterial();
-                        SetLabelText(MaterialLabel, item.LabelText, false, null, MaterialPanel);
+                        SetLabelText(MaterialLabel, item.LabelText);
                         MaterialText.text = item.MaterialName;
                         MaterialCopyButton.onClick.RemoveAllListeners();
                         MaterialCopyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
@@ -363,6 +366,10 @@ namespace MaterialEditorAPI
                         });
                         TooltipManager.AddTooltip(ShaderRenderQueueResetButton.gameObject, "Reset this property to its original value");
 
+                        break;
+                    case ItemInfo.RowItemType.PropertyCategory:
+                        ShowPropertyCategory();
+                        SetLabelText(PropertyCategoryLabel, item.LabelText);
                         break;
                     case ItemInfo.RowItemType.TextureProperty:
                         ShowTexture();
@@ -762,6 +769,10 @@ namespace MaterialEditorAPI
                 gameObject.SetActive(visible);
         }
 
+        private static void SetLabelText(Text label, string text) { 
+            label.text = text ?? "";
+        }
+
         private static void SetLabelText(Text label, string text, bool valueChanged, Button resetBtn, CanvasGroup panel)
         {
             label.text = text ?? "";
@@ -790,6 +801,7 @@ namespace MaterialEditorAPI
             ShowMaterial(false);
             ShowShader(false);
             ShowShaderRenderQueue(false);
+            ShowPropertyCategory(false);
             ShowTexture(false);
             ShowOffsetScale(false);
             ShowColor(false);
@@ -842,6 +854,11 @@ namespace MaterialEditorAPI
         {
             ShaderRenderQueuePanel.alpha = visible ? 1 : 0;
             ShaderRenderQueuePanel.blocksRaycasts = visible;
+        }
+
+        private void ShowPropertyCategory(bool visible = true) {
+            PropertyCategoryPanel.alpha = visible ? 1 : 0;
+            PropertyCategoryPanel.blocksRaycasts = visible;
         }
 
         private void ShowTexture(bool visible = true)

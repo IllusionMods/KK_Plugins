@@ -36,6 +36,10 @@
       <!-- Optional `Hidden` attribute -->
       <Property Name="{{PropertyName}}" Type="Float" Hidden="{{boolean}}"/>
       <!-- Example: <Property Name="PropertyName" Type="Float" Hidden="True"/> -->
+      <!-- -->
+      <!-- Optional `Category` attribute -->
+      <Property Name="{{PropertyName}}" Type="Float" Category="{{category_name}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Float" Category="Category Name"/> -->
 
       <!-- Color or vector property -->
       <Property Name="{{PropertyName}}" Type="Color"/>
@@ -47,6 +51,10 @@
       <!-- Optional `Hidden` attribute -->
       <Property Name="{{PropertyName}}" Type="Color" Hidden="{{boolean}}"/>
       <!-- Example: <Property Name="PropertyName" Type="Color" Hidden="True"/> -->
+      <!-- -->
+      <!-- Optional `Category` attribute -->
+      <Property Name="{{PropertyName}}" Type="Color" Category="{{category_name}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Color" Category="Category Name"/> -->
 
       <!-- Texture property -->
       <Property Name="{{PropertyName}}" Type="Texture"/>
@@ -58,6 +66,10 @@
       <!-- Optional `Hidden` attribute -->
       <Property Name="{{PropertyName}}" Type="Texture" Hidden="{{boolean}}"/>
       <!-- Example: <Property Name="PropertyName" Type="Texture" Hidden="True"/> -->
+      <!-- -->
+      <!-- Optional `Category` attribute -->
+      <Property Name="{{PropertyName}}" Type="Texture" Category="{{category_name}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Texture" Category="Category Name"/> -->
 
       <!-- Keyword -->
       <Property Name="{{KEYWORD_NAME}}" Type="Keyword"/>
@@ -69,6 +81,10 @@
       <!-- Optional `Hidden` attribute -->
       <Property Name="{{KEYWORD_NAME}}" Type="Keyword" Hidden="{{boolean}}"/>
       <!-- Example: <Property Name="KEYWORD_NAME" Type="Keyword" Hidden="True"/> -->
+      <!-- -->
+      <!-- Optional `Category` attribute -->
+      <Property Name="{{PropertyName}}" Type="Keyword" Category="{{category_name}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Keyword" Category="Category Name"/> -->
 
 
       <!-- Notes -->

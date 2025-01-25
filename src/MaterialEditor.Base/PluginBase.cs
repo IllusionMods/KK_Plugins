@@ -50,6 +50,8 @@ namespace MaterialEditorAPI
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
         public static ConfigEntry<bool> PersistFilter { get; set; }
         public static ConfigEntry<bool> Showtooltips { get; set; }
+        public static ConfigEntry<bool> SortPropertiesByType { get; set; }
+        public static ConfigEntry<bool> SortPropertiesByName { get; set; }
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFarClipPlaneMax { get; set; }
         public static ConfigEntry<float> ProjectorFieldOfViewMax { get; set; }
@@ -74,6 +76,8 @@ namespace MaterialEditorAPI
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
             PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
+            SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by their types.");
+            SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
             FilterDelay = Config.Bind("Config", "Filter search delay (in ms)", 200, new ConfigDescription("Time to wait until the filter actually refreshes the UI when stopped typing", new AcceptableValueRange<int>(1, 2000)));
 
             //Everything in these games is 10x the size of KK/KKS
@@ -96,6 +100,8 @@ namespace MaterialEditorAPI
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
             ShaderOptimization.SettingChanged += ShaderOptimization_SettingChanged;
             ConfigExportPath.SettingChanged += ConfigExportPath_SettingChanged;
+            SortPropertiesByType.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
+            SortPropertiesByName.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             FilterDelay.SettingChanged += (sender, e) => MaterialEditorUI.filterTimer.Interval = FilterDelay.Value;
             SetExportPath();
 
@@ -183,6 +189,7 @@ namespace MaterialEditorAPI
                                                 string range = shaderPropertyElement.GetAttribute("Range");
                                                 string min = null;
                                                 string max = null;
+                                                string category = shaderPropertyElement.GetAttribute("Category");
                                                 if (!range.IsNullOrWhiteSpace())
                                                 {
                                                     var rangeSplit = range.Split(',');
@@ -192,7 +199,7 @@ namespace MaterialEditorAPI
                                                         max = rangeSplit[1];
                                                     }
                                                 }
-                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max);
+                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max, category);
 
                                                 XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                                             }
@@ -262,6 +269,11 @@ namespace MaterialEditorAPI
             RenderTexture.ReleaseTemporary(tmp);
         }
 
+        protected static void RefreshPropertyOrganization()
+        {
+            PropertyOrganizer.Refresh();
+        }
+
         public class ShaderData
         {
             public string ShaderName;
@@ -297,8 +309,9 @@ namespace MaterialEditorAPI
             public bool Hidden;
             public float? MinValue;
             public float? MaxValue;
+            public string Category;
 
-            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string hidden = null, string minValue = null, string maxValue = null)
+            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string hidden = null, string minValue = null, string maxValue = null, string category = null)
             {
                 Name = name;
                 Type = type;
@@ -313,6 +326,7 @@ namespace MaterialEditorAPI
                         MaxValue = max;
                     }
                 }
+                Category = category;
             }
         }
     }

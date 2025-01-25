@@ -19,7 +19,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("RendererPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
-                itemPanel.color = SeparatorItemColor;
+                itemPanel.color = RendererColor;
 
                 var label = UIUtility.CreateText("RendererLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -192,7 +192,7 @@ namespace MaterialEditorAPI
                 var itemPanel = UIUtility.CreatePanel("MaterialPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
-                itemPanel.color = SeparatorItemColor;
+                itemPanel.color = MaterialColor;
 
                 var label = UIUtility.CreateText("MaterialLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -288,6 +288,21 @@ namespace MaterialEditorAPI
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
+            }
+
+            // Property Category
+            {
+                var itemPanel = UIUtility.CreatePanel("PropertyCategoryPanel", contentList.transform);
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = Padding;
+                itemPanel.color = CategoryColor;
+
+                var label = UIUtility.CreateText("PropertyCategoryLabel", itemPanel.transform, "");
+                label.alignment = TextAnchor.MiddleLeft;
+                label.color = Color.black;
+                var labelLE = label.gameObject.AddComponent<LayoutElement>();
+                labelLE.preferredWidth = LabelWidth;
+                labelLE.flexibleWidth = LabelWidth;
             }
 
             //Texture properties
