@@ -74,7 +74,7 @@ namespace MaterialEditorAPI
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
             PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
-            FilterDelay = Config.Bind("Config", "Filter search delay (in ms)", 250, new ConfigDescription("Time to wait until the filter actually refreshes the UI when stopped typing", new AcceptableValueRange<int>(1, 2000)));
+            FilterDelay = Config.Bind("Config", "Filter search delay (in ms)", 200, new ConfigDescription("Time to wait until the filter actually refreshes the UI when stopped typing", new AcceptableValueRange<int>(1, 2000)));
 
             //Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
