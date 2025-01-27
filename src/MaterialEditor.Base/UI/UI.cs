@@ -64,7 +64,7 @@ namespace MaterialEditorAPI
         internal const float LabelWidth = 0f;
         internal const float ButtonWidth = 100f;
         internal const float SmallButtonWidth = 20f;
-        internal const float ResetButtonWidth = SmallButtonWidth;
+        internal const float ResetButtonWidth = SmallButtonWidth * 2f;
         internal const float InterpolableButtonWidth = SmallButtonWidth;
         internal const float ContentFullWidth = 316f;
         // Renderer (Enbale/ShadowCastingMode/ReceiveShadows/RendererUpdateWhenOffscreen/RecalulateNormals)
