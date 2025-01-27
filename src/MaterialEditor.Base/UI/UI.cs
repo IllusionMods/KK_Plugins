@@ -58,20 +58,47 @@ namespace MaterialEditorAPI
         internal const float HeaderSize = 20f;
         internal const float ScrollOffsetX = -15f;
         internal const float PanelHeight = 20f;
-        internal const float LabelWidth = 50f;
-        internal const float ButtonWidth = 100f;
-        internal const float DropdownWidth = 100f;
-        internal const float TextBoxWidth = 75f;
-        internal const float ColorLabelWidth = 10f;
-        internal const float ResetButtonWidth = 30f;
-        internal const float ColorEditButtonWidth = 20f;
-        internal const float SliderWidth = 150f;
-        internal const float LabelXWidth = 60f;
-        internal const float LabelYWidth = 10f;
-        internal const float TextBoxXYWidth = 50f;
-        internal static RectOffset Padding;
-        internal static readonly Color RowColor = new Color(1f, 1f, 1f, 0.6f);
 
+        #region Entry Item Width
+        // General
+        internal const float LabelWidth = 0f;
+        internal const float ButtonWidth = 100f;
+        internal const float SmallButtonWidth = 24f;
+        internal const float ResetButtonWidth = SmallButtonWidth;
+        internal const float InterpolableButtonWidth = SmallButtonWidth;
+        internal const float ContentFullWidth = 316f;
+        // Renderer (Enbale/ShadowCastingMode/ReceiveShadows/RendererUpdateWhenOffscreen/RecalulateNormals)
+        internal const float RendererButtonWidth = ButtonWidth;
+        internal const float RendererToggleWidth = 20f;
+        internal const float RendererDropdownWidth = 94f;
+        // Material
+        internal const float MaterialButtonWidth = ButtonWidth * 0.75f;
+        internal const float MaterialRenameButtonWidth = SmallButtonWidth;
+        // Shader
+        internal const float ShaderDropdownWidth = ContentFullWidth;
+        // RenderQueue
+        internal const float RenderQueueInputFieldWidth = 94f;
+        // Texture
+        internal const float TextureButtonWidth = ContentFullWidth / 2f;
+        // Texture Offset and Scale
+        internal const float OffsetScaleLabelWidth = 24f;
+        internal const float OffsetScaleInputFieldWidth = 50f;
+        internal const float OffsetScaleEmptySpaceWidth = 20f;
+        // Color
+        internal const float ColorLabelWidth = 24f;
+        internal const float ColorInputFieldWidth = 50f;
+        internal const float ColorEditButtonWidth = 20f;
+        // Float
+        internal const float FloatSliderWidth = ContentFullWidth - 94f;
+        internal const float FloatInputFieldWidth = 94f;
+        // Keyword
+        internal const float KeywordToggleWidth = ContentFullWidth;
+        #endregion
+
+        internal static RectOffset Padding;
+
+        #region Colors
+        internal static readonly Color RowColor = new Color(1f, 1f, 1f, 0.6f);
         // https://simplified.com/blog/colors/triadic-colors
         internal static readonly Color RendererColor = new Color(0.984f, 0.600f, 0.008f, 0.5f);
         internal static readonly Color MaterialColor = new Color(0.400f, 0.690f, 0.196f, 0.5f);
@@ -79,6 +106,7 @@ namespace MaterialEditorAPI
 
         internal static readonly Color ItemColor = new Color(1f, 1f, 1f, 0f);
         internal static readonly Color ItemColorChanged = new Color(0f, 0f, 0f, 0.3f);
+        #endregion
 
         private protected IMaterialEditorColorPalette ColorPalette;
 
@@ -96,7 +124,7 @@ namespace MaterialEditorAPI
         /// </summary>
         protected void InitUI()
         {
-            Padding = new RectOffset(3, 2, 0, 1);
+            Padding = new RectOffset(1, 1, 0, 0);
 
             MaterialEditorWindow = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
