@@ -68,7 +68,7 @@ namespace MaterialEditorAPI
                 toggleEnabledLE.flexibleWidth = 0;
                 toggleEnabled.isOn = true;
 
-                var reset = UIUtility.CreateButton($"RendererEnabledResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"RendererEnabledResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -103,7 +103,7 @@ namespace MaterialEditorAPI
                 dropdownShadowCastingModeLE.preferredWidth = DropdownWidth;
                 dropdownShadowCastingModeLE.flexibleWidth = 0;
 
-                var reset = UIUtility.CreateButton($"RendererShadowCastingModeResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"RendererShadowCastingModeResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -129,7 +129,7 @@ namespace MaterialEditorAPI
                 toggleReceiveShadowsLE.flexibleWidth = 0;
                 toggleReceiveShadows.isOn = true;
 
-                var reset = UIUtility.CreateButton($"RendererReceiveShadowsResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"RendererReceiveShadowsResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -155,7 +155,7 @@ namespace MaterialEditorAPI
                 toggleRendererUpdateWhenOffscreenLE.flexibleWidth = 0;
                 toggleRendererUpdateWhenOffscreen.isOn = false;
 
-                var reset = UIUtility.CreateButton($"RendererUpdateWhenOffscreenResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"RendererUpdateWhenOffscreenResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -181,7 +181,7 @@ namespace MaterialEditorAPI
                 toggleRecalculateNormalsLE.flexibleWidth = 0;
                 toggleRecalculateNormals.isOn = false;
 
-                var reset = UIUtility.CreateButton($"RendererRecalculateNormalsResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"RendererRecalculateNormalsResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -258,7 +258,7 @@ namespace MaterialEditorAPI
                 dropdownShaderLE.preferredWidth = DropdownWidth * 3;
                 dropdownShaderLE.flexibleWidth = 0;
 
-                var reset = UIUtility.CreateButton($"ShaderResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"ShaderResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -284,7 +284,7 @@ namespace MaterialEditorAPI
                 textBoxShaderRenderQueueLE.preferredWidth = TextBoxWidth;
                 textBoxShaderRenderQueueLE.flexibleWidth = 0;
 
-                var reset = UIUtility.CreateButton($"ShaderRenderQueueResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"ShaderRenderQueueResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -331,7 +331,7 @@ namespace MaterialEditorAPI
                 importButtonLE.preferredWidth = ButtonWidth;
                 importButtonLE.flexibleWidth = 0;
 
-                var reset = UIUtility.CreateButton($"TextureResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"TextureResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -407,7 +407,7 @@ namespace MaterialEditorAPI
                 textBoxScaleYLE.preferredWidth = TextBoxXYWidth;
                 textBoxScaleYLE.flexibleWidth = 0;
 
-                var reset = UIUtility.CreateButton($"OffsetScaleResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"OffsetScaleResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -489,7 +489,7 @@ namespace MaterialEditorAPI
                 editLE.preferredWidth = ColorEditButtonWidth;
                 editLE.flexibleWidth = 0;
 
-                var reset = UIUtility.CreateButton($"ColorResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"ColorResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -527,7 +527,7 @@ namespace MaterialEditorAPI
                 textBoxFloatLE.preferredWidth = TextBoxWidth;
                 textBoxFloatLE.flexibleWidth = 0;
 
-                var reset = UIUtility.CreateButton($"FloatResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"FloatResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
@@ -553,7 +553,7 @@ namespace MaterialEditorAPI
                 toggleKeywordLE.preferredWidth = TextBoxWidth;
                 toggleKeywordLE.flexibleWidth = 0;
 
-                var reset = UIUtility.CreateButton($"KeywordResetButton", itemPanel.transform, "Reset");
+                var reset = UIUtility.CreateButton($"KeywordResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0;
