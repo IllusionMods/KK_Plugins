@@ -63,7 +63,7 @@ namespace MaterialEditorAPI
         // General
         internal const float LabelWidth = 0f;
         internal const float ButtonWidth = 100f;
-        internal const float SmallButtonWidth = 24f;
+        internal const float SmallButtonWidth = 20f;
         internal const float ResetButtonWidth = SmallButtonWidth;
         internal const float InterpolableButtonWidth = SmallButtonWidth;
         internal const float ContentFullWidth = 316f;
@@ -81,12 +81,12 @@ namespace MaterialEditorAPI
         // Texture
         internal const float TextureButtonWidth = ContentFullWidth / 2f;
         // Texture Offset and Scale
-        internal const float OffsetScaleLabelWidth = 24f;
+        internal const float OffsetScaleLabelXWidth = 48f;
+        internal const float OffsetScaleLabelYWidth = 10f;
         internal const float OffsetScaleInputFieldWidth = 50f;
-        internal const float OffsetScaleEmptySpaceWidth = 20f;
         // Color
-        internal const float ColorLabelWidth = 24f;
-        internal const float ColorInputFieldWidth = 50f;
+        internal const float ColorLabelWidth = 10f;
+        internal const float ColorInputFieldWidth = 64f;
         internal const float ColorEditButtonWidth = 20f;
         // Float
         internal const float FloatSliderWidth = ContentFullWidth - 94f;

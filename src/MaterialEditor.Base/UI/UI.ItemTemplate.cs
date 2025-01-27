@@ -23,8 +23,6 @@ namespace MaterialEditorAPI
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
 
-                CreateInterpolableButton("SelectInterpolableRendererButton", itemPanel.transform);
-
                 var label = UIUtility.CreateText("RendererLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
                 label.color = Color.black;
@@ -40,7 +38,9 @@ namespace MaterialEditorAPI
                 labelRendererLE.minWidth = LabelWidth;
                 labelRendererLE.preferredWidth = LabelWidth;
                 labelRendererLE.flexibleWidth = 1f;
-                 
+
+                CreateInterpolableButton("SelectInterpolableRendererButton", itemPanel.transform);
+
                 Button exportUVButton = UIUtility.CreateButton("ExportUVButton", itemPanel.transform, "Export UV Map");
                 var exportUVButtonLE = exportUVButton.gameObject.AddComponent<LayoutElement>();
                 exportUVButtonLE.minWidth = RendererButtonWidth;
@@ -148,7 +148,7 @@ namespace MaterialEditorAPI
                 toggleReceiveShadowsLE.minWidth = RendererToggleWidth;
                 toggleReceiveShadowsLE.preferredWidth = RendererToggleWidth;
                 toggleReceiveShadowsLE.flexibleWidth = 0f;
-                
+
                 var reset = UIUtility.CreateButton($"RendererReceiveShadowsResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.minWidth = ResetButtonWidth;
@@ -179,7 +179,7 @@ namespace MaterialEditorAPI
                 toggleRendererUpdateWhenOffscreenLE.minWidth = RendererToggleWidth;
                 toggleRendererUpdateWhenOffscreenLE.preferredWidth = RendererToggleWidth;
                 toggleRendererUpdateWhenOffscreenLE.flexibleWidth = 0f;
-                
+
                 var reset = UIUtility.CreateButton($"RendererUpdateWhenOffscreenResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.minWidth = ResetButtonWidth;
@@ -277,8 +277,6 @@ namespace MaterialEditorAPI
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
 
-                CreateInterpolableButton("SelectInterpolableShaderButton", itemPanel.transform);
-
                 var label = UIUtility.CreateText("ShaderLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
                 label.color = Color.black;
@@ -286,6 +284,8 @@ namespace MaterialEditorAPI
                 labelLE.minWidth = LabelWidth;
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
+
+                CreateInterpolableButton("SelectInterpolableShaderButton", itemPanel.transform);
 
                 Dropdown dropdownShader = UIUtility.CreateDropdown("ShaderDropdown", itemPanel.transform);
                 dropdownShader.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
@@ -364,9 +364,7 @@ namespace MaterialEditorAPI
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
-                itemHLG.childForceExpandWidth = false; 
-                
-                CreateInterpolableButton("SelectInterpolableTextureButton", itemPanel.transform);
+                itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("TextureLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -374,7 +372,9 @@ namespace MaterialEditorAPI
                 var labelLE = label.gameObject.AddComponent<LayoutElement>();
                 labelLE.minWidth = LabelWidth;
                 labelLE.preferredWidth = LabelWidth;
-                labelLE.flexibleWidth = 1f; 
+                labelLE.flexibleWidth = 1f;
+
+                CreateInterpolableButton("SelectInterpolableTextureButton", itemPanel.transform);
 
                 Button exportButton = UIUtility.CreateButton($"TextureExportButton", itemPanel.transform, $"Export Texture");
                 var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
@@ -412,12 +412,19 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
 
-                Text labelOffsetX = UIUtility.CreateText("OffsetXText", itemPanel.transform, "Ox");
+                Text emptySpace = UIUtility.CreateText("EmptySpace", itemPanel.transform, "");
+                emptySpace.alignment = TextAnchor.MiddleLeft;
+                var emptySpaceLE = emptySpace.gameObject.AddComponent<LayoutElement>();
+                emptySpaceLE.minWidth = InterpolableButtonWidth;
+                emptySpaceLE.preferredWidth = InterpolableButtonWidth;
+                emptySpaceLE.flexibleWidth = 0f;
+
+                Text labelOffsetX = UIUtility.CreateText("OffsetXText", itemPanel.transform, "OffsetX");
                 labelOffsetX.alignment = TextAnchor.MiddleLeft;
                 labelOffsetX.color = Color.black;
                 var labelOffsetXLE = labelOffsetX.gameObject.AddComponent<LayoutElement>();
-                labelOffsetXLE.minWidth = OffsetScaleLabelWidth;
-                labelOffsetXLE.preferredWidth = OffsetScaleLabelWidth;
+                labelOffsetXLE.minWidth = OffsetScaleLabelXWidth;
+                labelOffsetXLE.preferredWidth = OffsetScaleLabelXWidth;
                 labelOffsetXLE.flexibleWidth = 0f;
 
                 InputField textBoxOffsetX = UIUtility.CreateInputField("OffsetXInput", itemPanel.transform);
@@ -428,12 +435,12 @@ namespace MaterialEditorAPI
                 textBoxOffsetXLE.preferredWidth = OffsetScaleInputFieldWidth;
                 textBoxOffsetXLE.flexibleWidth = 0f;
 
-                Text labelOffsetY = UIUtility.CreateText("OffsetYText", itemPanel.transform, "Oy");
+                Text labelOffsetY = UIUtility.CreateText("OffsetYText", itemPanel.transform, "Y");
                 labelOffsetY.alignment = TextAnchor.MiddleLeft;
                 labelOffsetY.color = Color.black;
                 var labelOffsetYLE = labelOffsetY.gameObject.AddComponent<LayoutElement>();
-                labelOffsetYLE.minWidth = OffsetScaleLabelWidth;
-                labelOffsetYLE.preferredWidth = OffsetScaleLabelWidth;
+                labelOffsetYLE.minWidth = OffsetScaleLabelYWidth;
+                labelOffsetYLE.preferredWidth = OffsetScaleLabelYWidth;
                 labelOffsetYLE.flexibleWidth = 0f;
 
                 InputField textBoxOffsetY = UIUtility.CreateInputField("OffsetYInput", itemPanel.transform);
@@ -448,12 +455,12 @@ namespace MaterialEditorAPI
                 labelOffsetY.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxOffsetY, new[] { textBoxOffsetX });
 
                 //Scale
-                Text labelScaleX = UIUtility.CreateText("ScaleXText", itemPanel.transform, "Sx");
+                Text labelScaleX = UIUtility.CreateText("ScaleXText", itemPanel.transform, "ScaleX");
                 labelScaleX.alignment = TextAnchor.MiddleLeft;
                 labelScaleX.color = Color.black;
                 var labelScaleXLE = labelScaleX.gameObject.AddComponent<LayoutElement>();
-                labelScaleXLE.minWidth = OffsetScaleLabelWidth;
-                labelScaleXLE.preferredWidth = OffsetScaleLabelWidth;
+                labelScaleXLE.minWidth = OffsetScaleLabelXWidth;
+                labelScaleXLE.preferredWidth = OffsetScaleLabelXWidth;
                 labelScaleXLE.flexibleWidth = 0f;
 
                 InputField textBoxScaleX = UIUtility.CreateInputField("ScaleXInput", itemPanel.transform);
@@ -464,12 +471,12 @@ namespace MaterialEditorAPI
                 textBoxScaleXLE.preferredWidth = OffsetScaleInputFieldWidth;
                 textBoxScaleXLE.flexibleWidth = 0f;
 
-                Text labelScaleY = UIUtility.CreateText("ScaleYText", itemPanel.transform, "Sy");
+                Text labelScaleY = UIUtility.CreateText("ScaleYText", itemPanel.transform, "Y");
                 labelScaleY.alignment = TextAnchor.MiddleLeft;
                 labelScaleY.color = Color.black;
                 var labelScaleYLE = labelScaleY.gameObject.AddComponent<LayoutElement>();
-                labelScaleYLE.minWidth = OffsetScaleLabelWidth;
-                labelScaleYLE.preferredWidth = OffsetScaleLabelWidth;
+                labelScaleYLE.minWidth = OffsetScaleLabelYWidth;
+                labelScaleYLE.preferredWidth = OffsetScaleLabelYWidth;
                 labelScaleYLE.flexibleWidth = 0f;
 
                 InputField textBoxScaleY = UIUtility.CreateInputField("ScaleYInput", itemPanel.transform);
@@ -479,13 +486,6 @@ namespace MaterialEditorAPI
                 textBoxScaleYLE.minWidth = OffsetScaleInputFieldWidth;
                 textBoxScaleYLE.preferredWidth = OffsetScaleInputFieldWidth;
                 textBoxScaleYLE.flexibleWidth = 0f;
-
-                Text emptySpace = UIUtility.CreateText("EmptySpace", itemPanel.transform, "");
-                emptySpace.alignment = TextAnchor.MiddleLeft;
-                var emptySpaceLE = emptySpace.gameObject.AddComponent<LayoutElement>();
-                emptySpaceLE.minWidth = OffsetScaleEmptySpaceWidth;
-                emptySpaceLE.preferredWidth = OffsetScaleEmptySpaceWidth;
-                emptySpaceLE.flexibleWidth = 0f;
 
                 var reset = UIUtility.CreateButton($"OffsetScaleResetButton", itemPanel.transform, "R");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
@@ -506,8 +506,6 @@ namespace MaterialEditorAPI
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
 
-                CreateInterpolableButton("SelectInterpolableColorButton", itemPanel.transform);
-
                 var label = UIUtility.CreateText("ColorLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
                 label.color = Color.black;
@@ -515,6 +513,8 @@ namespace MaterialEditorAPI
                 labelLE.minWidth = LabelWidth;
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
+
+                CreateInterpolableButton("SelectInterpolableColorButton", itemPanel.transform);
 
                 Text labelR = UIUtility.CreateText("ColorRText", itemPanel.transform, "R");
                 labelR.alignment = TextAnchor.MiddleLeft;
@@ -531,7 +531,7 @@ namespace MaterialEditorAPI
                 textBoxRLE.minWidth = ColorInputFieldWidth;
                 textBoxRLE.preferredWidth = ColorInputFieldWidth;
                 textBoxRLE.flexibleWidth = 0f;
-         
+
 
                 Text labelG = UIUtility.CreateText("ColorGText", itemPanel.transform, "G");
                 labelG.alignment = TextAnchor.MiddleLeft;
@@ -608,8 +608,6 @@ namespace MaterialEditorAPI
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
 
-                CreateInterpolableButton("SelectInterpolableFloatButton", itemPanel.transform);
-
                 var label = UIUtility.CreateText("FloatLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
                 label.color = Color.black;
@@ -617,6 +615,8 @@ namespace MaterialEditorAPI
                 labelLE.minWidth = LabelWidth;
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
+
+                CreateInterpolableButton("SelectInterpolableFloatButton", itemPanel.transform);
 
                 Slider sliderFloat = UIUtility.CreateSlider("FloatSlider", itemPanel.transform);
                 var sliderFloatLE = sliderFloat.gameObject.AddComponent<LayoutElement>();
@@ -653,9 +653,16 @@ namespace MaterialEditorAPI
                 label.alignment = TextAnchor.MiddleLeft;
                 label.color = Color.black;
                 var labelLE = label.gameObject.AddComponent<LayoutElement>();
-                labelLE.minWidth = LabelWidth; 
-                labelLE.preferredWidth = LabelWidth; 
+                labelLE.minWidth = LabelWidth;
+                labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
+
+                Text emptySpace = UIUtility.CreateText("EmptySpace", itemPanel.transform, "");
+                emptySpace.alignment = TextAnchor.MiddleLeft;
+                var emptySpaceLE = emptySpace.gameObject.AddComponent<LayoutElement>();
+                emptySpaceLE.minWidth = InterpolableButtonWidth;
+                emptySpaceLE.preferredWidth = InterpolableButtonWidth;
+                emptySpaceLE.flexibleWidth = 0f;
 
                 Toggle toggleKeyword = UIUtility.CreateToggle("KeywordToggle", itemPanel.transform, "");
                 var toggleKeywordLE = toggleKeyword.gameObject.AddComponent<LayoutElement>();
