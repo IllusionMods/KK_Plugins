@@ -139,6 +139,7 @@ namespace MaterialEditorAPI
                         SelectInterpolableRendererButton.onClick.AddListener(() => item.SelectInterpolableButtonRendererOnClick());
                         TooltipManager.AddTooltip(SelectInterpolableRendererButton.gameObject, "Select the properties (Enabled, Shadow casting mode and Receive shadows) of the currently selected renderer as interpolables in timeline");
                         RendererText.text = item.RendererName;
+                        TooltipManager.AddTooltip(RendererText.gameObject, "Renderer name");
                         break;
                     case ItemInfo.RowItemType.RendererEnabled:
                         ShowRendererEnabled();
@@ -252,6 +253,7 @@ namespace MaterialEditorAPI
                         ShowMaterial();
                         SetLabelText(MaterialLabel, item.LabelText);
                         MaterialText.text = item.MaterialName;
+                        TooltipManager.AddTooltip(MaterialText.gameObject, "Material name");
                         MaterialCopyButton.onClick.RemoveAllListeners();
                         MaterialCopyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
                         TooltipManager.AddTooltip(MaterialCopyButton.gameObject, "Copy all the <b>edits</b> of this material");
@@ -370,6 +372,7 @@ namespace MaterialEditorAPI
                     case ItemInfo.RowItemType.PropertyCategory:
                         ShowPropertyCategory();
                         SetLabelText(PropertyCategoryLabel, item.LabelText);
+                        TooltipManager.AddTooltip(PropertyCategoryLabel.gameObject, "Category name");
                         break;
                     case ItemInfo.RowItemType.TextureProperty:
                         ShowTexture();
@@ -523,6 +526,10 @@ namespace MaterialEditorAPI
                             item.ScaleOnReset();
                             SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
                         });
+                        TooltipManager.AddTooltip(OffsetXInput.gameObject, "Adjust the horizontal offset of the texture. It can move the texture left or right.");
+                        TooltipManager.AddTooltip(OffsetYInput.gameObject, "Adjust the vertical offset of the texture. It can move the texture up or down.");
+                        TooltipManager.AddTooltip(ScaleXInput.gameObject, "Adjust the horizontal scale of the texture. Values greater than 1 make the texture appear smaller horizontally, values less than 1 make it appear larger horizontally.");
+                        TooltipManager.AddTooltip(ScaleYInput.gameObject, "Adjust the vertical scale of the texture. Values greater than 1 make the texture appear smaller vertically, values less than 1 make it appear larger vertically.");
                         TooltipManager.AddTooltip(OffsetScaleResetButton.gameObject, "Reset both the scale and offset properties to their original values");
 
                         break;
