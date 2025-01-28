@@ -57,7 +57,7 @@ namespace MaterialEditorAPI
         internal const float MarginSize = 5f;
         internal const float HeaderSize = 20f;
         internal const float ScrollOffsetX = -15f;
-        internal const float PanelHeight = 20f;
+        internal const float PanelHeight = 22f;
 
         #region Entry Item Width
         // General
@@ -124,7 +124,7 @@ namespace MaterialEditorAPI
         /// </summary>
         protected void InitUI()
         {
-            Padding = new RectOffset(1, 1, 0, 0);
+            Padding = new RectOffset(1, 1, 1, 1);
 
             MaterialEditorWindow = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
