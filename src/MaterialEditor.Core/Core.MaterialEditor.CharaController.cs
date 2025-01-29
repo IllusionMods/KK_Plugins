@@ -798,6 +798,11 @@ namespace KK_Plugins.MaterialEditor
 
         public IEnumerator LoadData(bool clothes, bool accessories, bool hair)
         {
+            return LoadData(clothes, accessories, hair, true);
+        }
+
+        public IEnumerator LoadData(bool clothes, bool accessories, bool hair, bool body)
+        {
             yield return null;
 #if !EC
             if (KKAPI.Studio.StudioAPI.InsideStudio)
@@ -809,9 +814,10 @@ namespace KK_Plugins.MaterialEditor
             while (ChaControl == null || ChaControl.GetHead() == null)
                 yield return null;
 
-            CorrectTongue();
+            if (body)
+                CorrectTongue();
 #if KK || KKS
-            if (KKAPI.Studio.StudioAPI.InsideStudio)
+            if (KKAPI.Studio.StudioAPI.InsideStudio && body)
                 CorrectFace();
 #endif
 
@@ -823,6 +829,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+                if (property.ObjectType == ObjectType.Character && !body) continue;
 
                 CopyMaterial(FindGameObject(property.ObjectType, property.Slot), property.MaterialName, property.MaterialCopyName);
             }
@@ -836,6 +843,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+                if (property.ObjectType == ObjectType.Character && !body) continue;
 
                 MaterialAPI.SetName(FindGameObject(property.ObjectType, property.Slot), property.Renderer, property.MaterialName, property.Value);
             }
@@ -847,6 +855,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+                if (property.ObjectType == ObjectType.Character && !body) continue;
 
 #if KK || EC || KKS
                 if (property.ObjectType == ObjectType.Character && MaterialEditorPlugin.EyeMaterials.Contains(property.MaterialName))
@@ -867,6 +876,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+                if (property.ObjectType == ObjectType.Character && !body) continue;
 
                 MaterialAPI.SetRendererProperty(FindGameObject(property.ObjectType, property.Slot), property.RendererName, property.Property, property.Value);
             }
@@ -879,6 +889,7 @@ namespace KK_Plugins.MaterialEditor
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
                 if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
+                if (property.ObjectType == ObjectType.Character && !body) continue;
 
                 SetFloat(go, property.MaterialName, property.Property, float.Parse(property.Value));
             }
@@ -891,6 +902,7 @@ namespace KK_Plugins.MaterialEditor
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
                 if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
+                if (property.ObjectType == ObjectType.Character && !body) continue;
 
                 SetKeyword(go, property.MaterialName, property.Property, property.Value);
             }
@@ -903,6 +915,7 @@ namespace KK_Plugins.MaterialEditor
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
                 if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
+                if (property.ObjectType == ObjectType.Character && !body) continue;
 
                 SetColor(go, property.MaterialName, property.Property, property.Value);
             }
@@ -913,6 +926,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+                if (property.ObjectType == ObjectType.Character && !body) continue;
                 var go = FindGameObject(property.ObjectType, property.Slot);
                 if (Instance.CheckBlacklist(property.MaterialName, property.Property)) continue;
 
@@ -927,6 +941,7 @@ namespace KK_Plugins.MaterialEditor
                 if (property.ObjectType == ObjectType.Accessory && !accessories) continue;
                 if (property.ObjectType == ObjectType.Hair && !hair) continue;
                 if ((property.ObjectType == ObjectType.Clothing || property.ObjectType == ObjectType.Accessory) && property.CoordinateIndex != CurrentCoordinateIndex) continue;
+                if (property.ObjectType == ObjectType.Character && !body) continue;
 
                 MaterialAPI.SetProjectorProperty(FindGameObject(property.ObjectType, property.Slot), property.ProjectorName, property.Property, float.Parse(property.Value));
             }
@@ -1329,6 +1344,7 @@ namespace KK_Plugins.MaterialEditor
             if (CustomClothesOverride) return;
             if (new System.Diagnostics.StackTrace().ToString().Contains("KoiClothesOverlayController"))
             {
+                StartCoroutine(LoadData(true, false, false, false));
                 RefreshingTextures = true;
                 return;
             }
