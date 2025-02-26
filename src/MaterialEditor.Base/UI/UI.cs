@@ -467,7 +467,11 @@ namespace MaterialEditorAPI
                 filterList.RemoveAll(x => x.IsNullOrWhiteSpace());
 
                 filterListProperties = new List<string>(filterList);
-                filterListProperties = filterListProperties.Where(x => x.StartsWith("_")).Select(x => x.Trim('_')).ToList();
+                filterListProperties = filterListProperties
+                    .Where(x => x.StartsWith("_"))
+                    .Select(x => x.Trim('_'))
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
                 filterList = filterList.Where(x => !x.StartsWith("_")).ToList();
             }
 
@@ -684,13 +688,11 @@ namespace MaterialEditorAPI
 
                 foreach (var category in categories)
                 {
-                    // Blacklist and filter
-                    if (!category.Value.Any(p =>
-                        !Instance.CheckBlacklist(materialName, p.Name)
-                        && (filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(p.Name, fw))))
-                    ) continue;
-
-                    if (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName) {
+                    if (
+                        filterListProperties.Count == 0
+                        && (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName)
+                    )
+                    {
                         var categoryItem = new ItemInfo(ItemInfo.RowItemType.PropertyCategory, category.Key);
                         items.Add(categoryItem);
                     }
