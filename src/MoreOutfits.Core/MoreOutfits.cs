@@ -8,6 +8,9 @@ using System;
 
 namespace KK_Plugins.MoreOutfits
 {
+    /// <summary>
+    /// Allows characters to have more than the default number of outfit slots.
+    /// </summary>
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class Plugin : BaseUnityPlugin
@@ -15,7 +18,7 @@ namespace KK_Plugins.MoreOutfits
         public const string PluginGUID = "com.deathweasel.bepinex.moreoutfits";
         public const string PluginName = "More Outfit Slots";
         public const string PluginNameInternal = Constants.Prefix + "_MoreOutfits";
-        public const string PluginVersion = "1.1.3";
+        public const string PluginVersion = "1.2.0"; // Updated by EGirlMilkers from v1.1.3
 
         internal static new ManualLogSource Logger;
         internal static Plugin Instance;
@@ -32,7 +35,14 @@ namespace KK_Plugins.MoreOutfits
             CharacterApi.RegisterExtraBehaviour<MoreOutfitsController>(PluginGUID);
             StudioUI.RegisterStudioControls();
 
-            Harmony.CreateAndPatchAll(typeof(Hooks));
+            var harmony = Harmony.CreateAndPatchAll(typeof(Hooks));
+
+            //Patch the VR version of these methods via reflection
+            Type VRHSceneType = Type.GetType("VRHScene, Assembly-CSharp");
+            if (VRHSceneType != null)
+            {
+                VRHScenePatcher.ApplyPatch(harmony);
+            }
         }
 
         /// <summary>

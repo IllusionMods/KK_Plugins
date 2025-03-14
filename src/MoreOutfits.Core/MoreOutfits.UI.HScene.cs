@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using HarmonyLib;
 using KKAPI.Utilities;
 using TMPro;
 using UniRx;
@@ -23,41 +25,53 @@ namespace KK_Plugins.MoreOutfits
 #if KK // Not needed in KKS
             LoadListTemplate();
 #endif
+            HFlag flags;
+            HSprite sprite;
 
-            var hSceneProc = Object.FindObjectOfType<HSceneProc>();
-
-            if (hSceneProc.flags.lstHeroine.Count == 1) //Single girl H
+            if (!KKAPI.KoikatuAPI.IsVR())
             {
-                foreach (var button in hSceneProc.sprite.categoryDress.lstButton)
+                flags = Object.FindObjectOfType<HSceneProc>().flags;
+                sprite = Object.FindObjectOfType<HSceneProc>().sprite;
+            }
+            else
+            {
+                var vrHScene = Object.FindObjectOfType(System.Type.GetType("VRHScene, Assembly-CSharp"));
+                flags = (HFlag)Traverse.Create(vrHScene).Field("flags").GetValue();
+                sprite = (HSprite)Traverse.Create(vrHScene).Field("sprite").GetValue();
+            }
+
+            if (flags.lstHeroine.Count == 1) //Single girl H
+            {
+                foreach (var button in sprite.categoryDress.lstButton)
                 {
 #if KK
                     if (button != null && button.gameObject.name == "ChangeCoordinatType")
                     {
                         var parent = button.transform.Find("CoordinatGroup/CoordinatCategory");
-                        SetUpList(hSceneProc, parent, 0);
+                        SetUpList(flags, sprite, parent, 0);
                     }
 #elif KKS
                     if (button != null && button.gameObject.transform.parent.name == "ChangeCoordinatType")
                     {
                         var parent = button.transform.parent.Find("CoordinatGroup/CoordinatCategory");
-                        SetUpList(hSceneProc, parent, 0);
+                        SetUpList(flags, sprite, parent, 0);
                     }
 #endif
                 }
             }
             else //Multi girl H
             {
-                for (int i = 0; i < hSceneProc.sprite.lstMultipleFemaleDressButton.Count; i++)
+                for (int i = 0; i < sprite.lstMultipleFemaleDressButton.Count; i++)
                 {
-                    var parent = hSceneProc.sprite.lstMultipleFemaleDressButton[i].coordinate.transform;
-                    SetUpList(hSceneProc, parent, i);
+                    var parent = sprite.lstMultipleFemaleDressButton[i].coordinate.transform;
+                    SetUpList(flags, sprite, parent, i);
                 }
             }
         }
 
-        private static void SetUpList(HSceneProc hSceneProc, Transform parent, int femaleIndex)
+        private static void SetUpList(HFlag hFlags, HSprite hSprite, Transform parent, int femaleIndex)
         {
-            var chaControl = hSceneProc.flags.lstHeroine[femaleIndex].chaCtrl;
+            var chaControl = hFlags.lstHeroine[femaleIndex].chaCtrl;
 
             var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
             go.transform.SetParent(parent.transform, false);
@@ -73,10 +87,12 @@ namespace KK_Plugins.MoreOutfits
             var viewportPos = scroll.viewport.localPosition;
             scroll.viewport.localPosition = new Vector3(0f, viewportPos.y, viewportPos.z);
 
+            var name = "clothesFileWindow";
+            if (KKAPI.KoikatuAPI.IsVR()) name = "VRClothesFileWindow";
 #if KK
-            var copyTarget = GameObject.Find("Canvas").transform.Find("clothesFileWindow/Window/WinRect/ListArea/Scroll View/Scrollbar Vertical").gameObject;
+            var copyTarget = GameObject.Find("Canvas").transform.Find($"{name}/Window/WinRect/ListArea/Scroll View/Scrollbar Vertical").gameObject;
 #elif KKS
-            var copyTarget = Object.FindObjectOfType<HSprite>().transform.Find("clothesFileWindow/Window/WinRect/ListArea/Scroll View/Scrollbar Vertical").gameObject;
+            var copyTarget = Object.FindObjectOfType<HSprite>().transform.Find($"{name}/Window/WinRect/ListArea/Scroll View/Scrollbar Vertical").gameObject;
 #endif
 
             var newScrollbar = Object.Instantiate(copyTarget, go.transform);
@@ -104,7 +120,7 @@ namespace KK_Plugins.MoreOutfits
                 int coordinateIndex = OriginalCoordinateLength + i;
                 var newButton = Object.Instantiate(buttons[0], buttons[0].transform.parent);
                 newButton.onClick.ActuallyRemoveAllListeners();
-                newButton.onClick.AddListener(() => hSceneProc.sprite.OnClickCoordinateChange(femaleIndex, coordinateIndex));
+                newButton.onClick.AddListener(() => hSprite.OnClickCoordinateChange(femaleIndex, coordinateIndex));
 
 #if KK
                 //Set the sprite to one without text

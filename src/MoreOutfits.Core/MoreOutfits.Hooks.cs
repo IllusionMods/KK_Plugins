@@ -4,6 +4,7 @@ using MessagePack;
 using Studio;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace KK_Plugins.MoreOutfits
 {
@@ -107,5 +108,47 @@ namespace KK_Plugins.MoreOutfits
             return true;
         }
 #endif
+    }
+
+
+    // Manual runtime patch for VRHScene
+    internal static class VRHScenePatcher
+    {
+        internal static void ApplyPatch(Harmony harmony)
+        {
+            Type vrhSceneType = Type.GetType("VRHScene, Assembly-CSharp");
+            if (vrhSceneType == null)
+            {
+                Plugin.Logger.LogWarning("VRHScene type not found, skipping patch.");
+                return;
+            }
+
+            MethodInfo startMethod = vrhSceneType.GetMethod("Start", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (startMethod == null)
+            {
+                Plugin.Logger.LogWarning("VRHScene.Start method not found, skipping patch.");
+                return;
+            }
+
+            MethodInfo postfixMethod = typeof(VRHScenePatcher).GetMethod(nameof(VRHScene_MapSameObjectDisable), BindingFlags.Static | BindingFlags.NonPublic);
+            if (postfixMethod == null)
+            {
+                Plugin.Logger.LogError("Failed to find VRHScene_MapSameObjectDisable method. Ensure it is private static.");
+                return;
+            }
+
+            Plugin.Logger.LogDebug($"VRHScene Type: {vrhSceneType}");
+            Plugin.Logger.LogDebug($"VRHScene Start Method: {startMethod}");
+            harmony.Patch(startMethod, postfix: new HarmonyMethod(postfixMethod));
+            Plugin.Logger.LogDebug("Successfully patched VRHScene.Start.");
+        }
+
+        // Ensure this method is private and static
+        private static void VRHScene_MapSameObjectDisable(object __instance)
+        {
+            Plugin.Logger.LogDebug("Hooks > VRHScene MapSameObjectDisable");
+            Plugin.Logger.LogDebug("HSceneUIInitialized -> false");
+            HSceneUI.HSceneUIInitialized = false;
+        }
     }
 }
