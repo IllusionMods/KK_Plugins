@@ -15,20 +15,28 @@ namespace TimelineFlowControl
         {
             var currentTime = Timeline.Timeline.playbackTime;
 
-            // todo is there a more reliable way to detect playback passing over a keyframe?
+            // TODO: is there a more reliable way to detect playback passing over a keyframe?
+            // TODO: check - doesnt this ignore commands when the timeline loops from end to start?
             if (_lastPlaybackTime < currentTime && currentTime - _lastPlaybackTime < 0.5f)
             {
                 foreach (var keyframe in FlowControlPlugin.GetAllCommands(true))
                 {
                     var keyframeTime = keyframe.Key;
                     if (keyframeTime > _lastPlaybackTime && keyframeTime <= currentTime)
-                        RunCommand(currentTime, keyframeTime, keyframe.Value);
+                        RunCommand(currentTime, keyframeTime, keyframe.Value); // TODO: check if the command modified Timeline state and act accordingly, probably run over "allCommands" again
+                        
                 }
             }
 
             _lastPlaybackTime = currentTime;
         }
-
+        
+        private void JumpToTime(float targetPlaybackTime, float commandTime)
+        {
+            _lastJumpTime = commandTime;
+            Timeline.Timeline.Seek(targetPlaybackTime);
+        }
+        
         private void RunCommand(float playbackTime, float commandTime, FlowCommand command)
         {
             float deltaTime = playbackTime - commandTime;
@@ -50,32 +58,33 @@ namespace TimelineFlowControl
                 case FlowCommand.CommandType.SubtractValueFromVariable:
                     SetVariableValue(command.Param1, GetVariableValue(command.Param1) - GetParamOrVariableValue(command.Param2));
                     break;
-
+                
+                case FlowCommand.CommandType.PrintToScreen:
+                    FlowControlPlugin.Logger.LogMessage(FlowCommand.IsValidLabelName(command.Param1) ? $"{command.Param1} = {GetVariableValue(command.Param1)}" : command.Param1);
+                    break;
+                
+                // These FlowCommands alter the Timeline state, so lets handle these specially and carefully
+                // TODO: make sure we dont skip any FlowCommands when jumping
+                // TODO: make sure we keep "time fluid" by accounting for delta time
+                
                 case FlowCommand.CommandType.JumpToLabel:
                     var labelName = command.Param1;
                     if (string.IsNullOrEmpty(labelName)) break;
 
                     var label = GetAllLabelCommands(true).Where(x => x.Value.Param1 == labelName).FirstOrDefault(x => SatisfiesCondition(x.Value));
-                    if (label.Value != null)
-                    {
-                        Timeline.Timeline.Seek(label.Key + deltaTime); // Take "deltaTime" into account
-                        _lastJumpTime = commandTime;
-                    }
+                    if (label.Value != null) JumpToTime(label.Key + deltaTime, commandTime); // Take "deltaTime" into account
                     break;
+				
                 case FlowCommand.CommandType.JumpToTimeAbsolute:
-                    Timeline.Timeline.Seek(GetParamOrVariableValue(command.Param1) + deltaTime); // Take "deltaTime" into account
-                    _lastJumpTime = commandTime;
+                    JumpToTime(GetParamOrVariableValue(command.Param1) + deltaTime, commandTime); // Take "deltaTime" into account
                     break;
+				
                 case FlowCommand.CommandType.JumpToTimeRelative:
-                    Timeline.Timeline.Seek(commandTime + GetParamOrVariableValue(command.Param1) + deltaTime); // Take "deltaTime" into account
-                    _lastJumpTime = commandTime;
+                    JumpToTime(commandTime + GetParamOrVariableValue(command.Param1) + deltaTime, commandTime); // Take "deltaTime" into account
                     break;
+				
                 case FlowCommand.CommandType.JumpReturn:
-                    Timeline.Timeline.Seek(_lastJumpTime + deltaTime); // Take "deltaTime" into account
-                    break;
-
-                case FlowCommand.CommandType.PrintToScreen:
-                    FlowControlPlugin.Logger.LogMessage(FlowCommand.IsValidLabelName(command.Param1) ? $"{command.Param1} = {GetVariableValue(command.Param1)}" : command.Param1);
+                	JumpToTime(_lastJumpTime + deltaTime, commandTime); // Take "deltaTime" into account
                     break;
 
                 default:
