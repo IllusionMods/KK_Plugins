@@ -31,6 +31,8 @@ namespace TimelineFlowControl
 
         private void RunCommand(float playbackTime, float commandTime, FlowCommand command)
         {
+            float deltaTime = playbackTime - commandTime;
+
             if (!SatisfiesCondition(command)) return;
 
             switch (command.Command)
@@ -56,20 +58,20 @@ namespace TimelineFlowControl
                     var label = GetAllLabelCommands(true).Where(x => x.Value.Param1 == labelName).FirstOrDefault(x => SatisfiesCondition(x.Value));
                     if (label.Value != null)
                     {
-                        Timeline.Timeline.Seek(label.Key);
+                        Timeline.Timeline.Seek(label.Key + deltaTime); // Take "deltaTime" into account
                         _lastJumpTime = commandTime;
                     }
                     break;
                 case FlowCommand.CommandType.JumpToTimeAbsolute:
-                    Timeline.Timeline.Seek(GetParamOrVariableValue(command.Param1));
+                    Timeline.Timeline.Seek(GetParamOrVariableValue(command.Param1) + deltaTime); // Take "deltaTime" into account
                     _lastJumpTime = commandTime;
                     break;
                 case FlowCommand.CommandType.JumpToTimeRelative:
-                    Timeline.Timeline.Seek(playbackTime + GetParamOrVariableValue(command.Param1));
+                    Timeline.Timeline.Seek(commandTime + GetParamOrVariableValue(command.Param1) + deltaTime); // Take "deltaTime" into account
                     _lastJumpTime = commandTime;
                     break;
                 case FlowCommand.CommandType.JumpReturn:
-                    Timeline.Timeline.Seek(_lastJumpTime);
+                    Timeline.Timeline.Seek(_lastJumpTime + deltaTime); // Take "deltaTime" into account
                     break;
 
                 case FlowCommand.CommandType.PrintToScreen:
