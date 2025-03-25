@@ -10,6 +10,7 @@ namespace TimelineFlowControl
         private readonly Dictionary<string, float> _variableValues = new Dictionary<string, float>();
 
         private float _lastJumpTime;
+        private float _lastJumpTargetTime;
         private float _lastPlaybackTime;
         private bool _isCurrentlyRecursivelyJumping = false;
 
@@ -45,12 +46,9 @@ namespace TimelineFlowControl
         {
             if (_isCurrentlyRecursivelyJumping) // Ignore deltaTime, since this is expected to be recursively called from within this function which already does the work .. what a sentence
             {
-                _lastJumpTime = commandTime;
+                _lastJumpTargetTime = targetTime;
                 return true;
             }
-            
-            float deltaTime = playbackTime - commandTime;
-            float targetTimeWithDeltaTime = targetTime + deltaTime;
             
             // We want to alter the Timeline state and respect deltaTime at the same time (to keep looping/jumping actions fluid and smooth)
             // Setup variables for the jump to "target time + deltaTime", but only do this internally, not touching Timeline yet
@@ -58,11 +56,13 @@ namespace TimelineFlowControl
             // Finally at the end we might now be at a totally different time (if we ran through jump commands) but which now (atleast partially) includes deltaTime
             // Then just set Timeline to this final time + the remainder of deltaTime (remainingTimeForJumps) and we are done
             
-            float currentTime = targetTime; // This does NOT include deltaTime
+            float deltaTime = playbackTime - commandTime;
             float remainingTimeForJumps = deltaTime;
+            float currentTime = targetTime; // This does NOT include deltaTime
             int jumpDepthCounter = 0;
             
             _lastJumpTime = commandTime;
+            _lastJumpTargetTime = targetTime;
             _isCurrentlyRecursivelyJumping = true;
             // TODO: find a way to avoid calling FlowControlPlugin.GetAllCommands() multiple times (not sure how expensive it is yet, will test), but also without having to store the entire array/list in memory
             // Perhaps using IEnumerator directly would work
@@ -75,11 +75,12 @@ namespace TimelineFlowControl
                     // TODO: As expected it does trigger when I set my game to 4 FPS
                     Timeline.Timeline.Seek(currentTime); // Set to the last FlowCommand position, this way we have jumped ahead some percent of the deltaTime but we have ran all the FlowCommands on the way, not skipping anything!
                     _isCurrentlyRecursivelyJumping = false;
-                    Console.WriteLine("[TimelineFlowControl]: depth limit reached, the system either cannot keep up or you are using too many FlowCommand JUMPs in a sequence VERY close to eachother"); // TODO: What is the proper way to print an error?
+                    Console.WriteLine("[TLFC]: depth limit reached, the system either cannot keep up or you are using too many FlowCommand JUMPs in a sequence VERY close to eachother"); // TODO: What is the proper way to print an error?
                     return true;
                 }
                 
                 bool thereWasAJump = false;
+                float targetTimeWithDeltaTime = targetTime + remainingTimeForJumps;
                 float clampedTargetTimeWithDeltaTime = Math.Min(targetTimeWithDeltaTime, Timeline.Timeline.duration); // Make sure we are not looping through keyframes that are hidden outside Timeline duration
                 
                 foreach (var keyframe in FlowControlPlugin.GetAllCommands(true))
@@ -90,11 +91,14 @@ namespace TimelineFlowControl
                         if (RunCommand(currentTime, keyframeTime, keyframe.Value))
                         {
                             // We jumped, calculate how much deltaTime we used up to get to this FlowCommand, then break and start from the new time
-                            thereWasAJump = true;
-                            
                             float timeRequired = Math.Abs(keyframeTime - currentTime);
                             remainingTimeForJumps = remainingTimeForJumps - timeRequired;
+                            
+                            thereWasAJump = true;
                             currentTime = keyframeTime;
+                            targetTime = _lastJumpTargetTime;
+
+                            _lastJumpTime = keyframeTime;
                             break;
                         }
                     }
@@ -105,7 +109,7 @@ namespace TimelineFlowControl
                 // TODO: detect if we loop over multiple times (when we have like 1 fps, which will make deltaTime huge)
                 float overflowedTargetTimeWithDeltaTime = targetTimeWithDeltaTime % Timeline.Timeline.duration;
                 
-                if (overflowedTargetTimeWithDeltaTime < targetTime) // Timeline will overflow/loop, so check keyframes starting from 0.0 aswell
+                if (overflowedTargetTimeWithDeltaTime < targetTimeWithDeltaTime) // Timeline will overflow/loop, so check keyframes starting from 0.0 aswell
                 {
                     foreach (var keyframe in FlowControlPlugin.GetAllCommands(true))
                     {
@@ -115,13 +119,16 @@ namespace TimelineFlowControl
                             if (RunCommand(currentTime, keyframeTime, keyframe.Value))
                             {
                                 // We jumped, calculate how much deltaTime we used up to get to this FlowCommand, then break and start from the new time
-                                thereWasAJump = true;
-                                
                                 float timeToEndOfTimeline = Timeline.Timeline.duration - currentTime;
                                 float timeFromStartToKeyframe = keyframeTime;
                                 float timeRequired = timeToEndOfTimeline + timeFromStartToKeyframe;
                                 remainingTimeForJumps = remainingTimeForJumps - timeRequired;
+                                
+                                thereWasAJump = true;
                                 currentTime = keyframeTime;
+                                targetTime = _lastJumpTargetTime;
+
+                                _lastJumpTime = keyframeTime;
                                 break;
                             }
                         }
