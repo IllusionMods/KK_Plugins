@@ -18,8 +18,9 @@ namespace TimelineFlowControl
             var currentTime = Timeline.Timeline.playbackTime;
 
             // TODO: is there a more reliable way to detect playback passing over a keyframe?
-            // TODO: SANITY CHECK - doesnt this ignore commands when the timeline loops from end to start? for example with duration 1.0s and 10fps (0.1s frametime) 0.97 loops to --> 0.07
+            // SANITY CHECK - doesnt this ignore commands when the timeline loops from end to start? for example with duration 1.0s and 10fps (0.1s frametime) 0.97 loops to --> 0.07
             // therefore on next Update() _lastPlaybackTime will be larger than currentTime and 0.0 to 0.07 will get ignored
+            // ^^ Confirmed this happens
             if (_lastPlaybackTime < currentTime && currentTime - _lastPlaybackTime < 0.5f)
             {
                 foreach (var keyframe in FlowControlPlugin.GetAllCommands(true))
@@ -29,7 +30,7 @@ namespace TimelineFlowControl
                     {
                         if (RunCommand(currentTime, keyframeTime, keyframe.Value))
                         {
-                            thereWasAJump = true;
+                            // There was a jump
                             currentTime = Timeline.Timeline.playbackTime;
                             break;
                         }
@@ -52,10 +53,10 @@ namespace TimelineFlowControl
             float targetTimeWithDeltaTime = targetTime + deltaTime;
             
             // We want to alter the Timeline state and respect deltaTime at the same time (to keep looping/jumping actions fluid and smooth)
-            // We will preserve the original behaviour of jumping to the target time (does not account for deltaTime) - only internally, not touching Timeline yet
-            // and THEN run through FlowCommands between "target time" and "target time + deltaTime" carefully "using up" deltaTime to ensure we dont skip any!
-            // Finally at the end we might now be at a totally different time (if we ran through jump commands) but which now includes deltaTime
-            // Then just set Timeline to this final time and we are done
+            // Setup variables for the jump to "target time + deltaTime", but only do this internally, not touching Timeline yet
+            // Then run through FlowCommands between "target time" and "target time + deltaTime" carefully "using up" deltaTime to ensure we dont skip any!
+            // Finally at the end we might now be at a totally different time (if we ran through jump commands) but which now (atleast partially) includes deltaTime
+            // Then just set Timeline to this final time + the remainder of deltaTime (remainingTimeForJumps) and we are done
             
             float currentTime = targetTime; // This does NOT include deltaTime
             float remainingTimeForJumps = deltaTime;
@@ -71,9 +72,10 @@ namespace TimelineFlowControl
                 jumpDepthCounter = jumpDepthCounter + 1;
                 if (jumpDepthCounter > _maxJumpDepth) // Prevent a lock up, if this happens preserve the original behaviour even though it might produce a stutter
                 {
+                    // TODO: As expected it does trigger when I set my game to 4 FPS
                     Timeline.Timeline.Seek(currentTime); // Set to the last FlowCommand position, this way we have jumped ahead some percent of the deltaTime but we have ran all the FlowCommands on the way, not skipping anything!
                     _isCurrentlyRecursivelyJumping = false;
-                    Logger.LogError("[TimelineFlowControl]: depth limit reached, the system either cannot keep up or you are using too many FlowCommand JUMPs in a sequence VERY close to eachother");
+                    Console.WriteLine("[TimelineFlowControl]: depth limit reached, the system either cannot keep up or you are using too many FlowCommand JUMPs in a sequence VERY close to eachother"); // TODO: What is the proper way to print an error?
                     return true;
                 }
                 
@@ -87,8 +89,7 @@ namespace TimelineFlowControl
                     {
                         if (RunCommand(currentTime, keyframeTime, keyframe.Value))
                         {
-                            // We jumped, so we are now more than likely outside our "time range"
-                            // Calculate how much deltaTime we used up to get to this FlowCommand, then break and start from the new time
+                            // We jumped, calculate how much deltaTime we used up to get to this FlowCommand, then break and start from the new time
                             thereWasAJump = true;
                             
                             float timeRequired = Math.Abs(keyframeTime - currentTime);
@@ -113,8 +114,7 @@ namespace TimelineFlowControl
                         {
                             if (RunCommand(currentTime, keyframeTime, keyframe.Value))
                             {
-                                // We jumped, so we are now more than likely outside our "time range"
-                                // Calculate how much deltaTime we used up to get to this FlowCommand, then break and start from the new time
+                                // We jumped, calculate how much deltaTime we used up to get to this FlowCommand, then break and start from the new time
                                 thereWasAJump = true;
                                 
                                 float timeToEndOfTimeline = Timeline.Timeline.duration - currentTime;
@@ -173,15 +173,12 @@ namespace TimelineFlowControl
 				
                 case FlowCommand.CommandType.JumpToTimeAbsolute:
                     return JumpToTime(GetParamOrVariableValue(command.Param1), playbackTime, commandTime);
-                    break;
 				
                 case FlowCommand.CommandType.JumpToTimeRelative:
                     return JumpToTime(commandTime + GetParamOrVariableValue(command.Param1), playbackTime, commandTime);
-                    break;
 				
                 case FlowCommand.CommandType.JumpReturn:
                     return JumpToTime(_lastJumpTime, playbackTime, commandTime);
-                    break;
                 
                 
                 default:
