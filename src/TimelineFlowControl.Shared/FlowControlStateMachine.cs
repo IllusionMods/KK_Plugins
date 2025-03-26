@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace TimelineFlowControl
 {
     public class FlowControlStateMachine
     {
-        private const int _maxJumpDepth = 64;
+        private const int _maxJumpDepth = 128;
         private readonly Dictionary<string, float> _variableValues = new Dictionary<string, float>();
 
         private float _lastJumpTime;
@@ -17,11 +18,14 @@ namespace TimelineFlowControl
         internal void Update()
         {
             var currentTime = Timeline.Timeline.playbackTime;
+            
+            // TODO: Ask nicely at HSPlugins for Timeline hooks - when scrubbing the timeline + when it overflows/loops?
+            // TODO: is there a more reliable way to detect playback passing over a keyframe? ^^ this would make that easier
 
-            // TODO: is there a more reliable way to detect playback passing over a keyframe?
-            // SANITY CHECK - doesnt this ignore commands when the timeline loops from end to start? for example with duration 1.0s and 10fps (0.1s frametime) 0.97 loops to --> 0.07
+            // SANITY CHECK - VV doesnt this ignore commands when the timeline loops from end to start? for example with duration 1.0s and 10fps (0.1s frametime) 0.97 loops to --> 0.07
             // therefore on next Update() _lastPlaybackTime will be larger than currentTime and 0.0 to 0.07 will get ignored
-            // ^^ Confirmed this happens
+            // ^^ Confirmed this happens ... it also does not play nicely with >1.0 Timescale, both could be fixed by the hooks
+
             if (_lastPlaybackTime < currentTime && currentTime - _lastPlaybackTime < 0.5f)
             {
                 foreach (var keyframe in FlowControlPlugin.GetAllCommands(true))
@@ -31,7 +35,7 @@ namespace TimelineFlowControl
                     {
                         if (RunCommand(currentTime, keyframeTime, keyframe.Value))
                         {
-                            // There was a jump
+                            // There was a jump, so Timeline changed and our time is no longer valid
                             currentTime = Timeline.Timeline.playbackTime;
                             break;
                         }
@@ -40,105 +44,117 @@ namespace TimelineFlowControl
             }
 
             _lastPlaybackTime = currentTime;
+            // TODO: _lastPlaybackTime is not updated when scrubbing the Timeline if Timeline is paused
+            // so if you scrub from a time before a jump command to a time after the jump command, it will still run through it
+            // since _lastPlaybackTime is updated at the very end here, could be fixed by the hooks aswell
         }
-        
+
         private bool JumpToTime(float targetTime, float playbackTime, float commandTime) // Returns true when Timeline state was altered, which is always since we are jumping
         {
-            if (_isCurrentlyRecursivelyJumping) // Ignore deltaTime, since this is expected to be recursively called from within this function which already does the work .. what a sentence
+            if (_isCurrentlyRecursivelyJumping) // Ignore deltaTime, since this is expected to be recursively called from within this function, which is currently handling the compensation
             {
+                _lastJumpTime = commandTime;
                 _lastJumpTargetTime = targetTime;
                 return true;
             }
             
             // We want to alter the Timeline state and respect deltaTime at the same time (to keep looping/jumping actions fluid and smooth)
             // Setup variables for the jump to "target time + deltaTime", but only do this internally, not touching Timeline yet
-            // Then run through FlowCommands between "target time" and "target time + deltaTime" carefully "using up" deltaTime to ensure we dont skip any!
-            // Finally at the end we might now be at a totally different time (if we ran through jump commands) but which now (atleast partially) includes deltaTime
+            // Then run through FlowCommands between "target time" and "target time + deltaTime" carefully "using up" deltaTime and making sure we dont skip any!
+            // Do this for all the jump commands we encounter on the way, updating the variables, rinse n repeat
+            // until there are no more jump commands on our way to "final target time + remaining delta time"
             // Then just set Timeline to this final time + the remainder of deltaTime (remainingTimeForJumps) and we are done
             
             float deltaTime = playbackTime - commandTime;
             float remainingTimeForJumps = deltaTime;
-            float currentTime = targetTime; // This does NOT include deltaTime
+            float currentTime = commandTime; // NOTE to myself: this does NOT include deltaTime
             int jumpDepthCounter = 0;
             
-            _lastJumpTime = commandTime;
+            _lastJumpTime = currentTime;
             _lastJumpTargetTime = targetTime;
             _isCurrentlyRecursivelyJumping = true;
-            // TODO: find a way to avoid calling FlowControlPlugin.GetAllCommands() multiple times (not sure how expensive it is yet, will test), but also without having to store the entire array/list in memory
+            // TODO: find a way to avoid calling FlowControlPlugin.GetAllCommands() multiple times (seems like it is not very expensive though), but also without having to store the entire array/list in memory
             // Perhaps using IEnumerator directly would work
             
             while (true)
             {
                 jumpDepthCounter = jumpDepthCounter + 1;
-                if (jumpDepthCounter > _maxJumpDepth) // Prevent a lock up, if this happens preserve the original behaviour even though it might produce a stutter
+                if (jumpDepthCounter > _maxJumpDepth) // Prevent a lock up, if this happens preserve the original behaviour even though it might produce a stutter, but we wont be skipping any FlowCommands
                 {
-                    // TODO: As expected it does trigger when I set my game to 4 FPS
-                    Timeline.Timeline.Seek(currentTime); // Set to the last FlowCommand position, this way we have jumped ahead some percent of the deltaTime but we have ran all the FlowCommands on the way, not skipping anything!
+                    // NOTE: To test this, make a JumpToTimeRelative command with a really low time jumping BACK, on my machine a value of -0.001 got me somewhere around 90-110 depth at 60fps
                     _isCurrentlyRecursivelyJumping = false;
-                    Console.WriteLine("[TLFC]: depth limit reached, the system either cannot keep up or you are using too many FlowCommand JUMPs in a sequence VERY close to eachother"); // TODO: What is the proper way to print an error?
+                    Timeline.Timeline.Seek(targetTime); // Set to the last jump target position, this way we have jumped ahead only some/or most percent of the deltaTime but we have ran all the FlowCommands on the way, not skipping any!
+                    FlowControlPlugin.Logger.LogError("[TLFC]: Depth limit of '" + _maxJumpDepth.ToString() + "' reached, the system either cannot keep up or you are using too many FlowCommand JUMPs in a sequence VERY close to eachother");
                     return true;
                 }
                 
                 bool thereWasAJump = false;
                 float targetTimeWithDeltaTime = targetTime + remainingTimeForJumps;
                 float clampedTargetTimeWithDeltaTime = Math.Min(targetTimeWithDeltaTime, Timeline.Timeline.duration); // Make sure we are not looping through keyframes that are hidden outside Timeline duration
-                
+
+                // Check if there are FlowCommands we would skip by just jumping with deltaTime
                 foreach (var keyframe in FlowControlPlugin.GetAllCommands(true))
                 {
                     float keyframeTime = keyframe.Key;
-                    if (keyframeTime >= targetTime && keyframeTime <= clampedTargetTimeWithDeltaTime) // Include only FlowCommands between (target time) and (target time + deltaTime)
+                    if (keyframeTime >= targetTime && keyframeTime <= clampedTargetTimeWithDeltaTime && keyframeTime != Timeline.Timeline.duration) // Time equal to Timeline duration would overflow/loop the Timeline, this is handled in the loop below!
                     {
                         if (RunCommand(currentTime, keyframeTime, keyframe.Value))
                         {
-                            // We jumped, calculate how much deltaTime we used up to get to this FlowCommand, then break and start from the new time
-                            float timeRequired = Math.Abs(keyframeTime - currentTime);
+                            // We jumped, calculate how much time we would use up during normal Timeline playback to get to this FlowCommand, then break and start from the new time
+                            float timeRequired = keyframeTime - currentTime; // Should always be >= 0.0
                             remainingTimeForJumps = remainingTimeForJumps - timeRequired;
-                            
-                            thereWasAJump = true;
-                            currentTime = keyframeTime;
-                            targetTime = _lastJumpTargetTime;
+                            if (remainingTimeForJumps < 0.0f)
+                            {
+                                FlowControlPlugin.Logger.LogWarning("[TLFC]: BUG?! remainingTimeForJumps is '" + remainingTimeForJumps.ToString() + "', which is less than 0.0");
+                                remainingTimeForJumps = 0.0f;
+                            }
 
-                            _lastJumpTime = keyframeTime;
+
+                            thereWasAJump = true;
+                            targetTime = _lastJumpTargetTime;
+                            currentTime = targetTime;
                             break;
                         }
                     }
                 }
                 if (thereWasAJump) continue;
-                
-                
-                // TODO: detect if we loop over multiple times (when we have like 1 fps, which will make deltaTime huge)
-                float overflowedTargetTimeWithDeltaTime = targetTimeWithDeltaTime % Timeline.Timeline.duration;
-                
-                if (overflowedTargetTimeWithDeltaTime < targetTimeWithDeltaTime) // Timeline will overflow/loop, so check keyframes starting from 0.0 aswell
+
+
+                // Check if Timeline would overflow/loop if we just jumped with deltaTime, if so, also check if there are FlowCommands we would skip
+                float overflowedTargetTimeWithDeltaTime = targetTimeWithDeltaTime % Timeline.Timeline.duration; // TODO: detect if we overflow/loop the Timeline multiple times (when we have like 1 fps, which will make deltaTime huge) - Timeline hooks would work for this
+                if (overflowedTargetTimeWithDeltaTime < targetTimeWithDeltaTime)
                 {
                     foreach (var keyframe in FlowControlPlugin.GetAllCommands(true))
                     {
                         float keyframeTime = keyframe.Key;
-                        if (keyframeTime <= overflowedTargetTimeWithDeltaTime) // Include only FlowCommands between 0.0 and (target time + deltaTime) % timeline duration
+                        if (keyframeTime <= overflowedTargetTimeWithDeltaTime)
                         {
                             if (RunCommand(currentTime, keyframeTime, keyframe.Value))
                             {
-                                // We jumped, calculate how much deltaTime we used up to get to this FlowCommand, then break and start from the new time
+                                // We jumped, calculate how much time we would use up during normal Timeline playback to get to this FlowCommand, then break and start from the new time
                                 float timeToEndOfTimeline = Timeline.Timeline.duration - currentTime;
                                 float timeFromStartToKeyframe = keyframeTime;
-                                float timeRequired = timeToEndOfTimeline + timeFromStartToKeyframe;
+                                float timeRequired = timeToEndOfTimeline + timeFromStartToKeyframe; // Should always be >= 0.0
                                 remainingTimeForJumps = remainingTimeForJumps - timeRequired;
-                                
-                                thereWasAJump = true;
-                                currentTime = keyframeTime;
-                                targetTime = _lastJumpTargetTime;
+                                if (remainingTimeForJumps < 0.0f)
+                                {
+                                    FlowControlPlugin.Logger.LogWarning("[TLFC]: BUG?! remainingTimeForJumps is '" + remainingTimeForJumps.ToString() + "', which is less than 0.0");
+                                    remainingTimeForJumps = 0.0f;
+                                }
 
-                                _lastJumpTime = keyframeTime;
+                                thereWasAJump = true;
+                                targetTime = _lastJumpTargetTime;
+                                currentTime = targetTime;
                                 break;
                             }
                         }
                     }
                 }
-                if (!thereWasAJump) break; // We have ran through all the jump FlowCommands and have arrived at our final time to which we just add the REMAINDER of deltaTime
+                if (!thereWasAJump) break; // We have ran through all the jump FlowCommands on our way which means we can safely do a final jump to targetTime + remainingTimeForJump
             }
-            
-            Timeline.Timeline.Seek(currentTime + remainingTimeForJumps);
+
             _isCurrentlyRecursivelyJumping = false;
+            Timeline.Timeline.Seek(targetTime + remainingTimeForJumps);
             return true;
         }
         
