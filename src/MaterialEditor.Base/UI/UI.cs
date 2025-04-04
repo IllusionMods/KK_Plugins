@@ -561,6 +561,7 @@ namespace MaterialEditorAPI
                 if (rend is SkinnedMeshRenderer meshRenderer) // recalculate normals should only exist on skinned renderers
                 {
                     //Renderer UpdateWhenOffscreen
+#if !KK
                     bool valueUpdateWhenOffscreenOriginal = meshRenderer.updateWhenOffscreen;
                     temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.UpdateWhenOffscreen, go);
                     if (!temp.IsNullOrEmpty())
@@ -573,6 +574,7 @@ namespace MaterialEditorAPI
                         RendererUpdateWhenOffscreenOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.UpdateWhenOffscreen, go)
                     };
                     items.Add(rendererUpdateWhenOffscreenItem);
+#endif
 
                     //Renderer RecalculateNormals
                     bool valueRecalculateNormalsOriginal = false; // this is not a real renderproperty so I cannot be true by default

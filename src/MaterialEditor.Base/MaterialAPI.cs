@@ -420,6 +420,7 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetRendererUpdateWhenOffscreen(GameObject gameObject, string rendererName, bool value)
         {
+#if !KK
             bool didSet = false;
             foreach (var renderer in GetRendererList(gameObject))
             {
@@ -430,6 +431,9 @@ namespace MaterialEditorAPI
                 }
             }
             return didSet;
+#else
+            return false;
+#endif
         }
 
         public static bool SetRendererRecalculateNormals(GameObject gameObject, string rendererName, bool value)
