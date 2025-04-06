@@ -264,6 +264,9 @@ namespace KK_Plugins.MaterialEditor
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var loadedProperty = properties[i];
+#if KK
+                    if (loadedProperty.Property == RendererProperties.UpdateWhenOffscreen) continue;
+#endif
                     GameObject go = ExtractGameObject(loadedItems, loadedProperty.ID, out var objID);
                     if (go != null)
                         if (MaterialAPI.SetRendererProperty(go, loadedProperty.RendererName, loadedProperty.Property, int.Parse(loadedProperty.Value)))
