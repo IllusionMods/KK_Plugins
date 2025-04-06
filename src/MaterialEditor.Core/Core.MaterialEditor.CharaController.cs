@@ -872,7 +872,7 @@ namespace KK_Plugins.MaterialEditor
             for (var i = 0; i < RendererPropertyList.Count; i++)
             {
                 var property = RendererPropertyList[i];
-# if KK
+#if KK
                 if (property.Property == RendererProperties.UpdateWhenOffscreen) continue;
 #endif
                 if (property.ObjectType == ObjectType.Clothing && !clothes) continue;
