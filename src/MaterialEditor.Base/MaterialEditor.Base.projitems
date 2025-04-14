@@ -18,18 +18,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Export.UV.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PluginBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ListEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.PropertyOrganizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.AutoScrollToCenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.FloatLabelDragTrigger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.DropdownFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemTemplate.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ListEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.PointerEnterHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SelectListPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Tooltip.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.VirtualList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities.cs" />
   </ItemGroup>
   <ItemGroup>

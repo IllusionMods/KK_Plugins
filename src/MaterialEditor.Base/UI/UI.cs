@@ -52,7 +52,6 @@ namespace MaterialEditorAPI
         private static bool RenameListVisible = false;
 
         internal static FileSystemWatcher TexChangeWatcher;
-        private VirtualList VirtualList;
 
         internal const float MarginSize = 5f;
         internal const float HeaderSize = 20f;
@@ -118,6 +117,8 @@ namespace MaterialEditorAPI
 
         internal static SelectedInterpolable selectedInterpolable;
         internal static SelectedProjectorInterpolable selectedProjectorInterpolable;
+        
+        private static List<GameObject> ListEntries = new List<GameObject>();
 
         /// <summary>
         /// Initialize the MaterialEditor UI
@@ -233,13 +234,6 @@ namespace MaterialEditorAPI
             MaterialEditorScrollableUI.viewport.offsetMax = new Vector2(ScrollOffsetX, 0f);
             MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
             MaterialEditorScrollableUI.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
-
-            var template = ItemTemplate.CreateTemplate(MaterialEditorScrollableUI.content.transform);
-
-            VirtualList = MaterialEditorScrollableUI.gameObject.AddComponent<VirtualList>();
-            VirtualList.ScrollRect = MaterialEditorScrollableUI;
-            VirtualList.EntryTemplate = template;
-            VirtualList.Initialize();
 
             MaterialEditorRendererList = new SelectListPanel(MaterialEditorMainPanel.transform, "RendererList", "Renderers");
             MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + UIListWidth.Value);
@@ -602,7 +596,12 @@ namespace MaterialEditorAPI
             foreach (var projector in filterList.Count == 0 ? projectorListFull : projectorList)
                 PopulateListMaterial(projector.material, projector);
 
-            VirtualList.SetList(items);
+            foreach (var entry in ListEntries)
+                Destroy(entry);
+            ListEntries.Clear();
+
+            foreach (var item in items)
+                ListEntries.Add(ListEntry.CreateItem(MaterialEditorScrollableUI.content.transform, item));
 
             void PopulateListMaterial(Material mat, Projector projector = null)
             {

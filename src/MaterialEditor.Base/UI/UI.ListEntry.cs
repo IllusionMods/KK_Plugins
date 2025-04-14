@@ -1,317 +1,369 @@
-using System;
+﻿using System;
+using UILib;
 using UnityEngine;
 using UnityEngine.UI;
-using static UILib.Extensions;
+using static MaterialEditorAPI.MaterialEditorUI;
 
 namespace MaterialEditorAPI
 {
-    internal class ListEntry : MonoBehaviour
+    internal static class ListEntry
     {
-        public CanvasGroup RendererPanel;
-        public Text RendererLabel;
-        public Text RendererText;
-        public Button SelectInterpolableRendererButton;
-        public Button ExportUVButton;
-        public Button ExportObjButton;
-
-        public CanvasGroup RendererEnabledPanel;
-        public Text RendererEnabledLabel;
-        public Toggle RendererEnabledToggle;
-        public Button RendererEnabledResetButton;
-
-        public CanvasGroup RendererShadowCastingModePanel;
-        public Text RendererShadowCastingModeLabel;
-        public Dropdown RendererShadowCastingModeDropdown;
-        public Button RendererShadowCastingModeResetButton;
-
-        public CanvasGroup RendererReceiveShadowsPanel;
-        public Text RendererReceiveShadowsLabel;
-        public Toggle RendererReceiveShadowsToggle;
-        public Button RendererReceiveShadowsResetButton;
-
-        public CanvasGroup RendererUpdateWhenOffscreenPanel;
-        public Text RendererUpdateWhenOffscreenLabel;
-        public Toggle RendererUpdateWhenOffscreenToggle;
-        public Button RendererUpdateWhenOffscreenResetButton;
-
-        public CanvasGroup RendererRecalculateNormalsPanel;
-        public Text RendererRecalculateNormalsLabel;
-        public Toggle RendererRecalculateNormalsToggle;
-        public Button RendererRecalculateNormalsResetButton;
-
-        public CanvasGroup MaterialPanel;
-        public Text MaterialLabel;
-        public Text MaterialText;
-        public Button SelectInterpolableMaterialButton;
-        public Button MaterialCopyButton;
-        public Button MaterialPasteButton;
-        public Button MaterialCopyRemove;
-        public Button MaterialRename;
-
-        public CanvasGroup ShaderPanel;
-        public Text ShaderLabel;
-        public Dropdown ShaderDropdown;
-        public Button SelectInterpolableShaderButton;
-        public Button ShaderResetButton;
-
-        public CanvasGroup ShaderRenderQueuePanel;
-        public Text ShaderRenderQueueLabel;
-        public InputField ShaderRenderQueueInput;
-        public Button ShaderRenderQueueResetButton;
-
-        public CanvasGroup PropertyCategoryPanel;
-        public Text PropertyCategoryLabel;
-
-        public CanvasGroup TexturePanel;
-        public Text TextureLabel;
-        public Button SelectInterpolableTextureButton;
-        public Button ExportTextureButton;
-        public Button ImportTextureButton;
-        public Button TextureResetButton;
-
-        public CanvasGroup OffsetScalePanel;
-        public Text OffsetScaleLabel;
-        public Text OffsetXText;
-        public InputField OffsetXInput;
-        public Text OffsetYText;
-        public InputField OffsetYInput;
-        public Text ScaleXText;
-        public InputField ScaleXInput;
-        public Text ScaleYText;
-        public InputField ScaleYInput;
-        public Button OffsetScaleResetButton;
-
-        public CanvasGroup ColorPanel;
-        public Text ColorLabel;
-        public Text ColorRText;
-        public Text ColorGText;
-        public Text ColorBText;
-        public Text ColorAText;
-        public InputField ColorRInput;
-        public InputField ColorGInput;
-        public InputField ColorBInput;
-        public InputField ColorAInput;
-        public Button SelectInterpolableColorButton;
-        public Button ColorResetButton;
-        public Button ColorEditButton;
-
-        public CanvasGroup FloatPanel;
-        public Text FloatLabel;
-        public Button SelectInterpolableFloatButton;
-        public Slider FloatSlider;
-        public InputField FloatInputField;
-        public Button FloatResetButton;
-
-        public CanvasGroup KeywordPanel;
-        public Text KeywordLabel;
-        public Toggle KeywordToggle;
-        public Button KeywordResetButton;
-
-        private ItemInfo _currentItem;
-
-        public ItemInfo CurrentItem
+        internal static GameObject CreateItem(Transform parent, ItemInfo item)
         {
-            get => _currentItem;
-            set => SetItem(value, false);
-        }
+            var contentList = UIUtility.CreatePanel("ListEntry", parent);
+            contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight;
+            contentList.gameObject.AddComponent<Mask>();
+            contentList.color = RowColor;
 
-        public void SetItem(ItemInfo item, bool force)
-        {
-            if (!force && ReferenceEquals(item, _currentItem)) return;
-
-            _currentItem = item;
-
-            HideAll();
-            if (item != null)
+            switch(item.ItemType)
             {
-                switch (item.ItemType)
-                {
-                    case ItemInfo.RowItemType.Renderer:
-                        ShowRenderer();
-                        SetLabelText(RendererLabel, item.LabelText);
-                        ExportUVButton.onClick.RemoveAllListeners();
-                        ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
-                        TooltipManager.AddTooltip(ExportUVButton.gameObject, "Export the UV map of this renderer.\n\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model. You can use this UV map as a guide to drawing on textures");
-                        ExportObjButton.onClick.RemoveAllListeners();
-                        ExportObjButton.onClick.AddListener(() => item.ExportObjOnClick());
-                        TooltipManager.AddTooltip(ExportObjButton.gameObject, "Export the renderer as a .obj.\n\nYou can use the <i>ExportBakedMesh</i> and <i>ExportBakedWorldPosition</i> config options to change the exporting behaviour");
-                        SelectInterpolableRendererButton.onClick.RemoveAllListeners();
-                        SelectInterpolableRendererButton.onClick.AddListener(() => item.SelectInterpolableButtonRendererOnClick());
-                        TooltipManager.AddTooltip(SelectInterpolableRendererButton.gameObject, "Select the properties (Enabled, Shadow casting mode and Receive shadows) of the currently selected renderer as interpolables in timeline");
-                        RendererText.text = item.RendererName;
-                        TooltipManager.AddTooltip(RendererText.gameObject, "Renderer name");
+                case ItemInfo.RowItemType.Renderer:
+                    {
+                        var panel = UIUtility.CreatePanel("RendererPanel", contentList.transform);
+                        panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = RendererColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("RendererLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, 0f, 0f, 0f);
+                        SetLabelText(label, item.LabelText);
+
+                        var text = UIUtility.CreateText("RendererText", panel.transform);
+                        text.alignment = TextAnchor.MiddleLeft;
+                        text.color = Color.black;
+                        AddLayoutElement(text.gameObject, LabelWidth, LabelWidth, 1f);
+                        text.text = item.RendererName;
+                        TooltipManager.AddTooltip(text.gameObject, "Renderer name");
+
+                        var interpolableButton = CreateInterpolableButton("SelectInterpolableRendererButton", panel.transform);
+                        interpolableButton.onClick.AddListener(() => item.SelectInterpolableButtonRendererOnClick());
+                        TooltipManager.AddTooltip(interpolableButton.gameObject, "Select the properties (Enabled, Shadow casting mode and Receive shadows) of the currently selected renderer as interpolables in timeline");
+
+                        var exportUVButton = UIUtility.CreateButton("ExportUVButton", panel.transform, "Export UV Map");
+                        AddLayoutElement(exportUVButton.gameObject, RendererButtonWidth, RendererButtonWidth, 0f);
+                        exportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
+                        TooltipManager.AddTooltip(exportUVButton.gameObject, "Export the UV map of this renderer.\n\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model. You can use this UV map as a guide to drawing on textures");
+
+                        var exportMeshButton = UIUtility.CreateButton("ExportObjButton", panel.transform, "Export .obj");
+                        AddLayoutElement(exportMeshButton.gameObject, RendererButtonWidth, RendererButtonWidth, 0f);
+                        exportMeshButton.onClick.AddListener(() => item.ExportObjOnClick());
+                        TooltipManager.AddTooltip(exportMeshButton.gameObject, "Export the renderer as a .obj.\n\nYou can use the <i>ExportBakedMesh</i> and <i>ExportBakedWorldPosition</i> config options to change the exporting behaviour");
                         break;
-                    case ItemInfo.RowItemType.RendererEnabled:
-                        ShowRendererEnabled();
-                        SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal, RendererEnabledResetButton, RendererEnabledPanel);
-                        RendererEnabledToggle.onValueChanged.RemoveAllListeners();
-                        RendererEnabledToggle.isOn = item.RendererEnabled;
-                        RendererEnabledToggle.onValueChanged.AddListener(value =>
+                    }
+
+                case ItemInfo.RowItemType.RendererEnabled:
+                    {
+                        var panel = UIUtility.CreatePanel("RendererEnabledPanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("RendererEnabledLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        var toggle = UIUtility.CreateToggle("RendererEnabledToggle", panel.transform, "");
+                        toggle.isOn = true;
+                        AddLayoutElement(toggle.gameObject, RendererToggleWidth, RendererToggleWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"RendererEnabledResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal, reset, itemPanelCanvas);
+                        toggle.isOn = item.RendererEnabled;
+                        toggle.onValueChanged.AddListener(value =>
                         {
                             item.RendererEnabled = value;
                             if (item.RendererEnabled != item.RendererEnabledOriginal)
                                 item.RendererEnabledOnChange(value);
                             else
                                 item.RendererEnabledOnReset();
-                            SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal, RendererEnabledResetButton, RendererEnabledPanel);
+                            SetLabelText(label, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(RendererEnabledToggle.gameObject, "Toggle the visibility of this renderer on/off");
+                        TooltipManager.AddTooltip(toggle.gameObject, "Toggle the visibility of this renderer on/off");
 
-                        RendererEnabledResetButton.onClick.RemoveAllListeners();
-                        RendererEnabledResetButton.onClick.AddListener(() => RendererEnabledToggle.isOn = item.RendererEnabledOriginal);
-                        TooltipManager.AddTooltip(RendererEnabledResetButton.gameObject, "Reset this property to its original value");
-
+                        reset.onClick.AddListener(() => toggle.isOn = item.RendererEnabledOriginal);
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
+                        
                         break;
-                    case ItemInfo.RowItemType.RendererShadowCastingMode:
-                        ShowRendererShadowCastingMode();
-                        SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal, RendererShadowCastingModeResetButton, RendererShadowCastingModePanel);
-                        RendererShadowCastingModeDropdown.onValueChanged.RemoveAllListeners();
-                        RendererShadowCastingModeDropdown.value = item.RendererShadowCastingMode;
-                        RendererShadowCastingModeDropdown.onValueChanged.AddListener(value =>
+                    }
+                
+                case ItemInfo.RowItemType.RendererShadowCastingMode:
+                    {
+                        var panel = UIUtility.CreatePanel("RendererShadowCastingModePanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("RendererShadowCastingModeLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        Dropdown dropdown = UIUtility.CreateDropdown("RendererShadowCastingModeDropdown", panel.transform);
+                        dropdown.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
+                        dropdown.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
+                        dropdown.captionText.alignment = TextAnchor.MiddleLeft;
+                        dropdown.options.Clear();
+                        dropdown.options.Add(new Dropdown.OptionData("Off"));
+                        dropdown.options.Add(new Dropdown.OptionData("On"));
+                        dropdown.options.Add(new Dropdown.OptionData("Two Sided"));
+                        dropdown.options.Add(new Dropdown.OptionData("Shadows Only"));
+                        dropdown.value = 0;
+                        dropdown.captionText.text = "Off";
+                        AddLayoutElement(dropdown.gameObject, RendererDropdownWidth, RendererDropdownWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"RendererShadowCastingModeResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal, reset, itemPanelCanvas);
+                        dropdown.value = item.RendererShadowCastingMode;
+                        dropdown.onValueChanged.AddListener(value =>
                         {
                             item.RendererShadowCastingMode = value;
                             if (item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal)
                                 item.RendererShadowCastingModeOnChange(value);
                             else
                                 item.RendererShadowCastingModeOnReset();
-                            SetLabelText(RendererShadowCastingModeLabel, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal, RendererShadowCastingModeResetButton, RendererShadowCastingModePanel);
+                            SetLabelText(label, item.LabelText, item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(RendererShadowCastingModeDropdown.gameObject, @"- Off: Renderer casts no shadows
+                        TooltipManager.AddTooltip(dropdown.gameObject, @"- Off: Renderer casts no shadows
 - On: Renderer casts shadows
 - Two Sided: Always cast shadows from any direction, even for single sided objects
 - Shadows Only: Renderer is invisible but still casts shadows");
 
-                        RendererShadowCastingModeResetButton.onClick.RemoveAllListeners();
-                        RendererShadowCastingModeResetButton.onClick.AddListener(() => RendererShadowCastingModeDropdown.value = item.RendererShadowCastingModeOriginal);
-                        TooltipManager.AddTooltip(RendererShadowCastingModeResetButton.gameObject, "Reset this property to its original value");
-
+                        reset.onClick.AddListener(() => dropdown.value = item.RendererShadowCastingModeOriginal);
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
+                        
                         break;
-                    case ItemInfo.RowItemType.RendererReceiveShadows:
-                        ShowRendererReceiveShadows();
-                        SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal, RendererReceiveShadowsResetButton, RendererReceiveShadowsPanel);
-                        RendererReceiveShadowsToggle.onValueChanged.RemoveAllListeners();
-                        RendererReceiveShadowsToggle.isOn = item.RendererReceiveShadows;
-                        RendererReceiveShadowsToggle.onValueChanged.AddListener(value =>
+                    }
+                
+                case ItemInfo.RowItemType.RendererReceiveShadows:
+                    {
+                        var panel = UIUtility.CreatePanel("RendererReceiveShadowsPanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("RendererReceiveShadowsLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        Toggle toggle = UIUtility.CreateToggle("RendererReceiveShadowsToggle", panel.transform, "");
+                        toggle.isOn = true;
+                        AddLayoutElement(toggle.gameObject, RendererToggleWidth, RendererToggleWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"RendererReceiveShadowsResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal, reset, itemPanelCanvas);
+                        toggle.isOn = item.RendererReceiveShadows;
+                        toggle.onValueChanged.AddListener(value =>
                         {
                             item.RendererReceiveShadows = value;
                             if (item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal)
                                 item.RendererReceiveShadowsOnChange(value);
                             else
                                 item.RendererReceiveShadowsOnReset();
-                            SetLabelText(RendererReceiveShadowsLabel, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal, RendererReceiveShadowsResetButton, RendererReceiveShadowsPanel);
+                            SetLabelText(label, item.LabelText, item.RendererReceiveShadows != item.RendererReceiveShadowsOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(RendererReceiveShadowsToggle.gameObject, "Toggle if the renderer can have shadows cast on it on/off");
+                        TooltipManager.AddTooltip(toggle.gameObject, "Toggle if the renderer can have shadows cast on it on/off");
 
-                        RendererReceiveShadowsResetButton.onClick.RemoveAllListeners();
-                        RendererReceiveShadowsResetButton.onClick.AddListener(() => RendererReceiveShadowsToggle.isOn = item.RendererReceiveShadowsOriginal);
-                        TooltipManager.AddTooltip(RendererReceiveShadowsResetButton.gameObject, "Reset this property to its original value");
-
+                        reset.onClick.AddListener(() => toggle.isOn = item.RendererReceiveShadowsOriginal);
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
+                        
                         break;
-                    case ItemInfo.RowItemType.RendererUpdateWhenOffscreen:
-                        ShowRendererUpdateWhenOffscreen();
-                        SetLabelText(RendererUpdateWhenOffscreenLabel, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal, RendererUpdateWhenOffscreenResetButton, RendererUpdateWhenOffscreenPanel);
-                        RendererUpdateWhenOffscreenToggle.onValueChanged.RemoveAllListeners();
-                        RendererUpdateWhenOffscreenToggle.isOn = item.RendererUpdateWhenOffscreen;
-                        RendererUpdateWhenOffscreenToggle.onValueChanged.AddListener(value =>
+                    }
+                
+                case ItemInfo.RowItemType.RendererUpdateWhenOffscreen:
+                    {
+                        var panel = UIUtility.CreatePanel("RendererUpdateWhenOffscreenPanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("RendererUpdateWhenOffscreenLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        Toggle toggle = UIUtility.CreateToggle("RendererUpdateWhenOffscreenToggle", panel.transform, "");
+                        toggle.isOn = false;
+                        AddLayoutElement(toggle.gameObject, RendererToggleWidth, RendererToggleWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"RendererUpdateWhenOffscreenResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal, reset, itemPanelCanvas);
+                        toggle.isOn = item.RendererUpdateWhenOffscreen;
+                        toggle.onValueChanged.AddListener(value =>
                         {
                             item.RendererUpdateWhenOffscreen = value;
                             if (item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal)
                                 item.RendererUpdateWhenOffscreenOnChange(value);
                             else
                                 item.RendererUpdateWhenOffscreenOnReset();
-                            SetLabelText(RendererUpdateWhenOffscreenLabel, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal, RendererUpdateWhenOffscreenResetButton, RendererUpdateWhenOffscreenPanel);
+                            SetLabelText(label, item.LabelText, item.RendererUpdateWhenOffscreen != item.RendererUpdateWhenOffscreenOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(RendererUpdateWhenOffscreenToggle.gameObject, "When on, a renderer will always stay renderer, even when considered to be off-screen.\n\n This is handy for when the bounding box of an object is configured improperly and dissapears when it should still be visible");
+                        TooltipManager.AddTooltip(toggle.gameObject, "When on, a renderer will always stay renderer, even when considered to be off-screen.\n\n This is handy for when the bounding box of an object is configured improperly and dissapears when it should still be visible");
 
-                        RendererUpdateWhenOffscreenResetButton.onClick.RemoveAllListeners();
-                        RendererUpdateWhenOffscreenResetButton.onClick.AddListener(() => RendererUpdateWhenOffscreenToggle.isOn = item.RendererUpdateWhenOffscreenOriginal);
-                        TooltipManager.AddTooltip(RendererUpdateWhenOffscreenResetButton.gameObject, "Reset this property to its original value");
-
+                        reset.onClick.AddListener(() => toggle.isOn = item.RendererUpdateWhenOffscreenOriginal);
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
+                        
                         break;
-                    case ItemInfo.RowItemType.RendererRecalculateNormals:
-                        ShowRendererRecalculateNormals();
-                        SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal, RendererRecalculateNormalsResetButton, RendererRecalculateNormalsPanel);
-                        RendererRecalculateNormalsToggle.onValueChanged.RemoveAllListeners();
-                        RendererRecalculateNormalsToggle.isOn = item.RendererRecalculateNormals;
-                        RendererRecalculateNormalsToggle.onValueChanged.AddListener(value =>
+                    }
+                
+                case ItemInfo.RowItemType.RendererRecalculateNormals:
+                    {
+                        var panel = UIUtility.CreatePanel("RendererRecalculateNormalsPanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("RendererRecalculateNormalsLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        Toggle toggle = UIUtility.CreateToggle("RendererRecalculateNormalsToggle", panel.transform, "");
+                        toggle.isOn = false;
+                        AddLayoutElement(toggle.gameObject, RendererToggleWidth, RendererToggleWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"RendererRecalculateNormalsResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal, reset, itemPanelCanvas);
+                        toggle.isOn = item.RendererRecalculateNormals;
+                        toggle.onValueChanged.AddListener(value =>
                         {
                             item.RendererRecalculateNormals = value;
                             if (item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal)
                                 item.RendererRecalculateNormalsOnChange(value);
                             else
                                 item.RendererRecalculateNormalsOnReset();
-                            SetLabelText(RendererRecalculateNormalsLabel, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal, RendererRecalculateNormalsResetButton, RendererRecalculateNormalsPanel);
+                            SetLabelText(label, item.LabelText, item.RendererRecalculateNormals != item.RendererRecalculateNormalsOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(RendererRecalculateNormalsToggle.gameObject, "Recalculate the normals of this renderer based on its current shape, instead of its original shape.\n\nOnly available on skinned mesh renderers");
+                        TooltipManager.AddTooltip(toggle.gameObject, "Recalculate the normals of this renderer based on its current shape, instead of its original shape.\n\nOnly available on skinned mesh renderers");
 
-                        RendererRecalculateNormalsResetButton.onClick.RemoveAllListeners();
-                        RendererRecalculateNormalsResetButton.onClick.AddListener(() => RendererRecalculateNormalsToggle.isOn = item.RendererRecalculateNormalsOriginal);
-                        TooltipManager.AddTooltip(RendererRecalculateNormalsResetButton.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
-
+                        reset.onClick.AddListener(() => toggle.isOn = item.RendererRecalculateNormalsOriginal);
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
+                        
                         break;
-                    case ItemInfo.RowItemType.Material:
-                        ShowMaterial();
-                        SetLabelText(MaterialLabel, item.LabelText);
-                        MaterialText.text = item.MaterialName;
-                        TooltipManager.AddTooltip(MaterialText.gameObject, "Material name");
-                        MaterialCopyButton.onClick.RemoveAllListeners();
-                        MaterialCopyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
-                        TooltipManager.AddTooltip(MaterialCopyButton.gameObject, "Copy all the <b>edits</b> of this material");
-                        MaterialPasteButton.onClick.RemoveAllListeners();
-                        MaterialPasteButton.onClick.AddListener(() => item.MaterialOnPaste.Invoke());
-                        TooltipManager.AddTooltip(MaterialPasteButton.gameObject, "Paste all the copied edits");
+                    }
+                
+                case ItemInfo.RowItemType.Material:
+                    {
+                        var panel = UIUtility.CreatePanel("MaterialPanel", contentList.transform);
+                        panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = MaterialColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("MaterialLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, 0f, 0f, 0f);
+
+                        Text text = UIUtility.CreateText("MaterialText", panel.transform);
+                        text.alignment = TextAnchor.MiddleLeft;
+                        text.color = Color.black;
+                        AddLayoutElement(text.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        var copyButton = UIUtility.CreateButton($"MaterialCopy", panel.transform, "Copy Edits");
+                        AddLayoutElement(copyButton.gameObject, MaterialButtonWidth, MaterialButtonWidth, 0f);
+
+                        var pasteButton = UIUtility.CreateButton($"MaterialPaste", panel.transform, "Paste Edits");
+                        AddLayoutElement(pasteButton.gameObject, MaterialButtonWidth, MaterialButtonWidth, 0f);
+
+                        var copyRemoveButton = UIUtility.CreateButton($"MaterialCopyRemove", panel.transform, "Copy Material");
+                        AddLayoutElement(copyRemoveButton.gameObject, MaterialButtonWidth, MaterialButtonWidth, 0f);
+
+                        var renameButton = UIUtility.CreateButton($"MaterialRename", panel.transform, ">");
+                        AddLayoutElement(renameButton.gameObject, MaterialButtonWidth, MaterialButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText);
+                        text.text = item.MaterialName;
+                        TooltipManager.AddTooltip(text.gameObject, "Material name");
+                        copyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
+                        TooltipManager.AddTooltip(copyButton.gameObject, "Copy all the <b>edits</b> of this material");
+                        pasteButton.onClick.AddListener(() => item.MaterialOnPaste.Invoke());
+                        TooltipManager.AddTooltip(pasteButton.gameObject, "Paste all the copied edits");
                         if (MaterialEditorPluginBase.CopyData.IsEmpty)
                         {
-                            MaterialPasteButton.enabled = false;
-                            Text text = MaterialPasteButton.GetComponentInChildren<Text>();
-                            text.color = Color.gray;
+                            pasteButton.enabled = false;
+                            pasteButton.GetComponentInChildren<Text>().color = Color.gray;
                         }
                         else
                         {
-                            MaterialPasteButton.enabled = true;
-                            Text text = MaterialPasteButton.GetComponentInChildren<Text>();
-                            text.color = Color.black;
+                            pasteButton.enabled = true;
+                            pasteButton.GetComponentInChildren<Text>().color = Color.black;
                         }
 
                         if (item.MaterialName.Contains(MaterialAPI.MaterialCopyPostfix))
                         {
-                            Text text = MaterialCopyRemove.GetComponentInChildren<Text>();
-                            text.text = "Remove Material";
-                            TooltipManager.AddTooltip(MaterialCopyRemove.gameObject, "Remove this copied material");
+                            copyRemoveButton.GetComponentInChildren<Text>().text = "Remove Material";
+                            TooltipManager.AddTooltip(copyRemoveButton.gameObject, "Remove this copied material");
                         }
                         else
                         {
-                            Text text = MaterialCopyRemove.GetComponentInChildren<Text>();
-                            text.text = "Copy Material";
-                            TooltipManager.AddTooltip(MaterialCopyRemove.gameObject, "Make a copy of this material.\n\nUseful for overlaying different effects onto an object with different material shaders/properties");
+                            copyRemoveButton.GetComponentInChildren<Text>().text = "Copy Material";
+                            TooltipManager.AddTooltip(copyRemoveButton.gameObject, "Make a copy of this material.\n\nUseful for overlaying different effects onto an object with different material shaders/properties");
                         }
                         if (item.MaterialOnCopyRemove != null)
                         {
-                            MaterialCopyRemove.onClick.RemoveAllListeners();
-                            MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
+                            copyRemoveButton.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
                         }
                         else
-                            MaterialCopyRemove.gameObject.SetActive(false);
+                            copyRemoveButton.gameObject.SetActive(false);
                         if (item.MaterialOnRename != null)
                         {
-                            MaterialRename.gameObject.SetActive(true);
-                            MaterialRename.onClick.RemoveAllListeners();
-                            MaterialRename.onClick.AddListener(delegate { item.MaterialOnRename.Invoke(); });
+                            renameButton.gameObject.SetActive(true);
+                            renameButton.onClick.AddListener(delegate { item.MaterialOnRename.Invoke(); });
                         }
                         else
-                            MaterialRename.gameObject.SetActive(false);
-                        TooltipManager.AddTooltip(MaterialRename.gameObject, "Rename material instances");
-
+                            renameButton.gameObject.SetActive(false);
+                        TooltipManager.AddTooltip(renameButton.gameObject, "Rename material instances");
+                        
                         break;
-                    case ItemInfo.RowItemType.Shader:
-                        ShowShader();
-                        SetLabelText(ShaderLabel, item.LabelText, item.ShaderName != item.ShaderNameOriginal, ShaderResetButton, ShaderPanel);
-                        ShaderDropdown.onValueChanged.RemoveAllListeners();
-                        ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderName);
-                        ShaderDropdown.captionText.text = item.ShaderName;
-                        ShaderDropdown.onValueChanged.AddListener(value =>
+                    }
+                
+                case ItemInfo.RowItemType.Shader:
+                    {
+                        var panel = UIUtility.CreatePanel("ShaderPanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("ShaderLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        var interpolableButton = CreateInterpolableButton("SelectInterpolableShaderButton", panel.transform);
+
+                        Dropdown dropdown = UIUtility.CreateDropdown("ShaderDropdown", panel.transform);
+                        dropdown.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
+                        dropdown.captionText.transform.SetRect(0f, 0f, 1f, 1f, 5f, 2f, -15f, -2f);
+                        dropdown.captionText.alignment = TextAnchor.MiddleLeft;
+                        dropdown.options.Clear();
+                        dropdown.options.Add(new Dropdown.OptionData("Reset"));
+                        foreach (var shader in MaterialEditorPluginBase.XMLShaderProperties)
+                            if (shader.Key != "default")
+                                dropdown.options.Add(new Dropdown.OptionData(shader.Key));
+                        AddLayoutElement(dropdown.gameObject, ShaderDropdownWidth, ShaderDropdownWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"ShaderResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText, item.ShaderName != item.ShaderNameOriginal, reset, itemPanelCanvas);
+                        dropdown.value = dropdown.OptionIndex(item.ShaderName);
+                        dropdown.captionText.text = item.ShaderName;
+                        dropdown.onValueChanged.AddListener(value =>
                         {
-                            var selected = ShaderDropdown.OptionText(value);
+                            var selected = dropdown.OptionText(value);
                             if (value == 0 || selected.IsNullOrEmpty())
                                 selected = item.ShaderNameOriginal;
                             item.ShaderName = selected;
@@ -320,429 +372,638 @@ namespace MaterialEditorAPI
                                 item.ShaderNameOnChange(item.ShaderName);
                             else
                                 item.ShaderNameOnReset();
-                            SetLabelText(ShaderLabel, item.LabelText, item.ShaderName != item.ShaderNameOriginal, ShaderResetButton, ShaderPanel);
+                            SetLabelText(label, item.LabelText, item.ShaderName != item.ShaderNameOriginal, reset, itemPanelCanvas);
                         });
 
-                        ShaderResetButton.onClick.RemoveAllListeners();
-                        ShaderResetButton.onClick.AddListener(() => ShaderDropdown.value = ShaderDropdown.OptionIndex(item.ShaderNameOriginal));
-                        TooltipManager.AddTooltip(ShaderResetButton.gameObject, "Reset this property to its original value.\n\nIf the original shader is not one known by Material Editor, it will not be able to reset the shader to its original value. In order for the reset to take effect you to either save and re-load the scene, or copy the object and delete the old one");
-                        SelectInterpolableShaderButton.onClick.RemoveAllListeners();
-                        SelectInterpolableShaderButton.onClick.AddListener(() => item.SelectInterpolableButtonShaderOnClick());
-                        TooltipManager.AddTooltip(SelectInterpolableShaderButton.gameObject, "Select the currently selected shader property and its render queue as interpolables in timeline");
+                        reset.onClick.AddListener(() => dropdown.value = dropdown.OptionIndex(item.ShaderNameOriginal));
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value.\n\nIf the original shader is not one known by Material Editor, it will not be able to reset the shader to its original value. In order for the reset to take effect you to either save and re-load the scene, or copy the object and delete the old one");
+                        interpolableButton.onClick.AddListener(() => item.SelectInterpolableButtonShaderOnClick());
+                        TooltipManager.AddTooltip(interpolableButton.gameObject, "Select the currently selected shader property and its render queue as interpolables in timeline");
 
-                        AutoScrollToSelectionWithDropdown.Setup(ShaderDropdown);
-                        DropdownFilter.AddFilterUI(ShaderDropdown, "ShaderDropDown");
-
+                        AutoScrollToSelectionWithDropdown.Setup(dropdown);
+                        DropdownFilter.AddFilterUI(dropdown, "ShaderDropDown");
+                        
                         break;
-                    case ItemInfo.RowItemType.ShaderRenderQueue:
-                        ShowShaderRenderQueue();
-                        SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, ShaderRenderQueueResetButton, ShaderRenderQueuePanel);
-                        ShaderRenderQueueInput.onEndEdit.RemoveAllListeners();
-                        ShaderRenderQueueInput.text = item.ShaderRenderQueue.ToString();
-                        ShaderRenderQueueInput.onEndEdit.AddListener(value =>
+                    }
+                
+                case ItemInfo.RowItemType.ShaderRenderQueue:
+                    {
+                        var panel = UIUtility.CreatePanel("ShaderRenderQueuePanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("ShaderRenderQueueLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        InputField inputField = UIUtility.CreateInputField("ShaderRenderQueueInput", panel.transform);
+                        inputField.text = "0";
+                        AddLayoutElement(inputField.gameObject, RenderQueueInputFieldWidth, RenderQueueInputFieldWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"ShaderRenderQueueResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, reset, itemPanelCanvas);
+                        inputField.text = item.ShaderRenderQueue.ToString();
+                        inputField.onEndEdit.AddListener(value =>
                         {
                             if (!int.TryParse(value, out int intValue))
                             {
-                                ShaderRenderQueueInput.text = item.ShaderRenderQueue.ToString();
+                                inputField.text = item.ShaderRenderQueue.ToString();
                                 return;
                             }
 
                             item.ShaderRenderQueue = intValue;
-                            ShaderRenderQueueInput.text = item.ShaderRenderQueue.ToString();
+                            inputField.text = item.ShaderRenderQueue.ToString();
 
                             if (item.ShaderRenderQueue != item.ShaderRenderQueueOriginal)
                                 item.ShaderRenderQueueOnChange(item.ShaderRenderQueue);
                             else
                                 item.ShaderRenderQueueOnReset();
-                            SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, ShaderRenderQueueResetButton, ShaderRenderQueuePanel);
+                            SetLabelText(label, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(ShaderRenderQueueInput.gameObject, "The order in which a material is rendered. Higher render queues get rendered later");
+                        TooltipManager.AddTooltip(inputField.gameObject, "The order in which a material is rendered. Higher render queues get rendered later");
 
-                        ShaderRenderQueueResetButton.onClick.RemoveAllListeners();
-                        ShaderRenderQueueResetButton.onClick.AddListener(() =>
+                        reset.onClick.AddListener(() =>
                         {
-                            ShaderRenderQueueInput.text = item.ShaderRenderQueueOriginal.ToString();
+                            inputField.text = item.ShaderRenderQueueOriginal.ToString();
                             item.ShaderRenderQueue = item.ShaderRenderQueueOriginal;
                             item.ShaderRenderQueueOnReset();
-                            SetLabelText(ShaderRenderQueueLabel, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, ShaderRenderQueueResetButton, ShaderRenderQueuePanel);
+                            SetLabelText(label, item.LabelText, item.ShaderRenderQueue != item.ShaderRenderQueueOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(ShaderRenderQueueResetButton.gameObject, "Reset this property to its original value");
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
+                        
+                        break;
+                    }
+                
+                case ItemInfo.RowItemType.PropertyCategory:
+                    {
+                        var panel = UIUtility.CreatePanel("PropertyCategoryPanel", contentList.transform);
+                        panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = CategoryColor;
+                        AddHorizontalLayoutGroup(panel);
 
+                        var label = UIUtility.CreateText("PropertyCategoryLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+                        
+                        SetLabelText(label, item.LabelText);
+                        TooltipManager.AddTooltip(label.gameObject, "Category name");
+                        
                         break;
-                    case ItemInfo.RowItemType.PropertyCategory:
-                        ShowPropertyCategory();
-                        SetLabelText(PropertyCategoryLabel, item.LabelText);
-                        TooltipManager.AddTooltip(PropertyCategoryLabel.gameObject, "Category name");
-                        break;
-                    case ItemInfo.RowItemType.TextureProperty:
-                        ShowTexture();
-                        SetLabelText(TextureLabel, item.LabelText, item.TextureChanged, TextureResetButton, TexturePanel);
+                    }
+                
+                case ItemInfo.RowItemType.TextureProperty:
+                    {
+                        var panel = UIUtility.CreatePanel("TexturePanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
+
+                        var label = UIUtility.CreateText("TextureLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        var interpolableButton = CreateInterpolableButton("SelectInterpolableTextureButton", panel.transform);
+
+                        Button exportButton = UIUtility.CreateButton($"TextureExportButton", panel.transform, $"Export Texture");
+                        AddLayoutElement(exportButton.gameObject, TextureButtonWidth, TextureButtonWidth, 0f);
+
+                        Button importButton = UIUtility.CreateButton($"TextureImportButton", panel.transform, $"Import Texture");
+                        AddLayoutElement(importButton.gameObject, TextureButtonWidth, TextureButtonWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"TextureResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText, item.TextureChanged, reset, itemPanelCanvas);
 
                         ConfigureExportButton();
                         void ConfigureExportButton()
                         {
                             if (item.TextureExists)
                             {
-                                ExportTextureButton.enabled = true;
-                                Text text = ExportTextureButton.GetComponentInChildren<Text>();
+                                exportButton.enabled = true;
+                                Text text = exportButton.GetComponentInChildren<Text>();
                                 text.text = "Export Texture";
                                 text.color = Color.black;
                             }
                             else
                             {
-                                ExportTextureButton.enabled = false;
-                                Text text = ExportTextureButton.GetComponentInChildren<Text>();
+                                exportButton.enabled = false;
+                                Text text = exportButton.GetComponentInChildren<Text>();
                                 text.text = "No Texture";
                                 text.color = Color.gray;
                             }
                         }
 
-                        ExportTextureButton.onClick.RemoveAllListeners();
-                        ExportTextureButton.onClick.AddListener(() => item.TextureOnExport());
-                        ImportTextureButton.onClick.RemoveAllListeners();
-                        ImportTextureButton.onClick.AddListener(() =>
+                        exportButton.onClick.AddListener(() => item.TextureOnExport());
+                        importButton.onClick.AddListener(() =>
                         {
                             item.TextureChanged = true;
                             item.TextureExists = true;
                             item.TextureOnImport();
                             ConfigureExportButton();
-                            SetLabelText(TextureLabel, item.LabelText, item.TextureChanged, TextureResetButton, TexturePanel);
+                            SetLabelText(label, item.LabelText, item.TextureChanged, reset, itemPanelCanvas);
                         });
 
-                        TextureResetButton.onClick.RemoveAllListeners();
-                        TextureResetButton.onClick.AddListener(() =>
+                        reset.onClick.AddListener(() =>
                         {
                             item.TextureChanged = false;
                             item.TextureOnReset();
-                            SetLabelText(TextureLabel, item.LabelText, item.TextureChanged, TextureResetButton, TexturePanel);
+                            SetLabelText(label, item.LabelText, item.TextureChanged, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(TextureResetButton.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
-                        SelectInterpolableTextureButton.onClick.RemoveAllListeners();
-                        SelectInterpolableTextureButton.onClick.AddListener(() => item.SelectInterpolableButtonTextureOnClick());
-                        TooltipManager.AddTooltip(SelectInterpolableTextureButton.gameObject, "Select the currently selected texture property and its offset and scale properties as interpolables in timeline");
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
+                        interpolableButton.onClick.AddListener(() => item.SelectInterpolableButtonTextureOnClick());
+                        TooltipManager.AddTooltip(interpolableButton.gameObject, "Select the currently selected texture property and its offset and scale properties as interpolables in timeline");
+                        
                         break;
-                    case ItemInfo.RowItemType.TextureOffsetScale:
-                        ShowOffsetScale();
-                        SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
+                    }
+                
+                case ItemInfo.RowItemType.TextureOffsetScale:
+                    {
+                        var panel = UIUtility.CreatePanel("OffsetScalePanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
 
-                        OffsetXInput.onEndEdit.RemoveAllListeners();
-                        OffsetYInput.onEndEdit.RemoveAllListeners();
-                        ScaleXInput.onEndEdit.RemoveAllListeners();
-                        ScaleYInput.onEndEdit.RemoveAllListeners();
+                        var label = UIUtility.CreateText("OffsetScaleLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
 
-                        OffsetXInput.text = item.Offset.x.ToString();
-                        OffsetYInput.text = item.Offset.y.ToString();
-                        ScaleXInput.text = item.Scale.x.ToString();
-                        ScaleYInput.text = item.Scale.y.ToString();
+                        Text emptySpace = UIUtility.CreateText("EmptySpace", panel.transform, "");
+                        emptySpace.alignment = TextAnchor.MiddleLeft;
+                        AddLayoutElement(emptySpace.gameObject, InterpolableButtonWidth, InterpolableButtonWidth, 0f);
 
-                        OffsetXInput.onEndEdit.AddListener(value =>
+                        Text labelOffsetX = UIUtility.CreateText("OffsetXText", panel.transform, "OffsetX");
+                        labelOffsetX.alignment = TextAnchor.MiddleLeft;
+                        labelOffsetX.color = Color.black;
+                        AddLayoutElement(labelOffsetX.gameObject, OffsetScaleLabelXWidth, OffsetScaleLabelXWidth, 0f);
+
+                        InputField textBoxOffsetX = UIUtility.CreateInputField("OffsetXInput", panel.transform);
+                        textBoxOffsetX.text = "0";
+                        textBoxOffsetX.characterLimit = 7;
+                        AddLayoutElement(textBoxOffsetX.gameObject, OffsetScaleInputFieldWidth, OffsetScaleInputFieldWidth, 0f);
+
+                        Text labelOffsetY = UIUtility.CreateText("OffsetYText", panel.transform, "Y");
+                        labelOffsetY.alignment = TextAnchor.MiddleLeft;
+                        labelOffsetY.color = Color.black;
+                        AddLayoutElement(labelOffsetY.gameObject, OffsetScaleLabelYWidth, OffsetScaleLabelYWidth, 0f);
+
+                        InputField textBoxOffsetY = UIUtility.CreateInputField("OffsetYInput", panel.transform);
+                        textBoxOffsetY.text = "0";
+                        textBoxOffsetY.characterLimit = 7;
+                        AddLayoutElement(textBoxOffsetY.gameObject, OffsetScaleInputFieldWidth, OffsetScaleInputFieldWidth, 0f);
+
+                        labelOffsetX.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxOffsetX, new[] { textBoxOffsetY });
+                        labelOffsetY.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxOffsetY, new[] { textBoxOffsetX });
+
+                        //Scale
+                        Text labelScaleX = UIUtility.CreateText("ScaleXText", panel.transform, "ScaleX");
+                        labelScaleX.alignment = TextAnchor.MiddleLeft;
+                        labelScaleX.color = Color.black;
+                        AddLayoutElement(labelScaleX.gameObject, OffsetScaleLabelXWidth, OffsetScaleLabelXWidth, 0f);
+
+                        InputField textBoxScaleX = UIUtility.CreateInputField("ScaleXInput", panel.transform);
+                        textBoxScaleX.text = "0";
+                        textBoxScaleX.characterLimit = 7;
+                        AddLayoutElement(textBoxScaleX.gameObject, OffsetScaleInputFieldWidth, OffsetScaleInputFieldWidth, 0f);
+
+                        Text labelScaleY = UIUtility.CreateText("ScaleYText", panel.transform, "Y");
+                        labelScaleY.alignment = TextAnchor.MiddleLeft;
+                        labelScaleY.color = Color.black;
+                        AddLayoutElement(labelScaleY.gameObject, OffsetScaleLabelYWidth, OffsetScaleLabelYWidth, 0f);
+
+                        InputField textBoxScaleY = UIUtility.CreateInputField("ScaleYInput", panel.transform);
+                        textBoxScaleY.text = "0";
+                        textBoxScaleY.characterLimit = 7;
+                        AddLayoutElement(textBoxScaleY.gameObject, OffsetScaleInputFieldWidth, OffsetScaleInputFieldWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"OffsetScaleResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+
+                        labelScaleX.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxScaleX, new[] { textBoxScaleY });
+                        labelScaleY.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxScaleY, new[] { textBoxScaleX });
+                        
+                        SetLabelText(label, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, reset, itemPanelCanvas);
+
+                        textBoxOffsetX.text = item.Offset.x.ToString();
+                        textBoxOffsetY.text = item.Offset.y.ToString();
+                        textBoxScaleX.text = item.Scale.x.ToString();
+                        textBoxScaleY.text = item.Scale.y.ToString();
+
+                        textBoxOffsetX.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
-                                OffsetXInput.text = item.Offset.x.ToString();
+                                textBoxOffsetX.text = item.Offset.x.ToString();
                                 return;
                             }
 
                             item.Offset = new Vector2(input, item.Offset.y);
-                            OffsetXInput.text = item.Offset.x.ToString();
+                            textBoxOffsetX.text = item.Offset.x.ToString();
 
                             if (item.Offset == item.OffsetOriginal)
                                 item.OffsetOnReset();
                             else
                                 item.OffsetOnChange(item.Offset);
 
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
+                            SetLabelText(label, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, reset, itemPanelCanvas);
                         });
 
-                        OffsetYInput.onEndEdit.AddListener(value =>
+                        textBoxOffsetY.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
-                                OffsetYInput.text = item.Offset.y.ToString();
+                                textBoxOffsetY.text = item.Offset.y.ToString();
                                 return;
                             }
 
                             item.Offset = new Vector2(item.Offset.x, input);
-                            OffsetYInput.text = item.Offset.y.ToString();
+                            textBoxOffsetY.text = item.Offset.y.ToString();
 
                             if (item.Offset == item.OffsetOriginal)
                                 item.OffsetOnReset();
                             else
                                 item.OffsetOnChange(item.Offset);
 
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
+                            SetLabelText(label, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, reset, itemPanelCanvas);
                         });
 
-                        ScaleXInput.onEndEdit.AddListener(value =>
+                        textBoxScaleX.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
-                                ScaleXInput.text = item.Scale.x.ToString();
+                                textBoxScaleX.text = item.Scale.x.ToString();
                                 return;
                             }
 
                             item.Scale = new Vector2(input, item.Scale.y);
-                            ScaleXInput.text = item.Scale.x.ToString();
+                            textBoxScaleX.text = item.Scale.x.ToString();
 
                             if (item.Scale == item.ScaleOriginal)
                                 item.ScaleOnReset();
                             else
                                 item.ScaleOnChange(item.Scale);
 
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
+                            SetLabelText(label, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, reset, itemPanelCanvas);
                         });
 
-                        ScaleYInput.onEndEdit.AddListener(value =>
+                        textBoxScaleY.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
-                                ScaleYInput.text = item.Scale.y.ToString();
+                                textBoxScaleY.text = item.Scale.y.ToString();
                                 return;
                             }
 
                             item.Scale = new Vector2(item.Scale.x, input);
-                            ScaleYInput.text = item.Scale.y.ToString();
+                            textBoxScaleY.text = item.Scale.y.ToString();
 
                             if (item.Scale == item.ScaleOriginal)
                                 item.ScaleOnReset();
                             else
                                 item.ScaleOnChange(item.Scale);
 
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
+                            SetLabelText(label, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, reset, itemPanelCanvas);
                         });
 
-                        OffsetScaleResetButton.onClick.RemoveAllListeners();
-                        OffsetScaleResetButton.onClick.AddListener(() =>
+                        reset.onClick.AddListener(() =>
                         {
                             item.Offset = item.OffsetOriginal;
                             item.Scale = item.ScaleOriginal;
 
-                            OffsetXInput.text = item.Offset.x.ToString();
-                            OffsetYInput.text = item.Offset.y.ToString();
-                            ScaleXInput.text = item.Scale.x.ToString();
-                            ScaleYInput.text = item.Scale.y.ToString();
+                            textBoxOffsetX.text = item.Offset.x.ToString();
+                            textBoxOffsetY.text = item.Offset.y.ToString();
+                            textBoxScaleX.text = item.Scale.x.ToString();
+                            textBoxScaleY.text = item.Scale.y.ToString();
 
                             item.OffsetOnReset();
                             item.ScaleOnReset();
-                            SetLabelText(OffsetScaleLabel, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, OffsetScaleResetButton, OffsetScalePanel);
+                            SetLabelText(label, item.LabelText, item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(OffsetXInput.gameObject, "Adjust the horizontal offset of the texture. It can move the texture left or right.");
-                        TooltipManager.AddTooltip(OffsetYInput.gameObject, "Adjust the vertical offset of the texture. It can move the texture up or down.");
-                        TooltipManager.AddTooltip(ScaleXInput.gameObject, "Adjust the horizontal scale of the texture. Values greater than 1 make the texture appear smaller horizontally, values less than 1 make it appear larger horizontally.");
-                        TooltipManager.AddTooltip(ScaleYInput.gameObject, "Adjust the vertical scale of the texture. Values greater than 1 make the texture appear smaller vertically, values less than 1 make it appear larger vertically.");
-                        TooltipManager.AddTooltip(OffsetScaleResetButton.gameObject, "Reset both the scale and offset properties to their original values");
-
+                        TooltipManager.AddTooltip(textBoxOffsetX.gameObject, "Adjust the horizontal offset of the texture. It can move the texture left or right.");
+                        TooltipManager.AddTooltip(textBoxOffsetY.gameObject, "Adjust the vertical offset of the texture. It can move the texture up or down.");
+                        TooltipManager.AddTooltip(textBoxScaleX.gameObject, "Adjust the horizontal scale of the texture. Values greater than 1 make the texture appear smaller horizontally, values less than 1 make it appear larger horizontally.");
+                        TooltipManager.AddTooltip(textBoxScaleY.gameObject, "Adjust the vertical scale of the texture. Values greater than 1 make the texture appear smaller vertically, values less than 1 make it appear larger vertically.");
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset both the scale and offset properties to their original values");
+                        
                         break;
-                    case ItemInfo.RowItemType.ColorProperty:
-                        ShowColor();
-                        SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
+                    }
+                
+                case ItemInfo.RowItemType.ColorProperty:
+                    {
+                        var panel = UIUtility.CreatePanel("ColorPanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
 
-                        ColorRInput.onEndEdit.RemoveAllListeners();
-                        ColorGInput.onEndEdit.RemoveAllListeners();
-                        ColorBInput.onEndEdit.RemoveAllListeners();
-                        ColorAInput.onEndEdit.RemoveAllListeners();
+                        var label = UIUtility.CreateText("ColorLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
 
-                        ColorRInput.text = item.ColorValue.r.ToString();
-                        ColorGInput.text = item.ColorValue.g.ToString();
-                        ColorBInput.text = item.ColorValue.b.ToString();
-                        ColorAInput.text = item.ColorValue.a.ToString();
+                        var interpolableButton = CreateInterpolableButton("SelectInterpolableColorButton", panel.transform);
 
-                        ColorEditButton.image.color = item.ColorValue;
+                        Text labelR = UIUtility.CreateText("ColorRText", panel.transform, "R");
+                        labelR.alignment = TextAnchor.MiddleLeft;
+                        labelR.color = Color.black;
+                        AddLayoutElement(labelR.gameObject, ColorLabelWidth, ColorLabelWidth, 0f);
 
-                        ColorRInput.onEndEdit.AddListener(value =>
+                        InputField textBoxR = UIUtility.CreateInputField("ColorRInput", panel.transform);
+                        textBoxR.text = "0";
+                        textBoxR.characterLimit = 7;
+                        AddLayoutElement(textBoxR.gameObject, ColorInputFieldWidth, ColorInputFieldWidth, 0f);
+
+                        Text labelG = UIUtility.CreateText("ColorGText", panel.transform, "G");
+                        labelG.alignment = TextAnchor.MiddleLeft;
+                        labelG.color = Color.black;
+                        AddLayoutElement(labelG.gameObject, ColorLabelWidth, ColorLabelWidth, 0f);
+
+                        InputField textBoxG = UIUtility.CreateInputField("ColorGInput", panel.transform);
+                        textBoxG.text = "0";
+                        textBoxG.characterLimit = 7;
+                        AddLayoutElement(textBoxG.gameObject, ColorInputFieldWidth, ColorInputFieldWidth, 0f);
+
+                        Text labelB = UIUtility.CreateText("ColorBText", panel.transform, "B");
+                        labelB.alignment = TextAnchor.MiddleLeft;
+                        labelB.color = Color.black;
+                        AddLayoutElement(labelB.gameObject, ColorLabelWidth, ColorLabelWidth, 0f);
+
+                        InputField textBoxB = UIUtility.CreateInputField("ColorBInput", panel.transform);
+                        textBoxB.text = "0";
+                        textBoxB.characterLimit = 7;
+                        AddLayoutElement(textBoxB.gameObject, ColorInputFieldWidth, ColorInputFieldWidth, 0f);
+
+                        Text labelA = UIUtility.CreateText("ColorAText", panel.transform, "A");
+                        labelA.alignment = TextAnchor.MiddleLeft;
+                        labelA.color = Color.black;
+                        AddLayoutElement(labelA.gameObject, ColorLabelWidth, ColorLabelWidth, 0f);
+
+                        InputField textBoxA = UIUtility.CreateInputField("ColorAInput", panel.transform);
+                        textBoxA.text = "0";
+                        textBoxA.characterLimit = 7;
+                        AddLayoutElement(textBoxA.gameObject, ColorInputFieldWidth, ColorInputFieldWidth, 0f);
+
+                        var edit = UIUtility.CreateButton("ColorEditButton", panel.transform, "");
+                        AddLayoutElement(edit.gameObject, ColorEditButtonWidth, ColorEditButtonWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"ColorResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+
+                        labelR.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxR, new[] { textBoxG, textBoxB });
+                        labelG.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxG, new[] { textBoxR, textBoxB });
+                        labelB.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxB, new[] { textBoxR, textBoxG });
+                        labelA.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxA);
+                        
+                        SetLabelText(label, item.LabelText, item.ColorValue != item.ColorValueOriginal, reset, itemPanelCanvas);
+                        
+                        textBoxR.text = item.ColorValue.r.ToString();
+                        textBoxG.text = item.ColorValue.g.ToString();
+                        textBoxB.text = item.ColorValue.b.ToString();
+                        textBoxA.text = item.ColorValue.a.ToString();
+
+                        edit.image.color = item.ColorValue;
+
+                        textBoxR.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
-                                ColorRInput.text = item.ColorValue.r.ToString();
+                                textBoxR.text = item.ColorValue.r.ToString();
                                 return;
                             }
 
                             item.ColorValue = new Color(input, item.ColorValue.g, item.ColorValue.b, item.ColorValue.a);
-                            ColorRInput.text = item.ColorValue.r.ToString();
+                            textBoxR.text = item.ColorValue.r.ToString();
 
                             if (item.ColorValue == item.ColorValueOriginal)
                                 item.ColorValueOnReset();
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
-                            ColorEditButton.image.color = item.ColorValue;
+                            edit.image.color = item.ColorValue;
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
+                            SetLabelText(label, item.LabelText, item.ColorValue != item.ColorValueOriginal, reset, itemPanelCanvas);
                         });
 
-                        ColorGInput.onEndEdit.AddListener(value =>
+                        textBoxG.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
-                                ColorGInput.text = item.ColorValue.g.ToString();
+                                textBoxG.text = item.ColorValue.g.ToString();
                                 return;
                             }
 
                             item.ColorValue = new Color(item.ColorValue.r, input, item.ColorValue.b, item.ColorValue.a);
-                            ColorGInput.text = item.ColorValue.g.ToString();
+                            textBoxG.text = item.ColorValue.g.ToString();
 
                             if (item.ColorValue == item.ColorValueOriginal)
                                 item.ColorValueOnReset();
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
-                            ColorEditButton.image.color = item.ColorValue;
+                            edit.image.color = item.ColorValue;
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
+                            SetLabelText(label, item.LabelText, item.ColorValue != item.ColorValueOriginal, reset, itemPanelCanvas);
                         });
 
-                        ColorBInput.onEndEdit.AddListener(value =>
+                        textBoxB.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
-                                ColorBInput.text = item.ColorValue.b.ToString();
+                                textBoxB.text = item.ColorValue.b.ToString();
                                 return;
                             }
 
                             item.ColorValue = new Color(item.ColorValue.r, item.ColorValue.g, input, item.ColorValue.a);
-                            ColorBInput.text = item.ColorValue.b.ToString();
+                            textBoxB.text = item.ColorValue.b.ToString();
 
                             if (item.ColorValue == item.ColorValueOriginal)
                                 item.ColorValueOnReset();
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
-                            ColorEditButton.image.color = item.ColorValue;
+                            edit.image.color = item.ColorValue;
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
+                            SetLabelText(label, item.LabelText, item.ColorValue != item.ColorValueOriginal, reset, itemPanelCanvas);
                         });
 
-                        ColorAInput.onEndEdit.AddListener(value =>
+                        textBoxA.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
-                                ColorAInput.text = item.ColorValue.a.ToString();
+                                textBoxA.text = item.ColorValue.a.ToString();
                                 return;
                             }
 
                             item.ColorValue = new Color(item.ColorValue.r, item.ColorValue.g, item.ColorValue.b, input);
-                            ColorAInput.text = item.ColorValue.a.ToString();
+                            textBoxA.text = item.ColorValue.a.ToString();
 
                             if (item.ColorValue == item.ColorValueOriginal)
                                 item.ColorValueOnReset();
                             else
                                 item.ColorValueOnChange(item.ColorValue);
 
-                            ColorEditButton.image.color = item.ColorValue;
+                            edit.image.color = item.ColorValue;
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
+                            SetLabelText(label, item.LabelText, item.ColorValue != item.ColorValueOriginal, reset, itemPanelCanvas);
                         });
 
-                        ColorResetButton.onClick.RemoveAllListeners();
-                        ColorResetButton.onClick.AddListener(() =>
+                        reset.onClick.AddListener(() =>
                         {
                             item.ColorValue = item.ColorValueOriginal;
 
-                            ColorRInput.text = item.ColorValue.r.ToString();
-                            ColorGInput.text = item.ColorValue.g.ToString();
-                            ColorBInput.text = item.ColorValue.b.ToString();
-                            ColorAInput.text = item.ColorValue.a.ToString();
+                            textBoxR.text = item.ColorValue.r.ToString();
+                            textBoxG.text = item.ColorValue.g.ToString();
+                            textBoxB.text = item.ColorValue.b.ToString();
+                            textBoxA.text = item.ColorValue.a.ToString();
 
-                            ColorEditButton.image.color = item.ColorValue;
+                            edit.image.color = item.ColorValue;
                             item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
 
                             item.ColorValueOnReset();
-                            SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
+                            SetLabelText(label, item.LabelText, item.ColorValue != item.ColorValueOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(ColorResetButton.gameObject, "Reset the selected property to its original value");
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset the selected property to its original value");
 
-                        ColorEditButton.onClick.RemoveAllListeners();
-                        ColorEditButton.onClick.AddListener(() =>
+                        edit.onClick.AddListener(() =>
                         {
                             item.ColorValueOnEdit(item.LabelText, item.ColorValue, onChanged);
 
                             void onChanged(Color c)
                             {
-                                ColorEditButton.image.color = c;
+                                edit.image.color = c;
                                 item.ColorValue = c;
 
-                                ColorRInput.text = c.r.ToString();
-                                ColorGInput.text = c.g.ToString();
-                                ColorBInput.text = c.b.ToString();
-                                ColorAInput.text = c.a.ToString();
+                                textBoxR.text = c.r.ToString();
+                                textBoxG.text = c.g.ToString();
+                                textBoxB.text = c.b.ToString();
+                                textBoxA.text = c.a.ToString();
 
                                 if (item.ColorValue == item.ColorValueOriginal)
                                     item.ColorValueOnReset();
                                 else
                                     item.ColorValueOnChange(item.ColorValue);
 
-                                SetLabelText(ColorLabel, item.LabelText, item.ColorValue != item.ColorValueOriginal, ColorResetButton, ColorPanel);
+                                SetLabelText(label, item.LabelText, item.ColorValue != item.ColorValueOriginal, reset, itemPanelCanvas);
                             }
                         });
-                        SelectInterpolableColorButton.onClick.RemoveAllListeners();
-                        SelectInterpolableColorButton.onClick.AddListener(() => item.SelectInterpolableButtonColorOnClick());
-                        TooltipManager.AddTooltip(SelectInterpolableColorButton.gameObject, "Select currently selected color property as interpolable in timeline");
-
+                        interpolableButton.onClick.AddListener(() => item.SelectInterpolableButtonColorOnClick());
+                        TooltipManager.AddTooltip(interpolableButton.gameObject, "Select currently selected color property as interpolable in timeline");
+                        
                         break;
-                    case ItemInfo.RowItemType.FloatProperty:
-                        ShowFloat();
-                        SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal, FloatResetButton, FloatPanel);
-                        FloatSlider.onValueChanged.RemoveAllListeners();
-                        FloatInputField.onEndEdit.RemoveAllListeners();
+                    }
+                
+                case ItemInfo.RowItemType.FloatProperty:
+                    {
+                        var panel = UIUtility.CreatePanel("FloatPanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
 
-                        FloatSlider.minValue = item.FloatValueSliderMin;
-                        FloatSlider.maxValue = item.FloatValueSliderMax;
-                        FloatSlider.value = item.FloatValue;
-                        FloatInputField.text = item.FloatValue.ToString();
+                        var label = UIUtility.CreateText("FloatLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
 
-                        FloatSlider.onValueChanged.AddListener(value =>
+                        var interpolableButton = CreateInterpolableButton("SelectInterpolableFloatButton", panel.transform);
+
+                        Slider sliderFloat = UIUtility.CreateSlider("FloatSlider", panel.transform);
+                        AddLayoutElement(sliderFloat.gameObject, FloatInputFieldWidth, FloatInputFieldWidth, 0f);
+
+                        InputField textBoxFloat = UIUtility.CreateInputField("FloatInputField", panel.transform);
+                        textBoxFloat.text = "0";
+                        textBoxFloat.characterLimit = 9;
+                        AddLayoutElement(textBoxFloat.gameObject, FloatInputFieldWidth, FloatInputFieldWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"FloatResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        label.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxFloat);
+                        
+                        SetLabelText(label, item.LabelText, item.FloatValue != item.FloatValueOriginal, reset, itemPanelCanvas);
+
+                        sliderFloat.minValue = item.FloatValueSliderMin;
+                        sliderFloat.maxValue = item.FloatValueSliderMax;
+                        sliderFloat.value = item.FloatValue;
+                        textBoxFloat.text = item.FloatValue.ToString();
+
+                        sliderFloat.onValueChanged.AddListener(value =>
                         {
-                            FloatInputField.text = value.ToString();
-                            FloatInputField.onEndEdit.Invoke(value.ToString());
+                            textBoxFloat.text = value.ToString();
+                            textBoxFloat.onEndEdit.Invoke(value.ToString());
                         });
 
-                        FloatInputField.onEndEdit.AddListener(value =>
+                        textBoxFloat.onEndEdit.AddListener(value =>
                         {
                             if (!float.TryParse(value, out float input))
                             {
-                                FloatInputField.text = item.FloatValue.ToString();
+                                textBoxFloat.text = item.FloatValue.ToString();
                                 return;
                             }
                             item.FloatValue = input;
-                            FloatInputField.text = item.FloatValue.ToString();
+                            textBoxFloat.text = item.FloatValue.ToString();
 
-                            FloatSlider.Set(item.FloatValue, sendCallback: false);
+                            sliderFloat.Set(item.FloatValue, sendCallback: false);
 
                             if (item.FloatValue == item.FloatValueOriginal)
                                 item.FloatValueOnReset();
                             else
                                 item.FloatValueOnChange(item.FloatValue);
 
-                            SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal, FloatResetButton, FloatPanel);
+                            SetLabelText(label, item.LabelText, item.FloatValue != item.FloatValueOriginal, reset, itemPanelCanvas);
                         });
 
-                        FloatResetButton.onClick.RemoveAllListeners();
-                        FloatResetButton.onClick.AddListener(() =>
+                        reset.onClick.AddListener(() =>
                         {
                             item.FloatValue = item.FloatValueOriginal;
 
-                            FloatSlider.Set(item.FloatValue);
-                            FloatInputField.text = item.FloatValue.ToString();
+                            sliderFloat.Set(item.FloatValue);
+                            textBoxFloat.text = item.FloatValue.ToString();
 
                             item.FloatValueOnReset();
-                            SetLabelText(FloatLabel, item.LabelText, item.FloatValue != item.FloatValueOriginal, FloatResetButton, FloatPanel);
+                            SetLabelText(label, item.LabelText, item.FloatValue != item.FloatValueOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(FloatResetButton.gameObject, "Reset the selected property to its original value");
-                        SelectInterpolableFloatButton.onClick.RemoveAllListeners();
-                        SelectInterpolableFloatButton.onClick.AddListener(() => item.SelectInterpolableButtonFloatOnClick());
-                        TooltipManager.AddTooltip(SelectInterpolableFloatButton.gameObject, "Select currently selected float property as interpolable in timeline");
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset the selected property to its original value");
+                        interpolableButton.onClick.AddListener(() => item.SelectInterpolableButtonFloatOnClick());
+                        TooltipManager.AddTooltip(interpolableButton.gameObject, "Select currently selected float property as interpolable in timeline");
+                        
                         break;
-                    case ItemInfo.RowItemType.KeywordProperty:
-                        ShowKeyword();
-                        SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, KeywordResetButton, KeywordPanel);
-                        KeywordToggle.onValueChanged.RemoveAllListeners();
+                    }
+                
+                case ItemInfo.RowItemType.KeywordProperty:
+                    {
+                        var panel = UIUtility.CreatePanel("KeywordPanel", contentList.transform);
+                        var itemPanelCanvas = panel.gameObject.AddComponent<CanvasGroup>();
+                        panel.color = ItemColor;
+                        AddHorizontalLayoutGroup(panel);
 
-                        KeywordToggle.isOn = item.KeywordValue;
-                        KeywordToggle.onValueChanged.AddListener(value =>
+                        var label = UIUtility.CreateText("KeywordLabel", panel.transform, "");
+                        label.alignment = TextAnchor.MiddleLeft;
+                        label.color = Color.black;
+                        AddLayoutElement(label.gameObject, LabelWidth, LabelWidth, 1f);
+
+                        Text text = UIUtility.CreateText("EmptySpace", panel.transform, "");
+                        text.alignment = TextAnchor.MiddleLeft;
+                        AddLayoutElement(text.gameObject, InterpolableButtonWidth, InterpolableButtonWidth, 0f);
+
+                        Toggle toggle = UIUtility.CreateToggle("KeywordToggle", panel.transform, "");
+                        AddLayoutElement(toggle.gameObject, RendererToggleWidth, RendererToggleWidth, 0f);
+
+                        var reset = UIUtility.CreateButton($"KeywordResetButton", panel.transform, "Reset");
+                        AddLayoutElement(reset.gameObject, ResetButtonWidth, ResetButtonWidth, 0f);
+                        
+                        SetLabelText(label, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, reset, itemPanelCanvas);
+
+                        toggle.isOn = item.KeywordValue;
+                        toggle.onValueChanged.AddListener(value =>
                         {
                             item.KeywordValue = value;
 
@@ -751,31 +1012,44 @@ namespace MaterialEditorAPI
                             else
                                 item.KeywordValueOnChange(item.KeywordValue);
 
-                            SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, KeywordResetButton, KeywordPanel);
+                            SetLabelText(label, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, reset, itemPanelCanvas);
                         });
 
-                        KeywordResetButton.onClick.RemoveAllListeners();
-                        KeywordResetButton.onClick.AddListener(() =>
+                        reset.onClick.AddListener(() =>
                         {
                             item.KeywordValue = item.KeywordValueOriginal;
 
-                            KeywordToggle.Set(item.KeywordValue);
+                            toggle.Set(item.KeywordValue);
 
                             item.KeywordValueOnReset();
-                            SetLabelText(KeywordLabel, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, KeywordResetButton, KeywordPanel);
+                            SetLabelText(label, item.LabelText, item.KeywordValue != item.KeywordValueOriginal, reset, itemPanelCanvas);
                         });
-                        TooltipManager.AddTooltip(KeywordResetButton.gameObject, "Reset the selected property to its original value");
+                        TooltipManager.AddTooltip(reset.gameObject, "Reset the selected property to its original value");
+                        
                         break;
-                }
+                    }
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(item.ItemType), item.ItemType, null);
             }
+            
+            return contentList.gameObject;
         }
-
-        public void SetVisible(bool visible)
+        private static void AddHorizontalLayoutGroup(Image panel)
         {
-            if (gameObject.activeSelf != visible)
-                gameObject.SetActive(visible);
+            var itemHLG = panel.gameObject.AddComponent<HorizontalLayoutGroup>();
+            itemHLG.padding = Padding;
+            itemHLG.childForceExpandWidth = false;
         }
 
+        private static void AddLayoutElement(GameObject gameObject, float minWidth, float preferredWidth, float  flexibleWidth)
+        {
+            var layoutElement = gameObject.AddComponent<LayoutElement>();
+            layoutElement.minWidth = minWidth;
+            layoutElement.preferredWidth = preferredWidth;
+            layoutElement.flexibleWidth = flexibleWidth;
+        }
+        
         private static void SetLabelText(Text label, string text) { 
             label.text = text ?? "";
         }
@@ -797,116 +1071,22 @@ namespace MaterialEditorAPI
                     resetBtn.interactable = false;
             }
         }
-        private void HideAll()
-        {
-            ShowRenderer(false);
-            ShowRendererEnabled(false);
-            ShowRendererShadowCastingMode(false);
-            ShowRendererReceiveShadows(false);
-            ShowRendererUpdateWhenOffscreen(false);
-            ShowRendererRecalculateNormals(false);
-            ShowMaterial(false);
-            ShowShader(false);
-            ShowShaderRenderQueue(false);
-            ShowPropertyCategory(false);
-            ShowTexture(false);
-            ShowOffsetScale(false);
-            ShowColor(false);
-            ShowFloat(false);
-            ShowKeyword(false);
-        }
 
-        private void ShowRenderer(bool visible = true)
+        private static Button CreateInterpolableButton(string objectName, Transform parent)
         {
-            RendererPanel.alpha = visible ? 1 : 0;
-            RendererPanel.blocksRaycasts = visible;
-        }
+            Button interpolableButton = UIUtility.CreateButton(objectName, parent, "O");
+            var sinterpolableButtonLE = interpolableButton.gameObject.AddComponent<LayoutElement>();
+            sinterpolableButtonLE.minWidth = InterpolableButtonWidth;
+            sinterpolableButtonLE.preferredWidth = InterpolableButtonWidth;
+            sinterpolableButtonLE.flexibleWidth = 0f;
+            interpolableButton.gameObject.SetActive(false);
 
-        private void ShowRendererEnabled(bool visible = true)
-        {
-            RendererEnabledPanel.alpha = visible ? 1 : 0;
-            RendererEnabledPanel.blocksRaycasts = visible;
-        }
-        private void ShowRendererShadowCastingMode(bool visible = true)
-        {
-            RendererShadowCastingModePanel.alpha = visible ? 1 : 0;
-            RendererShadowCastingModePanel.blocksRaycasts = visible;
-        }
-        private void ShowRendererReceiveShadows(bool visible = true)
-        {
-            RendererReceiveShadowsPanel.alpha = visible ? 1 : 0;
-            RendererReceiveShadowsPanel.blocksRaycasts = visible;
-        }
-        private void ShowRendererUpdateWhenOffscreen(bool visible = true)
-        {
-            RendererUpdateWhenOffscreenPanel.alpha = visible ? 1 : 0;
-            RendererUpdateWhenOffscreenPanel.blocksRaycasts = visible;
-        }
-        private void ShowRendererRecalculateNormals(bool visible = true)
-        {
-            RendererRecalculateNormalsPanel.alpha = visible ? 1 : 0;
-            RendererRecalculateNormalsPanel.blocksRaycasts = visible;
-        }
-        private void ShowMaterial(bool visible = true)
-        {
-            MaterialPanel.alpha = visible ? 1 : 0;
-            MaterialPanel.blocksRaycasts = visible;
-        }
-        private void ShowShader(bool visible = true)
-        {
-            ShaderPanel.alpha = visible ? 1 : 0;
-            ShaderPanel.blocksRaycasts = visible;
-        }
-        private void ShowShaderRenderQueue(bool visible = true)
-        {
-            ShaderRenderQueuePanel.alpha = visible ? 1 : 0;
-            ShaderRenderQueuePanel.blocksRaycasts = visible;
-        }
+#if !API && !EC
+            if (TimelineCompatibilityHelper.IsTimelineAvailable())
+                interpolableButton.gameObject.SetActive(true);
+#endif
 
-        private void ShowPropertyCategory(bool visible = true) {
-            PropertyCategoryPanel.alpha = visible ? 1 : 0;
-            PropertyCategoryPanel.blocksRaycasts = visible;
-        }
-
-        private void ShowTexture(bool visible = true)
-        {
-            TexturePanel.alpha = visible ? 1 : 0;
-            TexturePanel.blocksRaycasts = visible;
-        }
-
-        private void ShowOffsetScale(bool visible = true)
-        {
-            OffsetScalePanel.alpha = visible ? 1 : 0;
-            OffsetScalePanel.blocksRaycasts = visible;
-        }
-
-        private void ShowColor(bool visible = true)
-        {
-            ColorPanel.alpha = visible ? 1 : 0;
-            ColorPanel.blocksRaycasts = visible;
-        }
-
-        private void ShowFloat(bool visible = true)
-        {
-            FloatPanel.alpha = visible ? 1 : 0;
-            FloatPanel.blocksRaycasts = visible;
-        }
-        
-        private void ShowKeyword(bool visible = true)
-        {
-            KeywordPanel.alpha = visible ? 1 : 0;
-            KeywordPanel.blocksRaycasts = visible;
-        }
-
-        public T GetUIComponent<T>(string gameObjectName) where T : Component
-        {
-            GameObject uiObject = transform.FindLoop(gameObjectName).gameObject;
-            if (uiObject == null)
-                throw new ArgumentException($"Couldn't find {gameObjectName}");
-            var component = uiObject.GetComponent<T>();
-            if (component == null)
-                throw new ArgumentException($"Couldn't find {gameObjectName}");
-            return component;
+            return interpolableButton;
         }
     }
 }
