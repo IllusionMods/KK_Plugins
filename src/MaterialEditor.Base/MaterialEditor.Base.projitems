@@ -26,9 +26,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemTemplate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ListEntry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.PointerEnterHandler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SelectListPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Tooltip.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SelectListPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.TooltipManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.VirtualList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities.cs" />
   </ItemGroup>

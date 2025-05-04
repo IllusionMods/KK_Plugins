@@ -38,20 +38,23 @@ namespace MaterialEditorAPI
                 labelRendererLE.minWidth = LabelWidth;
                 labelRendererLE.preferredWidth = LabelWidth;
                 labelRendererLE.flexibleWidth = 1f;
+                TooltipManager.AddTooltip(labelRenderer.gameObject, "Renderer name");
 
-                CreateInterpolableButton("SelectInterpolableRendererButton", itemPanel.transform);
+                CreateInterpolableButton("SelectInterpolableRendererButton", itemPanel.transform, "Select the properties (Enabled, Shadow casting mode and Receive shadows) of the currently selected renderer as interpolables in timeline");
 
                 Button exportUVButton = UIUtility.CreateButton("ExportUVButton", itemPanel.transform, "Export UV Map");
                 var exportUVButtonLE = exportUVButton.gameObject.AddComponent<LayoutElement>();
                 exportUVButtonLE.minWidth = RendererButtonWidth;
                 exportUVButtonLE.preferredWidth = RendererButtonWidth;
                 exportUVButtonLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(exportUVButton.gameObject, "Export the UV map of this renderer.\n\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model. You can use this UV map as a guide to drawing on textures");
 
                 Button exportMeshButton = UIUtility.CreateButton("ExportObjButton", itemPanel.transform, "Export .obj");
                 var exportMeshButtonLE = exportMeshButton.gameObject.AddComponent<LayoutElement>();
                 exportMeshButtonLE.minWidth = RendererButtonWidth;
                 exportMeshButtonLE.preferredWidth = RendererButtonWidth;
                 exportMeshButtonLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(exportMeshButton.gameObject, "Export the renderer as a .obj.\n\nYou can use the <i>ExportBakedMesh</i> and <i>ExportBakedWorldPosition</i> config options to change the exporting behaviour");
             }
 
             //Renderer Enabled
@@ -77,12 +80,14 @@ namespace MaterialEditorAPI
                 toggleEnabledLE.minWidth = RendererToggleWidth;
                 toggleEnabledLE.preferredWidth = RendererToggleWidth;
                 toggleEnabledLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(toggleEnabled.gameObject, "Toggle the visibility of this renderer on/off");
 
                 var reset = UIUtility.CreateButton($"RendererEnabledResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
             }
 
             //Renderer ShadowCastingMode
@@ -117,12 +122,17 @@ namespace MaterialEditorAPI
                 dropdownShadowCastingModeLE.minWidth = RendererDropdownWidth;
                 dropdownShadowCastingModeLE.preferredWidth = RendererDropdownWidth;
                 dropdownShadowCastingModeLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(dropdownShadowCastingMode.gameObject, @"- Off: Renderer casts no shadows
+- On: Renderer casts shadows
+- Two Sided: Always cast shadows from any direction, even for single sided objects
+- Shadows Only: Renderer is invisible but still casts shadows");
 
                 var reset = UIUtility.CreateButton($"RendererShadowCastingModeResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
             }
 
             //Renderer ReceiveShadows
@@ -148,12 +158,14 @@ namespace MaterialEditorAPI
                 toggleReceiveShadowsLE.minWidth = RendererToggleWidth;
                 toggleReceiveShadowsLE.preferredWidth = RendererToggleWidth;
                 toggleReceiveShadowsLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(toggleReceiveShadows.gameObject, "Toggle if the renderer can have shadows cast on it on/off");
 
                 var reset = UIUtility.CreateButton($"RendererReceiveShadowsResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
             }
 
             //Renderer RendererUpdateWhenOffscreen
@@ -179,12 +191,14 @@ namespace MaterialEditorAPI
                 toggleRendererUpdateWhenOffscreenLE.minWidth = RendererToggleWidth;
                 toggleRendererUpdateWhenOffscreenLE.preferredWidth = RendererToggleWidth;
                 toggleRendererUpdateWhenOffscreenLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(toggleRendererUpdateWhenOffscreen.gameObject, "When on, a renderer will always stay renderer, even when considered to be off-screen.\n\n This is handy for when the bounding box of an object is configured improperly and dissapears when it should still be visible");
 
                 var reset = UIUtility.CreateButton($"RendererUpdateWhenOffscreenResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
             }
 
             //Renderer RecalulateNormals
@@ -210,12 +224,14 @@ namespace MaterialEditorAPI
                 toggleRecalculateNormalsLE.minWidth = RendererToggleWidth;
                 toggleRecalculateNormalsLE.preferredWidth = RendererToggleWidth;
                 toggleRecalculateNormalsLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(toggleRecalculateNormals.gameObject, "Recalculate the normals of this renderer based on its current shape, instead of its original shape.\n\nOnly available on skinned mesh renderers");
 
                 var reset = UIUtility.CreateButton($"RendererRecalculateNormalsResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
             }
 
             //Material
@@ -242,30 +258,35 @@ namespace MaterialEditorAPI
                 labelMaterialLE.minWidth = LabelWidth;
                 labelMaterialLE.preferredWidth = LabelWidth;
                 labelMaterialLE.flexibleWidth = 1f;
+                TooltipManager.AddTooltip(labelMaterial.gameObject, "Material name");
 
                 var copyEdits = UIUtility.CreateButton($"MaterialCopy", itemPanel.transform, "Copy Edits");
                 var copyEditsLE = copyEdits.gameObject.AddComponent<LayoutElement>();
                 copyEditsLE.minWidth = MaterialButtonWidth;
                 copyEditsLE.preferredWidth = MaterialButtonWidth;
                 copyEditsLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(copyEdits.gameObject, "Copy all the <b>edits</b> of this material");
 
                 var pasteEdits = UIUtility.CreateButton($"MaterialPaste", itemPanel.transform, "Paste Edits");
                 var pasteEditsLE = pasteEdits.gameObject.AddComponent<LayoutElement>();
                 pasteEditsLE.minWidth = MaterialButtonWidth;
                 pasteEditsLE.preferredWidth = MaterialButtonWidth;
                 pasteEditsLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(pasteEdits.gameObject, "Paste all the copied edits");
 
                 var copy = UIUtility.CreateButton($"MaterialCopyRemove", itemPanel.transform, "Copy Material");
                 var copyLE = copy.gameObject.AddComponent<LayoutElement>();
                 copyLE.minWidth = MaterialButtonWidth;
                 copyLE.preferredWidth = MaterialButtonWidth;
                 copyLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(copy.gameObject, "Make a copy of this material.\n\nUseful for overlaying different effects onto an object with different material shaders/properties");
 
                 var rename = UIUtility.CreateButton($"MaterialRename", itemPanel.transform, ">");
                 var renameLE = rename.gameObject.AddComponent<LayoutElement>();
                 renameLE.minWidth = MaterialRenameButtonWidth;
                 renameLE.preferredWidth = MaterialRenameButtonWidth;
                 renameLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(rename.gameObject, "Rename material instances");
             }
 
             //Material Shader
@@ -285,7 +306,7 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
 
-                CreateInterpolableButton("SelectInterpolableShaderButton", itemPanel.transform);
+                CreateInterpolableButton("SelectInterpolableShaderButton", itemPanel.transform, "Select the currently selected shader property and its render queue as interpolables in timeline");
 
                 Dropdown dropdownShader = UIUtility.CreateDropdown("ShaderDropdown", itemPanel.transform);
                 dropdownShader.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 100f);
@@ -306,6 +327,7 @@ namespace MaterialEditorAPI
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value.\n\nIf the original shader is not one known by Material Editor, it will not be able to reset the shader to its original value. In order for the reset to take effect you to either save and re-load the scene, or copy the object and delete the old one");
             }
 
             //Material RenderQueue
@@ -331,12 +353,14 @@ namespace MaterialEditorAPI
                 textBoxShaderRenderQueueLE.minWidth = RenderQueueInputFieldWidth;
                 textBoxShaderRenderQueueLE.preferredWidth = RenderQueueInputFieldWidth;
                 textBoxShaderRenderQueueLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(textBoxShaderRenderQueue.gameObject, "The order in which a material is rendered. Higher render queues get rendered later");
 
                 var reset = UIUtility.CreateButton($"ShaderRenderQueueResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value");
             }
 
             // Property Category
@@ -355,6 +379,7 @@ namespace MaterialEditorAPI
                 labelLE.minWidth = LabelWidth;
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
+                TooltipManager.AddTooltip(label.gameObject, "Category name");
             }
 
             //Texture properties
@@ -374,7 +399,7 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
 
-                CreateInterpolableButton("SelectInterpolableTextureButton", itemPanel.transform);
+                CreateInterpolableButton("SelectInterpolableTextureButton", itemPanel.transform, "Select the currently selected texture property and its offset and scale properties as interpolables in timeline");
 
                 Button exportButton = UIUtility.CreateButton($"TextureExportButton", itemPanel.transform, $"Export Texture");
                 var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
@@ -393,6 +418,7 @@ namespace MaterialEditorAPI
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
             }
 
             //Offset and Scale
@@ -434,6 +460,7 @@ namespace MaterialEditorAPI
                 textBoxOffsetXLE.minWidth = OffsetScaleInputFieldWidth;
                 textBoxOffsetXLE.preferredWidth = OffsetScaleInputFieldWidth;
                 textBoxOffsetXLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(textBoxOffsetX.gameObject, "Adjust the horizontal offset of the texture. It can move the texture left or right.");
 
                 Text labelOffsetY = UIUtility.CreateText("OffsetYText", itemPanel.transform, "Y");
                 labelOffsetY.alignment = TextAnchor.MiddleLeft;
@@ -450,6 +477,7 @@ namespace MaterialEditorAPI
                 textBoxOffsetYLE.minWidth = OffsetScaleInputFieldWidth;
                 textBoxOffsetYLE.preferredWidth = OffsetScaleInputFieldWidth;
                 textBoxOffsetYLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(textBoxOffsetY.gameObject, "Adjust the vertical offset of the texture. It can move the texture up or down.");
 
                 labelOffsetX.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxOffsetX, new[] { textBoxOffsetY });
                 labelOffsetY.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxOffsetY, new[] { textBoxOffsetX });
@@ -470,6 +498,7 @@ namespace MaterialEditorAPI
                 textBoxScaleXLE.minWidth = OffsetScaleInputFieldWidth;
                 textBoxScaleXLE.preferredWidth = OffsetScaleInputFieldWidth;
                 textBoxScaleXLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(textBoxScaleX.gameObject, "Adjust the horizontal scale of the texture. Values greater than 1 make the texture appear smaller horizontally, values less than 1 make it appear larger horizontally.");
 
                 Text labelScaleY = UIUtility.CreateText("ScaleYText", itemPanel.transform, "Y");
                 labelScaleY.alignment = TextAnchor.MiddleLeft;
@@ -486,12 +515,14 @@ namespace MaterialEditorAPI
                 textBoxScaleYLE.minWidth = OffsetScaleInputFieldWidth;
                 textBoxScaleYLE.preferredWidth = OffsetScaleInputFieldWidth;
                 textBoxScaleYLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(textBoxScaleY.gameObject, "Adjust the vertical scale of the texture. Values greater than 1 make the texture appear smaller vertically, values less than 1 make it appear larger vertically.");
 
                 var reset = UIUtility.CreateButton($"OffsetScaleResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset both the scale and offset properties to their original values");
 
                 labelScaleX.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxScaleX, new[] { textBoxScaleY });
                 labelScaleY.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxScaleY, new[] { textBoxScaleX });
@@ -514,7 +545,7 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
 
-                CreateInterpolableButton("SelectInterpolableColorButton", itemPanel.transform);
+                CreateInterpolableButton("SelectInterpolableColorButton", itemPanel.transform, "Select currently selected color property as interpolable in timeline");
 
                 Text labelR = UIUtility.CreateText("ColorRText", itemPanel.transform, "R");
                 labelR.alignment = TextAnchor.MiddleLeft;
@@ -592,6 +623,7 @@ namespace MaterialEditorAPI
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset the selected property to its original value");
 
                 labelR.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxR, new[] { textBoxG, textBoxB });
                 labelG.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxG, new[] { textBoxR, textBoxB });
@@ -616,7 +648,7 @@ namespace MaterialEditorAPI
                 labelLE.preferredWidth = LabelWidth;
                 labelLE.flexibleWidth = 1f;
 
-                CreateInterpolableButton("SelectInterpolableFloatButton", itemPanel.transform);
+                CreateInterpolableButton("SelectInterpolableFloatButton", itemPanel.transform, "Select currently selected float property as interpolable in timeline");
 
                 Slider sliderFloat = UIUtility.CreateSlider("FloatSlider", itemPanel.transform);
                 var sliderFloatLE = sliderFloat.gameObject.AddComponent<LayoutElement>();
@@ -637,6 +669,7 @@ namespace MaterialEditorAPI
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset the selected property to its original value");
                 label.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxFloat);
             }
 
@@ -675,12 +708,13 @@ namespace MaterialEditorAPI
                 resetLE.minWidth = ResetButtonWidth;
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(reset.gameObject, "Reset the selected property to its original value");
             }
 
             return contentList.gameObject;
         }
 
-        private static void CreateInterpolableButton(string objectName, Transform parent)
+        private static void CreateInterpolableButton(string objectName, Transform parent, string tooltipText)
         {
             Button interpolableButton = UIUtility.CreateButton(objectName, parent, "O");
             var sinterpolableButtonLE = interpolableButton.gameObject.AddComponent<LayoutElement>();
@@ -688,6 +722,7 @@ namespace MaterialEditorAPI
             sinterpolableButtonLE.preferredWidth = InterpolableButtonWidth;
             sinterpolableButtonLE.flexibleWidth = 0f;
             interpolableButton.gameObject.SetActive(false);
+            TooltipManager.AddTooltip(interpolableButton.gameObject, tooltipText);
 
 #if !API && !EC
             if (TimelineCompatibilityHelper.IsTimelineAvailable())
