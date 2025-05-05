@@ -34,7 +34,6 @@ namespace MaterialEditorAPI
         public static Image DragPanel;
         private static ScrollRect MaterialEditorScrollableUI;
         private static InputField FilterInputField;
-        internal static System.Timers.Timer filterTimer;
 
         internal static TooltipManager MaterialEditorTooltip;
         private static Button ViewListButton;
@@ -149,26 +148,10 @@ namespace MaterialEditorAPI
             nametext.transform.SetRect();
             nametext.alignment = TextAnchor.MiddleCenter;
 
-            filterTimer = new System.Timers.Timer(FilterDelay.Value);
-            filterTimer.AutoReset = false;
-            filterTimer.Elapsed += (sender, e) =>
-            {
-                RefreshUI(FilterInputField.text);
-            };
-            filterTimer.Stop();
-
             FilterInputField = UIUtility.CreateInputField("Filter", DragPanel.transform, "Filter");
             FilterInputField.text = CurrentFilter;
             FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 1f, 1f, 100f, -1f);
-            FilterInputField.onValueChanged.AddListener((e) => {
-                filterTimer.Stop();
-                filterTimer.Start();
-            });
-            FilterInputField.onEndEdit.AddListener((text) =>
-            {
-                filterTimer.Stop();
-                RefreshUI(text);
-            });
+            FilterInputField.onValueChanged.AddListener(RefreshUI);
             TooltipManager.AddTooltip(FilterInputField.gameObject, @"Filter visible items in the window.
 
 - Searches for renderers, materials and projectors

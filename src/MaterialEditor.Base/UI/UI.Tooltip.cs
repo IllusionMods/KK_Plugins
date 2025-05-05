@@ -1,75 +1,31 @@
-﻿using UILib;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using UnityEngine.EventSystems;
 
 namespace MaterialEditorAPI
 {
-    internal class TooltipManager : MonoBehaviour
+    internal class Tooltip : UIBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        private static TooltipManager Instance;
-        public Image Panel { get; private set; } = null;
-        private RectTransform panelTransform = null;
-        private Text tooltipText;
+        public Action<PointerEventData> onPointerEnter;
+        public Action<PointerEventData> onPointerExit;
 
-        private void Update()
+        public string TooltipText;
+
+        private void Start()
         {
-            if (MaterialEditorPluginBase.Showtooltips.Value)
-            {
-                var newPos = Input.mousePosition / panelTransform.localScale.x;
-                panelTransform.position = new Vector3(newPos.x + 5, newPos.y + 5, newPos.z);
-            }
+            onPointerEnter = (e) => { TooltipManager.SetToolTipText(TooltipText, true); };
+            onPointerExit = (e) => { TooltipManager.SetActive(false); };
         }
 
-        internal static void Init(Transform parent)
+        public void OnPointerEnter(PointerEventData eventData)
         {
-            var tooltip = parent.gameObject.AddComponent<TooltipManager>();
-
-            var panel = UIUtility.CreatePanel($"TooltipPanel", parent);
-            var panelTransform = (RectTransform)panel.transform;
-
-            panel.color = new Color(0.2f, 0.2f, 0.2f, 0.98f);
-            panelTransform.pivot = Vector3.zero;
-            panelTransform.anchorMax = Vector3.zero;
-            panelTransform.anchorMin = Vector3.zero;
-            panelTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 200);
-
-            var tooltipText = UIUtility.CreateText($"ToolTipText", panel.transform, "");
-            tooltipText.alignment = TextAnchor.MiddleCenter;
-            tooltipText.resizeTextForBestFit = false;
-            tooltipText.fontSize = 11;
-            var layout = panel.gameObject.AddComponent<HorizontalLayoutGroup>();
-            layout.padding = new RectOffset(4, 4, 2, 2);
-            var contentSizeFitter = panel.gameObject.AddComponent<ContentSizeFitter>();
-            contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-            contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            panel.gameObject.SetActive(false);
-
-            tooltip.Panel = panel;
-            tooltip.panelTransform = panelTransform;
-            tooltip.tooltipText = tooltipText;
-            Instance = tooltip;
+            onPointerEnter?.Invoke(eventData);
         }
 
-        public void SetToolTipText(string text, bool setActive = false)
+        public void OnPointerExit(PointerEventData eventData)
         {
-            tooltipText.text = text;
-            if (setActive)
-                SetActive(true);
-        }
-
-        public void SetActive(bool active) 
-        {
-            if (MaterialEditorPluginBase.Showtooltips.Value || !active)
-                Panel.gameObject.SetActive(active);
-        }
-
-        public static PointerEnterHandler AddTooltip(GameObject go, string text)
-        {
-            var pointerEnter = go.AddComponent<PointerEnterHandler>();
-            pointerEnter.onPointerEnter = (e) => { Instance.SetToolTipText(text, true); };
-            pointerEnter.onPointerExit = (e) => { Instance.SetActive(false); };
-            return pointerEnter;
+            onPointerExit?.Invoke(eventData);
         }
     }
 }
