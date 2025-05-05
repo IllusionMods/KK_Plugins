@@ -265,9 +265,9 @@ namespace KK_Plugins
 
         private readonly Harmony _harmony = new Harmony(PluginGUID);
 
-        private Dictionary<string, SwapTargetList> VanillaPlusShaderMapping { get => convertShaderMapping(false); set => setShaderMapping(false, value); }
+        private Dictionary<string, SwapTargetList> VanillaPlusShaderMapping { get => convertShaderMapping(false); set => setShaderMapping(NormalMapping.Value, value); }
 
-        private Dictionary<string, SwapTargetList> VanillaPlusTessShaderMapping { get => convertShaderMapping(true); set => setShaderMapping(true, value); }
+        private Dictionary<string, SwapTargetList> VanillaPlusTessShaderMapping { get => convertShaderMapping(true); set => setShaderMapping(TessMapping.Value, value); }
 
         private Dictionary<string, SwapTargetList> convertShaderMapping(bool tess)
         {
@@ -275,12 +275,12 @@ namespace KK_Plugins
                 e => e.Attribute("From").Value,
                 e => e.HasElements ? new SwapTargetList(e.Elements()) : new SwapTargetList(e.Attribute("To").Value)); // support backwards compat
         }
-        private void setShaderMapping(bool tess, Dictionary<string, SwapTargetList> value)
+        private void setShaderMapping(string path, Dictionary<string, SwapTargetList> value)
         {
             string text = new XElement("ShaderSwapper",
                                        value.Select(e => new XElement("Mapping", new XAttribute("From", e.Key), e.Value.ToElements()))
             ).ToString();
-            using (StreamWriter outputFile = new StreamWriter(tess ? TessMapping.Value : NormalMapping.Value))
+            using (StreamWriter outputFile = new StreamWriter(path))
             {
                 outputFile.Write(text);
             }
@@ -323,10 +323,13 @@ namespace KK_Plugins
             if (AutoReplace.Value) ApplyPatches(true);
 
             // XML stuff
-            NormalMapping = Config.Bind("Mapping", "Normal Shader Mapping", "./UserData/config/shader_swapper_normal.xml", new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting = 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
-            TessMapping = Config.Bind("Mapping", "Tess Shader Mapping", "./UserData/config/shader_swapper_tess.xml", new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting > 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
-            if (!File.Exists(NormalMapping.Value)) setShaderMapping(false, VanillaPlusShaders);
-            if (!File.Exists(TessMapping.Value)) setShaderMapping(true, VanillaPlusTesselationShaders);
+            string normalPath = "./UserData/config/shader_swapper_normal.xml";
+            string tessPath = "./UserData/config/shader_swapper_tess.xml";
+
+            NormalMapping = Config.Bind("Mapping", "Normal Shader Mapping", normalPath, new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting = 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
+            TessMapping = Config.Bind("Mapping", "Tess Shader Mapping", tessPath, new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting > 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
+            if (!File.Exists(normalPath)) setShaderMapping(normalPath, VanillaPlusShaders);
+            if (!File.Exists(tessPath)) setShaderMapping(tessPath, VanillaPlusTesselationShaders);
 
             TessMinOverride = Config.Bind("Tesselation", "TessMin Clamping", true, "Clamp the TessMin value of all xukmi *Tess shaders to 1.0 - 1.5 range to improve performance with cards that have this set way too high.\nWarning: The limited value could be saved to the card/scene (but shouldn't).");
             TessMinOverrideScreenshots = Config.Bind("Tesselation", "TessMin Override on Screenshots", true, "Temporarily override the TessMin value of all xukmi *Tess shaders to 25 when taking screenshots to potentially improve quality (minimal speed hit but may have no perceptible effect).");
