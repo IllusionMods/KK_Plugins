@@ -251,6 +251,106 @@ namespace KK_Plugins
             { "Standard", new SwapTargetList("xukmi/MainOpaquePlusTess") },
         };
 
+        private readonly Dictionary<string, SwapTargetList> AzShaders = new Dictionary<string, SwapTargetList>
+        {
+            { "Shader Forge/main_skin", new SwapTargetList("Az/StandardSkin") },
+            { "Koikano/main_skin", new SwapTargetList("Az/StandardSkin") },
+            { "Shader Forge/main_hair", new SwapTargetList("Az/StandardHair") },
+            { "Koikano/hair_main_sun", new SwapTargetList("Az/StandardHair") },
+            { "Shader Forge/main_hair_front", new SwapTargetList("Az/StandardHair") },
+            { "Koikano/hair_main_sun_front", new SwapTargetList("Az/StandardHair") },
+            { "Shader Forge/toon_eye_lod0", new SwapTargetList("Az/StandardEye") },
+            { "Koikano/main_eye", new SwapTargetList("Az/StandardEye") },
+            { "Shader Forge/toon_eyew_lod0", new SwapTargetList("Az/StandardEyeW") },
+            { "Koikano/main_eyew", new SwapTargetList("Az/StandardEyeW") },
+            { "Shader Forge/main_opaque", new SwapTargetList("Az/StandardAlpha") },
+            { "Shader Forge/main_opaque2", new SwapTargetList("Az/StandardAlpha") },
+            { "Koikano/main_clothes_opaque", new SwapTargetList("Az/StandardAlpha") },
+            { "Shader Forge/main_alpha", new SwapTargetList("Az/StandardAlpha") },
+            { "Koikano/main_clothes_alpha", new SwapTargetList("Az/StandardAlpha") },
+            { "Shader Forge/main_item", new SwapTargetList("Az/StandardAlpha") },
+            { "Koikano/main_clothes_item", new SwapTargetList("Az/StandardAlpha") },
+            { "Shader Forge/main_item_studio", new SwapTargetList("Az/StandardAlpha") },
+            { "Shader Forge/main_item_studio_alpha", new SwapTargetList("Az/StandardAlpha") },
+            { "ShaderForge/main_StandardMDK_studio", new SwapTargetList("Az/StandardAlpha") },
+            { "Standard", new SwapTargetList("Az/StandardAlpha") },
+        };
+
+        private readonly Dictionary<string, SwapTargetList> USSShaders = new Dictionary<string, SwapTargetList>
+        {
+            { "Shader Forge/main_skin", new SwapTargetList("KKUSS") },
+            { "Koikano/main_skin", new SwapTargetList("KKUSS") },
+            { "Shader Forge/main_hair", new SwapTargetList("KKUSShair") },
+            { "Koikano/hair_main_sun", new SwapTargetList("KKUSShair") },
+            { "Shader Forge/main_hair_front", new SwapTargetList("KKUSShair") },
+            { "Koikano/hair_main_sun_front", new SwapTargetList("KKUSShair") },
+            { "Shader Forge/toon_eye_lod0", new SwapTargetList("KKUSS") },
+            { "Koikano/main_eye", new SwapTargetList("KKUSS") },
+            { "Shader Forge/toon_eyew_lod0", new SwapTargetList("KKUSS") },
+            { "Koikano/main_eyew", new SwapTargetList("KKUSS") },
+            { "Shader Forge/main_opaque", new SwapTargetList("KKUSS") },
+            { "Shader Forge/main_opaque2", new SwapTargetList("KKUSS") },
+            { "Koikano/main_clothes_opaque", new SwapTargetList("KKUSS") },
+            { "Shader Forge/main_alpha", new SwapTargetList("KKUSSalpha") },
+            { "Koikano/main_clothes_alpha", new SwapTargetList("KKUSSalpha") },
+            { "Shader Forge/main_item", new SwapTargetList("KKUSSitem") },
+            { "Koikano/main_clothes_item", new SwapTargetList("KKUSSitem") },
+            { "Shader Forge/main_item_studio", new SwapTargetList("KKUSSitem") },
+            { "Shader Forge/main_item_studio_alpha", new SwapTargetList("KKUSSalpha") },
+            { "ShaderForge/main_StandardMDK_studio", new SwapTargetList("KKUSSitem") },
+            { "Standard", new SwapTargetList("KKUSSitem") },
+        };
+
+        private readonly Dictionary<string, SwapTargetList> UTSShaders = new Dictionary<string, SwapTargetList>
+        {
+            { "Shader Forge/main_skin", new SwapTargetList("KKUTS") },
+            { "Koikano/main_skin", new SwapTargetList("KKUTS") },
+            { "Shader Forge/main_hair", new SwapTargetList("KKUTShair") },
+            { "Koikano/hair_main_sun", new SwapTargetList("KKUTShair") },
+            { "Shader Forge/main_hair_front", new SwapTargetList("KKUTShair") },
+            { "Koikano/hair_main_sun_front", new SwapTargetList("KKUTShair") },
+            { "Shader Forge/toon_eye_lod0", new SwapTargetList("KKUTSeye") },
+            { "Koikano/main_eye", new SwapTargetList("KKUTSeye") },
+            { "Shader Forge/toon_eyew_lod0", new SwapTargetList("KKUTSeyew") },
+            { "Koikano/main_eyew", new SwapTargetList("KKUTSeyew") },
+            { "Shader Forge/main_opaque", new SwapTargetList("KKUTS") },
+            { "Shader Forge/main_opaque2", new SwapTargetList("KKUTS") },
+            { "Koikano/main_clothes_opaque", new SwapTargetList("KKUTS") },
+            { "Shader Forge/main_alpha", new SwapTargetList("KKUTSalpha") },
+            { "Koikano/main_clothes_alpha", new SwapTargetList("KKUTSalpha") },
+            { "Shader Forge/main_item", new SwapTargetList("KKUTSitem") },
+            { "Koikano/main_clothes_item", new SwapTargetList("KKUTSitem") },
+            { "Shader Forge/main_item_studio", new SwapTargetList("KKUTSitem") },
+            { "Shader Forge/main_item_studio_alpha", new SwapTargetList("KKUTSalpha") },
+            { "ShaderForge/main_StandardMDK_studio", new SwapTargetList("KKUTSitem") },
+            { "Standard", new SwapTargetList("KKUTSitem") },
+        };
+
+        private readonly Dictionary<string, SwapTargetList> UTSTesselationShaders = new Dictionary<string, SwapTargetList>
+        {
+            { "Shader Forge/main_skin", new SwapTargetList("KKUTS_Tess") },
+            { "Koikano/main_skin", new SwapTargetList("KKUTS_Tess") },
+            { "Shader Forge/main_hair", new SwapTargetList("KKUTShair_Tess") },
+            { "Koikano/hair_main_sun", new SwapTargetList("KKUTShair_Tess") },
+            { "Shader Forge/main_hair_front", new SwapTargetList("KKUTShair_Tess") },
+            { "Koikano/hair_main_sun_front", new SwapTargetList("KKUTShair_Tess") },
+            { "Shader Forge/toon_eye_lod0", new SwapTargetList("KKUTSeye") },
+            { "Koikano/main_eye", new SwapTargetList("KKUTSeye") },
+            { "Shader Forge/toon_eyew_lod0", new SwapTargetList("KKUTSeyew") },
+            { "Koikano/main_eyew", new SwapTargetList("KKUTSeyew") },
+            { "Shader Forge/main_opaque", new SwapTargetList("KKUTS_Tess") },
+            { "Shader Forge/main_opaque2", new SwapTargetList("KKUTS_Tess") },
+            { "Koikano/main_clothes_opaque", new SwapTargetList("KKUTS_Tess") },
+            { "Shader Forge/main_alpha", new SwapTargetList("KKUTSalpha_Tess") },
+            { "Koikano/main_clothes_alpha", new SwapTargetList("KKUTSalpha_Tess") },
+            { "Shader Forge/main_item", new SwapTargetList("KKUTSitem_Tess") },
+            { "Koikano/main_clothes_item", new SwapTargetList("KKUTSitem_Tess") },
+            { "Shader Forge/main_item_studio", new SwapTargetList("KKUTSitem_Tess") },
+            { "Shader Forge/main_item_studio_alpha", new SwapTargetList("KKUTSalpha_Tess") },
+            { "ShaderForge/main_StandardMDK_studio", new SwapTargetList("KKUTSitem_Tess") },
+            { "Standard", new SwapTargetList("KKUTSitem_Tess") },
+        };
+
         internal static ConfigEntry<bool> AutoReplace { get; private set; }
         internal static ConfigEntry<bool> DebugLogging { get; private set; }
 
@@ -323,13 +423,21 @@ namespace KK_Plugins
             if (AutoReplace.Value) ApplyPatches(true);
 
             // XML stuff
-            string normalPath = "./UserData/config/shader_swapper_normal.xml";
-            string tessPath = "./UserData/config/shader_swapper_tess.xml";
+            string plusNormalPath = "./UserData/config/shader_swapper_plus_normal.xml";
+            string plusTessPath = "./UserData/config/shader_swapper_plus_tess.xml";
+            string azPath = "./UserData/config/shader_swapper_az_normal+tess.xml";
+            string ussPath = "./UserData/config/shader_swapper_uss_normal.xml";
+            string utsNormalPath = "./UserData/config/shader_swapper_uts_normal.xml";
+            string utsTessPath = "./UserData/config/shader_swapper_uts_tess.xml";
 
-            NormalMapping = Config.Bind("Mapping", "Normal Shader Mapping", normalPath, new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting = 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
-            TessMapping = Config.Bind("Mapping", "Tess Shader Mapping", tessPath, new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting > 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
-            if (!File.Exists(normalPath)) setShaderMapping(normalPath, VanillaPlusShaders);
-            if (!File.Exists(tessPath)) setShaderMapping(tessPath, VanillaPlusTesselationShaders);
+            NormalMapping = Config.Bind("Mapping", "Normal Shader Mapping", plusNormalPath, new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting = 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
+            TessMapping = Config.Bind("Mapping", "Tess Shader Mapping", plusTessPath, new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting > 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));
+            if (!File.Exists(plusNormalPath)) setShaderMapping(plusNormalPath, VanillaPlusShaders);
+            if (!File.Exists(plusTessPath)) setShaderMapping(plusTessPath, VanillaPlusTesselationShaders);
+            if (!File.Exists(azPath)) setShaderMapping(azPath, AzShaders);
+            if (!File.Exists(ussPath)) setShaderMapping(ussPath, USSShaders);
+            if (!File.Exists(utsNormalPath)) setShaderMapping(utsNormalPath, UTSShaders);
+            if (!File.Exists(utsTessPath)) setShaderMapping(utsTessPath, UTSTesselationShaders);
 
             TessMinOverride = Config.Bind("Tesselation", "TessMin Clamping", true, "Clamp the TessMin value of all xukmi *Tess shaders to 1.0 - 1.5 range to improve performance with cards that have this set way too high.\nWarning: The limited value could be saved to the card/scene (but shouldn't).");
             TessMinOverrideScreenshots = Config.Bind("Tesselation", "TessMin Override on Screenshots", true, "Temporarily override the TessMin value of all xukmi *Tess shaders to 25 when taking screenshots to potentially improve quality (minimal speed hit but may have no perceptible effect).");
