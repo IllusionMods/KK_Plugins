@@ -655,11 +655,22 @@ namespace KK_Plugins
 
         private void SetTesselationValue(Material mat)
         {
-            if (mat == null || !mat.HasProperty("_TessSmooth"))
+            if (mat == null)
+            {
                 return;
+            }
 
-            //Adjust the weight of the tesselation
-            mat.SetFloat("_TessSmooth", TesselationSlider.Value);
+            if (mat.HasProperty("_TessSmooth"))
+            {
+                //Adjust the weight of the tesselation
+                mat.SetFloat("_TessSmooth", TesselationSlider.Value);
+            }
+
+            if (mat.HasProperty("_TESSELLATION"))
+            {
+                // Enable tesselation in Az shader
+                mat.EnableKeyword("_TESSELLATION");
+            }
         }
 
         #region TessMin override
