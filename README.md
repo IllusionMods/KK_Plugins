@@ -730,9 +730,9 @@ Boop the character by moving mouse over parts of their body, hair and clothes. U
 - [KK_ShaderSwapper]
 - [KKS_ShaderSwapper]
 
-Swap all shaders to the equivalent Vanilla Plus shader in the character maker or studio by pressing right ctrl + P.
+By default, swap all shaders to the equivalent Vanilla Plus shader in the character maker or studio by pressing right ctrl + P.
 
-Custom rules for swapping shaders can be provided in xml files. Check the "Mapping" category in plugin's settings. 
+Custom rules for swapping shaders can be provided in xml files. Check the "Mapping" category in plugin's settings. Optional premade XML configurations are included for swapping to Az, USS, and UTS shaders.
 
 <details>
 <summary>Explanation of the xml file format</summary>
