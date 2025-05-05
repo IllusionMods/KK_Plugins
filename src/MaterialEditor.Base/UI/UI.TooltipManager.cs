@@ -66,9 +66,9 @@ namespace MaterialEditorAPI
 
         public static Tooltip AddTooltip(GameObject go, string text)
         {
-            var pointerEnter = go.AddComponent<Tooltip>();
-            pointerEnter.TooltipText = text;
-            return pointerEnter;
+            var tooltip = go.AddComponent<Tooltip>();
+            tooltip.TooltipText = text;
+            return tooltip;
         }
     }
 }

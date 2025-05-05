@@ -14,11 +14,8 @@ namespace MaterialEditorAPI
 
         private void Start()
         {
-            if (MaterialEditorPluginBase.Showtooltips.Value)
-            {
-                onPointerEnter = (e) => { TooltipManager.SetToolTipText(TooltipText, true); };
-                onPointerExit = (e) => { TooltipManager.SetActive(false); };
-            }
+            onPointerEnter = (e) => { TooltipManager.SetToolTipText(TooltipText, true); };
+            onPointerExit = (e) => { TooltipManager.SetActive(false); };
         }
 
         public void OnPointerEnter(PointerEventData eventData)
