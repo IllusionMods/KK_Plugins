@@ -732,7 +732,7 @@ Boop the character by moving mouse over parts of their body, hair and clothes. U
 
 By default, swap all shaders to the equivalent Vanilla Plus shader in the character maker or studio by pressing right ctrl + P.
 
-Custom rules for swapping shaders can be provided in xml files. Check the "Mapping" category in plugin's settings. Optional premade XML configurations are included for swapping to Az, USS, and UTS shaders.
+Custom rules for swapping shaders can be provided in xml files. Check the "Mapping" category in plugin's settings. Optional premade XML configurations are included for swapping to Az Standard, USS, and UTS shaders.
 
 <details>
 <summary>Explanation of the xml file format</summary>
