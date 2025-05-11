@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using UnityEngine;
 
 namespace KK_Plugins
@@ -10,6 +11,13 @@ namespace KK_Plugins
         public const string PluginName = "Accessory Clothes";
         public const string PluginNameInternal = Constants.Prefix + "_AccessoryClothes";
         public const string Version = "1.0.2";
+
+        public static new ManualLogSource Logger;
+
+        private void Awake()
+        {
+            Logger = base.Logger;
+        }
     }
 
     /// <summary>
@@ -24,7 +32,10 @@ namespace KK_Plugins
         private void Awake()
         {
             //Move the armature outside of the character so these transforms are not found by certain methods that traverse the body hierarchy
-            ArmatureRoot.SetParent(null);
+            if (ArmatureRoot) 
+                ArmatureRoot.SetParent(null);
+            else
+                AccessoryClothes.Logger.LogWarning($"{nameof(ArmatureRoot)} is null for {gameObject.name}");
         }
 
         private void Start()
@@ -45,7 +56,7 @@ namespace KK_Plugins
                 chaControl.aaWeightsBody.AssignedWeightsAndSetBounds(chaAccessory.rendNormal[index].gameObject, "cf_j_root", chaControl.bounds, objRootBone.transform);
 
             //Get rid of this since it's no longer needed
-            Destroy(ArmatureRoot.gameObject);
+            if (ArmatureRoot) Destroy(ArmatureRoot.gameObject);
         }
     }
 }
