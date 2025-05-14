@@ -19,7 +19,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Timeline">
-      <HintPath>..\..\..\HSPlugins\bin\KK\Timeline.dll</HintPath>
+      <HintPath>..\..\libs\KK\Timeline.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

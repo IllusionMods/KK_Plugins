@@ -17,7 +17,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="KK_QuickAccessBox">
-      <HintPath>..\..\..\KK_QuickAccessBox\bin\BepInEx\plugins\KK_QuickAccessBox.dll</HintPath>
+      <HintPath>..\..\libs\KK\KK_QuickAccessBox.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

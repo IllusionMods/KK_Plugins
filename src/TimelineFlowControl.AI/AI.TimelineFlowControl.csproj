@@ -20,7 +20,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Timeline">
-      <HintPath>..\..\..\HSPlugins\bin\AI\Timeline.dll</HintPath>
+      <HintPath>..\..\libs\AI\Timeline.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
