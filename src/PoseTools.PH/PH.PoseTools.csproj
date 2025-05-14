@@ -6,11 +6,9 @@
     <AssemblyName>PH_PoseTools</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;PH</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;PH</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -26,8 +24,4 @@
   </ItemGroup>
   <Import Project="..\PoseTools.Core\Core.PoseTools.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" PH
-</PostBuildEvent>
-  </PropertyGroup>
 </Project>

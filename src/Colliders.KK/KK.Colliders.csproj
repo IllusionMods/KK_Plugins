@@ -6,12 +6,10 @@
     <AssemblyName>KK_Colliders</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;KK</DefineConstants>
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;KK</DefineConstants>
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>

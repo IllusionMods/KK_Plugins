@@ -6,13 +6,9 @@
     <AssemblyName>AI_StudioWindowResize</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;AI</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;AI</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -34,8 +30,4 @@
   </ItemGroup>
   <Import Project="..\StudioWindowResize.Core\StudioWindowResize.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" AI</PostBuildEvent>
-  </PropertyGroup>
 </Project>

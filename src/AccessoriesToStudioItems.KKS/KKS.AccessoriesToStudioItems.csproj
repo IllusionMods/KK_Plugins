@@ -6,13 +6,9 @@
     <AssemblyName>KKS_AccessoriesToStudioItems</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;KKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;KKS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>

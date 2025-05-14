@@ -6,11 +6,9 @@
     <AssemblyName>KKS_CharaMakerLoadedSound</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;KKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;KKS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>

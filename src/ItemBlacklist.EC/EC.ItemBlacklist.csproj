@@ -7,11 +7,9 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;EC</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;EC</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -33,9 +31,4 @@
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\ItemBlacklist.Core\ItemBlacklist.Core.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" EC
-</PostBuildEvent>
-  </PropertyGroup>
 </Project>

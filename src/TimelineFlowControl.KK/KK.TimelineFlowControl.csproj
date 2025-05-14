@@ -6,14 +6,10 @@
     <AssemblyName>KK_TimelineFlowControl</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;KK</DefineConstants>
     <NoWarn></NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;KK</DefineConstants>
     <NoWarn>HAA0102,HAA0601,HAA0603</NoWarn>
   </PropertyGroup>

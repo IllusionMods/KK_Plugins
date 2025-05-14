@@ -6,11 +6,9 @@
     <AssemblyName>KK_MoreOutfits</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;KK</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;KK</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -33,8 +31,4 @@
   </ItemGroup>
   <Import Project="..\MoreOutfits.Core\MoreOutfits.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KK</PostBuildEvent>
-  </PropertyGroup>
 </Project>

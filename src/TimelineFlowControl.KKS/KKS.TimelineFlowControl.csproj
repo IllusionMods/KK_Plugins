@@ -6,14 +6,10 @@
     <AssemblyName>KKS_TimelineFlowControl</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;KKS</DefineConstants>
     <NoWarn></NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;KKS</DefineConstants>
     <NoWarn>HAA0102,HAA0601,HAA0603</NoWarn>
   </PropertyGroup>

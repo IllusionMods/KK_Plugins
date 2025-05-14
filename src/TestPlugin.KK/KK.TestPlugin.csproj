@@ -6,11 +6,9 @@
     <AssemblyName>KK_TestPlugin</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;KK</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;KK</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -29,10 +27,4 @@
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KK
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KKS
-</PostBuildEvent>
-  </PropertyGroup>
 </Project>

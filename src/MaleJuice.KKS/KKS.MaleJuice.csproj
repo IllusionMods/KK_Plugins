@@ -6,11 +6,9 @@
     <AssemblyName>KKS_MaleJuice</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;KKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;KKS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -32,10 +30,5 @@
   </ItemGroup>
   <Import Project="..\MaleJuice.Core\MaleJuice.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" KKS
-</PostBuildEvent>
-  </PropertyGroup>
   <PropertyGroup />
 </Project>

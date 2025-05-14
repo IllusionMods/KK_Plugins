@@ -6,11 +6,9 @@
     <AssemblyName>AI_MaterialEditor</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;AI;Studio</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;AI;Studio</DefineConstants>
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
@@ -54,9 +52,4 @@
   <Import Project="..\Shared.TextureContainer\Shared.TextureContainer.projitems" Label="Shared" />
   <Import Project="..\MaterialEditor.Core.Maker\Core.MaterialEditor.Maker.projitems" Label="Shared" />
   <Import Project="..\MaterialEditor.Base\MaterialEditor.Base.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" AI
-</PostBuildEvent>
-  </PropertyGroup>
 </Project>
