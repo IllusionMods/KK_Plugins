@@ -4,15 +4,10 @@
     <OutputType>Library</OutputType>
     <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>KK_AccessoryClothes</AssemblyName>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <FinalAssName>KKS_AccessoryClothes.dll</FinalAssName>
+    <NormalOutputPath>$(OutputPath)</NormalOutputPath>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;KKS</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;KKS</DefineConstants>
+    <DefineConstants>$(DefineConstants);KKS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.0.4" />
@@ -26,11 +21,7 @@
   </ItemGroup>
   <Import Project="..\AccessoryClothes.Core\AccessoryClothes.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\..\bin\KKS_AccessoryClothes.dll"
-copy "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\..\bin\KKS_AccessoryClothes.pdb"
-del "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetDir)\EC_AccessoryClothes.dll" EC
-</PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="Rename" AfterTargets="Build"> <!-- Done to keep the internal name as KK_AccessoryClothes -->
+    <Move SourceFiles="$(TargetPath)" DestinationFiles="$(NormalOutputPath)\$(FinalAssName)"/>
+  </Target>
 </Project>

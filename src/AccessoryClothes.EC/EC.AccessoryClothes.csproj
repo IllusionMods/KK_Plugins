@@ -4,14 +4,10 @@
     <OutputType>Library</OutputType>
     <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>KK_AccessoryClothes</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <FinalAssName>EC_AccessoryClothes.dll</FinalAssName>
+    <NormalOutputPath>$(OutputPath)</NormalOutputPath>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;EC</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;EC</DefineConstants>
+    <DefineConstants>$(DefineConstants);EC</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.0.4" />
@@ -24,11 +20,7 @@
   </ItemGroup>
   <Import Project="..\AccessoryClothes.Core\AccessoryClothes.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\..\bin\EC_AccessoryClothes.dll"
-copy "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\..\bin\EC_AccessoryClothes.pdb"
-del "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetDir)\EC_AccessoryClothes.dll" EC
-</PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="Rename" AfterTargets="Build"> <!-- Done to keep the internal name as KK_AccessoryClothes -->
+    <Move SourceFiles="$(TargetPath)" DestinationFiles="$(NormalOutputPath)\$(FinalAssName)"/>
+  </Target>
 </Project>
