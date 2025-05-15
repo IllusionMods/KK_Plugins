@@ -7,4 +7,9 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <OutputPath>$(SolutionDir)\bin\$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</OutputPath>
     </PropertyGroup>
+    <Target Name="SkipAllRefs" AfterTargets="ResolveReferences">
+        <ItemGroup>
+            <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+        </ItemGroup>
+    </Target>
 </Project>
