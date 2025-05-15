@@ -5,6 +5,6 @@
         <Deterministic>true</Deterministic>
         <DebugType>embedded</DebugType>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <OutputPath>bin\</OutputPath>
+        <OutputPath>$(SolutionDir)\bin\$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</OutputPath>
     </PropertyGroup>
 </Project>

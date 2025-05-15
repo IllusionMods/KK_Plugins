@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>MaterialEditor</RootNamespace>
     <AssemblyName>MaterialEditor</AssemblyName>
+    <OutputPath>bin\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>TRACE;DEBUG;API</DefineConstants>
