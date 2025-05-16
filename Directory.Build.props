@@ -1,0 +1,15 @@
+<Project>
+    <PropertyGroup>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <Deterministic>true</Deterministic>
+        <DebugType>embedded</DebugType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <OutputPath>$(SolutionDir)\bin\$(Configuration)\$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</OutputPath>
+    </PropertyGroup>
+    <Target Name="SkipAllRefs" AfterTargets="ResolveReferences">
+        <ItemGroup>
+            <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+        </ItemGroup>
+    </Target>
+</Project>

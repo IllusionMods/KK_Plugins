@@ -1,103 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{129F09E0-0A3D-4D12-B724-2B3A64F81DAF}</ProjectGuid>
+    <TargetFramework>net46</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>HS2_PoseQuickLoad</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;HS2</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;HS2</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\lib\net35\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp.2020.5.29.5\lib\net46\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BepInEx, Version=5.4.22.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.22\lib\net35\BepInEx.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29.5\lib\net46\IL.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11.4\lib\net46\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11.4\lib\net46\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.21.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.4" />
+    <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
+    <PackageReference Include="IllusionLibs.BepInEx.Harmony" Version="2.9.0" />
+    <PackageReference Include="IllusionLibs.HoneySelect2.Assembly-CSharp" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.HoneySelect2.IL" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.HoneySelect2.UnityEngine.CoreModule" Version="2018.4.11.4" />
+    <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" HS2
-</PostBuildEvent>
-  </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp.2020.5.29.5\build\IllusionLibs.HoneySelect2.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp.2020.5.29.5\build\IllusionLibs.HoneySelect2.Assembly-CSharp.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29.5\build\IllusionLibs.HoneySelect2.IL.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29.5\build\IllusionLibs.HoneySelect2.IL.targets'))" />
-  </Target>
-  <Import Project="..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp.2020.5.29.5\build\IllusionLibs.HoneySelect2.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp.2020.5.29.5\build\IllusionLibs.HoneySelect2.Assembly-CSharp.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29.5\build\IllusionLibs.HoneySelect2.IL.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29.5\build\IllusionLibs.HoneySelect2.IL.targets')" />
 </Project>
