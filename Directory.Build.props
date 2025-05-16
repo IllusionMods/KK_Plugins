@@ -5,7 +5,7 @@
         <Deterministic>true</Deterministic>
         <DebugType>embedded</DebugType>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <OutputPath>$(SolutionDir)\bin\$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</OutputPath>
+        <OutputPath>$(SolutionDir)\bin\$(Configuration)\$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</OutputPath>
     </PropertyGroup>
     <Target Name="SkipAllRefs" AfterTargets="ResolveReferences">
         <ItemGroup>
