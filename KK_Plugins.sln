@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.FreeHRandom", "src\FreeH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.EyeShaking", "src\EyeShaking.KK\KK.EyeShaking.csproj", "{7B514B4E-A0BC-4DA9-B2A8-0B72515E8033}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.AnimationOverdrive", "src\ANIMATIONOVERDRIVE.KK\KK.AnimationOverdrive.csproj", "{D7FABE27-7568-49B1-A81A-CDCE5708970F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.AnimationOverdrive", "src\AnimationOverdrive.KK\KK.AnimationOverdrive.csproj", "{D7FABE27-7568-49B1-A81A-CDCE5708970F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.HCharaAdjustment", "src\HCharaAdjustment.KK\KK.HCharaAdjustment.csproj", "{42F4CCEE-063C-482F-AEE7-5E8D34433C95}"
 EndProject
@@ -444,6 +444,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0Solution Items", "0Solutio
 		README.md = README.md
 		release.ps1 = release.ps1
 		update_READMEs.ps1 = update_READMEs.ps1
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.FreeHRandom", "src\FreeHRandom.KKS\KKS.FreeHRandom.csproj", "{6ACAB92E-C496-4C43-805F-8EC87BBCE957}"

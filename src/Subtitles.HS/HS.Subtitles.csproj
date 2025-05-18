@@ -1,113 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F28FC29B-5CD1-4AEA-9E93-03BC9BE51360}</ProjectGuid>
+    <TargetFramework>net35</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>HS_Subtitles</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG;HS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE;HS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DebugSymbols>false</DebugSymbols>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="0Harmony, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\lib\net35\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp.2017.6.30.2\lib\net35\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp-firstpass.2017.6.30.2\lib\net35\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BepInEx, Version=5.4.22.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.BepInEx.5.4.22\lib\net35\BepInEx.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.HoneySelect.UnityEngine.5.3.5.2\lib\net35\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IllusionLibs.HoneySelect.UnityEngine.UI.5.3.5.2\lib\net35\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="HS.Subtitles.Hooks.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.Unity.Analyzers.1.21.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
-  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\EmbeddedSubs.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.4" />
+    <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
+    <PackageReference Include="IllusionLibs.BepInEx.Harmony" Version="2.9.0" />
+    <PackageReference Include="IllusionLibs.HoneySelect.Assembly-CSharp" Version="2017.6.30.2" />
+    <PackageReference Include="IllusionLibs.HoneySelect.Assembly-CSharp-firstpass" Version="2017.6.30.2" />
+    <PackageReference Include="IllusionLibs.HoneySelect.UnityEngine" Version="5.3.5.2" />
+    <PackageReference Include="IllusionLibs.HoneySelect.UnityEngine.UI" Version="5.3.5.2" />
+    <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
+  </ItemGroup>
   <Import Project="..\Subtitles.Core\Core.Subtitles.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
-IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" HS
-</PostBuildEvent>
-  </PropertyGroup>
-  <Import Project="..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp-firstpass.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp-firstpass.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp-firstpass.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp-firstpass.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect.UnityEngine.5.3.5.2\build\IllusionLibs.HoneySelect.UnityEngine.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect.UnityEngine.5.3.5.2\build\IllusionLibs.HoneySelect.UnityEngine.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.HoneySelect.UnityEngine.UI.5.3.5.2\build\IllusionLibs.HoneySelect.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.HoneySelect.UnityEngine.UI.5.3.5.2\build\IllusionLibs.HoneySelect.UnityEngine.UI.targets'))" />
-    <Error Condition="!Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets'))" />
-  </Target>
-  <Import Project="..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp-firstpass.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp-firstpass.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect.Assembly-CSharp-firstpass.2017.6.30.2\build\IllusionLibs.HoneySelect.Assembly-CSharp-firstpass.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.HoneySelect.UnityEngine.5.3.5.2\build\IllusionLibs.HoneySelect.UnityEngine.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect.UnityEngine.5.3.5.2\build\IllusionLibs.HoneySelect.UnityEngine.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.HoneySelect.UnityEngine.UI.5.3.5.2\build\IllusionLibs.HoneySelect.UnityEngine.UI.targets" Condition="Exists('..\..\packages\IllusionLibs.HoneySelect.UnityEngine.UI.5.3.5.2\build\IllusionLibs.HoneySelect.UnityEngine.UI.targets')" />
-  <Import Project="..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" />
 </Project>
