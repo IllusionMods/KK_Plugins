@@ -16,7 +16,4 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.UncensorSelector.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.UncensorSelector.SettingsGUI.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Template.xml" />
-  </ItemGroup>
 </Project>
