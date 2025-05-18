@@ -25,7 +25,7 @@
     <PackageReference Include="IllusionLibs.EmotionCreators.UnityEngine.UI" Version="2017.4.24.4" />
     <PackageReference Include="IllusionLibs.EmotionCreators.UnityEngine.UIModule" Version="2017.4.24.4" />
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
-    <PackageReference Include="SharpZipLib" Version="1.3.3" />
+    <PackageReference Include="SharpZipLib" Version="[1.3.3,1.4)" />
     <PackageReference Include="Sideloader.EmotionCreators" Version="19.3.3" />
   </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
