@@ -5,11 +5,18 @@
         <Deterministic>true</Deterministic>
         <DebugType>embedded</DebugType>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <OutputPath>$(SolutionDir)\bin\$(Configuration)\$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</OutputPath>
+        <GameType>$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</GameType>
+        <OutputPath>$(SolutionDir)\bin\$(Configuration)\$(GameType)</OutputPath>
     </PropertyGroup>
     <Target Name="SkipAllRefs" AfterTargets="ResolveReferences">
         <ItemGroup>
             <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
         </ItemGroup>
     </Target>
+    <PropertyGroup>
+        <PostBuildEvent Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+            IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
+            IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" $(GameType)
+        </PostBuildEvent>
+    </PropertyGroup>
 </Project>
