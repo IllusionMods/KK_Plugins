@@ -1,0 +1,41 @@
+name: Release
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Gather info
+      id: info
+      run: |
+        DATE=$(date +'%Y-%m-%d')
+        echo "date=$DATE" >> $GITHUB_OUTPUT
+        echo "file=${{ github.event.repository.name }}_$DATE.zip" >> $GITHUB_OUTPUT
+
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # for creating the changelog
+    - uses: actions/setup-dotnet@v4
+    - run: dotnet build --configuration Release
+
+    - name: Create release notes
+      continue-on-error: true
+      run: |
+        echo "## Changelog" >> body.md
+        LATEST_TAG=$(git describe --tags --abbrev=0)
+        git log $LATEST_TAG..HEAD --pretty=format:"* %s" >> body.md
+        echo "" >> body.md
+        echo "**Full Changelog**: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/compare/$LATEST_TAG...${{ steps.info.outputs.date }}" >> body.md
+
+    - name: Create zip
+      run: |
+        cd bin/Release
+        zip -r ${{ steps.info.outputs.file }} *
+    - uses: softprops/action-gh-release@v2
+      with:
+        draft: true
+        generate_release_notes: false
+        files: bin/Release/${{ steps.info.outputs.file }}
+        tag_name: ${{ steps.info.outputs.date }}
+        body_path: body.md
