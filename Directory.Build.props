@@ -6,7 +6,8 @@
         <DebugType>embedded</DebugType>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <GameType>$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</GameType>
-        <OutputPath>$(SolutionDir)\bin\$(Configuration)\$(GameType)</OutputPath>
+        <!--<OutputPath>$(SolutionDir)\bin\$(Configuration)\$(GameType)</OutputPath>-->
+        <OutputPath>$(SolutionDir)\bin</OutputPath>
     </PropertyGroup>
     <Target Name="SkipAllRefs" AfterTargets="ResolveReferences">
         <ItemGroup>
