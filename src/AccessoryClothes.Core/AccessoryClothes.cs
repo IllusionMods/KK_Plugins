@@ -10,7 +10,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.accessoryclothes";
         public const string PluginName = "Accessory Clothes";
         public const string PluginNameInternal = Constants.Prefix + "_AccessoryClothes";
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
 
         public static new ManualLogSource Logger;
 
