@@ -37,7 +37,6 @@ namespace KK_Plugins.MaterialEditor
         private readonly Dictionary<MaterialTextureProperty, MEAnimationController> AnimationControllerMap = new Dictionary<MaterialTextureProperty, MEAnimationController>();
 
         private static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
-        private static readonly HashSet<int> ExternallyReferencedTextureIDs = new HashSet<int>();
 
         private static string FileToSet;
         private static string PropertyToSet;
@@ -143,7 +142,7 @@ namespace KK_Plugins.MaterialEditor
             }
 
             //Remove textures in use
-            unuseds.RemoveWhere(texId => ExternallyReferencedTextureIDs.Contains(texId));
+            unuseds.RemoveWhere(texId => TimelineCompatibilityHelper.GetUsedTextureIds().Contains(texId));
 
             foreach (var texID in unuseds)
             {
@@ -189,7 +188,6 @@ namespace KK_Plugins.MaterialEditor
                 MaterialShaderList.Clear();
                 TextureDictionary.Clear();
                 MaterialCopyList.Clear();
-                ExternallyReferencedTextureIDs.Clear();
                 AnimationControllerMap.Clear();
             }
 
@@ -763,14 +761,6 @@ namespace KK_Plugins.MaterialEditor
             TextureDictionary.TryGetValue(id, out TextureContainer textureContainer);
             if (textureContainer != null) return textureContainer.Texture;
             return null;
-        }
-
-        /// <summary>
-        /// Add texture ID to a list to prevent them from being purged on save. List is cleared on scene load and reset.
-        /// </summary>
-        internal static void AddExternallyReferencedTextureID(int id)
-        {
-            ExternallyReferencedTextureIDs.Add(id);
         }
 
         /// <summary>
