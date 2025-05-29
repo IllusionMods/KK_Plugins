@@ -10,6 +10,10 @@ using static MaterialEditorAPI.MaterialEditorUI;
 using static KK_Plugins.MaterialEditor.SceneController;
 using System.Text.RegularExpressions;
 using System;
+using System.Collections.Generic;
+using HarmonyLib;
+using System.Collections;
+using KK_Plugins.MaterialEditor;
 
 namespace MaterialEditorAPI
 {
@@ -137,7 +141,6 @@ namespace MaterialEditorAPI
                    readValueFromXml: (parameter, node) => XmlConvert.ToInt32(node.Attributes["value"].Value),
                    writeValueToXml: (parameter, writer, value) =>
                    {
-                       AddExternallyReferencedTextureID(value);
                        writer.WriteAttributeString("value", XmlConvert.ToString(value));
                    },
                    getParameter: GetMaterialInfoParameter,
@@ -461,7 +464,7 @@ namespace MaterialEditorAPI
                 Projector projector = null;
                 var go = GetGameObject(oci);
                 foreach (var _projector in GetProjectorList(go))
-                    if (_projector.NameFormatted() == projectorName) 
+                    if (_projector.NameFormatted() == projectorName)
                     {
                         projector = _projector;
                         break;
@@ -516,6 +519,7 @@ namespace MaterialEditorAPI
                 {
                     var _isTimelineAvailable = type.GetMethod("IsTimelineAvailable", BindingFlags.Static | BindingFlags.Public);
                     isTimelineAvailable = (bool)_isTimelineAvailable.Invoke(null, null);
+                    if ((bool)isTimelineAvailable) InitTimelineTypes();
                 }
                 else isTimelineAvailable = false;
             }
@@ -533,6 +537,73 @@ namespace MaterialEditorAPI
                     refreshInterpolablesList = type.GetMethod("RefreshInterpolablesList", BindingFlags.Static | BindingFlags.Public);
             }
             refreshInterpolablesList.Invoke(null, null);
+        }
+
+        public static IEnumerable<int> GetUsedTextureIds()
+        {
+            var ids = new List<int>();
+            if (!IsTimelineAvailable()) return ids;
+
+            var interpolables = (IEnumerable)_GetAllInterpolables.Invoke(null, new object[] { false });
+
+            foreach (var interpolable in interpolables)
+            {
+                if (
+                    (string)_interpolableOwner.GetValue(interpolable) == "MaterialEditor"
+                    && (string)_interpolableId.GetValue(interpolable) == "textureProperty"
+                )
+                {
+                    var keyframes = (IDictionary)_interpolableKeyframes.GetValue(interpolable);
+                    foreach (var keyframe in keyframes.Values)
+                    {
+                        int id = (int)_keyframeValue.GetValue(keyframe);
+                        if (!ids.Contains(id)) ids.Add(id);
+                    }
+                }
+            }
+            return ids;
+        }
+
+        private static Type _timelineType;
+        private static Type _interpolableType;
+        private static Type _keyframeType;
+
+        private static MethodInfo _GetAllInterpolables;
+
+        private static FieldInfo _interpolableOwner;
+        private static FieldInfo _interpolableId;
+        private static FieldInfo _interpolableOci;
+        private static FieldInfo _interpolableKeyframes;
+        private static FieldInfo _keyframeValue;
+
+        private static void InitTimelineTypes()
+        {
+            try
+            {
+                _timelineType = System.Type.GetType("Timeline.Timeline,Timeline", throwOnError: false);
+                if (_timelineType == null)
+                {
+                    isTimelineAvailable = false;
+                    return;
+                };
+
+                _interpolableType = System.Type.GetType("Timeline.Interpolable,Timeline", throwOnError: false);
+                _keyframeType = System.Type.GetType("Timeline.Keyframe,Timeline", throwOnError: false);
+
+                _GetAllInterpolables = _timelineType.GetMethod("GetAllInterpolables") ?? throw new Exception("Method 'GetAllInterpolables' does not exist on the Timeline type");
+
+                _interpolableOwner = _interpolableType.GetField("owner") ?? throw new Exception("Field 'owner' does not exist on the Interpolable type");
+                _interpolableId = _interpolableType.GetField("id") ?? throw new Exception("Field 'id' does not exist on the Interpolable type");
+                _interpolableOci = _interpolableType.GetField("oci") ?? throw new Exception("Field 'oci' does not exist on the Interpolable type");
+                _interpolableKeyframes = _interpolableType.GetField("keyframes") ?? throw new Exception("Field 'keyframes' does not exist on the Interpolable type");
+                _keyframeValue = _keyframeType.GetField("value") ?? throw new Exception("Field 'value' does not exist on the Keyframe type");
+            }
+            catch (Exception e)
+            {
+                MaterialEditorPluginBase.Logger.LogError("An error occured while initializing timeline support");
+                MaterialEditorPluginBase.Logger.LogError(e);
+                isTimelineAvailable = false;
+            }
         }
     }
 }
