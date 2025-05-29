@@ -578,19 +578,32 @@ namespace MaterialEditorAPI
 
         private static void InitTimelineTypes()
         {
-            _timelineType = System.Type.GetType("Timeline.Timeline,Timeline", throwOnError: false);
-            if (_timelineType == null) return;
+            try
+            {
+                _timelineType = System.Type.GetType("Timeline.Timeline,Timeline", throwOnError: false);
+                if (_timelineType == null)
+                {
+                    isTimelineAvailable = false;
+                    return;
+                };
 
-            _interpolableType = System.Type.GetType("Timeline.Interpolable,Timeline", throwOnError: false);
-            _keyframeType = System.Type.GetType("Timeline.Keyframe,Timeline", throwOnError: false);
+                _interpolableType = System.Type.GetType("Timeline.Interpolable,Timeline", throwOnError: false);
+                _keyframeType = System.Type.GetType("Timeline.Keyframe,Timeline", throwOnError: false);
 
-            _GetAllInterpolables = _timelineType.GetMethod("GetAllInterpolables", AccessTools.all);
+                _GetAllInterpolables = _timelineType.GetMethod("GetAllInterpolables") ?? throw new Exception("Method 'GetAllInterpolables' does not exist on the Timeline type");
 
-            _interpolableOwner = _interpolableType.GetField("owner", AccessTools.all);
-            _interpolableId = _interpolableType.GetField("id", AccessTools.all);
-            _interpolableOci = _interpolableType.GetField("oci", AccessTools.all);
-            _interpolableKeyframes = _interpolableType.GetField("keyframes", AccessTools.all);
-            _keyframeValue = _keyframeType.GetField("value", AccessTools.all);
+                _interpolableOwner = _interpolableType.GetField("owner") ?? throw new Exception("Field 'owner' does not exist on the Interpolable type");
+                _interpolableId = _interpolableType.GetField("id") ?? throw new Exception("Field 'id' does not exist on the Interpolable type");
+                _interpolableOci = _interpolableType.GetField("oci") ?? throw new Exception("Field 'oci' does not exist on the Interpolable type");
+                _interpolableKeyframes = _interpolableType.GetField("keyframes") ?? throw new Exception("Field 'keyframes' does not exist on the Interpolable type");
+                _keyframeValue = _keyframeType.GetField("value") ?? throw new Exception("Field 'value' does not exist on the Keyframe type");
+            }
+            catch (Exception e)
+            {
+                MaterialEditorPluginBase.Logger.LogError("An error occured while initializing timeline support");
+                MaterialEditorPluginBase.Logger.LogError(e);
+                isTimelineAvailable = false;
+            }
         }
     }
 }
