@@ -124,8 +124,12 @@ namespace KK_Plugins
         {
             //Coordinates will not change without MoreOutfits, so no need to refresh the dropdown
             if (MoreOutfitsType == null || CoordinateDropdownTMP == null) return;
+            var value = CoordinateDropdownTMP.value;
             CoordinateDropdownTMP.ClearOptions();
-            CoordinateDropdownTMP.AddOptions(GetCoordinateList());
+            var options = GetCoordinateList();
+            CoordinateDropdownTMP.AddOptions(options);
+            if (value < options.Count)
+                CoordinateDropdownTMP.SetValue(value);
         }
 #endif
 
