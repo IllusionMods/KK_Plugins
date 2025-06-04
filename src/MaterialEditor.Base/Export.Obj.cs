@@ -48,39 +48,47 @@ namespace MaterialEditorAPI
 
             var scale = rend.transform.lossyScale;
             var inverseScale = Matrix4x4.Scale(scale).inverse;
-
             StringBuilder sb = new StringBuilder();
 
-            for (int x = 0; x < mesh.subMeshCount; x++)
+            for (var i = 0; i < mesh.vertices.Length; i++)
             {
-                Mesh subMesh = mesh.Submesh(x);
-
-                sb.AppendLine($"g {rend.NameFormatted()}_{x}");
-
-                for (var i = 0; i < subMesh.vertices.Length; i++)
-                {
-                    Vector3 v = subMesh.vertices[i];
-                    if (MaterialEditorPluginBase.ExportBakedMesh.Value && MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
-                        v = rend.transform.TransformPoint(inverseScale.MultiplyPoint(v));
-                    sb.AppendLine($"v {-v.x} {v.y} {v.z}");
-                }
-
-                for (var i = 0; i < subMesh.uv.Length; i++)
-                {
-                    Vector3 v = subMesh.uv[i];
-                    sb.AppendLine($"vt {v.x} {v.y}");
-                }
-
-                for (var i = 0; i < subMesh.normals.Length; i++)
-                {
-                    Vector3 v = subMesh.normals[i];
-                    sb.AppendLine($"vn {-v.x} {v.y} {v.z}");
-                }
-
-                int[] triangles = subMesh.GetTriangles(x);
-                for (int i = 0; i < triangles.Length; i += 3)
-                    sb.AppendFormat("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", triangles[i] + 1, triangles[i + 2] + 1, triangles[i + 1] + 1);
+                Vector3 v = mesh.vertices[i];
+                if (MaterialEditorPluginBase.ExportBakedMesh.Value && MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
+                    v = rend.transform.TransformPoint(inverseScale.MultiplyPoint(v));
+                sb.AppendLine($"v {-v.x} {v.y} {v.z}");
             }
+
+            for (var i = 0; i < mesh.uv.Length; i++)
+            {
+                Vector2 uv = mesh.uv[i];
+                sb.AppendLine($"vt {uv.x} {uv.y}");
+            }
+
+            for (var i = 0; i < mesh.normals.Length; i++)
+            {
+                Vector3 n = mesh.normals[i];
+                if (MaterialEditorPluginBase.ExportBakedMesh.Value &&
+                    MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
+                {
+                    n = rend.transform.TransformDirection(inverseScale.MultiplyVector(n));
+                }
+                sb.AppendLine($"vn {-n.x} {n.y} {n.z}");
+            }
+
+            for (int submeshIndex = 0; submeshIndex < mesh.subMeshCount; submeshIndex++)
+            {
+                sb.AppendLine($"g {rend.NameFormatted()}_{submeshIndex}");
+                int[] triangles = mesh.GetTriangles(submeshIndex);
+
+                for (int i = 0; i < triangles.Length; i += 3)
+                {
+                    int v1 = triangles[i] + 1;
+                    int v2 = triangles[i + 2] + 1;
+                    int v3 = triangles[i + 1] + 1;
+                    sb.AppendFormat("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", v1, v2, v3);
+                }
+            }
+
             return sb.ToString();
         }
     }
