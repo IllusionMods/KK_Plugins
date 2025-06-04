@@ -36,6 +36,9 @@
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.38.0" />
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MoreOutfits.KKS\KKS.MoreOutfits.csproj" />
+  </ItemGroup>
   <Import Project="..\Pushup.Core\Pushup.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>
