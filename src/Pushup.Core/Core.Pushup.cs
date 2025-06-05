@@ -16,6 +16,7 @@ namespace KK_Plugins
 {
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
+    [BepInDependency("com.deathweasel.bepinex.moreoutfits", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class Pushup : BaseUnityPlugin
     {
