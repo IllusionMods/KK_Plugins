@@ -26,6 +26,9 @@
     <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MoreOutfits.KK\KK.MoreOutfits.csproj" />
+  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\Profile.Core\Profile.Core.projitems" Label="Shared" />
 </Project>

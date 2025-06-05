@@ -7,6 +7,7 @@ using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using MessagePack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace KK_Plugins
 {
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
+    [BepInDependency("com.deathweasel.bepinex.moreoutfits", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class Pushup : BaseUnityPlugin
     {
@@ -24,6 +26,7 @@ namespace KK_Plugins
         public const string Version = "1.4.0";
         internal static new ManualLogSource Logger;
 
+        private static Type MoreOutfitsType;
         public static ConfigEntry<bool> ConfigEnablePushup { get; private set; }
         public static ConfigEntry<float> ConfigFirmnessDefault { get; private set; }
         public static ConfigEntry<float> ConfigLiftDefault { get; private set; }
@@ -100,6 +103,23 @@ namespace KK_Plugins
                 }
 #endif
             }
+#if !EC
+            MoreOutfitsType = Type.GetType($"KK_Plugins.MoreOutfits.Plugin, {Constants.Prefix}_MoreOutfits", throwOnError: false);
+            if (MoreOutfitsType != null)
+                PatchMoreOutfits();
+
+            void PatchMoreOutfits()
+            {
+                harmony.Patch(
+                    MoreOutfitsType.GetMethod("AddCoordinateSlot", AccessTools.all),
+                    new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CoordinateCountChangedPostHook), AccessTools.all))
+                );
+                harmony.Patch(
+                    MoreOutfitsType.GetMethod("RemoveCoordinateSlot", AccessTools.all),
+                    new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.CoordinateCountChangedPostHook), AccessTools.all))
+                );
+            }
+#endif
         }
 
 #if EC

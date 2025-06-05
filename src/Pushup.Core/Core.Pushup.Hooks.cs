@@ -70,6 +70,13 @@ namespace KK_Plugins
             /// Cancel the original slider onValueChanged event
             /// </summary>
             internal static bool SliderHook() => false;
+
+#if !EC
+            internal static void CoordinateCountChangedPostHook()
+            {
+                ReloadCoordinateDropdown();
+            }
+#endif
         }
     }
 }
