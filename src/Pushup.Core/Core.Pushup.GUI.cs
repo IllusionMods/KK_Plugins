@@ -243,9 +243,10 @@ namespace KK_Plugins
 
             void ExtendList()
             {
-                var moreOutfitsController = MoreOutfits.Plugin.GetController(MakerAPI.GetCharacterControl());
-                for (int coord = coordinateList.Count; coord < MakerAPI.GetCharacterControl().chaFile.coordinate.Length; coord++)
-                    coordinateList.Add(MoreOutfits.Plugin.GetController(MakerAPI.GetCharacterControl()).GetCoodinateName(coord));
+                var chaControl = MakerAPI.GetCharacterControl();
+                var moreOutfitsController = MoreOutfits.Plugin.GetController(chaControl);
+                for (int coord = coordinateList.Count; coord < chaControl.chaFile.coordinate.Length; coord++)
+                    coordinateList.Add(moreOutfitsController.GetCoodinateName(coord));
             }
 
             coordinateList.Add("All");
