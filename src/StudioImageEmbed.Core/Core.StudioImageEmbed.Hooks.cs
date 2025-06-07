@@ -14,7 +14,7 @@ namespace KK_Plugins
             [HarmonyPostfix, HarmonyPatch(typeof(OCIItem), nameof(OCIItem.SetPatternTex), typeof(int), typeof(int))]
             private static void OCIItem_SetPatternTex_Postfix(OCIItem __instance, int _idx)
             {
-                if (__instance?.itemComponent == null) return;
+                if (!(__instance?.itemComponent != null)) return;
 
                 string file = __instance.GetPatternPath(_idx);
 
