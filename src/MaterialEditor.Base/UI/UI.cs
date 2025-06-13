@@ -372,6 +372,11 @@ namespace MaterialEditorAPI
 
             // Setup text field
             string formattedName = material.NameFormatted().Split(new[] { MaterialCopyPostfix }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            if (string.IsNullOrEmpty(formattedName))
+            {
+                MaterialEditorPluginBase.Logger.LogWarning("Material name is empty or failed to be extracted from: " + material.name);
+                formattedName = "";
+            }
             MaterialEditorRenameField.text = formattedName;
 
             // Setup button
