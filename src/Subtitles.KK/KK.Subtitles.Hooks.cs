@@ -6,6 +6,8 @@ namespace KK_Plugins
 {
     public partial class Subtitles
     {
+        internal static Type HSceneType;
+
         internal static class Hooks
         {
             [HarmonyPostfix, HarmonyPatch(typeof(LoadAudioBase), nameof(LoadAudioBase.Play))]
