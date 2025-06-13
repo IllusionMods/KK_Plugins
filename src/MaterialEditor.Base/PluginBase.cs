@@ -18,11 +18,17 @@ namespace MaterialEditorAPI
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
     public partial class MaterialEditorPluginBase : BaseUnityPlugin
     {
+        /// <summary>
+        /// Logger instance for the plugin
+        /// </summary>
         public static new ManualLogSource Logger;
+        /// <summary>
+        /// Singleton instance of the plugin
+        /// </summary>
         public static MaterialEditorPluginBase Instance;
 
         /// <summary>
-        /// Path where textures will be exported
+        /// Default path where textures will be exported
         /// </summary>
         public static string ExportPathDefault = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
         /// <summary>
@@ -34,27 +40,90 @@ namespace MaterialEditorAPI
         /// </summary>
         public static CopyContainer CopyData = new CopyContainer();
 
+        /// <summary>
+        /// Dictionary of loaded shaders
+        /// </summary>
         public static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
+        /// <summary>
+        /// Sorted dictionary of XML shader properties
+        /// </summary>
         public static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
+        /// <summary>
+        /// Configuration entry for ME window scale
+        /// </summary>
         public static ConfigEntry<float> UIScale { get; set; }
+        /// <summary>
+        /// Configuration entry for ME window width
+        /// </summary>
         public static ConfigEntry<float> UIWidth { get; set; }
+        /// <summary>
+        /// Configuration entry for ME window height
+        /// </summary>
         public static ConfigEntry<float> UIHeight { get; set; }
+        /// <summary>
+        /// Configuration entry for width of the renderer/materials lists to the side of the window
+        /// </summary>
         public static ConfigEntry<float> UIListWidth { get; set; }
+        /// <summary>
+        /// Configuration entry for sensitivity of dragging labels to edit float values
+        /// </summary>
         public static ConfigEntry<float> DragSensitivity { get; set; }
+        /// <summary>
+        /// Configuration entry for watching for file changes and reloading textures on change
+        /// </summary>
         public static ConfigEntry<bool> WatchTexChanges { get; set; }
+        /// <summary>
+        /// Replaces every loaded shader with the MaterialEditor copy of the shader
+        /// </summary>
         public static ConfigEntry<bool> ShaderOptimization { get; set; }
+        /// <summary>
+        /// Skinned meshes will be exported in their current state with all customization applied as well as in the current pose
+        /// </summary>
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
+        /// <summary>
+        /// When enabled, objects will be exported with their position changes intact so that, i.e. when exporting two objects they retain their position relative to each other
+        /// </summary>
         public static ConfigEntry<bool> ExportBakedWorldPosition { get; set; }
+        /// <summary>
+        /// Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}
+        /// </summary>
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
+        /// <summary>
+        /// Persist search filter across editor windows
+        /// </summary>
         public static ConfigEntry<bool> PersistFilter { get; set; }
+        /// <summary>
+        /// Whether to show tooltips or not
+        /// </summary>
         public static ConfigEntry<bool> Showtooltips { get; set; }
+        /// <summary>
+        /// Whether to sort shader properties by their types
+        /// </summary>
         public static ConfigEntry<bool> SortPropertiesByType { get; set; }
+        /// <summary>
+        /// Whether to sort shader properties by their names
+        /// </summary>
         public static ConfigEntry<bool> SortPropertiesByName { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorFarClipPlaneMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorFieldOfViewMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorAspectRatioMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorOrthographicSizeMax { get; set; }
 
         public virtual void Awake()
