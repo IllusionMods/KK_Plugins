@@ -125,7 +125,10 @@ namespace MaterialEditorAPI
         /// Controls the max value of the slider for this projector property
         /// </summary>
         public static ConfigEntry<float> ProjectorOrthographicSizeMax { get; set; }
-
+        
+        /// <summary>
+        /// Init logic, do not call
+        /// </summary>
         public virtual void Awake()
         {
             Instance = this;
@@ -335,18 +338,43 @@ namespace MaterialEditorAPI
             RenderTexture.ReleaseTemporary(tmp);
         }
 
+        /// <summary>
+        /// Refreshes the property organization, which groups shader properties by their categories and sorts them based on the configuration settings.
+        /// </summary>
         protected static void RefreshPropertyOrganization()
         {
             PropertyOrganizer.Refresh();
         }
 
+        /// <summary>
+        /// Represents data for a shader, including its name, shader object, render queue, and optimization flag.
+        /// </summary>
         public class ShaderData
         {
+            /// <summary>
+            /// Name of the shader.
+            /// </summary>
             public string ShaderName;
+            /// <summary>
+            /// Shader object.
+            /// </summary>
             public Shader Shader;
+            /// <summary>
+            /// Render queue value for the shader. Null if not specified.
+            /// </summary>
             public int? RenderQueue;
+            /// <summary>
+            /// Indicates whether shader optimization is enabled.
+            /// </summary>
             public bool ShaderOptimization;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShaderData"/> class.
+            /// </summary>
+            /// <param name="shader">The shader object.</param>
+            /// <param name="shaderName">The name of the shader.</param>
+            /// <param name="renderQueue">The render queue value as a string. Defaults to an empty string.</param>
+            /// <param name="shaderOptimization">The shader optimization flag as a string. Defaults to null.</param>
             public ShaderData(Shader shader, string shaderName, string renderQueue = "", string shaderOptimization = null)
             {
                 Shader = shader;
@@ -366,17 +394,55 @@ namespace MaterialEditorAPI
             }
         }
 
+        /// <summary>
+        /// Represents data for a shader property, including its name, type, default values, visibility, range, and category.
+        /// </summary>
         public class ShaderPropertyData
         {
+            /// <summary>
+            /// Name of the shader property.
+            /// </summary>
             public string Name;
+            /// <summary>
+            /// Type of the shader property.
+            /// </summary>
             public ShaderPropertyType Type;
+            /// <summary>
+            /// Default value of the shader property.
+            /// </summary>
             public string DefaultValue;
+            /// <summary>
+            /// Default value of the shader property when loaded from an asset bundle.
+            /// </summary>
             public string DefaultValueAssetBundle;
+            /// <summary>
+            /// Indicates whether the shader property is hidden.
+            /// </summary>
             public bool Hidden;
+            /// <summary>
+            /// Minimum value of the shader property, if applicable.
+            /// </summary>
             public float? MinValue;
+            /// <summary>
+            /// Maximum value of the shader property, if applicable.
+            /// </summary>
             public float? MaxValue;
+            /// <summary>
+            /// Category of the shader property.
+            /// </summary>
             public string Category;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShaderPropertyData"/> class.
+            /// </summary>
+            /// <param name="name">Name of the shader property.</param>
+            /// <param name="type">Type of the shader property.</param>
+            /// <param name="defaultValue">Default value of the shader property.</param>
+            /// <param name="defaultValueAB">Default value of the shader property when loaded from an asset bundle.</param>
+            /// <param name="hidden">Indicates whether the shader property is hidden.</param>
+            /// <param name="minValue">Minimum value of the shader property.</param>
+            /// <param name="maxValue">Maximum value of the shader property.</param>
+            /// <param name="category">Category of the shader property.</param>
             public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string hidden = null, string minValue = null, string maxValue = null, string category = null)
             {
                 Name = name;

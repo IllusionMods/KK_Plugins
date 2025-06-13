@@ -4,12 +4,24 @@ using UnityEngine.UI;
 
 namespace MaterialEditorAPI
 {
+    /// <summary>
+    /// Allows dragging to adjust the value of an InputField.
+    /// </summary>
     [DisallowMultipleComponent]
     public class FloatLabelDragTrigger : MonoBehaviour, IDragHandler
     {
+        /// <summary>
+        /// The InputField that will be adjusted when dragging.
+        /// </summary>
         public InputField InputField = null;
+        /// <summary>
+        /// Optional paired InputFields that will also be adjusted when dragging.
+        /// </summary>
         public InputField[] PairedInputFields = null;
 
+        /// <summary>
+        /// Initializes the FloatLabelDragTrigger with the specified InputField and optional paired InputFields.
+        /// </summary>
         public void Initialize(InputField inputField, InputField[] pairedInputFields = null)
         {
             InputField = inputField;
