@@ -12,6 +12,7 @@ namespace HairShadowColorControl
 {
     [BepInPlugin(GUID, DisplayName, Version)]
     [BepInDependency(KKAPI.KoikatuAPI.GUID, KKAPI.KoikatuAPI.VersionConst)]
+    [BepInDependency(MaterialEditorPlugin.PluginGUID, MaterialEditorPlugin.PluginVersion)]
     public class HairShadowColorControlPlugin : BaseUnityPlugin
     {
         public const string GUID = "HairShadowColorControl";
