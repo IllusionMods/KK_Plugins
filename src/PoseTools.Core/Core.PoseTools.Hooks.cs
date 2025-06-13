@@ -151,6 +151,12 @@ namespace KK_Plugins.PoseTools
         [HarmonyPrefix, HarmonyPatch(typeof(PauseCtrl), nameof(PauseCtrl.Load))]
         private static bool PauseCtrl_Load(OCIChar _ociChar, ref string _path, ref bool __result)
         {
+            if (_path == null)
+            {
+                Plugin.Logger.LogError("Attempted to load a pose with a null path - " + new System.Diagnostics.StackTrace());
+                return true;
+            }
+
             if (Path.GetExtension(_path).ToLower() == ".png")
             {
                 var fileInfo = new PauseCtrl.FileInfo();

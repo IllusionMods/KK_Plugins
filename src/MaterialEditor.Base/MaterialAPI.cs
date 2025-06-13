@@ -83,9 +83,9 @@ namespace MaterialEditorAPI
 
             List<Material> materials = new List<Material>();
             foreach (var renderer in GetRendererList(gameObject))
-            foreach (var material in GetMaterials(gameObject, renderer))
-                if (material.NameFormatted() == materialName)
-                    materials.Add(material);
+                foreach (var material in GetMaterials(gameObject, renderer))
+                    if (material.NameFormatted() == materialName)
+                        materials.Add(material);
 
             foreach (var projector in GetProjectorList(gameObject))
                 materials.Add(projector.material);
@@ -183,6 +183,11 @@ namespace MaterialEditorAPI
             }
         }
 
+        /// <summary>
+        /// Removes a specific material from the specified GameObject's renderers.
+        /// </summary>
+        /// <param name="gameObject">The GameObject whose renderers will be searched for the material.</param>
+        /// <param name="material">The material to be removed.</param>
         public static void RemoveMaterial(GameObject gameObject, Material material)
         {
             foreach (var renderer in GetRendererList(gameObject))
@@ -436,6 +441,13 @@ namespace MaterialEditorAPI
 #endif
         }
 
+        /// <summary>
+        /// Recalculates the normals of a SkinnedMeshRenderer's mesh.
+        /// </summary>
+        /// <param name="gameObject">The GameObject containing the renderer.</param>
+        /// <param name="rendererName">The name of the renderer to modify.</param>
+        /// <param name="value">If true, recalculates the normals; otherwise, does nothing.</param>
+        /// <returns>True if the normals were recalculated; otherwise, false.</returns>
         public static bool SetRendererRecalculateNormals(GameObject gameObject, string rendererName, bool value)
         {
             bool didSet = false;
@@ -742,12 +754,13 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
-        /// Set the shader of a material. Can only be set to a shader that has been loaded by MaterialEditor
+        /// Set the shader of a material. Can only be set to a shader that has been loaded by MaterialEditor.
         /// </summary>
-        /// <param name="gameObject">GameObject to search for the renderer</param>
-        /// <param name="materialName">Name of the material being modified</param>
-        /// <param name="shaderName">Name of the shader to be set</param>
-        /// <returns>True if the value was set, false if it could not be set</returns>
+        /// <param name="gameObject">The GameObject to search for the renderer.</param>
+        /// <param name="materialName">The name of the material being modified.</param>
+        /// <param name="shaderName">The name of the shader to be set.</param>
+        /// <param name="preserveRenderQueue">Indicates whether to preserve the render queue of the material (if it's not specified in shaderData).</param>
+        /// <returns>True if the shader was successfully set; otherwise, false.</returns>
         public static bool SetShader(GameObject gameObject, string materialName, string shaderName, bool preserveRenderQueue = false)
         {
             bool didSet = false;

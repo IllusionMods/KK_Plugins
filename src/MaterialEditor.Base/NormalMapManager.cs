@@ -111,7 +111,6 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Convert a normal map texture from grey to red by setting the entire red color channel to white
         /// </summary>
-        /// </summary>
         /// <param name="src">Texture to convert</param>
         /// <returns>Converted Texture</returns>
         protected virtual Texture ConvertNormalMap(Texture src)

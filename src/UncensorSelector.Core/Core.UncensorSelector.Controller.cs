@@ -208,14 +208,11 @@ namespace KK_Plugins
             public void UpdateSkinLine() => SetLineVisibility();
             public void UpdateSkinGloss() => SetSkinGloss();
 #if KK || EC
+            private static readonly System.Reflection.PropertyInfo _ExTypeProp = typeof(ChaInfo).GetProperty(nameof(ChaInfo.exType), AccessTools.all);
             /// <summary>
             /// Returns the exType or 0 if the exType field does not exists for cross version compatibility
             /// </summary>
-            private static int ExType(ChaControl chaControl) => typeof(ChaControl).GetProperties(AccessTools.all).Any(p => p.Name == "exType") ? ExType_internal(chaControl) : 0;
-            /// <summary>
-            /// In a separate method to avoid missing method exception
-            /// </summary>
-            private static int ExType_internal(ChaControl chaControl) => chaControl.exType;
+            private static int ExType(ChaControl chaControl) => _ExTypeProp != null ? (int)_ExTypeProp.GetValue(chaControl, null) : 0;
 #else
             private static int ExType(ChaControl _) => 0;
 #endif
@@ -623,10 +620,10 @@ namespace KK_Plugins
 
 #if AI || HS2
             private bool? _lastUpdatedMonochromeState;
-            private void Update()
+            protected override void Update()
             {
-                base.Update();
                 UpdateMonochromeBody(false);
+                base.Update();
             }
 #endif
             /// <summary>

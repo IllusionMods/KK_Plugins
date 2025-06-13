@@ -12,7 +12,7 @@ namespace MaterialEditorAPI
 
         public string TooltipText;
 
-        private void Start()
+        public override void Start()
         {
             onPointerEnter = (e) => { TooltipManager.SetToolTipText(TooltipText, true); };
             onPointerExit = (e) => { TooltipManager.SetActive(false); };

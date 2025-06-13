@@ -442,7 +442,7 @@ namespace KK_Plugins
 
             foreach (var manifest in loadedManifests.Values)
             {
-                XDocument manifestDocument = manifest.manifestDocument;
+                XDocument manifestDocument = manifest.ManifestDocument;
                 XElement uncensorSelectorElement = manifestDocument?.Root?.Element(PluginNameInternal);
                 if (uncensorSelectorElement != null && uncensorSelectorElement.HasElements)
                 {

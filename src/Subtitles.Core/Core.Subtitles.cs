@@ -49,7 +49,6 @@ namespace KK_Plugins
 
 #if KK || KKS
         internal static ActionGame.Communication.Info ActionGameInfoInstance;
-        internal static Type HSceneType;
         internal static UnityEngine.Object HSceneInstance;
 #elif HS2
         internal static HScene HSceneInstance;

@@ -33,7 +33,11 @@ namespace KK_Plugins
             /// </summary>
             private static string CheckOverride(ChaListDefine.KeyType keyType)
             {
+#pragma warning disable KKANAL01
+#pragma warning disable KKANAL03
                 if (keyType == ChaListDefine.KeyType.NotBra || keyType == ChaListDefine.KeyType.Coordinate || keyType == ChaListDefine.KeyType.HideShorts)
+#pragma warning restore KKANAL03
+#pragma warning restore KKANAL01
                 {
                     if (chaControl == null) return null;
                     var controller = GetController(chaControl);

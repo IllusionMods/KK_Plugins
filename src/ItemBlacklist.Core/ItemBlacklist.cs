@@ -106,6 +106,9 @@ namespace KK_Plugins
                 foreach (var modElement in itemGroup.Elements("mod"))
                 {
                     string guid = modElement.Attribute("guid")?.Value;
+                    if (string.IsNullOrEmpty(guid))
+                        Logger.LogWarning("Missing guid! Element: " + modElement);
+
                     foreach (var categoryElement in modElement.Elements("category"))
                     {
                         if (int.TryParse(categoryElement.Attribute("number")?.Value, out int category))
@@ -163,7 +166,7 @@ namespace KK_Plugins
             }
 
             var retryCount = 3;
-        retry:
+retry:
             try
             {
                 using (var fs = new FileStream(file, FileMode.Create, FileAccess.ReadWrite))
