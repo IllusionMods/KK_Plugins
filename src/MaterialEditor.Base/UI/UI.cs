@@ -35,7 +35,6 @@ namespace MaterialEditorAPI
         private static ScrollRect MaterialEditorScrollableUI;
         private static InputField FilterInputField;
 
-        internal static TooltipManager MaterialEditorTooltip;
         private static Button ViewListButton;
         private static SelectListPanel MaterialEditorRendererList;
         private static List<Renderer> SelectedRenderers = new List<Renderer>();
@@ -362,6 +361,7 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="go">GameObject for which to read the renderers</param>
         /// <param name="material">Material to be renamed</param>
+        /// <param name="data">Object that will be passed through to the get/set/reset events</param>
         private void PopulateRenameList(GameObject go, Material material, object data)
         {
             SelectedMaterialRenderers.Clear();
