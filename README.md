@@ -28,6 +28,8 @@ Make sure you download the version for your game (the first part before _ is the
 
 If a plugin is listed but it's not a link, then it's either experimental or obsolete. You will need to compile it from source yourself, and you will not get any support.
 
+You can get the latest nightly builds of all plugins from the [CI workflow](https://github.com/IllusionMods/KK_Plugins/actions/workflows/ci.yaml). Open the latest successful run and download the build from the Artifacts section.
+
 #### CharaMakerLoadedSound
 
 - [KK_CharaMakerLoadedSound]
