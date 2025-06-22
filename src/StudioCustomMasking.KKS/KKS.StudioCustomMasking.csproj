@@ -36,6 +36,7 @@
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule" Version="2019.4.9" />
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.38.0" />
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
+    <PackageReference Include="ScreenshotManager.KoikatsuSunshine" Version="19.3.3" />
   </ItemGroup>
   <Import Project="..\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

@@ -37,6 +37,7 @@
     <PackageReference Include="IllusionLibs.BepInEx.MonoMod" Version="22.1.29.1" />
     <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.38.0" />
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
+    <PackageReference Include="ScreenshotManager.AIGirl" Version="19.3.3" />
   </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
