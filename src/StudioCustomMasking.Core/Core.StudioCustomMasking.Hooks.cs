@@ -34,17 +34,5 @@ namespace KK_Plugins.StudioCustomMasking
                 StudioCustomMasking.HideLines = false;
             }
         }
-
-        internal static void ScreencapHook()
-        {
-            StudioCustomMasking.HideLines = true;
-
-            StudioCustomMasking.Instance.StartCoroutine(Reset());
-            IEnumerator Reset()
-            {
-                yield return null;
-                StudioCustomMasking.HideLines = false;
-            }
-        }
     }
 }
