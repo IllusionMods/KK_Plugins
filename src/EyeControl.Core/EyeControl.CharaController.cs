@@ -37,6 +37,29 @@ namespace KK_Plugins
             }
         }
 
+        private float _EyeOpenMin;
+        public float EyeOpenMin
+        {
+            get => _EyeOpenMin;
+            set
+            {
+                _EyeOpenMin = value;
+#if KK || EC || KKS
+                if (MakerAPI.InsideAndLoaded)
+                    ChaControl.ChangeEyesOpenMax(ChaCustom.CustomBase.Instance.customCtrl.cmpDrawCtrl.sldEyesOpen.value);
+                else
+#endif
+                //Do not apply the change to the character in Studio. It is only applied once when the character is added to a scene.
+                if (EyeControl.InsideStudio)
+                { }
+                else
+                    ChaControl.ChangeEyesOpenMax(value);
+
+                if (MakerAPI.InsideAndLoaded)
+                    EyeControl.EyeOpenMinSlider.SetValue(value);
+            }
+        }
+
         private bool _DisableBlinking;
         /// <summary>
         /// Get or set the disable blinking value which will be saved and loaded with the card.
@@ -66,15 +89,16 @@ namespace KK_Plugins
 
         protected override void OnCardBeingSaved(GameMode currentGameMode)
         {
-            if (EyeOpenMax == 1f && DisableBlinking == false)
+            if (EyeOpenMin == 0 && EyeOpenMax == 1f && DisableBlinking == false)
             {
                 SetExtendedData(null);
             }
             else
             {
                 var data = new PluginData();
-                data.data.Add("EyeOpenMax", EyeOpenMax);
-                data.data.Add("DisableBlinking", DisableBlinking);
+                data.data.Add(nameof(EyeOpenMax), EyeOpenMax);
+                data.data.Add(nameof(EyeOpenMin), EyeOpenMin);
+                data.data.Add(nameof(DisableBlinking), DisableBlinking);
                 SetExtendedData(data);
             }
         }
@@ -99,15 +123,15 @@ namespace KK_Plugins
         private void LoadExtendedSaveData()
         {
             EyeOpenMax = 1f;
+            EyeOpenMin = 0;
             DisableBlinking = false;
 
             var data = GetExtendedData();
             if (data != null)
             {
-                if (data.data.TryGetValue("EyeOpenMax", out var loadedEyeOpenMax))
-                    EyeOpenMax = (float)loadedEyeOpenMax;
-                if (data.data.TryGetValue("DisableBlinking", out var loadedDisableBlinking))
-                    DisableBlinking = (bool)loadedDisableBlinking;
+                if (data.data.TryGetValue(nameof(EyeOpenMax), out var loadedEyeOpenMax)) EyeOpenMax = (float)loadedEyeOpenMax;
+                if (data.data.TryGetValue(nameof(EyeOpenMin), out var loadedEyeOpenMin)) EyeOpenMin = (float)loadedEyeOpenMin;
+                if (data.data.TryGetValue(nameof(DisableBlinking), out var loadedDisableBlinking)) DisableBlinking = (bool)loadedDisableBlinking;
             }
         }
     }

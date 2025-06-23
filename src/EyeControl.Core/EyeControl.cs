@@ -22,6 +22,7 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
 
         internal static MakerSlider EyeOpenMaxSlider;
+        internal static MakerSlider EyeOpenMinSlider;
         internal static MakerToggle DisableBlinkingToggle;
 
 #if EC
@@ -35,23 +36,10 @@ namespace KK_Plugins
             Logger = base.Logger;
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
-            MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;
             CharacterApi.RegisterExtraBehaviour<EyeControlCharaController>(GUID);
             Hooks.ApplyHooks();
         }
-
-        /// <summary>
-        /// Set the values based on the loaded character once the character maker finishes loading
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MakerAPI_MakerFinishedLoading(object sender, System.EventArgs e)
-        {
-            var controller = GetCharaController(MakerAPI.GetCharacterControl());
-            EyeOpenMaxSlider.SetValue(controller.EyeOpenMax);
-            DisableBlinkingToggle.SetValue(controller.DisableBlinking);
-        }
-
+        
         /// <summary>
         /// Register the custom controls
         /// </summary>
@@ -65,9 +53,11 @@ namespace KK_Plugins
             var category = MakerConstants.Face.Eyes;
 #endif
             EyeOpenMaxSlider = e.AddControl(new MakerSlider(category, "Eye Open Max", 0, 1, 1, this));
-            EyeOpenMaxSlider.ValueChanged.Subscribe(value => GetCharaController(MakerAPI.GetCharacterControl()).EyeOpenMax = value);
+            EyeOpenMaxSlider.BindToFunctionController<EyeControlCharaController, float>(c => c.EyeOpenMax, (c, v) => c.EyeOpenMax = v);
+            EyeOpenMinSlider = e.AddControl(new MakerSlider(category, "Eye Open Min", 0, 1, 0, this));
+            EyeOpenMinSlider.BindToFunctionController<EyeControlCharaController, float>(c => c.EyeOpenMin, (c, v) => c.EyeOpenMin = v);
             DisableBlinkingToggle = e.AddControl(new MakerToggle(category, "Disable Character Blinking", this));
-            DisableBlinkingToggle.ValueChanged.Subscribe(value => GetCharaController(MakerAPI.GetCharacterControl()).DisableBlinking = value);
+            DisableBlinkingToggle.BindToFunctionController<EyeControlCharaController, bool>(c => c.DisableBlinking, (c, v) => c.DisableBlinking = v);
         }
 
         /// <summary>

@@ -26,12 +26,16 @@ namespace KK_Plugins
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeEyesOpenMax))]
             private static void ChaControl_ChangeEyesOpenMax(ChaControl __instance, ref float maxValue)
             {
-                if (EyeControl.InsideStudio)
-                    return;
+                var controller = EyeControl.GetCharaController(__instance);
 
-                float eyeOpenMax = EyeControl.GetCharaController(__instance).EyeOpenMax;
-                if (maxValue > eyeOpenMax)
-                    maxValue = eyeOpenMax;
+                __instance.eyesCtrl.OpenMin = controller.EyeOpenMin;
+
+                if (!EyeControl.InsideStudio)
+                {
+                    float eyeOpenMax = controller.EyeOpenMax;
+                    if (maxValue > eyeOpenMax)
+                        maxValue = eyeOpenMax;
+                }
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeEyesBlinkFlag))]
