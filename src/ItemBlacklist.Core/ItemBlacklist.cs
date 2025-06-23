@@ -27,7 +27,7 @@ namespace KK_Plugins
         public const string GUID = "com.deathweasel.bepinex.itemblacklist";
         public const string PluginName = "Item Blacklist";
         public const string PluginNameInternal = "KK_ItemBlacklist";
-        public const string Version = "3.0";
+        public const string Version = "3.0.1";
         internal const string BaseGameItemGuid = "[['BASE'GAME'ITEM']]";
         internal static new ManualLogSource Logger;
 
