@@ -181,11 +181,16 @@ namespace KK_Plugins.MaterialEditor
             var accessories = chaControl.GetAccessoryObjects();
             for (var i = 0; i < accessories.Length; i++)
                 if (accessories[i] != null)
+                {
+                    string optionName = $"Accessory {AccessoryIndexToString(i)}";
 #if !PH
-                    ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(i)} {chaControl.infoAccessory[i].Name}"));
+                    if (i < chaControl.infoAccessory.Length)
+                        optionName += $" {chaControl.infoAccessory[i].Name}";
+                    ItemTypeDropDown.options.Add(new Dropdown.OptionData(optionName));
 #else
-                    ItemTypeDropDown.options.Add(new Dropdown.OptionData($"Accessory {AccessoryIndexToString(i)}"));
+                    ItemTypeDropDown.options.Add(new Dropdown.OptionData(optionName));
 #endif
+                }
         }
 
         private void ChangeItemType(int selectedItem, ChaControl chaControl)
