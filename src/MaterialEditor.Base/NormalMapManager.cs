@@ -36,8 +36,9 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="tex">Texture to convert</param>
         /// <param name="propertyName">Name of the property. Checks against the NormalMapProperties list and will not convert unless it matches.</param>
+        /// <param name="unpack">Whether to unpack the compressed normal or not (red normalmap to blue/purple)</param>
         /// <returns>True if the texture was converted</returns>
-        public bool ConvertNormalMap(ref Texture tex, string propertyName)
+        public bool ConvertNormalMap(ref Texture tex, string propertyName, bool unpack)
         {
             try
             {
@@ -48,6 +49,14 @@ namespace MaterialEditorAPI
                     return false;
 
                 Texture normalTex;
+
+                //This will only ever be triggered when exporting a normalmap
+                //So not being cached is not a problem
+                if (unpack)
+                {
+                    tex = ConvertNormalMap(tex, true);
+                    return true;
+                }
 
                 if (_convertedNormalMap.TryGetValue(tex, out var normalMapRef))
                 {
@@ -94,6 +103,17 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
+        /// Convert a normal map texture from grey to red by setting the entire red color channel to white
+        /// </summary>
+        /// <param name="tex">Texture to convert</param>
+        /// <param name="propertyName">Name of the property. Checks against the NormalMapProperties list and will not convert unless it matches.</param>
+        /// <returns>True if the texture was converted</returns>
+        public bool ConvertNormalMap(ref Texture tex, string propertyName)
+        {
+            return ConvertNormalMap(ref tex, propertyName, false);
+        }
+
+        /// <summary>
         /// Determine if the texture has been broken.
         /// 
         /// An object that is not a texture is set as a texture property.
@@ -113,7 +133,7 @@ namespace MaterialEditorAPI
         /// </summary>
         /// <param name="src">Texture to convert</param>
         /// <returns>Converted Texture</returns>
-        protected virtual Texture ConvertNormalMap(Texture src)
+        protected virtual Texture ConvertNormalMap(Texture src, bool unpack = false)
         {
             Texture2D readableTex = MakeTextureReadable(src);
 

@@ -69,6 +69,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         private static Material NormalMapConvertMaterial;
         private static Material NormalMapOpenGLConvertMaterial;
+        private static Material NormalMapUnpackDXT5Material;
 
 #if KK || EC || KKS
         internal static ConfigEntry<bool> RimRemover { get; private set; }
@@ -915,8 +916,10 @@ namespace KK_Plugins.MaterialEditor
             AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_Plugins)}.Resources.normal_convert.unity3d"));
             var shader = bundle.LoadAsset<Shader>("normal_convert");
             var shader_opengl = bundle.LoadAsset<Shader>("normal_convert_opengl");
+            var unpack_shader = bundle.LoadAsset<Shader>("unpack_normal");
             NormalMapConvertMaterial = new Material(shader);
             NormalMapOpenGLConvertMaterial = new Material(shader_opengl);
+            NormalMapUnpackDXT5Material = new Material(unpack_shader);
         }
 
 #if EC || KKS
@@ -1006,10 +1009,15 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-        protected override Texture ConvertNormalMap(Texture tex)
+        protected override Texture ConvertNormalMap(Texture tex, bool unpack = false)
         {
             var material = NormalMapConvertMaterial;
-            if (IsUncompressedNormalMap(tex))
+            if (unpack)
+            {
+                MaterialEditorPluginBase.Logger.LogInfo("Unpacking Normal");
+                material = NormalMapUnpackDXT5Material;
+            }
+            else if (IsUncompressedNormalMap(tex))
                 material = NormalMapOpenGLConvertMaterial;
             RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
             rt.useMipMap = true;

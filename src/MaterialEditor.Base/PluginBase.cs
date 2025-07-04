@@ -125,6 +125,10 @@ namespace MaterialEditorAPI
         /// Controls the max value of the slider for this projector property
         /// </summary>
         public static ConfigEntry<float> ProjectorOrthographicSizeMax { get; set; }
+        /// <summary>
+        /// When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals
+        /// </summary>
+        public static ConfigEntry<bool> ConvertNormalmapsOnExport { get; set; }
         
         /// <summary>
         /// Init logic, do not call
@@ -149,6 +153,7 @@ namespace MaterialEditorAPI
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
             SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by their types.");
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
+            ConvertNormalmapsOnExport = Config.Bind("Config", "Convert Normalmaps On Export", true, new ConfigDescription("When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals"));
 
             //Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
