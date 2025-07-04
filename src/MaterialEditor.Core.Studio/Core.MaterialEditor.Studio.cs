@@ -186,10 +186,8 @@ namespace KK_Plugins.MaterialEditor
 #if !PH
                     if (i < chaControl.infoAccessory.Length)
                         optionName += $" {chaControl.infoAccessory[i].Name}";
-                    ItemTypeDropDown.options.Add(new Dropdown.OptionData(optionName));
-#else
-                    ItemTypeDropDown.options.Add(new Dropdown.OptionData(optionName));
 #endif
+                    ItemTypeDropDown.options.Add(new Dropdown.OptionData(optionName));
                 }
         }
 
