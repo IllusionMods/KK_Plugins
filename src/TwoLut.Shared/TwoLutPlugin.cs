@@ -17,12 +17,14 @@ namespace KK_Plugins
 {
     // Based on TwoLut.dll by essu
     [BepInProcess(Constants.StudioProcessName)]
+    [BepInDependency(KKAPI.KoikatuAPI.GUID, KKAPI.KoikatuAPI.VersionConst)]
+    [BepInDependency(Sideloader.Sideloader.GUID, Sideloader.Sideloader.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class TwoLutPlugin : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.twolut";
         public const string PluginName = "Two Luts in Studio";
-        public const string Version = "1.0";
+        public const string Version = "1.0.1";
         public const string PluginNameInternal = Constants.Prefix + "_TwoLut";
 
         internal static new ManualLogSource Logger;
@@ -164,7 +166,7 @@ namespace KK_Plugins
                             CurrentLut2LocalSlot = slotInt;
                             break;
                         }
-                        var resolveInfo = UniversalAutoResolver.LoadedStudioResolutionInfo.FirstOrDefault(x => x.ResolveItem && x.GUID == guidStr && x.Slot == slotInt);
+                        var resolveInfo = UniversalAutoResolver.GetStudioResolveInfos(guidStr, slotInt, true).FirstOrDefault();
                         // If resolve info is not found (mod missing), try falling back to using the slot as it is
                         CurrentLut2LocalSlot = resolveInfo?.LocalSlot ?? slotInt;
                         break;
@@ -187,7 +189,7 @@ namespace KK_Plugins
                 {
                     pluginData = new PluginData();
 
-                    var resolveInfo = UniversalAutoResolver.LoadedStudioResolutionInfo.FirstOrDefault(x => x.ResolveItem && x.LocalSlot == CurrentLut2LocalSlot);
+                    var resolveInfo = UniversalAutoResolver.GetStudioResolveInfos(CurrentLut2LocalSlot, true).FirstOrDefault();
                     if (resolveInfo != null)
                     {
                         pluginData.data[DataKeyGuid] = resolveInfo.GUID;

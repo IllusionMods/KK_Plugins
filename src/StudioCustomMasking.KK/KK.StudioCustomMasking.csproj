@@ -29,6 +29,7 @@
     <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.38.0" />
     <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
+    <PackageReference Include="ScreenshotManager.Koikatu" Version="19.3.3" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />

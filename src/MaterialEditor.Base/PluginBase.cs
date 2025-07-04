@@ -18,11 +18,17 @@ namespace MaterialEditorAPI
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
     public partial class MaterialEditorPluginBase : BaseUnityPlugin
     {
+        /// <summary>
+        /// Logger instance for the plugin
+        /// </summary>
         public static new ManualLogSource Logger;
+        /// <summary>
+        /// Singleton instance of the plugin
+        /// </summary>
         public static MaterialEditorPluginBase Instance;
 
         /// <summary>
-        /// Path where textures will be exported
+        /// Default path where textures will be exported
         /// </summary>
         public static string ExportPathDefault = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
         /// <summary>
@@ -34,30 +40,99 @@ namespace MaterialEditorAPI
         /// </summary>
         public static CopyContainer CopyData = new CopyContainer();
 
+        /// <summary>
+        /// Dictionary of loaded shaders
+        /// </summary>
         public static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
+        /// <summary>
+        /// Sorted dictionary of XML shader properties
+        /// </summary>
         public static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
+        /// <summary>
+        /// Configuration entry for ME window scale
+        /// </summary>
         public static ConfigEntry<float> UIScale { get; set; }
+        /// <summary>
+        /// Configuration entry for ME window width
+        /// </summary>
         public static ConfigEntry<float> UIWidth { get; set; }
+        /// <summary>
+        /// Configuration entry for ME window height
+        /// </summary>
         public static ConfigEntry<float> UIHeight { get; set; }
+        /// <summary>
+        /// Configuration entry for width of the renderer/materials lists to the side of the window
+        /// </summary>
         public static ConfigEntry<float> UIListWidth { get; set; }
+        /// <summary>
+        /// Configuration entry for sensitivity of dragging labels to edit float values
+        /// </summary>
         public static ConfigEntry<float> DragSensitivity { get; set; }
+        /// <summary>
+        /// Configuration entry for watching for file changes and reloading textures on change
+        /// </summary>
         public static ConfigEntry<bool> WatchTexChanges { get; set; }
+        /// <summary>
+        /// Replaces every loaded shader with the MaterialEditor copy of the shader
+        /// </summary>
         public static ConfigEntry<bool> ShaderOptimization { get; set; }
+        /// <summary>
+        /// Skinned meshes will be exported in their current state with all customization applied as well as in the current pose
+        /// </summary>
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
+        /// <summary>
+        /// When enabled, objects will be exported with their position changes intact so that, i.e. when exporting two objects they retain their position relative to each other
+        /// </summary>
         public static ConfigEntry<bool> ExportBakedWorldPosition { get; set; }
+        /// <summary>
+        /// Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}
+        /// </summary>
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
+        /// <summary>
+        /// Persist search filter across editor windows
+        /// </summary>
         public static ConfigEntry<bool> PersistFilter { get; set; }
+        /// <summary>
+        /// Whether to show tooltips or not
+        /// </summary>
         public static ConfigEntry<bool> Showtooltips { get; set; }
+        /// <summary>
+        /// Whether to sort shader properties by their types
+        /// </summary>
         public static ConfigEntry<bool> SortPropertiesByType { get; set; }
+        /// <summary>
+        /// Whether to sort shader properties by their names
+        /// </summary>
         public static ConfigEntry<bool> SortPropertiesByName { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorFarClipPlaneMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorFieldOfViewMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorAspectRatioMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorOrthographicSizeMax { get; set; }
+        /// <summary>
+        /// When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals
+        /// </summary>
         public static ConfigEntry<bool> ConvertNormalmapsOnExport { get; set; }
-
+        
+        /// <summary>
+        /// Init logic, do not call
+        /// </summary>
         public virtual void Awake()
         {
             Instance = this;
@@ -268,18 +343,43 @@ namespace MaterialEditorAPI
             RenderTexture.ReleaseTemporary(tmp);
         }
 
+        /// <summary>
+        /// Refreshes the property organization, which groups shader properties by their categories and sorts them based on the configuration settings.
+        /// </summary>
         protected static void RefreshPropertyOrganization()
         {
             PropertyOrganizer.Refresh();
         }
 
+        /// <summary>
+        /// Represents data for a shader, including its name, shader object, render queue, and optimization flag.
+        /// </summary>
         public class ShaderData
         {
+            /// <summary>
+            /// Name of the shader.
+            /// </summary>
             public string ShaderName;
+            /// <summary>
+            /// Shader object.
+            /// </summary>
             public Shader Shader;
+            /// <summary>
+            /// Render queue value for the shader. Null if not specified.
+            /// </summary>
             public int? RenderQueue;
+            /// <summary>
+            /// Indicates whether shader optimization is enabled.
+            /// </summary>
             public bool ShaderOptimization;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShaderData"/> class.
+            /// </summary>
+            /// <param name="shader">The shader object.</param>
+            /// <param name="shaderName">The name of the shader.</param>
+            /// <param name="renderQueue">The render queue value as a string. Defaults to an empty string.</param>
+            /// <param name="shaderOptimization">The shader optimization flag as a string. Defaults to null.</param>
             public ShaderData(Shader shader, string shaderName, string renderQueue = "", string shaderOptimization = null)
             {
                 Shader = shader;
@@ -299,17 +399,55 @@ namespace MaterialEditorAPI
             }
         }
 
+        /// <summary>
+        /// Represents data for a shader property, including its name, type, default values, visibility, range, and category.
+        /// </summary>
         public class ShaderPropertyData
         {
+            /// <summary>
+            /// Name of the shader property.
+            /// </summary>
             public string Name;
+            /// <summary>
+            /// Type of the shader property.
+            /// </summary>
             public ShaderPropertyType Type;
+            /// <summary>
+            /// Default value of the shader property.
+            /// </summary>
             public string DefaultValue;
+            /// <summary>
+            /// Default value of the shader property when loaded from an asset bundle.
+            /// </summary>
             public string DefaultValueAssetBundle;
+            /// <summary>
+            /// Indicates whether the shader property is hidden.
+            /// </summary>
             public bool Hidden;
+            /// <summary>
+            /// Minimum value of the shader property, if applicable.
+            /// </summary>
             public float? MinValue;
+            /// <summary>
+            /// Maximum value of the shader property, if applicable.
+            /// </summary>
             public float? MaxValue;
+            /// <summary>
+            /// Category of the shader property.
+            /// </summary>
             public string Category;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShaderPropertyData"/> class.
+            /// </summary>
+            /// <param name="name">Name of the shader property.</param>
+            /// <param name="type">Type of the shader property.</param>
+            /// <param name="defaultValue">Default value of the shader property.</param>
+            /// <param name="defaultValueAB">Default value of the shader property when loaded from an asset bundle.</param>
+            /// <param name="hidden">Indicates whether the shader property is hidden.</param>
+            /// <param name="minValue">Minimum value of the shader property.</param>
+            /// <param name="maxValue">Maximum value of the shader property.</param>
+            /// <param name="category">Category of the shader property.</param>
             public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string hidden = null, string minValue = null, string maxValue = null, string category = null)
             {
                 Name = name;

@@ -61,7 +61,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.13";
+        public const string PluginVersion = "3.13.1";
 
 
         /// <summary>
@@ -723,9 +723,9 @@ namespace KK_Plugins.MaterialEditor
             var loadedManifests = Sideloader.Sideloader.Manifests;
             foreach (var manifest in loadedManifests.Values)
             {
-                var element = manifest.manifestDocument?.Root?.Element("MaterialEditor");
+                var element = manifest.ManifestDocument?.Root?.Element("MaterialEditor");
                 if (element == null)
-                    element = manifest.manifestDocument?.Root?.Element(PluginNameInternal);
+                    element = manifest.ManifestDocument?.Root?.Element(PluginNameInternal);
                 if (element != null)
                 {
                     //Convert XElement in to XmlElement

@@ -482,7 +482,11 @@ namespace KK_Plugins
                     if (infoBra != null)
                     {
                         var coordId = infoBra.GetInfoInt(ChaListDefine.KeyType.Coordinate) == 2 ? 1 : 0;
+#pragma warning disable KKANAL01
+#pragma warning disable KKANAL03
                         if (infoBra.dictInfo.TryGetValue((int)ChaListDefine.KeyType.MabUV, out var b)) coordId = b == "1" ? 1 : 0;
+#pragma warning restore KKANAL03
+#pragma warning restore KKANAL01
 
                         if (Owner.rendBra[0] != null)
                         {
