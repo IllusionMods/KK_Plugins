@@ -1034,6 +1034,8 @@ namespace KK_Plugins.MaterialEditor
             rt.autoGenerateMips = true;
             Graphics.Blit(tex, rt, material);
             rt.wrapMode = tex.wrapMode;
+            rt.anisoLevel = tex.anisoLevel;
+            rt.filterMode = tex.filterMode;
 
             return rt;
         }
