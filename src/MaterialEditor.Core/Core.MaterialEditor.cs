@@ -230,7 +230,7 @@ namespace KK_Plugins.MaterialEditor
 #if KK || KKS
             //Hook to delete properties of an outfit that gets removed
             var moreOutfitsType = Type.GetType($"KK_Plugins.MoreOutfits.Plugin, {Constants.Prefix}_MoreOutfits");
-            if(moreOutfitsType != null)
+            if (moreOutfitsType != null)
             {
                 var method = moreOutfitsType.GetMethod("RemoveCoordinateSlot", AccessTools.all);
                 if (method != null)
@@ -772,11 +772,12 @@ namespace KK_Plugins.MaterialEditor
                             ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), shaderPropertyElement.GetAttribute("Type"));
                             string defaultValue = shaderPropertyElement.GetAttribute("DefaultValue");
                             string defaultValueAB = shaderPropertyElement.GetAttribute("DefaultValueAssetBundle");
-                            string hidden = shaderPropertyElement.GetAttribute("Hidden");
+                            string anisoLevel = shaderPropertyElement.GetAttribute("AnisoLevel");
+                            string filterMode = shaderPropertyElement.GetAttribute("FilterMode");
+                            string wrapMode = shaderPropertyElement.GetAttribute("WrapMode");
                             string range = shaderPropertyElement.GetAttribute("Range");
                             string min = null;
                             string max = null;
-                            string category = shaderPropertyElement.GetAttribute("Category");
                             if (!range.IsNullOrWhiteSpace())
                             {
                                 var rangeSplit = range.Split(',');
@@ -786,7 +787,16 @@ namespace KK_Plugins.MaterialEditor
                                     max = rangeSplit[1];
                                 }
                             }
-                            ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max, category);
+                            string hidden = shaderPropertyElement.GetAttribute("Hidden");
+                            string category = shaderPropertyElement.GetAttribute("Category");
+
+                            ShaderPropertyData shaderPropertyData = new ShaderPropertyData(
+                                propertyName, propertyType,
+                                defaultValue, defaultValueAB,
+                                anisoLevel, filterMode, wrapMode,
+                                min, max,
+                                hidden, category
+                            );
 
                             XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                             XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;

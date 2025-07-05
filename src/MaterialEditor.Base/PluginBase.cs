@@ -129,7 +129,7 @@ namespace MaterialEditorAPI
         /// When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals
         /// </summary>
         public static ConfigEntry<bool> ConvertNormalmapsOnExport { get; set; }
-        
+
         /// <summary>
         /// Init logic, do not call
         /// </summary>
@@ -259,11 +259,12 @@ namespace MaterialEditorAPI
                                                 ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), shaderPropertyElement.GetAttribute("Type"));
                                                 string defaultValue = shaderPropertyElement.GetAttribute("DefaultValue");
                                                 string defaultValueAB = shaderPropertyElement.GetAttribute("DefaultValueAssetBundle");
-                                                string hidden = shaderPropertyElement.GetAttribute("Hidden");
+                                                string anisoLevel = shaderPropertyElement.GetAttribute("AnisoLevel");
+                                                string filterMode = shaderPropertyElement.GetAttribute("FilterMode");
+                                                string wrapMode = shaderPropertyElement.GetAttribute("WrapMode");
                                                 string range = shaderPropertyElement.GetAttribute("Range");
                                                 string min = null;
                                                 string max = null;
-                                                string category = shaderPropertyElement.GetAttribute("Category");
                                                 if (!range.IsNullOrWhiteSpace())
                                                 {
                                                     var rangeSplit = range.Split(',');
@@ -273,7 +274,16 @@ namespace MaterialEditorAPI
                                                         max = rangeSplit[1];
                                                     }
                                                 }
-                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max, category);
+                                                string hidden = shaderPropertyElement.GetAttribute("Hidden");
+                                                string category = shaderPropertyElement.GetAttribute("Category");
+
+                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(
+                                                    propertyName, propertyType,
+                                                    defaultValue, defaultValueAB,
+                                                    anisoLevel, filterMode, wrapMode,
+                                                    min, max,
+                                                    hidden, category
+                                                );
 
                                                 XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                                             }
@@ -417,21 +427,33 @@ namespace MaterialEditorAPI
             /// </summary>
             public string DefaultValue;
             /// <summary>
-            /// Default value of the shader property when loaded from an asset bundle.
+            /// Default value of the shader property when loaded from an asset bundle, like a texture.
             /// </summary>
             public string DefaultValueAssetBundle;
+            /// <summary>
+            /// Should only be used with texture properties. The `anisoLevel` of the texture, 0-16.
+            /// </summary>
+            public int? AnisoLevel;
+            /// <summary>
+            /// Should only be used with texture properties. The `filterMode` of the texture.
+            /// </summary>
+            public FilterMode? FilterMode;
+            /// <summary>
+            /// Should only be used with texture properties. The `wrapMode` of the texture.
+            /// </summary>
+            public TextureWrapMode? WrapMode;
+            /// <summary>
+            /// Should only be used with float properties. Minimum value displayed on the slider, if applicable.
+            /// </summary>
+            public float? MinValue;
+            /// <summary>
+            /// Should only be used with float properties. Maximum value displayed on the slider, if applicable.
+            /// </summary>
+            public float? MaxValue;
             /// <summary>
             /// Indicates whether the shader property is hidden.
             /// </summary>
             public bool Hidden;
-            /// <summary>
-            /// Minimum value of the shader property, if applicable.
-            /// </summary>
-            public float? MinValue;
-            /// <summary>
-            /// Maximum value of the shader property, if applicable.
-            /// </summary>
-            public float? MaxValue;
             /// <summary>
             /// Category of the shader property.
             /// </summary>
@@ -443,18 +465,45 @@ namespace MaterialEditorAPI
             /// <param name="name">Name of the shader property.</param>
             /// <param name="type">Type of the shader property.</param>
             /// <param name="defaultValue">Default value of the shader property.</param>
-            /// <param name="defaultValueAB">Default value of the shader property when loaded from an asset bundle.</param>
+            /// <param name="defaultValueAB">Default value of the shader property when loaded from an asset bundle, like a texture.</param>
+            /// <param name="anisoLevel">Should only be used with texture properties. The `anisoLevel` of the texture, 0-16.</param>
+            /// <param name="filterMode">Should only be used with texture properties. The `filterMode` of the texture.</param>
+            /// <param name="wrapMode">Should only be used with texture properties. The `wrapMode` of the texture.</param>
+            /// <param name="minValue">Should only be used with float properties. Minimum value displayed on the slider, if applicable.</param>
+            /// <param name="maxValue">Should only be used with float properties. Maximum value displayed on the slider, if applicable.</param>
             /// <param name="hidden">Indicates whether the shader property is hidden.</param>
-            /// <param name="minValue">Minimum value of the shader property.</param>
-            /// <param name="maxValue">Maximum value of the shader property.</param>
             /// <param name="category">Category of the shader property.</param>
-            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string hidden = null, string minValue = null, string maxValue = null, string category = null)
+            public ShaderPropertyData(
+                string name, ShaderPropertyType type,
+                string defaultValue = null, string defaultValueAB = null,
+                string anisoLevel = null, string filterMode = null, string wrapMode = null,
+                string minValue = null, string maxValue = null,
+                string hidden = null, string category = null
+                )
             {
                 Name = name;
                 Type = type;
                 DefaultValue = defaultValue.IsNullOrEmpty() ? null : defaultValue;
                 DefaultValueAssetBundle = defaultValueAB.IsNullOrEmpty() ? null : defaultValueAB;
-                Hidden = bool.TryParse(hidden, out bool result) && result;
+
+                if (!anisoLevel.IsNullOrWhiteSpace())
+                {
+                    int.TryParse(anisoLevel, out int outAnisoLevel);
+                    AnisoLevel = Mathf.Clamp(outAnisoLevel, 0, 16);
+                }
+
+                if (!filterMode.IsNullOrWhiteSpace())
+                {
+                    int.TryParse(filterMode, out int outFilterMode);
+                    if (Enum.IsDefined(typeof(FilterMode), outFilterMode)) FilterMode = (FilterMode)outFilterMode;
+                }
+
+                if (!wrapMode.IsNullOrWhiteSpace())
+                {
+                    int.TryParse(wrapMode, out int outWrapMode);
+                    if (Enum.IsDefined(typeof(TextureWrapMode), outWrapMode)) WrapMode = (TextureWrapMode)outWrapMode;
+                }
+
                 if (!minValue.IsNullOrWhiteSpace() && !maxValue.IsNullOrWhiteSpace())
                 {
                     if (float.TryParse(minValue, out float min) && float.TryParse(maxValue, out float max))
@@ -463,6 +512,8 @@ namespace MaterialEditorAPI
                         MaxValue = max;
                     }
                 }
+
+                Hidden = bool.TryParse(hidden, out bool result) && result;
                 Category = category;
             }
         }
