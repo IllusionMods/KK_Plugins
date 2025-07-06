@@ -42,7 +42,7 @@ namespace MaterialEditorAPI
         {
             try
             {
-                if (!NormalMapProperties.Any(x => propertyName.Contains(x)))
+                if (!NormalMapProperties.Contains(propertyName))
                     return false;
 
                 if (tex == null || IsBrokenTexture(tex))
