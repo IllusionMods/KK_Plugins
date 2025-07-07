@@ -42,7 +42,7 @@ namespace MaterialEditorAPI
         {
             try
             {
-                if (!NormalMapProperties.Any(x => propertyName.Contains(x)))
+                if (!NormalMapProperties.Contains(propertyName))
                     return false;
 
                 if (tex == null || IsBrokenTexture(tex))
@@ -159,6 +159,9 @@ namespace MaterialEditorAPI
                     Graphics.Blit(readableTex, rt);
                     RenderTexture.active = cur;
 
+                    rt.wrapMode = src.wrapMode;
+                    rt.anisoLevel = src.anisoLevel;
+                    rt.filterMode = src.filterMode;
                     return rt;
                 }
 

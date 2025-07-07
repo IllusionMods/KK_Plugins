@@ -664,6 +664,7 @@ namespace MaterialEditorAPI
                     //Add layer to mask
                     else if (!inMask && ignore)
                         projector.ignoreLayers |= (1 << layer);
+                    return true;
                 }
             }
             return false;
@@ -680,23 +681,38 @@ namespace MaterialEditorAPI
         public static bool SetTexture(GameObject gameObject, string materialName, string propertyName, Texture value)
         {
             bool didSet = false;
+            if (value == null) return didSet;
+
             var materials = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < materials.Count; i++)
             {
                 var material = materials[i];
-                if (material.HasProperty($"_{propertyName}"))
+                if (!material.HasProperty($"_{propertyName}")) continue; // Todo, should check if it is a texture
+
+                var oldTex = material.GetTexture($"_{propertyName}");
+                if (oldTex != null)
                 {
-                    if (value != null)
-                    {
-                        var tex = material.GetTexture($"_{propertyName}");
-                        if (tex == null)
-                            value.wrapMode = TextureWrapMode.Repeat;
-                        else
-                            value.wrapMode = tex.wrapMode;
-                    }
-                    material.SetTexture($"_{propertyName}", value);
-                    didSet = true;
+                    value.anisoLevel = oldTex.anisoLevel;
+                    value.filterMode = oldTex.filterMode;
+                    value.wrapMode = oldTex.wrapMode;
                 }
+                else
+                {
+                    // Texture default values
+                    value.anisoLevel = 1;
+                    value.filterMode = FilterMode.Bilinear;
+                    value.wrapMode = TextureWrapMode.Repeat;
+                }
+
+                // The shader has the final say over these properties, not the texture itself.
+                var texturePropertyData = MaterialEditorPluginBase.XMLShaderProperties[MaterialEditorPluginBase.XMLShaderProperties.ContainsKey(material.shader.NameFormatted()) ? material.shader.NameFormatted() : "default"]
+                .Where(p => p.Value.Name == propertyName && p.Value.Type == ShaderPropertyType.Texture).FirstOrDefault().Value;
+                if (texturePropertyData.AnisoLevel.HasValue) value.anisoLevel = texturePropertyData.AnisoLevel.Value;
+                if (texturePropertyData.FilterMode.HasValue) value.filterMode = texturePropertyData.FilterMode.Value;
+                if (texturePropertyData.WrapMode.HasValue) value.wrapMode = texturePropertyData.WrapMode.Value;
+
+                material.SetTexture($"_{propertyName}", value);
+                didSet = true;
             }
             return didSet;
         }
@@ -711,8 +727,8 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTextureOffset(GameObject gameObject, string materialName, string propertyName, Vector2? value)
         {
-            if (value == null) return false;
             bool didSet = false;
+            if (value == null) return didSet;
 
             var materials = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < materials.Count; i++)
@@ -737,8 +753,8 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTextureScale(GameObject gameObject, string materialName, string propertyName, Vector2? value)
         {
-            if (value == null) return false;
             bool didSet = false;
+            if (value == null) return didSet;
 
             var materials = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < materials.Count; i++)
@@ -764,13 +780,14 @@ namespace MaterialEditorAPI
         public static bool SetShader(GameObject gameObject, string materialName, string shaderName, bool preserveRenderQueue = false)
         {
             bool didSet = false;
-            if (shaderName.IsNullOrEmpty()) return false;
+            if (shaderName.IsNullOrEmpty()) return didSet;
+
             MaterialEditorPluginBase.LoadedShaders.TryGetValue(shaderName, out var shaderData);
 
             if (shaderData?.Shader == null)
             {
                 MaterialEditorPluginBase.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"Could not load shader:{shaderName}");
-                return false;
+                return didSet;
             }
             if (!MaterialEditorPluginBase.XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
                 shaderPropertyDataList = new Dictionary<string, MaterialEditorPluginBase.ShaderPropertyData>();
@@ -831,7 +848,7 @@ namespace MaterialEditorAPI
         public static bool SetRenderQueue(GameObject gameObject, string materialName, int? value)
         {
             bool didSet = false;
-            if (value == null) return false;
+            if (value == null) return didSet;
 
             var list = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < list.Count; i++)

@@ -63,6 +63,18 @@
       <Property Name="{{PropertyName}}" Type="Texture" DefaultValueAssetBundle="{{default_texture_asset_bundle_path.unity3d}}" DefaultValue="{{default_texture_asset_name}}"/>
       <!-- Example: <Property Name="PropertyName" Type="Texture" DefaultValueAssetBundle="shader_assets.unity3d" DefaultValue="default_texture_a"/> -->
       <!-- -->
+      <!-- Optional `AnisoLevel` attribute -->
+      <Property Name="{{PropertyName}}" Type="Texture" AnisoLevel="{{aniso_level: 0-16}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Texture" AnisoLevel="16"/> -->
+      <!-- -->
+      <!-- Optional `FilterMode` attribute -->
+      <Property Name="{{PropertyName}}" Type="Texture" FilterMode="{{filter_mode: Point = 0, Bilinear = 1, Trilinear = 2}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Texture" FilterMode="2"/> -->
+      <!-- -->
+       <!-- Optional `WrapMode` attribute -->
+      <Property Name="{{PropertyName}}" Type="Texture" WrapMode="{{wrap_mode: Repeat = 0, Clamp = 1, Mirror = 2, MirrorOnce = 3}}"/>
+      <!-- Example: <Property Name="PropertyName" Type="Texture" WrapMode="0"/> -->
+      <!-- -->
       <!-- Optional `Hidden` attribute -->
       <Property Name="{{PropertyName}}" Type="Texture" Hidden="{{boolean}}"/>
       <!-- Example: <Property Name="PropertyName" Type="Texture" Hidden="True"/> -->
