@@ -696,13 +696,13 @@ namespace MaterialEditorAPI
                     value.filterMode = oldTex.filterMode;
                     value.wrapMode = oldTex.wrapMode;
                 }
-                // else
-                // {
-                //     // Texture default values
-                //     value.anisoLevel = 1;
-                //     value.filterMode = FilterMode.Bilinear;
-                //     value.wrapMode = TextureWrapMode.Repeat;
-                // }
+                else
+                {
+                    // Texture default values
+                    value.anisoLevel = 1;
+                    value.filterMode = FilterMode.Bilinear;
+                    value.wrapMode = TextureWrapMode.Repeat;
+                }
 
                 // The shader has the final say over these properties, not the texture itself.
                 var texturePropertyData = MaterialEditorPluginBase.XMLShaderProperties[MaterialEditorPluginBase.XMLShaderProperties.ContainsKey(material.shader.NameFormatted()) ? material.shader.NameFormatted() : "default"]
