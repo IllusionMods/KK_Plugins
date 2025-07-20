@@ -27,24 +27,35 @@ namespace MaterialEditorAPI
             }
         }
 
+        private static Mesh GetMeshFromRenderer(Renderer rend)
+        {
+            switch (rend)
+            {
+                case MeshRenderer meshRenderer:
+                    return meshRenderer.GetComponent<MeshFilter>().mesh;
+                case SkinnedMeshRenderer skinnedMeshRenderer:
+                    return MaterialEditorPluginBase.ExportBakedMesh.Value ? BakeMesh(skinnedMeshRenderer) : skinnedMeshRenderer.sharedMesh;
+                default:
+                    return null;
+            }
+        }
+
+        private static Mesh BakeMesh(SkinnedMeshRenderer skinnedMeshRenderer)
+        {
+            var bakedMesh = new Mesh();
+            skinnedMeshRenderer.BakeMesh(bakedMesh);
+            return bakedMesh;
+        }
+
+        /// <summary>
+        /// Converts the mesh data from a given Renderer into an OBJ formatted string.
+        /// </summary>
+        /// <param name="rend">The Renderer containing the mesh to be converted to an OBJ string. Supported types include MeshRenderer and SkinnedMeshRenderer.</param>
+        /// <returns>A string representation of the mesh in OBJ format, or an empty string if the Renderer does not have a valid mesh.</returns>
         private static string MeshToObjString(Renderer rend)
         {
-            Mesh mesh;
-            if (rend is MeshRenderer meshRenderer)
-                mesh = meshRenderer.GetComponent<MeshFilter>().mesh;
-            else if (rend is SkinnedMeshRenderer skinnedMeshRenderer)
-            {
-                if (MaterialEditorPluginBase.ExportBakedMesh.Value)
-                {
-                    mesh = new Mesh();
-                    skinnedMeshRenderer.BakeMesh(mesh);
-                }
-                else
-                {
-                    mesh = skinnedMeshRenderer.sharedMesh;
-                }
-            }
-            else return "";
+            Mesh mesh = GetMeshFromRenderer(rend);
+            if (mesh == null) return string.Empty;
 
             var scale = rend.transform.lossyScale;
             var inverseScale = Matrix4x4.Scale(scale).inverse;
@@ -54,7 +65,7 @@ namespace MaterialEditorAPI
             {
                 Vector3 v = mesh.vertices[i];
                 if (MaterialEditorPluginBase.ExportBakedMesh.Value && MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
-                    v = rend.transform.TransformPoint(inverseScale.MultiplyPoint(v));
+                    v = rend.transform.TransformPoint(v);
                 sb.AppendLine($"v {-v.x} {v.y} {v.z}");
             }
 
@@ -67,11 +78,8 @@ namespace MaterialEditorAPI
             for (var i = 0; i < mesh.normals.Length; i++)
             {
                 Vector3 n = mesh.normals[i];
-                if (MaterialEditorPluginBase.ExportBakedMesh.Value &&
-                    MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
-                {
-                    n = rend.transform.TransformDirection(inverseScale.MultiplyVector(n));
-                }
+                if (MaterialEditorPluginBase.ExportBakedMesh.Value && MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
+                    n = rend.transform.TransformDirection(n);
                 sb.AppendLine($"vn {-n.x} {n.y} {n.z}");
             }
 
