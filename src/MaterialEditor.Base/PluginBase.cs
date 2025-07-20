@@ -18,11 +18,17 @@ namespace MaterialEditorAPI
     [BepInDependency(XUnity.ResourceRedirector.Constants.PluginData.Identifier, XUnity.ResourceRedirector.Constants.PluginData.Version)]
     public partial class MaterialEditorPluginBase : BaseUnityPlugin
     {
+        /// <summary>
+        /// Logger instance for the plugin
+        /// </summary>
         public static new ManualLogSource Logger;
+        /// <summary>
+        /// Singleton instance of the plugin
+        /// </summary>
         public static MaterialEditorPluginBase Instance;
 
         /// <summary>
-        /// Path where textures will be exported
+        /// Default path where textures will be exported
         /// </summary>
         public static string ExportPathDefault = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor");
         /// <summary>
@@ -34,29 +40,99 @@ namespace MaterialEditorAPI
         /// </summary>
         public static CopyContainer CopyData = new CopyContainer();
 
+        /// <summary>
+        /// Dictionary of loaded shaders
+        /// </summary>
         public static Dictionary<string, ShaderData> LoadedShaders = new Dictionary<string, ShaderData>();
+        /// <summary>
+        /// Sorted dictionary of XML shader properties
+        /// </summary>
         public static SortedDictionary<string, Dictionary<string, ShaderPropertyData>> XMLShaderProperties = new SortedDictionary<string, Dictionary<string, ShaderPropertyData>>();
 
+        /// <summary>
+        /// Configuration entry for ME window scale
+        /// </summary>
         public static ConfigEntry<float> UIScale { get; set; }
+        /// <summary>
+        /// Configuration entry for ME window width
+        /// </summary>
         public static ConfigEntry<float> UIWidth { get; set; }
+        /// <summary>
+        /// Configuration entry for ME window height
+        /// </summary>
         public static ConfigEntry<float> UIHeight { get; set; }
+        /// <summary>
+        /// Configuration entry for width of the renderer/materials lists to the side of the window
+        /// </summary>
         public static ConfigEntry<float> UIListWidth { get; set; }
+        /// <summary>
+        /// Configuration entry for sensitivity of dragging labels to edit float values
+        /// </summary>
         public static ConfigEntry<float> DragSensitivity { get; set; }
+        /// <summary>
+        /// Configuration entry for watching for file changes and reloading textures on change
+        /// </summary>
         public static ConfigEntry<bool> WatchTexChanges { get; set; }
+        /// <summary>
+        /// Replaces every loaded shader with the MaterialEditor copy of the shader
+        /// </summary>
         public static ConfigEntry<bool> ShaderOptimization { get; set; }
+        /// <summary>
+        /// Skinned meshes will be exported in their current state with all customization applied as well as in the current pose
+        /// </summary>
         public static ConfigEntry<bool> ExportBakedMesh { get; set; }
+        /// <summary>
+        /// When enabled, objects will be exported with their position changes intact so that, i.e. when exporting two objects they retain their position relative to each other
+        /// </summary>
         public static ConfigEntry<bool> ExportBakedWorldPosition { get; set; }
+        /// <summary>
+        /// Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}
+        /// </summary>
         internal static ConfigEntry<string> ConfigExportPath { get; private set; }
+        /// <summary>
+        /// Persist search filter across editor windows
+        /// </summary>
         public static ConfigEntry<bool> PersistFilter { get; set; }
+        /// <summary>
+        /// Whether to show tooltips or not
+        /// </summary>
         public static ConfigEntry<bool> Showtooltips { get; set; }
+        /// <summary>
+        /// Whether to sort shader properties by their types
+        /// </summary>
         public static ConfigEntry<bool> SortPropertiesByType { get; set; }
+        /// <summary>
+        /// Whether to sort shader properties by their names
+        /// </summary>
         public static ConfigEntry<bool> SortPropertiesByName { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorFarClipPlaneMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorFieldOfViewMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorAspectRatioMax { get; set; }
+        /// <summary>
+        /// Controls the max value of the slider for this projector property
+        /// </summary>
         public static ConfigEntry<float> ProjectorOrthographicSizeMax { get; set; }
+        /// <summary>
+        /// When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals
+        /// </summary>
+        public static ConfigEntry<bool> ConvertNormalmapsOnExport { get; set; }
 
+        /// <summary>
+        /// Init logic, do not call
+        /// </summary>
         public virtual void Awake()
         {
             Instance = this;
@@ -77,6 +153,7 @@ namespace MaterialEditorAPI
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
             SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by their types.");
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
+            ConvertNormalmapsOnExport = Config.Bind("Config", "Convert Normalmaps On Export", true, new ConfigDescription("When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals"));
 
             //Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
@@ -182,11 +259,12 @@ namespace MaterialEditorAPI
                                                 ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), shaderPropertyElement.GetAttribute("Type"));
                                                 string defaultValue = shaderPropertyElement.GetAttribute("DefaultValue");
                                                 string defaultValueAB = shaderPropertyElement.GetAttribute("DefaultValueAssetBundle");
-                                                string hidden = shaderPropertyElement.GetAttribute("Hidden");
+                                                string anisoLevel = shaderPropertyElement.GetAttribute("AnisoLevel");
+                                                string filterMode = shaderPropertyElement.GetAttribute("FilterMode");
+                                                string wrapMode = shaderPropertyElement.GetAttribute("WrapMode");
                                                 string range = shaderPropertyElement.GetAttribute("Range");
                                                 string min = null;
                                                 string max = null;
-                                                string category = shaderPropertyElement.GetAttribute("Category");
                                                 if (!range.IsNullOrWhiteSpace())
                                                 {
                                                     var rangeSplit = range.Split(',');
@@ -196,7 +274,16 @@ namespace MaterialEditorAPI
                                                         max = rangeSplit[1];
                                                     }
                                                 }
-                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max, category);
+                                                string hidden = shaderPropertyElement.GetAttribute("Hidden");
+                                                string category = shaderPropertyElement.GetAttribute("Category");
+
+                                                ShaderPropertyData shaderPropertyData = new ShaderPropertyData(
+                                                    propertyName, propertyType,
+                                                    defaultValue, defaultValueAB,
+                                                    anisoLevel, filterMode, wrapMode,
+                                                    min, max,
+                                                    hidden, category
+                                                );
 
                                                 XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                                             }
@@ -266,18 +353,43 @@ namespace MaterialEditorAPI
             RenderTexture.ReleaseTemporary(tmp);
         }
 
+        /// <summary>
+        /// Refreshes the property organization, which groups shader properties by their categories and sorts them based on the configuration settings.
+        /// </summary>
         protected static void RefreshPropertyOrganization()
         {
             PropertyOrganizer.Refresh();
         }
 
+        /// <summary>
+        /// Represents data for a shader, including its name, shader object, render queue, and optimization flag.
+        /// </summary>
         public class ShaderData
         {
+            /// <summary>
+            /// Name of the shader.
+            /// </summary>
             public string ShaderName;
+            /// <summary>
+            /// Shader object.
+            /// </summary>
             public Shader Shader;
+            /// <summary>
+            /// Render queue value for the shader. Null if not specified.
+            /// </summary>
             public int? RenderQueue;
+            /// <summary>
+            /// Indicates whether shader optimization is enabled.
+            /// </summary>
             public bool ShaderOptimization;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShaderData"/> class.
+            /// </summary>
+            /// <param name="shader">The shader object.</param>
+            /// <param name="shaderName">The name of the shader.</param>
+            /// <param name="renderQueue">The render queue value as a string. Defaults to an empty string.</param>
+            /// <param name="shaderOptimization">The shader optimization flag as a string. Defaults to null.</param>
             public ShaderData(Shader shader, string shaderName, string renderQueue = "", string shaderOptimization = null)
             {
                 Shader = shader;
@@ -297,24 +409,101 @@ namespace MaterialEditorAPI
             }
         }
 
+        /// <summary>
+        /// Represents data for a shader property, including its name, type, default values, visibility, range, and category.
+        /// </summary>
         public class ShaderPropertyData
         {
+            /// <summary>
+            /// Name of the shader property.
+            /// </summary>
             public string Name;
+            /// <summary>
+            /// Type of the shader property.
+            /// </summary>
             public ShaderPropertyType Type;
+            /// <summary>
+            /// Default value of the shader property.
+            /// </summary>
             public string DefaultValue;
+            /// <summary>
+            /// Default value of the shader property when loaded from an asset bundle, like a texture.
+            /// </summary>
             public string DefaultValueAssetBundle;
-            public bool Hidden;
+            /// <summary>
+            /// Should only be used with texture properties. The `anisoLevel` of the texture, 0-16.
+            /// </summary>
+            public int? AnisoLevel;
+            /// <summary>
+            /// Should only be used with texture properties. The `filterMode` of the texture.
+            /// </summary>
+            public FilterMode? FilterMode;
+            /// <summary>
+            /// Should only be used with texture properties. The `wrapMode` of the texture.
+            /// </summary>
+            public TextureWrapMode? WrapMode;
+            /// <summary>
+            /// Should only be used with float properties. Minimum value displayed on the slider, if applicable.
+            /// </summary>
             public float? MinValue;
+            /// <summary>
+            /// Should only be used with float properties. Maximum value displayed on the slider, if applicable.
+            /// </summary>
             public float? MaxValue;
+            /// <summary>
+            /// Indicates whether the shader property is hidden.
+            /// </summary>
+            public bool Hidden;
+            /// <summary>
+            /// Category of the shader property.
+            /// </summary>
             public string Category;
 
-            public ShaderPropertyData(string name, ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string hidden = null, string minValue = null, string maxValue = null, string category = null)
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShaderPropertyData"/> class.
+            /// </summary>
+            /// <param name="name">Name of the shader property.</param>
+            /// <param name="type">Type of the shader property.</param>
+            /// <param name="defaultValue">Default value of the shader property.</param>
+            /// <param name="defaultValueAB">Default value of the shader property when loaded from an asset bundle, like a texture.</param>
+            /// <param name="anisoLevel">Should only be used with texture properties. The `anisoLevel` of the texture, 0-16.</param>
+            /// <param name="filterMode">Should only be used with texture properties. The `filterMode` of the texture.</param>
+            /// <param name="wrapMode">Should only be used with texture properties. The `wrapMode` of the texture.</param>
+            /// <param name="minValue">Should only be used with float properties. Minimum value displayed on the slider, if applicable.</param>
+            /// <param name="maxValue">Should only be used with float properties. Maximum value displayed on the slider, if applicable.</param>
+            /// <param name="hidden">Indicates whether the shader property is hidden.</param>
+            /// <param name="category">Category of the shader property.</param>
+            public ShaderPropertyData(
+                string name, ShaderPropertyType type,
+                string defaultValue = null, string defaultValueAB = null,
+                string anisoLevel = null, string filterMode = null, string wrapMode = null,
+                string minValue = null, string maxValue = null,
+                string hidden = null, string category = null
+                )
             {
                 Name = name;
                 Type = type;
                 DefaultValue = defaultValue.IsNullOrEmpty() ? null : defaultValue;
                 DefaultValueAssetBundle = defaultValueAB.IsNullOrEmpty() ? null : defaultValueAB;
-                Hidden = bool.TryParse(hidden, out bool result) && result;
+
+                if (!anisoLevel.IsNullOrWhiteSpace())
+                {
+                    int.TryParse(anisoLevel, out int outAnisoLevel);
+                    AnisoLevel = Mathf.Clamp(outAnisoLevel, 0, 16);
+                }
+
+                if (!filterMode.IsNullOrWhiteSpace())
+                {
+                    int.TryParse(filterMode, out int outFilterMode);
+                    if (Enum.IsDefined(typeof(FilterMode), outFilterMode)) FilterMode = (FilterMode)outFilterMode;
+                }
+
+                if (!wrapMode.IsNullOrWhiteSpace())
+                {
+                    int.TryParse(wrapMode, out int outWrapMode);
+                    if (Enum.IsDefined(typeof(TextureWrapMode), outWrapMode)) WrapMode = (TextureWrapMode)outWrapMode;
+                }
+
                 if (!minValue.IsNullOrWhiteSpace() && !maxValue.IsNullOrWhiteSpace())
                 {
                     if (float.TryParse(minValue, out float min) && float.TryParse(maxValue, out float max))
@@ -323,6 +512,8 @@ namespace MaterialEditorAPI
                         MaxValue = max;
                     }
                 }
+
+                Hidden = bool.TryParse(hidden, out bool result) && result;
                 Category = category;
             }
         }

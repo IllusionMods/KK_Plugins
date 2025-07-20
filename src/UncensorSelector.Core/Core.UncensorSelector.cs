@@ -29,13 +29,14 @@ namespace KK_Plugins
     [BepInDependency(ExtendedSave.GUID, ExtendedSave.Version)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(KoiSkinOverlayX.KoiSkinOverlayMgr.GUID, "5.1")]
+    [BepInDependency(ConfigurationManager.ConfigurationManager.GUID, ConfigurationManager.ConfigurationManager.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public partial class UncensorSelector : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.uncensorselector";
         public const string PluginName = "Uncensor Selector";
         public const string PluginNameInternal = "KK_UncensorSelector";
-        public const string Version = "3.12.2";
+        public const string Version = "3.12.3";
         internal static new ManualLogSource Logger;
         private static readonly HashSet<string> AllAdditionalParts = new HashSet<string>();
         public static readonly Dictionary<string, BodyData> BodyDictionary = new Dictionary<string, BodyData>();
@@ -441,7 +442,7 @@ namespace KK_Plugins
 
             foreach (var manifest in loadedManifests.Values)
             {
-                XDocument manifestDocument = manifest.manifestDocument;
+                XDocument manifestDocument = manifest.ManifestDocument;
                 XElement uncensorSelectorElement = manifestDocument?.Root?.Element(PluginNameInternal);
                 if (uncensorSelectorElement != null && uncensorSelectorElement.HasElements)
                 {

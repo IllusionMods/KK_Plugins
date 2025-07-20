@@ -19,7 +19,7 @@ namespace KK_Plugins
         /// <summary>
         /// Dict containing the dll and dll file for all external dependencies needed to load all supported file formats
         /// </summary>
-        private static readonly Dictionary<string, string> dllDependencies = new Dictionary<string, string> 
+        private static readonly Dictionary<string, string> dllDependencies = new Dictionary<string, string>
         {
             { "webp", "libwebp.lib" }
         };
@@ -117,6 +117,8 @@ namespace KK_Plugins
         private static void LoadDependency(string dllName, string dllFileName, Type pluginType)
         {
             var assemblyPath = Path.GetDirectoryName(pluginType.Assembly.Location);
+            if (assemblyPath == null)
+                throw new ArgumentNullException(nameof(assemblyPath), "Failed to get directory from " + pluginType.Assembly.Location);
             var nativeDllPath = Path.Combine(assemblyPath, dllFileName);
             if (LoadLibrary(nativeDllPath) == IntPtr.Zero)
                 throw new IOException($"Failed to load {nativeDllPath}, verify that the file exists and is not corrupted.");

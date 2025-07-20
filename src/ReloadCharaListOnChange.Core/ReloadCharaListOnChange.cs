@@ -29,9 +29,11 @@ namespace KK_Plugins
         internal static new ManualLogSource Logger;
         private static FileSystemWatcher CharacterCardWatcher;
         private static FileSystemWatcher CoordinateCardWatcher;
+#if !EC
         private static FileSystemWatcher StudioFemaleCardWatcher;
         private static FileSystemWatcher StudioMaleCardWatcher;
         private static FileSystemWatcher StudioCoordinateCardWatcher;
+#endif
         private static bool DoRefresh;
         private static bool EventFromCharaMaker;
         private static Timer CardTimer;

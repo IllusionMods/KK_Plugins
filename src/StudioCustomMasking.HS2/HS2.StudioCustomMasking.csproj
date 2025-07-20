@@ -37,6 +37,7 @@
     <PackageReference Include="IllusionLibs.HoneySelect2.UnityEngine.UIModule" Version="2018.4.11.4" />
     <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.38.0" />
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
+    <PackageReference Include="ScreenshotManager.HoneySelect2" Version="19.3.3" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />

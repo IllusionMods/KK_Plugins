@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using KKAPI.Utilities;
+using Screencap;
 using UILib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,13 +20,14 @@ namespace KK_Plugins.StudioCustomMasking
     [BepInProcess(Constants.StudioProcessName)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     [BepInDependency(StudioSceneSettings.StudioSceneSettings.GUID, StudioSceneSettings.StudioSceneSettings.Version)]
+    [BepInDependency(ScreenshotManager.GUID, ScreenshotManager.Version)]
     [BepInPlugin(GUID, PluginName, Version)]
     public class StudioCustomMasking : BaseUnityPlugin
     {
         public const string GUID = "com.deathweasel.bepinex.studiocustommasking";
         public const string PluginName = "Studio Custom Masking";
         public const string PluginNameInternal = Constants.Prefix + "_StudioCustomMasking";
-        public const string Version = "1.1.1";
+        public const string Version = "1.2";
 
         internal static new ManualLogSource Logger;
         public static StudioCustomMasking Instance;
@@ -58,18 +60,8 @@ namespace KK_Plugins.StudioCustomMasking
 
             ColliderColor.SettingChanged += ColliderColor_SettingChanged;
 
-            Type ScreencapType = Type.GetType("Screencap.ScreenshotManager, Screencap");
-            if (ScreencapType == null)
-                ScreencapType = Type.GetType($"Screencap.ScreenshotManager, {Constants.Prefix}_Screencap");
-
-            if (ScreencapType != null)
-            {
-#if KK || KKS
-                harmony.Patch(ScreencapType.GetMethod("TakeCharScreenshot", AccessTools.all), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ScreencapHook), AccessTools.all)));
-#else
-                harmony.Patch(ScreencapType.GetMethod("CaptureAndWrite", AccessTools.all), new HarmonyMethod(typeof(Hooks).GetMethod(nameof(Hooks.ScreencapHook), AccessTools.all)));
-#endif
-            }
+            ScreenshotManager.OnPreCapture += () => HideLines = true;
+            ScreenshotManager.OnPostCapture += () => HideLines = false;
         }
 
         private static void ColliderColor_SettingChanged(object sender, EventArgs e)

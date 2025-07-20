@@ -24,7 +24,7 @@ namespace KK_Plugins.PoseTools
         public const string PluginGUID = "com.deathweasel.bepinex.posefolders";
         public const string PluginName = "Pose Tools";
         public const string PluginNameInternal = Constants.Prefix + "_PoseTools";
-        public const string PluginVersion = "1.1.2";
+        public const string PluginVersion = "1.1.3";
 
         internal static readonly int UserdataRoot = new DirectoryInfo(UserdataFolder).FullName.Length + 1; //+1 for slash
         internal static DirectoryInfo CurrentDirectory = new DirectoryInfo(UserdataFolder + "/" + PoseFolder);

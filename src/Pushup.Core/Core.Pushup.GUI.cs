@@ -10,6 +10,8 @@ using static Illusion.Utils;
 using KKAPI.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+
 #if KK || KKS
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
@@ -48,6 +50,9 @@ namespace KK_Plugins
         internal static PushupSlider PushNippleWidthSlider;
         internal static PushupSlider PushNippleDepthSlider;
 
+        internal static MakerDropdown CoordinateDropdown;
+        internal static TMP_Dropdown CoordinateDropdownTMP;
+
         internal static MakerRadioButtons SelectButtons;
 
         private static PushupController _pushUpController;
@@ -57,6 +62,7 @@ namespace KK_Plugins
 
         private static void MakerFinishedLoading(object sender, EventArgs e)
         {
+            CoordinateDropdownTMP = CoordinateDropdown.ControlObject.GetComponentInChildren<TMP_Dropdown>();
             ReloadPushup();
             _pushUpController.RecalculateBody(coroutine: true);
         }
@@ -108,7 +114,24 @@ namespace KK_Plugins
             UpdateToggleSubscription(FlattenNippleToggle, _activeClothData.FlattenNipples, b => { _activeClothData.FlattenNipples = b; });
 
             UpdateToggleSubscription(AdvancedModeToggle, _activeClothData.UseAdvanced, b => { _activeClothData.UseAdvanced = b; });
+#if !EC
+            ReloadCoordinateDropdown();
+#endif
         }
+
+#if !EC
+        internal static void ReloadCoordinateDropdown()
+        {
+            //Coordinates will not change without MoreOutfits, so no need to refresh the dropdown
+            if (MoreOutfitsType == null || CoordinateDropdownTMP == null) return;
+            var value = CoordinateDropdownTMP.value;
+            CoordinateDropdownTMP.ClearOptions();
+            var options = GetCoordinateList();
+            CoordinateDropdownTMP.AddOptions(options);
+            if (value < options.Count)
+                CoordinateDropdownTMP.SetValue(value);
+        }
+#endif
 
         private static void UpdateToggleSubscription(MakerToggle toggle, bool value, Action<bool> action)
         {
@@ -185,11 +208,9 @@ namespace KK_Plugins
             PushNippleDepthSlider = MakeSlider(category, "Nipple Depth", ev, Singleton<CustomBase>.Instance.defChaInfo.custom.body.shapeValueBody[PushupConstants.IndexNippleDepth], true);
 
 #if KK || KKS //Only one outfit in EC
-            var coordinateList = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).ToList();
-            coordinateList.Add("All");
             ev.AddControl(new MakerSeparator(category, this));
-            var copyDropdown = new MakerDropdown("Copy To Coordinate", coordinateList.ToArray(), category, 0, this);
-            ev.AddControl(copyDropdown);
+            CoordinateDropdown = new MakerDropdown("Copy To Coordinate", GetCoordinateList().ToArray(), category, 0, this);
+            ev.AddControl(CoordinateDropdown);
 
             string[] DataTypes = { "Basic and Advanced", "Basic", "Advanced" };
             var copyDataDropdown = new MakerDropdown("Data To Copy", DataTypes, category, 0, this);
@@ -202,15 +223,36 @@ namespace KK_Plugins
                 bool copyBasic = copyDataDropdown.Value == 0 || copyDataDropdown.Value == 1;
                 bool copyAdvanced = copyDataDropdown.Value == 0 || copyDataDropdown.Value == 2;
 
-                if (copyDropdown.Value == coordinateList.Count - 1) //Copy all
-                    for (int i = 0; i < coordinateList.Count - 1; i++)
+                if (CoordinateDropdownTMP.value == CoordinateDropdownTMP.options.Count - 1) //Copy all
+                    for (int i = 0; i < CoordinateDropdownTMP.options.Count - 1; i++)
                         CopySlidersToCoordinate(i, copyBasic, copyAdvanced);
                 else
-                    CopySlidersToCoordinate(copyDropdown.Value, copyBasic, copyAdvanced);
+                    CopySlidersToCoordinate(CoordinateDropdownTMP.value, copyBasic, copyAdvanced);
             });
 #endif
             ev.AddSubCategory(category);
         }
+
+#if !EC
+        private static List<string> GetCoordinateList()
+        {
+            var coordinateList = Enum.GetNames(typeof(ChaFileDefine.CoordinateType)).ToList();
+
+            if (MoreOutfitsType != null)
+                ExtendList();
+
+            void ExtendList()
+            {
+                var chaControl = MakerAPI.GetCharacterControl();
+                var moreOutfitsController = MoreOutfits.Plugin.GetController(chaControl);
+                for (int coord = coordinateList.Count; coord < chaControl.chaFile.coordinate.Length; coord++)
+                    coordinateList.Add(moreOutfitsController.GetCoodinateName(coord));
+            }
+
+            coordinateList.Add("All");
+            return coordinateList;
+        }
+#endif
 
         private static void CopyBodyToSliders()
         {

@@ -83,9 +83,9 @@ namespace MaterialEditorAPI
 
             List<Material> materials = new List<Material>();
             foreach (var renderer in GetRendererList(gameObject))
-            foreach (var material in GetMaterials(gameObject, renderer))
-                if (material.NameFormatted() == materialName)
-                    materials.Add(material);
+                foreach (var material in GetMaterials(gameObject, renderer))
+                    if (material.NameFormatted() == materialName)
+                        materials.Add(material);
 
             foreach (var projector in GetProjectorList(gameObject))
                 materials.Add(projector.material);
@@ -183,6 +183,11 @@ namespace MaterialEditorAPI
             }
         }
 
+        /// <summary>
+        /// Removes a specific material from the specified GameObject's renderers.
+        /// </summary>
+        /// <param name="gameObject">The GameObject whose renderers will be searched for the material.</param>
+        /// <param name="material">The material to be removed.</param>
         public static void RemoveMaterial(GameObject gameObject, Material material)
         {
             foreach (var renderer in GetRendererList(gameObject))
@@ -436,6 +441,13 @@ namespace MaterialEditorAPI
 #endif
         }
 
+        /// <summary>
+        /// Recalculates the normals of a SkinnedMeshRenderer's mesh.
+        /// </summary>
+        /// <param name="gameObject">The GameObject containing the renderer.</param>
+        /// <param name="rendererName">The name of the renderer to modify.</param>
+        /// <param name="value">If true, recalculates the normals; otherwise, does nothing.</param>
+        /// <returns>True if the normals were recalculated; otherwise, false.</returns>
         public static bool SetRendererRecalculateNormals(GameObject gameObject, string rendererName, bool value)
         {
             bool didSet = false;
@@ -652,6 +664,7 @@ namespace MaterialEditorAPI
                     //Add layer to mask
                     else if (!inMask && ignore)
                         projector.ignoreLayers |= (1 << layer);
+                    return true;
                 }
             }
             return false;
@@ -668,23 +681,38 @@ namespace MaterialEditorAPI
         public static bool SetTexture(GameObject gameObject, string materialName, string propertyName, Texture value)
         {
             bool didSet = false;
+            if (value == null) return didSet;
+
             var materials = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < materials.Count; i++)
             {
                 var material = materials[i];
-                if (material.HasProperty($"_{propertyName}"))
+                if (!material.HasProperty($"_{propertyName}")) continue; // Todo, should check if it is a texture
+
+                var oldTex = material.GetTexture($"_{propertyName}");
+                if (oldTex != null)
                 {
-                    if (value != null)
-                    {
-                        var tex = material.GetTexture($"_{propertyName}");
-                        if (tex == null)
-                            value.wrapMode = TextureWrapMode.Repeat;
-                        else
-                            value.wrapMode = tex.wrapMode;
-                    }
-                    material.SetTexture($"_{propertyName}", value);
-                    didSet = true;
+                    value.anisoLevel = oldTex.anisoLevel;
+                    value.filterMode = oldTex.filterMode;
+                    value.wrapMode = oldTex.wrapMode;
                 }
+                else
+                {
+                    // Texture default values
+                    value.anisoLevel = 1;
+                    value.filterMode = FilterMode.Bilinear;
+                    value.wrapMode = TextureWrapMode.Repeat;
+                }
+
+                // The shader has the final say over these properties, not the texture itself.
+                var texturePropertyData = MaterialEditorPluginBase.XMLShaderProperties[MaterialEditorPluginBase.XMLShaderProperties.ContainsKey(material.shader.NameFormatted()) ? material.shader.NameFormatted() : "default"]
+                .Where(p => p.Value.Name == propertyName && p.Value.Type == ShaderPropertyType.Texture).FirstOrDefault().Value;
+                if (texturePropertyData.AnisoLevel.HasValue) value.anisoLevel = texturePropertyData.AnisoLevel.Value;
+                if (texturePropertyData.FilterMode.HasValue) value.filterMode = texturePropertyData.FilterMode.Value;
+                if (texturePropertyData.WrapMode.HasValue) value.wrapMode = texturePropertyData.WrapMode.Value;
+
+                material.SetTexture($"_{propertyName}", value);
+                didSet = true;
             }
             return didSet;
         }
@@ -699,8 +727,8 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTextureOffset(GameObject gameObject, string materialName, string propertyName, Vector2? value)
         {
-            if (value == null) return false;
             bool didSet = false;
+            if (value == null) return didSet;
 
             var materials = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < materials.Count; i++)
@@ -725,8 +753,8 @@ namespace MaterialEditorAPI
         /// <returns>True if the value was set, false if it could not be set</returns>
         public static bool SetTextureScale(GameObject gameObject, string materialName, string propertyName, Vector2? value)
         {
-            if (value == null) return false;
             bool didSet = false;
+            if (value == null) return didSet;
 
             var materials = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < materials.Count; i++)
@@ -742,22 +770,24 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
-        /// Set the shader of a material. Can only be set to a shader that has been loaded by MaterialEditor
+        /// Set the shader of a material. Can only be set to a shader that has been loaded by MaterialEditor.
         /// </summary>
-        /// <param name="gameObject">GameObject to search for the renderer</param>
-        /// <param name="materialName">Name of the material being modified</param>
-        /// <param name="shaderName">Name of the shader to be set</param>
-        /// <returns>True if the value was set, false if it could not be set</returns>
+        /// <param name="gameObject">The GameObject to search for the renderer.</param>
+        /// <param name="materialName">The name of the material being modified.</param>
+        /// <param name="shaderName">The name of the shader to be set.</param>
+        /// <param name="preserveRenderQueue">Indicates whether to preserve the render queue of the material (if it's not specified in shaderData).</param>
+        /// <returns>True if the shader was successfully set; otherwise, false.</returns>
         public static bool SetShader(GameObject gameObject, string materialName, string shaderName, bool preserveRenderQueue = false)
         {
             bool didSet = false;
-            if (shaderName.IsNullOrEmpty()) return false;
+            if (shaderName.IsNullOrEmpty()) return didSet;
+
             MaterialEditorPluginBase.LoadedShaders.TryGetValue(shaderName, out var shaderData);
 
             if (shaderData?.Shader == null)
             {
                 MaterialEditorPluginBase.Logger.Log(BepInEx.Logging.LogLevel.Warning | BepInEx.Logging.LogLevel.Message, $"Could not load shader:{shaderName}");
-                return false;
+                return didSet;
             }
             if (!MaterialEditorPluginBase.XMLShaderProperties.TryGetValue(shaderName, out var shaderPropertyDataList))
                 shaderPropertyDataList = new Dictionary<string, MaterialEditorPluginBase.ShaderPropertyData>();
@@ -818,7 +848,7 @@ namespace MaterialEditorAPI
         public static bool SetRenderQueue(GameObject gameObject, string materialName, int? value)
         {
             bool didSet = false;
-            if (value == null) return false;
+            if (value == null) return didSet;
 
             var list = GetObjectMaterials(gameObject, materialName);
             for (var i = 0; i < list.Count; i++)

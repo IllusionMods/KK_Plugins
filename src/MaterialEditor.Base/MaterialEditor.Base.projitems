@@ -41,5 +41,6 @@
     <None Include="$(MSBuildThisFileDirectory)libwebp.lib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="$(MSBuildThisFileDirectory)unpack_normal.shader" />
   </ItemGroup>
 </Project>

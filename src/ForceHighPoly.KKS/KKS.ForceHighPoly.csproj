@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>KKS_ForceHighPoly</AssemblyName>
+    <NoWarn>AD0001</NoWarn> <!--BepInEx.Analyzers is crashing-->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>TRACE;DEBUG;KKS</DefineConstants>

@@ -179,7 +179,7 @@ namespace KK_Plugins
                     {
                         Visible = false;
                         var manager = GetConfigurationManager();
-                        if (manager != null) manager.DisplayingWindow = true;
+                        manager.DisplayingWindow = true;
                     }
                 }
                 GUILayout.EndHorizontal();
@@ -187,7 +187,7 @@ namespace KK_Plugins
 
             private static ConfigurationManager.ConfigurationManager GetConfigurationManager()
             {
-                return Chainloader.ManagerObject.transform.GetComponentInChildren<ConfigurationManager.ConfigurationManager>();
+                return (ConfigurationManager.ConfigurationManager)Chainloader.PluginInfos[ConfigurationManager.ConfigurationManager.GUID].Instance;
             }
 
             private void UpdateSelecedGUIDS(string value)
@@ -224,13 +224,10 @@ namespace KK_Plugins
 
                     // close when config manager closes
                     var manager = GetConfigurationManager();
-                    if (manager != null)
+                    manager.DisplayingWindowChanged += (s, e) =>
                     {
-                        manager.DisplayingWindowChanged += (s, e) =>
-                        {
-                            if (Visible && !e.NewValue) Visible = false;
-                        };
-                    }
+                        if (Visible && !e.NewValue) Visible = false;
+                    };
                 }
 
                 // draw button here

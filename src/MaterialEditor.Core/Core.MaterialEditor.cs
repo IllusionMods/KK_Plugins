@@ -61,7 +61,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.13";
+        public const string PluginVersion = "3.13.1";
 
 
         /// <summary>
@@ -69,6 +69,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         private static Material NormalMapConvertMaterial;
         private static Material NormalMapOpenGLConvertMaterial;
+        private static Material NormalMapUnpackDXT5Material;
 
 #if KK || EC || KKS
         internal static ConfigEntry<bool> RimRemover { get; private set; }
@@ -229,7 +230,7 @@ namespace KK_Plugins.MaterialEditor
 #if KK || KKS
             //Hook to delete properties of an outfit that gets removed
             var moreOutfitsType = Type.GetType($"KK_Plugins.MoreOutfits.Plugin, {Constants.Prefix}_MoreOutfits");
-            if(moreOutfitsType != null)
+            if (moreOutfitsType != null)
             {
                 var method = moreOutfitsType.GetMethod("RemoveCoordinateSlot", AccessTools.all);
                 if (method != null)
@@ -722,9 +723,9 @@ namespace KK_Plugins.MaterialEditor
             var loadedManifests = Sideloader.Sideloader.Manifests;
             foreach (var manifest in loadedManifests.Values)
             {
-                var element = manifest.manifestDocument?.Root?.Element("MaterialEditor");
+                var element = manifest.ManifestDocument?.Root?.Element("MaterialEditor");
                 if (element == null)
-                    element = manifest.manifestDocument?.Root?.Element(PluginNameInternal);
+                    element = manifest.ManifestDocument?.Root?.Element(PluginNameInternal);
                 if (element != null)
                 {
                     //Convert XElement in to XmlElement
@@ -771,11 +772,12 @@ namespace KK_Plugins.MaterialEditor
                             ShaderPropertyType propertyType = (ShaderPropertyType)Enum.Parse(typeof(ShaderPropertyType), shaderPropertyElement.GetAttribute("Type"));
                             string defaultValue = shaderPropertyElement.GetAttribute("DefaultValue");
                             string defaultValueAB = shaderPropertyElement.GetAttribute("DefaultValueAssetBundle");
-                            string hidden = shaderPropertyElement.GetAttribute("Hidden");
+                            string anisoLevel = shaderPropertyElement.GetAttribute("AnisoLevel");
+                            string filterMode = shaderPropertyElement.GetAttribute("FilterMode");
+                            string wrapMode = shaderPropertyElement.GetAttribute("WrapMode");
                             string range = shaderPropertyElement.GetAttribute("Range");
                             string min = null;
                             string max = null;
-                            string category = shaderPropertyElement.GetAttribute("Category");
                             if (!range.IsNullOrWhiteSpace())
                             {
                                 var rangeSplit = range.Split(',');
@@ -785,7 +787,16 @@ namespace KK_Plugins.MaterialEditor
                                     max = rangeSplit[1];
                                 }
                             }
-                            ShaderPropertyData shaderPropertyData = new ShaderPropertyData(propertyName, propertyType, defaultValue, defaultValueAB, hidden, min, max, category);
+                            string hidden = shaderPropertyElement.GetAttribute("Hidden");
+                            string category = shaderPropertyElement.GetAttribute("Category");
+
+                            ShaderPropertyData shaderPropertyData = new ShaderPropertyData(
+                                propertyName, propertyType,
+                                defaultValue, defaultValueAB,
+                                anisoLevel, filterMode, wrapMode,
+                                min, max,
+                                hidden, category
+                            );
 
                             XMLShaderProperties["default"][propertyName] = shaderPropertyData;
                             XMLShaderProperties[shaderName][propertyName] = shaderPropertyData;
@@ -915,8 +926,10 @@ namespace KK_Plugins.MaterialEditor
             AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_Plugins)}.Resources.normal_convert.unity3d"));
             var shader = bundle.LoadAsset<Shader>("normal_convert");
             var shader_opengl = bundle.LoadAsset<Shader>("normal_convert_opengl");
+            var unpack_shader = bundle.LoadAsset<Shader>("unpack_normal");
             NormalMapConvertMaterial = new Material(shader);
             NormalMapOpenGLConvertMaterial = new Material(shader_opengl);
+            NormalMapUnpackDXT5Material = new Material(unpack_shader);
         }
 
 #if EC || KKS
@@ -1006,16 +1019,23 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-        protected override Texture ConvertNormalMap(Texture tex)
+        protected override Texture ConvertNormalMap(Texture tex, bool unpack = false)
         {
             var material = NormalMapConvertMaterial;
-            if (IsUncompressedNormalMap(tex))
+            if (unpack)
+            {
+                MaterialEditorPluginBase.Logger.LogInfo("Unpacking Normal");
+                material = NormalMapUnpackDXT5Material;
+            }
+            else if (IsUncompressedNormalMap(tex))
                 material = NormalMapOpenGLConvertMaterial;
             RenderTexture rt = new RenderTexture(tex.width, tex.height, 0);
             rt.useMipMap = true;
             rt.autoGenerateMips = true;
             Graphics.Blit(tex, rt, material);
             rt.wrapMode = tex.wrapMode;
+            rt.anisoLevel = tex.anisoLevel;
+            rt.filterMode = tex.filterMode;
 
             return rt;
         }
