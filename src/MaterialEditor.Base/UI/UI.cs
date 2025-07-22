@@ -682,7 +682,8 @@ namespace MaterialEditorAPI
                     if (
                         filterListProperties.Count == 0
                         && (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName)
-                        && properties.Count() > 0
+                        && properties.Any()
+
                     )
                     {
                         var categoryItem = new ItemInfo(ItemInfo.RowItemType.PropertyCategory, category.Key);
