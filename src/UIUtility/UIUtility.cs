@@ -210,6 +210,7 @@ namespace UILib
                 Object.Destroy(text.gameObject);
             else
             {
+                text.font = defaultFont;
                 text.resizeTextForBestFit = true;
                 text.resizeTextMinSize = 2;
                 text.resizeTextMaxSize = 100;
