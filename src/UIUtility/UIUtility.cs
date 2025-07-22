@@ -206,13 +206,17 @@ namespace UILib
             go.name = objectName;
 
             Text text = go.GetComponentInChildren<Text>(true);
-            text.font = defaultFont;
-            text.resizeTextForBestFit = true;
-            text.resizeTextMinSize = 2;
-            text.resizeTextMaxSize = 100;
-            text.alignment = TextAnchor.MiddleCenter;
-            text.rectTransform.SetRect(Vector2.zero, Vector2.one, new Vector2(23f, 1f), new Vector2(-5f, -2f));
-            text.text = label;
+            if (string.IsNullOrEmpty(label))
+                Object.Destroy(text.gameObject);
+            else
+            {
+                text.resizeTextForBestFit = true;
+                text.resizeTextMinSize = 2;
+                text.resizeTextMaxSize = 100;
+                text.alignment = TextAnchor.MiddleCenter;
+                text.rectTransform.SetRect(Vector2.zero, Vector2.one, new Vector2(23f, 1f), new Vector2(-5f, -2f));
+                text.text = label;
+            }
             go.transform.SetParent(parent, false);
 
             return go.GetComponent<Toggle>();
