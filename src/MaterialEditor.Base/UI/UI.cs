@@ -678,26 +678,27 @@ namespace MaterialEditorAPI
 
                 foreach (var category in categories)
                 {
+                    var properties = category.Value.Where(x => mat.HasProperty($"_{x.Name}"));
                     if (
                         filterListProperties.Count == 0
                         && (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName)
+                        && properties.Any()
+
                     )
                     {
                         var categoryItem = new ItemInfo(ItemInfo.RowItemType.PropertyCategory, category.Key);
                         items.Add(categoryItem);
                     }
 
-                foreach (var property in category.Value)
-                {
-                    string propertyName = property.Name;
-                    // Blacklist
-                    if (Instance.CheckBlacklist(materialName, propertyName)) continue;
-                    // Filter
-                    if (!(filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(propertyName, fw)))) continue;
-
-                    if (property.Type == ShaderPropertyType.Texture)
+                    foreach (var property in properties)
                     {
-                        if (mat.HasProperty($"_{propertyName}"))
+                        string propertyName = property.Name;
+                        // Blacklist
+                        if (Instance.CheckBlacklist(materialName, propertyName)) continue;
+                        // Filter
+                        if (!(filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(propertyName, fw)))) continue;
+
+                        if (property.Type == ShaderPropertyType.Texture)
                         {
                             var textureItem = new ItemInfo(ItemInfo.RowItemType.TextureProperty, propertyName)
                             {
@@ -774,10 +775,7 @@ namespace MaterialEditorAPI
                             };
                             items.Add(textureItemOffsetScale);
                         }
-                    }
-                    else if (property.Type == ShaderPropertyType.Color)
-                    {
-                        if (mat.HasProperty($"_{propertyName}"))
+                        else if (property.Type == ShaderPropertyType.Color)
                         {
                             Color valueColor = mat.GetColor($"_{propertyName}");
                             Color valueColorOriginal = valueColor;
@@ -796,10 +794,7 @@ namespace MaterialEditorAPI
                             };
                             items.Add(contentItem);
                         }
-                    }
-                    else if (property.Type == ShaderPropertyType.Float)
-                    {
-                        if (mat.HasProperty($"_{propertyName}"))
+                        else if (property.Type == ShaderPropertyType.Float)
                         {
                             float valueFloatOriginal = mat.GetFloat($"_{propertyName}");
                             float? valueFloatOriginalTemp = GetMaterialFloatPropertyValueOriginal(data, mat, propertyName, go);
@@ -818,28 +813,27 @@ namespace MaterialEditorAPI
                                 maxValue: property.MaxValue
                             );
                         }
-                    }
-                    else if (property.Type == ShaderPropertyType.Keyword)
-                    {
-                        // Since there's no way to check if a Keyword exists, we'll have to trust the XML.
-                        bool valueKeyword = mat.IsKeywordEnabled($"_{propertyName}");
-                        bool valueKeywordOriginal = valueKeyword;
-                        bool? valueKeywordOriginalTemp = GetMaterialKeywordPropertyValueOriginal(data, mat, propertyName, go);
-
-                        if (valueKeywordOriginalTemp != null)
-                            valueKeywordOriginal = (bool)valueKeywordOriginalTemp;
-
-                        var contentItem = new ItemInfo(ItemInfo.RowItemType.KeywordProperty, propertyName)
+                        else if (property.Type == ShaderPropertyType.Keyword)
                         {
-                            KeywordValue = valueKeyword,
-                            KeywordValueOriginal = valueKeywordOriginal,
-                            KeywordValueOnChange = value => SetMaterialKeywordProperty(data, mat, propertyName, value, go),
-                            KeywordValueOnReset = () => RemoveMaterialKeywordProperty(data, mat, propertyName, go)
-                        };
+                            // Since there's no way to check if a Keyword exists, we'll have to trust the XML.
+                            bool valueKeyword = mat.IsKeywordEnabled($"_{propertyName}");
+                            bool valueKeywordOriginal = valueKeyword;
+                            bool? valueKeywordOriginalTemp = GetMaterialKeywordPropertyValueOriginal(data, mat, propertyName, go);
 
-                        items.Add(contentItem);
+                            if (valueKeywordOriginalTemp != null)
+                                valueKeywordOriginal = (bool)valueKeywordOriginalTemp;
+
+                            var contentItem = new ItemInfo(ItemInfo.RowItemType.KeywordProperty, propertyName)
+                            {
+                                KeywordValue = valueKeyword,
+                                KeywordValueOriginal = valueKeywordOriginal,
+                                KeywordValueOnChange = value => SetMaterialKeywordProperty(data, mat, propertyName, value, go),
+                                KeywordValueOnReset = () => RemoveMaterialKeywordProperty(data, mat, propertyName, go)
+                            };
+
+                            items.Add(contentItem);
+                        }
                     }
-                }
                 }
             }
 
