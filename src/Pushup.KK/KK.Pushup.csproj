@@ -29,6 +29,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MoreOutfits.KK\KK.MoreOutfits.csproj" />
   </ItemGroup>
+  <Import Project="..\Pushup.Core\Pushup.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <Import Project="..\Profile.Core\Profile.Core.projitems" Label="Shared" />
 </Project>

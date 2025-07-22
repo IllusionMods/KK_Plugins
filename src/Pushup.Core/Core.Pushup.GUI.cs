@@ -129,7 +129,7 @@ namespace KK_Plugins
             var options = GetCoordinateList();
             CoordinateDropdownTMP.AddOptions(options);
             if (value < options.Count)
-                CoordinateDropdownTMP.SetValue(value);
+                CoordinateDropdownTMP.value = value;
         }
 #endif
 
