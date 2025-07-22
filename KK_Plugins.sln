@@ -1764,11 +1764,11 @@ Global
 		src\DynamicBoneEditor.Core\DynamicBoneEditor.Core.projitems*{7451d643-3634-4dfc-9e86-ba3223f1a832}*SharedItemsImports = 13
 		src\CharacterExport.Core\Core.CharacterExport.projitems*{74c4a9b4-93db-49de-ada1-84c9586d62d1}*SharedItemsImports = 5
 		src\Shared\Shared.projitems*{74c4a9b4-93db-49de-ada1-84c9586d62d1}*SharedItemsImports = 5
-		src\Profile.Core\Profile.Core.projitems*{770f33bc-7c92-4059-a4af-9a958cee6bde}*SharedItemsImports = 5
+		src\Pushup.Core\Pushup.Core.projitems*{770f33bc-7c92-4059-a4af-9a958cee6bde}*SharedItemsImports = 5
 		src\Shared\Shared.projitems*{770f33bc-7c92-4059-a4af-9a958cee6bde}*SharedItemsImports = 5
 		src\Shared\Shared.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 5
 		src\StudioSceneLoadedSound.Core\Core.StudioSceneLoadedSound.projitems*{78d47e8d-b2f7-4d7c-8be8-213e4394a1fa}*SharedItemsImports = 5
-		src\Profile.Core\Profile.Core.projitems*{79bc0e60-bb08-4a5b-928f-8475a2977aa2}*SharedItemsImports = 5
+		src\Pushup.Core\Pushup.Core.projitems*{79bc0e60-bb08-4a5b-928f-8475a2977aa2}*SharedItemsImports = 5
 		src\Shared\Shared.projitems*{79bc0e60-bb08-4a5b-928f-8475a2977aa2}*SharedItemsImports = 5
 		src\HCharaAdjustment.Core\HCharaAdjustment.Core.projitems*{7a7d2306-8e32-4016-8562-b5d45eaa633f}*SharedItemsImports = 13
 		src\RandomCharacterGenerator.Core\RandomCharacterGenerator.Core.projitems*{7b2557ee-0c49-4931-b32d-82b01dd42890}*SharedItemsImports = 5

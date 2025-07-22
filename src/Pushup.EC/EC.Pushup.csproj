@@ -30,5 +30,5 @@
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <Import Project="..\Profile.Core\Profile.Core.projitems" Label="Shared" />
+  <Import Project="..\Pushup.Core\Pushup.Core.projitems" Label="Shared" />
 </Project>
