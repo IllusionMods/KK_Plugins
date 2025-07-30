@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SpawnLockData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SpawnLockerMain.cs" />
   </ItemGroup>

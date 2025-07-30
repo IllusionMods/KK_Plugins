@@ -1,5 +1,3 @@
-using System;
-using System.Reflection;
 using ExtensibleSaveFormat;
 using MessagePack;
 using MessagePack.Formatters;
@@ -13,33 +11,30 @@ namespace SpawnLocker
         public bool isLocked;
 
         [IgnoreMember]
-        static string PluginKey = "SpawnLock";
+        private static string PluginKey = "SpawnLock";
 
         [IgnoreMember]
-        static IFormatterResolver resolver = UnityEngineTypeFormatterResolver.Instance;
+        private static IFormatterResolver resolver = UnityEngineTypeFormatterResolver.Instance;
 
-        public static SpawnLockData Load( PluginData data )
+        public static SpawnLockData Load(PluginData data)
         {
             if (data?.data == null)
                 return null;
 
-            object bytesObj;
-            if (!data.data.TryGetValue(PluginKey, out bytesObj))
+            if (!data.data.TryGetValue(PluginKey, out object bytesObj))
                 return null;
 
-            var bytes = bytesObj as byte[];
+            if (bytesObj is byte[] bytes)
+                return LZ4MessagePackSerializer.Deserialize<SpawnLockData>(bytes, resolver);
 
-            if (bytes == null)
-                return null;
-
-            return LZ4MessagePackSerializer.Deserialize<SpawnLockData>(bytes, resolver);
+            return null;
         }
 
         public PluginData Save()
         {
             PluginData pluginData = new PluginData();
 
-            byte[] bytes = LZ4MessagePackSerializer.Serialize(this, resolver);
+            var bytes = LZ4MessagePackSerializer.Serialize(this, resolver);
             pluginData.data.Add(PluginKey, bytes);
 
             return pluginData;
@@ -50,13 +45,7 @@ namespace SpawnLocker
     {
         public IMessagePackFormatter<T> GetFormatter<T>()
         {
-            System.Object formatter;
-            formatter = MessagePack.Unity.UnityResolver.Instance.GetFormatter<T>();
-
-            if (formatter != null)
-                return (IMessagePackFormatter<T>)formatter;
-
-            return MessagePack.Resolvers.StandardResolver.Instance.GetFormatter<T>();
+            return MessagePack.Unity.UnityResolver.Instance.GetFormatter<T>() ?? MessagePack.Resolvers.StandardResolver.Instance.GetFormatter<T>();
         }
 
         public static UnityEngineTypeFormatterResolver Instance = new UnityEngineTypeFormatterResolver();
