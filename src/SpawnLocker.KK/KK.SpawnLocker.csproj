@@ -12,8 +12,8 @@
     <DefineConstants>TRACE;KK</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="21.0.0" />
-    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.42.2" />
+    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="19.3.3" />
+    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.38.0" />
   </ItemGroup>
   <Import Project="..\SpawnLocker.Core\SpawnLocker.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
