@@ -776,6 +776,14 @@ Custom rules for swapping shaders can be provided in xml files. Check the "Mappi
 
 </details>
 
+#### SpawnLocker
+
+- [KK_SpawnLocker]
+- [KKS_SpawnLocker]
+
+Allows you to select certain characters that you want to always appear in free roam (when there are more characters than the maximum to be loaded at one time).
+To use, middle click on a character portrait in the roster screen. You should see a message appear and the character portrait to be marked.
+
 #### FreeHStudioSceneLoader
 
 - [KK_FreeHStudioSceneLoader]
@@ -959,3 +967,5 @@ Allows you to use studio scenes as H mode maps in main game. **Experimental! Exp
 [KKS_ClothesToAccessories]: https://github.com/IllusionMods/KK_Plugins/releases/download/v259/KKS_ClothesToAccessories.v1.1.2.zip "v1.1.2"
 [KK_Boop]: https://github.com/IllusionMods/KK_Plugins/releases/download/v250/KK_Boop.v2.1.zip "v2.1"
 [KKS_Boop]: https://github.com/IllusionMods/KK_Plugins/releases/download/v250/KKS_Boop.v2.1.zip "v2.1"
+[KK_SpawnLocker]: https://github.com/IllusionMods/KK_Plugins/releases "v0.0"
+[KKS_SpawnLocker]: https://github.com/IllusionMods/KK_Plugins/releases "v0.0"
