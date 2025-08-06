@@ -678,7 +678,9 @@ namespace MaterialEditorAPI
 
                 foreach (var category in categories)
                 {
-                    var properties = category.Value.Where(x => mat.HasProperty($"_{x.Name}"));
+                    // There is no API to determine whether the shader contains a certain keyword, we can't rely
+                    // on a toggle property with the same name to determine whether the keyword is present either.
+                    var properties = category.Value.Where(x => x.Type == ShaderPropertyType.Keyword || mat.HasProperty($"_{x.Name}"));
                     if (
                         filterListProperties.Count == 0
                         && (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName)
