@@ -51,7 +51,9 @@ namespace KK_Plugins
         internal static PushupSlider PushNippleDepthSlider;
 
         internal static MakerDropdown CoordinateDropdown;
+#if !EC
         internal static TMP_Dropdown CoordinateDropdownTMP;
+#endif
 
         internal static MakerRadioButtons SelectButtons;
 
@@ -62,7 +64,9 @@ namespace KK_Plugins
 
         private static void MakerFinishedLoading(object sender, EventArgs e)
         {
+#if !EC
             CoordinateDropdownTMP = CoordinateDropdown.ControlObject.GetComponentInChildren<TMP_Dropdown>();
+#endif
             ReloadPushup();
             _pushUpController.RecalculateBody(coroutine: true);
         }
