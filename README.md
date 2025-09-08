@@ -189,29 +189,6 @@ v2.1 Subtitles for character maker, Fur, Sitri in HS2<br/>
 v2.2 Play Club version
 </details>
 
-#### AnimationController
-
-- [AI_AnimationController]
-- [HS2_AnimationController]
-- [KK_AnimationController]
-- [KKS_AnimationController]
-
-*Koikatsu version: Mostly obsolete. [NodeConstraints](https://www.patreon.com/posts/26357789) does what this plugin does but better.*
-
-Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.
-
-Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat.
-
-Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro
-
-<details><summary>Change Log</summary>
-v1.1 Gimmicks can now rotate hands and feet properly<br/>
-v1.2 Rotating characters doesn't break everything anymore<br/>
-v2.0 Significant rewrite with KKAPI integration. Can now link eyes and neck to objects, scene import support, Drag and Drop plugin support<br/>
-v2.1 Fix neck link not working, fix linking after unlinking not working<br/>
-v2.2 AI version, window position adjustment<br/>
-</details>
-
 #### ClothingUnlocker
 
 - [EC_ClothingUnlocker]
@@ -630,15 +607,6 @@ Edit properties of Dynamic Bones for accessories in the character maker.
 
 Allows clothes to function in accessory slots.
 
-#### PoseUnlocker
-
-- [AI_PoseUnlocker]
-- [HS2_PoseUnlocker]
-- [KK_PoseUnlocker]
-- [KKS_PoseUnlocker]
-
-Removes the gender restriction on saved Studio poses.
-
 #### LightingTweaks
 
 - [KK_LightingTweaks]
@@ -693,16 +661,6 @@ Convenient controls for changing the shadow color of character hair in maker. Us
 
 Adds simple logic to Timeline that allows for controlling playback, mostly to create limited animation loops.
 Requires the latest versions of BepInEx, Timeline and ModdingAPI.
-
-#### Demosaic
-
-- [AI_Demosaic]
-- [EC_Demosaic]
-- [HS2_Demosaic]
-- [KK_Demosaic]
-- [KKS_Demosaic]
-
-Removes mosaics from the character models. **This is replaced by UncensorSelector and not needed** unless there is no UncensorSelector port available for a game.
 
 #### StudioWindowResize
 
@@ -776,11 +734,56 @@ Custom rules for swapping shaders can be provided in xml files. Check the "Mappi
 
 </details>
 
+## Experimental and obsolete plugins
+Generally you don't want to install these unless you have a very good reason to do so.
+
+#### AnimationController
+
+- [AI_AnimationController]
+- [HS2_AnimationController]
+- [KK_AnimationController]
+- [KKS_AnimationController]
+
+*Koikatsu version: Mostly obsolete. [NodeConstraints](https://www.patreon.com/posts/26357789) does what this plugin does but better.*
+
+Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.
+
+Requires Marco's [KKAPI](https://github.com/ManlyMarco/KKAPI/releases) and [BepisPlugins](https://github.com/bbepis/BepisPlugins/releases) ExtensibleSaveFormat.
+
+Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro
+
+<details><summary>Change Log</summary>
+v1.1 Gimmicks can now rotate hands and feet properly<br/>
+v1.2 Rotating characters doesn't break everything anymore<br/>
+v2.0 Significant rewrite with KKAPI integration. Can now link eyes and neck to objects, scene import support, Drag and Drop plugin support<br/>
+v2.1 Fix neck link not working, fix linking after unlinking not working<br/>
+v2.2 AI version, window position adjustment<br/>
+</details>
+
+#### Demosaic
+
+- [AI_Demosaic]
+- [EC_Demosaic]
+- [HS2_Demosaic]
+- [KK_Demosaic]
+- [KKS_Demosaic]
+
+Removes mosaics from the character models. **This is replaced by UncensorSelector and not needed** unless there is no UncensorSelector port available for a game.
+
 #### FreeHStudioSceneLoader
 
 - [KK_FreeHStudioSceneLoader]
 
 Allows you to use studio scenes as H mode maps in main game. **Experimental! Expect issues, no support will be given.**
+
+#### PoseUnlocker
+
+- [AI_PoseUnlocker]
+- [HS2_PoseUnlocker]
+- [KK_PoseUnlocker]
+- [KKS_PoseUnlocker]
+
+Removes the gender restriction on saved Studio poses. Replaced by PoseTools.
 
 [//]: # (## Latest Links)
 
