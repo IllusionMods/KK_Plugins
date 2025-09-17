@@ -71,6 +71,7 @@ namespace KK_Plugins
         public static ConfigEntry<bool> AutosaveEnabled { get; private set; }
         public static ConfigEntry<int> AutosaveInterval { get; private set; }
         public static ConfigEntry<int> AutosaveCountdown { get; private set; }
+        public static ConfigEntry<bool> PauseInBackground { get; private set; }
         public static ConfigEntry<int> AutosaveFileLimit { get; private set; }
 
         private void Start()
@@ -81,7 +82,8 @@ namespace KK_Plugins
             AutosaveEnabled = Config.Bind("Config", "Autosave Enabled", true, new ConfigDescription("Whether to do autosaves", null, new ConfigurationManagerAttributes { Order = 11 }));
             AutosaveInterval = Config.Bind("Config", "Autosave Interval", 15, new ConfigDescription("Minutes between autosaves", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
             AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
-            AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
+            PauseInBackground = Config.Bind("Config", "Pause In Background", true, new ConfigDescription("Do not count down when the game is not focused", null, new ConfigurationManagerAttributes { Order = 8 }));
+            AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 7, ShowRangeAsPercent = false }));
 
 #if PC || HS || SBPR
             Hooks.ApplyHooks(PluginGUID);
@@ -142,24 +144,26 @@ namespace KK_Plugins
         private void OnApplicationFocus(bool hasFocus)
         {
             if (_hasFocus == hasFocus) return;
-
-            if (hasFocus)
-            {
-                // Once focus is regained, adjust the start time to account for time spent unfocused
-                var timePaused = Time.realtimeSinceStartup - _unfocusTime;
-                _startTime += timePaused;
-
-                // Ensure at least 10 seconds remain on the timer when focus is regained
-                if (Time.realtimeSinceStartup - _startTime > AutosaveInterval.Value * 60f - 10)
-                    _startTime = Time.realtimeSinceStartup - (AutosaveInterval.Value * 60f - 10);
-            }
-            else
-            {
-                _unfocusTime = Time.realtimeSinceStartup;
-            }
-
-            //Console.WriteLine($"FOCUS: {_hasFocus} -> {hasFocus}   starttime: {old} -> {_startTime}");
             _hasFocus = hasFocus;
+
+            if (PauseInBackground.Value)
+            {
+                if (hasFocus)
+                {
+                    // Once focus is regained, adjust the start time to account for time spent unfocused
+                    var timePaused = Time.realtimeSinceStartup - _unfocusTime;
+                    _startTime += timePaused;
+
+                    // Ensure at least 10 seconds remain on the timer when focus is regained
+                    if (Time.realtimeSinceStartup - _startTime > AutosaveInterval.Value * 60f - 10)
+                        _startTime = Time.realtimeSinceStartup - (AutosaveInterval.Value * 60f - 10);
+                }
+                else
+                {
+                    _unfocusTime = Time.realtimeSinceStartup;
+                }
+            }
+            //Console.WriteLine($"FOCUS: {_hasFocus} -> {hasFocus}   starttime: {old} -> {_startTime}");
         }
 
         private IEnumerator AutosaveCoroutine()
@@ -182,7 +186,7 @@ namespace KK_Plugins
                 while (!_hasFocus || Time.realtimeSinceStartup - _startTime < AutosaveInterval.Value * 60f)
                     yield return null;
 
-                if (!MakerIsAlive())
+                if (!InStudio && !MakerIsAlive())
                 {
                     StopAutosaveCoroutine();
                     break;
@@ -210,7 +214,7 @@ namespace KK_Plugins
                 //Needed so the thumbnail is correct
                 yield return new WaitForEndOfFrame();
 
-                if (!MakerIsAlive())
+                if (!InStudio &&!MakerIsAlive())
                 {
                     StopAutosaveCoroutine();
                     break;
@@ -230,8 +234,9 @@ namespace KK_Plugins
         private static bool MakerIsAlive()
         {
 #if PC || HS || SBPR
-            if (CustomControlInstance == null)
-                return false;
+            if (CustomControlInstance == null) return false;
+#elif HasKKAPI
+            if (!MakerAPI.InsideMaker) return false;
 #endif
             return true;
         }
