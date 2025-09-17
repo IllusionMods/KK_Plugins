@@ -183,6 +183,7 @@ namespace KK_Plugins.MaterialEditor
                 RendererPropertyList.Clear();
                 MaterialNamePropertyList.Clear();
                 MaterialFloatPropertyList.Clear();
+                MaterialKeywordPropertyList.Clear();
                 MaterialColorPropertyList.Clear();
                 MaterialTexturePropertyList.Clear();
                 MaterialShaderList.Clear();
@@ -356,6 +357,20 @@ namespace KK_Plugins.MaterialEditor
                             MaterialTexturePropertyList.Add(newTextureProperty);
                     }
                 }
+            }
+
+            // Clean up scenes saved in buggy versions of ME that duplicated keyword props on 
+            // scene loads, causing massive file sizes. `.First()` should always keep the latest user edit.
+            var fixedKeywordList = MaterialKeywordPropertyList
+                .GroupBy(d => new { d.ID, d.MaterialName })
+                .Select(f => f.First())
+                .ToArray();
+            MaterialKeywordPropertyList.Clear();
+            MaterialKeywordPropertyList.Capacity = 0;
+
+            foreach (MaterialKeywordProperty materialKeywordProperty in fixedKeywordList)
+            {
+                MaterialKeywordPropertyList.Add(materialKeywordProperty);
             }
         }
 
