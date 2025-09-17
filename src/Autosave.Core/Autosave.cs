@@ -43,7 +43,7 @@ namespace KK_Plugins
         public const string PluginGUID = "com.deathweasel.bepinex.autosave";
         public const string PluginName = "Autosave";
         public const string PluginNameInternal = Constants.Prefix + "_Autosave";
-        public const string PluginVersion = "1.2";
+        public const string PluginVersion = "2.0";
 
         internal static new ManualLogSource Logger;
         internal static Autosave Instance;
