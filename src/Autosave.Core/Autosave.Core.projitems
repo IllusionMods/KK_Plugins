@@ -10,8 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Autosave.CharaController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Autosave.StudioController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Autosave.cs" />
   </ItemGroup>
 </Project>

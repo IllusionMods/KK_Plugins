@@ -14,6 +14,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.0.4" />
+    <PackageReference Include="ExtensibleSaveFormat.PlayHome" Version="21.0.0" />
     <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
     <PackageReference Include="IllusionLibs.BepInEx.Harmony" Version="2.9.0" />
     <PackageReference Include="IllusionLibs.PlayHome.Assembly-CSharp" Version="2018.3.11.4" />
