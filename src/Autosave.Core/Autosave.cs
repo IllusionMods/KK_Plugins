@@ -137,8 +137,28 @@ namespace KK_Plugins
         }
 
         private bool _hasFocus = true;
+        private float _startTime;
+        private float _unfocusTime;
         private void OnApplicationFocus(bool hasFocus)
         {
+            if (_hasFocus == hasFocus) return;
+
+            if (hasFocus)
+            {
+                // Once focus is regained, adjust the start time to account for time spent unfocused
+                var timePaused = Time.realtimeSinceStartup - _unfocusTime;
+                _startTime += timePaused;
+
+                // Ensure at least 10 seconds remain on the timer when focus is regained
+                if (Time.realtimeSinceStartup - _startTime > AutosaveInterval.Value * 60f - 10)
+                    _startTime = Time.realtimeSinceStartup - (AutosaveInterval.Value * 60f - 10);
+            }
+            else
+            {
+                _unfocusTime = Time.realtimeSinceStartup;
+            }
+
+            //Console.WriteLine($"FOCUS: {_hasFocus} -> {hasFocus}   starttime: {old} -> {_startTime}");
             _hasFocus = hasFocus;
         }
 
@@ -157,22 +177,10 @@ namespace KK_Plugins
                 while (!Input.anyKey)
                     yield return null;
 
-                float startTime = Time.realtimeSinceStartup;
-                while (!_hasFocus || Time.realtimeSinceStartup - startTime < AutosaveInterval.Value * 60f)
-                {
-                    if (!_hasFocus)
-                    {
-                        // Pause the timer while the game is out of focus
-                        startTime += Time.unscaledDeltaTime;
-
-                        // Ensure at least 10 seconds remain on the timer when focus is regained
-                        float timeLeft = Time.realtimeSinceStartup - startTime;
-                        if (timeLeft < 10)
-                            startTime += 10 - timeLeft;
-                    }
-
+                _startTime = Time.realtimeSinceStartup;
+                // Stop the countdown if user alt-tabs out of the game
+                while (!_hasFocus || Time.realtimeSinceStartup - _startTime < AutosaveInterval.Value * 60f)
                     yield return null;
-                }
 
                 if (!MakerIsAlive())
                 {
@@ -197,7 +205,7 @@ namespace KK_Plugins
 
                 //Don't save if the user is in the middle of clicking and dragging
                 do yield return new WaitForSecondsRealtime(1);
-                while (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2));
+                while (Input.anyKey);
 
                 //Needed so the thumbnail is correct
                 yield return new WaitForEndOfFrame();
