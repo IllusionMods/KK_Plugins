@@ -359,6 +359,8 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 
+            // Clean up scenes saved in buggy versions of ME that duplicated keyword props on 
+            // scene loads, causing massive file sizes. `.First()` should always keep the latest user edit.
             var fixedKeywordList = MaterialKeywordPropertyList
                 .GroupBy(d => new { d.ID, d.MaterialName })
                 .Select(f => f.First())
