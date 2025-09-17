@@ -56,7 +56,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         protected override void OnSceneSave()
         {
-            var data = new PluginData();
+            var data = new PluginData { version = 1 };
 
             PurgeUnusedTextures();
 
@@ -359,10 +359,17 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 
+            if (data.version < 1)
+            {
+                FixDuplicatesInKeywordList();
+            }
+        }
+        private void FixDuplicatesInKeywordList()
+        {
             // Clean up scenes saved in buggy versions of ME that duplicated keyword props on 
             // scene loads, causing massive file sizes. `.First()` should always keep the latest user edit.
             var fixedKeywordList = MaterialKeywordPropertyList
-                .GroupBy(d => new { d.ID, d.MaterialName })
+                .GroupBy(d => new { d.ID, d.MaterialName, d.Property })
                 .Select(f => f.First())
                 .ToArray();
             MaterialKeywordPropertyList.Clear();
