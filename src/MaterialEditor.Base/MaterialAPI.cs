@@ -707,9 +707,12 @@ namespace MaterialEditorAPI
                 // The shader has the final say over these properties, not the texture itself.
                 var texturePropertyData = MaterialEditorPluginBase.XMLShaderProperties[MaterialEditorPluginBase.XMLShaderProperties.ContainsKey(material.shader.NameFormatted()) ? material.shader.NameFormatted() : "default"]
                 .Where(p => p.Value.Name == propertyName && p.Value.Type == ShaderPropertyType.Texture).FirstOrDefault().Value;
-                if (texturePropertyData.AnisoLevel.HasValue) value.anisoLevel = texturePropertyData.AnisoLevel.Value;
-                if (texturePropertyData.FilterMode.HasValue) value.filterMode = texturePropertyData.FilterMode.Value;
-                if (texturePropertyData.WrapMode.HasValue) value.wrapMode = texturePropertyData.WrapMode.Value;
+                if (texturePropertyData != null)
+                {
+                    if (texturePropertyData.AnisoLevel.HasValue) value.anisoLevel = texturePropertyData.AnisoLevel.Value;
+                    if (texturePropertyData.FilterMode.HasValue) value.filterMode = texturePropertyData.FilterMode.Value;
+                    if (texturePropertyData.WrapMode.HasValue) value.wrapMode = texturePropertyData.WrapMode.Value;
+                }
 
                 material.SetTexture($"_{propertyName}", value);
                 didSet = true;
