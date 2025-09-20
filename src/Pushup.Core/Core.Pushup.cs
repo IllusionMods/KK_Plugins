@@ -25,8 +25,9 @@ namespace KK_Plugins
         public const string PluginNameInternal = Constants.Prefix + "_Pushup";
         public const string Version = "1.5.2";
         internal static new ManualLogSource Logger;
-
+#if !EC
         private static Type MoreOutfitsType;
+#endif
         public static ConfigEntry<bool> ConfigEnablePushup { get; private set; }
         public static ConfigEntry<float> ConfigFirmnessDefault { get; private set; }
         public static ConfigEntry<float> ConfigLiftDefault { get; private set; }
