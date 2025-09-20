@@ -12,24 +12,7 @@
     <DefineConstants>TRACE;KK</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="KK_QuickAccessBox">
-      <HintPath>..\..\libs\KK\KK_QuickAccessBox.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="BepInEx.Analyzers" Version="1.0.4" />
-    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="19.3.3" />
-    <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
-    <PackageReference Include="IllusionLibs.BepInEx.Harmony" Version="2.9.0" />
-    <PackageReference Include="IllusionLibs.Koikatu.Assembly-CSharp" Version="2019.4.27.4" />
-    <PackageReference Include="IllusionLibs.Koikatu.Assembly-CSharp-firstpass" Version="2019.4.27.4" />
-    <PackageReference Include="IllusionLibs.Koikatu.UnityEngine" Version="5.6.2.4" />
-    <PackageReference Include="IllusionLibs.Koikatu.UnityEngine.UI" Version="5.6.2.4" />
-    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.38.0" />
-    <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
-    <PackageReference Include="Sideloader.Koikatu" Version="19.3.3" />
+    <PackageReference Include="KK_QuickAccessBox" Version="3.3.0" />
   </ItemGroup>
   <Import Project="..\AccessoriesToStudioItems.Core\AccessoriesToStudioItems.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
