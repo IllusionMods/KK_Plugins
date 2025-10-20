@@ -1,5 +1,4 @@
 ﻿using ExtensibleSaveFormat;
-using KKAPI.Maker;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
@@ -61,7 +60,10 @@ namespace KK_Plugins.MaterialEditor
             PurgeUnusedTextures();
 
             if (TextureDictionary.Count > 0)
-                data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+                /* if ((IsAutoSave() && AutosaveTexturesLocally.Value) || SaveSceneTexturesLocally.Value)
+                    {}
+                else */
+                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
             else
                 data.data.Add(nameof(TextureDictionary), null);
 

@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using System;
@@ -35,6 +36,14 @@ namespace MaterialEditorAPI
         /// Path where textures will be exported
         /// </summary>
         public static string ExportPath = ExportPathDefault;
+        /// <summary>
+        /// Default path where local textures will be exported to / imported from
+        /// </summary>
+        public static string LocalTexturePathDefault = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor\_LocalTextures");
+        /// <summary>
+        /// Path where local textures will be exported to / imported from
+        /// </summary>
+        public static string LocalTexturePath = LocalTexturePathDefault;
         /// <summary>
         /// Saved material edits
         /// </summary>
@@ -129,6 +138,22 @@ namespace MaterialEditorAPI
         /// When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals
         /// </summary>
         public static ConfigEntry<bool> ConvertNormalmapsOnExport { get; set; }
+        /// <summary>
+        /// When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene
+        /// </summary>
+        public static ConfigEntry<bool> SaveSceneTexturesLocally { get; set; }
+        /// <summary>
+        /// When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene
+        /// </summary>
+        public static ConfigEntry<bool> SaveCharTexturesLocally { get; set; }
+        /// <summary>
+        /// When enabled, textures in autosaved characters and scenes will be saved to the local MaterialEditor folder instead of as part of the card / scene
+        /// </summary>
+        public static ConfigEntry<bool> AutosaveTexturesLocally { get; set; }
+        /// <summary>
+        /// Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}
+        /// </summary>
+        internal static ConfigEntry<string> ConfigLocalTexturePath { get; private set; }
 
         /// <summary>
         /// Init logic, do not call
@@ -155,7 +180,13 @@ namespace MaterialEditorAPI
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
             ConvertNormalmapsOnExport = Config.Bind("Config", "Convert Normalmaps On Export", true, new ConfigDescription("When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals"));
 
-            //Everything in these games is 10x the size of KK/KKS
+            // Texture saving configs
+            SaveSceneTexturesLocally = Config.Bind("Textures", "Save Scene Textures Locally", false, new ConfigDescription("When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene"));
+            SaveCharTexturesLocally = Config.Bind("Textures", "Save Character Textures Locally", false, new ConfigDescription("When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene"));
+            AutosaveTexturesLocally = Config.Bind("Textures", "Autosave Textures Locally", false, new ConfigDescription("When enabled, textures in autosaved characters and scenes will be saved to the local MaterialEditor folder instead of as part of the card / scene"));
+            ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 1 }));
+
+            // Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
             ProjectorNearClipPlaneMax = Config.Bind("Projector", "Max Near Clip Plane", 100f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 1000f), new ConfigurationManagerAttributes { Order = 5 }));
             ProjectorFarClipPlaneMax = Config.Bind("Projector", "Max Far Clip Plane", 1000f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 1000f), new ConfigurationManagerAttributes { Order = 4 }));
@@ -175,6 +206,7 @@ namespace MaterialEditorAPI
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
             ShaderOptimization.SettingChanged += ShaderOptimization_SettingChanged;
             ConfigExportPath.SettingChanged += ConfigExportPath_SettingChanged;
+            ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
             SortPropertiesByType.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             SortPropertiesByName.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             SetExportPath();
@@ -316,6 +348,19 @@ namespace MaterialEditorAPI
                 ExportPath = ConfigExportPath.Value;
         }
 
+        internal virtual void ConfigLocalTexturePath_SettingChanged(object sender, EventArgs e)
+        {
+            SetLocalTexturePath();
+        }
+
+        private void SetLocalTexturePath()
+        {
+            if (ConfigLocalTexturePath.Value == "")
+                LocalTexturePath = LocalTexturePathDefault;
+            else
+                LocalTexturePath = ConfigExportPath.Value;
+        }
+
         /// <summary>
         /// Always returns false, i.e. does nothing. Override to prevent certain materials from showing in the UI.
         /// </summary>
@@ -351,6 +396,19 @@ namespace MaterialEditorAPI
             SaveTexR(tmp, path);
             RenderTexture.active = currentActiveRT;
             RenderTexture.ReleaseTemporary(tmp);
+        }
+
+        internal static bool IsAutoSave()
+        {
+            try
+            {
+                if (Chainloader.PluginInfos.TryGetValue("com.deathweasel.bepinex.autosave", out PluginInfo pluginInfo))
+                    return (bool)pluginInfo.Instance.GetType().GetField("Autosaving").GetValue(null);
+            }
+            catch
+            {
+            }
+            return false;
         }
 
         /// <summary>
