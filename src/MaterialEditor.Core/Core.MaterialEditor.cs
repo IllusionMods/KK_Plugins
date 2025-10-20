@@ -71,6 +71,8 @@ namespace KK_Plugins.MaterialEditor
         private static Material NormalMapOpenGLConvertMaterial;
         private static Material NormalMapUnpackDXT5Material;
 
+        public const string LocalTexPrefix = "ME_LocalTex_";
+
 #if KK || EC || KKS
         internal static ConfigEntry<bool> RimRemover { get; private set; }
 #endif
@@ -1019,6 +1021,23 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
+        internal static void SaveLocally(PluginData data, string key, Dictionary<int, TextureContainer> dict)
+        {
+            if (!Directory.Exists(LocalTexturePath))
+                Directory.CreateDirectory(LocalTexturePath);
+
+            var hashDict = dict.ToDictionary(pair => pair.Key, pair => TextureContainerManager.Acquire(pair.Value.Data).key.hash);
+            foreach (var kvp in hashDict)
+            {
+                string fileName = LocalTexPrefix + kvp.Value.ToString("X") + "." + MIMESniffer.Identify(dict[kvp.Key].Data);
+                string filePath = Path.Combine(LocalTexturePath, fileName);
+                if (!File.Exists(filePath))
+                    File.WriteAllBytes(filePath, dict[kvp.Key].Data);
+            }
+
+            data.data.Add(key, hashDict);
+        }
+
         protected override Texture ConvertNormalMap(Texture tex, bool unpack = false)
         {
             var material = NormalMapConvertMaterial;
@@ -1062,6 +1081,55 @@ namespace KK_Plugins.MaterialEditor
         public static void ClearCache(GameObject gameObject)
         {
             Hooks.ClearCache(gameObject);
+        }
+
+        private static class MIMESniffer
+        {
+            private static readonly Dictionary<string, byte[][]> patterns = new Dictionary<string, byte[][]>();
+            private static readonly Dictionary<string, string[]> patternsRaw = new Dictionary<string, string[]>
+            {
+                { "png", new[] { "89 50 4E 47 0D 0A 1A 0A" } },
+                { "jpg", new[] { "FF D8 FF", "00 00 00 0C 6A 50 20 20 0D 0A 87 0A", "FF 4F FF 51" } },
+                { "webp", new[] { "52 49 46 46" } },
+                { "bmp", new[] { "42 4D" } },
+                { "gif", new[] { "47 49 46 38 37 61", "47 49 46 38 39 61" } },
+                { "avif", new[] { "00 00 00 1C 66 74 79 70 61 76 69 66", "00 00 00 20 66 74 79 70 61 76 69 66" } },
+                { "tif", new[] { "49 49 2A 00", "4D 4D 00 2A", "49 49 2B 00", "4D 4D 00 2B" } },
+            };
+
+            static MIMESniffer()
+            {
+                List<byte[]> patternList = new List<byte[]>();
+                foreach (var kvp in patternsRaw)
+                {
+                    patternList.Clear();
+                    foreach (var byteString in kvp.Value)
+                        patternList.Add(byteString.Split(' ').Select(x => Convert.ToByte(x, 16)).ToArray());
+                    patterns.Add(kvp.Key, patternList.ToArray());
+                }
+            }
+
+            public static string Identify(byte[] bytes)
+            {
+                if (bytes == null || bytes.Length < 20) return "bin";
+                bool found;
+                int i;
+                foreach (var kvp in patterns)
+                    foreach (var pattern in kvp.Value)
+                    {
+                        found = true;
+                        for (i = 0; i < pattern.Length; i++)
+                        {
+                            if (bytes[i] != pattern[i])
+                            {
+                                found = false;
+                                break;
+                            }
+                        }
+                        if (found) return kvp.Key;
+                    }
+                return "bin";
+            }
         }
     }
 }

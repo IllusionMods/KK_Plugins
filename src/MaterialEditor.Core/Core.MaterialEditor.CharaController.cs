@@ -14,6 +14,9 @@ using UniRx;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
+#if !EC
+using KKAPI.Studio;
+#endif
 #if AI || HS2
 using AIChara;
 #endif
@@ -86,7 +89,16 @@ namespace KK_Plugins.MaterialEditor
                 var data = new PluginData();
 
                 if (TextureDictionary.Count > 0)
-                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+                    if (
+                        (IsAutoSave() && AutosaveTexturesLocally.Value)
+                        || (SaveCharTexturesLocally.Value && MakerAPI.InsideMaker)
+#if !EC
+                        || (SaveSceneTexturesLocally.Value && StudioAPI.InsideStudio)
+#endif
+                    )
+                        MaterialEditorPlugin.SaveLocally(data, nameof(TextureDictionary), TextureDictionary);
+                    else
+                        data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
                 else
                     data.data.Add(nameof(TextureDictionary), null);
 

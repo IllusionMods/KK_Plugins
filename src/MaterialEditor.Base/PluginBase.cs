@@ -138,10 +138,12 @@ namespace MaterialEditorAPI
         /// When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals
         /// </summary>
         public static ConfigEntry<bool> ConvertNormalmapsOnExport { get; set; }
+#if !EC
         /// <summary>
         /// When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene
         /// </summary>
         public static ConfigEntry<bool> SaveSceneTexturesLocally { get; set; }
+#endif
         /// <summary>
         /// When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene
         /// </summary>
@@ -181,7 +183,9 @@ namespace MaterialEditorAPI
             ConvertNormalmapsOnExport = Config.Bind("Config", "Convert Normalmaps On Export", true, new ConfigDescription("When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals"));
 
             // Texture saving configs
+#if !EC
             SaveSceneTexturesLocally = Config.Bind("Textures", "Save Scene Textures Locally", false, new ConfigDescription("When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene"));
+#endif
             SaveCharTexturesLocally = Config.Bind("Textures", "Save Character Textures Locally", false, new ConfigDescription("When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene"));
             AutosaveTexturesLocally = Config.Bind("Textures", "Autosave Textures Locally", false, new ConfigDescription("When enabled, textures in autosaved characters and scenes will be saved to the local MaterialEditor folder instead of as part of the card / scene"));
             ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 1 }));

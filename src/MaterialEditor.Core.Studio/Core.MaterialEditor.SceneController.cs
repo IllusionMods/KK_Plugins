@@ -60,9 +60,9 @@ namespace KK_Plugins.MaterialEditor
             PurgeUnusedTextures();
 
             if (TextureDictionary.Count > 0)
-                /* if ((IsAutoSave() && AutosaveTexturesLocally.Value) || SaveSceneTexturesLocally.Value)
-                    {}
-                else */
+                if ((IsAutoSave() && AutosaveTexturesLocally.Value) || SaveSceneTexturesLocally.Value)
+                    MaterialEditorPlugin.SaveLocally(data, nameof(TextureDictionary), TextureDictionary);
+                else
                     data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
             else
                 data.data.Add(nameof(TextureDictionary), null);
