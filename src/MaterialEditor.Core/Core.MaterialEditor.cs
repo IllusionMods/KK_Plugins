@@ -21,6 +21,8 @@ using XUnity.ResourceRedirector;
 using System.Text.RegularExpressions;
 using static MaterialEditorAPI.MaterialAPI;
 using KKAPI.Utilities;
+using BepInEx.Bootstrap;
+
 
 
 #if AI || HS2
@@ -144,6 +146,17 @@ namespace KK_Plugins.MaterialEditor
         public const string LocalTexPrefix = "ME_LocalTex_";
         public const string LocalTexSavePreFix = "LOCAL_";
 
+        // Local texture audit screen variables
+        internal static int auditAllFiles = 0;
+        internal static int auditProcessedFiles = 0;
+        internal static Dictionary<string, string> auditUnusedTextures = null;
+        internal static List<KeyValuePair<string, string>> auditMissingTextures = null;
+        internal static bool auditShow = false;
+        internal static Coroutine auditCoroutine = null;
+        internal static Rect auditRect = new Rect();
+        internal static Vector2 auditUnusedScroll = Vector2.zero;
+        internal static Vector2 auditMissingScroll = Vector2.zero;
+
         public override void Awake()
         {
             base.Awake();
@@ -175,6 +188,20 @@ namespace KK_Plugins.MaterialEditor
             ShaderOptimization.Value = false;
 #endif
             RendererCachingEnabled = Config.Bind("Config", "Renderer Cache", true, "Turning this off will fix cache related issues but may have a negative impact on performance.");
+
+            // Texture saving configs
+            ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 10 }));
+            ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
+#if !EC
+            SaveSceneTexturesLocally = Config.Bind("Textures", "Save Scene Textures Locally", false, new ConfigDescription("When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene", null, new ConfigurationManagerAttributes { Order = 5 }));
+#endif
+            SaveCharTexturesLocally = Config.Bind("Textures", "Save Character Textures Locally", false, new ConfigDescription("When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene", null, new ConfigurationManagerAttributes { Order = 5 }));
+            AutosaveTexturesLocally = Config.Bind("Textures", "Autosave Textures Locally", false, new ConfigDescription("When enabled, textures in autosaved characters and scenes will be saved to the local MaterialEditor folder instead of as part of the card / scene", null, new ConfigurationManagerAttributes { Order = 5 }));
+            Config.Bind("Textures", "Audit Local Files", 0, new ConfigDescription("Parse all character / scene files and check for missing or unused local files. Takes a long times if you have many cards and scenes.", null, new ConfigurationManagerAttributes
+            {
+                CustomDrawer = new Action<ConfigEntryBase>(AuditOptionDrawer),
+                Order = 0
+            }));
         }
 
         internal void Main()
@@ -257,6 +284,19 @@ namespace KK_Plugins.MaterialEditor
             NormalMapProperties.Add("BumpMap");
 #endif
             LoadNormalMapConverter();
+        }
+
+        internal virtual void ConfigLocalTexturePath_SettingChanged(object sender, EventArgs e)
+        {
+            SetLocalTexturePath();
+        }
+
+        private void SetLocalTexturePath()
+        {
+            if (ConfigLocalTexturePath.Value == "")
+                LocalTexturePath = LocalTexturePathDefault;
+            else
+                LocalTexturePath = ConfigExportPath.Value;
         }
 
         /// <summary>
@@ -1079,6 +1119,232 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
+        internal void AuditOptionDrawer(ConfigEntryBase configEntry)
+        {
+            if (GUILayout.Button("Audit Local Files", GUILayout.ExpandWidth(true)))
+            {
+                AuditLocalFiles();
+                try
+                {
+                    if (Chainloader.PluginInfos.TryGetValue("com.bepis.bepinex.configurationmanager", out var cfgMgrInfo) && cfgMgrInfo != null)
+                    {
+                        var displaying = cfgMgrInfo.Instance.GetType().GetProperty("DisplayingWindow", AccessTools.all);
+                        displaying.SetValue(cfgMgrInfo.Instance, false, null);
+                    }
+                }
+                catch { }
+            }
+        }
+
+        internal static void AuditLocalFiles()
+        {
+            if (!Directory.Exists(LocalTexturePath))
+            {
+                Logger.LogMessage("[MaterialEditor] Local texture directory doesn't exist, nothing to clean up!");
+                return;
+            }
+
+            string[] localTexFolderFiles = Directory.GetFiles(LocalTexturePath, LocalTexPrefix + "*", SearchOption.TopDirectoryOnly);
+            if (localTexFolderFiles.Length == 0)
+            {
+                Logger.LogMessage("[MaterialEditor] No local textures found!");
+                return;
+            }
+
+            var localHashes = new Dictionary<string, string>();
+            foreach (string file in localTexFolderFiles)
+                localHashes.Add(Regex.Match(file, "(?<=_)[A-F0-9]{16}(?=.)").Value, file.Split(Path.DirectorySeparatorChar).Last());
+
+            auditRect = new Rect();
+            auditShow = true;
+            auditCoroutine = Instance.StartCoroutine(AuditLocalFilesCoroutine(localHashes));
+        }
+
+        internal static IEnumerator AuditLocalFilesCoroutine(Dictionary<string, string> localHashes)
+        {
+            var pngs = new List<string>();
+            pngs.AddRange(Directory.GetFiles(Path.Combine(Paths.GameRootPath, @"UserData\chara"), "*.png", SearchOption.AllDirectories));
+            pngs.AddRange(Directory.GetFiles(Path.Combine(Paths.GameRootPath, @"UserData\Studio\scene"), "*.png", SearchOption.AllDirectories));
+
+            List<KeyValuePair<string, string>> missingHashes = new List<KeyValuePair<string, string>>();
+            auditAllFiles = pngs.Count;
+            auditProcessedFiles = 0;
+
+            foreach (var file in pngs)
+            {
+                string line;
+                using (var sr = new StreamReader(file, System.Text.Encoding.ASCII))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        line = sr.ReadLine();
+                        int matchIdx = line.IndexOf(LocalTexSavePreFix + nameof(MaterialEditorCharaController.TextureDictionary));
+                        if (matchIdx >= 0)
+                        {
+                            var newHashes = Regex.Match(line.Substring(matchIdx), "(?<![a-zA-Z0-9])[A-F0-9]{16}(?=[^a-zA-Z0-9])");
+                            foreach (Capture newHash in newHashes.Captures)
+                                if (localHashes.ContainsKey(newHash.Value))
+                                    localHashes.Remove(newHash.Value);
+                                else
+                                    missingHashes.Add(new KeyValuePair<string, string>(file, newHash.Value));
+                            break;
+                        }
+                    }
+                }
+
+                ++auditProcessedFiles;
+                yield return null;
+            }
+
+            auditUnusedTextures = localHashes;
+            auditMissingTextures = missingHashes;
+            auditCoroutine = null;
+            yield break;
+        }
+
+        private void OnGUI()
+        {
+            if (auditShow)
+            {
+                Rect screenRect = new Rect(0, 0, Screen.width, Screen.height);
+                GUI.Box(screenRect, "");
+                GUI.Box(screenRect, "");
+                auditRect.position = new Vector2((Screen.width - auditRect.size.x) / 2, (Screen.height - auditRect.size.y) / 2);
+                auditRect = GUILayout.Window(42069, auditRect, AuditWindowFunction, "", GUI.skin.window, GUILayout.MinWidth(Screen.width / 2), GUILayout.MinHeight(Screen.height * 3 / 4));
+                IMGUIUtils.EatInputInRect(screenRect);
+            }
+        }
+
+        private void AuditWindowFunction(int windowID)
+        {
+            if (auditCoroutine != null)
+            {
+                GUILayout.BeginVertical(GUILayout.ExpandWidth(true)); GUILayout.FlexibleSpace();
+                {
+                    GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
+                    {
+                        GUILayout.BeginVertical(GUI.skin.box);
+                        {
+                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace(); GUILayout.Label("Processing cards and scenes..."); GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                            GUILayout.Space(10);
+                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace(); GUILayout.Label($"{auditProcessedFiles} / {auditAllFiles}"); GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace(); GUILayout.Label($"{Math.Round((double)auditProcessedFiles / auditAllFiles, 3) * 100:0.0}%"); GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                            GUILayout.Space(10);
+                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
+                            if (GUILayout.Button("Cancel", GUILayout.Width(100), GUILayout.Height(30)))
+                            {
+                                auditShow = false;
+                                Instance.StopCoroutine(auditCoroutine);
+                            }
+                            GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                        }
+                        GUILayout.EndVertical();
+                    }
+                    GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                }
+                GUILayout.FlexibleSpace(); GUILayout.EndVertical();
+            }
+            else
+            {
+                GUILayout.BeginVertical();
+                {
+                    GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
+                    GUILayout.Label("MaterialEditor local file audit results");
+                    GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                    GUILayout.Space(10);
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.BeginVertical(GUI.skin.box);
+                        {
+                            if (auditUnusedTextures == null || auditUnusedTextures.Count == 0)
+                            {
+                                GUILayout.BeginVertical(); GUILayout.FlexibleSpace();
+                                GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
+                                GUILayout.Label("No unused textures found!");
+                                GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                                GUILayout.FlexibleSpace(); GUILayout.EndVertical();
+                            }
+                            else
+                            {
+                                GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
+                                GUILayout.Label("Unused textures");
+                                GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                                GUILayout.Space(5);
+                                auditUnusedScroll = GUILayout.BeginScrollView(auditUnusedScroll, false, true, GUI.skin.label, GUI.skin.verticalScrollbar, GUI.skin.box, GUILayout.ExpandHeight(true));
+                                {
+                                    GUILayout.BeginVertical();
+                                    {
+                                        foreach (var kvp in auditUnusedTextures)
+                                            GUILayout.Label(kvp.Value);
+                                    }
+                                    GUILayout.EndVertical();
+                                }
+                                GUILayout.EndScrollView();
+                            }
+                        }
+                        GUILayout.EndVertical();
+                        GUILayout.Space(10);
+                        GUILayout.BeginVertical(GUI.skin.box);
+                        {
+                            if (auditMissingTextures == null || auditMissingTextures.Count == 0)
+                            {
+                                GUILayout.BeginVertical(); GUILayout.FlexibleSpace();
+                                GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
+                                GUILayout.Label("No missing textures found!");
+                                GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                                GUILayout.FlexibleSpace(); GUILayout.EndVertical();
+                            }
+                            else
+                            {
+                                GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
+                                GUILayout.Label("Missing textures");
+                                GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                                GUILayout.Space(5);
+                                auditMissingScroll = GUILayout.BeginScrollView(auditMissingScroll, false, true, GUI.skin.label, GUI.skin.verticalScrollbar, GUI.skin.box, GUILayout.ExpandHeight(true));
+                                {
+                                    GUILayout.BeginVertical();
+                                    {
+                                        foreach (var kvp in auditMissingTextures)
+                                        {
+                                            GUILayout.BeginVertical(GUI.skin.box, GUILayout.ExpandWidth(true));
+                                            GUILayout.Label($"Card: {kvp.Key}");
+                                            GUILayout.Label($"Missing texture hash: {kvp.Value}");
+                                            GUILayout.EndVertical();
+                                            GUILayout.Space(3);
+                                        }
+                                    }
+                                    GUILayout.EndVertical();
+                                }
+                                GUILayout.EndScrollView();
+                            }
+                        }
+                        GUILayout.EndVertical();
+                    }
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(10);
+                    GUILayout.BeginHorizontal();
+                    {
+                        if (GUILayout.Button("Delete unused files", GUILayout.Height(30)))
+                        {
+
+                        }
+                        GUILayout.Space(5);
+                        if (GUILayout.Button("Move unused files to '_Unused' folder", GUILayout.Height(30)))
+                        {
+
+                        }
+                        GUILayout.Space(5);
+                        if (GUILayout.Button("Close", GUILayout.Height(30)))
+                        {
+                            auditMissingTextures = null;
+                            auditUnusedTextures = null;
+                            auditShow = false;
+                        }
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                GUILayout.EndVertical();
+            }
         }
 
         protected override Texture ConvertNormalMap(Texture tex, bool unpack = false)

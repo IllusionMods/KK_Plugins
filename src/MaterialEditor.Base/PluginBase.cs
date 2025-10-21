@@ -155,7 +155,7 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}
         /// </summary>
-        internal static ConfigEntry<string> ConfigLocalTexturePath { get; private set; }
+        internal static ConfigEntry<string> ConfigLocalTexturePath { get; set; }
 
         /// <summary>
         /// Init logic, do not call
@@ -182,14 +182,6 @@ namespace MaterialEditorAPI
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
             ConvertNormalmapsOnExport = Config.Bind("Config", "Convert Normalmaps On Export", true, new ConfigDescription("When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals"));
 
-            // Texture saving configs
-#if !EC
-            SaveSceneTexturesLocally = Config.Bind("Textures", "Save Scene Textures Locally", false, new ConfigDescription("When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene"));
-#endif
-            SaveCharTexturesLocally = Config.Bind("Textures", "Save Character Textures Locally", false, new ConfigDescription("When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene"));
-            AutosaveTexturesLocally = Config.Bind("Textures", "Autosave Textures Locally", false, new ConfigDescription("When enabled, textures in autosaved characters and scenes will be saved to the local MaterialEditor folder instead of as part of the card / scene"));
-            ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 1 }));
-
             // Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
             ProjectorNearClipPlaneMax = Config.Bind("Projector", "Max Near Clip Plane", 100f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 1000f), new ConfigurationManagerAttributes { Order = 5 }));
@@ -210,7 +202,6 @@ namespace MaterialEditorAPI
             WatchTexChanges.SettingChanged += WatchTexChanges_SettingChanged;
             ShaderOptimization.SettingChanged += ShaderOptimization_SettingChanged;
             ConfigExportPath.SettingChanged += ConfigExportPath_SettingChanged;
-            ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
             SortPropertiesByType.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             SortPropertiesByName.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             SetExportPath();
@@ -350,19 +341,6 @@ namespace MaterialEditorAPI
                 ExportPath = ExportPathDefault;
             else
                 ExportPath = ConfigExportPath.Value;
-        }
-
-        internal virtual void ConfigLocalTexturePath_SettingChanged(object sender, EventArgs e)
-        {
-            SetLocalTexturePath();
-        }
-
-        private void SetLocalTexturePath()
-        {
-            if (ConfigLocalTexturePath.Value == "")
-                LocalTexturePath = LocalTexturePathDefault;
-            else
-                LocalTexturePath = ConfigExportPath.Value;
         }
 
         /// <summary>
