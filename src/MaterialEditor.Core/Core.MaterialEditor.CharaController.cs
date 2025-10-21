@@ -40,7 +40,7 @@ namespace KK_Plugins.MaterialEditor
         private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
         private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
         private readonly List<MaterialKeywordProperty> MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
-        private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
+        internal readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
         private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
         private readonly List<MaterialCopy> MaterialCopyList = new List<MaterialCopy>();
 
@@ -2652,7 +2652,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Get the coordinate index based on object type, hair and character return 0, clothes and accessories return CurrentCoordinateIndex
         /// </summary>
-        private int GetCoordinateIndex(ObjectType objectType)
+        internal int GetCoordinateIndex(ObjectType objectType)
         {
 #if KK || KKS
             if (objectType == ObjectType.Accessory || objectType == ObjectType.Clothing)

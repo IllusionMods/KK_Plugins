@@ -379,6 +379,36 @@ namespace KK_Plugins.MaterialEditor
             return -1;
         }
 
+        internal override void ExportTexture(Material mat, string property)
+        {
+            byte[] texData = null;
+            if (CurrentData is ObjectData objData)
+            {
+                var controller = (MaterialEditorCharaController)CurrentGameObject.GetComponentInParent(typeof(MaterialEditorCharaController));
+                if (controller != null)
+                {
+                    var textureProperty = controller.MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objData.ObjectType && x.CoordinateIndex == controller.GetCoordinateIndex(objData.ObjectType) && x.Slot == objData.Slot && x.Property == property && x.MaterialName == mat.NameFormatted());
+                    if (textureProperty?.TexID != null)
+                        texData = controller.TextureDictionary[textureProperty.TexID.Value].Data;
+                }
+            }
+            else if (CurrentData is int id)
+            {
+                var controller = GetSceneController();
+                if (controller != null)
+                {
+                    var textureProperty = controller.MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == mat.NameFormatted() && x.Property == property);
+                    if (textureProperty?.TexID != null)
+                        texData = SceneController.TextureDictionary[textureProperty.TexID.Value].Data;
+                }
+            }
+            string ext = MaterialEditorPlugin.MIMESniffer.Identify(texData, "XXX");
+            if (texData != null && ext != "XXX")
+                base.ExportTextureOriginal(mat, property, ext, texData);
+            else
+                base.ExportTexture(mat, property);
+        }
+
         /// <summary>
         /// Get the ID for the specified ObjectCtrlInfo
         /// </summary>

@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Illusion.Utils;
 using static MaterialEditorAPI.MaterialAPI;
+using System.Linq;
+
 #if AI || HS2
 using AIChara;
 using ChaClothesComponent = AIChara.CmpClothes;
@@ -298,6 +300,26 @@ namespace KK_Plugins.MaterialEditor
                 Visible = false;
             else
                 PopulateList(hair, new ObjectData(index, MaterialEditorCharaController.ObjectType.Hair));
+        }
+
+        internal override void ExportTexture(Material mat, string property)
+        {
+            byte[] texData = null;
+            if (CurrentData is ObjectData objData)
+            {
+                var controller = (MaterialEditorCharaController)CurrentGameObject.GetComponentInParent(typeof(MaterialEditorCharaController));
+                if (controller != null)
+                {
+                    var textureProperty = controller.MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objData.ObjectType && x.CoordinateIndex == controller.GetCoordinateIndex(objData.ObjectType) && x.Slot == objData.Slot && x.Property == property && x.MaterialName == mat.NameFormatted());
+                    if (textureProperty?.TexID != null)
+                        texData = controller.TextureDictionary[textureProperty.TexID.Value].Data;
+                }
+            }
+            string ext = MaterialEditorPlugin.MIMESniffer.Identify(texData, "XXX");
+            if (texData != null && ext != "XXX")
+                base.ExportTextureOriginal(mat, property, ext, texData);
+            else
+                base.ExportTexture(mat, property);
         }
 
         public override string GetRendererPropertyValueOriginal(object data, Renderer renderer, RendererProperties property, GameObject go)

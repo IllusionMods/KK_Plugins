@@ -1464,7 +1464,7 @@ namespace KK_Plugins.MaterialEditor
             Hooks.ClearCache(gameObject);
         }
 
-        private static class MIMESniffer
+        internal static class MIMESniffer
         {
             private static readonly Dictionary<string, byte[][]> patterns = new Dictionary<string, byte[][]>();
             private static readonly Dictionary<string, string[]> patternsRaw = new Dictionary<string, string[]>
@@ -1490,9 +1490,9 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
 
-            public static string Identify(byte[] bytes)
+            public static string Identify(byte[] bytes, string defReturn = "bin")
             {
-                if (bytes == null || bytes.Length < 20) return "bin";
+                if (bytes == null || bytes.Length < 20) return defReturn;
                 bool found;
                 int i;
                 foreach (var kvp in patterns)
@@ -1509,7 +1509,7 @@ namespace KK_Plugins.MaterialEditor
                         }
                         if (found) return kvp.Key;
                     }
-                return "bin";
+                return defReturn;
             }
         }
     }
