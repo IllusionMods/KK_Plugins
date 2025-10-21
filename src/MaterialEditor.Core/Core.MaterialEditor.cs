@@ -22,9 +22,6 @@ using System.Text.RegularExpressions;
 using static MaterialEditorAPI.MaterialAPI;
 using KKAPI.Utilities;
 using BepInEx.Bootstrap;
-
-
-
 #if AI || HS2
 using AIChara;
 using ChaAccessoryComponent = AIChara.CmpAccessory;
@@ -145,17 +142,70 @@ namespace KK_Plugins.MaterialEditor
         // Do not change, lest you break all existing local cards
         public const string LocalTexPrefix = "ME_LocalTex_";
         public const string LocalTexSavePreFix = "LOCAL_";
+        public const string LocalTexUnusedFolder = "_Unused";
 
         // Local texture audit screen variables
         internal static int auditAllFiles = 0;
         internal static int auditProcessedFiles = 0;
         internal static Dictionary<string, string> auditUnusedTextures = null;
-        internal static List<KeyValuePair<string, string>> auditMissingTextures = null;
+        internal static Dictionary<string, List<string>> auditMissingTextures = null;
         internal static bool auditShow = false;
         internal static Coroutine auditCoroutine = null;
         internal static Rect auditRect = new Rect();
         internal static Vector2 auditUnusedScroll = Vector2.zero;
         internal static Vector2 auditMissingScroll = Vector2.zero;
+        private static GUISkin _auditSkin = null;
+        internal static GUISkin AuditSkin
+        {
+            get
+            {
+                if (_auditSkin == null)
+                {
+#if !PH
+                    _auditSkin = IMGUIUtils.SolidBackgroundGuiSkin;
+#else
+                    _auditSkin = GUI.skin;
+#endif
+                    var newFont = new Font(new[] { _auditSkin.font.name }, Mathf.RoundToInt(_auditSkin.font.fontSize * 1.25f));
+                    _auditSkin.font = newFont;
+                    _auditSkin.label.font = newFont;
+                    _auditSkin.button.font = newFont;
+                }
+                return _auditSkin;
+            }
+        }
+        private static GUIStyle _auditBigText = null;
+        internal static GUIStyle AuditBigText
+        {
+            get
+            {
+                if ( _auditBigText == null)
+                {
+                    _auditBigText = new GUIStyle(AuditSkin.label)
+                    {
+                        font = new Font(new[] { _auditSkin.font.name }, Mathf.RoundToInt(_auditSkin.font.fontSize * 1.5f))
+                    };
+                }
+                return _auditBigText;
+            }
+        }
+        private static GUIStyle _auditWarnButton = null;
+        internal static GUIStyle AuditWarnButton
+        {
+            get
+            {
+                if (_auditWarnButton == null)
+                {
+                    _auditWarnButton = new GUIStyle(AuditSkin.button);
+                    var warnColor = new Color(1, 0.25f, 0.20f);
+                    _auditWarnButton.normal.textColor = warnColor;
+                    _auditWarnButton.active.textColor = warnColor;
+                    _auditWarnButton.hover.textColor = warnColor;
+                    _auditWarnButton.focused.textColor = warnColor;
+                }
+                return _auditWarnButton;
+            }
+        }
 
         public override void Awake()
         {
@@ -1160,16 +1210,16 @@ namespace KK_Plugins.MaterialEditor
             auditCoroutine = Instance.StartCoroutine(AuditLocalFilesCoroutine(localHashes));
         }
 
-        internal static IEnumerator AuditLocalFilesCoroutine(Dictionary<string, string> localHashes)
+        internal static IEnumerator AuditLocalFilesCoroutine(Dictionary<string, string> dicLocalHashToFilename)
         {
             var pngs = new List<string>();
             pngs.AddRange(Directory.GetFiles(Path.Combine(Paths.GameRootPath, @"UserData\chara"), "*.png", SearchOption.AllDirectories));
             pngs.AddRange(Directory.GetFiles(Path.Combine(Paths.GameRootPath, @"UserData\Studio\scene"), "*.png", SearchOption.AllDirectories));
 
-            List<KeyValuePair<string, string>> missingHashes = new List<KeyValuePair<string, string>>();
             auditAllFiles = pngs.Count;
             auditProcessedFiles = 0;
 
+            var dicFoundHashToFiles = new Dictionary<string, List<string>>();
             foreach (var file in pngs)
             {
                 string line;
@@ -1181,23 +1231,31 @@ namespace KK_Plugins.MaterialEditor
                         int matchIdx = line.IndexOf(LocalTexSavePreFix + nameof(MaterialEditorCharaController.TextureDictionary));
                         if (matchIdx >= 0)
                         {
-                            var newHashes = Regex.Match(line.Substring(matchIdx), "(?<![a-zA-Z0-9])[A-F0-9]{16}(?=[^a-zA-Z0-9])");
-                            foreach (Capture newHash in newHashes.Captures)
-                                if (localHashes.ContainsKey(newHash.Value))
-                                    localHashes.Remove(newHash.Value);
+                            var fileHashMatches = Regex.Matches(line.Substring(matchIdx), "(?<![a-zA-Z0-9])[A-F0-9]{16}(?=[^a-zA-Z0-9])");
+                            foreach (Match match in fileHashMatches)
+                                if (!dicFoundHashToFiles.ContainsKey(match.Value))
+                                    dicFoundHashToFiles.Add(match.Value, new List<string> { file });
                                 else
-                                    missingHashes.Add(new KeyValuePair<string, string>(file, newHash.Value));
+                                    dicFoundHashToFiles[match.Value].Add(file);
+                            sr.Close();
                             break;
                         }
                     }
+                    sr.Close();
                 }
 
                 ++auditProcessedFiles;
-                yield return null;
+                if (auditProcessedFiles % 3 == 0)
+                    yield return null;
             }
 
-            auditUnusedTextures = localHashes;
-            auditMissingTextures = missingHashes;
+            var dicMissingHashToFiles = new Dictionary<string, List<string>>();
+            foreach (var kvp in dicFoundHashToFiles)
+                if (!dicLocalHashToFilename.Remove(kvp.Key))
+                    dicMissingHashToFiles.Add(kvp.Key, kvp.Value);
+
+            auditUnusedTextures = dicLocalHashToFilename;
+            auditMissingTextures = dicMissingHashToFiles;
             auditCoroutine = null;
             yield break;
         }
@@ -1207,10 +1265,10 @@ namespace KK_Plugins.MaterialEditor
             if (auditShow)
             {
                 Rect screenRect = new Rect(0, 0, Screen.width, Screen.height);
-                GUI.Box(screenRect, "");
-                GUI.Box(screenRect, "");
+                for (int i = 0; i < 4; i++) GUI.Box(screenRect, "");
                 auditRect.position = new Vector2((Screen.width - auditRect.size.x) / 2, (Screen.height - auditRect.size.y) / 2);
-                auditRect = GUILayout.Window(42069, auditRect, AuditWindowFunction, "", GUI.skin.window, GUILayout.MinWidth(Screen.width / 2), GUILayout.MinHeight(Screen.height * 3 / 4));
+                float minWidth = Mathf.Clamp(Screen.width / 2, 960, 1280);
+                auditRect = GUILayout.Window(42069, auditRect, AuditWindowFunction, "", AuditSkin.window, GUILayout.MinWidth(minWidth), GUILayout.MinHeight(Screen.height * 3 / 4));
                 IMGUIUtils.EatInputInRect(screenRect);
             }
         }
@@ -1225,18 +1283,21 @@ namespace KK_Plugins.MaterialEditor
                     {
                         GUILayout.BeginVertical(GUI.skin.box);
                         {
-                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace(); GUILayout.Label("Processing cards and scenes..."); GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
                             GUILayout.Space(10);
-                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace(); GUILayout.Label($"{auditProcessedFiles} / {auditAllFiles}"); GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
-                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace(); GUILayout.Label($"{Math.Round((double)auditProcessedFiles / auditAllFiles, 3) * 100:0.0}%"); GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace(); GUILayout.Label("Processing cards and scenes...", AuditBigText); GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                            GUILayout.Space(10);
+                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace(); GUILayout.Label($"{auditProcessedFiles} / {auditAllFiles}", AuditSkin.label); GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                            GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace(); GUILayout.Label($"{Math.Round((double)auditProcessedFiles / auditAllFiles, 3) * 100:0.0}%", AuditSkin.label); GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
                             GUILayout.Space(10);
                             GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-                            if (GUILayout.Button("Cancel", GUILayout.Width(100), GUILayout.Height(30)))
+                            if (GUILayout.Button("Cancel", AuditSkin.button, GUILayout.Width(100), GUILayout.Height(30)))
                             {
                                 auditShow = false;
                                 Instance.StopCoroutine(auditCoroutine);
+                                auditCoroutine = null;
                             }
                             GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+                            GUILayout.Space(10);
                         }
                         GUILayout.EndVertical();
                     }
@@ -1248,26 +1309,27 @@ namespace KK_Plugins.MaterialEditor
             {
                 GUILayout.BeginVertical();
                 {
+                    GUILayout.Space(5);
                     GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-                    GUILayout.Label("MaterialEditor local file audit results");
+                    GUILayout.Label("MaterialEditor local file audit results", AuditBigText);
                     GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
                     GUILayout.Space(10);
                     GUILayout.BeginHorizontal();
                     {
-                        GUILayout.BeginVertical(GUI.skin.box);
+                        GUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(300));
                         {
                             if (auditUnusedTextures == null || auditUnusedTextures.Count == 0)
                             {
                                 GUILayout.BeginVertical(); GUILayout.FlexibleSpace();
                                 GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-                                GUILayout.Label("No unused textures found!");
+                                GUILayout.Label("No unused textures found!", AuditSkin.label);
                                 GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
                                 GUILayout.FlexibleSpace(); GUILayout.EndVertical();
                             }
                             else
                             {
                                 GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-                                GUILayout.Label("Unused textures");
+                                GUILayout.Label("Unused textures", AuditSkin.label);
                                 GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
                                 GUILayout.Space(5);
                                 auditUnusedScroll = GUILayout.BeginScrollView(auditUnusedScroll, false, true, GUI.skin.label, GUI.skin.verticalScrollbar, GUI.skin.box, GUILayout.ExpandHeight(true));
@@ -1290,14 +1352,14 @@ namespace KK_Plugins.MaterialEditor
                             {
                                 GUILayout.BeginVertical(); GUILayout.FlexibleSpace();
                                 GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-                                GUILayout.Label("No missing textures found!");
+                                GUILayout.Label("No missing textures found!", AuditSkin.label);
                                 GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
                                 GUILayout.FlexibleSpace(); GUILayout.EndVertical();
                             }
                             else
                             {
                                 GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-                                GUILayout.Label("Missing textures");
+                                GUILayout.Label("Missing textures", AuditSkin.label);
                                 GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
                                 GUILayout.Space(5);
                                 auditMissingScroll = GUILayout.BeginScrollView(auditMissingScroll, false, true, GUI.skin.label, GUI.skin.verticalScrollbar, GUI.skin.box, GUILayout.ExpandHeight(true));
@@ -1307,8 +1369,8 @@ namespace KK_Plugins.MaterialEditor
                                         foreach (var kvp in auditMissingTextures)
                                         {
                                             GUILayout.BeginVertical(GUI.skin.box, GUILayout.ExpandWidth(true));
-                                            GUILayout.Label($"Card: {kvp.Key}");
-                                            GUILayout.Label($"Missing texture hash: {kvp.Value}");
+                                            GUILayout.Label($"Missing texture hash: {kvp.Key}", AuditSkin.label);
+                                            GUILayout.Label($"Used by:\n{string.Join(",\n", kvp.Value.ToArray())}", AuditSkin.label);
                                             GUILayout.EndVertical();
                                             GUILayout.Space(3);
                                         }
@@ -1324,17 +1386,26 @@ namespace KK_Plugins.MaterialEditor
                     GUILayout.Space(10);
                     GUILayout.BeginHorizontal();
                     {
-                        if (GUILayout.Button("Delete unused files", GUILayout.Height(30)))
+                        if (GUILayout.Button("Delete unused files", AuditWarnButton, GUILayout.Height(30)))
                         {
-
+                            foreach (var kvp in auditUnusedTextures)
+                                File.Delete(Path.Combine(LocalTexturePath, kvp.Value));
+                            auditUnusedTextures.Clear();
                         }
                         GUILayout.Space(5);
-                        if (GUILayout.Button("Move unused files to '_Unused' folder", GUILayout.Height(30)))
+                        if (GUILayout.Button("Move unused files to '_Unused' folder", AuditSkin.button, GUILayout.Height(30)))
                         {
-
+                            string unusedFolder = Path.Combine(LocalTexturePath, LocalTexUnusedFolder);
+                            if (!Directory.Exists(unusedFolder))
+                                Directory.CreateDirectory(unusedFolder);
+                            foreach (var kvp in auditUnusedTextures)
+                                File.Move(
+                                    Path.Combine(LocalTexturePath, kvp.Value),
+                                    Path.Combine(Path.Combine(LocalTexturePath, LocalTexUnusedFolder), kvp.Value));
+                            auditUnusedTextures.Clear();
                         }
                         GUILayout.Space(5);
-                        if (GUILayout.Button("Close", GUILayout.Height(30)))
+                        if (GUILayout.Button("Close", AuditSkin.button, GUILayout.Height(30)))
                         {
                             auditMissingTextures = null;
                             auditUnusedTextures = null;
@@ -1342,6 +1413,7 @@ namespace KK_Plugins.MaterialEditor
                         }
                     }
                     GUILayout.EndHorizontal();
+                    GUILayout.Space(4);
                 }
                 GUILayout.EndVertical();
             }
