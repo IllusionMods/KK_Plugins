@@ -20,6 +20,9 @@ using UnityEngine;
 using XUnity.ResourceRedirector;
 using System.Text.RegularExpressions;
 using static MaterialEditorAPI.MaterialAPI;
+using KKAPI.Utilities;
+
+
 #if AI || HS2
 using AIChara;
 using ChaAccessoryComponent = AIChara.CmpAccessory;
@@ -70,8 +73,6 @@ namespace KK_Plugins.MaterialEditor
         private static Material NormalMapConvertMaterial;
         private static Material NormalMapOpenGLConvertMaterial;
         private static Material NormalMapUnpackDXT5Material;
-
-        public const string LocalTexPrefix = "ME_LocalTex_";
 
 #if KK || EC || KKS
         internal static ConfigEntry<bool> RimRemover { get; private set; }
@@ -139,12 +140,19 @@ namespace KK_Plugins.MaterialEditor
         public static HashSet<string> MouthParts = new HashSet<string> { "o_tooth", "o_tang" };
 #endif
 
+        // Do not change, lest you break all existing local cards
+        public const string LocalTexPrefix = "ME_LocalTex_";
+        public const string LocalTexSavePreFix = "LOCAL_";
+
         public override void Awake()
         {
             base.Awake();
 
             //Load any image loading dependencies before any images are actually ever loaded
             ImageHelper.LoadDependencies(typeof(MaterialEditorPlugin));
+#if !PH
+            MakerCardSave.RegisterNewCardSavePathModifier(null, AddLocalPrefixToCard);
+#endif
 
 #if KK || EC || KKS
             RimRemover = Config.Bind("Config", "Remove Rim Lighting", false, new ConfigDescription("Remove rim lighting for all characters clothes, hair, accessories, etc. Will save modified values to the card.\n\nUse with caution as it cannot be undone except by manually resetting all the changes.", null, new ConfigurationManagerAttributes { Order = 0, IsAdvanced = true }));
@@ -1026,16 +1034,51 @@ namespace KK_Plugins.MaterialEditor
             if (!Directory.Exists(LocalTexturePath))
                 Directory.CreateDirectory(LocalTexturePath);
 
-            var hashDict = dict.ToDictionary(pair => pair.Key, pair => TextureContainerManager.Acquire(pair.Value.Data).key.hash);
+            var hashDict = dict.ToDictionary(pair => pair.Key, pair => TextureContainerManager.Acquire(pair.Value.Data).key.hash.ToString("X"));
             foreach (var kvp in hashDict)
             {
-                string fileName = LocalTexPrefix + kvp.Value.ToString("X") + "." + MIMESniffer.Identify(dict[kvp.Key].Data);
+                string fileName = LocalTexPrefix + kvp.Value + "." + MIMESniffer.Identify(dict[kvp.Key].Data);
                 string filePath = Path.Combine(LocalTexturePath, fileName);
                 if (!File.Exists(filePath))
                     File.WriteAllBytes(filePath, dict[kvp.Key].Data);
             }
 
-            data.data.Add(key, hashDict);
+            data.data.Add(key, MessagePackSerializer.Serialize(hashDict));
+        }
+
+        internal static byte[] LoadLocally(string hash)
+        {
+            if (!Directory.Exists(LocalTexturePath))
+            {
+                Logger.LogMessage("[MaterialEditor] Local texture directory doesn't exist, can't load texture!");
+                return new byte[0];
+            }
+
+            string searchPattern = LocalTexPrefix + hash + ".*";
+            string[] files = Directory.GetFiles(LocalTexturePath, searchPattern, SearchOption.TopDirectoryOnly);
+            if (files == null || files.Length == 0)
+            {
+                Logger.LogMessage($"[MaterialEditor] No local texture found with hash {hash}!");
+                return new byte[0];
+            }
+            if (files.Length > 1)
+            {
+                Logger.LogMessage($"[MaterialEditor] Multiple local textures found with hash {hash}, aborting!");
+                return new byte[0];
+            }
+
+            return File.ReadAllBytes(files[0]);
+        }
+
+#if !PH
+        private static string AddLocalPrefixToCard(string current)
+        {
+            if (!IsAutoSave() && SaveCharTexturesLocally.Value)
+                return LocalTexSavePreFix + current;
+            return current;
+        }
+#endif
+
         }
 
         protected override Texture ConvertNormalMap(Texture tex, bool unpack = false)

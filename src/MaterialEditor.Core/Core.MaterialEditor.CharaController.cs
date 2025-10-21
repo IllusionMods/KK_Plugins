@@ -96,7 +96,7 @@ namespace KK_Plugins.MaterialEditor
                         || (SaveSceneTexturesLocally.Value && StudioAPI.InsideStudio)
 #endif
                     )
-                        MaterialEditorPlugin.SaveLocally(data, nameof(TextureDictionary), TextureDictionary);
+                        MaterialEditorPlugin.SaveLocally(data, MaterialEditorPlugin.LocalTexSavePreFix + nameof(TextureDictionary), TextureDictionary);
                     else
                         data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
                 else
@@ -520,6 +520,9 @@ namespace KK_Plugins.MaterialEditor
                 if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
                     foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
                         importDictionary[x.Key] = SetAndGetTextureID(x.Value);
+                else if (data.data.TryGetValue(MaterialEditorPlugin.LocalTexSavePreFix + nameof(TextureDictionary), out var texDicLocal) && texDicLocal != null)
+                    foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicLocal))
+                        importDictionary[x.Key] = SetAndGetTextureID(MaterialEditorPlugin.LoadLocally(x.Value));
 
                 //Debug for dumping all textures
                 //int counter = 1;
