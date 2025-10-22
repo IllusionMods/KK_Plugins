@@ -1155,7 +1155,7 @@ namespace KK_Plugins.MaterialEditor
             if (!Directory.Exists(LocalTexturePath))
                 Directory.CreateDirectory(LocalTexturePath);
 
-            var hashDict = dict.ToDictionary(pair => pair.Key, pair => TextureContainerManager.Acquire(pair.Value.Data).key.hash.ToString("X"));
+            var hashDict = dict.ToDictionary(pair => pair.Key, pair => TextureContainerManager.Acquire(pair.Value.Data).key.hash.ToString("X16"));
             foreach (var kvp in hashDict)
             {
                 string fileName = LocalTexPrefix + kvp.Value + "." + MIMESniffer.Identify(dict[kvp.Key].Data);
@@ -1262,12 +1262,19 @@ namespace KK_Plugins.MaterialEditor
                         int matchIdx = line.IndexOf(LocalTexSavePreFix + nameof(MaterialEditorCharaController.TextureDictionary));
                         if (matchIdx >= 0)
                         {
-                            var fileHashMatches = Regex.Matches(line.Substring(matchIdx), "(?<![a-zA-Z0-9])[A-F0-9]{16}(?=[^a-zA-Z0-9])");
-                            foreach (Match match in fileHashMatches)
-                                if (!dicFoundHashToFiles.ContainsKey(match.Value))
-                                    dicFoundHashToFiles.Add(match.Value, new List<string> { file });
-                                else
-                                    dicFoundHashToFiles[match.Value].Add(file);
+                            line = line.Substring(matchIdx);
+                            while(!sr.EndOfStream)
+                            {
+                                var fileHashMatches = Regex.Matches(line, "(?<![a-zA-Z0-9])[A-F0-9]{16}(?![a-zA-Z0-9])");
+                                if (fileHashMatches.Count == 0)
+                                    break;
+                                foreach (Match match in fileHashMatches)
+                                    if (!dicFoundHashToFiles.ContainsKey(match.Value))
+                                        dicFoundHashToFiles.Add(match.Value, new List<string> { file });
+                                    else
+                                        dicFoundHashToFiles[match.Value].Add(file);
+                                line = sr.ReadLine();
+                            }
                             sr.Close();
                             break;
                         }
@@ -1412,6 +1419,7 @@ namespace KK_Plugins.MaterialEditor
                             }
                         }
                         GUILayout.EndVertical();
+                        GUILayout.Space(4);
                     }
                     GUILayout.EndHorizontal();
                     GUILayout.Space(10);
@@ -1442,6 +1450,7 @@ namespace KK_Plugins.MaterialEditor
                             auditUnusedTextures = null;
                             auditShow = false;
                         }
+                        GUILayout.Space(4);
                     }
                     GUILayout.EndHorizontal();
                     GUILayout.Space(4);
