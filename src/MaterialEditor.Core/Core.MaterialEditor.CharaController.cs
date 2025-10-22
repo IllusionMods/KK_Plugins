@@ -91,9 +91,9 @@ namespace KK_Plugins.MaterialEditor
                 if (TextureDictionary.Count > 0)
                     if (
                         (IsAutoSave() && AutosaveTexturesLocally.Value)
-                        || (SaveCharTexturesLocally.Value && MakerAPI.InsideMaker)
+                        || (!IsAutoSave() && SaveCharTexturesLocally.Value && MakerAPI.InsideMaker)
 #if !EC
-                        || (SaveSceneTexturesLocally.Value && StudioAPI.InsideStudio)
+                        || (!IsAutoSave() && SaveSceneTexturesLocally.Value && StudioAPI.InsideStudio)
 #endif
                     )
                         MaterialEditorPlugin.SaveLocally(data, MaterialEditorPlugin.LocalTexSavePreFix + nameof(TextureDictionary), TextureDictionary);

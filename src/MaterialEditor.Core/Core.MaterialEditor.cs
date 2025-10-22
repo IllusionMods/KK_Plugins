@@ -269,17 +269,19 @@ namespace KK_Plugins.MaterialEditor
             RendererCachingEnabled = Config.Bind("Config", "Renderer Cache", true, "Turning this off will fix cache related issues but may have a negative impact on performance.");
 
             // Texture saving configs
-            ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 10 }));
+            string warn = "\n!!! WARNING !!!\nLocally saved textures, cards, and scenes need to be handled carefully. Unused files can be cleaned up via the 'Audit' button below. Enable at your own risk.";
+            ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 10, IsAdvanced = true }));
             ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
 #if !EC
-            SaveSceneTexturesLocally = Config.Bind("Textures", "Save Scene Textures Locally", false, new ConfigDescription("When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene", null, new ConfigurationManagerAttributes { Order = 5 }));
+            SaveSceneTexturesLocally = Config.Bind("Textures", "Save Scene Textures Locally", false, new ConfigDescription("When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene." + warn, null, new ConfigurationManagerAttributes { Order = 5, IsAdvanced = true }));
 #endif
-            SaveCharTexturesLocally = Config.Bind("Textures", "Save Character Textures Locally", false, new ConfigDescription("When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene", null, new ConfigurationManagerAttributes { Order = 5 }));
-            AutosaveTexturesLocally = Config.Bind("Textures", "Autosave Textures Locally", false, new ConfigDescription("When enabled, textures in autosaved characters and scenes will be saved to the local MaterialEditor folder instead of as part of the card / scene", null, new ConfigurationManagerAttributes { Order = 5 }));
+            SaveCharTexturesLocally = Config.Bind("Textures", "Save Character Textures Locally", false, new ConfigDescription("When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene." + warn, null, new ConfigurationManagerAttributes { Order = 5, IsAdvanced = true }));
+            AutosaveTexturesLocally = Config.Bind("Textures", "Autosave Textures Locally", false, new ConfigDescription("When enabled, textures in autosaved characters and scenes will be saved to the local MaterialEditor folder instead of as part of the card / scene." + warn, null, new ConfigurationManagerAttributes { Order = 5, IsAdvanced = true }));
             Config.Bind("Textures", "Audit Local Files", 0, new ConfigDescription("Parse all character / scene files and check for missing or unused local files. Takes a long times if you have many cards and scenes.", null, new ConfigurationManagerAttributes
             {
                 CustomDrawer = new Action<ConfigEntryBase>(AuditOptionDrawer),
-                Order = 0
+                Order = 0,
+                IsAdvanced = true
             }));
         }
 
