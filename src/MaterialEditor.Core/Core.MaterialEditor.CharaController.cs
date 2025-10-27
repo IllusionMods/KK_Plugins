@@ -14,6 +14,7 @@ using UniRx;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
+using static KK_Plugins.MaterialEditor.MaterialEditorPlugin;
 #if !EC
 using KKAPI.Studio;
 #endif
@@ -89,16 +90,15 @@ namespace KK_Plugins.MaterialEditor
                 var data = new PluginData();
 
                 if (TextureDictionary.Count > 0)
-                    if (
-                        (IsAutoSave() && AutosaveTexturesLocally.Value)
-                        || (!IsAutoSave() && SaveCharTexturesLocally.Value && MakerAPI.InsideMaker)
-#if !EC
-                        || (!IsAutoSave() && SaveSceneTexturesLocally.Value && StudioAPI.InsideStudio)
-#endif
-                    )
-                        MaterialEditorPlugin.SaveLocally(data, MaterialEditorPlugin.LocalTexSavePreFix + nameof(TextureDictionary), TextureDictionary);
-                    else
-                        data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+                    switch(DetermineSaveType())
+                    {
+                        case (int)CharaTextureSaveType.Local:
+                            SaveLocally(data, LocalTexSavePreFix + nameof(TextureDictionary), TextureDictionary);
+                            break;
+                        default:
+                            data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+                            break;
+                    }   
                 else
                     data.data.Add(nameof(TextureDictionary), null);
 
@@ -520,9 +520,9 @@ namespace KK_Plugins.MaterialEditor
                 if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
                     foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
                         importDictionary[x.Key] = SetAndGetTextureID(x.Value);
-                else if (data.data.TryGetValue(MaterialEditorPlugin.LocalTexSavePreFix + nameof(TextureDictionary), out var texDicLocal) && texDicLocal != null)
+                else if (data.data.TryGetValue(LocalTexSavePreFix + nameof(TextureDictionary), out var texDicLocal) && texDicLocal != null)
                     foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicLocal))
-                        importDictionary[x.Key] = SetAndGetTextureID(MaterialEditorPlugin.LoadLocally(x.Value));
+                        importDictionary[x.Key] = SetAndGetTextureID(LoadLocally(x.Value));
 
                 //Debug for dumping all textures
                 //int counter = 1;

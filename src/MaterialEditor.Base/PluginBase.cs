@@ -138,20 +138,6 @@ namespace MaterialEditorAPI
         /// When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals
         /// </summary>
         public static ConfigEntry<bool> ConvertNormalmapsOnExport { get; set; }
-#if !EC
-        /// <summary>
-        /// When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene
-        /// </summary>
-        public static ConfigEntry<bool> SaveSceneTexturesLocally { get; set; }
-#endif
-        /// <summary>
-        /// When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene
-        /// </summary>
-        public static ConfigEntry<bool> SaveCharTexturesLocally { get; set; }
-        /// <summary>
-        /// When enabled, textures in autosaved characters and scenes will be saved to the local MaterialEditor folder instead of as part of the card / scene
-        /// </summary>
-        public static ConfigEntry<bool> AutosaveTexturesLocally { get; set; }
         /// <summary>
         /// Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}
         /// </summary>
@@ -382,14 +368,8 @@ namespace MaterialEditorAPI
 
         internal static bool IsAutoSave()
         {
-            try
-            {
-                if (Chainloader.PluginInfos.TryGetValue("com.deathweasel.bepinex.autosave", out PluginInfo pluginInfo))
-                    return (bool)pluginInfo.Instance.GetType().GetField("Autosaving").GetValue(null);
-            }
-            catch
-            {
-            }
+            if (Chainloader.PluginInfos.TryGetValue("com.deathweasel.bepinex.autosave", out PluginInfo pluginInfo) && pluginInfo?.Instance != null)
+                return (bool)(pluginInfo.Instance.GetType().GetField("Autosaving")?.GetValue(null) ?? false);
             return false;
         }
 

@@ -3,6 +3,7 @@ using HarmonyLib;
 using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
+using KKAPI.Utilities;
 using MaterialEditorAPI;
 using System.Collections;
 using System.Collections.Generic;
@@ -315,7 +316,7 @@ namespace KK_Plugins.MaterialEditor
                         texData = controller.TextureDictionary[textureProperty.TexID.Value].Data;
                 }
             }
-            string ext = MaterialEditorPlugin.MIMESniffer.Identify(texData, "XXX");
+            string ext = ImageTypeIdentifier.Identify(texData, "XXX");
             if (texData != null && ext != "XXX")
                 base.ExportTextureOriginal(mat, property, ext, texData);
             else

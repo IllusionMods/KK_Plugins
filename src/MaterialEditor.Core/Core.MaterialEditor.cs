@@ -34,6 +34,9 @@ using Studio;
 #if PH
 using ChaControl = Human;
 #endif
+#if !EC
+using KKAPI.Studio;
+#endif
 
 namespace KK_Plugins.MaterialEditor
 {
@@ -49,7 +52,7 @@ namespace KK_Plugins.MaterialEditor
     [BepInDependency("com.deathweasel.bepinex.moreoutfits", BepInDependency.DependencyFlags.SoftDependency)]
 #endif
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    public partial class MaterialEditorPlugin : MaterialEditorAPI.MaterialEditorPluginBase
+    public partial class MaterialEditorPlugin : MaterialEditorPluginBase
     {
         /// <summary>
         /// MaterialEditor plugin GUID
@@ -91,6 +94,13 @@ namespace KK_Plugins.MaterialEditor
         internal static ConfigEntry<KeyboardShortcut> PurgeOrphanedPropertiesHotkey { get; private set; }
 
         internal static ConfigEntry<bool> RendererCachingEnabled { get; private set; }
+
+#if !EC
+        internal static ConfigEntry<SceneTextureSaveType> TextureSaveTypeScene { get; private set; }
+        internal static ConfigEntry<string> TextureSaveTypeSceneAuto { get; private set; }
+#endif
+        internal static ConfigEntry<CharaTextureSaveType> TextureSaveTypeChara { get; private set; }
+        internal static ConfigEntry<string> TextureSaveTypeCharaAuto { get; private set; }
 
         /// <summary>
         /// Parts of the body
@@ -142,6 +152,7 @@ namespace KK_Plugins.MaterialEditor
         // Do not change, lest you break all existing local cards
         public const string LocalTexPrefix = "ME_LocalTex_";
         public const string LocalTexSavePreFix = "LOCAL_";
+        public const string DedupedTexSavePreFix = "DEDUPED_";
         public const string LocalTexUnusedFolder = "_Unused";
 
         // Local texture audit screen variables
@@ -242,9 +253,6 @@ namespace KK_Plugins.MaterialEditor
 
             //Load any image loading dependencies before any images are actually ever loaded
             ImageHelper.LoadDependencies(typeof(MaterialEditorPlugin));
-#if !PH
-            MakerCardSave.RegisterNewCardSavePathModifier(null, AddLocalPrefixToCard);
-#endif
 
 #if KK || EC || KKS
             RimRemover = Config.Bind("Config", "Remove Rim Lighting", false, new ConfigDescription("Remove rim lighting for all characters clothes, hair, accessories, etc. Will save modified values to the card.\n\nUse with caution as it cannot be undone except by manually resetting all the changes.", null, new ConfigurationManagerAttributes { Order = 0, IsAdvanced = true }));
@@ -269,20 +277,29 @@ namespace KK_Plugins.MaterialEditor
             RendererCachingEnabled = Config.Bind("Config", "Renderer Cache", true, "Turning this off will fix cache related issues but may have a negative impact on performance.");
 
             // Texture saving configs
-            string warn = "\n!!! WARNING !!!\nLocally saved textures, cards, and scenes need to be handled carefully. Unused files can be cleaned up via the 'Audit' button below. Enable at your own risk.";
             ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 10, IsAdvanced = true }));
             ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
+
+            CharaLocalTextures.Activate();
+            TextureSaveTypeChara = Config.Bind("Textures", "Chara Texture Save Type", CharaLocalTextures.SaveType, new ConfigDescription("Texture save type for characters set in the Modding API.", null, new ConfigurationManagerAttributes { Order = 7, IsAdvanced = true, CustomDrawer = new Action<ConfigEntryBase>(KKAPISettingDrawer<CharaTextureSaveType>), HideDefaultButton = true }));
+            TextureSaveTypeCharaAuto = Config.Bind("Textures", "Chara Autosave Type Override", "-", new ConfigDescription("Save type override for autosaves. Set to \"-\" to disable the override.", AutoSaveTypeOptions(false), new ConfigurationManagerAttributes { Order = 6, IsAdvanced = true }));
+            CharaLocalTextures.SaveTypeChangedEvent += (x, y) => { TextureSaveTypeChara.Value = y.NewSetting; };
 #if !EC
-            SaveSceneTexturesLocally = Config.Bind("Textures", "Save Scene Textures Locally", false, new ConfigDescription("When enabled, textures from scenes (including characters in scenes) will be saved to the local MaterialEditor folder instead of as part of the card / scene." + warn, null, new ConfigurationManagerAttributes { Order = 5, IsAdvanced = true }));
+            SceneLocalTextures.Activate();
+            TextureSaveTypeScene = Config.Bind("Textures", "Scene Texture Save Type", SceneLocalTextures.SaveType, new ConfigDescription("Texture save type for scenes set in the Modding API.", null, new ConfigurationManagerAttributes { Order = 5, IsAdvanced = true, CustomDrawer = new Action<ConfigEntryBase>(KKAPISettingDrawer<SceneTextureSaveType>), HideDefaultButton = true }));
+            TextureSaveTypeSceneAuto = Config.Bind("Textures", "Scene Autosave Type Override", "-", new ConfigDescription("Save type override for autosaves. Set to \"-\" to disable the override.", AutoSaveTypeOptions(true), new ConfigurationManagerAttributes { Order = 4, IsAdvanced = true }));
+            SceneLocalTextures.SaveTypeChangedEvent += (x, y) => { TextureSaveTypeScene.Value = y.NewSetting; };
 #endif
-            SaveCharTexturesLocally = Config.Bind("Textures", "Save Character Textures Locally", false, new ConfigDescription("When enabled, textures from characters will be saved to the local MaterialEditor folder instead of as part of the card / scene." + warn, null, new ConfigurationManagerAttributes { Order = 5, IsAdvanced = true }));
-            AutosaveTexturesLocally = Config.Bind("Textures", "Autosave Textures Locally", false, new ConfigDescription("When enabled, textures in autosaved characters and scenes will be saved to the local MaterialEditor folder instead of as part of the card / scene." + warn, null, new ConfigurationManagerAttributes { Order = 5, IsAdvanced = true }));
             Config.Bind("Textures", "Audit Local Files", 0, new ConfigDescription("Parse all character / scene files and check for missing or unused local files. Takes a long times if you have many cards and scenes.", null, new ConfigurationManagerAttributes
             {
                 CustomDrawer = new Action<ConfigEntryBase>(AuditOptionDrawer),
                 Order = 0,
-                IsAdvanced = true
+                HideDefaultButton = true,
+                IsAdvanced = true, 
             }));
+#if !PH
+            MakerCardSave.RegisterNewCardSavePathModifier(null, AddLocalPrefixToCard);
+#endif
         }
 
         internal void Main()
@@ -1150,6 +1167,37 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
+        internal static int DetermineSaveType()
+        {
+#if !EC
+            if (StudioAPI.InsideStudio)
+            {
+                foreach (SceneTextureSaveType option in Enum.GetValues(typeof(SceneTextureSaveType)))
+                {
+                    if (
+                        (IsAutoSave() && TextureSaveTypeSceneAuto.Value == option.ToString()) ||
+                        ((TextureSaveTypeSceneAuto.Value == "-" || !IsAutoSave()) && TextureSaveTypeScene.Value == option)
+                    )
+                        return (int)option;
+                }
+                return (int)SceneTextureSaveType.Bundled;
+            }
+#endif
+            if (MakerAPI.InsideMaker)
+            {
+                foreach (CharaTextureSaveType option in Enum.GetValues(typeof(CharaTextureSaveType)))
+                {
+                    if (
+                        (IsAutoSave() && TextureSaveTypeCharaAuto.Value == option.ToString()) ||
+                        ((TextureSaveTypeCharaAuto.Value == "-" || !IsAutoSave()) && TextureSaveTypeChara.Value == option)
+                    )
+                        return (int)option;
+                }
+                return (int)CharaTextureSaveType.Bundled;
+            }
+            throw new ArgumentException("Not inside Studio or Maker!");
+        }
+
         internal static void SaveLocally(PluginData data, string key, Dictionary<int, TextureContainer> dict)
         {
             if (!Directory.Exists(LocalTexturePath))
@@ -1158,7 +1206,7 @@ namespace KK_Plugins.MaterialEditor
             var hashDict = dict.ToDictionary(pair => pair.Key, pair => TextureContainerManager.Acquire(pair.Value.Data).key.hash.ToString("X16"));
             foreach (var kvp in hashDict)
             {
-                string fileName = LocalTexPrefix + kvp.Value + "." + MIMESniffer.Identify(dict[kvp.Key].Data);
+                string fileName = LocalTexPrefix + kvp.Value + "." + ImageTypeIdentifier.Identify(dict[kvp.Key].Data);
                 string filePath = Path.Combine(LocalTexturePath, fileName);
                 if (!File.Exists(filePath))
                     File.WriteAllBytes(filePath, dict[kvp.Key].Data);
@@ -1194,7 +1242,7 @@ namespace KK_Plugins.MaterialEditor
 #if !PH
         private static string AddLocalPrefixToCard(string current)
         {
-            if (!IsAutoSave() && SaveCharTexturesLocally.Value)
+            if (!IsAutoSave() && TextureSaveTypeChara.Value == CharaTextureSaveType.Local)
                 return LocalTexSavePreFix + current;
             return current;
         }
@@ -1215,6 +1263,11 @@ namespace KK_Plugins.MaterialEditor
                 }
                 catch { }
             }
+        }
+
+        internal void KKAPISettingDrawer<T>(ConfigEntryBase configEntry) where T : Enum
+        {
+            GUILayout.Label(((T)configEntry.BoxedValue).ToString(), GUILayout.ExpandWidth(true));
         }
 
         internal static void AuditLocalFiles()
@@ -1504,53 +1557,20 @@ namespace KK_Plugins.MaterialEditor
             Hooks.ClearCache(gameObject);
         }
 
-        internal static class MIMESniffer
+        internal static AcceptableValueBase AutoSaveTypeOptions(bool forStudio)
         {
-            private static readonly Dictionary<string, byte[][]> patterns = new Dictionary<string, byte[][]>();
-            private static readonly Dictionary<string, string[]> patternsRaw = new Dictionary<string, string[]>
+            var options = new List<string> { "-" };
+            if (forStudio)
             {
-                { "png", new[] { "89 50 4E 47 0D 0A 1A 0A" } },
-                { "jpg", new[] { "FF D8 FF", "00 00 00 0C 6A 50 20 20 0D 0A 87 0A", "FF 4F FF 51" } },
-                { "webp", new[] { "52 49 46 46" } },
-                { "bmp", new[] { "42 4D" } },
-                { "gif", new[] { "47 49 46 38 37 61", "47 49 46 38 39 61" } },
-                { "avif", new[] { "00 00 00 1C 66 74 79 70 61 76 69 66", "00 00 00 20 66 74 79 70 61 76 69 66" } },
-                { "tif", new[] { "49 49 2A 00", "4D 4D 00 2A", "49 49 2B 00", "4D 4D 00 2B" } },
-            };
-
-            static MIMESniffer()
-            {
-                List<byte[]> patternList = new List<byte[]>();
-                foreach (var kvp in patternsRaw)
-                {
-                    patternList.Clear();
-                    foreach (var byteString in kvp.Value)
-                        patternList.Add(byteString.Split(' ').Select(x => Convert.ToByte(x, 16)).ToArray());
-                    patterns.Add(kvp.Key, patternList.ToArray());
-                }
+#if !EC
+                options.AddRange(((SceneTextureSaveType[])Enum.GetValues(typeof(SceneTextureSaveType))).Select(x => x.ToString()));
+#endif
             }
-
-            public static string Identify(byte[] bytes, string defReturn = "bin")
+            else
             {
-                if (bytes == null || bytes.Length < 20) return defReturn;
-                bool found;
-                int i;
-                foreach (var kvp in patterns)
-                    foreach (var pattern in kvp.Value)
-                    {
-                        found = true;
-                        for (i = 0; i < pattern.Length; i++)
-                        {
-                            if (bytes[i] != pattern[i])
-                            {
-                                found = false;
-                                break;
-                            }
-                        }
-                        if (found) return kvp.Key;
-                    }
-                return defReturn;
+                options.AddRange(((CharaTextureSaveType[])Enum.GetValues(typeof(CharaTextureSaveType))).Select(x => x.ToString()));
             }
+            return new AcceptableValueList<string>(options.ToArray());
         }
     }
 }
