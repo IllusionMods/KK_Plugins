@@ -29,7 +29,7 @@ namespace KK_Plugins
             public TextureKey(byte[] data, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
             {
                 //First part of the data is sufficient to calculate the hash.
-                long hash = (long)CRC64Calculator.CalculateCRC64(data, 1 << 11);
+                long hash = (long)CRC64Calculator.CalculateCRC64(data, 1 << 11, 1 << 9, true);
                 hash ^= format.GetHashCode();
                 hash ^= mipmaps.GetHashCode();
 
@@ -243,24 +243,47 @@ namespace KK_Plugins
         /// </summary>
         /// <param name="data">The data bytes to hash.</param>
         /// <param name="size">How many bytes to hash. Leave out to hash all.</param>
-        public static ulong CalculateCRC64(byte[] data, int? size = null)
+        public static ulong CalculateCRC64(byte[] data, int? size = null, int? sizeEnd = null, bool hashLen = false)
         {
             size = Math.Min(data.Length, size ?? data.Length);
-            byte[] crcCheckVal = CalculateCheckValue(data, size.Value);
+            sizeEnd = Math.Min(data.Length, sizeEnd ?? data.Length);
+            byte[] crcCheckVal = CalculateCheckValue(data, size.Value, sizeEnd.Value, hashLen);
             Array.Resize(ref crcCheckVal, 8);
             return BitConverter.ToUInt64(crcCheckVal, 0);
         }
 
-        public static byte[] CalculateCheckValue(byte[] data, int size)
+        public static byte[] CalculateCheckValue(byte[] data, int size, int sizeEnd, bool hashLen)
         {
             if (data == null) return null;
 
             ulong crc = initialValue;
 
-            for (int i = 0; i < size; i++)
+            // Hash the start
+            int i;
+            for (i = 0; i < size; i++)
             {
                 crc = Crc64Table[((crc >> (width - 8)) ^ data[i]) & 0xFF] ^ (crc << 8);
                 crc &= UInt64.MaxValue >> (64 - width);
+            }
+
+            // Hash the end
+            int length = data.Length;
+            int downEnd = length - sizeEnd - 1;
+            for (i = length - 1; i > downEnd; i--)
+            {
+                crc = Crc64Table[((crc >> (width - 8)) ^ data[i]) & 0xFF] ^ (crc << 8);
+                crc &= UInt64.MaxValue >> (64 - width);
+            }
+
+            // Hash the length
+            if (hashLen)
+            {
+                byte[] lengthBytes = BitConverter.GetBytes(length);
+                foreach (byte b in lengthBytes)
+                {
+                    crc = Crc64Table[((crc >> (width - 8)) ^ b) & 0xFF] ^ (crc << 8);
+                    crc &= UInt64.MaxValue >> (64 - width);
+                }
             }
 
             ulong crcFinalValue = crc ^ xorOutValue;
