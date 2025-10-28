@@ -153,6 +153,7 @@ namespace KK_Plugins.MaterialEditor
         public const string LocalTexPrefix = "ME_LocalTex_";
         public const string LocalTexSavePreFix = "LOCAL_";
         public const string DedupedTexSavePreFix = "DEDUPED_";
+        public const string DedupedTexSavePostFix = "_DATA";
         public const string LocalTexUnusedFolder = "_Unused";
 
         // Local texture audit screen variables
@@ -1198,12 +1199,41 @@ namespace KK_Plugins.MaterialEditor
             throw new ArgumentException("Not inside Studio or Maker!");
         }
 
+        internal static void SaveDeduped(PluginData data, string key, Dictionary<int, TextureContainer> dict)
+        {
+            HashSet<long> hashes = new HashSet<long>();
+            Dictionary<int, string> dicKeyToHash = new Dictionary<int, string>();
+            Dictionary<string, byte[]> dicHashToData = new Dictionary<string, byte[]>();
+            foreach (var kvp in dict)
+            {
+                var texKey = kvp.Value._token.key;
+                string hashString = texKey.hash.ToString("X16");
+                hashes.Add(texKey.hash);
+                dicKeyToHash.Add(kvp.Key, hashString);
+                dicHashToData.Add(hashString, texKey.data);
+            }
+
+            foreach (var controller in MaterialEditorCharaController.charaControllers)
+            {
+                var controllerKeys = controller.TextureDictionary.Values.Select(x => x._token.key);
+                foreach (var controllerKey in controllerKeys)
+                    if (!hashes.Contains(controllerKey.hash))
+                    {
+                        hashes.Add(controllerKey.hash);
+                        dicHashToData.Add(controllerKey.hash.ToString("X16"), controllerKey.data);
+                    }
+            }
+
+            data.data.Add(key, MessagePackSerializer.Serialize(dicKeyToHash));
+            data.data.Add(key + DedupedTexSavePostFix, MessagePackSerializer.Serialize(dicHashToData));
+        }
+
         internal static void SaveLocally(PluginData data, string key, Dictionary<int, TextureContainer> dict)
         {
             if (!Directory.Exists(LocalTexturePath))
                 Directory.CreateDirectory(LocalTexturePath);
 
-            var hashDict = dict.ToDictionary(pair => pair.Key, pair => TextureContainerManager.Acquire(pair.Value.Data).key.hash.ToString("X16"));
+            var hashDict = dict.ToDictionary(pair => pair.Key, pair => pair.Value._token.key.hash.ToString("X16"));
             foreach (var kvp in hashDict)
             {
                 string fileName = LocalTexPrefix + kvp.Value + "." + ImageTypeIdentifier.Identify(dict[kvp.Key].Data);

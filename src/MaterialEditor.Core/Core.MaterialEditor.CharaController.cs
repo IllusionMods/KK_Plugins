@@ -35,6 +35,8 @@ namespace KK_Plugins.MaterialEditor
     /// </summary>
     public class MaterialEditorCharaController : CharaCustomFunctionController
     {
+        internal static List<MaterialEditorCharaController> charaControllers = new List<MaterialEditorCharaController>();
+
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
         private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
         private readonly List<MaterialNameProperty> MaterialNamePropertyList = new List<MaterialNameProperty>();
@@ -69,6 +71,18 @@ namespace KK_Plugins.MaterialEditor
         private ObjectType ObjectTypeToSet;
         private GameObject GameObjectToSet;
 
+        protected override void Awake()
+        {
+            charaControllers.Add(this);
+            base.Awake();
+        }
+
+        protected override void OnDestroy()
+        {
+            charaControllers.Remove(this);
+            base.OnDestroy();
+        }
+
         /// <summary>
         /// Handles saving data to character cards
         /// </summary>
@@ -90,15 +104,34 @@ namespace KK_Plugins.MaterialEditor
                 var data = new PluginData();
 
                 if (TextureDictionary.Count > 0)
-                    switch(DetermineSaveType())
-                    {
-                        case (int)CharaTextureSaveType.Local:
-                            SaveLocally(data, LocalTexSavePreFix + nameof(TextureDictionary), TextureDictionary);
-                            break;
-                        default:
-                            data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
-                            break;
-                    }   
+#if !EC
+                    if (StudioAPI.InsideStudio)
+                        switch (DetermineSaveType())
+                        {
+                            case (int)SceneTextureSaveType.Local:
+                                SaveLocally(data, LocalTexSavePreFix + nameof(TextureDictionary), TextureDictionary);
+                                break;
+                            case (int)SceneTextureSaveType.Deduped:
+                                data.data.Add(DedupedTexSavePreFix + nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value._token.key.hash.ToString("X16"))));
+                                break;
+                            default:
+                                data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+                                break;
+                        }
+                    else
+#endif
+                    if (MakerAPI.InsideMaker)
+                        switch (DetermineSaveType())
+                        {
+                            case (int)CharaTextureSaveType.Local:
+                                SaveLocally(data, LocalTexSavePreFix + nameof(TextureDictionary), TextureDictionary);
+                                break;
+                            default:
+                                data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+                                break;
+                        }
+                    else
+                        data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
                 else
                     data.data.Add(nameof(TextureDictionary), null);
 
@@ -520,6 +553,24 @@ namespace KK_Plugins.MaterialEditor
                 if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
                     foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
                         importDictionary[x.Key] = SetAndGetTextureID(x.Value);
+#if !EC
+                else if (data.data.TryGetValue(DedupedTexSavePreFix + nameof(TextureDictionary), out var texDicDeduped) && texDicDeduped != null)
+                {
+                    var sceneController = MEStudio.GetSceneController();
+                    if (sceneController != null)
+                    {
+                        if (sceneController.DedupedTextureData == null)
+                            if (sceneController.GetExtendedData()?.data.TryGetValue(DedupedTexSavePreFix + nameof(TextureDictionary) + DedupedTexSavePostFix, out var dataBytes) != null && dataBytes != null)
+                                sceneController.DedupedTextureData = MessagePackSerializer.Deserialize<Dictionary<string, byte[]>>((byte[])dataBytes);
+                            else
+                                MaterialEditorPluginBase.Logger.LogMessage("[MaterialEditor] Couldn't load deduped character textures!");
+                        foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicDeduped))
+                            importDictionary[x.Key] = SetAndGetTextureID(sceneController.DedupedTextureData[x.Value]);
+                    }
+                    else
+                        MaterialEditorPluginBase.Logger.LogMessage("[MaterialEditor] Couldn't load deduped character textures!");
+                }
+#endif
                 else if (data.data.TryGetValue(LocalTexSavePreFix + nameof(TextureDictionary), out var texDicLocal) && texDicLocal != null)
                     foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicLocal))
                         importDictionary[x.Key] = SetAndGetTextureID(LoadLocally(x.Value));
