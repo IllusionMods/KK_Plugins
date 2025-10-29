@@ -159,10 +159,12 @@ namespace KK_Plugins.MaterialEditor
         // Local texture audit screen variables
         internal static int auditAllFiles = 0;
         internal static int auditProcessedFiles = 0;
+        internal static int auditRunningThread = 0;
         internal static Dictionary<string, string> auditUnusedTextures = null;
         internal static Dictionary<string, List<string>> auditMissingTextures = null;
+        internal static Dictionary<string, List<string>> auditFoundHashToFiles = new Dictionary<string, List<string>>();
         internal static bool auditShow = false;
-        internal static Coroutine auditCoroutine = null;
+        internal static Coroutine auditDoneCoroutine = null;
         internal static Rect auditRect = new Rect();
         internal static Vector2 auditUnusedScroll = Vector2.zero;
         internal static Vector2 auditMissingScroll = Vector2.zero;
@@ -1315,27 +1317,44 @@ namespace KK_Plugins.MaterialEditor
                 return;
             }
 
-            var localHashes = new Dictionary<string, string>();
+            auditUnusedTextures = new Dictionary<string, string>();
             foreach (string file in localTexFolderFiles)
-                localHashes.Add(Regex.Match(file, "(?<=_)[A-F0-9]{16}(?=.)").Value, file.Split(Path.DirectorySeparatorChar).Last());
+                auditUnusedTextures.Add(Regex.Match(file, "(?<=_)[A-F0-9]{16}(?=.)").Value, file.Split(Path.DirectorySeparatorChar).Last());
 
-            auditRect = new Rect();
-            auditShow = true;
-            auditCoroutine = Instance.StartCoroutine(AuditLocalFilesCoroutine(localHashes));
-        }
-
-        internal static IEnumerator AuditLocalFilesCoroutine(Dictionary<string, string> dicLocalHashToFilename)
-        {
             var pngs = new List<string>();
             pngs.AddRange(Directory.GetFiles(Path.Combine(Paths.GameRootPath, @"UserData\chara"), "*.png", SearchOption.AllDirectories));
             pngs.AddRange(Directory.GetFiles(Path.Combine(Paths.GameRootPath, @"UserData\Studio\scene"), "*.png", SearchOption.AllDirectories));
-
             auditAllFiles = pngs.Count;
             auditProcessedFiles = 0;
+            auditRect = new Rect();
+            auditShow = true;
 
-            var dicFoundHashToFiles = new Dictionary<string, List<string>>();
-            foreach (var file in pngs)
+            int numThreads = Environment.ProcessorCount;
+            auditRunningThread = numThreads;
+            auditDoneCoroutine = Instance.StartCoroutine(AuditLocalFilesDone());
+            for (int i = 0; i < numThreads; i++)
             {
+                int nowOffset = i;
+                ThreadingHelper.Instance.StartAsyncInvoke(delegate
+                {
+                    AuditLocalFilesProcessor(pngs, numThreads, nowOffset);
+                    --auditRunningThread;
+                    return null;
+                });
+            }
+        }
+
+        internal static void AuditLocalFilesProcessor(List<string> pngs, int period, int offset)
+        {
+            Logger.LogDebug($"Starting new local file processor with period {period} and offset {offset}!");
+
+            string file;
+            int i = offset;
+            while (i < pngs.Count)
+            {
+                if (auditDoneCoroutine == null) return;
+
+                file = pngs[i];
                 string line;
                 using (var sr = new StreamReader(file, System.Text.Encoding.ASCII))
                 {
@@ -1352,10 +1371,16 @@ namespace KK_Plugins.MaterialEditor
                                 if (fileHashMatches.Count == 0)
                                     break;
                                 foreach (Match match in fileHashMatches)
-                                    if (!dicFoundHashToFiles.ContainsKey(match.Value))
-                                        dicFoundHashToFiles.Add(match.Value, new List<string> { file });
-                                    else
-                                        dicFoundHashToFiles[match.Value].Add(file);
+                                    lock (auditFoundHashToFiles)
+                                    {
+                                        if (!auditFoundHashToFiles.ContainsKey(match.Value))
+                                            auditFoundHashToFiles.Add(match.Value, new List<string> { file });
+                                        else
+                                            lock (auditFoundHashToFiles[match.Value])
+                                            {
+                                                auditFoundHashToFiles[match.Value].Add(file);
+                                            }
+                                    }
                                 line = sr.ReadLine();
                             }
                             sr.Close();
@@ -1366,18 +1391,24 @@ namespace KK_Plugins.MaterialEditor
                 }
 
                 ++auditProcessedFiles;
-                if (auditProcessedFiles % 3 == 0)
-                    yield return null;
+                i += period;
             }
 
-            var dicMissingHashToFiles = new Dictionary<string, List<string>>();
-            foreach (var kvp in dicFoundHashToFiles)
-                if (!dicLocalHashToFilename.Remove(kvp.Key))
-                    dicMissingHashToFiles.Add(kvp.Key, kvp.Value);
+            Logger.LogDebug($"Local file processor with offset {offset} done!");
+        }
 
-            auditUnusedTextures = dicLocalHashToFilename;
-            auditMissingTextures = dicMissingHashToFiles;
-            auditCoroutine = null;
+        internal static IEnumerator AuditLocalFilesDone()
+        {
+            while (auditRunningThread > 0)
+                yield return null;
+
+            auditMissingTextures = new Dictionary<string, List<string>>();
+            foreach (var kvp in auditFoundHashToFiles)
+                if (!auditUnusedTextures.Remove(kvp.Key))
+                    auditMissingTextures.Add(kvp.Key, kvp.Value);
+
+            auditDoneCoroutine = null;
+
             yield break;
         }
 
@@ -1389,14 +1420,14 @@ namespace KK_Plugins.MaterialEditor
                 for (int i = 0; i < 4; i++) GUI.Box(screenRect, "");
                 auditRect.position = new Vector2((Screen.width - auditRect.size.x) / 2, (Screen.height - auditRect.size.y) / 2);
                 float minWidth = Mathf.Clamp(Screen.width / 2, 960, 1280);
-                auditRect = GUILayout.Window(42069, auditRect, AuditWindowFunction, "", AuditWindow, GUILayout.MinWidth(minWidth), GUILayout.MinHeight(Screen.height * 3 / 4));
+                auditRect = GUILayout.Window(42069, auditRect, AuditWindowFunction, "", AuditWindow, GUILayout.MinWidth(minWidth), GUILayout.MinHeight(Screen.height * 4 / 5));
                 IMGUIUtils.EatInputInRect(screenRect);
             }
         }
 
         private void AuditWindowFunction(int windowID)
         {
-            if (auditCoroutine != null)
+            if (auditDoneCoroutine != null)
             {
                 GUILayout.BeginVertical(GUILayout.ExpandWidth(true)); GUILayout.FlexibleSpace();
                 {
@@ -1414,8 +1445,8 @@ namespace KK_Plugins.MaterialEditor
                             if (GUILayout.Button("Cancel", AuditButton, GUILayout.Width(100), GUILayout.Height(30)))
                             {
                                 auditShow = false;
-                                Instance.StopCoroutine(auditCoroutine);
-                                auditCoroutine = null;
+                                Instance.StopCoroutine(auditDoneCoroutine);
+                                auditDoneCoroutine = null;
                             }
                             GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
                             GUILayout.Space(10);
