@@ -533,7 +533,7 @@ namespace KK_Plugins.MaterialEditor
                 if (MEStudio.GetSceneController().GetExtendedData()?.data.TryGetValue(DedupedTexSavePreFix + key + DedupedTexSavePostFix, out var dataBytes) != null && dataBytes != null)
                     DedupedTextureData = MessagePackSerializer.Deserialize<Dictionary<string, byte[]>>((byte[])dataBytes);
                 else
-                    MaterialEditorPluginBase.Logger.LogMessage("[MaterialEditor] Failed to load deduped scene textures!");
+                    MaterialEditorPluginBase.Logger.LogMessage($"[MaterialEditor] Failed to load deduped {(isCharaController ? "character" : "scene")} textures!");
             Dictionary<int, TextureContainer> result = new Dictionary<int, TextureContainer>();
             if (DedupedTextureData != null)
                 result = MessagePackSerializer.Deserialize<Dictionary<int, string>>(texDicDeduped).ToDictionary(pair => pair.Key, pair => new TextureContainer(DedupedTextureData[pair.Value]));
