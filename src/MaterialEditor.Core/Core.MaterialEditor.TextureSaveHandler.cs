@@ -214,40 +214,34 @@ namespace KK_Plugins.MaterialEditor
                         while (true)
                         {
                             int patternStart = FindPosition(fileData, searchStringStartBytes, readingAt);
-                            if (patternStart > 0)
+                            if (patternStart < 0) break;
+                            int patternEnd = FindPosition(fileData, searchStringEndBytes, patternStart);
+                            if (patternEnd < 0) break;
+                            Dictionary<int, string> hashDict;
+                            List<byte> data = fileData.SubSet(patternStart + searchStringStartBytes.Length + 2, patternEnd - 1).ToList();
+                            for (int j = 0; j < 3; j++)
                             {
-                                int patternEnd = FindPosition(fileData, searchStringEndBytes, patternStart);
-                                if (patternEnd > 0)
+                                try
                                 {
-                                    Dictionary<int, string> hashDict;
-                                    List<byte> data = fileData.SubSet(patternStart + searchStringStartBytes.Length + 2, patternEnd - 1).ToList();
-                                    for (int j = 0; j < 3; j++)
+                                    hashDict = MessagePackSerializer.Deserialize<Dictionary<int, string>>(data.ToArray());
+                                    if (hashDict != null && hashDict.Count > 0)
                                     {
-                                        try
-                                        {
-                                            hashDict = MessagePackSerializer.Deserialize<Dictionary<int, string>>(data.ToArray());
-                                            if (hashDict != null && hashDict.Count > 0)
-                                            {
-                                                foreach (var kvp in hashDict)
-                                                    lock (auditFoundHashToFiles)
-                                                        if (!auditFoundHashToFiles.ContainsKey(kvp.Value))
-                                                            auditFoundHashToFiles.Add(kvp.Value, new List<string> { file });
-                                                        else
-                                                            lock (auditFoundHashToFiles[kvp.Value])
-                                                                auditFoundHashToFiles[kvp.Value].Add(file);
-                                                break;
-                                            }
-                                        }
-                                        catch
-                                        {
-                                            data.RemoveAt(0);
-                                        }
+                                        foreach (var kvp in hashDict)
+                                            lock (auditFoundHashToFiles)
+                                                if (!auditFoundHashToFiles.TryGetValue(kvp.Value, out var fileList))
+                                                    auditFoundHashToFiles.Add(kvp.Value, new List<string> { file });
+                                                else
+                                                    lock (fileList)
+                                                        fileList.Add(file);
+                                        break;
                                     }
-                                    readingAt = patternEnd;
                                 }
-                                else break;
+                                catch
+                                {
+                                    data.RemoveAt(0);
+                                }
                             }
-                            else break;
+                            readingAt = patternEnd;
                         }
                     }
                 }

@@ -37,7 +37,7 @@ namespace KK_Plugins.MaterialEditor
         public const string RendererSaveKey = nameof(RendererPropertyList);
         public const string TexDicSaveKey = nameof(TextureDictionary);
 
-        internal static List<MaterialEditorCharaController> charaControllers = new List<MaterialEditorCharaController>();
+        internal static readonly List<MaterialEditorCharaController> charaControllers = new List<MaterialEditorCharaController>();
 
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
         private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();

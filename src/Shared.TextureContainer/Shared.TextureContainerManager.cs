@@ -55,7 +55,8 @@ namespace KK_Plugins
 
             public override int GetHashCode()
             {
-                return (int)hash;
+                // Need to return int, so we do the best we can
+                return (int)(hash ^ (hash >> 32));
             }
         }
 
