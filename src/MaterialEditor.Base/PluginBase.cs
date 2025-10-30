@@ -106,6 +106,10 @@ namespace MaterialEditorAPI
         /// </summary>
         public static ConfigEntry<bool> SortPropertiesByName { get; set; }
         /// <summary>
+        /// Whether to sort shader properties by their category
+        /// </summary>
+        public static ConfigEntry<bool> SortPropertiesByCategory { get; set; }
+        /// <summary>
         /// Controls the max value of the slider for this projector property
         /// </summary>
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
@@ -153,6 +157,7 @@ namespace MaterialEditorAPI
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
             SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by their types.");
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
+            SortPropertiesByCategory = Config.Bind("Config", "Sort Properties by Category", true, "Whether to sort shader properties by their category.");
             ConvertNormalmapsOnExport = Config.Bind("Config", "Convert Normalmaps On Export", true, new ConfigDescription("When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals"));
 
             //Everything in these games is 10x the size of KK/KKS
@@ -177,6 +182,7 @@ namespace MaterialEditorAPI
             ConfigExportPath.SettingChanged += ConfigExportPath_SettingChanged;
             SortPropertiesByType.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             SortPropertiesByName.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
+            SortPropertiesByCategory.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             SetExportPath();
 
             ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerResourceLoaded, AssetLoadedHook);
