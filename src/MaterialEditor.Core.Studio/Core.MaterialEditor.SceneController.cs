@@ -56,38 +56,6 @@ namespace KK_Plugins.MaterialEditor
             InitAnimationController();
         }
 
-        protected void Awake()
-        {
-            SceneLoadWatcherCoroutine = StartCoroutine(SceneLoadWatcher());
-        }
-
-        IEnumerator SceneLoadWatcher()
-        {
-            bool wasLoading = false;
-            bool isLoading;
-            int counter = 0;
-            while(true)
-            {
-                isLoading = StudioSaveLoadApi.ImportInProgress || StudioSaveLoadApi.LoadInProgress;
-                if (isLoading == wasLoading == false && counter == 0)
-                    counter = 60;
-                else if (isLoading != wasLoading)
-                {
-                    if (wasLoading)
-                    {
-                        counter = 10;
-                    }
-                    wasLoading = isLoading;
-                }
-                else if (counter > 0 && !isLoading)
-                {
-                    --counter;
-                    if (counter <= 0) DedupedTextureData = null;
-                }
-                yield return null;
-            }
-        }
-
         /// <summary>
         /// Saves data
         /// </summary>
@@ -260,6 +228,7 @@ namespace KK_Plugins.MaterialEditor
                             MaterialEditorPluginBase.Logger.LogMessage("[MaterialEditor] Failed to load deduped scene textures!");
                     if (DedupedTextureData != null)
                         TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicDeduped).ToDictionary(pair => pair.Key, pair => new TextureContainer(DedupedTextureData[pair.Value]));
+                    DedupedTextureData = null;
                 }
                 else if (data.data.TryGetValue(LocalTexSavePreFix + nameof(TextureDictionary), out var texDicLocal) && texDicLocal != null)
                     TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicLocal).ToDictionary(pair => pair.Key, pair => new TextureContainer(LoadLocally(pair.Value)));
