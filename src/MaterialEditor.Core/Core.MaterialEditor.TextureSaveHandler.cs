@@ -487,8 +487,11 @@ namespace KK_Plugins.MaterialEditor
 
         internal static Dictionary<int, TextureContainer> Load(PluginData data, string key, bool isCharaController)
         {
-            if (data.data.TryGetValue(key, out var texDic) && texDic != null)
-                return MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureContainer(pair.Value));
+            if (data.data.TryGetValue(key, out var texDic))
+                if (texDic != null)
+                    return MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureContainer(pair.Value));
+                else
+                    return null;
 #if !EC
             else if (data.data.TryGetValue(DedupedTexSavePreFix + key, out var texDicDeduped) && texDicDeduped != null)
                 return LoadDeduped((byte[])texDicDeduped, key, isCharaController);
