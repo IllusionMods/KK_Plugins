@@ -24,13 +24,14 @@ namespace KK_Plugins.MaterialEditor
 {
     internal static class TextureSaveHandler
     {
-        // Saveload variables
         // Do not change constants, lest you break all existing local cards
         public const string LocalTexPrefix = "ME_LocalTex_";
         public const string LocalTexSavePreFix = "LOCAL_";
         public const string DedupedTexSavePreFix = "DEDUPED_";
         public const string DedupedTexSavePostFix = "_DATA";
         public const string LocalTexUnusedFolder = "_Unused";
+
+        // Saveload variables
         private static Dictionary<string, byte[]> DedupedTextureData = null;
 
         // Audit variables
