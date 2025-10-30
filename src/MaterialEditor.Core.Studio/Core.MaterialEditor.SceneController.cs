@@ -14,8 +14,6 @@ using System.Linq;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
-using static KK_Plugins.MaterialEditor.MaterialEditorPlugin;
-using System.Collections;
 
 namespace KK_Plugins.MaterialEditor
 {

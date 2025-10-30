@@ -20,8 +20,6 @@ using UnityEngine;
 using XUnity.ResourceRedirector;
 using System.Text.RegularExpressions;
 using static MaterialEditorAPI.MaterialAPI;
-using KKAPI.Utilities;
-using BepInEx.Bootstrap;
 #if AI || HS2
 using AIChara;
 using ChaAccessoryComponent = AIChara.CmpAccessory;

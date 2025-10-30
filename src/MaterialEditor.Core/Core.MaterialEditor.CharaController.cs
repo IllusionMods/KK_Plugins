@@ -14,7 +14,6 @@ using UniRx;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
-using static KK_Plugins.MaterialEditor.MaterialEditorPlugin;
 #if !EC
 using KKAPI.Studio;
 #endif
