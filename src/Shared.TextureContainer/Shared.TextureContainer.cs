@@ -9,7 +9,7 @@ namespace KK_Plugins
     /// </summary>
     public sealed class TextureContainer : IDisposable
     {
-        internal TextureContainerManager.Token _token;
+        private TextureContainerManager.Token _token;
 
         /// <summary>
         /// Load a byte array containing texture data.
@@ -53,6 +53,14 @@ namespace KK_Plugins
             {
                 return _token.Texture;
             }
+        }
+
+        /// <summary>
+        /// Unique hash of the byte[] contained in Data.
+        /// </summary>
+        public long Hash
+        {
+            get => _token.key.hash;
         }
 
         /// <summary>

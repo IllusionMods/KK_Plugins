@@ -1209,21 +1209,19 @@ namespace KK_Plugins.MaterialEditor
             Dictionary<string, byte[]> dicHashToData = new Dictionary<string, byte[]>();
             foreach (var kvp in dict)
             {
-                var texKey = kvp.Value._token.key;
-                string hashString = texKey.hash.ToString("X16");
-                hashes.Add(texKey.hash);
+                string hashString = kvp.Value.Hash.ToString("X16");
+                hashes.Add(kvp.Value.Hash);
                 dicKeyToHash.Add(kvp.Key, hashString);
-                dicHashToData.Add(hashString, texKey.data);
+                dicHashToData.Add(hashString, kvp.Value.Data);
             }
 
             foreach (var controller in MaterialEditorCharaController.charaControllers)
             {
-                var controllerKeys = controller.TextureDictionary.Values.Select(x => x._token.key);
-                foreach (var controllerKey in controllerKeys)
-                    if (!hashes.Contains(controllerKey.hash))
+                foreach (var textureContainer in controller.TextureDictionary.Values)
+                    if (!hashes.Contains(textureContainer.Hash))
                     {
-                        hashes.Add(controllerKey.hash);
-                        dicHashToData.Add(controllerKey.hash.ToString("X16"), controllerKey.data);
+                        hashes.Add(textureContainer.Hash);
+                        dicHashToData.Add(textureContainer.Hash.ToString("X16"), textureContainer.Data);
                     }
             }
 
@@ -1236,7 +1234,7 @@ namespace KK_Plugins.MaterialEditor
             if (!Directory.Exists(LocalTexturePath))
                 Directory.CreateDirectory(LocalTexturePath);
 
-            var hashDict = dict.ToDictionary(pair => pair.Key, pair => pair.Value._token.key.hash.ToString("X16"));
+            var hashDict = dict.ToDictionary(pair => pair.Key, pair => pair.Value.Hash.ToString("X16"));
             foreach (var kvp in hashDict)
             {
                 string fileName = LocalTexPrefix + kvp.Value + "." + ImageTypeIdentifier.Identify(dict[kvp.Key].Data);

@@ -112,7 +112,7 @@ namespace KK_Plugins.MaterialEditor
                                 SaveLocally(data, LocalTexSavePreFix + nameof(TextureDictionary), TextureDictionary);
                                 break;
                             case (int)SceneTextureSaveType.Deduped:
-                                data.data.Add(DedupedTexSavePreFix + nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value._token.key.hash.ToString("X16"))));
+                                data.data.Add(DedupedTexSavePreFix + nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Hash.ToString("X16"))));
                                 break;
                             default:
                                 data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
