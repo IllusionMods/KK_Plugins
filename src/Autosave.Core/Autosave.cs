@@ -23,6 +23,9 @@ using AIChara;
 using KKAPI;
 using KKAPI.Maker;
 using ExtensibleSaveFormat;
+#if !EC
+using KKAPI.Studio;
+#endif
 #endif
 #if PC || SBPR
 // Too old Unity version, fall back to WaitForSeconds since it doesn't cause any major issues in these games
@@ -73,6 +76,17 @@ namespace KK_Plugins
         public static ConfigEntry<int> AutosaveCountdown { get; private set; }
         public static ConfigEntry<bool> PauseInBackground { get; private set; }
         public static ConfigEntry<int> AutosaveFileLimit { get; private set; }
+#if !HS && !PC && !SBPR
+        public static ConfigEntry<string> CharaTexSaveTypeAutosaveOverride { get; private set; }
+#if !EC
+        public static ConfigEntry<string> SceneTexSaveTypeAutosaveOverride { get; private set; }
+
+        private static SceneTextureSaveType sceneTexSaveTypeBuffered = SceneTextureSaveType.Bundled;
+#endif
+        private static CharaTextureSaveType charaTexSaveTypeBuffered = CharaTextureSaveType.Bundled;
+
+        public const string NoOverride = "No Override";
+#endif
 
         private void Start()
         {
@@ -84,6 +98,12 @@ namespace KK_Plugins
             AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
             PauseInBackground = Config.Bind("Config", "Pause In Background", true, new ConfigDescription("Do not count down when the game is not focused", null, new ConfigurationManagerAttributes { Order = 8 }));
             AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 7, ShowRangeAsPercent = false }));
+#if !PC && !HS && !SBPR
+            CharaTexSaveTypeAutosaveOverride = Config.Bind("Texture Save Type", "Chara Autosave Type Override", NoOverride, new ConfigDescription($"Save type override for autosaves in Maker. Set to \"{NoOverride}\" to use the KKAPI setting.", AutoSaveTypeOptions(false), new ConfigurationManagerAttributes { Order = 6, IsAdvanced = true }));
+#if !EC
+            SceneTexSaveTypeAutosaveOverride = Config.Bind("Texture Save Type", "Scene Autosave Type Override", NoOverride, new ConfigDescription($"Save type override for autosaves in Studio. Set to \"{NoOverride}\" to use the KKAPI setting.", AutoSaveTypeOptions(true), new ConfigurationManagerAttributes { Order = 4, IsAdvanced = true }));
+#endif
+#endif
 
 #if PC || HS || SBPR
             Hooks.ApplyHooks(PluginGUID);
@@ -221,15 +241,56 @@ namespace KK_Plugins
                 }
 
                 Autosaving = true;
+                TodoBeforeSave();
                 MakeSave();
                 DeleteAutosaves();
                 SetText("Saved!");
+                TodoAfterSave();
                 Autosaving = false;
 
                 yield return new WaitForSecondsRealtime(2);
                 SetText("");
             }
         }
+
+        private static void TodoBeforeSave()
+        {
+#if !HS && !PC && !SBPR
+#if !EC
+            if (StudioAPI.InsideStudio)
+            {
+                sceneTexSaveTypeBuffered = SceneLocalTextures.SaveType;
+                if (SceneTexSaveTypeAutosaveOverride.Value != NoOverride)
+                    SceneLocalTextures.SaveType = EnumParser<SceneTextureSaveType>(SceneTexSaveTypeAutosaveOverride.Value);
+            }
+#endif
+            if (MakerAPI.InsideMaker)
+            {
+                charaTexSaveTypeBuffered = CharaLocalTextures.SaveType;
+                if (CharaTexSaveTypeAutosaveOverride.Value != NoOverride)
+                    CharaLocalTextures.SaveType = EnumParser<CharaTextureSaveType>(CharaTexSaveTypeAutosaveOverride.Value);
+            }
+#endif
+        }
+
+        private static void TodoAfterSave()
+        {
+#if !HS && !PC && !SBPR
+#if !EC
+            if (StudioAPI.InsideStudio)
+                SceneLocalTextures.SaveType = sceneTexSaveTypeBuffered;
+#endif
+            if (MakerAPI.InsideMaker)
+                CharaLocalTextures.SaveType = charaTexSaveTypeBuffered;
+#endif
+        }
+
+#if !HS && !PC && !SBPR
+        private static T EnumParser<T>(string _val)
+        {
+            return (T)Enum.Parse(typeof(T), _val.Split(' ').Join((x) => x, ""), true);
+        }
+#endif
 
         private static bool MakerIsAlive()
         {
@@ -394,6 +455,22 @@ namespace KK_Plugins
             InitGUI();
             AutosaveText.text = text;
         }
+
+#if !HS && !PC && !SBPR
+        internal static AcceptableValueBase AutoSaveTypeOptions(bool forStudio)
+        {
+            var options = new List<string> { NoOverride };
+            if (forStudio)
+            {
+#if !EC
+                options.AddRange(((SceneTextureSaveType[])Enum.GetValues(typeof(SceneTextureSaveType))).Select(x => x.ToString()));
+#endif
+            }
+            else
+                options.AddRange(((CharaTextureSaveType[])Enum.GetValues(typeof(CharaTextureSaveType))).Select(x => x.ToString()));
+            return new AcceptableValueList<string>(options.ToArray());
+        }
+#endif
 
 #if PC || HS || SBPR
         private static class Hooks
