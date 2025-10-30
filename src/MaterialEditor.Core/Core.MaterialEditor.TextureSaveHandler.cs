@@ -491,7 +491,7 @@ namespace KK_Plugins.MaterialEditor
                 if (texDic != null)
                     return MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureContainer(pair.Value));
                 else
-                    return null;
+                    return new Dictionary<int, TextureContainer>();
 #if !EC
             else if (data.data.TryGetValue(DedupedTexSavePreFix + key, out var texDicDeduped) && texDicDeduped != null)
                 return LoadDeduped((byte[])texDicDeduped, key, isCharaController);
@@ -499,7 +499,7 @@ namespace KK_Plugins.MaterialEditor
             else if (data.data.TryGetValue(LocalTexSavePreFix + key, out var texDicLocal) && texDicLocal != null)
                 return MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicLocal).ToDictionary(pair => pair.Key, pair => new TextureContainer(LoadLocally(pair.Value)));
             MaterialEditorPluginBase.Logger.LogMessage($"[MaterialEditor] Couldn't load {(isCharaController ? "character" : "scene")} texture data!");
-            return null;
+            return new Dictionary<int, TextureContainer>();
         }
 
 #if !EC
