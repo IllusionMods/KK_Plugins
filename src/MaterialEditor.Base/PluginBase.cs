@@ -366,13 +366,6 @@ namespace MaterialEditorAPI
             RenderTexture.ReleaseTemporary(tmp);
         }
 
-        internal static bool IsAutoSave()
-        {
-            if (Chainloader.PluginInfos.TryGetValue("com.deathweasel.bepinex.autosave", out PluginInfo pluginInfo) && pluginInfo?.Instance != null)
-                return (bool)(pluginInfo.Instance.GetType().GetField("Autosaving")?.GetValue(null) ?? false);
-            return false;
-        }
-
         /// <summary>
         /// Refreshes the property organization, which groups shader properties by their categories and sorts them based on the configuration settings.
         /// </summary>

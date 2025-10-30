@@ -48,9 +48,6 @@ namespace KK_Plugins.MaterialEditor
         private Dictionary<string, object> AAAAAA;
         private Dictionary<string, object> BBBBBB;
 
-        internal Coroutine SceneLoadWatcherCoroutine = null;
-        internal Dictionary<string, byte[]> DedupedTextureData = null;
-
         static SceneController()
         {
             InitAnimationController();
@@ -65,22 +62,7 @@ namespace KK_Plugins.MaterialEditor
 
             PurgeUnusedTextures();
 
-            int saveType = DetermineSaveType();
-            if (TextureDictionary.Count > 0 || (MaterialEditorCharaController.charaControllers.Any(x => x.TextureDictionary.Count > 0) && saveType == (int)SceneTextureSaveType.Deduped))
-                switch (saveType)
-                {
-                    case (int)SceneTextureSaveType.Deduped:
-                        SaveDeduped(data, DedupedTexSavePreFix + nameof(TextureDictionary), TextureDictionary);
-                        break;
-                    case (int)SceneTextureSaveType.Local:
-                        SaveLocally(data, LocalTexSavePreFix + nameof(TextureDictionary), TextureDictionary);
-                        break;
-                    default:
-                        data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
-                        break;
-                }
-            else
-                data.data.Add(nameof(TextureDictionary), null);
+            TextureSaveHandler.Save(data, nameof(TextureDictionary), TextureDictionary, false);
 
             // This HAS to be saved right after TextureDictionary, because local texture auditing relies on it
             if (RendererPropertyList.Count > 0)
@@ -217,31 +199,14 @@ namespace KK_Plugins.MaterialEditor
 
             if (operation == SceneOperationKind.Load)
             {
-                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                    TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureContainer(pair.Value));
-                else if (data.data.TryGetValue(DedupedTexSavePreFix + nameof(TextureDictionary), out var texDicDeduped) && texDicDeduped != null)
-                {
-                    if (DedupedTextureData == null)
-                        if (data.data.TryGetValue(DedupedTexSavePreFix + nameof(TextureDictionary) + DedupedTexSavePostFix, out var dataBytes) && dataBytes != null)
-                            DedupedTextureData = MessagePackSerializer.Deserialize<Dictionary<string, byte[]>>((byte[])dataBytes);
-                        else
-                            MaterialEditorPluginBase.Logger.LogMessage("[MaterialEditor] Failed to load deduped scene textures!");
-                    if (DedupedTextureData != null)
-                        TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicDeduped).ToDictionary(pair => pair.Key, pair => new TextureContainer(DedupedTextureData[pair.Value]));
-                    DedupedTextureData = null;
-                }
-                else if (data.data.TryGetValue(LocalTexSavePreFix + nameof(TextureDictionary), out var texDicLocal) && texDicLocal != null)
-                    TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicLocal).ToDictionary(pair => pair.Key, pair => new TextureContainer(LoadLocally(pair.Value)));
+                TextureDictionary = TextureSaveHandler.Load(data, nameof(TextureDictionary), false);
             }
 
             if (operation == SceneOperationKind.Import)
             {
-                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                    foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
-                        importDictionary[x.Key] = SetAndGetTextureID(x.Value);
-                else if (data.data.TryGetValue(LocalTexSavePreFix + nameof(TextureDictionary), out var texDicLocal) && texDicLocal != null)
-                    foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, string>>((byte[])texDicLocal))
-                        importDictionary[x.Key] = SetAndGetTextureID(LoadLocally(x.Value));
+                var importDictionaryTemp = TextureSaveHandler.Load(data, nameof(TextureDictionary), false);
+                foreach (var kvp in importDictionaryTemp)
+                    importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
             }
 
             if (data.data.TryGetValue(nameof(MaterialCopyList), out var materialCopyData) && materialCopyData != null)
