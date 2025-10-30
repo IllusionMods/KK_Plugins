@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using System.Linq;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
 
@@ -17,7 +14,7 @@ namespace MaterialEditorAPI
             {
                 PropertyOrganization[shader.Key] = shader.Value
                     .Where(kv => !kv.Value.Hidden)
-                    .GroupBy(kv => string.IsNullOrEmpty(kv.Value.Category) ? UncategorizedName : char.ToUpper(kv.Value.Category[0]) + kv.Value.Category.Substring(1))
+                    .GroupBy(kv => (string.IsNullOrEmpty(kv.Value.Category) || !SortPropertiesByCategory.Value) ? UncategorizedName : char.ToUpper(kv.Value.Category[0]) + kv.Value.Category.Substring(1))
                     .OrderBy(g => g.Key == UncategorizedName ? 1 : 0)  // Ensure "Uncategorized" goes to the end
                     .ToDictionary(
                         g => g.Key,
