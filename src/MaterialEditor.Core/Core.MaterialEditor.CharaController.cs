@@ -37,7 +37,7 @@ namespace KK_Plugins.MaterialEditor
     {
         internal static List<MaterialEditorCharaController> charaControllers = new List<MaterialEditorCharaController>();
 
-        private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
+        internal readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
         private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
         private readonly List<MaterialNameProperty> MaterialNamePropertyList = new List<MaterialNameProperty>();
         private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
@@ -135,6 +135,7 @@ namespace KK_Plugins.MaterialEditor
                 else
                     data.data.Add(nameof(TextureDictionary), null);
 
+                // This HAS to be saved right after TextureDictionary, because local texture auditing relies on it
                 if (RendererPropertyList.Count > 0)
                     data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
                 else

@@ -163,6 +163,7 @@ namespace KK_Plugins.MaterialEditor
         internal static Dictionary<string, string> auditUnusedTextures = null;
         internal static Dictionary<string, List<string>> auditMissingTextures = null;
         internal static Dictionary<string, List<string>> auditFoundHashToFiles = new Dictionary<string, List<string>>();
+        internal static object auditLock = new object();
         internal static bool auditShow = false;
         internal static Coroutine auditDoneCoroutine = null;
         internal static Rect auditRect = new Rect();
@@ -1346,8 +1347,15 @@ namespace KK_Plugins.MaterialEditor
 
         internal static void AuditLocalFilesProcessor(List<string> pngs, int period, int offset)
         {
-            Logger.LogDebug($"Starting new local file processor with period {period} and offset {offset}!");
+            lock (Logger)
+                Logger.LogDebug($"Starting new local file processor with period {period} and offset {offset}!");
 
+            string searchStringStart = LocalTexSavePreFix + nameof(MaterialEditorCharaController.TextureDictionary);
+            byte[] searchStringStartBytes = System.Text.Encoding.ASCII.GetBytes(searchStringStart);
+            string searchStringEnd = nameof(MaterialEditorCharaController.RendererPropertyList);
+            byte[] searchStringEndBytes = System.Text.Encoding.ASCII.GetBytes(searchStringEnd);
+
+            DateTime cutoff = new DateTime(2025, 10, 21);
             string file;
             int i = offset;
             while (i < pngs.Count)
@@ -1355,46 +1363,79 @@ namespace KK_Plugins.MaterialEditor
                 if (auditDoneCoroutine == null) return;
 
                 file = pngs[i];
-                string line;
-                using (var sr = new StreamReader(file, System.Text.Encoding.ASCII))
+                if (file != null && File.Exists(file) && File.GetLastWriteTime(file) > cutoff)
                 {
-                    while (!sr.EndOfStream)
+                    if (new FileInfo(file).Length <= int.MaxValue)
                     {
-                        line = sr.ReadLine();
-                        int matchIdx = line.IndexOf(LocalTexSavePreFix + nameof(MaterialEditorCharaController.TextureDictionary));
-                        if (matchIdx >= 0)
+                        byte[] fileData = File.ReadAllBytes(file);
+                        int readingAt = 0;
+                        while(true)
                         {
-                            line = line.Substring(matchIdx);
-                            while(!sr.EndOfStream)
+                            int patternStart = FindPosition(fileData, searchStringStartBytes, readingAt);
+                            if (patternStart > 0)
                             {
-                                var fileHashMatches = Regex.Matches(line, "(?<![a-zA-Z0-9])[A-F0-9]{16}(?![a-zA-Z0-9])");
-                                if (fileHashMatches.Count == 0)
-                                    break;
-                                foreach (Match match in fileHashMatches)
-                                    lock (auditFoundHashToFiles)
+                                int patternEnd = FindPosition(fileData, searchStringEndBytes, patternStart);
+                                if (patternEnd > 0)
+                                {
+                                    Dictionary<int, string> hashDict;
+                                    List<byte> data = fileData.SubSet(patternStart + searchStringStartBytes.Length + 2, patternEnd - 1).ToList();
+                                    for (int j = 0; j < 3; j++)
                                     {
-                                        if (!auditFoundHashToFiles.ContainsKey(match.Value))
-                                            auditFoundHashToFiles.Add(match.Value, new List<string> { file });
-                                        else
-                                            lock (auditFoundHashToFiles[match.Value])
+                                        try
+                                        {
+                                            hashDict = MessagePackSerializer.Deserialize<Dictionary<int, string>>(data.ToArray());
+                                            if (hashDict != null && hashDict.Count > 0)
                                             {
-                                                auditFoundHashToFiles[match.Value].Add(file);
+                                                foreach (var kvp in hashDict)
+                                                    lock (auditFoundHashToFiles)
+                                                        if (!auditFoundHashToFiles.ContainsKey(kvp.Value))
+                                                            auditFoundHashToFiles.Add(kvp.Value, new List<string> { file });
+                                                        else
+                                                            lock (auditFoundHashToFiles[kvp.Value])
+                                                                auditFoundHashToFiles[kvp.Value].Add(file);
+                                                break;
                                             }
+                                        }
+                                        catch
+                                        {
+                                            data.RemoveAt(0);
+                                        }
                                     }
-                                line = sr.ReadLine();
+                                    readingAt = patternEnd;
+                                }
+                                else break;
                             }
-                            sr.Close();
-                            break;
+                            else break;
                         }
                     }
-                    sr.Close();
                 }
-
-                ++auditProcessedFiles;
+                lock (auditLock)
+                    ++auditProcessedFiles;
                 i += period;
             }
+            lock (Logger)
+                Logger.LogDebug($"Local file processor with offset {offset} done!");
+        }
 
-            Logger.LogDebug($"Local file processor with offset {offset} done!");
+        private static int FindPosition(byte[] data, byte[] pattern, int startPos)
+        {
+            int pos = startPos - 1;
+            int foundPosition = -1;
+            int at = 0;
+
+            while (++pos < data.Length)
+            {
+                if (data[pos] == pattern[at])
+                {
+                    at++;
+                    if (at == 1) foundPosition = pos;
+                    if (at == pattern.Length) return foundPosition;
+                } else
+                {
+                    at = 0;
+                }
+            }
+            return -1;
         }
 
         internal static IEnumerator AuditLocalFilesDone()

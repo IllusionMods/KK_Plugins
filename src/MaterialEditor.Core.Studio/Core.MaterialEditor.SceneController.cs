@@ -114,6 +114,7 @@ namespace KK_Plugins.MaterialEditor
             else
                 data.data.Add(nameof(TextureDictionary), null);
 
+            // This HAS to be saved right after TextureDictionary, because local texture auditing relies on it
             if (RendererPropertyList.Count > 0)
                 data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
             else
