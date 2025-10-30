@@ -398,7 +398,7 @@ namespace KK_Plugins.MaterialEditor
             if (ConfigLocalTexturePath.Value == "")
                 LocalTexturePath = LocalTexturePathDefault;
             else
-                LocalTexturePath = ConfigExportPath.Value;
+                LocalTexturePath = ConfigLocalTexturePath.Value;
         }
 
         /// <summary>
