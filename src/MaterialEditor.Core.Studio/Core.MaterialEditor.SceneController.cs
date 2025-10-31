@@ -24,6 +24,8 @@ namespace KK_Plugins.MaterialEditor
     /// </summary>
     public class SceneController : SceneCustomFunctionController
     {
+        public const string TexDicSaveKey = nameof(TextureDictionary);
+
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
         private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
         private readonly List<MaterialNameProperty> MaterialNamePropertyList = new List<MaterialNameProperty>();
@@ -60,9 +62,14 @@ namespace KK_Plugins.MaterialEditor
 
             PurgeUnusedTextures();
 
-            TextureSaveHandler.Save(data, nameof(TextureDictionary), TextureDictionary, false);
+            if (TextureDictionary.Count > 0 || (
+                SceneLocalTextures.SaveType == SceneTextureSaveType.Deduped
+                && MaterialEditorCharaController.charaControllers.Any(x => x.TextureDictionary.Count > 0)
+            ))
+                TextureSaveHandler.Instance.Save(data, TexDicSaveKey, TextureDictionary, false);
+            else
+                data.data.Add(TexDicSaveKey, null);
 
-            // This HAS to be saved right after TextureDictionary, because local texture auditing relies on it
             if (RendererPropertyList.Count > 0)
                 data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
             else
@@ -197,12 +204,12 @@ namespace KK_Plugins.MaterialEditor
 
             if (operation == SceneOperationKind.Load)
             {
-                TextureDictionary = TextureSaveHandler.Load(data, nameof(TextureDictionary), false);
+                TextureDictionary = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, false);
             }
 
             if (operation == SceneOperationKind.Import)
             {
-                var importDictionaryTemp = TextureSaveHandler.Load(data, nameof(TextureDictionary), false);
+                var importDictionaryTemp = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, false);
                 foreach (var kvp in importDictionaryTemp)
                     importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
             }

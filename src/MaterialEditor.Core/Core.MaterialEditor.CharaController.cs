@@ -34,7 +34,6 @@ namespace KK_Plugins.MaterialEditor
     /// </summary>
     public class MaterialEditorCharaController : CharaCustomFunctionController
     {
-        public const string RendererSaveKey = nameof(RendererPropertyList);
         public const string TexDicSaveKey = nameof(TextureDictionary);
 
         internal static readonly List<MaterialEditorCharaController> charaControllers = new List<MaterialEditorCharaController>();
@@ -105,13 +104,15 @@ namespace KK_Plugins.MaterialEditor
             {
                 var data = new PluginData();
 
-                TextureSaveHandler.Save(data, TexDicSaveKey, TextureDictionary, true);
-
-                // This HAS to be saved right after TextureDictionary, because local texture auditing relies on it
-                if (RendererPropertyList.Count > 0)
-                    data.data.Add(RendererSaveKey, MessagePackSerializer.Serialize(RendererPropertyList));
+                if (TextureDictionary.Count > 0)
+                    TextureSaveHandler.Instance.Save(data, TexDicSaveKey, TextureDictionary, true);
                 else
-                    data.data.Add(RendererSaveKey, null);
+                    data.data.Add(TexDicSaveKey, null);
+
+                if (RendererPropertyList.Count > 0)
+                    data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
+                else
+                    data.data.Add(nameof(RendererPropertyList), null);
 
                 if (ProjectorPropertyList.Count > 0)
                     data.data.Add(nameof(ProjectorPropertyList), MessagePackSerializer.Serialize(ProjectorPropertyList));
@@ -349,9 +350,9 @@ namespace KK_Plugins.MaterialEditor
                     data.data.Add(TexDicSaveKey, null);
 
                 if (coordinateRendererPropertyList.Count > 0)
-                    data.data.Add(RendererSaveKey, MessagePackSerializer.Serialize(coordinateRendererPropertyList));
+                    data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(coordinateRendererPropertyList));
                 else
-                    data.data.Add(RendererSaveKey, null);
+                    data.data.Add(nameof(RendererPropertyList), null);
 
                 if (coordinateProjectorPropertyList.Count > 0)
                     data.data.Add(nameof(ProjectorPropertyList), MessagePackSerializer.Serialize(coordinateProjectorPropertyList));
@@ -523,7 +524,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var importDictionary = new Dictionary<int, int>();
 
-                var importDictionaryTemp = TextureSaveHandler.Load(data, TexDicSaveKey, true);
+                var importDictionaryTemp = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, true);
                 foreach (var kvp in importDictionaryTemp)
                     importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
 
@@ -549,7 +550,7 @@ namespace KK_Plugins.MaterialEditor
                     }
                 }
 
-                if (data.data.TryGetValue(RendererSaveKey, out var rendererProperties) && rendererProperties != null)
+                if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
                 {
                     var properties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
                     for (var i = 0; i < properties.Count; i++)
@@ -728,7 +729,7 @@ namespace KK_Plugins.MaterialEditor
                     }
                 }
 
-                if (data.data.TryGetValue(RendererSaveKey, out var rendererProperties) && rendererProperties != null)
+                if (data.data.TryGetValue(nameof(RendererPropertyList), out var rendererProperties) && rendererProperties != null)
                 {
                     var properties = MessagePackSerializer.Deserialize<List<RendererProperty>>((byte[])rendererProperties);
                     for (var i = 0; i < properties.Count; i++)

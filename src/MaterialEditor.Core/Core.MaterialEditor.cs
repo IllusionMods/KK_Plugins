@@ -28,6 +28,8 @@ using ChaAccessoryComponent = AIChara.CmpAccessory;
 using Map;
 #else
 using Studio;
+using KKAPI.Utilities;
+
 #endif
 #if PH
 using ChaControl = Human;
@@ -179,26 +181,12 @@ namespace KK_Plugins.MaterialEditor
             // Texture saving configs
             ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 10, IsAdvanced = true }));
             ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
+            var handler = new TextureSaveHandler(LocalTexturePath);
+            handler.RegisterForAudit("Material Editor", handler.LocalTexSavePrefix + MaterialEditorCharaController.TexDicSaveKey);
 
             CharaLocalTextures.Activate();
-            TextureSaveTypeChara = Config.Bind("Textures", "Chara Texture Save Type", CharaLocalTextures.SaveType, new ConfigDescription("Texture save type for characters set in the Modding API.", null, new ConfigurationManagerAttributes { Order = 7, IsAdvanced = true, CustomDrawer = new Action<ConfigEntryBase>(KKAPISettingDrawer<CharaTextureSaveType>), HideDefaultButton = true }));
-            TextureSaveTypeCharaAuto = Config.Bind("Textures", "Chara Autosave Type Override", "-", new ConfigDescription("Save type override for autosaves. Set to \"-\" to disable the override.", AutoSaveTypeOptions(false), new ConfigurationManagerAttributes { Order = 6, IsAdvanced = true }));
-            CharaLocalTextures.SaveTypeChangedEvent += (x, y) => { TextureSaveTypeChara.Value = y.NewSetting; };
 #if !EC
             SceneLocalTextures.Activate();
-            TextureSaveTypeScene = Config.Bind("Textures", "Scene Texture Save Type", SceneLocalTextures.SaveType, new ConfigDescription("Texture save type for scenes set in the Modding API.", null, new ConfigurationManagerAttributes { Order = 5, IsAdvanced = true, CustomDrawer = new Action<ConfigEntryBase>(KKAPISettingDrawer<SceneTextureSaveType>), HideDefaultButton = true }));
-            TextureSaveTypeSceneAuto = Config.Bind("Textures", "Scene Autosave Type Override", "-", new ConfigDescription("Save type override for autosaves. Set to \"-\" to disable the override.", AutoSaveTypeOptions(true), new ConfigurationManagerAttributes { Order = 4, IsAdvanced = true }));
-            SceneLocalTextures.SaveTypeChangedEvent += (x, y) => { TextureSaveTypeScene.Value = y.NewSetting; };
-#endif
-            Config.Bind("Textures", "Audit Local Files", 0, new ConfigDescription("Parse all character / scene files and check for missing or unused local files. Takes a long times if you have many cards and scenes.", null, new ConfigurationManagerAttributes
-            {
-                CustomDrawer = new Action<ConfigEntryBase>(TextureSaveHandler.AuditOptionDrawer),
-                Order = 0,
-                HideDefaultButton = true,
-                IsAdvanced = true, 
-            }));
-#if !PH
-            MakerCardSave.RegisterNewCardSavePathModifier(null, TextureSaveHandler.AddLocalPrefixToCard);
 #endif
         }
 
@@ -287,6 +275,7 @@ namespace KK_Plugins.MaterialEditor
         internal virtual void ConfigLocalTexturePath_SettingChanged(object sender, EventArgs e)
         {
             SetLocalTexturePath();
+            TextureSaveHandler.Instance.LocalTexturePath = LocalTexturePath;
         }
 
         private void SetLocalTexturePath()
@@ -1066,16 +1055,6 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 #endif
-
-        internal void KKAPISettingDrawer<T>(ConfigEntryBase configEntry) where T : Enum
-        {
-            GUILayout.Label(((T)configEntry.BoxedValue).ToString(), GUILayout.ExpandWidth(true));
-        }
-
-        private void OnGUI()
-        {
-            TextureSaveHandler.DoOnGUI();
-        }
 
         protected override Texture ConvertNormalMap(Texture tex, bool unpack = false)
         {
