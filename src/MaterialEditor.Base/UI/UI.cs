@@ -108,8 +108,8 @@ namespace MaterialEditorAPI
 
         private protected IMaterialEditorColorPalette ColorPalette;
 
-        private GameObject CurrentGameObject;
-        private object CurrentData;
+        internal GameObject CurrentGameObject;
+        internal object CurrentData;
         private static string CurrentFilter = "";
         private bool DoObjExport = false;
         private Renderer ObjRenderer;
@@ -967,7 +967,7 @@ namespace MaterialEditorAPI
             PopulateList(go, data, filter);
         }
 
-        private static void ExportTexture(Material mat, string property)
+        internal virtual void ExportTexture(Material mat, string property)
         {
             var tex = mat.GetTexture($"_{property}");
             if (tex == null) return;
@@ -976,6 +976,16 @@ namespace MaterialEditorAPI
             string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{matName}_{property}.png");
             Instance.ConvertNormalMap(ref tex, property, ConvertNormalmapsOnExport.Value);
             SaveTex(tex, filename);
+            MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
+            Utilities.OpenFileInExplorer(filename);
+        }
+
+        internal void ExportTextureOriginal(Material mat, string property, string ext, byte[] texData)
+        {
+            var matName = mat.NameFormatted();
+            matName = string.Concat(matName.Split(Path.GetInvalidFileNameChars())).Trim();
+            string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{matName}_{property}.{ext}");
+            System.IO.File.WriteAllBytes(filename, texData);
             MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
             Utilities.OpenFileInExplorer(filename);
         }

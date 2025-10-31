@@ -28,9 +28,14 @@ using ChaAccessoryComponent = AIChara.CmpAccessory;
 using Map;
 #else
 using Studio;
+using KKAPI.Utilities;
+
 #endif
 #if PH
 using ChaControl = Human;
+#endif
+#if !EC
+using KKAPI.Studio;
 #endif
 
 namespace KK_Plugins.MaterialEditor
@@ -47,7 +52,7 @@ namespace KK_Plugins.MaterialEditor
     [BepInDependency("com.deathweasel.bepinex.moreoutfits", BepInDependency.DependencyFlags.SoftDependency)]
 #endif
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    public partial class MaterialEditorPlugin : MaterialEditorAPI.MaterialEditorPluginBase
+    public partial class MaterialEditorPlugin : MaterialEditorPluginBase
     {
         /// <summary>
         /// MaterialEditor plugin GUID
@@ -89,6 +94,13 @@ namespace KK_Plugins.MaterialEditor
         internal static ConfigEntry<KeyboardShortcut> PurgeOrphanedPropertiesHotkey { get; private set; }
 
         internal static ConfigEntry<bool> RendererCachingEnabled { get; private set; }
+
+#if !EC
+        internal static ConfigEntry<SceneTextureSaveType> TextureSaveTypeScene { get; private set; }
+        internal static ConfigEntry<string> TextureSaveTypeSceneAuto { get; private set; }
+#endif
+        internal static ConfigEntry<CharaTextureSaveType> TextureSaveTypeChara { get; private set; }
+        internal static ConfigEntry<string> TextureSaveTypeCharaAuto { get; private set; }
 
         /// <summary>
         /// Parts of the body
@@ -165,6 +177,17 @@ namespace KK_Plugins.MaterialEditor
             ShaderOptimization.Value = false;
 #endif
             RendererCachingEnabled = Config.Bind("Config", "Renderer Cache", true, "Turning this off will fix cache related issues but may have a negative impact on performance.");
+
+            // Texture saving configs
+            ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 10, IsAdvanced = true }));
+            ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
+            var handler = new TextureSaveHandler(LocalTexturePath);
+            handler.RegisterForAudit("Material Editor", handler.LocalTexSavePrefix + MaterialEditorCharaController.TexDicSaveKey);
+
+            CharaLocalTextures.Activate();
+#if !EC
+            SceneLocalTextures.Activate();
+#endif
         }
 
         internal void Main()
@@ -247,6 +270,20 @@ namespace KK_Plugins.MaterialEditor
             NormalMapProperties.Add("BumpMap");
 #endif
             LoadNormalMapConverter();
+        }
+
+        internal virtual void ConfigLocalTexturePath_SettingChanged(object sender, EventArgs e)
+        {
+            SetLocalTexturePath();
+            TextureSaveHandler.Instance.LocalTexturePath = LocalTexturePath;
+        }
+
+        private void SetLocalTexturePath()
+        {
+            if (ConfigLocalTexturePath.Value == "")
+                LocalTexturePath = LocalTexturePathDefault;
+            else
+                LocalTexturePath = ConfigLocalTexturePath.Value;
         }
 
         /// <summary>
@@ -1062,6 +1099,22 @@ namespace KK_Plugins.MaterialEditor
         public static void ClearCache(GameObject gameObject)
         {
             Hooks.ClearCache(gameObject);
+        }
+
+        internal static AcceptableValueBase AutoSaveTypeOptions(bool forStudio)
+        {
+            var options = new List<string> { "-" };
+            if (forStudio)
+            {
+#if !EC
+                options.AddRange(((SceneTextureSaveType[])Enum.GetValues(typeof(SceneTextureSaveType))).Select(x => x.ToString()));
+#endif
+            }
+            else
+            {
+                options.AddRange(((CharaTextureSaveType[])Enum.GetValues(typeof(CharaTextureSaveType))).Select(x => x.ToString()));
+            }
+            return new AcceptableValueList<string>(options.ToArray());
         }
     }
 }

@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.ObjectData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.TextureSaveHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\APNG.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\acTLChunk.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\Chunks\Chunk.cs" />

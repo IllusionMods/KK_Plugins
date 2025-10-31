@@ -15,14 +15,14 @@
     <ProjectReference Include="..\MaterialEditor.KK\KK.MaterialEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="19.3.3" />
+    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="21.1.2" />
     <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
     <PackageReference Include="IllusionLibs.BepInEx.Harmony" Version="2.9.0" />
     <PackageReference Include="IllusionLibs.Koikatu.Assembly-CSharp" Version="2019.4.27.4" />
     <PackageReference Include="IllusionLibs.Koikatu.Assembly-CSharp-firstpass" Version="2019.4.27.4" />
     <PackageReference Include="IllusionLibs.Koikatu.UnityEngine" Version="5.6.2.4" />
     <PackageReference Include="IllusionLibs.Koikatu.UnityEngine.UI" Version="5.6.2.4" />
-    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.44.0" />
     <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
   </ItemGroup>
   <Import Project="..\HairShadowColorControl.Core\HairShadowColorControl.Core.projitems" Label="Shared" />

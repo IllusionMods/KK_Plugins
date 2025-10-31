@@ -56,6 +56,14 @@ namespace KK_Plugins
         }
 
         /// <summary>
+        /// Unique hash of the byte[] contained in Data.
+        /// </summary>
+        public long Hash
+        {
+            get => _token.key.hash;
+        }
+
+        /// <summary>
         /// Dispose of the texture data.
         /// </summary>
         public void Dispose()
