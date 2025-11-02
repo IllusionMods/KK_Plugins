@@ -11,7 +11,9 @@ namespace KK_Plugins.MaterialEditor
     internal class TextureSaveHandler : TextureSaveHandlerBase
     {
         internal static TextureSaveHandler Instance;
+#if !EC
         private Dictionary<string, byte[]> DedupedTextureData = null;
+#endif
 
         public TextureSaveHandler(
             string localTexturePath,
@@ -39,10 +41,12 @@ namespace KK_Plugins.MaterialEditor
             return pluginData.data.TryGetValue(key, out data) && data != null;
         }
 
+#if !EC
         protected override bool IsDeduped(PluginData pluginData, string key, out object data)
         {
             return pluginData.data.TryGetValue(DedupedTexSavePrefix + key, out data) && data != null;
         }
+#endif
 
         protected override bool IsLocal(PluginData pluginData, string key, out object data)
         {
