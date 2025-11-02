@@ -95,13 +95,6 @@ namespace KK_Plugins.MaterialEditor
 
         internal static ConfigEntry<bool> RendererCachingEnabled { get; private set; }
 
-#if !EC
-        internal static ConfigEntry<SceneTextureSaveType> TextureSaveTypeScene { get; private set; }
-        internal static ConfigEntry<string> TextureSaveTypeSceneAuto { get; private set; }
-#endif
-        internal static ConfigEntry<CharaTextureSaveType> TextureSaveTypeChara { get; private set; }
-        internal static ConfigEntry<string> TextureSaveTypeCharaAuto { get; private set; }
-
         /// <summary>
         /// Parts of the body
         /// </summary>
@@ -181,6 +174,7 @@ namespace KK_Plugins.MaterialEditor
             // Texture saving configs
             ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 10, IsAdvanced = true }));
             ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
+            SetLocalTexturePath();
             var handler = new TextureSaveHandler(LocalTexturePath);
             handler.RegisterForAudit("Material Editor", handler.LocalTexSavePrefix + MaterialEditorCharaController.TexDicSaveKey);
 
