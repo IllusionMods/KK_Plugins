@@ -44,6 +44,7 @@ namespace KK_Plugins.MaterialEditor
             }
             catch
             {
+                MaterialEditorPluginBase.Logger.LogWarning("Save method failed, falling back to Bundled saving!");
                 SaveBundled(pluginData, key, data, isCharaController);
             }
         }
