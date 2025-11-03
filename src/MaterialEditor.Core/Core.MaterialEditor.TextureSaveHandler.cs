@@ -36,6 +36,18 @@ namespace KK_Plugins.MaterialEditor
             return new Dictionary<int, TextureContainer>();
         }
 
+        public override void Save(PluginData pluginData, string key, object data, bool isCharaController)
+        {
+            try
+            {
+                base.Save(pluginData, key, data, isCharaController);
+            }
+            catch
+            {
+                SaveBundled(pluginData, key, data, isCharaController);
+            }
+        }
+
         protected override bool IsBundled(PluginData pluginData, string key, out object data)
         {
             return pluginData.data.TryGetValue(key, out data) && data != null;
