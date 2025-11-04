@@ -174,7 +174,7 @@ namespace KK_Plugins.MaterialEditor
             // Texture saving configs
             ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription($"Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}.\nWARNING: If you change this, make sure to move all files to the new path!", null, new ConfigurationManagerAttributes { Order = 10, IsAdvanced = true }));
             ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
-            SetLocalTexturePath();
+            ConfigLocalTexturePath_SettingChanged(null, null);
             var handler = new TextureSaveHandler(LocalTexturePath);
             handler.RegisterForAudit("Material Editor", handler.LocalTexSavePrefix + MaterialEditorCharaController.TexDicSaveKey);
 
@@ -268,7 +268,16 @@ namespace KK_Plugins.MaterialEditor
 
         internal virtual void ConfigLocalTexturePath_SettingChanged(object sender, EventArgs e)
         {
-            SetLocalTexturePath();
+            if (ConfigLocalTexturePath.Value.ToLower().StartsWith(Paths.GameRootPath.ToLower()))
+            {
+                if (ConfigLocalTexturePath.Value.Length > Paths.GameRootPath.Length)
+                    ConfigLocalTexturePath.Value = ConfigLocalTexturePath.Value.Substring(Paths.GameRootPath.Length + 1);
+                else
+                    ConfigLocalTexturePath.Value = "";
+                return;
+            }
+            if (ConfigLocalTexturePath.Value.Split(Path.GetInvalidPathChars()).Length == 1)
+                SetLocalTexturePath();
             TextureSaveHandler.Instance.LocalTexturePath = LocalTexturePath;
         }
 
@@ -276,8 +285,10 @@ namespace KK_Plugins.MaterialEditor
         {
             if (ConfigLocalTexturePath.Value == "")
                 LocalTexturePath = LocalTexturePathDefault;
-            else
+            else if (Path.IsPathRooted(ConfigLocalTexturePath.Value))
                 LocalTexturePath = ConfigLocalTexturePath.Value;
+            else
+                LocalTexturePath = Path.Combine(Paths.GameRootPath, ConfigLocalTexturePath.Value);
         }
 
         /// <summary>
