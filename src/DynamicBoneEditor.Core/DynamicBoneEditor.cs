@@ -8,6 +8,7 @@ using KKAPI.Chara;
 using KKAPI.Maker;
 using MessagePack;
 using System.Collections.Generic;
+using BepInEx.Configuration;
 #if AI || HS2
 using AIChara;
 #endif
@@ -29,11 +30,15 @@ namespace KK_Plugins.DynamicBoneEditor
         internal static new ManualLogSource Logger;
         internal static Plugin PluginInstance;
 
+        public static ConfigEntry<bool> PreventDragout {get; set;}
+
         private void Start()
         {
             Logger = base.Logger;
             PluginInstance = this;
             Harmony.CreateAndPatchAll(typeof(Hooks));
+
+            PreventDragout = Config.Bind("Config", "Prevent Window Dragout", true, "Prevent dragging the DBE window outside of the game window (Requires restart to apply!)");
 
             MakerAPI.MakerBaseLoaded += MakerAPI_MakerBaseLoaded;
             MakerAPI.MakerFinishedLoading += MakerAPI_MakerFinishedLoading;

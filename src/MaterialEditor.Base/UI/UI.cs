@@ -141,7 +141,7 @@ namespace MaterialEditorAPI
             DragPanel = UIUtility.CreatePanel("Draggable", MaterialEditorMainPanel.transform);
             DragPanel.transform.SetRect(0f, 1f, 1f, 1f, 0f, -HeaderSize);
             DragPanel.color = Color.gray;
-            UIUtility.MakeObjectDraggable(DragPanel.rectTransform, MaterialEditorMainPanel.rectTransform);
+            UIUtility.MakeObjectDraggable(DragPanel.rectTransform, MaterialEditorMainPanel.rectTransform, PreventDragout.Value);
 
             var nametext = UIUtility.CreateText("Nametext", DragPanel.transform, "Material Editor");
             nametext.transform.SetRect();
