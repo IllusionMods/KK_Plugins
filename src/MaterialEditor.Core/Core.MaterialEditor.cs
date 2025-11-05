@@ -278,7 +278,8 @@ namespace KK_Plugins.MaterialEditor
             }
             if (ConfigLocalTexturePath.Value.Split(Path.GetInvalidPathChars()).Length == 1)
                 SetLocalTexturePath();
-            TextureSaveHandler.Instance.LocalTexturePath = LocalTexturePath;
+            if (TextureSaveHandler.Instance != null)
+                TextureSaveHandler.Instance.LocalTexturePath = LocalTexturePath;
         }
 
         private void SetLocalTexturePath()
