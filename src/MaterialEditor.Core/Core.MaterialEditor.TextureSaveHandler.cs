@@ -42,8 +42,9 @@ namespace KK_Plugins.MaterialEditor
             {
                 base.Save(pluginData, key, data, isCharaController);
             }
-            catch
+            catch (System.Exception ex)
             {
+                MaterialEditorPluginBase.Logger.LogError(ex);
                 MaterialEditorPluginBase.Logger.LogWarning("Save method failed, falling back to Bundled saving!");
                 SaveBundled(pluginData, key, data, isCharaController);
             }
@@ -68,7 +69,8 @@ namespace KK_Plugins.MaterialEditor
 
         protected override void SaveBundled(PluginData pluginData, string key, object dictRaw, bool isCharaController = false)
         {
-            var dict = dictRaw as Dictionary<int, TextureContainer>;
+            if (!(dictRaw is Dictionary<int, TextureContainer> dict && dict != null))
+                throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
             pluginData.data.Add(key, MessagePackSerializer.Serialize(dict.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
         }
 
@@ -82,7 +84,8 @@ namespace KK_Plugins.MaterialEditor
 
         protected override void SaveDeduped(PluginData data, string key, object dictRaw, bool isCharaController = false)
         {
-            var dict = dictRaw as Dictionary<int, TextureContainer>;
+            if (!(dictRaw is Dictionary<int, TextureContainer> dict && dict != null))
+                throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
 
             data.data.Add(DedupedTexSavePrefix + key, MessagePackSerializer.Serialize(
                 dict.ToDictionary(pair => pair.Key, pair => pair.Value.Hash.ToString("X16"))
@@ -100,12 +103,11 @@ namespace KK_Plugins.MaterialEditor
             }
 
             foreach (var controller in MaterialEditorCharaController.charaControllers)
-                foreach (var textureContainer in controller.TextureDictionary.Values)
-                    if (!hashes.Contains(textureContainer.Hash))
-                    {
-                        hashes.Add(textureContainer.Hash);
-                        dicHashToData.Add(textureContainer.Hash.ToString("X16"), textureContainer.Data);
-                    }
+                foreach (var textureContainer in controller.TextureDictionary.Values.Where(x => !hashes.Contains(x.Hash)))
+                {
+                    hashes.Add(textureContainer.Hash);
+                    dicHashToData.Add(textureContainer.Hash.ToString("X16"), textureContainer.Data);
+                }
 
             data.data.Add(DedupedTexSavePrefix + key + DedupedTexSavePostfix, MessagePackSerializer.Serialize(dicHashToData));
         }
@@ -115,7 +117,7 @@ namespace KK_Plugins.MaterialEditor
             if (data.data.TryGetValue(DedupedTexSavePrefix + key, out var dedupedData) && dedupedData != null)
             {
                 if (DedupedTextureData == null)
-                    if (MEStudio.GetSceneController().GetExtendedData()?.data.TryGetValue(DedupedTexSavePrefix + key + DedupedTexSavePostfix, out var dataBytes) != null && dataBytes != null)
+                    if (MEStudio.GetSceneController().GetExtendedData()?.data.TryGetValue(DedupedTexSavePrefix + key + DedupedTexSavePostfix, out var dataBytes) == true && dataBytes != null)
                         DedupedTextureData = MessagePackSerializer.Deserialize<Dictionary<string, byte[]>>((byte[])dataBytes);
                     else
                         MaterialEditorPluginBase.Logger.LogMessage($"[MaterialEditor] Failed to load deduped {(isCharaController ? "character" : "scene")} textures!");
@@ -133,10 +135,12 @@ namespace KK_Plugins.MaterialEditor
 #endif
         protected override void SaveLocal(PluginData data, string key, object dictRaw, bool isCharaController = false)
         {
+            if (!(dictRaw is Dictionary<int, TextureContainer> dict && dict != null))
+                throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
+
             if (!Directory.Exists(LocalTexturePath))
                 Directory.CreateDirectory(LocalTexturePath);
 
-            var dict = dictRaw as Dictionary<int, TextureContainer>;
             var hashDict = dict.ToDictionary(pair => pair.Key, pair => pair.Value.Hash.ToString("X16"));
             foreach (var kvp in hashDict)
             {

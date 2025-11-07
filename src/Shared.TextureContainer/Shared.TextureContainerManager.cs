@@ -28,7 +28,7 @@ namespace KK_Plugins
 
             public TextureKey(byte[] data, TextureFormat format = TextureFormat.ARGB32, bool mipmaps = true)
             {
-                //First part of the data is sufficient to calculate the hash.
+                // Hashing first 2048 bytes, last 512 bytes, and length to avoid all hash collisions but keep performance
                 long hash = (long)CRC64Calculator.CalculateCRC64(data, 1 << 11, 1 << 9, true);
                 hash ^= format.GetHashCode();
                 hash ^= mipmaps.GetHashCode();

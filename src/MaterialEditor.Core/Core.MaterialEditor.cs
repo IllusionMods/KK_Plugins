@@ -268,7 +268,7 @@ namespace KK_Plugins.MaterialEditor
 
         internal virtual void ConfigLocalTexturePath_SettingChanged(object sender, EventArgs e)
         {
-            if (ConfigLocalTexturePath.Value.ToLower().StartsWith(Paths.GameRootPath.ToLower()))
+            if (ConfigLocalTexturePath.Value.StartsWith(Paths.GameRootPath, StringComparison.OrdinalIgnoreCase))
             {
                 if (ConfigLocalTexturePath.Value.Length > Paths.GameRootPath.Length)
                     ConfigLocalTexturePath.Value = ConfigLocalTexturePath.Value.Substring(Paths.GameRootPath.Length + 1);
