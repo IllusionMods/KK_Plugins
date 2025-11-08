@@ -149,6 +149,11 @@ namespace MaterialEditorAPI
         public static TResult Call<T1, T2, TResult>(this Func<T1, T2, TResult> func, T1 arg1, T2 arg2, TResult result = default) => func == null ? result : func(arg1, arg2);
 
         public static TResult Call<T1, T2, T3, TResult>(this Func<T1, T2, T3, TResult> func, T1 arg1, T2 arg2, T3 arg3, TResult result = default) => func == null ? result : func(arg1, arg2, arg3);
+
+        public static IEnumerable<T> SubSet<T>(this T[] array, int start, int end)
+        {
+            for (int i = start; i < end; i++) yield return array[i];
+        }
     }
 
     internal static class MeshExtensions

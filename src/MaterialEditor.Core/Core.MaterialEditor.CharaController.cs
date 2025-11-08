@@ -14,6 +14,9 @@ using UniRx;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialAPI;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
+#if !EC
+using KKAPI.Studio;
+#endif
 #if AI || HS2
 using AIChara;
 #endif
@@ -31,17 +34,21 @@ namespace KK_Plugins.MaterialEditor
     /// </summary>
     public class MaterialEditorCharaController : CharaCustomFunctionController
     {
+        public const string TexDicSaveKey = nameof(TextureDictionary);
+
+        internal static readonly List<MaterialEditorCharaController> charaControllers = new List<MaterialEditorCharaController>();
+
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
         private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
         private readonly List<MaterialNameProperty> MaterialNamePropertyList = new List<MaterialNameProperty>();
         private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
         private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
         private readonly List<MaterialKeywordProperty> MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
-        private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
+        internal readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
         private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
         private readonly List<MaterialCopy> MaterialCopyList = new List<MaterialCopy>();
 
-        private readonly Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
+        internal readonly Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
 
         private readonly Dictionary<MaterialTextureProperty, MEAnimationController> AnimationControllerMap = new Dictionary<MaterialTextureProperty, MEAnimationController>();
 
@@ -65,6 +72,18 @@ namespace KK_Plugins.MaterialEditor
         private ObjectType ObjectTypeToSet;
         private GameObject GameObjectToSet;
 
+        protected override void Awake()
+        {
+            charaControllers.Add(this);
+            base.Awake();
+        }
+
+        protected override void OnDestroy()
+        {
+            charaControllers.Remove(this);
+            base.OnDestroy();
+        }
+
         /// <summary>
         /// Handles saving data to character cards
         /// </summary>
@@ -86,9 +105,9 @@ namespace KK_Plugins.MaterialEditor
                 var data = new PluginData();
 
                 if (TextureDictionary.Count > 0)
-                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+                    TextureSaveHandler.Instance.Save(data, TexDicSaveKey, TextureDictionary, true);
                 else
-                    data.data.Add(nameof(TextureDictionary), null);
+                    data.data.Add(TexDicSaveKey, null);
 
                 if (RendererPropertyList.Count > 0)
                     data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
@@ -326,9 +345,9 @@ namespace KK_Plugins.MaterialEditor
             {
                 var data = new PluginData();
                 if (coordinateTextureDictionary.Count > 0)
-                    data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(coordinateTextureDictionary));
+                    data.data.Add(TexDicSaveKey, MessagePackSerializer.Serialize(coordinateTextureDictionary));
                 else
-                    data.data.Add(nameof(TextureDictionary), null);
+                    data.data.Add(TexDicSaveKey, null);
 
                 if (coordinateRendererPropertyList.Count > 0)
                     data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(coordinateRendererPropertyList));
@@ -505,9 +524,9 @@ namespace KK_Plugins.MaterialEditor
             {
                 var importDictionary = new Dictionary<int, int>();
 
-                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                    foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
-                        importDictionary[x.Key] = SetAndGetTextureID(x.Value);
+                var importDictionaryTemp = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, true);
+                foreach (var kvp in importDictionaryTemp)
+                    importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
 
                 //Debug for dumping all textures
                 //int counter = 1;
@@ -695,7 +714,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var importDictionary = new Dictionary<int, int>();
 
-                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
+                if (data.data.TryGetValue(TexDicSaveKey, out var texDic) && texDic != null)
                     foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
                         importDictionary[x.Key] = SetAndGetTextureID(x.Value);
 
@@ -2637,7 +2656,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Get the coordinate index based on object type, hair and character return 0, clothes and accessories return CurrentCoordinateIndex
         /// </summary>
-        private int GetCoordinateIndex(ObjectType objectType)
+        internal int GetCoordinateIndex(ObjectType objectType)
         {
 #if KK || KKS
             if (objectType == ObjectType.Accessory || objectType == ObjectType.Clothing)

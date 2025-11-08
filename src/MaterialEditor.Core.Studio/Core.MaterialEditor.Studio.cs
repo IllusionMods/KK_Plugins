@@ -4,6 +4,7 @@ using KKAPI;
 using KKAPI.Maker;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
+using KKAPI.Utilities;
 using MaterialEditorAPI;
 using Studio;
 using System;
@@ -15,7 +16,6 @@ using UILib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static Illusion.Utils;
 using static MaterialEditorAPI.MaterialAPI;
 #if AI || HS2
 using AIChara;
@@ -377,6 +377,36 @@ namespace KK_Plugins.MaterialEditor
             if (int.TryParse(s, out int index))
                 return index - 1;
             return -1;
+        }
+
+        internal override void ExportTexture(Material mat, string property)
+        {
+            byte[] texData = null;
+            if (CurrentData is ObjectData objData)
+            {
+                var controller = (MaterialEditorCharaController)CurrentGameObject.GetComponentInParent(typeof(MaterialEditorCharaController));
+                if (controller != null)
+                {
+                    var textureProperty = controller.MaterialTexturePropertyList.FirstOrDefault(x => x.ObjectType == objData.ObjectType && x.CoordinateIndex == controller.GetCoordinateIndex(objData.ObjectType) && x.Slot == objData.Slot && x.Property == property && x.MaterialName == mat.NameFormatted());
+                    if (textureProperty?.TexID != null)
+                        texData = controller.TextureDictionary[textureProperty.TexID.Value].Data;
+                }
+            }
+            else if (CurrentData is int id)
+            {
+                var controller = GetSceneController();
+                if (controller != null)
+                {
+                    var textureProperty = controller.MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == mat.NameFormatted() && x.Property == property);
+                    if (textureProperty?.TexID != null)
+                        texData = SceneController.TextureDictionary[textureProperty.TexID.Value].Data;
+                }
+            }
+            string ext = ImageTypeIdentifier.Identify(texData, "XXX");
+            if (texData != null && ext != "XXX")
+                base.ExportTextureOriginal(mat, property, ext, texData);
+            else
+                base.ExportTexture(mat, property);
         }
 
         /// <summary>

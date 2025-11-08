@@ -14,20 +14,5 @@
   <ItemGroup>
     <ProjectReference Include="..\MaterialEditor.KKS\KKS.MaterialEditor.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.KoikatsuSunshine" Version="19.3.3" />
-    <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
-    <PackageReference Include="IllusionLibs.BepInEx.Harmony" Version="2.9.0" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.Assembly-CSharp" Version="2021.9.17" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.Assembly-CSharp-firstpass" Version="2021.9.17" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.UniRx" Version="2021.9.17" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.UniTask" Version="2021.9.17" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule" Version="2019.4.9" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.IMGUIModule" Version="2019.4.9" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule" Version="2019.4.9" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.UI" Version="2019.4.9" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.UIModule" Version="2019.4.9" />
-    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.38.0" />
-  </ItemGroup>
   <Import Project="..\HairShadowColorControl.Core\HairShadowColorControl.Core.projitems" Label="Shared" />
 </Project>

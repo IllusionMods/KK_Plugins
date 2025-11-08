@@ -1,5 +1,5 @@
 ﻿using ExtensibleSaveFormat;
-using KKAPI.Maker;
+using KKAPI;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
@@ -24,19 +24,21 @@ namespace KK_Plugins.MaterialEditor
     /// </summary>
     public class SceneController : SceneCustomFunctionController
     {
+        public const string TexDicSaveKey = nameof(TextureDictionary);
+
         private readonly List<RendererProperty> RendererPropertyList = new List<RendererProperty>();
         private readonly List<ProjectorProperty> ProjectorPropertyList = new List<ProjectorProperty>();
         private readonly List<MaterialNameProperty> MaterialNamePropertyList = new List<MaterialNameProperty>();
         private readonly List<MaterialFloatProperty> MaterialFloatPropertyList = new List<MaterialFloatProperty>();
         private readonly List<MaterialKeywordProperty> MaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
         private readonly List<MaterialColorProperty> MaterialColorPropertyList = new List<MaterialColorProperty>();
-        private readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
+        internal readonly List<MaterialTextureProperty> MaterialTexturePropertyList = new List<MaterialTextureProperty>();
         private readonly List<MaterialShader> MaterialShaderList = new List<MaterialShader>();
         private readonly List<MaterialCopy> MaterialCopyList = new List<MaterialCopy>();
 
         private readonly Dictionary<MaterialTextureProperty, MEAnimationController> AnimationControllerMap = new Dictionary<MaterialTextureProperty, MEAnimationController>();
 
-        private static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
+        internal static Dictionary<int, TextureContainer> TextureDictionary = new Dictionary<int, TextureContainer>();
 
         private static string FileToSet;
         private static string PropertyToSet;
@@ -60,10 +62,13 @@ namespace KK_Plugins.MaterialEditor
 
             PurgeUnusedTextures();
 
-            if (TextureDictionary.Count > 0)
-                data.data.Add(nameof(TextureDictionary), MessagePackSerializer.Serialize(TextureDictionary.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
+            if (TextureDictionary.Count > 0 || (
+                SceneLocalTextures.SaveType == SceneTextureSaveType.Deduped
+                && MaterialEditorCharaController.charaControllers.Any(x => x.TextureDictionary.Count > 0)
+            ))
+                TextureSaveHandler.Instance.Save(data, TexDicSaveKey, TextureDictionary, false);
             else
-                data.data.Add(nameof(TextureDictionary), null);
+                data.data.Add(TexDicSaveKey, null);
 
             if (RendererPropertyList.Count > 0)
                 data.data.Add(nameof(RendererPropertyList), MessagePackSerializer.Serialize(RendererPropertyList));
@@ -198,13 +203,16 @@ namespace KK_Plugins.MaterialEditor
             var importDictionary = new Dictionary<int, int>();
 
             if (operation == SceneOperationKind.Load)
-                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                    TextureDictionary = MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic).ToDictionary(pair => pair.Key, pair => new TextureContainer(pair.Value));
+            {
+                TextureDictionary = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, false);
+            }
 
             if (operation == SceneOperationKind.Import)
-                if (data.data.TryGetValue(nameof(TextureDictionary), out var texDic) && texDic != null)
-                    foreach (var x in MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])texDic))
-                        importDictionary[x.Key] = SetAndGetTextureID(x.Value);
+            {
+                var importDictionaryTemp = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, false);
+                foreach (var kvp in importDictionaryTemp)
+                    importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
+            }
 
             if (data.data.TryGetValue(nameof(MaterialCopyList), out var materialCopyData) && materialCopyData != null)
             {
