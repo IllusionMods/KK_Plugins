@@ -90,7 +90,7 @@ namespace KK_Plugins.DynamicBoneEditor
             DragPanel = UIUtility.CreatePanel("Draggable", EditorMainPanel.transform);
             DragPanel.transform.SetRect(0f, 1f, 1f, 1f, 0f, -HeaderSize);
             DragPanel.color = Color.gray;
-            UIUtility.MakeObjectDraggable(DragPanel.rectTransform, EditorMainPanel.rectTransform);
+            UIUtility.MakeObjectDraggable(DragPanel.rectTransform, EditorMainPanel.rectTransform, PreventDragout.Value);
 
             var nametext = UIUtility.CreateText("Nametext", DragPanel.transform, "Dynamic Bone Editor");
             nametext.transform.SetRect();
