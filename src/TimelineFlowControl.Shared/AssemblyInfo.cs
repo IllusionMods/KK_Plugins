@@ -1,10 +1,10 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using TimelineFlowControl;
 
 [assembly: AssemblyTitle(FlowControlPlugin.DisplayName)]
 [assembly: AssemblyDescription(FlowControlPlugin.DisplayName)]
-[assembly: AssemblyCompany("https://github.com/IllusionMods/KK_Plugins/")]
+[assembly: AssemblyCompany("https://gitgoon.dev/IllusionMods/KK_Plugins/")]
 [assembly: AssemblyProduct(FlowControlPlugin.GUID)]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 

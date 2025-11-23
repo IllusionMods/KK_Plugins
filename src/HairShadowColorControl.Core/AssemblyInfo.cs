@@ -1,10 +1,10 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using HairShadowColorControl;
 
 [assembly: AssemblyTitle(HairShadowColorControlPlugin.GUID)]
 [assembly: AssemblyDescription(HairShadowColorControlPlugin.DisplayName)]
-[assembly: AssemblyCompany("https://github.com/IllusionMods/KK_Plugins/")]
+[assembly: AssemblyCompany("https://gitgoon.dev/IllusionMods/KK_Plugins/")]
 [assembly: AssemblyProduct(HairShadowColorControlPlugin.DisplayName)]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 
