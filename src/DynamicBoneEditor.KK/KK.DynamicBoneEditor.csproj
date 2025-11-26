@@ -1,13 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>KK_DynamicBoneEditor</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="19.3.3" />
     <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="2019.4.27.4" />
-    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.38.0" />
-    <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
+    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />

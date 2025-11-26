@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
     <RootNamespace>TimelineFlowControl</RootNamespace>
@@ -14,7 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\TimelineFlowControl.Shared\Shared_TimelineButton.projitems" Label="Shared" />
 </Project>

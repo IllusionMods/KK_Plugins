@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>KKS_FKIK</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.KoikatsuSunshine" Version="19.3.3" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
-    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\FKIK.Core\Core.FKIK.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

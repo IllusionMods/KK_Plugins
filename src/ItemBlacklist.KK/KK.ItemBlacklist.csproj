@@ -7,7 +7,7 @@
     <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="2019.4.27.4" />
     <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
     <PackageReference Include="SharpZipLib" Version="[0.86.0,1.0)" NoWarn="NU1903, NU1902" />
-    <PackageReference Include="Sideloader.Koikatu" Version="19.3.3" />
+    <PackageReference Include="Sideloader.Koikatu" Version="19.4" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />

@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>EC_InvisibleBody</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.EmotionCreators" Version="19.3.3" />
     <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="2019.6.6.4" />
-    <PackageReference Include="IllusionModdingAPI.ECAPI" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.ECAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\InvisibleBody.Core\Core.InvisibleBody.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

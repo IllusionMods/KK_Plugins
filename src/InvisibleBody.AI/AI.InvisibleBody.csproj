@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>AI_InvisibleBody</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.AIGirl" Version="19.3.3" />
     <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\InvisibleBody.Core\Core.InvisibleBody.projitems" Label="Shared" />
   <Import Project="..\InvisibleBody.Core.Studio\Core.InvisibleBody.Studio.projitems" Label="Shared" />

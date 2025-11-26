@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>HS2_MaterialEditor</AssemblyName>
@@ -13,9 +13,9 @@
   <ItemGroup>
     <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="2020.5.29.5" />
     <PackageReference Include="IllusionLibs.XUnity.ResourceRedirector" Version="4.18.0" />
-    <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.45.0" />
+    <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.45.1" />
     <PackageReference Include="SharpZipLib" Version="[1.3.3,1.4)" />
-    <PackageReference Include="Sideloader.HoneySelect2" Version="19.3.3" />
+    <PackageReference Include="Sideloader.HoneySelect2" Version="19.4" />
     <PackageReference Include="XUnity.Common" Version="1.0.0" />
     <PackageReference Include="XUnity.ResourceRedirector" Version="1.1.0" />
   </ItemGroup>

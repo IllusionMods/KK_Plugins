@@ -1,13 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>KKS_EyeControl</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.KoikatsuSunshine" Version="19.3.3" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
     <PackageReference Include="IllusionLibs.XUnity.AutoTranslator.Plugin.Core" Version="4.18.0" />
-    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\EyeControl.Core\EyeControl.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

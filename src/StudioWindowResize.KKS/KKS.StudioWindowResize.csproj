@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
     <AssemblyName>KKS_StudioWindowResize</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.KoikatsuSunshine" Version="19.3.3" />
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
-    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\StudioWindowResize.Core\StudioWindowResize.Core.projitems" Label="Shared" />

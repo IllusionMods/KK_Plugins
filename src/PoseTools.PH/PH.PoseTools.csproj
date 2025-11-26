@@ -4,7 +4,7 @@
     <AssemblyName>PH_PoseTools</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.PlayHome" Version="17.0.0" />
+    <PackageReference Include="ExtensibleSaveFormat.PlayHome" Version="19.4" />
     <PackageReference Include="IllusionLibs.PlayHome.AllPackages" Version="2018.3.11.4" />
   </ItemGroup>
   <Import Project="..\PoseTools.Core\Core.PoseTools.projitems" Label="Shared" />

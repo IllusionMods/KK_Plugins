@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>KK_Autosave</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="2019.4.27.4" />
-    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.44.0" />
-    <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
+    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Autosave.Core\Autosave.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

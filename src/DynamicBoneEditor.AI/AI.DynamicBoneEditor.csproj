@@ -1,11 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net46</TargetFramework>
 		<AssemblyName>AI_DynamicBoneEditor</AssemblyName>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
-		<PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.45.1" />
+		<PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.45.1">
+		  
+		  
+		</PackageReference>
 	</ItemGroup>
 	<Import Project="..\Shared\Shared.projitems" Label="Shared" />
 	<Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />

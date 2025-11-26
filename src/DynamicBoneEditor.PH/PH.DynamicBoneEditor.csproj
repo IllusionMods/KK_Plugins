@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>PH_DynamicBoneEditor</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.PlayHome" Version="17.0.0" />
     <PackageReference Include="IllusionLibs.PlayHome.AllPackages" Version="2018.3.11.4" />
-    <PackageReference Include="IllusionModdingAPI.PHAPI" Version="1.15.1" />
+    <PackageReference Include="IllusionModdingAPI.PHAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\DynamicBoneEditor.Core\DynamicBoneEditor.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

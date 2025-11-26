@@ -5,7 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="2019.4.27.4" />
-    <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems" Label="Shared" />

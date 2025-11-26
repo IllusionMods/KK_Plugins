@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>KK_MaterialEditor</AssemblyName>
@@ -12,10 +12,10 @@
   <ItemGroup>
     <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="2019.4.27.4" />
     <PackageReference Include="IllusionLibs.XUnity.ResourceRedirector" Version="4.18.0" />
-    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.0" />
+    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.25.0" />
     <PackageReference Include="SharpZipLib" Version="[0.86.0,1.0)" NoWarn="NU1903, NU1902" />
-    <PackageReference Include="Sideloader.Koikatu" Version="19.3.3" />
+    <PackageReference Include="Sideloader.Koikatu" Version="19.4" />
   </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

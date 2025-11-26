@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>PH_Autosave</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="IllusionLibs.PlayHome.AllPackages" Version="2018.3.11.4" />
-    <PackageReference Include="IllusionModdingAPI.PHAPI" Version="1.44.0" />
+    <PackageReference Include="IllusionModdingAPI.PHAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Autosave.Core\Autosave.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

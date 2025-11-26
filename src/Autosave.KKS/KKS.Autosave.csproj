@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>KKS_Autosave</AssemblyName>
@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
     <PackageReference Include="IllusionLibs.XUnity.AutoTranslator.Plugin.Core" Version="4.18.0" />
-    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.44.0" />
+    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Autosave.Core\Autosave.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

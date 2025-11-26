@@ -1,13 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <RootNamespace>KK_Plugins.StudioSceneSettings</RootNamespace>
     <AssemblyName>HS2_StudioSceneSettings</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.HoneySelect2" Version="19.3.3" />
     <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

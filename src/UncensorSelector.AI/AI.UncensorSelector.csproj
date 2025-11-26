@@ -1,16 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>AI_UncensorSelector</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.ConfigurationManager" Version="18.2.0.1" />
-    <PackageReference Include="ExtensibleSaveFormat.AIGirl" Version="19.3.3" />
     <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.45.1" />
     <PackageReference Include="OverlayMods.AIGirl" Version="6.0.7" />
     <PackageReference Include="SharpZipLib" Version="[1.3.3,1.4)" />
-    <PackageReference Include="Sideloader.AIGirl" Version="19.3.3" />
+    <PackageReference Include="Sideloader.AIGirl" Version="19.4" />
   </ItemGroup>
   <Import Project="..\UncensorSelector.Core\Core.UncensorSelector.projitems" Label="Shared" />
   <Import Project="..\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems" Label="Shared" />

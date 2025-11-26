@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>HS2_MakerDefaults</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.HoneySelect2" Version="19.3.3" />
     <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.38.0" />
+    <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\MakerDefaults.Core.AIHS2\MakerDefaults.Core.projitems" Label="Shared" />
