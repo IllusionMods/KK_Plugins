@@ -1,15 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <OutputType>Library</OutputType>
     <RootNamespace>HairShadowColorControl</RootNamespace>
     <AssemblyName>KK_HairShadowColorControl</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>TRACE;DEBUG;KK</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>TRACE;KK</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MaterialEditor.KK\KK.MaterialEditor.csproj" />

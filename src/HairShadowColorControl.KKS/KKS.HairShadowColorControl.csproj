@@ -1,15 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <OutputType>Library</OutputType>
     <RootNamespace>HairShadowColorControl</RootNamespace>
     <AssemblyName>KKS_HairShadowColorControl</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>TRACE;DEBUG;KKS</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>TRACE;KKS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MaterialEditor.KKS\KKS.MaterialEditor.csproj" />

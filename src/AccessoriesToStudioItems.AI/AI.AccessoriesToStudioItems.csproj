@@ -1,15 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <OutputType>Library</OutputType>
     <RootNamespace>AccessoriesToStudioItems</RootNamespace>
     <AssemblyName>AI_AccessoriesToStudioItems</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>TRACE;DEBUG;AI</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>TRACE;AI</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AI_QuickAccessBox" Version="3.3.0" />

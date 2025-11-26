@@ -1,15 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>HS2_StudioImageEmbed</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>TRACE;DEBUG;HS2</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>TRACE;HS2</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MaterialEditor.HS2\HS2.MaterialEditor.csproj" />
