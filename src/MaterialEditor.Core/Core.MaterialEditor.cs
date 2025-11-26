@@ -66,7 +66,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// MaterialEditor plugin version
         /// </summary>
-        public const string PluginVersion = "3.13.5";
+        public const string PluginVersion = "4.0";
 
 
         /// <summary>

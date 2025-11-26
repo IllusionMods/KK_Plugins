@@ -26,7 +26,7 @@ namespace KK_Plugins.DynamicBoneEditor
         public const string PluginGUID = "com.deathweasel.bepinex.dynamicboneeditor";
         public const string PluginName = "Dynamic Bone Editor";
         public const string PluginNameInternal = Constants.Prefix + "_DynamicBoneEditor";
-        public const string PluginVersion = "1.0.5";
+        public const string PluginVersion = "1.1";
         internal static new ManualLogSource Logger;
         internal static Plugin PluginInstance;
 
