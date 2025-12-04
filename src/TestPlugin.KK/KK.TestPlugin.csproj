@@ -8,4 +8,7 @@
     <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+
+  <!--Obsolete/broken plugin, do not create releases-->
+  <Target Name="CreateReleaseZip"/>
 </Project>

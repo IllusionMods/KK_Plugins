@@ -8,4 +8,7 @@
     <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+
+  <!--Obsolete/broken plugin, do not create releases-->
+  <Target Name="CreateReleaseZip"/>
 </Project>

@@ -8,4 +8,7 @@
   </ItemGroup>
   <Import Project="..\PoseUnlocker.Core\PoseUnlocker.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+
+  <!--Obsolete/broken plugin, do not create releases-->
+  <Target Name="CreateReleaseZip"/>
 </Project>
