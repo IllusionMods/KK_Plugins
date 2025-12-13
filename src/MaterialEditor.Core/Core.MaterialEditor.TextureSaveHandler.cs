@@ -50,6 +50,17 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        public override T Load<T>(PluginData pluginData, string key, bool isCharaController)
+        {
+            if (pluginData.version <= 2)
+                return base.Load<T>(pluginData, key, isCharaController);
+            else
+            {
+                MaterialEditorPluginBase.Logger.LogMessage("[MaterialEditor] Unsupported save data! Please update your plugin!");
+                throw new System.Exception("Unsupported save data! Plugin is outdated.");
+            }
+        }
+
         protected override bool IsBundled(PluginData pluginData, string key, out object data)
         {
             return pluginData.data.TryGetValue(key, out data) && data != null;
@@ -71,6 +82,7 @@ namespace KK_Plugins.MaterialEditor
         {
             if (!(dictRaw is Dictionary<int, TextureContainer> dict && dict != null))
                 throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
+            pluginData.version = 1;
             pluginData.data.Add(key, MessagePackSerializer.Serialize(dict.ToDictionary(pair => pair.Key, pair => pair.Value.Data)));
         }
 
@@ -86,6 +98,7 @@ namespace KK_Plugins.MaterialEditor
         {
             if (!(dictRaw is Dictionary<int, TextureContainer> dict && dict != null))
                 throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
+            data.version = 2;
 
             data.data.Add(DedupedTexSavePrefix + key, MessagePackSerializer.Serialize(
                 dict.ToDictionary(pair => pair.Key, pair => pair.Value.Hash.ToString("X16"))
@@ -137,6 +150,7 @@ namespace KK_Plugins.MaterialEditor
         {
             if (!(dictRaw is Dictionary<int, TextureContainer> dict && dict != null))
                 throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
+            data.version = 2;
 
             if (!Directory.Exists(LocalTexturePath))
                 Directory.CreateDirectory(LocalTexturePath);
