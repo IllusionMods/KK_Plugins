@@ -48,7 +48,7 @@
 
 
 	<!-- Inline task to get file version from assembly -->
-	<UsingTask TaskName="GetFileVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\\Microsoft.Build.Tasks.v4.0.dll">
+	<UsingTask TaskName="GetFileVersion" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<AssemblyPath ParameterType="System.String" Required="true" />
 			<FileVersion Output="true" ParameterType="System.String" />
