@@ -6,14 +6,14 @@ Plugins for Koikatu, Koikatsu Sunshine, EmotionCreators, AI Girl, HoneySelect2, 
 
 1. Install the latest versions of: 
     - [BepInEx v5](https://github.com/BepInEx/BepInEx/releases)
-    - [BepisPlugins](https://gitgoon.dev/IllusionMods/BepisPlugins/releases)
-    - [IllusionModdingAPI](https://gitgoon.dev/IllusionMods/IllusionModdingAPI)
+    - [BepisPlugins](https://github.com/IllusionMods/BepisPlugins/releases)
+    - [IllusionModdingAPI](https://github.com/IllusionMods/IllusionModdingAPI)
 2. Download the plugin release you want from the links below. Make sure it's a version for your game.
 3. Extract the plugin .zip file to your game folder (where the BepInEx folder and game .exe is).
 
 ## If you are a modder
 
-If you'd like to create a mod that is compatible with various plugins in this repo, check [the Guides folder](https://gitgoon.dev/IllusionMods/KK_Plugins/tree/master/Guides) and [the wiki](https://gitgoon.dev/IllusionMods/KK_Plugins/wiki).
+If you'd like to create a mod that is compatible with various plugins in this repo, check [the Guides folder](https://github.com/IllusionMods/KK_Plugins/tree/master/Guides) and [the wiki](https://github.com/IllusionMods/KK_Plugins/wiki).
 
 If you'd like to contribute code fixes and improvements: fork this repository, create a new branch, push your changes, and open a new PR.
 
@@ -29,7 +29,7 @@ Make sure you download the version for your game (the first part before _ is the
 
 If a plugin is listed but it's not a link, then it's either experimental or obsolete. You will need to compile it from source yourself, and you will not get any support.
 
-You can get the latest nightly builds of all plugins from the [CI workflow](https://gitgoon.dev/IllusionMods/KK_Plugins/actions/workflows/ci.yaml). Open the latest successful run and download the build from the Artifacts section.
+You can get the latest nightly builds of all plugins from the [CI workflow](https://github.com/IllusionMods/KK_Plugins/actions/workflows/ci.yaml). Open the latest successful run and download the build from the Artifacts section.
 
 #### CharaMakerLoadedSound
 
@@ -58,11 +58,11 @@ Select characters in the Studio workspace and Anim->Current State->Invisible Bod
 Allows you to specify which uncensors individual characters use and removes the mosaic censor. Select an uncensor for your character in the character maker in the Body/General tab or specify a default uncensor to use in the plugin settings. The default uncensor will apply to any character that does not have one selected.
 
 Requirements:
-* Marco's [KKAPI](https://gitgoon.dev/IllusionMods/IllusionModdingAPI/releases)
+* Marco's [KKAPI](https://github.com/IllusionMods/IllusionModdingAPI/releases)
 * Marco's [Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods/releases)
-* [BepisPlugins](https://gitgoon.dev/IllusionMods/BepisPlugins/releases) ExtensibleSaveFormat and Sideloader.
+* [BepisPlugins](https://github.com/IllusionMods/BepisPlugins/releases) ExtensibleSaveFormat and Sideloader.
 
-For makers of uncensors, see the [template](https://gitgoon.dev/IllusionMods/KK_Plugins/blob/master/Guides/UncensorSelector%20Guide/uncensor_manifest_template.xml) for how to configure your uncensor for UncensorSelector compatibility.
+For makers of uncensors, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/Guides/UncensorSelector%20Guide/uncensor_manifest_template.xml) for how to configure your uncensor for UncensorSelector compatibility.
 
 Make sure to remove any sideloader uncensors and replace your oo_base with a clean, unmodified one to prevent incompatibilities!
 
@@ -100,7 +100,7 @@ Overriding list files can allow you to do things like enable bras with some shir
 
 Adds configuration options for hair accessories to the character maker. Hair accessories can be set to match color with the hair, enable hair gloss, modify outline color, and has a separate color picker for the hair tie part. Hairs that support a length slider can also have their length adjusted, just like vanilla front hairs. Saves and loads to cards and coordinates.
 
-**Note for modders**: These options will only show up for hair accessories that are properly configured. For accessories to work the accessory must have a		`ChaCustomHairComponent` MonoBehavior in addition to the `ChaAccessoryComponent` MonoBehavior. Hair accessory color will display if the ChaCustomHairComponent rendAccessory array has meshes configured. The length slider will appear if the `ChaCustomHairComponent.trfLength` array has bones configured. Hair color will only match to meshes configured in the `ChaCustomHairComponent.rendHair` array. Also check out [this guide](https://gitgoon.dev/IllusionMods/KK_Plugins/wiki/Hair-Accessory-Guide) for how to create hair accessories.
+**Note for modders**: These options will only show up for hair accessories that are properly configured. For accessories to work the accessory must have a		`ChaCustomHairComponent` MonoBehavior in addition to the `ChaAccessoryComponent` MonoBehavior. Hair accessory color will display if the ChaCustomHairComponent rendAccessory array has meshes configured. The length slider will appear if the `ChaCustomHairComponent.trfLength` array has bones configured. Hair color will only match to meshes configured in the `ChaCustomHairComponent.rendHair` array. Also check out [this guide](https://github.com/IllusionMods/KK_Plugins/wiki/Hair-Accessory-Guide) for how to create hair accessories.
 
 #### FreeHRandom
 
@@ -125,7 +125,7 @@ Features:
 
 Access the Material Editor by pressing the "Open Material Editor" button on clothes, hair, or accessories in the character maker. Access it in Studio by pressing the "Mat. Editor" button on the Workspace with a studio item selected.
 
-For makers of shaders, see the [template](https://gitgoon.dev/IllusionMods/KK_Plugins/blob/master/Guides/Material%20Editor%20Guide/shader_manifest_template.xml) for how to configure your shader zipmod for MaterialEditor compatibility.
+For makers of shaders, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/Guides/Material%20Editor%20Guide/shader_manifest_template.xml) for how to configure your shader zipmod for MaterialEditor compatibility.
 
 #### MaleJuice
 
@@ -300,11 +300,11 @@ Generally you don't want to install these unless you have a very good reason to 
 
 #### AnimationController
 
-*Mostly obsolete: [NodeConstraints](https://gitgoon.dev/IllusionMods/HSPlugins) does what this plugin does but better.*
+*Mostly obsolete: [NodeConstraints](https://github.com/IllusionMods/HSPlugins) does what this plugin does but better.*
 
 Allows attaching IK nodes to objects to create custom animations. Press the Minus (-) hotkey to bring up the menu. This hotkey can be  configured in the F1 plugin settings.
 
-Requires Marco's [KKAPI](https://gitgoon.dev/IllusionMods/IllusionModdingAPI/releases) and [BepisPlugins](https://gitgoon.dev/IllusionMods/BepisPlugins/releases) ExtensibleSaveFormat.
+Requires Marco's [KKAPI](https://github.com/IllusionMods/IllusionModdingAPI/releases) and [BepisPlugins](https://github.com/IllusionMods/BepisPlugins/releases) ExtensibleSaveFormat.
 
 Inspired by [AttachAnimationLib](http://www.hongfire.com/forum/forum/hentai-lair/hf-modding-translation/honey-select-mods/6388508-vn-game-engine-ready-games-and-utils?p=6766050#post6766050) by Keitaro
 
