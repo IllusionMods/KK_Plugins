@@ -608,7 +608,7 @@ namespace KK_Plugins
 
         private void SwapToVanillaPlus(MaterialEditorCharaController controller, int slot, ObjectType objectType, Material mat, GameObject go, bool forceSwap)
         {
-            if (controller.GetMaterialShader(slot, ObjectType.Clothing, mat, go) == null || forceSwap)
+            if (controller.GetMaterialShader(slot, objectType, mat, go) == null || forceSwap)
             {
                 string oldShader = mat.shader.name;
                 if (!SwapStudioShadersOnCharacter.Value)
