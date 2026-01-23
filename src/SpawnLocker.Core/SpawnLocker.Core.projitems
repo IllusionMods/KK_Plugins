@@ -6,7 +6,7 @@
     <SharedGUID>a27f5e6b-5e24-4609-a634-1a704ebbf1d9</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>ShaderSwapper.Core</Import_RootNamespace>
+    <Import_RootNamespace>SpawnLocker</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
