@@ -1,21 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <OutputType>Library</OutputType>
     <RootNamespace>SpawnLocker</RootNamespace>
     <AssemblyName>KKS_SpawnLocker</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>TRACE;DEBUG;KKS</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>TRACE;KKS</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.KoikatsuSunshine" Version="19.3.3" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.Unity.TextMeshPro" Version="2019.4.9" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule" Version="2019.4.9" />
-    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.38.0" />
+    <PackageReference Include="ExtensibleSaveFormat.KoikatsuSunshine" Version="19.4" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
+    <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\SpawnLocker.Core\SpawnLocker.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

@@ -1,19 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <OutputType>Library</OutputType>
     <RootNamespace>SpawnLocker</RootNamespace>
     <AssemblyName>KK_SpawnLocker</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>TRACE;DEBUG;KK</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>TRACE;KK</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="19.3.3" />
-    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.38.0" />
+    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="19.4" />
+    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
+    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\SpawnLocker.Core\SpawnLocker.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
