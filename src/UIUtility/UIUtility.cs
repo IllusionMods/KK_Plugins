@@ -334,10 +334,11 @@ namespace UILib
             return i;
         }
 
-        public static MovableWindow MakeObjectDraggable(RectTransform clickableDragZone, RectTransform draggableObject)
+        public static MovableWindow MakeObjectDraggable(RectTransform clickableDragZone, RectTransform draggableObject, bool preventDragout = false)
         {
             MovableWindow mv = clickableDragZone.gameObject.AddComponent<MovableWindow>();
             mv.ToDrag = draggableObject;
+            mv.PreventDragout = preventDragout;
             return mv;
         }
     }

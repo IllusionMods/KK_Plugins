@@ -108,8 +108,8 @@ namespace MaterialEditorAPI
 
         private protected IMaterialEditorColorPalette ColorPalette;
 
-        private GameObject CurrentGameObject;
-        private object CurrentData;
+        internal GameObject CurrentGameObject;
+        internal object CurrentData;
         private static string CurrentFilter = "";
         private bool DoObjExport = false;
         private Renderer ObjRenderer;
@@ -141,7 +141,7 @@ namespace MaterialEditorAPI
             DragPanel = UIUtility.CreatePanel("Draggable", MaterialEditorMainPanel.transform);
             DragPanel.transform.SetRect(0f, 1f, 1f, 1f, 0f, -HeaderSize);
             DragPanel.color = Color.gray;
-            UIUtility.MakeObjectDraggable(DragPanel.rectTransform, MaterialEditorMainPanel.rectTransform);
+            UIUtility.MakeObjectDraggable(DragPanel.rectTransform, MaterialEditorMainPanel.rectTransform, PreventDragout.Value);
 
             var nametext = UIUtility.CreateText("Nametext", DragPanel.transform, "Material Editor");
             nametext.transform.SetRect();
@@ -678,7 +678,9 @@ namespace MaterialEditorAPI
 
                 foreach (var category in categories)
                 {
-                    var properties = category.Value.Where(x => mat.HasProperty($"_{x.Name}"));
+                    // There is no API to determine whether the shader contains a certain keyword, we can't rely
+                    // on a toggle property with the same name to determine whether the keyword is present either.
+                    var properties = category.Value.Where(x => x.Type == ShaderPropertyType.Keyword || mat.HasProperty($"_{x.Name}"));
                     if (
                         filterListProperties.Count == 0
                         && (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName)
@@ -965,7 +967,7 @@ namespace MaterialEditorAPI
             PopulateList(go, data, filter);
         }
 
-        private static void ExportTexture(Material mat, string property)
+        internal virtual void ExportTexture(Material mat, string property)
         {
             var tex = mat.GetTexture($"_{property}");
             if (tex == null) return;
@@ -974,6 +976,16 @@ namespace MaterialEditorAPI
             string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{matName}_{property}.png");
             Instance.ConvertNormalMap(ref tex, property, ConvertNormalmapsOnExport.Value);
             SaveTex(tex, filename);
+            MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
+            Utilities.OpenFileInExplorer(filename);
+        }
+
+        internal void ExportTextureOriginal(Material mat, string property, string ext, byte[] texData)
+        {
+            var matName = mat.NameFormatted();
+            matName = string.Concat(matName.Split(Path.GetInvalidFileNameChars())).Trim();
+            string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{matName}_{property}.{ext}");
+            System.IO.File.WriteAllBytes(filename, texData);
             MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
             Utilities.OpenFileInExplorer(filename);
         }

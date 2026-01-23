@@ -1,25 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>HS_Autosave</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DefineConstants>TRACE;DEBUG;HS</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>TRACE;HS</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BepInEx.Analyzers" Version="1.0.4" />
-    <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
-    <PackageReference Include="IllusionLibs.BepInEx.Harmony" Version="2.9.0" />
-    <PackageReference Include="IllusionLibs.HoneySelect.Assembly-CSharp" Version="2017.6.30.2" />
-    <PackageReference Include="IllusionLibs.HoneySelect.UnityEngine" Version="5.3.5.2" />
-    <PackageReference Include="IllusionLibs.HoneySelect.UnityEngine.UI" Version="5.3.5.2" />
-    <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
+    <PackageReference Include="IllusionLibs.HoneySelect.AllPackages" Version="2017.6.30.2" />
   </ItemGroup>
   <Import Project="..\Autosave.Core\Autosave.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

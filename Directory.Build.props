@@ -1,23 +1,91 @@
 <Project>
-    <PropertyGroup>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <Deterministic>true</Deterministic>
-        <DebugType>embedded</DebugType>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <GameType>$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</GameType>
-        <!--<OutputPath>$(SolutionDir)\bin\$(Configuration)\$(GameType)</OutputPath>-->
-        <OutputPath>$(SolutionDir)\bin</OutputPath>
-    </PropertyGroup>
-    <Target Name="SkipAllRefs" AfterTargets="ResolveReferences">
-        <ItemGroup>
-            <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
-        </ItemGroup>
-    </Target>
-    <PropertyGroup>
-        <PostBuildEvent Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+		<RootNamespace>KK_Plugins</RootNamespace>
+
+		<OutputPath>..\..\bin\build\$(MSBuildProjectName)\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+		<OutputType>Library</OutputType>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<Deterministic>true</Deterministic>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>embedded</DebugType>
+		<FileAlignment>512</FileAlignment>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(Configuration)' == 'Debug'" >
+		<PackageReference Include="BepInEx.Analyzers" Version="1.*" />
+		<PackageReference Include="Microsoft.Unity.Analyzers" Version="1.*" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(MSBuildProjectName.IndexOf(.))' != '-1'">
+		<!--Add constants based on the project name e.g. KK-KKS.Fix_DynamicBones -> KK;KKS;Fix;DynamicBones-->
+		<DefineConstants>$(MSBuildProjectName.Replace('.',';').Replace('-',';').Replace('_',';'))</DefineConstants>
+	</PropertyGroup>
+
+	<!--Delete unnecessary .deps.json file in build output since it's not used in plugins-->
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Delete Files="$(OutputPath)\$(MSBuildProjectName).deps.json" />
+	</Target>
+
+	<!--Do not copy any dlls other than the assembly itself to the build output-->
+	<Target Name="SkipAllRefs" AfterTargets="ResolveReferences">
+		<ItemGroup>
+			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+		</ItemGroup>
+	</Target>
+
+
+	<PropertyGroup>
+		<PostBuildEvent Condition="$([MSBuild]::IsOSPlatform('Windows'))">
             IF EXIST "$(TargetDir)$(TargetName).pdb" IF EXIST "$(SolutionDir)pdb2mdb.exe" CALL "$(SolutionDir)pdb2mdb.exe" "$(TargetPath)"
             IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetPath)" $(GameType)
         </PostBuildEvent>
-    </PropertyGroup>
+	</PropertyGroup>
+
+
+	<!-- Inline task to get file version from assembly -->
+	<UsingTask TaskName="GetFileVersion" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<AssemblyPath ParameterType="System.String" Required="true" />
+			<FileVersion Output="true" ParameterType="System.String" />
+		</ParameterGroup>
+		<Task>
+			<Code Type="Fragment" Language="cs">
+				FileVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(AssemblyPath).FileVersion;
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<!-- Create a release zip file (after successful Release build) -->
+	<Target Name="CreateReleaseZip" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+		<GetFileVersion AssemblyPath="$(OutputPath)$(AssemblyName).dll">
+			<Output TaskParameter="FileVersion" PropertyName="FileVersionFromAssembly" />
+		</GetFileVersion>
+
+		<PropertyGroup>
+			<CopyDir>$(OutputPath)\..\TEMP_COPY_$(AssemblyName)</CopyDir>
+			<GameType>$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</GameType>
+			<ZipDir>$(OutputPath)\..\..\out</ZipDir>
+			<ZipPath>$(ZipDir)\$(AssemblyName)_v$(FileVersionFromAssembly).zip</ZipPath>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<BuildFiles Include="$(OutputPath)\*"/>
+		</ItemGroup>
+
+		<RemoveDir Directories="$(CopyDir)" />
+		<Copy DestinationFolder="$(CopyDir)\BepInEx\plugins\$(GameType)_Plugins\" SourceFiles="@(BuildFiles)" />
+
+		<Message Importance="high" Text="Writing release zip to: $(ZipPath)" />
+
+		<MakeDir Directories="$(ZipDir)" />
+
+		<!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/zipdirectory-task?view=vs-2022 -->
+		<ZipDirectory SourceDirectory="$(CopyDir)" DestinationFile="$(ZipPath)" Overwrite="true" />
+		<RemoveDir Directories="$(CopyDir)" />
+	</Target>
 </Project>

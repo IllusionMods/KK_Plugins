@@ -1,4 +1,11 @@
-﻿using BepInEx;
+﻿#if !HS && !PC && !SBPR
+#define HasKKAPI
+#endif
+#if !EC && !PC && !SBPR
+#define HasStudio
+#endif
+
+using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -12,13 +19,14 @@ using UnityEngine.UI;
 #if AI || HS2
 using AIChara;
 #endif
-#if !HS && !PC && !SBPR
+#if HasKKAPI
 using KKAPI;
+using KKAPI.Maker;
+using ExtensibleSaveFormat;
+#if !EC
+using KKAPI.Studio;
 #endif
-#if !EC && !PC && !SBPR
-using Studio;
 #endif
-
 #if PC || SBPR
 // Too old Unity version, fall back to WaitForSeconds since it doesn't cause any major issues in these games
 using WaitForSecondsRealtime = UnityEngine.WaitForSeconds;
@@ -29,7 +37,7 @@ namespace KK_Plugins
     /// <summary>
     /// Autosave for Studio scenes and character maker cards
     /// </summary>
-#if !HS && !PC && !SBPR
+#if HasKKAPI
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
 #endif
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
@@ -38,11 +46,12 @@ namespace KK_Plugins
         public const string PluginGUID = "com.deathweasel.bepinex.autosave";
         public const string PluginName = "Autosave";
         public const string PluginNameInternal = Constants.Prefix + "_Autosave";
-        public const string PluginVersion = "1.2";
+        public const string PluginVersion = "3.0";
+
         internal static new ManualLogSource Logger;
         internal static Autosave Instance;
 
-#if !EC && !PC && !SBPR
+#if HasStudio
         public const string AutosavePathStudio = Studio.Studio.savePath + "/_autosave";
 #endif
 #if PC
@@ -57,50 +66,298 @@ namespace KK_Plugins
         public static bool Autosaving = false;
 
 #if PC
-        private static CharaCustomMode CharaCustomModeInstance;
+        private static CharaCustomMode CustomControlInstance;
 #elif HS || SBPR
         private static CustomControl CustomControlInstance;
 #endif
-        private static Coroutine MakerCoroutine;
-#if !EC && !PC && !SBPR
-        private static Coroutine StudioCoroutine;
-#endif
+        private static Coroutine _autosaveCoroutine;
         public static ConfigEntry<bool> AutosaveEnabled { get; private set; }
         public static ConfigEntry<int> AutosaveInterval { get; private set; }
         public static ConfigEntry<int> AutosaveCountdown { get; private set; }
+        public static ConfigEntry<bool> PauseInBackground { get; private set; }
         public static ConfigEntry<int> AutosaveFileLimit { get; private set; }
+#if !HS && !PC && !SBPR
+        public static ConfigEntry<string> CharaTexSaveTypeAutosaveOverride { get; private set; }
+#if !EC
+        public static ConfigEntry<string> SceneTexSaveTypeAutosaveOverride { get; private set; }
+
+        private static SceneTextureSaveType sceneTexSaveTypeBuffered = SceneTextureSaveType.Bundled;
+#endif
+        private static CharaTextureSaveType charaTexSaveTypeBuffered = CharaTextureSaveType.Bundled;
+
+        public const string NoOverride = "No Override";
+#endif
 
         private void Start()
         {
-#if !EC && !PC && !SBPR
-            InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
-#endif
             Logger = base.Logger;
             Instance = this;
 
             AutosaveEnabled = Config.Bind("Config", "Autosave Enabled", true, new ConfigDescription("Whether to do autosaves", null, new ConfigurationManagerAttributes { Order = 11 }));
             AutosaveInterval = Config.Bind("Config", "Autosave Interval", 15, new ConfigDescription("Minutes between autosaves", new AcceptableValueRange<int>(1, 60), new ConfigurationManagerAttributes { Order = 10 }));
             AutosaveCountdown = Config.Bind("Config", "Autosave Countdown", 10, new ConfigDescription("Seconds of countdown before autosaving", new AcceptableValueRange<int>(0, 60), new ConfigurationManagerAttributes { Order = 9 }));
-            AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 8, ShowRangeAsPercent = false }));
-
-            Harmony.CreateAndPatchAll(typeof(Hooks));
-
-            if (InStudio)
-            {
-#if !EC && !PC && !SBPR
-                StudioCoroutine = StartCoroutine(AutosaveStudio());
+            PauseInBackground = Config.Bind("Config", "Pause In Background", true, new ConfigDescription("Do not count down when the game is not focused", null, new ConfigurationManagerAttributes { Order = 8 }));
+            AutosaveFileLimit = Config.Bind("Config", "Autosave File Limit", 10, new ConfigDescription("Number of autosaves to keep, older ones will be deleted", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes { Order = 7, ShowRangeAsPercent = false }));
+#if !PC && !HS && !SBPR
+            CharaTexSaveTypeAutosaveOverride = Config.Bind("Texture Save Type", "Chara Autosave Type Override", NoOverride, new ConfigDescription($"Save type override for autosaves in Maker. Set to \"{NoOverride}\" to use the KKAPI setting.", AutoSaveTypeOptions(false), new ConfigurationManagerAttributes { Order = 6, IsAdvanced = true }));
+#if !EC
+            SceneTexSaveTypeAutosaveOverride = Config.Bind("Texture Save Type", "Scene Autosave Type Override", NoOverride, new ConfigDescription($"Save type override for autosaves in Studio. Set to \"{NoOverride}\" to use the KKAPI setting.", AutoSaveTypeOptions(true), new ConfigurationManagerAttributes { Order = 4, IsAdvanced = true }));
 #endif
-            }
-            else
-            {
-#if !HS && !PC && !SBPR
-                KKAPI.Maker.MakerAPI.MakerFinishedLoading += (a, b) => MakerCoroutine = StartCoroutine(AutosaveMaker());
-                KKAPI.Maker.MakerAPI.MakerExiting += (a, b) => StopMakerCoroutine();
 #endif
-            }
+
+#if PC || HS || SBPR
+            Hooks.ApplyHooks(PluginGUID);
+#endif
+
+#if HasStudio
+            InStudio = Application.productName == Constants.StudioProcessName.Replace("64bit", "").Replace("_64", "");
+            if (InStudio) StartAutosaveCoroutine();
+#endif
 
             //Delete any leftover autosaves
             if (AutosaveFileLimit.Value == 0)
+                DeleteAutosaves();
+
+#if HasKKAPI
+            if (!InStudio)
+            {
+                KKAPI.Maker.MakerAPI.MakerFinishedLoading += (a, b) => StartAutosaveCoroutine();
+                KKAPI.Maker.MakerAPI.MakerExiting += (a, b) => StopAutosaveCoroutine();
+
+                ExtendedSave.CardBeingLoaded += CharaSaveLoadHandler;
+                ExtendedSave.CardBeingSaved += CharaSaveLoadHandler;
+#if PH
+                void CharaSaveLoadHandler(Character.CustomParameter file)
+#else
+                void CharaSaveLoadHandler(ChaFile file)
+#endif
+                {
+                    if (MakerAPI.InsideAndLoaded && !Autosaving)
+                    {
+                        StopAutosaveCoroutine();
+                        StartAutosaveCoroutine();
+                    }
+                }
+            }
+#if HasStudio
+            else
+            {
+                ExtendedSave.SceneBeingSaved += SceneSaveLoadHandler;
+                ExtendedSave.SceneBeingImported += SceneSaveLoadHandler;
+                ExtendedSave.SceneBeingLoaded += SceneSaveLoadHandler;
+                void SceneSaveLoadHandler(string path)
+                {
+                    if (!MakerAPI.InsideAndLoaded && !Autosaving)
+                    {
+                        StopAutosaveCoroutine();
+                        StartAutosaveCoroutine();
+                    }
+                }
+            }
+#endif
+#endif
+        }
+
+        private bool _hasFocus = true;
+        private float _startTime;
+        private float _unfocusTime;
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (_hasFocus == hasFocus) return;
+            _hasFocus = hasFocus;
+
+            if (PauseInBackground.Value)
+            {
+                if (hasFocus)
+                {
+                    // Once focus is regained, adjust the start time to account for time spent unfocused
+                    var timePaused = Time.realtimeSinceStartup - _unfocusTime;
+                    _startTime += timePaused;
+
+                    // Ensure at least 10 seconds remain on the timer when focus is regained
+                    if (Time.realtimeSinceStartup - _startTime > AutosaveInterval.Value * 60f - 10)
+                        _startTime = Time.realtimeSinceStartup - (AutosaveInterval.Value * 60f - 10);
+                }
+                else
+                {
+                    _unfocusTime = Time.realtimeSinceStartup;
+                }
+            }
+            //Console.WriteLine($"FOCUS: {_hasFocus} -> {hasFocus}   starttime: {old} -> {_startTime}");
+        }
+
+        private IEnumerator AutosaveCoroutine()
+        {
+#if HasStudio
+            if (InStudio)
+            {
+                //Studio not loaded yet
+                while (!Studio.Studio.IsInstance())
+                    yield return null;
+            }
+#endif
+            while (true)
+            {
+                while (!Input.anyKey)
+                    yield return null;
+
+                _startTime = Time.realtimeSinceStartup;
+                // Stop the countdown if user alt-tabs out of the game
+                while (!_hasFocus || Time.realtimeSinceStartup - _startTime < AutosaveInterval.Value * 60f)
+                    yield return null;
+
+                if (!InStudio && !MakerIsAlive())
+                {
+                    StopAutosaveCoroutine();
+                    break;
+                }
+
+                if (AutosaveFileLimit.Value == 0 || !AutosaveEnabled.Value)
+                    continue;
+
+                //Display a counter before saving so that the user has a chance to stop moving the camera around
+                if (AutosaveCountdown.Value > 0)
+                {
+                    for (int countdown = AutosaveCountdown.Value; countdown > 0; countdown--)
+                    {
+                        SetText($"Autosaving in {countdown}");
+                        yield return new WaitForSecondsRealtime(1);
+                    }
+                }
+
+                SetText("Saving...");
+
+                //Don't save if the user is in the middle of clicking and dragging
+                do yield return new WaitForSecondsRealtime(1);
+                while (Input.anyKey);
+
+                //Needed so the thumbnail is correct
+                yield return new WaitForEndOfFrame();
+
+                if (!InStudio &&!MakerIsAlive())
+                {
+                    StopAutosaveCoroutine();
+                    break;
+                }
+
+                Autosaving = true;
+                TodoBeforeSave();
+                MakeSave();
+                DeleteAutosaves();
+                SetText("Saved!");
+                TodoAfterSave();
+                Autosaving = false;
+
+                yield return new WaitForSecondsRealtime(2);
+                SetText("");
+            }
+        }
+
+        private static void TodoBeforeSave()
+        {
+#if !HS && !PC && !SBPR
+#if !EC
+            if (StudioAPI.InsideStudio)
+            {
+                sceneTexSaveTypeBuffered = SceneLocalTextures.SaveType;
+                if (SceneTexSaveTypeAutosaveOverride.Value != NoOverride)
+                    SceneLocalTextures.SaveType = EnumParser<SceneTextureSaveType>(SceneTexSaveTypeAutosaveOverride.Value);
+            }
+#endif
+            if (MakerAPI.InsideMaker)
+            {
+                charaTexSaveTypeBuffered = CharaLocalTextures.SaveType;
+                if (CharaTexSaveTypeAutosaveOverride.Value != NoOverride)
+                    CharaLocalTextures.SaveType = EnumParser<CharaTextureSaveType>(CharaTexSaveTypeAutosaveOverride.Value);
+            }
+#endif
+        }
+
+        private static void TodoAfterSave()
+        {
+#if !HS && !PC && !SBPR
+#if !EC
+            if (StudioAPI.InsideStudio)
+                SceneLocalTextures.SaveType = sceneTexSaveTypeBuffered;
+#endif
+            if (MakerAPI.InsideMaker)
+                CharaLocalTextures.SaveType = charaTexSaveTypeBuffered;
+#endif
+        }
+
+#if !HS && !PC && !SBPR
+        private static T EnumParser<T>(string _val)
+        {
+            return (T)Enum.Parse(typeof(T), _val.Split(' ').Join((x) => x, ""), true);
+        }
+#endif
+
+        private static bool MakerIsAlive()
+        {
+#if PC || HS || SBPR
+            if (CustomControlInstance == null) return false;
+#elif HasKKAPI
+            if (!MakerAPI.InsideMaker) return false;
+#endif
+            return true;
+        }
+
+        private static void MakeSave()
+        {
+#if HasStudio
+            if (InStudio)
+            {
+                //Game runs similar code
+                foreach (KeyValuePair<int, Studio.ObjectCtrlInfo> item in Studio.Studio.Instance.dicObjectCtrl)
+                    item.Value.OnSavePreprocessing();
+                Studio.Studio.Instance.sceneInfo.cameraSaveData = Studio.Studio.Instance.cameraCtrl.Export();
+                DateTime now = DateTime.Now;
+                string str = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
+                string path = $"{UserData.Create(AutosavePathStudio)}{str}";
+
+                Studio.Studio.Instance.sceneInfo.Save(path);
+            }
+            else
+#endif
+            {
+                DateTime now = DateTime.Now;
+                string filename = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
+#if PC
+                string folder = AutosavePath;
+#elif PH
+                string folder = KKAPI.Maker.MakerAPI.GetCharacterControl() is Male ? AutosavePathMale : AutosavePathFemale;
+#elif HS
+                string folder = CustomControlInstance.chainfo.Sex == 0 ? AutosavePathMale : AutosavePathFemale;
+#elif SBPR
+                string folder = CustomControlInstance.chabody.Sex == 0 ? AutosavePathMale : AutosavePathFemale;
+#else
+                string folder = KKAPI.Maker.MakerAPI.GetCharacterControl().sex == 0 ? AutosavePathMale : AutosavePathFemale;
+#endif
+                string filepath = $"{UserData.Create(folder)}{filename}";
+#if KK || KKS
+                KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile.SaveFile(filepath);
+#elif PC
+                ((Human)Traverse.Create(CustomControlInstance).Field("human").GetValue()).Custom.Save(filepath, null);
+#elif PH
+                KKAPI.Maker.MakerAPI.GetCharacterControl().Save(filepath);
+#elif HS
+                CustomControlInstance.CustomSaveCharaAssist(filepath);
+#elif SBPR
+                CustomControlInstance.chabody.OverwriteCharaFile(filepath);
+#else
+                KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile.SaveFile(filepath, 0);
+#endif
+            }
+        }
+        private void DeleteAutosaves()
+        {
+#if HasStudio
+            if (InStudio)
+            {
+                DeleteAutosaves(AutosavePathStudio);
+            }
+            else
+#endif
             {
 #if PC
                 DeleteAutosaves(AutosavePath);
@@ -109,172 +366,7 @@ namespace KK_Plugins
                 DeleteAutosaves(AutosavePathFemale);
 #endif
             }
-
-#if KK || EC || AI || HS2 || PH || KKS
-            KKAPI.Chara.CharacterApi.RegisterExtraBehaviour<CharaController>(PluginGUID);
-#endif
-#if KK || AI || HS2 || PH || KKS
-            KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour<StudioController>(PluginGUID);
-#endif
         }
-
-        private IEnumerator AutosaveMaker()
-        {
-            while (true)
-            {
-                while (!Input.anyKey)
-                    yield return null;
-
-                var startTime = Time.realtimeSinceStartup;
-                while (Time.realtimeSinceStartup - startTime < AutosaveInterval.Value * 60)
-                {
-#if !HS && !PH && !SBPR && !PC
-                    if (!Application.isFocused)
-                        startTime = Time.realtimeSinceStartup;
-#endif
-                    yield return null;
-                }
-
-#if HS
-                if (CustomControlInstance == null)
-                {
-                    StopMakerCoroutine();
-                    break;
-                }
-#endif
-
-                if (AutosaveFileLimit.Value != 0 && AutosaveEnabled.Value)
-                {
-                    //Display a counter before saving so that the user has a chance to stop moving the camera around
-                    if (AutosaveCountdown.Value > 0)
-                        for (int countdown = AutosaveCountdown.Value; countdown > 0; countdown--)
-                        {
-                            SetText($"Autosaving in {countdown}");
-                            yield return new WaitForSecondsRealtime(1);
-                        }
-
-                    SetText("Saving...");
-                    yield return new WaitForSecondsRealtime(1);
-
-                    //Don't save if the user is in the middle of clicking and dragging
-                    while (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
-                        yield return new WaitForSecondsRealtime(1);
-
-                    yield return new WaitForEndOfFrame();
-                    Autosaving = true;
-#if HS
-                    if (CustomControlInstance == null)
-                    {
-                        StopMakerCoroutine();
-                        break;
-                    }
-#endif
-                    DateTime now = DateTime.Now;
-                    string filename = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
-#if PC
-                    string folder = AutosavePath;
-#elif PH
-                    string folder = KKAPI.Maker.MakerAPI.GetCharacterControl() is Male ? AutosavePathMale : AutosavePathFemale;
-#elif HS
-                    string folder = CustomControlInstance.chainfo.Sex == 0 ? AutosavePathMale : AutosavePathFemale;
-#elif SBPR
-                    string folder = CustomControlInstance.chabody.Sex == 0 ? AutosavePathMale : AutosavePathFemale;
-#else
-                    string folder = KKAPI.Maker.MakerAPI.GetCharacterControl().sex == 0 ? AutosavePathMale : AutosavePathFemale;
-#endif
-                    string filepath = $"{UserData.Create(folder)}{filename}";
-
-#if KK || KKS
-                    KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile.SaveFile(filepath);
-#elif PC
-                    ((Human)Traverse.Create(CharaCustomModeInstance).Field("human").GetValue()).Custom.Save(filepath, null);
-#elif PH
-                    KKAPI.Maker.MakerAPI.GetCharacterControl().Save(filepath);
-#elif HS
-                    CustomControlInstance.CustomSaveCharaAssist(filepath);
-#elif SBPR
-                    CustomControlInstance.chabody.OverwriteCharaFile(filepath);
-#else
-                    KKAPI.Maker.MakerAPI.GetCharacterControl().chaFile.SaveFile(filepath, 0);
-#endif
-
-#if PC
-                    DeleteAutosaves(AutosavePath);
-#else
-                    DeleteAutosaves(AutosavePathMale);
-                    DeleteAutosaves(AutosavePathFemale);
-#endif
-
-                    SetText("Saved!");
-                    Autosaving = false;
-                    yield return new WaitForSecondsRealtime(2);
-                    SetText("");
-                }
-            }
-        }
-
-#if !EC && !PC && !SBPR
-        private IEnumerator AutosaveStudio()
-        {
-            while (true)
-            {
-                while (!Input.anyKey)
-                    yield return null;
-
-                var startTime = Time.realtimeSinceStartup;
-                while (Time.realtimeSinceStartup - startTime < AutosaveInterval.Value * 60)
-                {
-#if !HS && !PH && !SBPR && !PC
-                    if (!Application.isFocused)
-                        startTime = Time.realtimeSinceStartup;
-#endif
-                    yield return null;
-                }
-
-                //Studio not loaded yet
-                if (!Studio.Studio.IsInstance())
-                    continue;
-
-                if (AutosaveFileLimit.Value != 0 && AutosaveEnabled.Value)
-                {
-                    //Display a counter before saving so that the user has a chance to stop moving the camera around
-                    if (AutosaveCountdown.Value > 0)
-                        for (int countdown = AutosaveCountdown.Value; countdown > 0; countdown--)
-                        {
-                            SetText($"Autosaving in {countdown}");
-                            yield return new WaitForSecondsRealtime(1);
-                        }
-
-                    SetText("Saving...");
-                    yield return new WaitForSecondsRealtime(1);
-
-                    //Don't save if the user is in the middle of clicking and dragging
-                    while (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
-                        yield return new WaitForSecondsRealtime(1);
-
-                    //Needed so the thumbnail is correct
-                    yield return new WaitForEndOfFrame();
-                    Autosaving = true;
-
-                    //Game runs similar code
-                    foreach (KeyValuePair<int, ObjectCtrlInfo> item in Studio.Studio.Instance.dicObjectCtrl)
-                        item.Value.OnSavePreprocessing();
-                    Studio.Studio.Instance.sceneInfo.cameraSaveData = Studio.Studio.Instance.cameraCtrl.Export();
-                    DateTime now = DateTime.Now;
-                    string str = $"autosave_{now.Year}_{now.Month:00}{now.Day:00}_{now.Hour:00}{now.Minute:00}_{now.Second:00}_{now.Millisecond:000}.png";
-                    string path = $"{UserData.Create(AutosavePathStudio)}{str}";
-                    Studio.Studio.Instance.sceneInfo.Save(path);
-
-                    DeleteAutosaves(AutosavePathStudio);
-
-                    SetText("Saved!");
-                    Autosaving = false;
-                    yield return new WaitForSecondsRealtime(2);
-                    SetText("");
-                }
-            }
-        }
-#endif
 
         /// <summary>
         /// Delete all but the latest few autosaves
@@ -284,14 +376,13 @@ namespace KK_Plugins
         {
             DirectoryInfo di = new DirectoryInfo(UserData.Create(folder));
             var files = di.GetFiles("autosave*.png").ToList();
-            files.OrderBy(x => x.CreationTime);
+            files.Sort((x, y) => x.CreationTimeUtc.CompareTo(y.CreationTimeUtc));
             while (files.Count > AutosaveFileLimit.Value)
             {
                 var fileToDelete = files[0];
                 string filenameToDelete = files[0].Name;
                 files.RemoveAt(0);
                 fileToDelete.Delete();
-
 #if PH
                 //Remove any extra files starting with the same name (PH ext save data)
                 var extraFiles = di.GetFiles(filenameToDelete + "*").ToList();
@@ -301,33 +392,16 @@ namespace KK_Plugins
             }
         }
 
-        private static void StopMakerCoroutine()
+        private static void StopAutosaveCoroutine()
         {
             SetText("");
-            Instance.StopCoroutine(MakerCoroutine);
+            Instance.StopCoroutine(_autosaveCoroutine);
         }
 
-        /// <summary>
-        /// Reset the coroutine and restart the autosave timer
-        /// </summary>
-        public static void ResetMakerCoroutine()
+        private static void StartAutosaveCoroutine()
         {
-            SetText("");
-            Instance.StopCoroutine(MakerCoroutine);
-            MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
+            _autosaveCoroutine = Instance.StartCoroutine(Instance.AutosaveCoroutine());
         }
-
-#if !EC && !PC && !SBPR
-        /// <summary>
-        /// Reset the coroutine and restart the autosave timer
-        /// </summary>
-        public static void ResetStudioCoroutine()
-        {
-            SetText("");
-            Instance.StopCoroutine(StudioCoroutine);
-            StudioCoroutine = Instance.StartCoroutine(Instance.AutosaveStudio());
-        }
-#endif
 
         private static void InitGUI()
         {
@@ -382,33 +456,58 @@ namespace KK_Plugins
             AutosaveText.text = text;
         }
 
+#if !HS && !PC && !SBPR
+        internal static AcceptableValueBase AutoSaveTypeOptions(bool forStudio)
+        {
+            var options = new List<string> { NoOverride };
+            if (forStudio)
+            {
+#if !EC
+                options.AddRange(((SceneTextureSaveType[])Enum.GetValues(typeof(SceneTextureSaveType))).Select(x => x.ToString()));
+#endif
+            }
+            else
+                options.AddRange(((CharaTextureSaveType[])Enum.GetValues(typeof(CharaTextureSaveType))).Select(x => x.ToString()));
+            return new AcceptableValueList<string>(options.ToArray());
+        }
+#endif
+
+#if PC || HS || SBPR
         private static class Hooks
         {
+            public static void ApplyHooks(string guid) => Harmony.CreateAndPatchAll(typeof(Hooks), guid);
 #if PC
             [HarmonyPostfix, HarmonyPatch(typeof(CharaCustomMode), nameof(CharaCustomMode.Start))]
             private static void CharaCustomMode_Start(CharaCustomMode __instance)
             {
-                CharaCustomModeInstance = __instance;
-                MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
+                CustomControlInstance = __instance;
+                StartAutosaveCoroutine();
             }
 
             [HarmonyPostfix, HarmonyPatch(typeof(CharaCustomMode), nameof(CharaCustomMode.End))]
-            private static void CharaCustomMode_End() => StopMakerCoroutine();
+            private static void CharaCustomMode_End() => StopAutosaveCoroutine();
 #elif HS
             [HarmonyPostfix, HarmonyPatch(typeof(CustomControl), "Start")]
             private static void CustomControl_Start(CustomControl __instance)
             {
                 CustomControlInstance = __instance;
-                MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
+                StartAutosaveCoroutine();
             }
+
+            [HarmonyPrefix, HarmonyPatch(typeof(CustomControl), nameof(CustomControl.EndCustomScene))]
+            private static void CustomControl_End(CustomScene __instance) => StopAutosaveCoroutine();
 #elif SBPR
-            [HarmonyPostfix, HarmonyPatch(typeof(CustomScene), "Start")]
+            [HarmonyPostfix, HarmonyPatch(typeof(CustomScene), nameof(CustomScene.Start))]
             private static void CustomScene_Start(CustomScene __instance)
             {
                 CustomControlInstance = __instance.customControl;
-                MakerCoroutine = Instance.StartCoroutine(Instance.AutosaveMaker());
+                StartAutosaveCoroutine();
             }
+
+            [HarmonyPrefix, HarmonyPatch(typeof(CustomScene), nameof(CustomScene.Destroy))]
+            private static void CustomScene_End(CustomScene __instance) => StopAutosaveCoroutine();
 #endif
         }
+#endif
     }
 }

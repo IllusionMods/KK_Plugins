@@ -1,15 +1,7 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
-using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
 using UnityEngine;
-using XUnity.ResourceRedirector;
-using static MaterialEditorAPI.MaterialAPI;
 
 namespace MaterialEditorAPI
 {
@@ -23,7 +15,7 @@ namespace MaterialEditorAPI
         /// <summary>
         /// Dictionary of textures and textures converted to normal maps.
         /// </summary>
-        WeakKeyDictionary<Texture, WeakReference> _convertedNormalMap = new WeakKeyDictionary<Texture, WeakReference>();
+        private readonly WeakKeyDictionary<Texture, WeakReference> _convertedNormalMap = new WeakKeyDictionary<Texture, WeakReference>();
 
         void Update()
         {
@@ -132,6 +124,7 @@ namespace MaterialEditorAPI
         /// Convert a normal map texture from grey to red by setting the entire red color channel to white
         /// </summary>
         /// <param name="src">Texture to convert</param>
+        /// <param name="unpack">Unpack normal maps if supported</param>
         /// <returns>Converted Texture</returns>
         protected virtual Texture ConvertNormalMap(Texture src, bool unpack = false)
         {
@@ -340,8 +333,8 @@ namespace MaterialEditorAPI
     /// </summary>
     internal class WeakKey<TKey> where TKey : class
     {
-        private System.WeakReference _ref;
-        private int _hash;
+        private readonly System.WeakReference _ref;
+        private readonly int _hash;
 
         public WeakKey(TKey key)
         {

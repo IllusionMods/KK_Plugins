@@ -1,26 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>KK_AccessoryClothes</AssemblyName>
-    <FinalAssName>EC_AccessoryClothes.dll</FinalAssName>
-    <NormalOutputPath>$(OutputPath)</NormalOutputPath>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>$(DefineConstants);EC</DefineConstants>
+    <FinalAssName>EC_AccessoryClothes</FinalAssName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BepInEx.Analyzers" Version="1.0.4" />
-    <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
-    <PackageReference Include="IllusionLibs.BepInEx.Harmony" Version="2.9.0" />
-    <PackageReference Include="IllusionLibs.EmotionCreators.Assembly-CSharp" Version="2019.6.6.4" />
-    <PackageReference Include="IllusionLibs.EmotionCreators.IL" Version="2019.6.6.4" />
-    <PackageReference Include="IllusionLibs.EmotionCreators.UnityEngine.CoreModule" Version="2017.4.24.4" />
-    <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
+    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="2019.6.6.4" />
   </ItemGroup>
   <Import Project="..\AccessoryClothes.Core\AccessoryClothes.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <Target Name="Rename" AfterTargets="Build"> <!-- Done to keep the internal name as KK_AccessoryClothes -->
-    <Move SourceFiles="$(TargetPath)" DestinationFiles="$(NormalOutputPath)\$(FinalAssName)"/>
+
+  <Target Name="Rename" AfterTargets="Build" BeforeTargets="CreateReleaseZip"> <!-- Done to keep the internal name as KK_AccessoryClothes -->
+    <Move SourceFiles="$(TargetPath)" DestinationFiles="$(OutputPath)\$(FinalAssName).dll"/>
+    <PropertyGroup>
+      <AssemblyName>$(FinalAssName)</AssemblyName>
+    </PropertyGroup>
   </Target>
 </Project>

@@ -2,20 +2,18 @@
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using System;
-using System.Linq;
 using UniRx;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using static Illusion.Utils;
-using KKAPI.Utilities;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 
 #if KK || KKS
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Studio;
+using UnityEngine;
 using KKAPI.Studio;
 using KKAPI.Studio.UI;
-using Studio;
+using KKAPI.Utilities;
+using TMPro;
 #endif
 
 namespace KK_Plugins
@@ -50,8 +48,10 @@ namespace KK_Plugins
         internal static PushupSlider PushNippleWidthSlider;
         internal static PushupSlider PushNippleDepthSlider;
 
+#if !EC
         internal static MakerDropdown CoordinateDropdown;
         internal static TMP_Dropdown CoordinateDropdownTMP;
+#endif
 
         internal static MakerRadioButtons SelectButtons;
 
@@ -62,7 +62,9 @@ namespace KK_Plugins
 
         private static void MakerFinishedLoading(object sender, EventArgs e)
         {
+#if !EC
             CoordinateDropdownTMP = CoordinateDropdown.ControlObject.GetComponentInChildren<TMP_Dropdown>();
+#endif
             ReloadPushup();
             _pushUpController.RecalculateBody(coroutine: true);
         }

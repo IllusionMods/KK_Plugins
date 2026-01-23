@@ -1,35 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>KK_Plugins</RootNamespace>
     <AssemblyName>AI_Colliders</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>TRACE;DEBUG;AI</DefineConstants>
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>TRACE;AI</DefineConstants>
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BepInEx.Analyzers" Version="1.0.4" />
-    <PackageReference Include="ExtensibleSaveFormat.AIGirl" Version="19.3.3" />
-    <PackageReference Include="IllusionLibs.AIGirl.Assembly-CSharp" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionLibs.AIGirl.Assembly-CSharp-firstpass" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionLibs.AIGirl.MessagePack" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionLibs.AIGirl.Sirenix.Serialization" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionLibs.AIGirl.UniRx" Version="2020.5.29.5" />
-    <PackageReference Include="IllusionLibs.AIGirl.UnityEngine.CoreModule" Version="2018.2.21.4" />
-    <PackageReference Include="IllusionLibs.AIGirl.UnityEngine.IMGUIModule" Version="2018.2.21.4" />
-    <PackageReference Include="IllusionLibs.AIGirl.UnityEngine.UI" Version="2018.2.21.4" />
-    <PackageReference Include="IllusionLibs.AIGirl.UnityEngine.UIModule" Version="2018.2.21.4" />
-    <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
-    <PackageReference Include="IllusionLibs.BepInEx.Harmony" Version="2.9.0" />
-    <PackageReference Include="IllusionLibs.BepInEx.MonoMod" Version="22.1.29.1" />
-    <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.38.0" />
-    <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" />
+    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Colliders.Core\Core.Colliders.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

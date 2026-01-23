@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using System;
@@ -36,6 +37,14 @@ namespace MaterialEditorAPI
         /// </summary>
         public static string ExportPath = ExportPathDefault;
         /// <summary>
+        /// Default path where local textures will be exported to / imported from
+        /// </summary>
+        public static string LocalTexturePathDefault = Path.Combine(Paths.GameRootPath, @"UserData\MaterialEditor\_LocalTextures");
+        /// <summary>
+        /// Path where local textures will be exported to / imported from
+        /// </summary>
+        public static string LocalTexturePath = LocalTexturePathDefault;
+        /// <summary>
         /// Saved material edits
         /// </summary>
         public static CopyContainer CopyData = new CopyContainer();
@@ -69,6 +78,10 @@ namespace MaterialEditorAPI
         /// Configuration entry for sensitivity of dragging labels to edit float values
         /// </summary>
         public static ConfigEntry<float> DragSensitivity { get; set; }
+        /// <summary>
+        /// Prevent dragging the ME window outside of the game window
+        /// </summary>
+        public static ConfigEntry<bool> PreventDragout { get; set; }
         /// <summary>
         /// Configuration entry for watching for file changes and reloading textures on change
         /// </summary>
@@ -106,6 +119,10 @@ namespace MaterialEditorAPI
         /// </summary>
         public static ConfigEntry<bool> SortPropertiesByName { get; set; }
         /// <summary>
+        /// Whether to sort shader properties by their category
+        /// </summary>
+        public static ConfigEntry<bool> SortPropertiesByCategory { get; set; }
+        /// <summary>
         /// Controls the max value of the slider for this projector property
         /// </summary>
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
@@ -129,6 +146,10 @@ namespace MaterialEditorAPI
         /// When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals
         /// </summary>
         public static ConfigEntry<bool> ConvertNormalmapsOnExport { get; set; }
+        /// <summary>
+        /// Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}
+        /// </summary>
+        internal static ConfigEntry<string> ConfigLocalTexturePath { get; set; }
 
         /// <summary>
         /// Init logic, do not call
@@ -144,6 +165,7 @@ namespace MaterialEditorAPI
             UIHeight = Config.Bind("Config", "UI Height", 0.3f, new ConfigDescription("Controls the size of the window.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 5, ShowRangeAsPercent = false }));
             UIListWidth = Config.Bind("Config", "UI List Width", 180f, new ConfigDescription("Controls width of the renderer/materials lists to the side of the window", new AcceptableValueRange<float>(100f, 500f), new ConfigurationManagerAttributes { Order = 4, ShowRangeAsPercent = false }));
             DragSensitivity = Config.Bind("Config", "Drag Sensitivity", 30f, new ConfigDescription("Controls the sensitivity of dragging labels to edit float values", new AcceptableValueRange<float>(1f, 100f), new ConfigurationManagerAttributes { Order = 3, ShowRangeAsPercent = false }));
+            PreventDragout = Config.Bind("Config", "Prevent Window Dragout", true, "Prevent dragging the ME window outside of the game window (Requires restart to apply!)");
             WatchTexChanges = Config.Bind("Config", "Watch File Changes", true, new ConfigDescription("Watch for file changes and reload textures on change. Can be toggled in the UI.", null, new ConfigurationManagerAttributes { Order = 2 }));
             ShaderOptimization = Config.Bind("Config", "Shader Optimization", true, new ConfigDescription("Replaces every loaded shader with the MaterialEditor copy of the shader. Reduces the number of copies of shaders loaded which reduces RAM usage and improves performance.", null, new ConfigurationManagerAttributes { Order = 1 }));
             ExportBakedMesh = Config.Bind("Config", "Export Baked Mesh", false, new ConfigDescription("When enabled, skinned meshes will be exported in their current state with all customization applied as well as in the current pose.", null, new ConfigurationManagerAttributes { Order = 1 }));
@@ -153,9 +175,10 @@ namespace MaterialEditorAPI
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
             SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by their types.");
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
+            SortPropertiesByCategory = Config.Bind("Config", "Sort Properties by Category", true, "Whether to sort shader properties by their category.");
             ConvertNormalmapsOnExport = Config.Bind("Config", "Convert Normalmaps On Export", true, new ConfigDescription("When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals"));
 
-            //Everything in these games is 10x the size of KK/KKS
+            // Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
             ProjectorNearClipPlaneMax = Config.Bind("Projector", "Max Near Clip Plane", 100f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 1000f), new ConfigurationManagerAttributes { Order = 5 }));
             ProjectorFarClipPlaneMax = Config.Bind("Projector", "Max Far Clip Plane", 1000f, new ConfigDescription("Controls the max value of the slider for this projector property", new AcceptableValueRange<float>(0.01f, 1000f), new ConfigurationManagerAttributes { Order = 4 }));
@@ -177,6 +200,7 @@ namespace MaterialEditorAPI
             ConfigExportPath.SettingChanged += ConfigExportPath_SettingChanged;
             SortPropertiesByType.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             SortPropertiesByName.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
+            SortPropertiesByCategory.SettingChanged += (object sender, EventArgs e) => PropertyOrganizer.Refresh();
             SetExportPath();
 
             ResourceRedirection.RegisterAssetLoadedHook(HookBehaviour.OneCallbackPerResourceLoaded, AssetLoadedHook);
