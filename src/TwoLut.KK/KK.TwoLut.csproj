@@ -4,9 +4,8 @@
     <AssemblyName>KK_TwoLut</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
-    <PackageReference Include="Sideloader.Koikatu" Version="19.4" />
+    <PackageReference Include="Sideloader.Koikatu" Version="21.0" />
   </ItemGroup>
   <Import Project="..\TwoLut.Shared\TwoLut.Shared.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

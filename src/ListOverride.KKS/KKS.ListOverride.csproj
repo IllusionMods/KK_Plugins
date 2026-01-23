@@ -3,9 +3,7 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>KKS_ListOverride</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\ListOverride.Core\ListOverride.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>

@@ -23,7 +23,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
+    <PackageReference Include="IllusionLibs.BepInEx" Version="5.*" />
   </ItemGroup>
   <Import Project="..\Autosave.Core\Autosave.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

@@ -4,9 +4,7 @@
     <AssemblyName>KK_MakerDefaults</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
-    <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\MakerDefaults.Core.KKEC\Core.MakerDefaults.KKEC.projitems" Label="Shared" />

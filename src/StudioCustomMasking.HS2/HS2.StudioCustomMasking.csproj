@@ -7,9 +7,7 @@
     <ProjectReference Include="..\StudioSceneSettings.HS2\HS2.StudioSceneSettings.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.HoneySelect2" Version="19.4" />
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
-    <PackageReference Include="ScreenshotManager.HoneySelect2" Version="19.4" />
+    <PackageReference Include="ScreenshotManager.HoneySelect2" Version="21.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />

@@ -5,10 +5,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.ConfigurationManager" Version="18.2.0.1" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
     <PackageReference Include="OverlayMods.KoikatsuSunshine" Version="6.0.7" />
-    <PackageReference Include="Sideloader.KoikatsuSunshine" Version="19.4" />
+    <PackageReference Include="Sideloader.KoikatsuSunshine" Version="21.0" />
   </ItemGroup>
   <Import Project="..\UncensorSelector.Core\Core.UncensorSelector.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

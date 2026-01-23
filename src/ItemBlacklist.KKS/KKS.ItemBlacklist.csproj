@@ -4,10 +4,9 @@
     <AssemblyName>KKS_ItemBlacklist</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
     <PackageReference Include="IllusionLibs.XUnity.ResourceRedirector" Version="4.18.0" />
     <PackageReference Include="SharpZipLib" Version="[1.3.3,1.4)" />
-    <PackageReference Include="Sideloader.KoikatsuSunshine" Version="19.4" />
+    <PackageReference Include="Sideloader.KoikatsuSunshine" Version="21.0" />
   </ItemGroup>
   <Import Project="..\ItemBlacklist.Core\ItemBlacklist.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

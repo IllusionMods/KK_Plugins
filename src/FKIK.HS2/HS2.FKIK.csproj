@@ -4,7 +4,6 @@
     <AssemblyName>HS2_FKIK</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\FKIK.Core\Core.FKIK.projitems" Label="Shared" />

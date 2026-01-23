@@ -3,9 +3,7 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>AI_PoseUnlocker</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\PoseUnlocker.Core\PoseUnlocker.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 

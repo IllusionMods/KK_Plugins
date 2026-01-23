@@ -3,9 +3,7 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>HS_Autosave</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.HoneySelect.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\Autosave.Core\Autosave.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>

@@ -4,7 +4,6 @@
     <AssemblyName>KK_ClothingUnlocker</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems" Label="Shared" />

@@ -5,11 +5,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.ConfigurationManager" Version="18.2.0.1" />
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
     <PackageReference Include="OverlayMods.Koikatu" Version="6.0.7" />
     <PackageReference Include="SharpZipLib" Version="[0.86.0,1.0)" NoWarn="NU1903, NU1902" />
-    <PackageReference Include="Sideloader.Koikatu" Version="19.4" />
+    <PackageReference Include="Sideloader.Koikatu" Version="21.0" />
   </ItemGroup>
   <Import Project="..\UncensorSelector.Core\Core.UncensorSelector.projitems" Label="Shared" />
   <Import Project="..\UncensorSelector.Core.Studio\Core.UncensorSelector.Studio.projitems" Label="Shared" />

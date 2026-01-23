@@ -5,7 +5,6 @@
     <AssemblyName>HS2_StudioSceneSettings</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems" Label="Shared" />

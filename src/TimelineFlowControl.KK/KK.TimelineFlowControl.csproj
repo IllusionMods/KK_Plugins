@@ -17,7 +17,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\TimelineFlowControl.Shared\Shared_TimelineButton.projitems" Label="Shared" />

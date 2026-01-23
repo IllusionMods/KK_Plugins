@@ -4,7 +4,6 @@
     <AssemblyName>KKS_ClothingUnlocker</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
     <PackageReference Include="IllusionLibs.XUnity.AutoTranslator.Plugin.Core" Version="4.18.0" />
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
   </ItemGroup>

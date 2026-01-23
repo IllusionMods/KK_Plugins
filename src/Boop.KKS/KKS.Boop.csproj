@@ -4,7 +4,6 @@
     <AssemblyName>KKS_Boop</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Boop.Core\Boop.Core.projitems" Label="Shared" />

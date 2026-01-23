@@ -4,7 +4,6 @@
     <AssemblyName>EC_ClothingUnlocker</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.ECAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\ClothingUnlocker.Core\Core.ClothingUnlocker.projitems" Label="Shared" />

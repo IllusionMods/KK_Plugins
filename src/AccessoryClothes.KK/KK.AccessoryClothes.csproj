@@ -3,10 +3,7 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>KK_AccessoryClothes</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
-    <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
-  </ItemGroup>
+
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\AccessoryClothes.Core\AccessoryClothes.Core.projitems" Label="Shared" />
 </Project>

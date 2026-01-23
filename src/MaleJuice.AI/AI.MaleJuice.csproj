@@ -3,10 +3,7 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>AI_MaleJuice</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.AIGirl" Version="19.4" />
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\MaleJuice.Core\MaleJuice.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>

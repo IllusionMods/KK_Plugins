@@ -29,9 +29,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\EmbeddedSubs.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.BepInEx" Version="5.4.22" />
-  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\Subtitles.Core\Core.Subtitles.projitems" Label="Shared" />
 </Project>

@@ -4,7 +4,6 @@
     <AssemblyName>EC_HairAccessoryCustomizer</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.ECAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\HairAccessoryCustomizer.Core\Core.HairAccessoryCustomizer.projitems" Label="Shared" />

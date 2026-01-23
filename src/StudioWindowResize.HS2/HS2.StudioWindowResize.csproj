@@ -4,7 +4,6 @@
     <AssemblyName>HS2_StudioWindowResize</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\StudioWindowResize.Core\StudioWindowResize.Core.projitems" Label="Shared" />

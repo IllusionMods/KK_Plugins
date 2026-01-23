@@ -4,10 +4,8 @@
     <AssemblyName>KK_ItemBlacklist</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
-    <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
     <PackageReference Include="SharpZipLib" Version="[0.86.0,1.0)" NoWarn="NU1903, NU1902" />
-    <PackageReference Include="Sideloader.Koikatu" Version="19.4" />
+    <PackageReference Include="Sideloader.Koikatu" Version="21.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
