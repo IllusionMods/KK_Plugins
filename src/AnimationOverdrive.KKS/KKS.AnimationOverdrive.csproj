@@ -4,7 +4,7 @@
     <AssemblyName>KKS_AnimationOverdrive</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

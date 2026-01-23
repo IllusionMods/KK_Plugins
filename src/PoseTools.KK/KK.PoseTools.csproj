@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="19.4" />
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="2019.4.27.4" />
+    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
     <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
   </ItemGroup>
   <Import Project="..\PoseTools.Core\Core.PoseTools.projitems" Label="Shared" />

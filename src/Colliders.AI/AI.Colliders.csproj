@@ -10,7 +10,7 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Colliders.Core\Core.Colliders.projitems" Label="Shared" />

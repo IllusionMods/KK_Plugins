@@ -4,7 +4,7 @@
     <AssemblyName>AI_StudioObjectMoveHotkeys</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\StudioObjectMoveHotkeys.Core\Core.StudioObjectMoveHotkeys.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

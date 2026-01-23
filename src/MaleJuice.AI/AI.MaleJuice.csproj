@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ExtensibleSaveFormat.AIGirl" Version="19.4" />
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\MaleJuice.Core\MaleJuice.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

@@ -4,7 +4,7 @@
     <AssemblyName>EC_Demosaic</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="2019.6.6.4" />
+    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\Demosaic.Core\Core.Demosaic.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

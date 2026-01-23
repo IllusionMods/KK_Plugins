@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.ConfigurationManager" Version="18.2.0.1" />
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
     <PackageReference Include="OverlayMods.KoikatsuSunshine" Version="6.0.7" />
     <PackageReference Include="Sideloader.KoikatsuSunshine" Version="19.4" />

@@ -4,7 +4,7 @@
     <AssemblyName>KKS_StudioSceneSettings</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\StudioSceneSettings.Core\Core.StudioSceneSettings.projitems" Label="Shared" />

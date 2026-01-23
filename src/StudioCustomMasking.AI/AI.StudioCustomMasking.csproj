@@ -8,7 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ExtensibleSaveFormat.AIGirl" Version="19.4" />
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
     <PackageReference Include="ScreenshotManager.AIGirl" Version="19.4" />
   </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />

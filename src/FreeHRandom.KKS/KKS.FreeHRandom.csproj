@@ -4,7 +4,7 @@
     <AssemblyName>KKS_FreeHRandom</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\FreeHRandom.Core\FreeHRandom.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

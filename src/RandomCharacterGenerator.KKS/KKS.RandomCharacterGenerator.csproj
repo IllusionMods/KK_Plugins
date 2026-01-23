@@ -4,7 +4,7 @@
     <AssemblyName>KKS_RandomCharacterGenerator</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\RandomCharacterGenerator.Core\RandomCharacterGenerator.Core.projitems" Label="Shared" />

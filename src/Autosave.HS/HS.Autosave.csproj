@@ -4,7 +4,7 @@
     <AssemblyName>HS_Autosave</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.HoneySelect.AllPackages" Version="2017.6.30.2" />
+    <PackageReference Include="IllusionLibs.HoneySelect.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\Autosave.Core\Autosave.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

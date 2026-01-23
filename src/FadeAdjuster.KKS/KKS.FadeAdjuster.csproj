@@ -4,7 +4,7 @@
     <AssemblyName>KKS_FadeAdjuster</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\FadeAdjuster.Core\FadeAdjuster.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

@@ -4,7 +4,7 @@
     <AssemblyName>EC_Pushup</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="2019.6.6.4" />
+    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.ECAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

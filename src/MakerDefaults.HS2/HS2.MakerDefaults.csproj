@@ -4,7 +4,7 @@
     <AssemblyName>HS2_MakerDefaults</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.HS2API" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

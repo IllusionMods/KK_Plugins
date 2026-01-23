@@ -4,7 +4,7 @@
     <AssemblyName>AI_AnimationOverdrive</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

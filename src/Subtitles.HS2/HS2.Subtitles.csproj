@@ -7,7 +7,7 @@
     <EmbeddedResource Include="Resources\EmbeddedSubs.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\Subtitles.Core\Core.Subtitles.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

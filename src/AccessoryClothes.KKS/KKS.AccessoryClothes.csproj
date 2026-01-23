@@ -5,7 +5,7 @@
     <FinalAssName>KKS_AccessoryClothes</FinalAssName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\AccessoryClothes.Core\AccessoryClothes.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

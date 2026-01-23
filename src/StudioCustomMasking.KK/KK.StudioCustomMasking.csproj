@@ -7,7 +7,7 @@
     <ProjectReference Include="..\StudioSceneSettings.KK\KK.StudioSceneSettings.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="2019.4.27.4" />
+    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
     <PackageReference Include="ScreenshotManager.Koikatu" Version="19.4" />
   </ItemGroup>

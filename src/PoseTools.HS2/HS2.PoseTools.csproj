@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ExtensibleSaveFormat.HoneySelect2" Version="19.4" />
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\PoseTools.Core\Core.PoseTools.projitems" Label="Shared" />

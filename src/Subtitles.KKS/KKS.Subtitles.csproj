@@ -7,7 +7,7 @@
     <EmbeddedResource Include="Resources\EmbeddedSubs.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="2021.9.17" />
+    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
   </ItemGroup>
   <Import Project="..\Subtitles.Core\Core.Subtitles.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

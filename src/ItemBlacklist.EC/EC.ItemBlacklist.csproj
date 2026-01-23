@@ -4,7 +4,7 @@
     <AssemblyName>EC_ItemBlacklist</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="2019.6.6.4" />
+    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="*" />
     <PackageReference Include="SharpZipLib" Version="[1.3.3,1.4)" />
     <PackageReference Include="Sideloader.EmotionCreators" Version="19.4" />
   </ItemGroup>

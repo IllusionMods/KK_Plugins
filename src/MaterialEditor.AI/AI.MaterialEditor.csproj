@@ -11,7 +11,7 @@
     <EmbeddedResource Include="Resources\AI_Shaders.unity3d" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="2020.5.29.5" />
+    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
     <PackageReference Include="IllusionLibs.XUnity.ResourceRedirector" Version="4.18.0" />
     <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.45.1" />
     <PackageReference Include="SharpZipLib" Version="[1.3.3,1.4)" />
