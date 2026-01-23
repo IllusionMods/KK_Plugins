@@ -294,6 +294,11 @@ Custom rules for swapping shaders can be provided in xml files. Check the "Mappi
 ```
 
 </details>
+  
+#### SpawnLocker
+
+Allows you to select certain characters that you want to always appear in free roam (when there are more characters than the maximum to be loaded at one time).
+To use, middle click on a character portrait in the roster screen. You should see a message appear and the character portrait to be marked.
 
 ## Experimental and obsolete plugins
 Generally you don't want to install these unless you have a very good reason to do so.

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <RootNamespace>SpawnLocker</RootNamespace>
+    <AssemblyName>KK_SpawnLocker</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="19.4" />
+    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
+    <PackageReference Include="IllusionModdingAPI.KKAPI" Version="1.45.1" />
+  </ItemGroup>
+  <Import Project="..\SpawnLocker.Core\SpawnLocker.Core.projitems" Label="Shared" />
+  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+</Project>
