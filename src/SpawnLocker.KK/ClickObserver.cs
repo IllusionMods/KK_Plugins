@@ -49,11 +49,11 @@ namespace SpawnLocker
 
             if (SpawnLockMain.IsLocked(previewData.data?.charFile))
             {
-                float mergin = 16;
+                float margin = 16;
                 m_Desk.color = Color.black;
-                m_DeskRect.sizeDelta = m_SizeDelta + new Vector2(mergin, mergin);
-                m_DeskRect.offsetMin = m_OffsetMin - new Vector2(mergin / 2, mergin / 2);
-                m_DeskRect.offsetMax = m_OffsetMax + new Vector2(mergin / 2, mergin / 2);
+                m_DeskRect.sizeDelta = m_SizeDelta + new Vector2(margin, margin);
+                m_DeskRect.offsetMin = m_OffsetMin - new Vector2(margin / 2, margin / 2);
+                m_DeskRect.offsetMax = m_OffsetMax + new Vector2(margin / 2, margin / 2);
             }
             else
             {

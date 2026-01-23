@@ -11,10 +11,10 @@ namespace SpawnLocker
         public bool isLocked;
 
         [IgnoreMember]
-        private static string PluginKey = "SpawnLock";
+        private static readonly string PluginKey = "SpawnLock";
 
         [IgnoreMember]
-        private static IFormatterResolver resolver = UnityEngineTypeFormatterResolver.Instance;
+        private static readonly IFormatterResolver resolver = UnityEngineTypeFormatterResolver.Instance;
 
         public static SpawnLockData Load(PluginData data)
         {
