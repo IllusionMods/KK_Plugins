@@ -4,7 +4,6 @@
     <AssemblyName>AI_FKIK</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\FKIK.Core\Core.FKIK.projitems" Label="Shared" />

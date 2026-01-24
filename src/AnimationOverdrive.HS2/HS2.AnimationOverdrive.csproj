@@ -3,9 +3,7 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>HS2_AnimationOverdrive</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>

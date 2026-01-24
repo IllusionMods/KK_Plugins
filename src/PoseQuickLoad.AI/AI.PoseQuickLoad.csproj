@@ -3,9 +3,7 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>AI_PoseQuickLoad</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\PoseQuickLoad.Core\Core.PoseQuickLoad.projitems" Label="Shared" />
 </Project>

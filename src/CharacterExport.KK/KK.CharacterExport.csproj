@@ -3,9 +3,7 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>KK_CharacterExport</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\CharacterExport.Core\Core.CharacterExport.projitems" Label="Shared" />
 </Project>

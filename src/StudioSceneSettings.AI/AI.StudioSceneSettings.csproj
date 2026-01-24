@@ -5,7 +5,6 @@
     <AssemblyName>AI_StudioSceneSettings</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.AIAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

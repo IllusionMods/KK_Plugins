@@ -3,9 +3,7 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>HS2_CharacterExport</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\CharacterExport.Core\Core.CharacterExport.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>

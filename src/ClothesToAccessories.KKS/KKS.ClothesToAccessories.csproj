@@ -4,9 +4,8 @@
     <AssemblyName>KKS_ClothesToAccessories</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
-    <PackageReference Include="Sideloader.KoikatsuSunshine" Version="19.4" />
+    <PackageReference Include="Sideloader.KoikatsuSunshine" Version="21.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\ClothesToAccessories.Common\ClothesToAccessories.Common.projitems" Label="Shared" />

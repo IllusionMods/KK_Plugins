@@ -3,11 +3,7 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>KK_MaleJuice</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.Koikatu" Version="19.4" />
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
-    <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
-  </ItemGroup>
+
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\MaleJuice.Core\MaleJuice.Core.projitems" Label="Shared" />
 </Project>

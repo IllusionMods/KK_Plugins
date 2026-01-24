@@ -4,7 +4,6 @@
     <AssemblyName>EC_EyeControl</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.EmotionCreators.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.ECAPI" Version="1.45.1" />
   </ItemGroup>
   <Import Project="..\EyeControl.Core\EyeControl.Core.projitems" Label="Shared" />

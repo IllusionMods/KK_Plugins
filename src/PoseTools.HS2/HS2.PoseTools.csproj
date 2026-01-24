@@ -3,10 +3,7 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>HS2_PoseTools</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.HoneySelect2" Version="19.4" />
-    <PackageReference Include="IllusionLibs.HoneySelect2.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\PoseTools.Core\Core.PoseTools.projitems" Label="Shared" />
 </Project>

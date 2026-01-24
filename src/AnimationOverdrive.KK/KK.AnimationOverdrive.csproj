@@ -3,10 +3,7 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>KK_AnimationOverdrive</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.Koikatu.AllPackages" Version="*" />
-    <PackageReference Include="KoikatuCompatibilityAnalyzer" Version="1.1.0" />
-  </ItemGroup>
+
   <Import Project="..\AnimationOverdrive.Core\Core.AnimationOverdrive.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>

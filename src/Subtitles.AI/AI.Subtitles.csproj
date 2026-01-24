@@ -6,9 +6,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\EmbeddedSubs.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="IllusionLibs.AIGirl.AllPackages" Version="*" />
-  </ItemGroup>
   <Import Project="..\Subtitles.Core\Core.Subtitles.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>

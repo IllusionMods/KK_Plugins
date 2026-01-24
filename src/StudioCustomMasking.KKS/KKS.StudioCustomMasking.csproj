@@ -7,9 +7,8 @@
     <ProjectReference Include="..\StudioSceneSettings.KKS\KKS.StudioSceneSettings.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IllusionLibs.KoikatsuSunshine.AllPackages" Version="*" />
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />
-    <PackageReference Include="ScreenshotManager.KoikatsuSunshine" Version="19.4" />
+    <PackageReference Include="ScreenshotManager.KoikatsuSunshine" Version="21.0" />
   </ItemGroup>
   <Import Project="..\StudioCustomMasking.Core\StudioCustomMasking.Core.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

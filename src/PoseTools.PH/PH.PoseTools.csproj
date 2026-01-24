@@ -3,10 +3,7 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>PH_PoseTools</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ExtensibleSaveFormat.PlayHome" Version="19.4" />
-    <PackageReference Include="IllusionLibs.PlayHome.AllPackages" Version="*" />
-  </ItemGroup>
+
   <Import Project="..\PoseTools.Core\Core.PoseTools.projitems" Label="Shared" />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>

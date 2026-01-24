@@ -7,7 +7,7 @@
     <ProjectReference Include="..\MaterialEditor.KK\KK.MaterialEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ScreenshotManager.Koikatu" Version="19.4" />
+    <PackageReference Include="ScreenshotManager.Koikatu" Version="21.0" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="..\ShaderSwapper.Core\ShaderSwapper.Core.projitems" Label="Shared" />
