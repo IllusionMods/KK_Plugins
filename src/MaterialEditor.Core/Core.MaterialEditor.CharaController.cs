@@ -986,7 +986,7 @@ namespace KK_Plugins.MaterialEditor
 #if KK || EC || KKS || AI || HS2
             //Get the tongue material used by the head since this one is properly refreshed with every character reload
             Material tongueMat = null;
-            foreach (var renderer in GetRendererList(ChaControl.objHead.gameObject))
+            foreach (var renderer in GetRendererList(ChaControl.objHead))
             {
                 var mat = GetMaterials(ChaControl.gameObject, renderer).FirstOrDefault(x => x.name.Contains("tang"));
                 if (mat != null)
@@ -1962,7 +1962,7 @@ namespace KK_Plugins.MaterialEditor
         /// <returns>Saved material property's current name or empty string if none is saved</returns>
         public string GetMaterialNamePropertyValue(int slot, ObjectType objectType, Renderer renderer, Material material, GameObject go)
         {
-            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == renderer?.NameFormatted() && x.Value == material?.name)?.Value ?? string.Empty;
+            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == (renderer == null ? null : renderer.NameFormatted()) && x.Value == (material == null ? null : material.name))?.Value ?? string.Empty;
         }
         /// <summary>
         /// Get the saved material property's original name or empty string if none is saved
@@ -1974,7 +1974,7 @@ namespace KK_Plugins.MaterialEditor
         /// <returns>Saved material property's original value or null if none is saved</returns>
         public string GetMaterialNamePropertyValueOriginal(int slot, ObjectType objectType, Renderer renderer, Material material, GameObject go)
         {
-            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == renderer?.NameFormatted() && x.Value == material?.name)?.ValueOriginal ?? string.Empty;
+            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == (renderer == null ? null : renderer.NameFormatted()) && x.Value == (material == null ? null : material.name))?.ValueOriginal ?? string.Empty;
         }
 
         /// <summary>
@@ -2795,7 +2795,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var hair = ChaControl.GetHair(slot);
                 if (hair != null)
-                    return hair.gameObject;
+                    return hair;
             }
             if (objectType == ObjectType.Character)
                 return ChaControl.gameObject;
