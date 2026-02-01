@@ -34,6 +34,9 @@ namespace KK_Plugins.MaterialEditor
     /// </summary>
     public class MaterialEditorCharaController : CharaCustomFunctionController
     {
+        /// <summary>
+        /// Under what name the controller's textures get saved in cards
+        /// </summary>
         public const string TexDicSaveKey = nameof(TextureDictionary);
 
         internal static readonly List<MaterialEditorCharaController> charaControllers = new List<MaterialEditorCharaController>();
@@ -72,12 +75,14 @@ namespace KK_Plugins.MaterialEditor
         private ObjectType ObjectTypeToSet;
         private GameObject GameObjectToSet;
 
+        /// <summary></summary>
         protected override void Awake()
         {
             charaControllers.Add(this);
             base.Awake();
         }
 
+        /// <summary></summary>
         protected override void OnDestroy()
         {
             charaControllers.Remove(this);
@@ -815,11 +820,13 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary></summary>       
         public IEnumerator LoadData(bool clothes, bool accessories, bool hair)
         {
             return LoadData(clothes, accessories, hair, true);
         }
 
+        /// <summary></summary>
         public IEnumerator LoadData(bool clothes, bool accessories, bool hair, bool body)
         {
             yield return null;
@@ -1663,6 +1670,13 @@ namespace KK_Plugins.MaterialEditor
                 }
         }
 
+        /// <summary>
+        /// Duplicate a material / remove a duplicate material from the specified object
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <param name="objectType"></param>
+        /// <param name="material"></param>
+        /// <param name="go"></param>
         public void MaterialCopyRemove(int slot, ObjectType objectType, Material material, GameObject go)
         {
             string matName = material.NameFormatted();
@@ -1809,6 +1823,12 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 MaterialAPI.SetProjectorProperty(go, projector.NameFormatted(), property, value);
         }
+        /// <summary>
+        /// Return a list of projectors attached to the specified object
+        /// </summary>
+        /// <param name="objectType"></param>
+        /// <param name="gameObject"></param>
+        /// <returns></returns>
         public IEnumerable<Projector> GetProjectorList(ObjectType objectType, GameObject gameObject)
         {
             //The body will never have a projector component attached
@@ -3094,6 +3114,9 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Data storage class for material renaming
+        /// </summary>
         [Serializable]
         [MessagePackObject]
         public class MaterialNameProperty
@@ -3625,6 +3648,14 @@ namespace KK_Plugins.MaterialEditor
             [Key("MaterialCopyName")]
             public string MaterialCopyName;
 
+            /// <summary>
+            /// Constructor for material copy info objects
+            /// </summary>
+            /// <param name="objectType"></param>
+            /// <param name="coordinateIndex"></param>
+            /// <param name="slot"></param>
+            /// <param name="materialName"></param>
+            /// <param name="materialCopyName"></param>
             public MaterialCopy(ObjectType objectType, int coordinateIndex, int slot, string materialName, string materialCopyName)
             {
                 ObjectType = objectType;
