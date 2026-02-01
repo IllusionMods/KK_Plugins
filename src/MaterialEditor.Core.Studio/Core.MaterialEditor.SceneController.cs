@@ -507,7 +507,7 @@ namespace KK_Plugins.MaterialEditor
 #endif
                         ;
 
-                    MaterialEditorPlugin.GetCharaController(chaCtrl).isDuplicating = copiedItem.Key;
+                    MaterialEditorPlugin.GetCharaController(chaCtrl).DuplicatingFrom = copiedItem.Key;
                 }
             }
 

@@ -74,7 +74,7 @@ namespace KK_Plugins.MaterialEditor
         private int SlotToSet;
         private ObjectType ObjectTypeToSet;
         private GameObject GameObjectToSet;
-        internal int? isDuplicating = null;
+        internal int? DuplicatingFrom = null;
 
         /// <summary></summary>
         protected override void Awake()
@@ -530,17 +530,17 @@ namespace KK_Plugins.MaterialEditor
             {
                 var importDictionary = new Dictionary<int, int>();
 
-                if (isDuplicating.HasValue)
+                if (DuplicatingFrom.HasValue)
                 {
 #if !EC
-                    var chaCtrl = (Studio.Studio.Instance.dicObjectCtrl[isDuplicating.Value] as Studio.OCIChar).charInfo
+                    DuplicatingFrom = null;
+                    var chaCtrl = (Studio.Studio.Instance.dicObjectCtrl[DuplicatingFrom.Value] as Studio.OCIChar).charInfo
 #if PH
                         .human
 #endif
                         ;
                     foreach (var kvp in MaterialEditorPlugin.GetCharaController(chaCtrl).TextureDictionary)
                         importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
-                    isDuplicating = null;
 #endif
                 }
                 else
