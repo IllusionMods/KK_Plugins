@@ -34,6 +34,9 @@ namespace KK_Plugins.MaterialEditor
     /// </summary>
     public class MaterialEditorCharaController : CharaCustomFunctionController
     {
+        /// <summary>
+        /// Under what name the controller's textures get saved in cards
+        /// </summary>
         public const string TexDicSaveKey = nameof(TextureDictionary);
 
         internal static readonly List<MaterialEditorCharaController> charaControllers = new List<MaterialEditorCharaController>();
@@ -71,13 +74,16 @@ namespace KK_Plugins.MaterialEditor
         private int SlotToSet;
         private ObjectType ObjectTypeToSet;
         private GameObject GameObjectToSet;
+        internal int? DuplicatingFrom = null;
 
+        /// <summary></summary>
         protected override void Awake()
         {
             charaControllers.Add(this);
             base.Awake();
         }
 
+        /// <summary></summary>
         protected override void OnDestroy()
         {
             charaControllers.Remove(this);
@@ -524,9 +530,25 @@ namespace KK_Plugins.MaterialEditor
             {
                 var importDictionary = new Dictionary<int, int>();
 
-                var importDictionaryTemp = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, true);
-                foreach (var kvp in importDictionaryTemp)
-                    importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
+#if !EC
+                if (DuplicatingFrom.HasValue)
+                {
+                    var chaCtrl = (Studio.Studio.Instance.dicObjectCtrl[DuplicatingFrom.Value] as Studio.OCIChar).charInfo
+#if PH
+                        .human
+#endif
+                        ;
+                    foreach (var kvp in MaterialEditorPlugin.GetCharaController(chaCtrl).TextureDictionary)
+                        importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
+                    DuplicatingFrom = null;
+                }
+                else
+#endif
+                {
+                    var importDictionaryTemp = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, true);
+                    foreach (var kvp in importDictionaryTemp)
+                        importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
+                }
 
                 //Debug for dumping all textures
                 //int counter = 1;
@@ -815,11 +837,13 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary></summary>       
         public IEnumerator LoadData(bool clothes, bool accessories, bool hair)
         {
             return LoadData(clothes, accessories, hair, true);
         }
 
+        /// <summary></summary>
         public IEnumerator LoadData(bool clothes, bool accessories, bool hair, bool body)
         {
             yield return null;
@@ -986,7 +1010,7 @@ namespace KK_Plugins.MaterialEditor
 #if KK || EC || KKS || AI || HS2
             //Get the tongue material used by the head since this one is properly refreshed with every character reload
             Material tongueMat = null;
-            foreach (var renderer in GetRendererList(ChaControl.objHead.gameObject))
+            foreach (var renderer in GetRendererList(ChaControl.objHead))
             {
                 var mat = GetMaterials(ChaControl.gameObject, renderer).FirstOrDefault(x => x.name.Contains("tang"));
                 if (mat != null)
@@ -1663,6 +1687,13 @@ namespace KK_Plugins.MaterialEditor
                 }
         }
 
+        /// <summary>
+        /// Duplicate a material / remove a duplicate material from the specified object
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <param name="objectType"></param>
+        /// <param name="material"></param>
+        /// <param name="go"></param>
         public void MaterialCopyRemove(int slot, ObjectType objectType, Material material, GameObject go)
         {
             string matName = material.NameFormatted();
@@ -1809,6 +1840,12 @@ namespace KK_Plugins.MaterialEditor
             if (setProperty)
                 MaterialAPI.SetProjectorProperty(go, projector.NameFormatted(), property, value);
         }
+        /// <summary>
+        /// Return a list of projectors attached to the specified object
+        /// </summary>
+        /// <param name="objectType"></param>
+        /// <param name="gameObject"></param>
+        /// <returns></returns>
         public IEnumerable<Projector> GetProjectorList(ObjectType objectType, GameObject gameObject)
         {
             //The body will never have a projector component attached
@@ -1962,7 +1999,7 @@ namespace KK_Plugins.MaterialEditor
         /// <returns>Saved material property's current name or empty string if none is saved</returns>
         public string GetMaterialNamePropertyValue(int slot, ObjectType objectType, Renderer renderer, Material material, GameObject go)
         {
-            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == renderer?.NameFormatted() && x.Value == material?.name)?.Value ?? string.Empty;
+            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == (renderer == null ? null : renderer.NameFormatted()) && x.Value == (material == null ? null : material.name))?.Value ?? string.Empty;
         }
         /// <summary>
         /// Get the saved material property's original name or empty string if none is saved
@@ -1974,7 +2011,7 @@ namespace KK_Plugins.MaterialEditor
         /// <returns>Saved material property's original value or null if none is saved</returns>
         public string GetMaterialNamePropertyValueOriginal(int slot, ObjectType objectType, Renderer renderer, Material material, GameObject go)
         {
-            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == renderer?.NameFormatted() && x.Value == material?.name)?.ValueOriginal ?? string.Empty;
+            return MaterialNamePropertyList.FirstOrDefault(x => x.ObjectType == objectType && x.CoordinateIndex == GetCoordinateIndex(objectType) && x.Slot == slot && x.Renderer == (renderer == null ? null : renderer.NameFormatted()) && x.Value == (material == null ? null : material.name))?.ValueOriginal ?? string.Empty;
         }
 
         /// <summary>
@@ -2795,7 +2832,7 @@ namespace KK_Plugins.MaterialEditor
             {
                 var hair = ChaControl.GetHair(slot);
                 if (hair != null)
-                    return hair.gameObject;
+                    return hair;
             }
             if (objectType == ObjectType.Character)
                 return ChaControl.gameObject;
@@ -3094,6 +3131,9 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        /// <summary>
+        /// Data storage class for material renaming
+        /// </summary>
         [Serializable]
         [MessagePackObject]
         public class MaterialNameProperty
@@ -3625,6 +3665,14 @@ namespace KK_Plugins.MaterialEditor
             [Key("MaterialCopyName")]
             public string MaterialCopyName;
 
+            /// <summary>
+            /// Constructor for material copy info objects
+            /// </summary>
+            /// <param name="objectType"></param>
+            /// <param name="coordinateIndex"></param>
+            /// <param name="slot"></param>
+            /// <param name="materialName"></param>
+            /// <param name="materialCopyName"></param>
             public MaterialCopy(ObjectType objectType, int coordinateIndex, int slot, string materialName, string materialCopyName)
             {
                 ObjectType = objectType;
