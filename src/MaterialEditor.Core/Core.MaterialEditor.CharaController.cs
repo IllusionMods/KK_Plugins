@@ -530,10 +530,9 @@ namespace KK_Plugins.MaterialEditor
             {
                 var importDictionary = new Dictionary<int, int>();
 
+#if !EC
                 if (DuplicatingFrom.HasValue)
                 {
-#if !EC
-                    DuplicatingFrom = null;
                     var chaCtrl = (Studio.Studio.Instance.dicObjectCtrl[DuplicatingFrom.Value] as Studio.OCIChar).charInfo
 #if PH
                         .human
@@ -541,9 +540,10 @@ namespace KK_Plugins.MaterialEditor
                         ;
                     foreach (var kvp in MaterialEditorPlugin.GetCharaController(chaCtrl).TextureDictionary)
                         importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
-#endif
+                    DuplicatingFrom = null;
                 }
                 else
+#endif
                 {
                     var importDictionaryTemp = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, true);
                     foreach (var kvp in importDictionaryTemp)
