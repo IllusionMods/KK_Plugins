@@ -499,6 +499,16 @@ namespace KK_Plugins.MaterialEditor
                         }
                     }
                 }
+                if (copiedItem.Value is OCIChar ociChar)
+                {
+                    var chaCtrl = ociChar.charInfo
+#if PH
+                        .human
+#endif
+                        ;
+
+                    MaterialEditorPlugin.GetCharaController(chaCtrl).isDuplicating = copiedItem.Key;
+                }
             }
 
             RendererPropertyList.AddRange(rendererPropertyListNew);

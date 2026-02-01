@@ -74,6 +74,7 @@ namespace KK_Plugins.MaterialEditor
         private int SlotToSet;
         private ObjectType ObjectTypeToSet;
         private GameObject GameObjectToSet;
+        internal int? isDuplicating = null;
 
         /// <summary></summary>
         protected override void Awake()
@@ -529,9 +530,25 @@ namespace KK_Plugins.MaterialEditor
             {
                 var importDictionary = new Dictionary<int, int>();
 
-                var importDictionaryTemp = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, true);
-                foreach (var kvp in importDictionaryTemp)
-                    importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
+                if (isDuplicating.HasValue)
+                {
+#if !EC
+                    var chaCtrl = (Studio.Studio.Instance.dicObjectCtrl[isDuplicating.Value] as Studio.OCIChar).charInfo
+#if PH
+                        .human
+#endif
+                        ;
+                    foreach (var kvp in MaterialEditorPlugin.GetCharaController(chaCtrl).TextureDictionary)
+                        importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
+                    isDuplicating = null;
+#endif
+                }
+                else
+                {
+                    var importDictionaryTemp = TextureSaveHandler.Instance.Load<Dictionary<int, TextureContainer>>(data, TexDicSaveKey, true);
+                    foreach (var kvp in importDictionaryTemp)
+                        importDictionary[kvp.Key] = SetAndGetTextureID(kvp.Value.Data);
+                }
 
                 //Debug for dumping all textures
                 //int counter = 1;
