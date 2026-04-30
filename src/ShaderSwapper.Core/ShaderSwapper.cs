@@ -401,6 +401,7 @@ namespace KK_Plugins
             // TODO: identify which one is for the Pantyhose slot and put Hanmen/Clothes True Pantyhose for that one.
             { "AIT/Clothes Alpha True", new SwapTargetList("Hanmen/Clothes True Alpha") },
 
+            { "AIT/Clothes Alpha True BackCull", new SwapTargetList("Hanmen/Clothes True Alpha") },
             { "AIT/Accessory", new SwapTargetList("Hanmen/Item Cutoff") },
             { "AIT/Item", new SwapTargetList("Hanmen/Item Cutoff") },
             { "AIT/Item studio", new SwapTargetList("Hanmen/Item Cutoff") },
@@ -410,6 +411,7 @@ namespace KK_Plugins
             { "GDC/Clothes True Cutoff", new SwapTargetList("Hanmen/Clothes True Cutoff") },
             { "GDC/Item Cutoff", new SwapTargetList("Hanmen/Item Cutoff") },
             { "hooh/ClotheReplicaOpaque", new SwapTargetList("Hanmen/Clothes True Cutoff") },
+            { "hooh/ClotheReplicaAlphaCullOff", new SwapTargetList("Hanmen/Clothes True Alpha") },
 
             // TODO: distinguish between these two based on material name (c_m_tang vs c_m_tooth), so for now these can't be done as they have the same shader.
             //{ "AIT/Skin Translucency simple", new SwapTargetList("Hanmen/Next-Gen Tongue") },
