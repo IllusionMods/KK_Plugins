@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <AssemblyName>AI_ShaderSwapper</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MaterialEditor.AI\AI.MaterialEditor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ScreenshotManager.AIGirl" Version="21.0" />
+  </ItemGroup>
+  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+  <Import Project="..\ShaderSwapper.Core\ShaderSwapper.Core.projitems" Label="Shared" />
+</Project>

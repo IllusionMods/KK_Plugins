@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <AssemblyName>HS2_ShaderSwapper</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MaterialEditor.HS2\HS2.MaterialEditor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ScreenshotManager.HoneySelect2" Version="21.0" />
+  </ItemGroup>
+  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
+  <Import Project="..\ShaderSwapper.Core\ShaderSwapper.Core.projitems" Label="Shared" />
+</Project>

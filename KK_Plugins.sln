@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.8.34309.116
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11723.231 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.CharaMakerLoadedSound", "src\CharaMakerLoadedSound.KK\KK.CharaMakerLoadedSound.csproj", "{6463C4B8-12CE-496B-8578-48D424F61400}"
 EndProject
@@ -594,6 +594,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.SpawnLocker", "src\SpawnLocker.KK\KK.SpawnLocker.csproj", "{1CC189B7-2C5F-460B-C140-D14CFBD39CB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKS.SpawnLocker", "src\SpawnLocker.KKS\KKS.SpawnLocker.csproj", "{5A6D7A38-C1FF-7369-EECA-532AD766D270}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.ShaderSwapper", "src\ShaderSwapper.AI\AI.ShaderSwapper.csproj", "{6DA74281-008A-A225-F1E3-EF5A20293F40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2.ShaderSwapper", "src\ShaderSwapper.HS2\HS2.ShaderSwapper.csproj", "{6EE06974-80A6-9EAD-7258-6D1A0D7C1391}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1325,6 +1329,14 @@ Global
 		{5A6D7A38-C1FF-7369-EECA-532AD766D270}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A6D7A38-C1FF-7369-EECA-532AD766D270}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A6D7A38-C1FF-7369-EECA-532AD766D270}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DA74281-008A-A225-F1E3-EF5A20293F40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DA74281-008A-A225-F1E3-EF5A20293F40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DA74281-008A-A225-F1E3-EF5A20293F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DA74281-008A-A225-F1E3-EF5A20293F40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EE06974-80A6-9EAD-7258-6D1A0D7C1391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EE06974-80A6-9EAD-7258-6D1A0D7C1391}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE06974-80A6-9EAD-7258-6D1A0D7C1391}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EE06974-80A6-9EAD-7258-6D1A0D7C1391}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1565,6 +1577,8 @@ Global
 		{A545658E-D416-40B6-90C6-BFD776147D3E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{1CC189B7-2C5F-460B-C140-D14CFBD39CB8} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5A6D7A38-C1FF-7369-EECA-532AD766D270} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{6DA74281-008A-A225-F1E3-EF5A20293F40} = {546FB98F-02D6-4C04-AE4C-F86E9A1CA88A}
+		{6EE06974-80A6-9EAD-7258-6D1A0D7C1391} = {546FB98F-02D6-4C04-AE4C-F86E9A1CA88A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0F79985-4CB7-46CB-BEC2-FF89C476ED20}
@@ -1773,8 +1787,12 @@ Global
 		src\Shared\Shared.projitems*{6b1c1b2b-c74e-4c53-b019-5dfba3ba3f75}*SharedItemsImports = 5
 		src\AnimationController.Core\Core.AnimationController.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 5
 		src\Shared\Shared.projitems*{6baa3e18-20b2-41d3-bcfc-fe13e9d5c2c1}*SharedItemsImports = 5
+		src\ShaderSwapper.Core\ShaderSwapper.Core.projitems*{6da74281-008a-a225-f1e3-ef5a20293f40}*SharedItemsImports = 5
+		src\Shared\Shared.projitems*{6da74281-008a-a225-f1e3-ef5a20293f40}*SharedItemsImports = 5
 		src\Demosaic.Core\Core.Demosaic.projitems*{6ddfd009-9742-4898-98a3-ff1051c8a62f}*SharedItemsImports = 5
 		src\Shared\Shared.projitems*{6ddfd009-9742-4898-98a3-ff1051c8a62f}*SharedItemsImports = 5
+		src\ShaderSwapper.Core\ShaderSwapper.Core.projitems*{6ee06974-80a6-9ead-7258-6d1a0d7c1391}*SharedItemsImports = 5
+		src\Shared\Shared.projitems*{6ee06974-80a6-9ead-7258-6d1a0d7c1391}*SharedItemsImports = 5
 		src\AccessoryQuickRemove.Core\AccessoryQuickRemove.Core.projitems*{6f832183-df80-400a-9463-5058361a5797}*SharedItemsImports = 13
 		src\PoseUnlocker.Core\PoseUnlocker.Core.projitems*{6f8f5f23-de07-43c0-9fb9-1cb09a4a84bd}*SharedItemsImports = 5
 		src\Shared\Shared.projitems*{6f8f5f23-de07-43c0-9fb9-1cb09a4a84bd}*SharedItemsImports = 5
