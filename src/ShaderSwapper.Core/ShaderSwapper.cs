@@ -401,6 +401,9 @@ namespace KK_Plugins
             // TODO: identify which one is for the Pantyhose slot and put Hanmen/Clothes True Pantyhose for that one.
             { "AIT/Clothes Alpha True", new SwapTargetList("Hanmen/Clothes True Alpha") },
 
+            // obsolete shader that seems to have been used for pantyhose
+            { "Hanmen/Clothes True Transparent", new SwapTargetList("Hanmen/Clothes True Pantyhose") },
+
             { "AIT/Clothes Alpha True BackCull", new SwapTargetList("Hanmen/Clothes True Alpha") },
             { "AIT/Accessory", new SwapTargetList("Hanmen/Item Cutoff") },
             { "AIT/Item", new SwapTargetList("Hanmen/Item Cutoff") },
