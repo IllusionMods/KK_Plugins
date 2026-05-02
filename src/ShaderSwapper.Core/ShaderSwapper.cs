@@ -475,13 +475,20 @@ namespace KK_Plugins
 
             DebugLogging = Config.Bind("General", "Verbose logging", true, "Write to log every time a shader is swapped.");
 
+#if KK || KKS
             AutoReplace = Config.Bind("General", "Auto swap to V+ shaders", false,
                                       "Automatically swap vanilla shaders to their Vanilla+ equivalents on ALL characters.\n" +
                                       "Changes take effect after character reload.\n" +
                                       "WARNING: Saving the game, cards, or scenes with this setting enabled can permanently apply the V+ shaders! You won't be able to go back to vanilla shaders without manually resetting MaterialEditor edits in the maker!");
-#if KK || KKS
+
             SwapStudioShadersOnCharacter = Config.Bind("General", "Studio-shaders on characters", false, "Toggles if the following shaders should be swapped on characters: [Shader Forge/main_item_studio],[Shader Forge/main_item_studio_alpha],[ShaderForge/main_StandartMDK_studio] and [Standart]");
             AutoEnableOutline = Config.Bind("General", "Auto enable outline", true, "Automatically sets the OutlineOn shaderproperty to 1");
+#elif AI || HS2
+            AutoReplace = Config.Bind("General", "Auto swap to Next-gen shaders", false,
+                                      "Automatically swap vanilla shaders to their Next-gen equivalents on ALL characters.\n" +
+                                      "Changes take effect after character reload.\n" +
+                                      "WARNING: Saving the game, cards, or scenes with this setting enabled can permanently apply the Next-gen shaders! You won't be able to go back to vanilla shaders without manually resetting MaterialEditor edits in the maker!");
+
 #endif
             void ApplyPatches(bool enable)
             {
@@ -519,7 +526,7 @@ namespace KK_Plugins
             if (!File.Exists(utsNormalPath)) setShaderMapping(utsNormalPath, UTSShaders);
             if (!File.Exists(utsTessPath)) setShaderMapping(utsTessPath, UTSTesselationShaders);
 #elif AI || HS2
-            NormalMapping = Config.Bind("Mapping", "Normal Shader Mapping", hanmenNxtgPath, new ConfigDescription("XML file with mapping for shaders which is used when the tesselation setting = 0", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));      
+            NormalMapping = Config.Bind("Mapping", "Normal Shader Mapping", hanmenNxtgPath, new ConfigDescription("XML file with shader mapping used for swaps", null, new ConfigurationManagerAttributes { CustomDrawer = FileInputDrawer }));      
             if (!File.Exists(hanmenNxtgPath)) setShaderMapping(hanmenNxtgPath, HanmenNxtgShaders);
 #endif
 
