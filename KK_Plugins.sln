@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.5.11723.231
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK.CharaMakerLoadedSound", "src\CharaMakerLoadedSound.KK\KK.CharaMakerLoadedSound.csproj", "{6463C4B8-12CE-496B-8578-48D424F61400}"
 EndProject
