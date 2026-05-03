@@ -17,9 +17,8 @@ namespace KK_Plugins
         private void Awake()
         {
             Logger = base.Logger;
-#if KK
             Hooks.InstallHooks();
-#endif
+
         }
     }
 
