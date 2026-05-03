@@ -10,13 +10,13 @@ namespace KK_Plugins
     {
         internal static void InstallHooks() 
         {
-            Harmony harmony = new Harmony("AccessoryClothesHarmony");
+            //Avoid hard dependency on MBI
+            Type implantorType = Type.GetType("ModBoneImplantor.ModBoneImplantor, ModBoneImplantor", false)?
+                .GetNestedType("AssignedAnotherWeightsHooks", BindingFlags.Public | BindingFlags.NonPublic);
 
-            Type implantorType = Traverse.Create(AccessTools.TypeByName("ModBoneImplantor.ModBoneImplantor"))
-                .Type("AssignedAnotherWeightsHooks").GetValue<Type>();
-
-            if(implantorType != null) 
+            if (implantorType != null) 
             {
+                Harmony harmony = new Harmony("AccessoryClothesHarmony");
                 MethodBase orig = AccessTools.Method(implantorType, "AssignWeightsAndImplantBones");
                 MethodInfo prefix = AccessTools.Method(typeof(Hooks), "AssignWeightsAndImplantBonesPrefix");
                 harmony.Patch(orig, new HarmonyMethod(prefix));
@@ -32,8 +32,8 @@ namespace KK_Plugins
         /// </summary>
         public static void AssignWeightsAndImplantBonesPrefix(ref GameObject obj)
         {
-            ListInfoComponent[] parentComponents = obj.GetComponentsInParent<ListInfoComponent>(true);
-            ListInfoComponent listInfoComponent = ((parentComponents != null) ? parentComponents.FirstOrDefault() : null);            
+            ListInfoComponent[] parentComponents = obj.GetComponentsInParent<ListInfoComponent>(true); //Singular GetComponentInParent does not have includeInactive parameter in old Unity            
+            ListInfoComponent listInfoComponent = ((parentComponents != null) ? parentComponents.FirstOrDefault() : null);
             if (listInfoComponent != null && listInfoComponent.GetComponent<ChaAccessoryClothes>() != null)
             { 
                     obj = listInfoComponent.gameObject;
