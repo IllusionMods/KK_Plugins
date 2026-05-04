@@ -18,7 +18,6 @@ namespace KK_Plugins
         {
             Logger = base.Logger;
             Hooks.InstallHooks();
-
         }
     }
 

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace KK_Plugins
 {
-    internal class Hooks
+    internal static class Hooks
     {
         internal static void InstallHooks() 
         {
