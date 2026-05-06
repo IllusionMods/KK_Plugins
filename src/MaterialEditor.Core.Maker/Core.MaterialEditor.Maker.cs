@@ -197,6 +197,7 @@ namespace KK_Plugins.MaterialEditor
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eyes, this)).OnClick.AddListener(() => UpdateUICharacter("eyebase,eyeshadow"));
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.HL, this)).OnClick.AddListener(() => UpdateUICharacter("eyebase,eyeshadow"));
             e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.Eyelashes, this)).OnClick.AddListener(() => UpdateUICharacter("eyelashes"));
+            e.AddControl(new MakerButton("Material Editor", MakerConstants.Face.EyeL, this)).OnClick.AddListener(() => UpdateUICharacter("eye"));
 #endif
         }
 
