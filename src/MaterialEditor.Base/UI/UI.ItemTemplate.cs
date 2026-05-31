@@ -14,18 +14,71 @@ namespace MaterialEditorAPI
             contentList.gameObject.AddComponent<Mask>();
             contentList.color = RowColor;
 
+            //Renderer Section Header
+            {
+                var itemPanel = UIUtility.CreatePanel("RendererSectionPanel", contentList.transform);
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.color = RendererSectionColor;
+                itemPanel.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight + 4f;
+                var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
+                itemHLG.padding = new RectOffset(7, 1, 1, 1);
+                itemHLG.spacing = 4f;
+                itemHLG.childForceExpandWidth = false;
+
+                //Left accent bar
+                var accentBar = UIUtility.CreatePanel("RendererSectionAccentBar", itemPanel.transform);
+                accentBar.color = RendererSectionAccent;
+                var accentBarLE = accentBar.gameObject.AddComponent<LayoutElement>();
+                accentBarLE.minWidth = 3f;
+                accentBarLE.preferredWidth = 3f;
+                accentBarLE.flexibleWidth = 0f;
+
+                var collapseButton = UIUtility.CreateButton("RendererSectionCollapseButton", itemPanel.transform, "-");
+                var collapseButtonLE = collapseButton.gameObject.AddComponent<LayoutElement>();
+                collapseButtonLE.minWidth = SmallButtonWidth;
+                collapseButtonLE.preferredWidth = SmallButtonWidth;
+                collapseButtonLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(collapseButton.gameObject, "Collapse/expand all renderers");
+
+                Text labelSection = UIUtility.CreateText("RendererSectionText", itemPanel.transform);
+                labelSection.alignment = TextAnchor.MiddleLeft;
+                labelSection.color = RendererSectionText;
+                labelSection.fontStyle = FontStyle.Bold;
+                labelSection.fontSize = 14;
+                var labelSectionLE = labelSection.gameObject.AddComponent<LayoutElement>();
+                labelSectionLE.minWidth = LabelWidth;
+                labelSectionLE.preferredWidth = LabelWidth;
+                labelSectionLE.flexibleWidth = 1f;
+
+            }
+
             //Renderer
             {
                 var itemPanel = UIUtility.CreatePanel("RendererPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = RendererColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = new RectOffset(18, 1, 1, 1);
+                itemHLG.spacing = 4f;
                 itemHLG.childForceExpandWidth = false;
 
+                //Left accent bar
+                var accentBar = UIUtility.CreatePanel("RendererAccentBar", itemPanel.transform);
+                accentBar.color = RendererSectionAccent;
+                var accentBarLE = accentBar.gameObject.AddComponent<LayoutElement>();
+                accentBarLE.minWidth = 2f;
+                accentBarLE.preferredWidth = 2f;
+                accentBarLE.flexibleWidth = 0f;
+
+                var collapseButton = UIUtility.CreateButton("RendererCollapseButton", itemPanel.transform, "-");
+                var collapseButtonLE = collapseButton.gameObject.AddComponent<LayoutElement>();
+                collapseButtonLE.minWidth = SmallButtonWidth;
+                collapseButtonLE.preferredWidth = SmallButtonWidth;
+                collapseButtonLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(collapseButton.gameObject, "Collapse/expand renderer properties");
+
                 var label = UIUtility.CreateText("RendererLabel", itemPanel.transform, "");
-                label.alignment = TextAnchor.MiddleLeft;
-                label.color = Color.black;
+                label.enabled = false;
                 var labelLE = label.gameObject.AddComponent<LayoutElement>();
                 labelLE.minWidth = 0f;
                 labelLE.preferredWidth = 0f;
@@ -40,16 +93,24 @@ namespace MaterialEditorAPI
                 labelRendererLE.flexibleWidth = 1f;
                 TooltipManager.AddTooltip(labelRenderer.gameObject, "Renderer name");
 
+                Toggle toggleEnabledInline = UIUtility.CreateToggle("RendererEnabledInlineToggle", itemPanel.transform, "");
+                toggleEnabledInline.isOn = true;
+                var toggleEnabledInlineLE = toggleEnabledInline.gameObject.AddComponent<LayoutElement>();
+                toggleEnabledInlineLE.minWidth = RendererToggleWidth;
+                toggleEnabledInlineLE.preferredWidth = RendererToggleWidth;
+                toggleEnabledInlineLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(toggleEnabledInline.gameObject, "Toggle the visibility of this renderer on/off");
+
                 CreateInterpolableButton("SelectInterpolableRendererButton", itemPanel.transform, "Select the properties (Enabled, Shadow casting mode and Receive shadows) of the currently selected renderer as interpolables in timeline");
 
-                Button exportUVButton = UIUtility.CreateButton("ExportUVButton", itemPanel.transform, "Export UV Map");
+                Button exportUVButton = UIUtility.CreateButton("ExportUVButton", itemPanel.transform, "UV Map");
                 var exportUVButtonLE = exportUVButton.gameObject.AddComponent<LayoutElement>();
                 exportUVButtonLE.minWidth = RendererButtonWidth;
                 exportUVButtonLE.preferredWidth = RendererButtonWidth;
                 exportUVButtonLE.flexibleWidth = 0f;
                 TooltipManager.AddTooltip(exportUVButton.gameObject, "Export the UV map of this renderer.\n\nThe UV map is the 2d projection of the renderer with which to map textures to the 3d model. You can use this UV map as a guide to drawing on textures");
 
-                Button exportMeshButton = UIUtility.CreateButton("ExportObjButton", itemPanel.transform, "Export .obj");
+                Button exportMeshButton = UIUtility.CreateButton("ExportObjButton", itemPanel.transform, ".obj");
                 var exportMeshButtonLE = exportMeshButton.gameObject.AddComponent<LayoutElement>();
                 exportMeshButtonLE.minWidth = RendererButtonWidth;
                 exportMeshButtonLE.preferredWidth = RendererButtonWidth;
@@ -63,7 +124,7 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("RendererEnabledLabel", itemPanel.transform, "");
@@ -96,7 +157,7 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("RendererShadowCastingModeLabel", itemPanel.transform, "");
@@ -122,6 +183,8 @@ namespace MaterialEditorAPI
                 dropdownShadowCastingModeLE.minWidth = RendererDropdownWidth;
                 dropdownShadowCastingModeLE.preferredWidth = RendererDropdownWidth;
                 dropdownShadowCastingModeLE.flexibleWidth = 0f;
+                var shadowTemplate = dropdownShadowCastingMode.transform.Find("Template");
+                if (shadowTemplate != null) shadowTemplate.gameObject.AddComponent<DropdownThemer>();
                 TooltipManager.AddTooltip(dropdownShadowCastingMode.gameObject, @"- Off: Renderer casts no shadows
 - On: Renderer casts shadows
 - Two Sided: Always cast shadows from any direction, even for single sided objects
@@ -141,7 +204,7 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("RendererReceiveShadowsLabel", itemPanel.transform, "");
@@ -174,7 +237,7 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("RendererUpdateWhenOffscreenLabel", itemPanel.transform, "");
@@ -207,7 +270,7 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("RendererRecalculateNormalsLabel", itemPanel.transform, "");
@@ -234,18 +297,70 @@ namespace MaterialEditorAPI
                 TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
             }
 
+            //Material Section Header
+            {
+                var itemPanel = UIUtility.CreatePanel("MaterialSectionPanel", contentList.transform);
+                itemPanel.gameObject.AddComponent<CanvasGroup>();
+                itemPanel.color = MaterialSectionColor;
+                itemPanel.gameObject.AddComponent<LayoutElement>().preferredHeight = PanelHeight + 4f;
+                var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
+                itemHLG.padding = new RectOffset(7, 1, 1, 1);
+                itemHLG.spacing = 4f;
+                itemHLG.childForceExpandWidth = false;
+
+                //Left accent bar
+                var accentBar = UIUtility.CreatePanel("MaterialSectionAccentBar", itemPanel.transform);
+                accentBar.color = MaterialSectionAccent;
+                var accentBarLE = accentBar.gameObject.AddComponent<LayoutElement>();
+                accentBarLE.minWidth = 3f;
+                accentBarLE.preferredWidth = 3f;
+                accentBarLE.flexibleWidth = 0f;
+
+                var collapseButton = UIUtility.CreateButton("MaterialSectionCollapseButton", itemPanel.transform, "-");
+                var collapseButtonLE = collapseButton.gameObject.AddComponent<LayoutElement>();
+                collapseButtonLE.minWidth = SmallButtonWidth;
+                collapseButtonLE.preferredWidth = SmallButtonWidth;
+                collapseButtonLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(collapseButton.gameObject, "Collapse/expand all materials");
+
+                Text labelSection = UIUtility.CreateText("MaterialSectionText", itemPanel.transform);
+                labelSection.alignment = TextAnchor.MiddleLeft;
+                labelSection.color = MaterialSectionText;
+                labelSection.fontStyle = FontStyle.Bold;
+                labelSection.fontSize = 14;
+                var labelSectionLE = labelSection.gameObject.AddComponent<LayoutElement>();
+                labelSectionLE.minWidth = LabelWidth;
+                labelSectionLE.preferredWidth = LabelWidth;
+                labelSectionLE.flexibleWidth = 1f;
+            }
+
             //Material
             {
                 var itemPanel = UIUtility.CreatePanel("MaterialPanel", contentList.transform);
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = MaterialColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = new RectOffset(18, 1, 1, 1);
+                itemHLG.spacing = 2f;
                 itemHLG.childForceExpandWidth = false;
 
+                //Left accent bar
+                var accentBar = UIUtility.CreatePanel("MaterialAccentBar", itemPanel.transform);
+                accentBar.color = MaterialSectionAccent;
+                var accentBarLE = accentBar.gameObject.AddComponent<LayoutElement>();
+                accentBarLE.minWidth = 2f;
+                accentBarLE.preferredWidth = 2f;
+                accentBarLE.flexibleWidth = 0f;
+
+                var collapseButton = UIUtility.CreateButton("MaterialCollapseButton", itemPanel.transform, "-");
+                var collapseButtonLE = collapseButton.gameObject.AddComponent<LayoutElement>();
+                collapseButtonLE.minWidth = SmallButtonWidth;
+                collapseButtonLE.preferredWidth = SmallButtonWidth;
+                collapseButtonLE.flexibleWidth = 0f;
+                TooltipManager.AddTooltip(collapseButton.gameObject, "Collapse/expand material properties");
+
                 var label = UIUtility.CreateText("MaterialLabel", itemPanel.transform, "");
-                label.alignment = TextAnchor.MiddleLeft;
-                label.color = Color.black;
+                label.enabled = false;
                 var labelLE = label.gameObject.AddComponent<LayoutElement>();
                 labelLE.minWidth = 0f;
                 labelLE.preferredWidth = 0f;
@@ -254,6 +369,7 @@ namespace MaterialEditorAPI
                 Text labelMaterial = UIUtility.CreateText("MaterialText", itemPanel.transform);
                 labelMaterial.alignment = TextAnchor.MiddleLeft;
                 labelMaterial.color = Color.black;
+                labelMaterial.raycastTarget = true;
                 var labelMaterialLE = labelMaterial.gameObject.AddComponent<LayoutElement>();
                 labelMaterialLE.minWidth = LabelWidth;
                 labelMaterialLE.preferredWidth = LabelWidth;
@@ -274,7 +390,7 @@ namespace MaterialEditorAPI
                 pasteEditsLE.flexibleWidth = 0f;
                 TooltipManager.AddTooltip(pasteEdits.gameObject, "Paste all the copied edits");
 
-                var copy = UIUtility.CreateButton($"MaterialCopyRemove", itemPanel.transform, "Copy Material");
+                var copy = UIUtility.CreateButton($"MaterialCopyRemove", itemPanel.transform, "Copy Mat");
                 var copyLE = copy.gameObject.AddComponent<LayoutElement>();
                 copyLE.minWidth = MaterialButtonWidth;
                 copyLE.preferredWidth = MaterialButtonWidth;
@@ -295,7 +411,8 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
+                itemHLG.spacing = 2f;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("ShaderLabel", itemPanel.transform, "");
@@ -321,6 +438,9 @@ namespace MaterialEditorAPI
                 dropdownShaderLE.minWidth = ShaderDropdownWidth;
                 dropdownShaderLE.preferredWidth = ShaderDropdownWidth;
                 dropdownShaderLE.flexibleWidth = 0f;
+                //Attach themer to the popup template so it gets styled when opened
+                var shaderTemplate = dropdownShader.transform.Find("Template");
+                if (shaderTemplate != null) shaderTemplate.gameObject.AddComponent<DropdownThemer>();
 
                 var reset = UIUtility.CreateButton($"ShaderResetButton", itemPanel.transform, "Reset");
                 var resetLE = reset.gameObject.AddComponent<LayoutElement>();
@@ -336,7 +456,7 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("ShaderRenderQueueLabel", itemPanel.transform, "");
@@ -369,7 +489,7 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = CategoryColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("PropertyCategoryLabel", itemPanel.transform, "");
@@ -388,12 +508,15 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
+                itemHLG.spacing = 2f;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("TextureLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
                 label.color = Color.black;
+                label.raycastTarget = true;
+                TooltipManager.AddTooltip(label.gameObject, "Left-click to show in preview panel. Right-click to toggle preview (if enabled in F1).");
                 var labelLE = label.gameObject.AddComponent<LayoutElement>();
                 labelLE.minWidth = LabelWidth;
                 labelLE.preferredWidth = LabelWidth;
@@ -401,13 +524,13 @@ namespace MaterialEditorAPI
 
                 CreateInterpolableButton("SelectInterpolableTextureButton", itemPanel.transform, "Select the currently selected texture property and its offset and scale properties as interpolables in timeline");
 
-                Button exportButton = UIUtility.CreateButton($"TextureExportButton", itemPanel.transform, $"Export Texture");
+                Button exportButton = UIUtility.CreateButton($"TextureExportButton", itemPanel.transform, $"Export");
                 var exportButtonLE = exportButton.gameObject.AddComponent<LayoutElement>();
                 exportButtonLE.minWidth = TextureButtonWidth;
                 exportButtonLE.preferredWidth = TextureButtonWidth;
                 exportButtonLE.flexibleWidth = 0f;
 
-                Button importButton = UIUtility.CreateButton($"TextureImportButton", itemPanel.transform, $"Import Texture");
+                Button importButton = UIUtility.CreateButton($"TextureImportButton", itemPanel.transform, $"Import");
                 var importButtonLE = importButton.gameObject.AddComponent<LayoutElement>();
                 importButtonLE.minWidth = TextureButtonWidth;
                 importButtonLE.preferredWidth = TextureButtonWidth;
@@ -419,6 +542,7 @@ namespace MaterialEditorAPI
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
                 TooltipManager.AddTooltip(reset.gameObject, "Reset this property to its original value.\n\nIn order for the reset to take effect you need to either save and re-load the scene, or copy the object and delete the old one");
+
             }
 
             //Offset and Scale
@@ -427,7 +551,7 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("OffsetScaleLabel", itemPanel.transform, "");
@@ -447,7 +571,7 @@ namespace MaterialEditorAPI
 
                 Text labelOffsetX = UIUtility.CreateText("OffsetXText", itemPanel.transform, "OffsetX");
                 labelOffsetX.alignment = TextAnchor.MiddleLeft;
-                labelOffsetX.color = Color.black;
+                labelOffsetX.color = ItemTextColor;
                 var labelOffsetXLE = labelOffsetX.gameObject.AddComponent<LayoutElement>();
                 labelOffsetXLE.minWidth = OffsetScaleLabelXWidth;
                 labelOffsetXLE.preferredWidth = OffsetScaleLabelXWidth;
@@ -464,7 +588,7 @@ namespace MaterialEditorAPI
 
                 Text labelOffsetY = UIUtility.CreateText("OffsetYText", itemPanel.transform, "Y");
                 labelOffsetY.alignment = TextAnchor.MiddleLeft;
-                labelOffsetY.color = Color.black;
+                labelOffsetY.color = ItemTextColor;
                 var labelOffsetYLE = labelOffsetY.gameObject.AddComponent<LayoutElement>();
                 labelOffsetYLE.minWidth = OffsetScaleLabelYWidth;
                 labelOffsetYLE.preferredWidth = OffsetScaleLabelYWidth;
@@ -485,7 +609,7 @@ namespace MaterialEditorAPI
                 //Scale
                 Text labelScaleX = UIUtility.CreateText("ScaleXText", itemPanel.transform, "ScaleX");
                 labelScaleX.alignment = TextAnchor.MiddleLeft;
-                labelScaleX.color = Color.black;
+                labelScaleX.color = ItemTextColor;
                 var labelScaleXLE = labelScaleX.gameObject.AddComponent<LayoutElement>();
                 labelScaleXLE.minWidth = OffsetScaleLabelXWidth;
                 labelScaleXLE.preferredWidth = OffsetScaleLabelXWidth;
@@ -502,7 +626,7 @@ namespace MaterialEditorAPI
 
                 Text labelScaleY = UIUtility.CreateText("ScaleYText", itemPanel.transform, "Y");
                 labelScaleY.alignment = TextAnchor.MiddleLeft;
-                labelScaleY.color = Color.black;
+                labelScaleY.color = ItemTextColor;
                 var labelScaleYLE = labelScaleY.gameObject.AddComponent<LayoutElement>();
                 labelScaleYLE.minWidth = OffsetScaleLabelYWidth;
                 labelScaleYLE.preferredWidth = OffsetScaleLabelYWidth;
@@ -534,7 +658,10 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
+                //Tighter spacing: the colour row has many children, so 2px gaps accumulate and
+                //shrink the flexible name label, shifting the row left relative to simpler rows
+                itemHLG.spacing = 1f;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("ColorLabel", itemPanel.transform, "");
@@ -549,7 +676,7 @@ namespace MaterialEditorAPI
 
                 Text labelR = UIUtility.CreateText("ColorRText", itemPanel.transform, "R");
                 labelR.alignment = TextAnchor.MiddleLeft;
-                labelR.color = Color.black;
+                labelR.color = ItemTextColor;
                 var labelRLE = labelR.gameObject.AddComponent<LayoutElement>();
                 labelRLE.minWidth = ColorLabelWidth;
                 labelRLE.preferredWidth = ColorLabelWidth;
@@ -566,7 +693,7 @@ namespace MaterialEditorAPI
 
                 Text labelG = UIUtility.CreateText("ColorGText", itemPanel.transform, "G");
                 labelG.alignment = TextAnchor.MiddleLeft;
-                labelG.color = Color.black;
+                labelG.color = ItemTextColor;
                 var labelGLE = labelG.gameObject.AddComponent<LayoutElement>();
                 labelGLE.minWidth = ColorLabelWidth;
                 labelGLE.preferredWidth = ColorLabelWidth;
@@ -582,7 +709,7 @@ namespace MaterialEditorAPI
 
                 Text labelB = UIUtility.CreateText("ColorBText", itemPanel.transform, "B");
                 labelB.alignment = TextAnchor.MiddleLeft;
-                labelB.color = Color.black;
+                labelB.color = ItemTextColor;
                 var labelBLE = labelB.gameObject.AddComponent<LayoutElement>();
                 labelBLE.minWidth = ColorLabelWidth;
                 labelBLE.preferredWidth = ColorLabelWidth;
@@ -598,7 +725,7 @@ namespace MaterialEditorAPI
 
                 Text labelA = UIUtility.CreateText("ColorAText", itemPanel.transform, "A");
                 labelA.alignment = TextAnchor.MiddleLeft;
-                labelA.color = Color.black;
+                labelA.color = ItemTextColor;
                 var labelALE = labelA.gameObject.AddComponent<LayoutElement>();
                 labelALE.minWidth = ColorLabelWidth;
                 labelALE.preferredWidth = ColorLabelWidth;
@@ -637,7 +764,8 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
+                itemHLG.spacing = 2f;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("FloatLabel", itemPanel.transform, "");
@@ -651,6 +779,7 @@ namespace MaterialEditorAPI
                 CreateInterpolableButton("SelectInterpolableFloatButton", itemPanel.transform, "Select currently selected float property as interpolable in timeline");
 
                 Slider sliderFloat = UIUtility.CreateSlider("FloatSlider", itemPanel.transform);
+                StyleSlider(sliderFloat);
                 var sliderFloatLE = sliderFloat.gameObject.AddComponent<LayoutElement>();
                 sliderFloatLE.minWidth = FloatSliderWidth;
                 sliderFloatLE.preferredWidth = FloatSliderWidth;
@@ -670,6 +799,7 @@ namespace MaterialEditorAPI
                 resetLE.preferredWidth = ResetButtonWidth;
                 resetLE.flexibleWidth = 0f;
                 TooltipManager.AddTooltip(reset.gameObject, "Reset the selected property to its original value");
+                //Drag the float label (property name) to adjust the value
                 label.gameObject.AddComponent<FloatLabelDragTrigger>().Initialize(textBoxFloat);
             }
 
@@ -679,7 +809,7 @@ namespace MaterialEditorAPI
                 itemPanel.gameObject.AddComponent<CanvasGroup>();
                 itemPanel.color = ItemColor;
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-                itemHLG.padding = Padding;
+                itemHLG.padding = SubRowPadding;
                 itemHLG.childForceExpandWidth = false;
 
                 var label = UIUtility.CreateText("KeywordLabel", itemPanel.transform, "");
@@ -712,6 +842,86 @@ namespace MaterialEditorAPI
             }
 
             return contentList.gameObject;
+        }
+
+        internal static void StyleSlider(Slider slider)
+        {
+            bool dark = MaterialEditorPluginBase.DarkMode.Value;
+            bool hacker = MaterialEditorUI.HackerMode;
+            var trackColor  = hacker ? new Color(0.00f, 0.25f, 0.05f, 1f) : dark ? new Color(0.28f, 0.28f, 0.30f, 1f) : new Color(0.55f, 0.55f, 0.57f, 1f);
+            var fillColor   = hacker ? new Color(0.00f, 0.55f, 0.12f, 1f) : dark ? new Color(0.45f, 0.45f, 0.50f, 1f) : new Color(0.38f, 0.38f, 0.42f, 1f);
+            var handleColor = hacker ? new Color(0.00f, 0.90f, 0.20f, 1f) : dark ? new Color(0.88f, 0.88f, 0.92f, 1f) : new Color(0.15f, 0.15f, 0.18f, 1f);
+
+            //Track background: raycast target matching the handle circle (~12px)
+            var bg = slider.transform.Find("Background")?.GetComponent<Image>();
+            if (bg != null)
+            {
+                // Transparent: catches clicks in a band matching the handle diameter, no visible box
+                bg.color = new Color(0f, 0f, 0f, 0f);
+                var bgRT = bg.GetComponent<RectTransform>();
+                bgRT.anchorMin = new Vector2(0f, 0.2f);
+                bgRT.anchorMax = new Vector2(1f, 0.8f);
+                bgRT.offsetMin = Vector2.zero;
+                bgRT.offsetMax = Vector2.zero;
+                bg.raycastTarget = true;
+            }
+
+            //Decorative track line, no raycast
+            var trackLine = slider.transform.Find("TrackLine")?.GetComponent<Image>();
+            if (trackLine == null)
+            {
+                var trackLineGO = new GameObject("TrackLine");
+                trackLineGO.transform.SetParent(slider.transform, false);
+                // Insert before Fill Area so it sits behind the fill
+                var fillAreaT = slider.transform.Find("Fill Area");
+                if (fillAreaT != null) trackLineGO.transform.SetSiblingIndex(fillAreaT.GetSiblingIndex());
+                var trackLineRT = trackLineGO.AddComponent<RectTransform>();
+                trackLineRT.anchorMin = new Vector2(0f, 0.42f);
+                trackLineRT.anchorMax = new Vector2(1f, 0.58f);
+                trackLineRT.offsetMin = Vector2.zero;
+                trackLineRT.offsetMax = Vector2.zero;
+                trackLine = trackLineGO.AddComponent<Image>();
+                trackLine.raycastTarget = false;
+            }
+            trackLine.color = trackColor;
+
+            //Fill area, centered strip
+            var fillArea = slider.transform.Find("Fill Area")?.GetComponent<RectTransform>();
+            if (fillArea != null)
+            {
+                fillArea.anchorMin = new Vector2(0f, 0.42f);
+                fillArea.anchorMax = new Vector2(1f, 0.58f);
+                fillArea.offsetMin = new Vector2(2f, 0f);
+                fillArea.offsetMax = new Vector2(-2f, 0f);
+            }
+
+            //Handle slide area, same band as background
+            var handleSlideArea = slider.transform.Find("Handle Slide Area")?.GetComponent<RectTransform>();
+            if (handleSlideArea != null)
+            {
+                handleSlideArea.anchorMin = new Vector2(0f, 0.2f);
+                handleSlideArea.anchorMax = new Vector2(1f, 0.8f);
+                handleSlideArea.offsetMin = new Vector2(2f, 0f);
+                handleSlideArea.offsetMax = new Vector2(-2f, 0f);
+            }
+
+            //Fill colour
+            var fill = slider.transform.Find("Fill Area/Fill")?.GetComponent<Image>();
+            if (fill != null)
+                fill.color = fillColor;
+
+            //Handle, UILib knob sprite
+            var handle = slider.transform.Find("Handle Slide Area/Handle")?.GetComponent<Image>();
+            if (handle != null)
+            {
+                handle.color = handleColor;
+                handle.sprite = UILib.UIUtility.knob;
+                handle.type = Image.Type.Simple;
+                handle.preserveAspect = true;
+                var handleRT = handle.GetComponent<RectTransform>();
+                handleRT.sizeDelta = new Vector2(12f, 12f);
+                handleRT.localEulerAngles = Vector3.zero;
+            }
         }
 
         private static void CreateInterpolableButton(string objectName, Transform parent, string tooltipText)

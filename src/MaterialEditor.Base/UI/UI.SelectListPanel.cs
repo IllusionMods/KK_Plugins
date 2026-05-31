@@ -17,6 +17,9 @@ namespace MaterialEditorAPI
         private InputField filterInputField;
         private Dictionary<string, Image> listItems;
 
+        public Color TextColor { get; set; } = Color.black;
+        public Color RowColor { get; set; } = new Color(1f, 1f, 1f, 0.6f);
+
         public SelectListPanel(Transform parent, string name, string title)
         {
             listItems = new Dictionary<string, Image>();
@@ -43,7 +46,8 @@ namespace MaterialEditorAPI
             scrollRect.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(MaterialEditorUI.ScrollOffsetX, 0f);
             scrollRect.viewport.offsetMax = new Vector2(MaterialEditorUI.ScrollOffsetX, 0f);
             scrollRect.movementType = ScrollRect.MovementType.Clamped;
-            scrollRect.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
+            // Scrollbar: semi-transparent track, matches main ME scrollbar style
+            scrollRect.verticalScrollbar.GetComponent<Image>().color = new Color(0.70f, 0.70f, 0.72f, 0.4f);
         }
 
         public void AddEntry(string name, Action<bool> onValueChanged)
@@ -54,7 +58,7 @@ namespace MaterialEditorAPI
             var contentList = UIUtility.CreatePanel($"{this.name}Entry", scrollRect.content.transform);
             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = MaterialEditorUI.PanelHeight;
             contentList.gameObject.AddComponent<Mask>();
-            contentList.color = MaterialEditorUI.RowColor;
+            contentList.color = RowColor;
 
             var itemPanel = UIUtility.CreatePanel($"{this.name}EntryPanel", contentList.transform);
             itemPanel.gameObject.AddComponent<CanvasGroup>();
@@ -66,6 +70,9 @@ namespace MaterialEditorAPI
             toggle.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 1f, 1f, -18f, 18f, -1f);
             toggle.isOn = false;
             toggle.onValueChanged.AddListener(value => onValueChanged(value));
+            //Apply current theme colour to the toggle label
+            var toggleLabel = toggle.GetComponentInChildren<Text>(true);
+            if (toggleLabel != null) toggleLabel.color = TextColor;
 
             itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggle.isOn = !toggle.isOn);
 

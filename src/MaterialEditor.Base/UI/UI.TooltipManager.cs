@@ -49,6 +49,15 @@ namespace MaterialEditorAPI
             tooltip.panelTransform = panelTransform;
             tooltip.tooltipText = tooltipText;
             Instance = tooltip;
+
+            ApplyOpacity();
+        }
+
+        internal static void ApplyOpacity()
+        {
+            if (Instance?.Panel == null) return;
+            var c = Instance.Panel.color;
+            Instance.Panel.color = new Color(c.r, c.g, c.b, MaterialEditorPluginBase.TooltipOpacity.Value);
         }
 
         public static void SetToolTipText(string text, bool setActive = false)

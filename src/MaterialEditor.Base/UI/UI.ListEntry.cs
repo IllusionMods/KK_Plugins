@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 using static UILib.Extensions;
@@ -7,9 +7,19 @@ namespace MaterialEditorAPI
 {
     internal class ListEntry : MonoBehaviour
     {
+        public CanvasGroup RendererSectionPanel;
+        public Button RendererSectionCollapseButton;
+        public Text RendererSectionText;
+
+        public CanvasGroup MaterialSectionPanel;
+        public Button MaterialSectionCollapseButton;
+        public Text MaterialSectionText;
+
         public CanvasGroup RendererPanel;
         public Text RendererLabel;
         public Text RendererText;
+        public Button RendererCollapseButton;
+        public Toggle RendererEnabledInlineToggle;
         public Button SelectInterpolableRendererButton;
         public Button ExportUVButton;
         public Button ExportObjButton;
@@ -42,6 +52,7 @@ namespace MaterialEditorAPI
         public CanvasGroup MaterialPanel;
         public Text MaterialLabel;
         public Text MaterialText;
+        public Button MaterialCollapseButton;
         public Button SelectInterpolableMaterialButton;
         public Button MaterialCopyButton;
         public Button MaterialPasteButton;
@@ -108,6 +119,7 @@ namespace MaterialEditorAPI
         public Button KeywordResetButton;
 
         private ItemInfo _currentItem;
+        private bool _inlineToggleSuppressed;
 
         public ItemInfo CurrentItem
         {
@@ -115,20 +127,72 @@ namespace MaterialEditorAPI
             set => SetItem(value, false);
         }
 
-        public void SetItem(ItemInfo item, bool force)
+        public void SetItem(ItemInfo item, bool force, int rowIndex = -1)
         {
             if (!force && ReferenceEquals(item, _currentItem)) return;
 
             _currentItem = item;
+
+            //Alternate row colour by absolute item index so the stripe stays stable while scrolling
+            var rowImg = GetComponent<Image>();
+            if (rowImg != null)
+            {
+                int parity = rowIndex >= 0 ? rowIndex : transform.GetSiblingIndex();
+                rowImg.color = (parity % 2 == 0) ? MaterialEditorUI.RowColor : MaterialEditorUI.RowColorAlt;
+            }
 
             HideAll();
             if (item != null)
             {
                 switch (item.ItemType)
                 {
+                    case ItemInfo.RowItemType.RendererSection:
+                        ShowRendererSection();
+                        RendererSectionText.text = $"Renderers ({item.RendererCount})";
+                        RendererSectionCollapseButton.onClick.RemoveAllListeners();
+                        RendererSectionCollapseButton.GetComponentInChildren<Text>().text = MaterialEditorUI.RendererSectionCollapsed ? "+" : "-";
+                        RendererSectionCollapseButton.onClick.AddListener(() =>
+                        {
+                            MaterialEditorUI.RendererSectionCollapsed = !MaterialEditorUI.RendererSectionCollapsed;
+                            MaterialEditorUI.UIInstance.RefreshUI();
+                        });
+                        break;
                     case ItemInfo.RowItemType.Renderer:
                         ShowRenderer();
                         SetLabelText(RendererLabel, item.LabelText);
+
+                        // Collapse/expand button
+                        RendererCollapseButton.onClick.RemoveAllListeners();
+                        bool isRendererCollapsed = MaterialEditorUI.CollapsedRenderers.Contains(item.RendererInstanceID);
+                        RendererCollapseButton.GetComponentInChildren<Text>().text = isRendererCollapsed ? "+" : "-";
+                        RendererCollapseButton.onClick.AddListener(() =>
+                        {
+                            if (MaterialEditorUI.CollapsedRenderers.Contains(item.RendererInstanceID))
+                                MaterialEditorUI.CollapsedRenderers.Remove(item.RendererInstanceID);
+                            else
+                                MaterialEditorUI.CollapsedRenderers.Add(item.RendererInstanceID);
+                            MaterialEditorUI.UIInstance.RefreshUI();
+                        });
+
+                        // Inline enabled toggle, mirrors the Enabled row
+                        RendererEnabledInlineToggle.onValueChanged.RemoveAllListeners();
+                        _inlineToggleSuppressed = true;
+                        try { RendererEnabledInlineToggle.isOn = item.RendererEnabled; }
+                        finally { _inlineToggleSuppressed = false; }
+                        RendererEnabledInlineToggle.onValueChanged.AddListener(value =>
+                        {
+                            if (_inlineToggleSuppressed) return;
+                            item.RendererEnabled = value;
+                            // OnChange only; OnReset here contaminates other renderers in Studio
+                            item.RendererEnabledOnChange(value);
+                            if (RendererEnabledToggle != null)
+                            {
+                                _inlineToggleSuppressed = true;
+                                try { RendererEnabledToggle.isOn = value; }
+                                finally { _inlineToggleSuppressed = false; }
+                            }
+                        });
+
                         ExportUVButton.onClick.RemoveAllListeners();
                         ExportUVButton.onClick.AddListener(() => item.ExportUVOnClick());
                         ExportObjButton.onClick.RemoveAllListeners();
@@ -136,6 +200,11 @@ namespace MaterialEditorAPI
                         SelectInterpolableRendererButton.onClick.RemoveAllListeners();
                         SelectInterpolableRendererButton.onClick.AddListener(() => item.SelectInterpolableButtonRendererOnClick());
                         RendererText.text = item.RendererName;
+                        bool dark = MaterialEditorPluginBase.DarkMode.Value;
+                        RendererText.color = item.RendererHasChanges
+                            ? (dark ? new Color(0.40f, 0.85f, 0.95f, 1f) : new Color(0.00f, 0.40f, 0.75f, 1f))
+                            : MaterialEditorUI.ItemTextColor;
+                        RendererText.fontStyle = item.RendererHasChanges ? FontStyle.Bold : FontStyle.Normal;
                         break;
                     case ItemInfo.RowItemType.RendererEnabled:
                         ShowRendererEnabled();
@@ -149,6 +218,12 @@ namespace MaterialEditorAPI
                                 item.RendererEnabledOnChange(value);
                             else
                                 item.RendererEnabledOnReset();
+                            if (RendererEnabledInlineToggle != null)
+                            {
+                                _inlineToggleSuppressed = true;
+                                try { RendererEnabledInlineToggle.isOn = value; }
+                                finally { _inlineToggleSuppressed = false; }
+                            }
                             SetLabelText(RendererEnabledLabel, item.LabelText, item.RendererEnabled != item.RendererEnabledOriginal, RendererEnabledResetButton, RendererEnabledPanel);
                         });
 
@@ -229,10 +304,42 @@ namespace MaterialEditorAPI
                         RendererRecalculateNormalsResetButton.onClick.RemoveAllListeners();
                         RendererRecalculateNormalsResetButton.onClick.AddListener(() => RendererRecalculateNormalsToggle.isOn = item.RendererRecalculateNormalsOriginal);
                         break;
+                    case ItemInfo.RowItemType.MaterialSection:
+                        ShowMaterialSection();
+                        MaterialSectionText.text = $"Materials ({item.MaterialCount})";
+                        MaterialSectionCollapseButton.onClick.RemoveAllListeners();
+                        MaterialSectionCollapseButton.GetComponentInChildren<Text>().text = MaterialEditorUI.MaterialSectionCollapsed ? "+" : "-";
+                        MaterialSectionCollapseButton.onClick.AddListener(() =>
+                        {
+                            MaterialEditorUI.MaterialSectionCollapsed = !MaterialEditorUI.MaterialSectionCollapsed;
+                            MaterialEditorUI.UIInstance.RefreshUI();
+                        });
+                        break;
                     case ItemInfo.RowItemType.Material:
                         ShowMaterial();
                         SetLabelText(MaterialLabel, item.LabelText);
                         MaterialText.text = item.MaterialName;
+                        {
+                            bool darkMat = MaterialEditorPluginBase.DarkMode.Value;
+                            MaterialText.color = item.MaterialHasChanges
+                                ? (darkMat ? new Color(0.40f, 0.85f, 0.95f, 1f) : new Color(0.00f, 0.40f, 0.75f, 1f))
+                                : MaterialEditorUI.ItemTextColor;
+                            MaterialText.fontStyle = item.MaterialHasChanges ? FontStyle.Bold : FontStyle.Normal;
+                        }
+
+                        // Collapse/expand button
+                        MaterialCollapseButton.onClick.RemoveAllListeners();
+                        bool isCollapsed = MaterialEditorUI.CollapsedMaterials.Contains(item.MaterialCollapseKey);
+                        MaterialCollapseButton.GetComponentInChildren<Text>().text = isCollapsed ? "+" : "-";
+                        MaterialCollapseButton.onClick.AddListener(() =>
+                        {
+                            if (MaterialEditorUI.CollapsedMaterials.Contains(item.MaterialCollapseKey))
+                                MaterialEditorUI.CollapsedMaterials.Remove(item.MaterialCollapseKey);
+                            else
+                                MaterialEditorUI.CollapsedMaterials.Add(item.MaterialCollapseKey);
+                            MaterialEditorUI.UIInstance.RefreshUI();
+                        });
+
                         MaterialCopyButton.onClick.RemoveAllListeners();
                         MaterialCopyButton.onClick.AddListener(() => item.MaterialOnCopy.Invoke());
                         MaterialPasteButton.onClick.RemoveAllListeners();
@@ -247,21 +354,15 @@ namespace MaterialEditorAPI
                         {
                             MaterialPasteButton.enabled = true;
                             Text text = MaterialPasteButton.GetComponentInChildren<Text>();
-                            text.color = Color.black;
+                            text.color = MaterialEditorUI.ItemTextColor;
                         }
 
-                        if (item.MaterialName.Contains(MaterialAPI.MaterialCopyPostfix))
-                        {
-                            Text text = MaterialCopyRemove.GetComponentInChildren<Text>();
-                            text.text = "Remove Material";
-                        }
-                        else
-                        {
-                            Text text = MaterialCopyRemove.GetComponentInChildren<Text>();
-                            text.text = "Copy Material";
-                        }
+                        var copyRemoveText = MaterialCopyRemove.GetComponentInChildren<Text>();
+                        if (copyRemoveText != null)
+                            copyRemoveText.text = item.MaterialName.Contains(MaterialAPI.MaterialCopyPostfix) ? "Remove Mat" : "Copy Mat";
                         if (item.MaterialOnCopyRemove != null)
                         {
+                            MaterialCopyRemove.gameObject.SetActive(true);
                             MaterialCopyRemove.onClick.RemoveAllListeners();
                             MaterialCopyRemove.onClick.AddListener(delegate { item.MaterialOnCopyRemove.Invoke(); });
                         }
@@ -354,8 +455,8 @@ namespace MaterialEditorAPI
                             {
                                 ExportTextureButton.enabled = true;
                                 Text text = ExportTextureButton.GetComponentInChildren<Text>();
-                                text.text = "Export Texture";
-                                text.color = Color.black;
+                                text.text = "Export";
+                                text.color = MaterialEditorUI.ItemTextColor;
                             }
                             else
                             {
@@ -387,6 +488,17 @@ namespace MaterialEditorAPI
                         });
                         SelectInterpolableTextureButton.onClick.RemoveAllListeners();
                         SelectInterpolableTextureButton.onClick.AddListener(() => item.SelectInterpolableButtonTextureOnClick());
+
+                        // Left-click populates preview if panel is open; right-click toggles (gated by F1 config).
+                        // Use RightClickHandler for both to avoid adding a Button component,
+                        // which causes layout recalculation and shrinks the text element.
+                        var texRch = TextureLabel.gameObject.GetComponent<RightClickHandler>() ?? TextureLabel.gameObject.AddComponent<RightClickHandler>();
+                        texRch.OnLeftClick = () => MaterialEditorUI.SetTexturePreview(item.TexturePreview, item.TexturePreviewFileName);
+                        texRch.OnRightClick = () =>
+                        {
+                            if (MaterialEditorPluginBase.TexturePreviewRightClick.Value)
+                                MaterialEditorUI.ToggleMaterialPreview(item.LabelText, item.TexturePreview);
+                        };
                         break;
                     case ItemInfo.RowItemType.TextureOffsetScale:
                         ShowOffsetScale();
@@ -732,35 +844,93 @@ namespace MaterialEditorAPI
                 gameObject.SetActive(visible);
         }
 
-        private static void SetLabelText(Text label, string text) { 
+        private static void SetLabelText(Text label, string text)
+        {
             label.text = text ?? "";
+            label.color = MaterialEditorUI.ItemTextColor;
         }
 
         private static void SetLabelText(Text label, string text, bool valueChanged, Button resetBtn, CanvasGroup panel)
         {
             label.text = text ?? "";
+            label.fontStyle = valueChanged ? FontStyle.Bold : FontStyle.Normal;
 
+            //Accent the label so edits are obvious regardless of background opacity
             if (valueChanged)
             {
-                panel.gameObject.GetComponent<Image>().color = MaterialEditorUI.ItemColorChanged;
-                if (resetBtn)
-                    resetBtn.interactable = true;
+                bool dark = MaterialEditorPluginBase.DarkMode.Value;
+                bool hacker = MaterialEditorUI.HackerMode;
+                label.color = hacker ? new Color(1f, 0.30f, 0.25f, 1f)
+                            : dark   ? new Color(0.40f, 0.85f, 0.95f, 1f)
+                                     : new Color(0.00f, 0.40f, 0.75f, 1f);
             }
             else
             {
-                panel.gameObject.GetComponent<Image>().color = MaterialEditorUI.ItemColor;
-                if (resetBtn)
-                    resetBtn.interactable = false;
+                label.color = MaterialEditorUI.ItemTextColor;
+            }
+
+            //Keep the row transparent so the stripe shows; the coloured text marks the edit
+            panel.gameObject.GetComponent<Image>().color = MaterialEditorUI.ItemColor;
+
+            if (resetBtn)
+            {
+                resetBtn.interactable = valueChanged;
+                StyleResetButton(resetBtn, valueChanged);
+            }
+        }
+
+        //Colours the reset button by theme; blue (or green in hacker mode) when a reset is available.
+        //Adds a text outline in dark and hacker modes so the label stays readable on the tinted button.
+        private static void StyleResetButton(Button resetBtn, bool available)
+        {
+            bool hacker = MaterialEditorUI.HackerMode;
+            bool dark = MaterialEditorPluginBase.DarkMode.Value;
+
+            var img = resetBtn.GetComponent<Image>();
+            if (img != null)
+            {
+                if (available)
+                    img.color = hacker ? new Color(0.60f, 0.10f, 0.10f, 1f)
+                              : dark   ? new Color(0.40f, 0.85f, 0.95f, 1f)
+                                       : new Color(0.00f, 0.40f, 0.75f, 1f);
+                else
+                    img.color = (dark || hacker) ? new Color(0.25f, 0.25f, 0.28f, 1f)
+                                                 : new Color(0.85f, 0.85f, 0.85f, 1f);
+            }
+
+            var txt = resetBtn.GetComponentInChildren<Text>(true);
+            if (txt != null)
+            {
+                //Light text on the tinted available button; theme colour otherwise
+                if (available)
+                    txt.color = (dark || hacker) ? new Color(0.96f, 0.96f, 0.96f, 1f) : MaterialEditorUI.ItemTextColor;
+                else
+                    txt.color = MaterialEditorUI.ItemTextColor;
+
+                var outline = txt.GetComponent<Outline>();
+                if (dark || hacker)
+                {
+                    if (outline == null) outline = txt.gameObject.AddComponent<Outline>();
+                    outline.effectColor = new Color(0f, 0f, 0f, 0.9f);
+                    outline.effectDistance = new Vector2(1f, -1f);
+                    outline.enabled = true;
+                }
+                else if (outline != null)
+                {
+                    outline.enabled = false;
+                }
             }
         }
         private void HideAll()
         {
+            ShowRendererSection(false);
             ShowRenderer(false);
             ShowRendererEnabled(false);
             ShowRendererShadowCastingMode(false);
             ShowRendererReceiveShadows(false);
             ShowRendererUpdateWhenOffscreen(false);
             ShowRendererRecalculateNormals(false);
+            ShowMaterialSection(false);
             ShowMaterial(false);
             ShowShader(false);
             ShowShaderRenderQueue(false);
@@ -770,6 +940,12 @@ namespace MaterialEditorAPI
             ShowColor(false);
             ShowFloat(false);
             ShowKeyword(false);
+        }
+
+        private void ShowRendererSection(bool visible = true)
+        {
+            RendererSectionPanel.alpha = visible ? 1 : 0;
+            RendererSectionPanel.blocksRaycasts = visible;
         }
 
         private void ShowRenderer(bool visible = true)
@@ -803,6 +979,12 @@ namespace MaterialEditorAPI
             RendererRecalculateNormalsPanel.alpha = visible ? 1 : 0;
             RendererRecalculateNormalsPanel.blocksRaycasts = visible;
         }
+        private void ShowMaterialSection(bool visible = true)
+        {
+            MaterialSectionPanel.alpha = visible ? 1 : 0;
+            MaterialSectionPanel.blocksRaycasts = visible;
+        }
+
         private void ShowMaterial(bool visible = true)
         {
             MaterialPanel.alpha = visible ? 1 : 0;

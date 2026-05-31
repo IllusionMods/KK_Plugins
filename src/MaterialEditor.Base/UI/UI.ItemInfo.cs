@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace MaterialEditorAPI
@@ -8,7 +8,12 @@ namespace MaterialEditorAPI
         public RowItemType ItemType;
         public string LabelText { get; set; }
 
+        public int RendererCount { get; set; }
+        public int MaterialCount { get; set; }
+
         public string RendererName { get; set; }
+        public int RendererInstanceID { get; set; }
+        public bool RendererHasChanges { get; set; }
         public Action SelectInterpolableButtonRendererOnClick { get; set; }
         public Action ExportUVOnClick { get; set; }
         public Action ExportObjOnClick { get; set; }
@@ -39,10 +44,13 @@ namespace MaterialEditorAPI
         public Action RendererRecalculateNormalsOnReset { get; set; }
 
         public string MaterialName { get; set; }
+        public string MaterialCollapseKey { get; set; }
+        public bool MaterialHasChanges { get; set; }
         public Action MaterialOnCopy { get; set; }
         public Action MaterialOnPaste { get; set; }
         public Action MaterialOnCopyRemove { get; set; }
         public Action MaterialOnRename { get; set; }
+        public Action MaterialOnPreview { get; set; }
 
         public string ShaderName { get; set; }
         public string ShaderNameOriginal { get; set; }
@@ -57,6 +65,8 @@ namespace MaterialEditorAPI
 
         public bool TextureChanged { get; set; }
         public bool TextureExists { get; set; }
+        public Texture TexturePreview { get; set; }
+        public string TexturePreviewFileName { get; set; }
         public Action SelectInterpolableButtonTextureOnClick { get; set; }
         public Action TextureOnExport { get; set; }
         public Action TextureOnImport { get; set; }
@@ -99,6 +109,6 @@ namespace MaterialEditorAPI
             LabelText = labelText;
         }
 
-        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, RendererUpdateWhenOffscreen, RendererRecalculateNormals, Material, Shader, ShaderRenderQueue, PropertyCategory, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
+        public enum RowItemType { RendererSection, Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, RendererUpdateWhenOffscreen, RendererRecalculateNormals, MaterialSection, Material, Shader, ShaderRenderQueue, PropertyCategory, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
     }
 }

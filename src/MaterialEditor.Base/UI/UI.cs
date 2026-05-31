@@ -49,12 +49,21 @@ namespace MaterialEditorAPI
         private static List<Renderer> SelectedMaterialRenderers = new List<Renderer>();
         private static bool RenameListVisible = false;
 
+        internal static readonly HashSet<string> CollapsedMaterials = new HashSet<string>();
+        internal static readonly HashSet<int> CollapsedRenderers = new HashSet<int>();
+        internal static bool RendererSectionCollapsed = false;
+        internal static bool MaterialSectionCollapsed = false;
+        internal static bool HackerMode = false;
+
+        /// <summary>Singleton instance of the MaterialEditorUI</summary>
+        public static MaterialEditorUI UIInstance { get; private set; }
+
         internal static FileSystemWatcher TexChangeWatcher;
         private VirtualList VirtualList;
 
         internal const float MarginSize = 5f;
         internal const float HeaderSize = 20f;
-        internal const float ScrollOffsetX = -15f;
+        internal const float ScrollOffsetX = -10f; // scrollbar width
         internal const float PanelHeight = 22f;
 
         #region Entry Item Width
@@ -66,11 +75,11 @@ namespace MaterialEditorAPI
         internal const float InterpolableButtonWidth = SmallButtonWidth;
         internal const float ContentFullWidth = 316f;
         // Renderer (Enbale/ShadowCastingMode/ReceiveShadows/RendererUpdateWhenOffscreen/RecalulateNormals)
-        internal const float RendererButtonWidth = ButtonWidth;
+        internal const float RendererButtonWidth = ButtonWidth * 0.65f;
         internal const float RendererToggleWidth = 20f;
         internal const float RendererDropdownWidth = 94f;
         // Material
-        internal const float MaterialButtonWidth = ButtonWidth * 0.75f;
+        internal const float MaterialButtonWidth = ButtonWidth * 0.55f;
         internal const float MaterialRenameButtonWidth = SmallButtonWidth;
         // Shader
         internal const float ShaderDropdownWidth = ContentFullWidth;
@@ -94,17 +103,588 @@ namespace MaterialEditorAPI
         #endregion
 
         internal static RectOffset Padding;
+        internal static RectOffset SubRowPadding;
 
         #region Colors
-        internal static readonly Color RowColor = new Color(1f, 1f, 1f, 0.6f);
+        //Light mode base colours
+        internal static Color RowColor     = new Color(0.94f, 0.94f, 0.95f, 1f);
+        internal static Color RowColorAlt  = new Color(1.00f, 1.00f, 1.00f, 1f);
         // https://simplified.com/blog/colors/triadic-colors
-        internal static readonly Color RendererColor = new Color(0.984f, 0.600f, 0.008f, 0.5f);
-        internal static readonly Color MaterialColor = new Color(0.400f, 0.690f, 0.196f, 0.5f);
-        internal static readonly Color CategoryColor = new Color(0.627f, 0.004f, 0.812f, 0.5f);
+        internal static Color RendererColor  = new Color(1.00f, 0.96f, 0.90f, 1f);
+        internal static Color MaterialColor  = new Color(0.93f, 0.98f, 0.93f, 1f);
+        internal static Color CategoryColor  = new Color(0.91f, 0.86f, 0.98f, 1f);
 
-        internal static readonly Color ItemColor = new Color(1f, 1f, 1f, 0f);
-        internal static readonly Color ItemColorChanged = new Color(0f, 0f, 0f, 0.3f);
+        internal static Color RendererSectionColor = new Color(0.98f, 0.88f, 0.70f, 1f);
+        internal static Color MaterialSectionColor = new Color(0.78f, 0.93f, 0.80f, 1f);
+        internal static Color RendererSectionAccent = new Color(0.72f, 0.42f, 0.02f, 1f);
+        internal static Color MaterialSectionAccent = new Color(0.14f, 0.50f, 0.20f, 1f);
+        internal static Color RendererSectionText = new Color(0.35f, 0.18f, 0.00f, 1f);
+        internal static Color MaterialSectionText = new Color(0.04f, 0.24f, 0.06f, 1f);
+
+        internal static Color ItemColor        = new Color(0f, 0f, 0f, 0f);
+        internal static Color ItemColorChanged = new Color(0f, 0f, 0f, 0.08f);
+        internal static Color ItemTextColor    = Color.black;
         #endregion
+
+        private static Font _arialFont;
+        private static Font _interRegular;
+        private static Font _interBold;
+        private static Font _cascadiaFont;
+        private static Font _notoRegular;
+        private static Font _notoBold;
+        private static Sprite _flatSprite;
+
+        /// <summary>1x1 white sprite for a flat squared look instead of UILib's rounded sprites.</summary>
+        internal static Sprite FlatSprite
+        {
+            get
+            {
+                if (_flatSprite == null)
+                {
+                    var tex = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+                    tex.SetPixel(0, 0, Color.white);
+                    tex.Apply();
+                    _flatSprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+                }
+                return _flatSprite;
+            }
+        }
+
+        private static void LoadFonts()
+        {
+            if (_interRegular == null)
+            {
+                try
+                {
+                    var asm = System.Reflection.Assembly.GetExecutingAssembly();
+                    foreach (var name in asm.GetManifestResourceNames())
+                    {
+                        if (!name.EndsWith("mefonts.unity3d")) continue;
+                        using (var stream = asm.GetManifestResourceStream(name))
+                        {
+                            byte[] buf = new byte[stream.Length];
+                            stream.Read(buf, 0, buf.Length);
+                            var bundle = AssetBundle.LoadFromMemory(buf);
+                            if (bundle == null) return;
+                            _interRegular = bundle.LoadAsset<Font>("Assets/Fonts/JetBrainsMonoNL-Regular.ttf");
+                            _interBold    = bundle.LoadAsset<Font>("Assets/Fonts/JetBrainsMonoNL-Bold.ttf");
+                            _cascadiaFont = bundle.LoadAsset<Font>("Assets/Fonts/CascadiaMono.ttf");
+                            _notoRegular  = bundle.LoadAsset<Font>("Assets/Fonts/NotoSans-Regular.ttf");
+                            _notoBold     = bundle.LoadAsset<Font>("Assets/Fonts/NotoSans-Bold.ttf");
+                            bundle.Unload(false);
+                        }
+                        break;
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    MaterialEditorPluginBase.Logger.LogWarning($"[ME] Could not load font bundle: {e.Message}");
+                }
+            }
+            ApplyFontChoice();
+        }
+
+        internal static void ApplyFontChoice()
+        {
+            Font chosen;
+            switch (MaterialEditorPluginBase.UIFont?.Value)
+            {
+                case MaterialEditorPluginBase.MEFont.JetBrainsMono when _interRegular != null:
+                    chosen = _interRegular; break;
+                case MaterialEditorPluginBase.MEFont.CascadiaMono when _cascadiaFont != null:
+                    chosen = _cascadiaFont; break;
+                case MaterialEditorPluginBase.MEFont.NotoSans when _notoRegular != null:
+                    chosen = _notoRegular; break;
+                default:
+                    chosen = _arialFont ?? Resources.GetBuiltinResource<Font>("Arial.ttf"); break;
+            }
+            UILib.UIUtility.defaultFont = chosen;
+            //Update all existing text elements in the ME window
+            if (MaterialEditorWindow != null)
+                foreach (var txt in MaterialEditorWindow.GetComponentsInChildren<Text>(true))
+                    txt.font = chosen;
+        }
+
+        private static Image FooterPanel;
+        private static Button FooterRendererSectionButton;
+        private static Button FooterMaterialSectionButton;
+        private static Button CollapseRenderersButton;
+        private static Button CollapseMaterialsButton;
+
+        /// <summary>Show or hide the R and M header buttons based on config</summary>
+        public static void UpdateHeaderButtons()
+        {
+            CollapseRenderersButton?.gameObject.SetActive(MaterialEditorPluginBase.ShowCollapseRenderersButton.Value);
+            CollapseMaterialsButton?.gameObject.SetActive(MaterialEditorPluginBase.ShowCollapseMaterialsButton.Value);
+        }
+
+        private static RawImage TexturePreviewImage;
+        private static Text TexturePreviewNameText;
+        private static GameObject TexturePreviewPanel;
+        private static bool TexturePreviewVisible = false;
+        private static Vector2 TexturePreviewDefaultSize;
+        private static Vector2 TexturePreviewDefaultPosition;
+
+        /// <summary>
+        /// Update the texture preview panel with the given texture and name
+        /// </summary>
+        public static void SetTexturePreview(Texture texture, string textureName)
+        {
+            if (TexturePreviewPanel == null || !TexturePreviewVisible) return;
+            TexturePreviewImage.texture = texture;
+            TexturePreviewImage.gameObject.SetActive(texture != null);
+            TexturePreviewNameText.text = texture != null ? textureName : "No Texture";
+            TexturePreviewImage.uvRect = new Rect(0, 0, 1, 1);
+            // Update the aspect ratio fitter to match the actual texture
+            var arf = TexturePreviewImage.GetComponent<AspectRatioFitter>();
+            if (arf != null)
+                arf.aspectRatio = (texture != null && texture.width > 0 && texture.height > 0)
+                    ? (float)texture.width / texture.height
+                    : 1f;
+        }
+
+        /// <summary>
+        /// Apply light or dark theme to the Material Editor UI
+        /// </summary>
+        public static void ApplyTheme()
+        {
+            if (MaterialEditorMainPanel == null) return;
+            bool dark = MaterialEditorPluginBase.DarkMode.Value;
+            float op = MaterialEditorPluginBase.WindowOpacity.Value;
+
+            //Hacker mode: black bg, green text, Cascadia font
+            if (HackerMode)
+            {
+                var hackerBg     = new Color(0f, 0f, 0f, op);
+                var hackerGreen  = new Color(0.00f, 0.90f, 0.20f, 1f);
+                var hackerDimGreen = new Color(0.00f, 0.55f, 0.12f, 1f);
+                var hackerPanel  = new Color(0f, 0f, 0f, op);
+                var hackerRowA   = new Color(0.04f, 0.04f, 0.04f, op);
+                var hackerRowB   = new Color(0.07f, 0.07f, 0.07f, op);
+
+                //Override font to Cascadia for terminal feel
+                if (_cascadiaFont != null)
+                {
+                    UILib.UIUtility.defaultFont = _cascadiaFont;
+                    if (MaterialEditorWindow != null)
+                        foreach (var txt in MaterialEditorWindow.GetComponentsInChildren<Text>(true))
+                            txt.font = _cascadiaFont;
+                }
+
+                MaterialEditorMainPanel.color = hackerBg;
+                var scrollBgImgH = MaterialEditorScrollableUI?.GetComponent<Image>();
+                if (scrollBgImgH != null) scrollBgImgH.color = hackerBg;
+                var cgH = MaterialEditorWindow?.GetComponent<CanvasGroup>();
+                if (cgH != null) { cgH.alpha = 1f; cgH.interactable = true; cgH.blocksRaycasts = true; }
+
+                RowColor         = hackerRowA;
+                RowColorAlt      = hackerRowB;
+                ItemColor        = new Color(0f, 0f, 0f, 0f);
+                ItemColorChanged = new Color(0f, 0.9f, 0.2f, 0.10f);
+                ItemTextColor    = hackerGreen;
+                RendererColor    = new Color(0.02f, 0.06f, 0.02f, op);
+                MaterialColor    = new Color(0.02f, 0.06f, 0.02f, op);
+                CategoryColor    = new Color(0.02f, 0.04f, 0.06f, op);
+                RendererSectionColor  = new Color(0f, 0.12f, 0.02f, op);
+                MaterialSectionColor  = new Color(0f, 0.12f, 0.02f, op);
+                RendererSectionAccent = hackerGreen;
+                MaterialSectionAccent = hackerGreen;
+                RendererSectionText   = hackerGreen;
+                MaterialSectionText   = hackerGreen;
+
+                if (MaterialEditorScrollableUI != null)
+                {
+                    var content = MaterialEditorScrollableUI.content;
+                    if (content != null)
+                    {
+                        foreach (var panel in content.GetComponentsInChildren<Image>(true))
+                        {
+                            if (panel.gameObject.name == "RendererSectionPanel") panel.color = RendererSectionColor;
+                            else if (panel.gameObject.name == "MaterialSectionPanel") panel.color = MaterialSectionColor;
+                            else if (panel.gameObject.name == "RendererPanel") panel.color = RendererColor;
+                            else if (panel.gameObject.name == "MaterialPanel") panel.color = MaterialColor;
+                        }
+                        foreach (var img in content.GetComponentsInChildren<Image>(true))
+                        {
+                            if (img.gameObject.name == "RendererSectionAccentBar") img.color = RendererSectionAccent;
+                            else if (img.gameObject.name == "MaterialSectionAccentBar") img.color = MaterialSectionAccent;
+                            else if (img.gameObject.name == "RendererAccentBar") img.color = RendererSectionAccent;
+                            else if (img.gameObject.name == "MaterialAccentBar") img.color = MaterialSectionAccent;
+                        }
+                        foreach (var txt in content.GetComponentsInChildren<Text>(true))
+                        {
+                            if (txt.gameObject.name == "RendererSectionText" || txt.gameObject.name == "MaterialSectionText")
+                                txt.color = hackerGreen;
+                        }
+                    }
+                }
+
+                var footerHackerColor = new Color(0f, 0f, 0f, op);
+                if (FooterPanel != null) FooterPanel.color = footerHackerColor;
+                DragPanel.color = footerHackerColor;
+
+                foreach (var panel in new[] { DragPanel?.transform, FooterPanel?.transform })
+                {
+                    if (panel == null) continue;
+                    foreach (var btn in panel.GetComponentsInChildren<Button>(true))
+                    {
+                        if (btn.name == "CloseButton") continue;
+                        var img = btn.GetComponent<Image>();
+                        if (img != null) img.color = new Color(0f, 0.15f, 0.03f, 1f);
+                        var txt = btn.GetComponentInChildren<Text>();
+                        if (txt != null) txt.color = hackerGreen;
+                    }
+                }
+
+                var nameTextH = DragPanel.transform.Find("Nametext")?.GetComponent<Text>();
+                if (nameTextH != null) { nameTextH.text = "HACKER MODE"; nameTextH.color = hackerGreen; }
+                var x1H = DragPanel.transform.Find("CloseButton/x1")?.GetComponent<Image>();
+                var x2H = DragPanel.transform.Find("CloseButton/x2")?.GetComponent<Image>();
+                var closeBgH = DragPanel.transform.Find("CloseButton")?.GetComponent<Image>();
+                if (closeBgH != null) closeBgH.color = new Color(0f, 0.15f, 0.03f, 1f);
+                if (x1H != null) x1H.color = hackerGreen;
+                if (x2H != null) x2H.color = hackerGreen;
+
+                var scrollbarH = MaterialEditorScrollableUI?.verticalScrollbar?.GetComponent<UnityEngine.UI.Image>();
+                if (scrollbarH != null) scrollbarH.color = new Color(0f, 0.12f, 0.03f, 0.6f); // dim green track
+                var scrollbarHandleH = MaterialEditorScrollableUI?.verticalScrollbar?.handleRect?.GetComponent<UnityEngine.UI.Image>();
+                if (scrollbarHandleH != null) scrollbarHandleH.color = hackerGreen;
+
+                foreach (var bar in new[] { "StickyRendererBar", "StickyMaterialBar" })
+                {
+                    var barImg = MaterialEditorMainPanel?.transform.Find(bar)?.GetComponent<Image>();
+                    if (barImg != null) barImg.color = new Color(0f, 0.12f, 0.02f, op);
+                    var accentName = bar == "StickyRendererBar" ? "StickyRendererAccentBar" : "StickyMaterialAccentBar";
+                    var accentImg = MaterialEditorMainPanel?.transform.Find($"{bar}/{accentName}")?.GetComponent<Image>();
+                    if (accentImg != null) accentImg.color = hackerGreen;
+                    var barTextName = bar == "StickyRendererBar" ? "StickyRendererBarText" : "StickyMaterialBarText";
+                    var barTxt = MaterialEditorMainPanel?.transform.Find($"{bar}/{barTextName}")?.GetComponent<Text>();
+                    if (barTxt != null) barTxt.color = hackerGreen;
+                }
+
+                if (UIInstance != null && UIInstance.CurrentGameObject != null)
+                    UIInstance.RefreshUI();
+
+                if (MaterialEditorScrollableUI != null)
+                {
+                    var labelNames = new System.Collections.Generic.HashSet<string>
+                        { "OffsetXText", "OffsetYText", "ScaleXText", "ScaleYText",
+                          "ColorRText", "ColorGText", "ColorBText", "ColorAText" };
+                    foreach (var txt in MaterialEditorScrollableUI.content.GetComponentsInChildren<Text>(true))
+                        if (labelNames.Contains(txt.gameObject.name))
+                            txt.color = hackerGreen;
+                    foreach (var btn in MaterialEditorScrollableUI.content.GetComponentsInChildren<Button>(true))
+                    {
+                        var btnImg = btn.GetComponent<Image>();
+                        if (btnImg != null) btnImg.color = new Color(0f, 0.15f, 0.03f, 1f);
+                        var btnTxt = btn.GetComponentInChildren<Text>();
+                        if (btnTxt != null) btnTxt.color = hackerGreen;
+                    }
+                    foreach (var slider in MaterialEditorScrollableUI.content.GetComponentsInChildren<Slider>(true))
+                        ItemTemplate.StyleSlider(slider);
+                }
+                //Side lists (Renderer/Material/Rename panels)
+                foreach (var listPanel in new[] { MaterialEditorRendererList, MaterialEditorMaterialList, MaterialEditorRenameList })
+                {
+                    if (listPanel == null) continue;
+                    listPanel.Panel.color = new Color(0f, 0.08f, 0.01f, 1f);
+                    listPanel.TextColor = hackerGreen;
+                    listPanel.RowColor = new Color(0.02f, 0.06f, 0.02f, 1f);
+                    foreach (var t in listPanel.Panel.GetComponentsInChildren<Text>(true))
+                        t.color = hackerGreen;
+                    foreach (var img in listPanel.Panel.GetComponentsInChildren<Image>(true))
+                        if (img.gameObject.name.EndsWith("Entry"))
+                            img.color = new Color(0.02f, 0.06f, 0.02f, 1f);
+                    foreach (var sb in listPanel.Panel.GetComponentsInChildren<Scrollbar>(true))
+                    {
+                        var sbTrack = sb.GetComponent<Image>();
+                        if (sbTrack != null) sbTrack.color = new Color(0f, 0.12f, 0.03f, 0.6f);
+                        var sbHandle = sb.handleRect?.GetComponent<Image>();
+                        if (sbHandle != null) sbHandle.color = hackerGreen;
+                    }
+                }
+
+                //Texture preview panel
+                if (TexturePreviewPanel != null)
+                {
+                    TexturePreviewPanel.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+                    var prevHeader = TexturePreviewPanel.transform.Find("TexturePreviewHeader")?.GetComponent<Image>();
+                    if (prevHeader != null) prevHeader.color = new Color(0f, 0.10f, 0.02f, 1f);
+                    var prevHeaderTxt = TexturePreviewPanel.transform.Find("TexturePreviewHeader/TexturePreviewHeaderText")?.GetComponent<Text>();
+                    if (prevHeaderTxt != null) prevHeaderTxt.color = hackerGreen;
+                    var prevName = TexturePreviewPanel.transform.Find("TexturePreviewName")?.GetComponent<Text>();
+                    if (prevName != null) prevName.color = hackerGreen;
+                    foreach (var btn in TexturePreviewPanel.GetComponentsInChildren<Button>(true))
+                    {
+                        var btnImg = btn.GetComponent<Image>();
+                        if (btnImg != null) btnImg.color = new Color(0f, 0.15f, 0.03f, 1f);
+                        var btnTxt = btn.GetComponentInChildren<Text>();
+                        if (btnTxt != null) btnTxt.color = hackerGreen;
+                    }
+                    var resizeImg = TexturePreviewPanel.transform.Find("ResizeHandle")?.GetComponent<Image>();
+                    if (resizeImg != null) resizeImg.color = new Color(0f, 0.30f, 0.07f, 0.8f);
+                }
+
+                return;
+            }
+
+            //Restore font and title when hacker mode is off
+            ApplyFontChoice();
+            var nameTextRestore = DragPanel.transform.Find("Nametext")?.GetComponent<Text>();
+            if (nameTextRestore != null && nameTextRestore.text == "HACKER MODE")
+                nameTextRestore.text = "Material Editor";
+
+            var bgColor        = dark ? new Color(0.13f, 0.13f, 0.15f, 1f) : new Color(0.96f, 0.96f, 0.97f, 1f);
+            var headerColor    = dark ? new Color(0.10f, 0.10f, 0.12f, 1f) : new Color(0.88f, 0.88f, 0.90f, 1f);
+            var textColor      = dark ? new Color(0.90f, 0.90f, 0.90f, 1f) : Color.black;
+            var scrollbarColor = dark ? new Color(0.35f, 0.35f, 0.35f, 0.8f) : new Color(0.6f, 0.6f, 0.6f, 0.6f);
+
+            //Bake opacity into row colours so rows fade with the window
+            RowColor          = dark ? new Color(0.16f, 0.16f, 0.18f, op) : new Color(0.94f, 0.94f, 0.95f, op);
+            RowColorAlt       = dark ? new Color(0.19f, 0.19f, 0.21f, op) : new Color(1.00f, 1.00f, 1.00f, op);
+            ItemColor         = new Color(0f, 0f, 0f, 0f);
+            ItemColorChanged  = dark ? new Color(1f, 1f, 1f, 0.06f) : new Color(0f, 0f, 0f, 0.08f);
+            ItemTextColor     = textColor;
+            RendererColor     = dark ? new Color(0.20f, 0.17f, 0.13f, op) : new Color(1.00f, 0.96f, 0.90f, op);
+            MaterialColor     = dark ? new Color(0.13f, 0.18f, 0.14f, op) : new Color(0.93f, 0.98f, 0.93f, op);
+            CategoryColor     = dark ? new Color(0.16f, 0.12f, 0.22f, op) : new Color(0.91f, 0.86f, 0.98f, op);
+
+            RendererSectionColor  = dark ? new Color(0.22f, 0.14f, 0.04f, op) : new Color(0.98f, 0.88f, 0.70f, op);
+            MaterialSectionColor  = dark ? new Color(0.06f, 0.15f, 0.07f, op) : new Color(0.78f, 0.93f, 0.80f, op);
+            RendererSectionAccent = dark ? new Color(0.80f, 0.52f, 0.10f, 1f) : new Color(0.72f, 0.42f, 0.02f, 1f);
+            MaterialSectionAccent = dark ? new Color(0.24f, 0.65f, 0.30f, 1f) : new Color(0.14f, 0.50f, 0.20f, 1f);
+            RendererSectionText   = dark ? new Color(0.95f, 0.72f, 0.38f, 1f) : new Color(0.35f, 0.18f, 0.00f, 1f);
+            MaterialSectionText   = dark ? new Color(0.48f, 0.88f, 0.54f, 1f) : new Color(0.04f, 0.24f, 0.06f, 1f);
+
+            //Section bar colours
+            if (MaterialEditorScrollableUI != null)
+            {
+                var content = MaterialEditorScrollableUI.content;
+                if (content != null)
+                {
+                    foreach (var panel in content.GetComponentsInChildren<Image>(true))
+                    {
+                        if (panel.gameObject.name == "RendererSectionPanel") panel.color = RendererSectionColor;
+                        else if (panel.gameObject.name == "MaterialSectionPanel") panel.color = MaterialSectionColor;
+                        else if (panel.gameObject.name == "RendererPanel") panel.color = RendererColor;
+                        else if (panel.gameObject.name == "MaterialPanel") panel.color = MaterialColor;
+                    }
+                    foreach (var img in content.GetComponentsInChildren<Image>(true))
+                    {
+                        if (img.gameObject.name == "RendererSectionAccentBar") img.color = RendererSectionAccent;
+                        else if (img.gameObject.name == "MaterialSectionAccentBar") img.color = MaterialSectionAccent;
+                        else if (img.gameObject.name == "RendererAccentBar") img.color = RendererSectionAccent;
+                        else if (img.gameObject.name == "MaterialAccentBar") img.color = MaterialSectionAccent;
+                    }
+                    foreach (var txt in content.GetComponentsInChildren<Text>(true))
+                    {
+                        if (txt.gameObject.name == "RendererSectionText") txt.color = RendererSectionText;
+                        else if (txt.gameObject.name == "MaterialSectionText") txt.color = MaterialSectionText;
+                    }
+                }
+            }
+
+            //Main panel background and scroll view background
+            MaterialEditorMainPanel.color = new Color(bgColor.r, bgColor.g, bgColor.b, op);
+            var scrollBgImg = MaterialEditorScrollableUI?.GetComponent<Image>();
+            if (scrollBgImg != null) scrollBgImg.color = new Color(bgColor.r, bgColor.g, bgColor.b, op);
+
+            //Drive opacity per background panel, not CanvasGroup alpha
+            var cg = MaterialEditorWindow?.GetComponent<CanvasGroup>();
+            if (cg != null) { cg.alpha = 1f; cg.interactable = true; cg.blocksRaycasts = true; }
+
+            //Header text
+            var nameText = DragPanel.transform.Find("Nametext")?.GetComponent<Text>();
+            if (nameText != null) nameText.color = dark ? Color.white : Color.black;
+
+            //Close button: bg matches header, X gets contrast colour
+            var closeBtnImg = DragPanel.transform.Find("CloseButton")?.GetComponent<Image>();
+            if (closeBtnImg != null) closeBtnImg.color = dark ? new Color(0.06f, 0.06f, 0.08f, op) : new Color(0.70f, 0.70f, 0.72f, op);
+            var x1 = DragPanel.transform.Find("CloseButton/x1")?.GetComponent<Image>();
+            var x2 = DragPanel.transform.Find("CloseButton/x2")?.GetComponent<Image>();
+            var xColor = dark ? Color.white : Color.black;
+            if (x1 != null) x1.color = xColor;
+            if (x2 != null) x2.color = xColor;
+
+            //Main window scrollbar: subtle track + darker pill handle
+            var scrollbar = MaterialEditorScrollableUI?.verticalScrollbar?.GetComponent<UnityEngine.UI.Image>();
+            if (scrollbar != null) scrollbar.color = dark ? new Color(0.25f, 0.25f, 0.28f, 0.5f) : new Color(0.70f, 0.70f, 0.72f, 0.4f);
+            var scrollbarHandle = MaterialEditorScrollableUI?.verticalScrollbar?.handleRect?.GetComponent<UnityEngine.UI.Image>();
+            if (scrollbarHandle != null) scrollbarHandle.color = dark ? new Color(0.84f, 0.84f, 0.87f, 1f) : new Color(0.40f, 0.40f, 0.45f, 0.9f);
+
+            //Texture preview panel
+            if (TexturePreviewPanel != null)
+            {
+                TexturePreviewPanel.GetComponent<Image>().color = bgColor;
+                var previewHeader = TexturePreviewPanel.transform.Find("TexturePreviewHeader")?.GetComponent<Image>();
+                if (previewHeader != null) previewHeader.color = headerColor;
+                var previewHeaderTxt = TexturePreviewPanel.transform.Find("TexturePreviewHeader/TexturePreviewHeaderText")?.GetComponent<Text>();
+                if (previewHeaderTxt != null) previewHeaderTxt.color = dark ? Color.white : Color.black;
+                var previewName = TexturePreviewPanel.transform.Find("TexturePreviewName")?.GetComponent<Text>();
+                if (previewName != null) previewName.color = textColor;
+                //Restore buttons in case hacker mode left them green
+                var previewBtnBg = dark ? new Color(0.18f, 0.18f, 0.22f, 1f) : new Color(0.84f, 0.84f, 0.87f, 1f);
+                foreach (var btn in TexturePreviewPanel.GetComponentsInChildren<Button>(true))
+                {
+                    var btnImg = btn.GetComponent<Image>();
+                    if (btnImg != null) btnImg.color = previewBtnBg;
+                    var btnTxt = btn.GetComponentInChildren<Text>();
+                    if (btnTxt != null) btnTxt.color = dark ? Color.white : Color.black;
+                }
+                var resizeImg = TexturePreviewPanel.transform.Find("ResizeHandle")?.GetComponent<Image>();
+                if (resizeImg != null) resizeImg.color = new Color(0.5f, 0.5f, 0.5f, 0.8f);
+            }
+
+            //Sticky section bars
+            var stickyRendBarImg = MaterialEditorMainPanel?.transform.Find("StickyRendererBar")?.GetComponent<Image>();
+            if (stickyRendBarImg != null) stickyRendBarImg.color = RendererSectionColor;
+            var stickyRendAccentImg = MaterialEditorMainPanel?.transform.Find("StickyRendererBar/StickyRendererAccentBar")?.GetComponent<Image>();
+            if (stickyRendAccentImg != null) stickyRendAccentImg.color = RendererSectionAccent;
+            var stickyRendTxt = MaterialEditorMainPanel?.transform.Find("StickyRendererBar/StickyRendererBarText")?.GetComponent<Text>();
+            if (stickyRendTxt != null) stickyRendTxt.color = RendererSectionText;
+            var stickyMatBarImg = MaterialEditorMainPanel?.transform.Find("StickyMaterialBar")?.GetComponent<Image>();
+            if (stickyMatBarImg != null) stickyMatBarImg.color = MaterialSectionColor;
+            var stickyMatAccentImg = MaterialEditorMainPanel?.transform.Find("StickyMaterialBar/StickyMaterialAccentBar")?.GetComponent<Image>();
+            if (stickyMatAccentImg != null) stickyMatAccentImg.color = MaterialSectionAccent;
+            var stickyMatTxt = MaterialEditorMainPanel?.transform.Find("StickyMaterialBar/StickyMaterialBarText")?.GetComponent<Text>();
+            if (stickyMatTxt != null) stickyMatTxt.color = MaterialSectionText;
+
+            //Footer darker than buttons so 2px gaps read as dividers
+            var footerPanelColor = dark ? new Color(0.06f, 0.06f, 0.08f, op) : new Color(0.70f, 0.70f, 0.72f, op);
+            if (FooterPanel != null) FooterPanel.color = footerPanelColor;
+            //Header panel also uses the same gap-background trick
+            DragPanel.color = footerPanelColor;
+
+            //Header/footer button colours, gaps show between them
+            var headerBtnBg   = dark ? new Color(0.18f, 0.18f, 0.22f, 1f) : new Color(0.84f, 0.84f, 0.87f, 1f);
+            var headerBtnText = dark ? Color.white : Color.black;
+            foreach (var panel in new[] { DragPanel?.transform, FooterPanel?.transform })
+            {
+                if (panel == null) continue;
+                foreach (var btn in panel.GetComponentsInChildren<Button>(true))
+                {
+                    var txt = btn.GetComponentInChildren<Text>();
+                    //Skip the close button (no text), found by name
+                    if (btn.name == "CloseButton") continue;
+                    var img = btn.GetComponent<Image>();
+                    if (img != null) img.color = headerBtnBg;
+                    if (txt != null) txt.color = headerBtnText;
+                }
+            }
+
+            //Repaint all visible rows so they pick up the new colours immediately
+            if (UIInstance != null && UIInstance.CurrentGameObject != null)
+                UIInstance.RefreshUI();
+            //Recolour static labels after RefreshUI so rows exist
+            //Only targets label Text elements, not button texts or section header texts
+            if (MaterialEditorScrollableUI != null)
+            {
+                var labelNames = new System.Collections.Generic.HashSet<string>
+                    { "OffsetXText", "OffsetYText", "ScaleXText", "ScaleYText",
+                      "ColorRText", "ColorGText", "ColorBText", "ColorAText" };
+                foreach (var txt in MaterialEditorScrollableUI.content.GetComponentsInChildren<Text>(true))
+                    if (labelNames.Contains(txt.gameObject.name))
+                        txt.color = textColor;
+                //Update all content button colours
+                var btnBgColor = dark ? new Color(0.25f, 0.25f, 0.28f, 1f) : new Color(0.85f, 0.85f, 0.85f, 1f);
+                foreach (var btn in MaterialEditorScrollableUI.content.GetComponentsInChildren<Button>(true))
+                {
+                    var btnImg = btn.GetComponent<Image>();
+                    if (btnImg != null) btnImg.color = btnBgColor;
+                    var btnTxt = btn.GetComponentInChildren<Text>();
+                    if (btnTxt != null) btnTxt.color = textColor;
+                }
+                //Restyle sliders for current theme
+                foreach (var slider in MaterialEditorScrollableUI.content.GetComponentsInChildren<Slider>(true))
+                    ItemTemplate.StyleSlider(slider);
+            }
+
+            // Theme the SelectList side panels
+            var selectPanelColor = dark ? new Color(0.20f, 0.20f, 0.20f, 1f) : new Color(0.76f, 0.76f, 0.76f, 1f);
+            var selectPanelTextColor = dark ? new Color(0.90f, 0.90f, 0.90f, 1f) : Color.black;
+            var selectPanelRowColor = dark ? new Color(0.30f, 0.30f, 0.30f, 1f) : new Color(1f, 1f, 1f, 0.6f);
+            var selectSbTrack  = dark ? new Color(0.25f, 0.25f, 0.28f, 0.5f) : new Color(0.70f, 0.70f, 0.72f, 0.4f);
+            var selectSbHandle = dark ? new Color(0.84f, 0.84f, 0.87f, 1f)   : new Color(0.40f, 0.40f, 0.45f, 0.9f);
+            foreach (var panel in new[] { MaterialEditorRendererList, MaterialEditorMaterialList, MaterialEditorRenameList })
+            {
+                if (panel == null) continue;
+                panel.Panel.color = selectPanelColor;
+                panel.TextColor = selectPanelTextColor;
+                panel.RowColor = selectPanelRowColor;
+                foreach (var t in panel.Panel.GetComponentsInChildren<Text>(true))
+                    t.color = selectPanelTextColor;
+                foreach (var img in panel.Panel.GetComponentsInChildren<Image>(true))
+                    if (img.gameObject.name.EndsWith("Entry"))
+                        img.color = selectPanelRowColor;
+                // Restyle scrollbar to match main ME scrollbar
+                foreach (var sb in panel.Panel.GetComponentsInChildren<Scrollbar>(true))
+                {
+                    var sbTrack = sb.GetComponent<Image>();
+                    if (sbTrack != null) sbTrack.color = selectSbTrack;
+                    var sbHandle = sb.handleRect?.GetComponent<Image>();
+                    if (sbHandle != null) sbHandle.color = selectSbHandle;
+                }
+            }
+        }
+
+        private static string _previewedMaterialName = null;
+        private static bool _previewInitialized = false;
+        private static bool _previewDocked = false;
+        private static Vector3 _meDragLastPos;
+
+        /// <summary>
+        /// Toggle the texture preview for a material row. Right-click same to close, different to switch.
+        /// </summary>
+        public static void ToggleMaterialPreview(string materialName, Texture texture)
+        {
+            if (!TexturePreviewVisible || _previewedMaterialName != materialName)
+            {
+                if (!TexturePreviewVisible)
+                    ToggleTexturePreviewPanel();
+                _previewedMaterialName = materialName;
+                SetTexturePreview(texture, materialName);
+            }
+            else
+            {
+                ToggleTexturePreviewPanel();
+                _previewedMaterialName = null;
+            }
+        }
+
+        private static void ToggleTexturePreviewPanel()
+        {
+            TexturePreviewVisible = !TexturePreviewVisible;
+            TexturePreviewPanel.SetActive(TexturePreviewVisible);
+            if (!TexturePreviewVisible)
+            {
+                TexturePreviewImage.texture = null;
+                TexturePreviewNameText.text = "";
+                return;
+            }
+            //Position only on the first open; afterwards keep the last position
+            if (!_previewInitialized)
+            {
+                UpdateTexturePreviewPanelPosition();
+                _previewInitialized = true;
+            }
+        }
+
+        /// <summary>Snap the preview panel to the right of the ME window.</summary>
+        internal static void UpdateTexturePreviewPanelPosition()
+        {
+            if (TexturePreviewPanel == null) return;
+            var mainRT = MaterialEditorMainPanel.GetComponent<RectTransform>();
+            var previewRT = TexturePreviewPanel.GetComponent<RectTransform>();
+            previewRT.anchorMin = new Vector2(0f, 0f);
+            previewRT.anchorMax = new Vector2(0f, 0f);
+            previewRT.pivot = new Vector2(0f, 1f);
+            var corners = new Vector3[4];
+            mainRT.GetWorldCorners(corners);
+            var canvasRT = MaterialEditorWindow.GetComponent<RectTransform>();
+            Vector2 topRight = RectTransformUtility.WorldToScreenPoint(null, corners[2]);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRT, topRight, null, out Vector2 localTopRight);
+            previewRT.anchoredPosition = new Vector2(localTopRight.x + canvasRT.rect.width / 2f + MarginSize, localTopRight.y + canvasRT.rect.height / 2f);
+        }
 
         private protected IMaterialEditorColorPalette ColorPalette;
 
@@ -122,7 +702,21 @@ namespace MaterialEditorAPI
         /// </summary>
         protected void InitUI()
         {
+            UIInstance = this;
             Padding = new RectOffset(1, 1, 1, 1);
+            SubRowPadding = new RectOffset(18, 1, 1, 1);
+            //Store original font before LoadFonts potentially changes it
+            _arialFont = UILib.UIUtility.defaultFont;
+            LoadFonts();
+            //Replace UILib rounded sprites with flat 1x1 sprite for squared look
+            var origBackground = UILib.UIUtility.backgroundSprite;
+            var origStandard   = UILib.UIUtility.standardSprite;
+            UILib.UIUtility.backgroundSprite     = FlatSprite;
+            UILib.UIUtility.standardSprite       = FlatSprite;
+            UILib.UIUtility.resources.background = FlatSprite;
+            UILib.UIUtility.resources.standard   = FlatSprite;
+            //Set theme colours before creating the template so static labels pick up the correct colour
+            ItemTextColor = MaterialEditorPluginBase.DarkMode.Value ? new Color(0.90f, 0.90f, 0.90f, 1f) : Color.black;
 
             MaterialEditorWindow = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
@@ -132,7 +726,7 @@ namespace MaterialEditorAPI
 
             MaterialEditorMainPanel = UIUtility.CreatePanel("Panel", MaterialEditorWindow.transform);
             MaterialEditorMainPanel.color = Color.white;
-            MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+            MaterialEditorMainPanel.transform.SetRect(0.15f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
 
             TooltipManager.Init(MaterialEditorWindow.transform);
 
@@ -142,6 +736,21 @@ namespace MaterialEditorAPI
             DragPanel.transform.SetRect(0f, 1f, 1f, 1f, 0f, -HeaderSize);
             DragPanel.color = Color.gray;
             UIUtility.MakeObjectDraggable(DragPanel.rectTransform, MaterialEditorMainPanel.rectTransform, PreventDragout.Value);
+            //When the ME window is dragged and preview is docked, keep preview snapped
+            var meDragTrigger = DragPanel.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
+            var meDownEntry = new UnityEngine.EventSystems.EventTrigger.Entry { eventID = UnityEngine.EventSystems.EventTriggerType.PointerDown };
+            meDownEntry.callback.AddListener(_ => { _meDragLastPos = MaterialEditorMainPanel.transform.position; });
+            meDragTrigger.triggers.Add(meDownEntry);
+            //When docked the preview follows the ME window by the same delta, keeping its relative position
+            var meDragEntry = new UnityEngine.EventSystems.EventTrigger.Entry { eventID = UnityEngine.EventSystems.EventTriggerType.Drag };
+            meDragEntry.callback.AddListener(_ =>
+            {
+                if (!_previewDocked || !TexturePreviewVisible) return;
+                var mePos = MaterialEditorMainPanel.transform.position;
+                TexturePreviewPanel.transform.position += mePos - _meDragLastPos;
+                _meDragLastPos = mePos;
+            });
+            meDragTrigger.triggers.Add(meDragEntry);
 
             var nametext = UIUtility.CreateText("Nametext", DragPanel.transform, "Material Editor");
             nametext.transform.SetRect();
@@ -159,19 +768,17 @@ namespace MaterialEditorAPI
 - Use a '*' as a wildcard for any amount of characters (e.g. ""_pattern*1"" will find the ""PatternMask1"" property)
 - Use a '?' as a wildcard for a single character");
 
-            var persistSearch = UIUtility.CreateToggle("PersistSearch", DragPanel.transform, "");
-            persistSearch.transform.SetRect(0f, 1f, 1f, 0.5f, 100f, 0f, 0, 10f);
-            persistSearch.Set(PersistFilter.Value);
-            persistSearch.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 0f, 0f, -19f, 19f, -1f);
-            persistSearch.onValueChanged.AddListener((value) => PersistFilter.Value = value);
-            TooltipManager.AddTooltip(persistSearch.gameObject, "Keeps the filter between instances of this window instead of resetting them");
-
-            //Don't use text withing the toggle itself to prevent weird scaling issues
-            var persistSearchText = UIUtility.CreateText("PersistSearchText", DragPanel.transform, "Persist search");
-            persistSearchText.transform.SetRect(0f, 0.15f, 1f, 0.85f, 120f, 0f, 0, 0f);
+            var persistBtn = UIUtility.CreateButton("PersistSearchButton", DragPanel.transform, PersistFilter.Value ? "[P]" : "P");
+            persistBtn.transform.SetRect(0f, 0f, 0f, 1f, 101f, 1f, 120f, -1f);
+            TooltipManager.AddTooltip(persistBtn.gameObject, "Persist filter between objects");
+            persistBtn.onClick.AddListener(() =>
+            {
+                PersistFilter.Value = !PersistFilter.Value;
+                persistBtn.GetComponentInChildren<Text>().text = PersistFilter.Value ? "[P]" : "P";
+            });
 
             var close = UIUtility.CreateButton("CloseButton", DragPanel.transform, "");
-            close.transform.SetRect(1f, 0f, 1f, 1f, -40f, 1f, -21f, -1f);
+            close.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
             close.onClick.AddListener(() => Visible = false);
 
             //X button
@@ -185,7 +792,7 @@ namespace MaterialEditorAPI
             x2.color = Color.black;
 
             ViewListButton = UIUtility.CreateButton("ViewListButton", DragPanel.transform, ">");
-            ViewListButton.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
+            ViewListButton.transform.SetRect(1f, 0f, 1f, 1f, -40f, 1f, -21f, -1f);
             ViewListButton.onClick.AddListener(() =>
             {
                 if (RenameListVisible)
@@ -206,15 +813,21 @@ namespace MaterialEditorAPI
                 }
             });
 
+            UpdateHeaderButtons();
+
             MaterialEditorScrollableUI = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
-            MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
+            MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, MarginSize, MarginSize + HeaderSize, -MarginSize, -HeaderSize - MarginSize / 2f);
             MaterialEditorScrollableUI.gameObject.AddComponent<Mask>();
             MaterialEditorScrollableUI.content.gameObject.AddComponent<VerticalLayoutGroup>();
             MaterialEditorScrollableUI.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             MaterialEditorScrollableUI.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(ScrollOffsetX, 0f);
             MaterialEditorScrollableUI.viewport.offsetMax = new Vector2(ScrollOffsetX, 0f);
             MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
-            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
+            // Scrollbar: semi-transparent track, pill handle inset 2px each side
+            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<Image>().color = new Color(0.70f, 0.70f, 0.72f, 0.4f);
+            //Match scroll view background to main panel colour (updated by ApplyTheme on theme change)
+            var scrollBg = MaterialEditorScrollableUI.GetComponent<Image>();
+            if (scrollBg != null) scrollBg.color = new Color(0.96f, 0.96f, 0.97f, 1f);
 
             var template = ItemTemplate.CreateTemplate(MaterialEditorScrollableUI.content.transform);
 
@@ -222,6 +835,176 @@ namespace MaterialEditorAPI
             VirtualList.ScrollRect = MaterialEditorScrollableUI;
             VirtualList.EntryTemplate = template;
             VirtualList.Initialize();
+
+
+            //Sticky section bars overlay the top of the scroll area and float in place as the user scrolls
+            var stickyComp = MaterialEditorScrollableUI.gameObject.AddComponent<StickySectionBar>();
+            stickyComp.ScrollRect = MaterialEditorScrollableUI;
+
+            // Renderer sticky bar
+            var stickyRendBar = UIUtility.CreatePanel("StickyRendererBar", MaterialEditorMainPanel.transform);
+            stickyRendBar.color = RendererSectionColor;
+            stickyRendBar.transform.SetRect(0f, 1f, 1f, 1f,
+                MarginSize, -(HeaderSize + MarginSize / 2f + PanelHeight), ScrollOffsetX - MarginSize, -(HeaderSize + MarginSize / 2f));
+            UIUtility.AddOutlineToObject(stickyRendBar.transform, new Color(0f, 0f, 0f, 0.15f));
+            var stickyRendAccent = UIUtility.CreatePanel("StickyRendererAccentBar", stickyRendBar.transform);
+            stickyRendAccent.color = RendererSectionAccent;
+            stickyRendAccent.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 3f, 0f);
+            var stickyRendCollapse = UIUtility.CreateButton("StickyRendererCollapseButton", stickyRendBar.transform, "-");
+            stickyRendCollapse.transform.SetRect(0f, 0f, 0f, 1f, 7f, 1f, 7f + SmallButtonWidth, -1f);
+            stickyRendCollapse.onClick.AddListener(() =>
+            {
+                RendererSectionCollapsed = !RendererSectionCollapsed;
+                UIInstance.RefreshUI();
+            });
+            var stickyRendText = UIUtility.CreateText("StickyRendererBarText", stickyRendBar.transform, "Renderers");
+            stickyRendText.transform.SetRect(0f, 0f, 1f, 1f, 7f + SmallButtonWidth + 4f, 0f, 0f, 0f);
+            stickyRendText.alignment = TextAnchor.MiddleLeft;
+            stickyRendText.fontStyle = FontStyle.Bold;
+            stickyRendText.fontSize = 14;
+            stickyRendText.color = RendererSectionText;
+            stickyRendBar.gameObject.SetActive(false);
+            stickyComp.RendererBar = stickyRendBar;
+            stickyComp.RendererBarText = stickyRendText;
+            stickyComp.RendererBarCollapseButton = stickyRendCollapse;
+
+            // Material sticky bar
+            var stickyMatBar = UIUtility.CreatePanel("StickyMaterialBar", MaterialEditorMainPanel.transform);
+            stickyMatBar.color = MaterialSectionColor;
+            stickyMatBar.transform.SetRect(0f, 1f, 1f, 1f,
+                MarginSize, -(HeaderSize + MarginSize / 2f + PanelHeight), ScrollOffsetX - MarginSize, -(HeaderSize + MarginSize / 2f));
+            UIUtility.AddOutlineToObject(stickyMatBar.transform, new Color(0f, 0f, 0f, 0.15f));
+            var stickyMatAccent = UIUtility.CreatePanel("StickyMaterialAccentBar", stickyMatBar.transform);
+            stickyMatAccent.color = MaterialSectionAccent;
+            stickyMatAccent.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, 3f, 0f);
+            var stickyMatCollapse = UIUtility.CreateButton("StickyMaterialCollapseButton", stickyMatBar.transform, "-");
+            stickyMatCollapse.transform.SetRect(0f, 0f, 0f, 1f, 7f, 1f, 7f + SmallButtonWidth, -1f);
+            stickyMatCollapse.onClick.AddListener(() =>
+            {
+                MaterialSectionCollapsed = !MaterialSectionCollapsed;
+                UIInstance.RefreshUI();
+            });
+            var stickyMatText = UIUtility.CreateText("StickyMaterialBarText", stickyMatBar.transform, "Materials");
+            stickyMatText.transform.SetRect(0f, 0f, 1f, 1f, 7f + SmallButtonWidth + 4f, 0f, 0f, 0f);
+            stickyMatText.alignment = TextAnchor.MiddleLeft;
+            stickyMatText.fontStyle = FontStyle.Bold;
+            stickyMatText.fontSize = 14;
+            stickyMatText.color = MaterialSectionText;
+            stickyMatBar.gameObject.SetActive(false);
+            stickyComp.MaterialBar = stickyMatBar;
+            stickyComp.MaterialBarText = stickyMatText;
+            stickyComp.MaterialBarCollapseButton = stickyMatCollapse;
+
+            // Footer panel with buttons
+            FooterPanel = UIUtility.CreatePanel("FooterPanel", MaterialEditorMainPanel.transform);
+            FooterPanel.transform.SetRect(0f, 0f, 1f, 0f, 0f, MarginSize / 2f, 0f, MarginSize / 2f + HeaderSize);
+            FooterPanel.color = Color.gray;
+
+            //Footer order: Renderers-, R, Materials-, M, collapse-all, T, P
+            //1px gap between buttons achieved by inset right edge by 1px
+
+            //Footer: Renderers section toggle
+            var footerRendererBtn = UIUtility.CreateButton("FooterRendererSectionButton", FooterPanel.transform, "Renderers -");
+            footerRendererBtn.transform.SetRect(0f, 0f, 0f, 1f, 1f, 1f, 80f, -1f);
+            TooltipManager.AddTooltip(footerRendererBtn.gameObject, "Collapse / expand the Renderers section");
+            footerRendererBtn.onClick.AddListener(() =>
+            {
+                RendererSectionCollapsed = !RendererSectionCollapsed;
+                UIInstance.RefreshUI();
+            });
+            FooterRendererSectionButton = footerRendererBtn;
+
+            //Footer: Collapse renderers (R)
+            var footerCollapseRBtn = UIUtility.CreateButton("FooterCollapseRenderersButton", FooterPanel.transform, "R");
+            footerCollapseRBtn.transform.SetRect(0f, 0f, 0f, 1f, 82f, 1f, 101f, -1f);
+            TooltipManager.AddTooltip(footerCollapseRBtn.gameObject, "Collapse / expand all renderer sub-rows");
+            footerCollapseRBtn.onClick.AddListener(() =>
+            {
+                if (CurrentGameObject == null) return;
+                if (CollapsedRenderers.Count == 0)
+                    foreach (var rend in GetRendererList(CurrentGameObject))
+                        CollapsedRenderers.Add(rend.GetInstanceID());
+                else
+                    CollapsedRenderers.Clear();
+                UIInstance.RefreshUI();
+            });
+            CollapseRenderersButton = footerCollapseRBtn;
+
+            //Footer: Materials section toggle
+            var footerMaterialBtn = UIUtility.CreateButton("FooterMaterialSectionButton", FooterPanel.transform, "Materials -");
+            footerMaterialBtn.transform.SetRect(0f, 0f, 0f, 1f, 103f, 1f, 182f, -1f);
+            TooltipManager.AddTooltip(footerMaterialBtn.gameObject, "Collapse / expand the Materials section");
+            footerMaterialBtn.onClick.AddListener(() =>
+            {
+                MaterialSectionCollapsed = !MaterialSectionCollapsed;
+                UIInstance.RefreshUI();
+            });
+            FooterMaterialSectionButton = footerMaterialBtn;
+
+            //Footer: Collapse materials (M)
+            var footerCollapseMBtn = UIUtility.CreateButton("FooterCollapseMaterialsButton", FooterPanel.transform, "M");
+            footerCollapseMBtn.transform.SetRect(0f, 0f, 0f, 1f, 184f, 1f, 203f, -1f);
+            TooltipManager.AddTooltip(footerCollapseMBtn.gameObject, "Collapse / expand all material sub-rows");
+            footerCollapseMBtn.onClick.AddListener(() =>
+            {
+                if (CurrentGameObject == null) return;
+                if (CollapsedMaterials.Count == 0)
+                    foreach (var rend in GetRendererList(CurrentGameObject))
+                        foreach (var mat in GetMaterials(CurrentGameObject, rend))
+                            CollapsedMaterials.Add(mat.NameFormatted());
+                else
+                    CollapsedMaterials.Clear();
+                UIInstance.RefreshUI();
+            });
+            CollapseMaterialsButton = footerCollapseMBtn;
+
+            //Footer: Collapse all
+            var footerCollapseAllBtn = UIUtility.CreateButton("FooterCollapseAllButton", FooterPanel.transform, "--");
+            footerCollapseAllBtn.transform.SetRect(0f, 0f, 0f, 1f, 205f, 1f, 224f, -1f);
+            TooltipManager.AddTooltip(footerCollapseAllBtn.gameObject, "Collapse all / expand all");
+            footerCollapseAllBtn.onClick.AddListener(() =>
+            {
+                if (CurrentGameObject == null) return;
+                bool anyExpanded = CollapsedRenderers.Count == 0 && CollapsedMaterials.Count == 0 && !RendererSectionCollapsed && !MaterialSectionCollapsed;
+                if (anyExpanded)
+                {
+                    foreach (var rend in GetRendererList(CurrentGameObject))
+                    {
+                        CollapsedRenderers.Add(rend.GetInstanceID());
+                        foreach (var mat in GetMaterials(CurrentGameObject, rend))
+                            CollapsedMaterials.Add(mat.NameFormatted());
+                    }
+                    RendererSectionCollapsed = true;
+                    MaterialSectionCollapsed = true;
+                }
+                else
+                {
+                    CollapsedRenderers.Clear();
+                    CollapsedMaterials.Clear();
+                    RendererSectionCollapsed = false;
+                    MaterialSectionCollapsed = false;
+                }
+                UIInstance.RefreshUI();
+            });
+
+            //Footer: Texture preview toggle (T)
+            var footerTexPreviewBtn = UIUtility.CreateButton("FooterTexPreviewButton", FooterPanel.transform, "T");
+            footerTexPreviewBtn.transform.SetRect(0f, 0f, 0f, 1f, 226f, 1f, 245f, -1f);
+            TooltipManager.AddTooltip(footerTexPreviewBtn.gameObject, "Toggle texture preview panel");
+            footerTexPreviewBtn.onClick.AddListener(() => ToggleTexturePreviewPanel());
+
+            //Footer: Hacker mode toggle
+            var footerHackerBtn = UIUtility.CreateButton("FooterHackerButton", FooterPanel.transform, ">_");
+            footerHackerBtn.transform.SetRect(1f, 0f, 1f, 1f, -24f, 1f, -1f, -1f);
+            TooltipManager.AddTooltip(footerHackerBtn.gameObject, "Toggle hacker terminal mode");
+            footerHackerBtn.onClick.AddListener(() =>
+            {
+                HackerMode = !HackerMode;
+                footerHackerBtn.GetComponentInChildren<Text>().text = HackerMode ? "[>_]" : ">_";
+                ApplyTheme();
+            });
+
+            UpdateHeaderButtons();
 
             MaterialEditorRendererList = new SelectListPanel(MaterialEditorMainPanel.transform, "RendererList", "Renderers");
             MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + UIListWidth.Value);
@@ -243,6 +1026,129 @@ namespace MaterialEditorAPI
             MaterialEditorRenameMaterial = Instantiate(MaterialEditorRenameList.Panel.transform.GetChild(0), MaterialEditorRenameList.Panel.transform).GetComponent<Text>();
             MaterialEditorRenameMaterial.gameObject.name = nameof(MaterialEditorRenameMaterial);
             MaterialEditorRenameMaterial.transform.SetRect(0, 1, 1, 1, 5, -20, -2, -5);
+
+            // Texture preview side panel - parented to canvas, positioned to the right of the main panel
+            var previewPanelGO = new GameObject("TexturePreviewPanel");
+            previewPanelGO.transform.SetParent(MaterialEditorWindow.transform, false);
+            var previewPanelRT = previewPanelGO.AddComponent<RectTransform>();
+            previewPanelRT.anchorMin = new Vector2(0f, 0f);
+            previewPanelRT.anchorMax = new Vector2(0f, 0f);
+            previewPanelRT.pivot = new Vector2(0f, 1f);
+            // Default size: half ME window width x half ME window height
+            float previewSize = (UIWidth.Value - 0.05f) * 1920f / UIScale.Value * 0.5f;
+            previewPanelRT.sizeDelta = new Vector2(previewSize, previewSize);
+            var previewPanelBG = previewPanelGO.AddComponent<Image>();
+            previewPanelBG.color = Color.white;
+            UIUtility.AddOutlineToObject(previewPanelRT, Color.black);
+
+            // Header bar
+            var previewHeader = UIUtility.CreatePanel("TexturePreviewHeader", previewPanelGO.transform);
+            previewHeader.color = Color.gray;
+            previewHeader.transform.SetRect(0f, 1f, 1f, 1f, 0f, -HeaderSize);
+            var previewHeaderText = UIUtility.CreateText("TexturePreviewHeaderText", previewHeader.transform, "Texture Preview");
+            previewHeaderText.transform.SetRect();
+            previewHeaderText.alignment = TextAnchor.MiddleCenter;
+            UIUtility.MakeObjectDraggable(previewHeader.rectTransform, previewPanelRT, false);
+
+            //Lock button, top-left, toggles docking
+            var previewLockButton = UIUtility.CreateButton("TexturePreviewLockButton", previewHeader.transform, "\u25a1");
+            previewLockButton.transform.SetRect(0f, 0f, 0f, 1f, 0f, 0f, HeaderSize, 0f);
+            TooltipManager.AddTooltip(previewLockButton.gameObject, "Lock/unlock: when locked the preview panel moves with the ME window");
+            previewLockButton.onClick.AddListener(() =>
+            {
+                _previewDocked = !_previewDocked;
+                previewLockButton.GetComponentInChildren<Text>().text = _previewDocked ? "\u25a0" : "\u25a1";
+                //Anchor at the current relative position instead of snapping to default
+                if (_previewDocked) _meDragLastPos = MaterialEditorMainPanel.transform.position;
+            });
+
+            //Close button, upper-right of preview header
+            var previewCloseButton = UIUtility.CreateButton("TexturePreviewCloseButton", previewHeader.transform, "X");
+            previewCloseButton.transform.SetRect(1f, 0f, 1f, 1f, -HeaderSize, 0f, 0f, 0f);
+            TooltipManager.AddTooltip(previewCloseButton.gameObject, "Close preview");
+            previewCloseButton.onClick.AddListener(() =>
+            {
+                if (TexturePreviewVisible)
+                {
+                    ToggleTexturePreviewPanel();
+                    _previewedMaterialName = null;
+                }
+            });
+
+            // Texture image container - fixed area between header and name label
+            var imageContainerGO = new GameObject("TexturePreviewImageContainer");
+            imageContainerGO.transform.SetParent(previewPanelGO.transform, false);
+            var imageContainerRT = imageContainerGO.AddComponent<RectTransform>();
+            imageContainerRT.anchorMin = new Vector2(0f, 0f);
+            imageContainerRT.anchorMax = new Vector2(1f, 1f);
+            imageContainerRT.offsetMin = new Vector2(MarginSize, HeaderSize + MarginSize * 2f + PanelHeight);
+            imageContainerRT.offsetMax = new Vector2(-MarginSize, -HeaderSize - MarginSize);
+            imageContainerGO.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+
+            // Texture image - sized by AspectRatioFitter inside the container
+            var imageGO = new GameObject("TexturePreviewImage");
+            imageGO.transform.SetParent(imageContainerGO.transform, false);
+            var imageRT = imageGO.AddComponent<RectTransform>();
+            imageRT.anchorMin = new Vector2(0.5f, 0.5f);
+            imageRT.anchorMax = new Vector2(0.5f, 0.5f);
+            imageRT.pivot = new Vector2(0.5f, 0.5f);
+            imageRT.anchoredPosition = Vector2.zero;
+            imageRT.sizeDelta = Vector2.zero;
+            TexturePreviewImage = imageGO.AddComponent<RawImage>();
+            var imageARF = imageGO.AddComponent<AspectRatioFitter>();
+            imageARF.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            imageARF.aspectRatio = 1f;
+
+            // Texture name label
+            TexturePreviewNameText = UIUtility.CreateText("TexturePreviewName", previewPanelGO.transform, "");
+            TexturePreviewNameText.alignment = TextAnchor.MiddleCenter;
+            TexturePreviewNameText.color = Color.black;
+            TexturePreviewNameText.transform.SetRect(0f, 0f, 1f, 0f, MarginSize, MarginSize, -MarginSize, MarginSize + PanelHeight);
+
+            TexturePreviewPanel = previewPanelGO;
+            TexturePreviewPanel.SetActive(false);
+            UpdateTexturePreviewPanelPosition();
+
+            //Store defaults for reset
+            TexturePreviewDefaultSize = previewPanelRT.sizeDelta;
+            TexturePreviewDefaultPosition = previewPanelRT.anchoredPosition;
+
+            //Reset button, lower-left corner of the panel
+            var previewResetButton = UIUtility.CreateButton("TexturePreviewResetButton", previewPanelGO.transform, "R");
+            previewResetButton.transform.SetRect(0f, 0f, 0f, 0f, 0f, 0f, HeaderSize, HeaderSize);
+            TooltipManager.AddTooltip(previewResetButton.gameObject, "Reset position and size");
+            previewResetButton.onClick.AddListener(() =>
+            {
+                previewPanelRT.sizeDelta = TexturePreviewDefaultSize;
+                _previewDocked = false;
+                var lockBtn = previewHeader.transform.Find("TexturePreviewLockButton");
+                if (lockBtn != null) lockBtn.GetComponentInChildren<Text>().text = "\u25a1";
+                UpdateTexturePreviewPanelPosition();
+            });
+
+            //Resize handle, bottom-right corner
+            var resizeHandleGO = new GameObject("ResizeHandle");
+            resizeHandleGO.transform.SetParent(previewPanelGO.transform, false);
+            var resizeHandleRT = resizeHandleGO.AddComponent<RectTransform>();
+            resizeHandleRT.anchorMin = new Vector2(1f, 0f);
+            resizeHandleRT.anchorMax = new Vector2(1f, 0f);
+            resizeHandleRT.pivot = new Vector2(1f, 0f);
+            resizeHandleRT.sizeDelta = new Vector2(16f, 16f);
+            resizeHandleRT.anchoredPosition = Vector2.zero;
+            var resizeHandleImg = resizeHandleGO.AddComponent<UnityEngine.UI.Image>();
+            resizeHandleImg.color = new Color(0.5f, 0.5f, 0.5f, 0.8f);
+            var resizeHandle = resizeHandleGO.AddComponent<ResizeHandle>();
+            resizeHandle.TargetRT = previewPanelRT;
+            resizeHandle.MinSize = new Vector2(100f, 100f);
+            TooltipManager.AddTooltip(resizeHandleGO, "Drag to resize");
+
+            //Restore UILib sprites so other plugins aren't affected
+            UILib.UIUtility.backgroundSprite     = origBackground;
+            UILib.UIUtility.standardSprite       = origStandard;
+            UILib.UIUtility.resources.background = origBackground;
+            UILib.UIUtility.resources.standard   = origStandard;
+
+            ApplyTheme();
         }
 
         /// <summary>
@@ -287,11 +1193,16 @@ namespace MaterialEditorAPI
             if (MaterialEditorWindow != null)
                 MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
             if (MaterialEditorMainPanel != null)
-                SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+                SetMainRectWithMemory(0.15f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+            if (MaterialEditorScrollableUI != null)
+                MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, MarginSize, MarginSize + HeaderSize, -MarginSize, -HeaderSize - MarginSize / 2f);
+            if (FooterPanel != null)
+                FooterPanel.transform.SetRect(0f, 0f, 1f, 0f, 0f, MarginSize / 2f, 0f, MarginSize / 2f + HeaderSize);
             if (MaterialEditorRendererList != null)
                 MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + UIListWidth.Value);
             if (MaterialEditorMaterialList != null)
                 MaterialEditorMaterialList.Panel.transform.SetRect(1f, 0f, 1f, 0.5f, MarginSize, 0f, MarginSize + UIListWidth.Value, -MarginSize);
+            UpdateTexturePreviewPanelPosition();
         }
 
         /// <summary>
@@ -429,7 +1340,7 @@ namespace MaterialEditorAPI
 
             MaterialEditorWindow.gameObject.SetActive(true);
             MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
-            SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+            SetMainRectWithMemory(0.15f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
             FilterInputField.Set(filter);
 
             if (go == null) return;
@@ -444,6 +1355,22 @@ namespace MaterialEditorAPI
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
 
             PopulateRendererList(go, data, rendListFull);
+
+            //Clear collapsed state when switching to a different object
+            if (go != CurrentGameObject)
+            {
+                CollapsedMaterials.Clear();
+                CollapsedRenderers.Clear();
+
+                //Pre-collapse based on config options
+                if (MaterialEditorPluginBase.CollapseRenderersByDefault.Value)
+                    foreach (var rend in GetRendererList(go))
+                        CollapsedRenderers.Add(rend.GetInstanceID());
+                if (MaterialEditorPluginBase.CollapseMaterialsByDefault.Value)
+                    foreach (var rend in GetRendererList(go))
+                        foreach (var mat in GetMaterials(go, rend))
+                            CollapsedMaterials.Add(mat.NameFormatted());
+            }
 
             CurrentGameObject = go;
             CurrentData = data;
@@ -487,40 +1414,57 @@ namespace MaterialEditorAPI
                         projectorList.Add(projector);
             }
 
+            //Build matList regardless of collapse state so materials always show
+            if (filterList.Count == 0)
+                foreach (var rend in rendList)
+                    foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
+                        matList[mat.NameFormatted()] = mat;
+
+            //Renderer section header row
+            var rendererSectionItem = new ItemInfo(ItemInfo.RowItemType.RendererSection, "Renderers")
+            {
+                RendererCount = rendList.Count
+            };
+            items.Add(rendererSectionItem);
+
+            if (!RendererSectionCollapsed)
+            {
             for (var i = 0; i < rendList.Count; i++)
             {
                 var rend = rendList[i];
-                //Get materials if materials list wasn't previously built by the filter    
-                if (filterList.Count == 0)
-                    foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
-                        matList[mat.NameFormatted()] = mat;
+
+                bool valueEnabledOriginal = rend.enabled;
+                var temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.Enabled, go);
+                if (!temp.IsNullOrEmpty())
+                    valueEnabledOriginal = temp == "1";
 
                 var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer")
                 {
                     RendererName = rend.NameFormatted(),
+                    RendererInstanceID = rend.GetInstanceID(),
+                    RendererHasChanges =
+                        !GetRendererPropertyValueOriginal(data, rend, RendererProperties.Enabled, go).IsNullOrEmpty() ||
+                        !GetRendererPropertyValueOriginal(data, rend, RendererProperties.ShadowCastingMode, go).IsNullOrEmpty() ||
+                        !GetRendererPropertyValueOriginal(data, rend, RendererProperties.ReceiveShadows, go).IsNullOrEmpty() ||
+                        !GetRendererPropertyValueOriginal(data, rend, RendererProperties.UpdateWhenOffscreen, go).IsNullOrEmpty() ||
+                        !GetRendererPropertyValueOriginal(data, rend, RendererProperties.RecalculateNormals, go).IsNullOrEmpty(),
                     ExportUVOnClick = () => Export.ExportUVMaps(rend),
                     ExportObjOnClick = () =>
                     {
                         ObjRenderer = rend;
                         DoObjExport = true;
                     },
-                    SelectInterpolableButtonRendererOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.Renderer, rendererName: rend.NameFormatted())
-                };
-                items.Add(rendererItem);
-
-                //Renderer Enabled
-                bool valueEnabledOriginal = rend.enabled;
-                var temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.Enabled, go);
-                if (!temp.IsNullOrEmpty())
-                    valueEnabledOriginal = temp == "1";
-                var rendererEnabledItem = new ItemInfo(ItemInfo.RowItemType.RendererEnabled, "Enabled")
-                {
+                    SelectInterpolableButtonRendererOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.Renderer, rendererName: rend.NameFormatted()),
                     RendererEnabled = rend.enabled,
                     RendererEnabledOriginal = valueEnabledOriginal,
                     RendererEnabledOnChange = value => SetRendererProperty(data, rend, RendererProperties.Enabled, (value ? 1 : 0).ToString(), go),
                     RendererEnabledOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.Enabled, go)
                 };
-                items.Add(rendererEnabledItem);
+                items.Add(rendererItem);
+
+                // Skip all properties for this renderer if collapsed
+                if (CollapsedRenderers.Contains(rend.GetInstanceID()))
+                    continue;
 
                 //Renderer ShadowCastingMode
                 var valueShadowCastingModeOriginal = rend.shadowCastingMode;
@@ -588,22 +1532,112 @@ namespace MaterialEditorAPI
                 }
             }
 
-            foreach (var mat in matList.Values)
-                PopulateListMaterial(mat);
+            } // end if (!RendererSectionCollapsed)
 
-            foreach (var projector in filterList.Count == 0 ? projectorListFull : projectorList)
-                PopulateListMaterial(projector.material, projector);
+            //Material section header row
+            var materialSectionItem = new ItemInfo(ItemInfo.RowItemType.MaterialSection, "Materials")
+            {
+                MaterialCount = matList.Count
+            };
+            items.Add(materialSectionItem);
+
+            if (!MaterialSectionCollapsed)
+            {
+                foreach (var mat in matList.Values)
+                    PopulateListMaterial(mat);
+
+                foreach (var projector in filterList.Count == 0 ? projectorListFull : projectorList)
+                    PopulateListMaterial(projector.material, projector);
+            }
 
             VirtualList.SetList(items);
+
+            //Ensure button colours are correct after population (covers first-open in dark mode)
+            var btnBgColor = MaterialEditorPluginBase.DarkMode.Value ? new Color(0.25f, 0.25f, 0.28f, 1f) : new Color(0.85f, 0.85f, 0.85f, 1f);
+            foreach (var btn in MaterialEditorScrollableUI.content.GetComponentsInChildren<Button>(true))
+            {
+                var btnImg = btn.GetComponent<Image>();
+                if (btnImg != null) btnImg.color = btnBgColor;
+                var btnTxt = btn.GetComponentInChildren<Text>();
+                if (btnTxt != null && btn.gameObject.name != "RendererSectionCollapseButton" && btn.gameObject.name != "MaterialSectionCollapseButton"
+                    && btn.gameObject.name != "RendererCollapseButton" && btn.gameObject.name != "MaterialCollapseButton")
+                    btnTxt.color = ItemTextColor;
+            }
+
+            //Update sticky section bar with layout indices and current state
+            var sticky = MaterialEditorScrollableUI?.GetComponent<StickySectionBar>();
+            if (sticky != null)
+            {
+                //MaterialSection item sits after the RendererSection header and all renderer rows
+                int matSectionIdx = items.IndexOf(materialSectionItem);
+                sticky.UpdateLayout(
+                    matSectionIdx,
+                    items.Count,
+                    RendererSectionCollapsed ? $"Renderers ({rendList.Count}) +" : $"Renderers ({rendList.Count})",
+                    MaterialSectionCollapsed  ? $"Materials ({matList.Count}) +"  : $"Materials ({matList.Count})",
+                    RendererSectionCollapsed,
+                    MaterialSectionCollapsed);
+            }
+
+            //Update footer section button labels to reflect current state
+            if (FooterRendererSectionButton != null)
+                FooterRendererSectionButton.GetComponentInChildren<Text>().text = RendererSectionCollapsed ? "Renderers +" : "Renderers -";
+            if (FooterMaterialSectionButton != null)
+                FooterMaterialSectionButton.GetComponentInChildren<Text>().text = MaterialSectionCollapsed ? "Materials +" : "Materials -";
 
             void PopulateListMaterial(Material mat, Projector projector = null)
             {
                 string materialName = mat.NameFormatted();
                 string shaderName = mat.shader.NameFormatted();
 
+                // Check if this material has any ME-tracked changes
+                string origShaderName = GetMaterialShaderNameOriginal(data, mat, go);
+                int? origRenderQueue = GetMaterialShaderRenderQueueOriginal(data, mat, go);
+                bool matHasChanges = (!origShaderName.IsNullOrEmpty() && origShaderName != shaderName)
+                    || (origRenderQueue.HasValue && origRenderQueue.Value != mat.renderQueue);
+
+                // Also check texture, color, and float properties if not already flagged
+                if (!matHasChanges)
+                {
+                    var checkCats = PropertyOrganizer.PropertyOrganization[XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"];
+                    foreach (var cat in checkCats)
+                    {
+                        foreach (var prop in cat.Value)
+                        {
+                            if (matHasChanges) break;
+                            if (prop.Type == ShaderPropertyType.Texture)
+                            {
+                                if (!GetMaterialTextureValueOriginal(data, mat, prop.Name, go))
+                                    matHasChanges = true;
+                                var offOrig = GetMaterialTextureOffsetOriginal(data, mat, prop.Name, go);
+                                if (offOrig.HasValue && offOrig.Value != mat.GetTextureOffset($"_{prop.Name}"))
+                                    matHasChanges = true;
+                                var scaleOrig = GetMaterialTextureScaleOriginal(data, mat, prop.Name, go);
+                                if (scaleOrig.HasValue && scaleOrig.Value != mat.GetTextureScale($"_{prop.Name}"))
+                                    matHasChanges = true;
+                            }
+                            else if (prop.Type == ShaderPropertyType.Color && mat.HasProperty($"_{prop.Name}"))
+                            {
+                                var colOrig = GetMaterialColorPropertyValueOriginal(data, mat, prop.Name, go);
+                                if (colOrig.HasValue && colOrig.Value != mat.GetColor($"_{prop.Name}"))
+                                    matHasChanges = true;
+                            }
+                            else if (prop.Type == ShaderPropertyType.Float && mat.HasProperty($"_{prop.Name}"))
+                            {
+                                var floatOrig = GetMaterialFloatPropertyValueOriginal(data, mat, prop.Name, go);
+                                if (floatOrig.HasValue && floatOrig.Value != mat.GetFloat($"_{prop.Name}"))
+                                    matHasChanges = true;
+                            }
+                        }
+                        if (matHasChanges) break;
+                    }
+                }
+
                 var materialItem = new ItemInfo(ItemInfo.RowItemType.Material, "Material")
                 {
                     MaterialName = materialName,
+                    MaterialCollapseKey = materialName,
+                    MaterialHasChanges = matHasChanges,
                     MaterialOnCopy = () => MaterialCopyEdits(data, mat, go),
                     MaterialOnPaste = () =>
                     {
@@ -636,6 +1670,10 @@ namespace MaterialEditorAPI
 
                 if (projector != null)
                     PopulateProjectorSettings(projector);
+
+                // Skip all properties for this material if collapsed
+                if (CollapsedMaterials.Contains(materialName))
+                    return;
 
                 //Shader
                 string shaderNameOriginal = shaderName;
@@ -696,7 +1734,7 @@ namespace MaterialEditorAPI
                     {
                         string propertyName = property.Name;
                         // Blacklist
-                        if (Instance.CheckBlacklist(materialName, propertyName)) continue;
+                        if (MaterialEditorPluginBase.Instance.CheckBlacklist(materialName, propertyName)) continue;
                         // Filter
                         if (!(filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(propertyName, fw)))) continue;
 
@@ -706,6 +1744,8 @@ namespace MaterialEditorAPI
                             {
                                 TextureChanged = !GetMaterialTextureValueOriginal(data, mat, propertyName, go),
                                 TextureExists = mat.GetTexture($"_{propertyName}") != null,
+                                TexturePreview = mat.GetTexture($"_{propertyName}"),
+                                TexturePreviewFileName = mat.GetTexture($"_{propertyName}")?.name ?? "",
                                 TextureOnExport = () => ExportTexture(mat, propertyName),
                                 SelectInterpolableButtonTextureOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.TextureProperty, materialName, propertyName)
                             };
@@ -729,6 +1769,9 @@ namespace MaterialEditorAPI
                                     string filePath = strings[0];
 
                                     SetMaterialTexture(data, mat, propertyName, filePath, go);
+                                    textureItem.TexturePreviewFileName = System.IO.Path.GetFileName(filePath);
+                                    // Wait a frame for the texture to be applied before reading it back
+                                    StartCoroutine(UpdateTexturePreview(textureItem, mat, propertyName));
 
                                     TexChangeWatcher?.Dispose();
                                     if (WatchTexChanges.Value)
@@ -749,7 +1792,7 @@ namespace MaterialEditorAPI
                                     }
                                 }
                             };
-                            textureItem.TextureOnReset = () => RemoveMaterialTexture(data, mat, propertyName, go);
+                            textureItem.TextureOnReset = () => { RemoveMaterialTexture(data, mat, propertyName, go); textureItem.TexturePreview = mat.GetTexture($"_{propertyName}"); };
                             items.Add(textureItem);
 
                             Vector2 textureOffset = mat.GetTextureOffset($"_{propertyName}");
@@ -967,6 +2010,12 @@ namespace MaterialEditorAPI
             PopulateList(go, data, filter);
         }
 
+        private IEnumerator UpdateTexturePreview(ItemInfo item, Material mat, string propertyName)
+        {
+            yield return null;
+            item.TexturePreview = mat.GetTexture($"_{propertyName}");
+        }
+
         internal virtual void ExportTexture(Material mat, string property)
         {
             var tex = mat.GetTexture($"_{property}");
@@ -974,7 +2023,7 @@ namespace MaterialEditorAPI
             var matName = mat.NameFormatted();
             matName = string.Concat(matName.Split(Path.GetInvalidFileNameChars())).Trim();
             string filename = Path.Combine(ExportPath, $"_Export_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}_{matName}_{property}.png");
-            Instance.ConvertNormalMap(ref tex, property, ConvertNormalmapsOnExport.Value);
+            MaterialEditorPluginBase.Instance.ConvertNormalMap(ref tex, property, ConvertNormalmapsOnExport.Value);
             SaveTex(tex, filename);
             MaterialEditorPluginBase.Logger.LogInfo($"Exported {filename}");
             Utilities.OpenFileInExplorer(filename);

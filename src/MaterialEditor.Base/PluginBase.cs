@@ -150,6 +150,42 @@ namespace MaterialEditorAPI
         /// Local textures will be exported to / imported from this folder. If empty, defaults to {LocalTexturePathDefault}
         /// </summary>
         internal static ConfigEntry<string> ConfigLocalTexturePath { get; set; }
+        /// <summary>
+        /// When enabled, the Material Editor UI uses a dark colour scheme
+        /// </summary>
+        public static ConfigEntry<bool> DarkMode { get; set; }
+        /// <summary>Font choice for the Material Editor UI</summary>
+        public static ConfigEntry<MEFont> UIFont { get; set; }
+        /// <summary>Available font options</summary>
+        public enum MEFont { JetBrainsMono, CascadiaMono, NotoSans, Arial }
+        /// <summary>
+        /// When enabled, all renderers are collapsed by default when opening a new object
+        /// </summary>
+        public static ConfigEntry<bool> CollapseRenderersByDefault { get; set; }
+        /// <summary>
+        /// When enabled, all materials are collapsed by default when opening a new object
+        /// </summary>
+        public static ConfigEntry<bool> CollapseMaterialsByDefault { get; set; }
+        /// <summary>
+        /// When enabled, the Collapse Renderers (R) button is shown in the header
+        /// </summary>
+        public static ConfigEntry<bool> ShowCollapseRenderersButton { get; set; }
+        /// <summary>
+        /// When enabled, the Collapse Materials (M) button is shown in the header
+        /// </summary>
+        public static ConfigEntry<bool> ShowCollapseMaterialsButton { get; set; }
+        /// <summary>
+        /// Controls the opacity of the tooltip background (0 = fully transparent, 1 = fully opaque)
+        /// </summary>
+        public static ConfigEntry<float> TooltipOpacity { get; set; }
+        /// <summary>
+        /// Controls the opacity of the Material Editor window background (0 = fully transparent, 1 = fully opaque)
+        /// </summary>
+        public static ConfigEntry<float> WindowOpacity { get; set; }
+        /// <summary>
+        /// When enabled, right-clicking a texture property label opens the texture preview panel for that texture
+        /// </summary>
+        public static ConfigEntry<bool> TexturePreviewRightClick { get; set; }
 
         /// <summary>
         /// Init logic, do not call
@@ -177,6 +213,21 @@ namespace MaterialEditorAPI
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
             SortPropertiesByCategory = Config.Bind("Config", "Sort Properties by Category", true, "Whether to sort shader properties by their category.");
             ConvertNormalmapsOnExport = Config.Bind("Config", "Convert Normalmaps On Export", true, new ConfigDescription("When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals"));
+            DarkMode = Config.Bind("Config", "Dark Mode", false, new ConfigDescription("When enabled, the Material Editor UI uses a dark colour scheme.", null, new ConfigurationManagerAttributes { Order = 0 }));
+            DarkMode.SettingChanged += (sender, e) => MaterialEditorUI.ApplyTheme();
+            UIFont = Config.Bind("Config", "UI Font", MEFont.JetBrainsMono, new ConfigDescription("Font used in the Material Editor UI.", null, new ConfigurationManagerAttributes { Order = 0 }));
+            UIFont.SettingChanged += (sender, e) => MaterialEditorUI.ApplyFontChoice();
+            CollapseRenderersByDefault = Config.Bind("Config", "Collapse Renderers By Default", false, new ConfigDescription("When enabled, all renderer rows start collapsed when opening a new object.", null, new ConfigurationManagerAttributes { Order = 0 }));
+            CollapseMaterialsByDefault = Config.Bind("Config", "Collapse Materials By Default", false, new ConfigDescription("When enabled, all material rows start collapsed when opening a new object.", null, new ConfigurationManagerAttributes { Order = 0 }));
+            ShowCollapseRenderersButton = Config.Bind("Config", "Show Collapse Renderers Button", true, new ConfigDescription("Show or hide the R (collapse renderers) button in the header.", null, new ConfigurationManagerAttributes { Order = 0 }));
+            ShowCollapseRenderersButton.SettingChanged += (sender, e) => MaterialEditorUI.UpdateHeaderButtons();
+            ShowCollapseMaterialsButton = Config.Bind("Config", "Show Collapse Materials Button", true, new ConfigDescription("Show or hide the M (collapse materials) button in the header.", null, new ConfigurationManagerAttributes { Order = 0 }));
+            ShowCollapseMaterialsButton.SettingChanged += (sender, e) => MaterialEditorUI.UpdateHeaderButtons();
+            TooltipOpacity = Config.Bind("Config", "Tooltip Opacity", 0.98f, new ConfigDescription("Controls the opacity of the tooltip background.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 0 }));
+            TooltipOpacity.SettingChanged += (sender, e) => TooltipManager.ApplyOpacity();
+            WindowOpacity = Config.Bind("Config", "Window Opacity", 1f, new ConfigDescription("Controls the opacity of the Material Editor window background.", new AcceptableValueRange<float>(0f, 1f), new ConfigurationManagerAttributes { Order = 0 }));
+            WindowOpacity.SettingChanged += (sender, e) => MaterialEditorUI.ApplyTheme();
+            TexturePreviewRightClick = Config.Bind("Config", "Texture Preview Right Click", true, new ConfigDescription("When enabled, right-clicking a texture property label toggles the preview panel for that texture. Left-click always populates the preview when the panel is open.", null, new ConfigurationManagerAttributes { Order = 0 }));
 
             // Everything in these games is 10x the size of KK/KKS
 #if AI || HS2 || PH
