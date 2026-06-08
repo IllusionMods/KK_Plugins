@@ -56,29 +56,37 @@ namespace MaterialEditorAPI
         {
             Mesh mesh = GetMeshFromRenderer(rend);
             if (mesh == null) return string.Empty;
+            
+            var baked = MaterialEditorPluginBase.ExportBakedMesh.Value && MaterialEditorPluginBase.ExportBakedWorldPosition.Value;
+            var bakedSkinned = MaterialEditorPluginBase.ExportBakedMesh.Value && rend is SkinnedMeshRenderer;
+            
+            Matrix4x4 invScale = bakedSkinned ? Matrix4x4.Scale(rend.transform.lossyScale).inverse : Matrix4x4.identity;
+            Matrix4x4 invScaleTranspose = invScale.transpose;
 
-            var scale = rend.transform.lossyScale;
-            var inverseScale = Matrix4x4.Scale(scale).inverse;
             StringBuilder sb = new StringBuilder();
 
-            for (var i = 0; i < mesh.vertices.Length; i++)
+            // Cache data to avoid repeated allocations (mesh properties return a new array each call)
+            Vector3[] vertices = mesh.vertices;
+            for (var i = 0; i < vertices.Length; i++)
             {
-                Vector3 v = mesh.vertices[i];
-                if (MaterialEditorPluginBase.ExportBakedMesh.Value && MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
+                Vector3 v = bakedSkinned ? invScale.MultiplyPoint3x4(vertices[i]) : vertices[i];
+                if (baked)
                     v = rend.transform.TransformPoint(v);
                 sb.AppendLine($"v {-v.x} {v.y} {v.z}");
             }
 
-            for (var i = 0; i < mesh.uv.Length; i++)
+            Vector2[] uvs = mesh.uv;
+            for (var i = 0; i < uvs.Length; i++)
             {
-                Vector2 uv = mesh.uv[i];
+                var uv = uvs[i];
                 sb.AppendLine($"vt {uv.x} {uv.y}");
             }
 
-            for (var i = 0; i < mesh.normals.Length; i++)
+            Vector3[] normals = mesh.normals;
+            for (var i = 0; i < normals.Length; i++)
             {
-                Vector3 n = mesh.normals[i];
-                if (MaterialEditorPluginBase.ExportBakedMesh.Value && MaterialEditorPluginBase.ExportBakedWorldPosition.Value)
+                Vector3 n = bakedSkinned ? invScaleTranspose.MultiplyVector(normals[i]).normalized : normals[i];
+                if (baked)
                     n = rend.transform.TransformDirection(n);
                 sb.AppendLine($"vn {-n.x} {n.y} {n.z}");
             }
