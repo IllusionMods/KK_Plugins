@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.AutoScrollToCenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.FloatLabelDragTrigger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.DropdownFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.DropdownThemer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ItemTemplate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ListEntry.cs" />
@@ -30,11 +31,23 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SelectListPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.TooltipManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.VirtualList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ResizeHandle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RightClickHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.StickySectionBar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)normal_convert.shader" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\normal_convert.unity3d">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\mefonts.unity3d">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\icon_lock_closed.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\icon_lock_open.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="$(MSBuildThisFileDirectory)normal_convert_opengl.shader" />
