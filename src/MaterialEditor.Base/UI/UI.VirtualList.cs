@@ -53,9 +53,19 @@ namespace MaterialEditorAPI
 
             var listEntry = EntryTemplate.AddComponent<ListEntry>();
 
+            listEntry.RendererSectionPanel = listEntry.GetUIComponent<CanvasGroup>("RendererSectionPanel");
+            listEntry.RendererSectionCollapseButton = listEntry.GetUIComponent<Button>("RendererSectionCollapseButton");
+            listEntry.RendererSectionText = listEntry.GetUIComponent<Text>("RendererSectionText");
+
+            listEntry.MaterialSectionPanel = listEntry.GetUIComponent<CanvasGroup>("MaterialSectionPanel");
+            listEntry.MaterialSectionCollapseButton = listEntry.GetUIComponent<Button>("MaterialSectionCollapseButton");
+            listEntry.MaterialSectionText = listEntry.GetUIComponent<Text>("MaterialSectionText");
+
             listEntry.RendererPanel = listEntry.GetUIComponent<CanvasGroup>("RendererPanel");
             listEntry.RendererLabel = listEntry.GetUIComponent<Text>("RendererLabel");
             listEntry.RendererText = listEntry.GetUIComponent<Text>("RendererText");
+            listEntry.RendererCollapseButton = listEntry.GetUIComponent<Button>("RendererCollapseButton");
+            listEntry.RendererEnabledInlineToggle = listEntry.GetUIComponent<Toggle>("RendererEnabledInlineToggle");
             listEntry.SelectInterpolableRendererButton = listEntry.GetUIComponent<Button>("SelectInterpolableRendererButton");
             listEntry.ExportUVButton = listEntry.GetUIComponent<Button>("ExportUVButton");
             listEntry.ExportObjButton = listEntry.GetUIComponent<Button>("ExportObjButton");
@@ -88,6 +98,7 @@ namespace MaterialEditorAPI
             listEntry.MaterialPanel = listEntry.GetUIComponent<CanvasGroup>("MaterialPanel");
             listEntry.MaterialLabel = listEntry.GetUIComponent<Text>("MaterialLabel");
             listEntry.MaterialText = listEntry.GetUIComponent<Text>("MaterialText");
+            listEntry.MaterialCollapseButton = listEntry.GetUIComponent<Button>("MaterialCollapseButton");
             listEntry.MaterialCopyButton = listEntry.GetUIComponent<Button>("MaterialCopy");
             listEntry.MaterialPasteButton = listEntry.GetUIComponent<Button>("MaterialPaste");
             listEntry.MaterialCopyRemove = listEntry.GetUIComponent<Button>("MaterialCopyRemove");
@@ -194,6 +205,24 @@ namespace MaterialEditorAPI
 
         private void Update()
         {
+            //If the viewport has grown since init, spawn additional cache entries to fill it
+            var viewportHeight = ScrollRect.GetComponent<RectTransform>().rect.height;
+            var requiredEntryCount = Mathf.CeilToInt(viewportHeight / PanelHeight) + 1;
+            while (_cachedEntries.Count < requiredEntryCount)
+            {
+                GameObject copy;
+                if (instantiateOverloadExists)
+                    copy = Instantiate(EntryTemplate == null ? _cachedEntries[0].gameObject : EntryTemplate, _cachedEntries[0].transform.parent);
+                else
+                {
+                    copy = Instantiate(_cachedEntries[0].gameObject);
+                    copy.transform.parent = _cachedEntries[0].transform.parent;
+                }
+                var entry = copy.GetComponent<ListEntry>();
+                _cachedEntries.Add(entry);
+                entry.SetVisible(false);
+                _dirty = true;
+            }
             var scrollPosition = ScrollRect.content.localPosition.y;
             // How many items are not visible in current view
             var offscreenItemCount = Mathf.Max(0, _items.Count - _cachedEntries.Count);
@@ -223,9 +252,10 @@ namespace MaterialEditorAPI
 
                 var cachedEntry = _cachedEntries[count];
 
+                int rowIndex = itemsAboveViewRect + count;
                 count++;
 
-                cachedEntry.SetItem(item, false);
+                cachedEntry.SetItem(item, false, rowIndex);
                 cachedEntry.SetVisible(true);
 
                 if (eventSystem && ReferenceEquals(selectedItem, item))
