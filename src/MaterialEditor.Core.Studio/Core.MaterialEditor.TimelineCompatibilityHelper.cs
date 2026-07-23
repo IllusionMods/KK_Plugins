@@ -41,9 +41,9 @@ namespace MaterialEditorAPI
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
                    getParameter: GetMaterialInfoParameter,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.Renderer),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.Renderer),
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.rendererName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Renderer)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.Renderer)
                );
 
             //Renderer ShadowCastingMode
@@ -59,9 +59,9 @@ namespace MaterialEditorAPI
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
                    getParameter: GetMaterialInfoParameter,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.Renderer),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.Renderer),
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.rendererName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Renderer)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.Renderer)
                );
 
             //Renderer ReceiveShadows
@@ -77,9 +77,9 @@ namespace MaterialEditorAPI
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
                    getParameter: GetMaterialInfoParameter,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.Renderer),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.Renderer),
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.rendererName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Renderer)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.Renderer)
                );
 
             //Shader
@@ -95,9 +95,9 @@ namespace MaterialEditorAPI
                    getParameter: GetMaterialInfoParameter,
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.Shader),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.Shader),
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Shader)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.Shader)
                );
 
             //Shader RenderQueue
@@ -113,9 +113,9 @@ namespace MaterialEditorAPI
                    getParameter: GetMaterialInfoParameter,
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.Shader),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.Shader),
                    getFinalName: (currentName, oci, parameter) => $"{currentName}: {parameter.materialName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.Shader)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.Shader)
                );
 
             //Texture value
@@ -146,9 +146,9 @@ namespace MaterialEditorAPI
                    getParameter: GetMaterialInfoParameter,
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.TextureProperty),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.TextureProperty),
                    getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName}: {parameter.materialName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.TextureProperty)
                );
 
             //Texture scale value
@@ -174,9 +174,9 @@ namespace MaterialEditorAPI
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
                    getParameter: GetMaterialInfoParameter,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.TextureProperty),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.TextureProperty),
                    getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName} Scale: {parameter.materialName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.TextureProperty)
                );
 
             //Texture offset value
@@ -202,9 +202,9 @@ namespace MaterialEditorAPI
                    getParameter: GetMaterialInfoParameter,
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.TextureProperty),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.TextureProperty),
                    getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName} Offset: {parameter.materialName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.TextureProperty)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.TextureProperty)
                );
 
             //Color value
@@ -234,9 +234,9 @@ namespace MaterialEditorAPI
                    getParameter: GetMaterialInfoParameter,
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.ColorProperty),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.ColorProperty),
                    getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName}: {parameter.materialName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.ColorProperty)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.ColorProperty)
                );
 
             //Float value
@@ -252,9 +252,9 @@ namespace MaterialEditorAPI
                    getParameter: GetMaterialInfoParameter,
                    readParameterFromXml: ReadMaterialInfoXml,
                    writeParameterToXml: WriteMaterialInfoXml,
-                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, ItemInfo.RowItemType.FloatProperty),
+                   checkIntegrity: (oci, parameter, leftValue, rightValue) => CheckIntegrity(oci, parameter, leftValue, rightValue, RowModel.RowItemType.FloatProperty),
                    getFinalName: (currentName, oci, parameter) => $"{parameter.propertyName}: {parameter.materialName}",
-                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(ItemInfo.RowItemType.FloatProperty)
+                   isCompatibleWithTarget: (oci) => IsCompatibleWithTarget(RowModel.RowItemType.FloatProperty)
                );
 
             //Projector property
@@ -309,7 +309,7 @@ namespace MaterialEditorAPI
             return new ProjectorInfo(node.Attributes["gameObjectPath"].Value, node.Attributes["projectorName"].Value, (ProjectorProperties)Enum.Parse(typeof(ProjectorProperties), node.Attributes["property"].Value));
         }
 
-        private static bool CheckIntegrity(ObjectCtrlInfo oci, MaterialInfo parameter, object leftValue, object rightValue, ItemInfo.RowItemType rowType)
+        private static bool CheckIntegrity(ObjectCtrlInfo oci, MaterialInfo parameter, object leftValue, object rightValue, RowModel.RowItemType rowType)
         {
             if (oci != null && parameter != null)
             {
@@ -322,14 +322,14 @@ namespace MaterialEditorAPI
             return false;
         }
 
-        private static bool IsCompatibleWithTarget(ItemInfo.RowItemType rowtype)
+        private static bool IsCompatibleWithTarget(RowModel.RowItemType rowtype)
         {
             if (selectedInterpolable != null && selectedInterpolable.RowType == rowtype)
-                if (rowtype == ItemInfo.RowItemType.Renderer && !selectedInterpolable.RendererName.IsNullOrEmpty())
+                if (rowtype == RowModel.RowItemType.Renderer && !selectedInterpolable.RendererName.IsNullOrEmpty())
                     return true;
-                else if (rowtype == ItemInfo.RowItemType.Shader && !selectedInterpolable.MaterialName.IsNullOrEmpty())
+                else if (rowtype == RowModel.RowItemType.Shader && !selectedInterpolable.MaterialName.IsNullOrEmpty())
                     return true;
-                else if ((rowtype == ItemInfo.RowItemType.TextureProperty || rowtype == ItemInfo.RowItemType.ColorProperty || rowtype == ItemInfo.RowItemType.FloatProperty) && !selectedInterpolable.MaterialName.IsNullOrEmpty() && !selectedInterpolable.PropertyName.IsNullOrEmpty())
+                else if ((rowtype == RowModel.RowItemType.TextureProperty || rowtype == RowModel.RowItemType.ColorProperty || rowtype == RowModel.RowItemType.FloatProperty) && !selectedInterpolable.MaterialName.IsNullOrEmpty() && !selectedInterpolable.PropertyName.IsNullOrEmpty())
                     return true;
             return false;
         }
@@ -399,21 +399,21 @@ namespace MaterialEditorAPI
                 return null;
             }
 
-            public bool CheckIntegrity(ItemInfo.RowItemType rowType)
+            public bool CheckIntegrity(RowModel.RowItemType rowType)
             {
                 if (gameObjectPath.IsNullOrEmpty())
                     return false;
                 switch (rowType)
                 {
-                    case ItemInfo.RowItemType.Renderer:
+                    case RowModel.RowItemType.Renderer:
                         if (rendererName.IsNullOrEmpty()) return false;
                         break;
-                    case ItemInfo.RowItemType.Shader:
+                    case RowModel.RowItemType.Shader:
                         if (materialName.IsNullOrEmpty()) return false;
                         break;
-                    case ItemInfo.RowItemType.TextureProperty:
-                    case ItemInfo.RowItemType.ColorProperty:
-                    case ItemInfo.RowItemType.FloatProperty:
+                    case RowModel.RowItemType.TextureProperty:
+                    case RowModel.RowItemType.ColorProperty:
+                    case RowModel.RowItemType.FloatProperty:
                         if (materialName.IsNullOrEmpty() || propertyName.IsNullOrEmpty()) return false;
                         break;
                 }

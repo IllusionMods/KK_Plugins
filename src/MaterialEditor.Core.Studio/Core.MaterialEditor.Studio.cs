@@ -431,404 +431,103 @@ namespace KK_Plugins.MaterialEditor
         /// <returns></returns>
         public static SceneController GetSceneController() => Chainloader.ManagerObject.transform.GetComponentInChildren<SceneController>();
 
-        public override string GetRendererPropertyValueOriginal(object data, Renderer renderer, RendererProperties property, GameObject go)
+        private protected override MaterialEditService CreateMaterialEditService()
         {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetRendererPropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, property, go);
-            }
-            else
-                return GetSceneController().GetRendererPropertyValueOriginal((int)data, renderer, property);
-        }
-        public override string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetRendererPropertyValue(objectData.Slot, objectData.ObjectType, renderer, property, go);
-            }
-            else
-                return GetSceneController().GetRendererPropertyValue((int)data, renderer, property);
-        }
-        public override void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, value, go);
-            }
-            else
-                GetSceneController().SetRendererProperty((int)data, renderer, property, value);
-        }
-        public override void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, go);
-            }
-            else
-                GetSceneController().RemoveRendererProperty((int)data, renderer, property);
-        }
-        public override float? GetProjectorPropertyValueOriginal(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = gameObject.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetProjectorPropertyValueOriginal(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
-            }
-            else
-                return GetSceneController().GetProjectorPropertyValueOriginal((int)data, projector, property);
-        }
-        public override float? GetProjectorPropertyValue(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = gameObject.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetProjectorPropertyValue(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
-            }
-            else
-                return GetSceneController().GetProjectorPropertyValue((int)data, projector, property);
-        }
-        public override void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetProjectorProperty(objectData.Slot, objectData.ObjectType, projector, property, value, gameObject);
-            }
-            else
-                GetSceneController().SetProjectorProperty((int)data, projector, property, value);
-        }
-        public override void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = gameObject.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveProjectorProperty(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
-            }
-            else
-                GetSceneController().RemoveProjectorProperty((int)data, projector, property);
-        }
-        public override IEnumerable<Projector> GetProjectorList(object data, GameObject gameObject)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = gameObject.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetProjectorList(objectData.ObjectType, gameObject);
-            }
-            else
-                return GetSceneController().GetProjectorList(gameObject);
+            var charaRepository = new CharaMaterialEditRepository(gameObject =>
+                MaterialEditorPlugin.GetCharaController(gameObject.GetComponentInParent<ChaControl>()));
+            var sceneRepository = new SceneMaterialEditRepository(GetSceneController);
+            return new MaterialEditService(data =>
+                data is ObjectData ? (IMaterialEditRepository)charaRepository : sceneRepository);
         }
 
-        public override void MaterialCopyEdits(object data, Material material, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).MaterialCopyEdits(objectData.Slot, objectData.ObjectType, material, go);
-            }
-            else
-                GetSceneController().MaterialCopyEdits((int)data, material);
-        }
-        public override void MaterialPasteEdits(object data, Material material, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).MaterialPasteEdits(objectData.Slot, objectData.ObjectType, material, go);
-            }
-            else
-                GetSceneController().MaterialPasteEdits((int)data, material);
-        }
-        public override void MaterialCopyRemove(object data, Material material, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).MaterialCopyRemove(objectData.Slot, objectData.ObjectType, material, go);
-            }
-            else
-                GetSceneController().MaterialCopyRemove((int)data, material, go);
-        }
+        public override string GetRendererPropertyValueOriginal(object data, Renderer renderer, RendererProperties property, GameObject go) =>
+            EditService.GetRendererPropertyValueOriginal(data, renderer, property, go);
+        public override string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject go) =>
+            EditService.GetRendererPropertyValue(data, renderer, property, go);
+        public override void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject go) =>
+            EditService.SetRendererProperty(data, renderer, property, value, go);
+        public override void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject go) =>
+            EditService.RemoveRendererProperty(data, renderer, property, go);
 
-        public override string GetMaterialNameOriginal(object data, Renderer renderer, Material material, GameObject gameObject)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = gameObject.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialNamePropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, material, gameObject);
-            }
-            else
-                return GetSceneController().GetMaterialNamePropertyValueOriginal((int)data, renderer, material);
-        }
-        public override void SetMaterialName(object data, Renderer renderer, Material material, string value, GameObject gameObject)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = gameObject.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialNameProperty(objectData.Slot, objectData.ObjectType, renderer, material, value, gameObject);
-            }
-            else
-                GetSceneController().SetMaterialNameProperty((int)data, renderer, material, value);
-        }
-        public override void RemoveMaterialName(object data, Renderer renderer, Material material, GameObject gameObject)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = gameObject.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialNameProperty(objectData.Slot, objectData.ObjectType, renderer, material, gameObject);
-            }
-            else
-                GetSceneController().RemoveMaterialNameProperty((int)data, renderer, material);
-        }
+        public override float? GetProjectorPropertyValueOriginal(object data, Projector projector, ProjectorProperties property, GameObject gameObject) =>
+            EditService.GetProjectorPropertyValueOriginal(data, projector, property, gameObject);
+        public override float? GetProjectorPropertyValue(object data, Projector projector, ProjectorProperties property, GameObject gameObject) =>
+            EditService.GetProjectorPropertyValue(data, projector, property, gameObject);
+        public override void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject go) =>
+            EditService.SetProjectorProperty(data, projector, property, value, go);
+        public override void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject) =>
+            EditService.RemoveProjectorProperty(data, projector, property, gameObject);
+        public override IEnumerable<Projector> GetProjectorList(object data, GameObject gameObject) =>
+            EditService.GetProjectorList(data, gameObject);
 
-        public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderOriginal(objectData.Slot, objectData.ObjectType, material, go);
-            }
-            else
-                return GetSceneController().GetMaterialShaderOriginal((int)data, material);
-        }
-        public override void SetMaterialShaderName(object data, Material material, string value, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialShader(objectData.Slot, objectData.ObjectType, material, value, go);
-            }
-            else
-                GetSceneController().SetMaterialShader((int)data, material, value);
-        }
-        public override void RemoveMaterialShaderName(object data, Material material, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShader(objectData.Slot, objectData.ObjectType, material, go);
-            }
-            else
-                GetSceneController().RemoveMaterialShader((int)data, material);
-        }
+        public override void MaterialCopyEdits(object data, Material material, GameObject go) =>
+            EditService.MaterialCopyEdits(data, material, go);
+        public override void MaterialPasteEdits(object data, Material material, GameObject go) =>
+            EditService.MaterialPasteEdits(data, material, go);
+        public override void MaterialCopyRemove(object data, Material material, GameObject go) =>
+            EditService.MaterialCopyRemove(data, material, go);
 
-        public override int? GetMaterialShaderRenderQueueOriginal(object data, Material material, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialShaderRenderQueueOriginal(objectData.Slot, objectData.ObjectType, material, go);
-            }
-            else
-                return GetSceneController().GetMaterialShaderRenderQueueOriginal((int)data, material);
-        }
-        public override void SetMaterialShaderRenderQueue(object data, Material material, int value, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, value, go);
-            }
-            else
-                GetSceneController().SetMaterialShaderRenderQueue((int)data, material, value);
-        }
-        public override void RemoveMaterialShaderRenderQueue(object data, Material material, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, go);
-            }
-            else
-                GetSceneController().RemoveMaterialShaderRenderQueue((int)data, material);
-        }
+        public override string GetMaterialNameOriginal(object data, Renderer renderer, Material material, GameObject gameObject) =>
+            EditService.GetMaterialNameOriginal(data, renderer, material, gameObject);
+        public override void SetMaterialName(object data, Renderer renderer, Material material, string value, GameObject gameObject) =>
+            EditService.SetMaterialName(data, renderer, material, value, gameObject);
+        public override void RemoveMaterialName(object data, Renderer renderer, Material material, GameObject gameObject) =>
+            EditService.RemoveMaterialName(data, renderer, material, gameObject);
 
-        public override bool GetMaterialTextureValueOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                return GetSceneController().GetMaterialTextureOriginal((int)data, material, propertyName);
-        }
-        public override void SetMaterialTexture(object data, Material material, string propertyName, string filePath, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialTextureFromFile(objectData.Slot, objectData.ObjectType, material, propertyName, filePath, go, true);
-            }
-            else
-                GetSceneController().SetMaterialTextureFromFile((int)data, material, propertyName, filePath, true);
-        }
-        public override void RemoveMaterialTexture(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTexture(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                GetSceneController().RemoveMaterialTexture((int)data, material, propertyName);
-        }
+        public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go) =>
+            EditService.GetMaterialShaderNameOriginal(data, material, go);
+        public override void SetMaterialShaderName(object data, Material material, string value, GameObject go) =>
+            EditService.SetMaterialShaderName(data, material, value, go);
+        public override void RemoveMaterialShaderName(object data, Material material, GameObject go) =>
+            EditService.RemoveMaterialShaderName(data, material, go);
 
-        public override Vector2? GetMaterialTextureOffsetOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureOffsetOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                return GetSceneController().GetMaterialTextureOffsetOriginal((int)data, material, propertyName);
-        }
-        public override void SetMaterialTextureOffset(object data, Material material, string propertyName, Vector2 value, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-            }
-            else
-                GetSceneController().SetMaterialTextureOffset((int)data, material, propertyName, value);
-        }
-        public override void RemoveMaterialTextureOffset(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                GetSceneController().RemoveMaterialTextureOffset((int)data, material, propertyName);
-        }
+        public override int? GetMaterialShaderRenderQueueOriginal(object data, Material material, GameObject go) =>
+            EditService.GetMaterialShaderRenderQueueOriginal(data, material, go);
+        public override void SetMaterialShaderRenderQueue(object data, Material material, int value, GameObject go) =>
+            EditService.SetMaterialShaderRenderQueue(data, material, value, go);
+        public override void RemoveMaterialShaderRenderQueue(object data, Material material, GameObject go) =>
+            EditService.RemoveMaterialShaderRenderQueue(data, material, go);
 
-        public override Vector2? GetMaterialTextureScaleOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialTextureScaleOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                return GetSceneController().GetMaterialTextureScaleOriginal((int)data, material, propertyName);
-        }
-        public override void SetMaterialTextureScale(object data, Material material, string propertyName, Vector2 value, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-            }
-            else
-                GetSceneController().SetMaterialTextureScale((int)data, material, propertyName, value);
-        }
-        public override void RemoveMaterialTextureScale(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                GetSceneController().RemoveMaterialTextureScale((int)data, material, propertyName);
-        }
+        public override bool GetMaterialTextureValueOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialTextureValueOriginal(data, material, propertyName, go);
+        public override void SetMaterialTexture(object data, Material material, string propertyName, string filePath, GameObject go) =>
+            EditService.SetMaterialTexture(data, material, propertyName, filePath, go);
+        public override void RemoveMaterialTexture(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialTexture(data, material, propertyName, go);
 
-        public override Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialColorPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                return GetSceneController().GetMaterialColorPropertyValueOriginal((int)data, material, propertyName);
-        }
-        public override void SetMaterialColorProperty(object data, Material material, string propertyName, Color value, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-            }
-            else
-                GetSceneController().SetMaterialColorProperty((int)data, material, propertyName, value);
-        }
-        public override void RemoveMaterialColorProperty(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                GetSceneController().RemoveMaterialColorProperty((int)data, material, propertyName);
-        }
+        public override Vector2? GetMaterialTextureOffsetOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialTextureOffsetOriginal(data, material, propertyName, go);
+        public override void SetMaterialTextureOffset(object data, Material material, string propertyName, Vector2 value, GameObject go) =>
+            EditService.SetMaterialTextureOffset(data, material, propertyName, value, go);
+        public override void RemoveMaterialTextureOffset(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialTextureOffset(data, material, propertyName, go);
 
-        public override float? GetMaterialFloatPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialFloatPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                return GetSceneController().GetMaterialFloatPropertyValueOriginal((int)data, material, propertyName);
-        }
-        public override void SetMaterialFloatProperty(object data, Material material, string propertyName, float value, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-            }
-            else
-                GetSceneController().SetMaterialFloatProperty((int)data, material, propertyName, value);
-        }
-        public override void RemoveMaterialFloatProperty(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                GetSceneController().RemoveMaterialFloatProperty((int)data, material, propertyName);
-        }
-        public override bool? GetMaterialKeywordPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                return MaterialEditorPlugin.GetCharaController(chaControl).GetMaterialKeywordPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                return GetSceneController().GetMaterialKeywordPropertyValueOriginal((int)data, material, propertyName);
-        }
-        public override void SetMaterialKeywordProperty(object data, Material material, string propertyName, bool value, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).SetMaterialKeywordProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-            }
-            else
-                GetSceneController().SetMaterialKeywordProperty((int)data, material, propertyName, value);
-        }
-        public override void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject go)
-        {
-            if (data is ObjectData objectData)
-            {
-                var chaControl = go.GetComponentInParent<ChaControl>();
-                MaterialEditorPlugin.GetCharaController(chaControl).RemoveMaterialKeywordProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-            }
-            else
-                GetSceneController().RemoveMaterialKeywordProperty((int)data, material, propertyName);
-        }
+        public override Vector2? GetMaterialTextureScaleOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialTextureScaleOriginal(data, material, propertyName, go);
+        public override void SetMaterialTextureScale(object data, Material material, string propertyName, Vector2 value, GameObject go) =>
+            EditService.SetMaterialTextureScale(data, material, propertyName, value, go);
+        public override void RemoveMaterialTextureScale(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialTextureScale(data, material, propertyName, go);
+
+        public override Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialColorPropertyValueOriginal(data, material, propertyName, go);
+        public override void SetMaterialColorProperty(object data, Material material, string propertyName, Color value, GameObject go) =>
+            EditService.SetMaterialColorProperty(data, material, propertyName, value, go);
+        public override void RemoveMaterialColorProperty(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialColorProperty(data, material, propertyName, go);
+
+        public override float? GetMaterialFloatPropertyValueOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialFloatPropertyValueOriginal(data, material, propertyName, go);
+        public override void SetMaterialFloatProperty(object data, Material material, string propertyName, float value, GameObject go) =>
+            EditService.SetMaterialFloatProperty(data, material, propertyName, value, go);
+        public override void RemoveMaterialFloatProperty(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialFloatProperty(data, material, propertyName, go);
+
+        public override bool? GetMaterialKeywordPropertyValueOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialKeywordPropertyValueOriginal(data, material, propertyName, go);
+        public override void SetMaterialKeywordProperty(object data, Material material, string propertyName, bool value, GameObject go) =>
+            EditService.SetMaterialKeywordProperty(data, material, propertyName, value, go);
+        public override void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialKeywordProperty(data, material, propertyName, go);
     }
 }

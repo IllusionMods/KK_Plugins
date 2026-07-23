@@ -12,8 +12,8 @@ namespace MaterialEditorAPI
     {
         private static readonly bool instantiateOverloadExists = typeof(UnityEngine.Object).GetMethod("Instantiate", new[] { typeof(GameObject), typeof(Transform) }) != null;
 
-        private readonly List<ListEntry> _cachedEntries = new List<ListEntry>();
-        private readonly List<ItemInfo> _items = new List<ItemInfo>();
+        private readonly List<RowView> _cachedViews = new List<RowView>();
+        private readonly List<RowModel> _models = new List<RowModel>();
 
         public GameObject EntryTemplate;
         public ScrollRect ScrollRect;
@@ -51,11 +51,14 @@ namespace MaterialEditorAPI
 
             EntryTemplate.SetActive(false);
 
-            var listEntry = EntryTemplate.AddComponent<ListEntry>();
+            var rowView = EntryTemplate.AddComponent<RowView>();
+            var listEntry = EntryTemplate.AddComponent<RowBinder>();
+            rowView.Initialize(listEntry);
 
             listEntry.RendererPanel = listEntry.GetUIComponent<CanvasGroup>("RendererPanel");
             listEntry.RendererLabel = listEntry.GetUIComponent<Text>("RendererLabel");
             listEntry.RendererText = listEntry.GetUIComponent<Text>("RendererText");
+            listEntry.RendererTextClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("RendererText");
             listEntry.SelectInterpolableRendererButton = listEntry.GetUIComponent<Button>("SelectInterpolableRendererButton");
             listEntry.ExportUVButton = listEntry.GetUIComponent<Button>("ExportUVButton");
             listEntry.ExportObjButton = listEntry.GetUIComponent<Button>("ExportObjButton");
@@ -88,6 +91,7 @@ namespace MaterialEditorAPI
             listEntry.MaterialPanel = listEntry.GetUIComponent<CanvasGroup>("MaterialPanel");
             listEntry.MaterialLabel = listEntry.GetUIComponent<Text>("MaterialLabel");
             listEntry.MaterialText = listEntry.GetUIComponent<Text>("MaterialText");
+            listEntry.MaterialTextClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("MaterialText");
             listEntry.MaterialCopyButton = listEntry.GetUIComponent<Button>("MaterialCopy");
             listEntry.MaterialPasteButton = listEntry.GetUIComponent<Button>("MaterialPaste");
             listEntry.MaterialCopyRemove = listEntry.GetUIComponent<Button>("MaterialCopyRemove");
@@ -95,20 +99,24 @@ namespace MaterialEditorAPI
 
             listEntry.ShaderPanel = listEntry.GetUIComponent<CanvasGroup>("ShaderPanel");
             listEntry.ShaderLabel = listEntry.GetUIComponent<Text>("ShaderLabel");
+            listEntry.ShaderLabelClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("ShaderLabel");
             listEntry.SelectInterpolableShaderButton = listEntry.GetUIComponent<Button>("SelectInterpolableShaderButton");
             listEntry.ShaderDropdown = listEntry.GetUIComponent<Dropdown>("ShaderDropdown");
             listEntry.ShaderResetButton = listEntry.GetUIComponent<Button>("ShaderResetButton");
 
             listEntry.ShaderRenderQueuePanel = listEntry.GetUIComponent<CanvasGroup>("ShaderRenderQueuePanel");
             listEntry.ShaderRenderQueueLabel = listEntry.GetUIComponent<Text>("ShaderRenderQueueLabel");
+            listEntry.ShaderRenderQueueLabelClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("ShaderRenderQueueLabel");
             listEntry.ShaderRenderQueueInput = listEntry.GetUIComponent<InputField>("ShaderRenderQueueInput");
             listEntry.ShaderRenderQueueResetButton = listEntry.GetUIComponent<Button>("ShaderRenderQueueResetButton");
 
             listEntry.PropertyCategoryPanel = listEntry.GetUIComponent<CanvasGroup>("PropertyCategoryPanel");
+            listEntry.PropertyCategoryCollapseButton = listEntry.GetUIComponent<Button>("PropertyCategoryCollapseButton");
             listEntry.PropertyCategoryLabel = listEntry.GetUIComponent<Text>("PropertyCategoryLabel");
 
             listEntry.TexturePanel = listEntry.GetUIComponent<CanvasGroup>("TexturePanel");
             listEntry.TextureLabel = listEntry.GetUIComponent<Text>("TextureLabel");
+            listEntry.TextureLabelClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("TextureLabel");
             listEntry.SelectInterpolableTextureButton = listEntry.GetUIComponent<Button>("SelectInterpolableTextureButton");
             listEntry.ExportTextureButton = listEntry.GetUIComponent<Button>("TextureExportButton");
             listEntry.ImportTextureButton = listEntry.GetUIComponent<Button>("TextureImportButton");
@@ -116,7 +124,9 @@ namespace MaterialEditorAPI
 
             listEntry.OffsetScalePanel = listEntry.GetUIComponent<CanvasGroup>("OffsetScalePanel");
             listEntry.OffsetScaleLabel = listEntry.GetUIComponent<Text>("OffsetScaleLabel");
+            listEntry.OffsetScaleLabelClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("OffsetScaleLabel");
             listEntry.OffsetXText = listEntry.GetUIComponent<Text>("OffsetXText");
+            listEntry.OffsetXTextClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("OffsetXText");
             listEntry.OffsetXInput = listEntry.GetUIComponent<InputField>("OffsetXInput");
             listEntry.OffsetYText = listEntry.GetUIComponent<Text>("OffsetYText");
             listEntry.OffsetYInput = listEntry.GetUIComponent<InputField>("OffsetYInput");
@@ -129,6 +139,7 @@ namespace MaterialEditorAPI
             listEntry.ColorPanel = listEntry.GetUIComponent<CanvasGroup>("ColorPanel");
             listEntry.SelectInterpolableColorButton = listEntry.GetUIComponent<Button>("SelectInterpolableColorButton");
             listEntry.ColorLabel = listEntry.GetUIComponent<Text>("ColorLabel");
+            listEntry.ColorLabelClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("ColorLabel");
             listEntry.ColorRText = listEntry.GetUIComponent<Text>("ColorRText");
             listEntry.ColorGText = listEntry.GetUIComponent<Text>("ColorGText");
             listEntry.ColorBText = listEntry.GetUIComponent<Text>("ColorBText");
@@ -142,6 +153,7 @@ namespace MaterialEditorAPI
 
             listEntry.FloatPanel = listEntry.GetUIComponent<CanvasGroup>("FloatPanel");
             listEntry.FloatLabel = listEntry.GetUIComponent<Text>("FloatLabel");
+            listEntry.FloatLabelClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("FloatLabel");
             listEntry.SelectInterpolableFloatButton = listEntry.GetUIComponent<Button>("SelectInterpolableFloatButton");
             listEntry.FloatSlider = listEntry.GetUIComponent<Slider>("FloatSlider");
             listEntry.FloatInputField = listEntry.GetUIComponent<InputField>("FloatInputField");
@@ -149,10 +161,11 @@ namespace MaterialEditorAPI
 
             listEntry.KeywordPanel = listEntry.GetUIComponent<CanvasGroup>("KeywordPanel");
             listEntry.KeywordLabel = listEntry.GetUIComponent<Text>("KeywordLabel");
+            listEntry.KeywordLabelClickTrigger = listEntry.GetUIComponent<LabelClickTrigger>("KeywordLabel");
             listEntry.KeywordToggle = listEntry.GetUIComponent<Toggle>("KeywordToggle");
             listEntry.KeywordResetButton = listEntry.GetUIComponent<Button>("KeywordResetButton");
 
-            listEntry.SetItem(null, true);
+            rowView.Bind(null, true);
         }
 
         private void PopulateEntryCache()
@@ -172,8 +185,8 @@ namespace MaterialEditorAPI
                     copy = Instantiate(EntryTemplate);
                     copy.transform.parent = EntryTemplate.transform.parent;
                 }
-                var entry = copy.GetComponent<ListEntry>();
-                _cachedEntries.Add(entry);
+                var entry = copy.GetComponent<RowView>();
+                _cachedViews.Add(entry);
                 entry.SetVisible(false);
             }
         }
@@ -183,11 +196,11 @@ namespace MaterialEditorAPI
             SetList(null);
         }
 
-        public void SetList(IEnumerable<ItemInfo> items)
+        public void SetList(IEnumerable<RowModel> items)
         {
-            _items.Clear();
+            _models.Clear();
             if (items != null)
-                _items.AddRange(items);
+                _models.AddRange(items);
 
             _dirty = true;
         }
@@ -196,7 +209,7 @@ namespace MaterialEditorAPI
         {
             var scrollPosition = ScrollRect.content.localPosition.y;
             // How many items are not visible in current view
-            var offscreenItemCount = Mathf.Max(0, _items.Count - _cachedEntries.Count);
+            var offscreenItemCount = Mathf.Max(0, _models.Count - _cachedViews.Count);
             // How many items are above current view rect and not visible
             var itemsAboveViewRect = Mathf.FloorToInt(Mathf.Clamp(scrollPosition / PanelHeight, 0, offscreenItemCount));
 
@@ -207,25 +220,25 @@ namespace MaterialEditorAPI
             _dirty = false;
 
             // Store selected item to preserve selection when moving the list with mouse
-            ItemInfo selectedItem = null;
+            RowModel selectedItem = null;
             if (EventSystem.current != null)
             {
-                var cachedEntry = _cachedEntries.Find(x => x.gameObject == EventSystem.current.currentSelectedGameObject);
+                var cachedEntry = _cachedViews.Find(x => x.gameObject == EventSystem.current.currentSelectedGameObject);
                 if (cachedEntry != null)
-                    selectedItem = cachedEntry.CurrentItem;
+                    selectedItem = cachedEntry.CurrentModel;
             }
 
             var count = 0;
             bool eventSystem = EventSystem.current != null;
-            foreach (var item in _items.Skip(itemsAboveViewRect))
+            foreach (var item in _models.Skip(itemsAboveViewRect))
             {
-                if (_cachedEntries.Count <= count) break;
+                if (_cachedViews.Count <= count) break;
 
-                var cachedEntry = _cachedEntries[count];
+                var cachedEntry = _cachedViews[count];
 
                 count++;
 
-                cachedEntry.SetItem(item, false);
+                cachedEntry.Bind(item, false);
                 cachedEntry.SetVisible(true);
 
                 if (eventSystem && ReferenceEquals(selectedItem, item))
@@ -233,9 +246,9 @@ namespace MaterialEditorAPI
             }
 
             // If there are less items than cached list entries, disable unused cache entries
-            if (_cachedEntries.Count > _items.Count)
+            if (_cachedViews.Count > _models.Count)
             {
-                foreach (var cacheEntry in _cachedEntries.Skip(_items.Count))
+                foreach (var cacheEntry in _cachedViews.Skip(_models.Count))
                     cacheEntry.SetVisible(false);
             }
 
@@ -250,15 +263,15 @@ namespace MaterialEditorAPI
             var topOffset = Mathf.RoundToInt(itemsAboveViewRect * PanelHeight);
             _verticalLayoutGroup.padding.top = _paddingTop + topOffset;
 
-            var totalHeight = _items.Count * PanelHeight;
-            var cacheEntriesHeight = _cachedEntries.Count * PanelHeight;
+            var totalHeight = _models.Count * PanelHeight;
+            var cacheEntriesHeight = _cachedViews.Count * PanelHeight;
             var trailingHeight = totalHeight - cacheEntriesHeight - topOffset;
             _verticalLayoutGroup.padding.bottom = Mathf.FloorToInt(Mathf.Max(0, trailingHeight) + _paddingBot);
         }
 
         public void SelectFirstItem()
         {
-            var entry = _cachedEntries.FirstOrDefault();
+            var entry = _cachedViews.FirstOrDefault();
             if (entry != null) entry.GetComponent<Button>().Select();
         }
     }

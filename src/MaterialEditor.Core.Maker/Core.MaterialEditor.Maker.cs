@@ -324,214 +324,98 @@ namespace KK_Plugins.MaterialEditor
                 base.ExportTexture(mat, property);
         }
 
-        public override string GetRendererPropertyValueOriginal(object data, Renderer renderer, RendererProperties property, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetRendererPropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, property, go);
-        }
-        public override string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetRendererPropertyValue(objectData.Slot, objectData.ObjectType, renderer, property, go);
-        }
-        public override void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, value, go);
-        }
-        public override void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveRendererProperty(objectData.Slot, objectData.ObjectType, renderer, property, go);
-        }
+        private protected override MaterialEditService CreateMaterialEditService() =>
+            new MaterialEditService(new CharaMaterialEditRepository(
+                gameObject => MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl())));
 
-        public override float? GetProjectorPropertyValueOriginal(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetProjectorPropertyValueOriginal(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
-        }
+        public override string GetRendererPropertyValueOriginal(object data, Renderer renderer, RendererProperties property, GameObject go) =>
+            EditService.GetRendererPropertyValueOriginal(data, renderer, property, go);
+        public override string GetRendererPropertyValue(object data, Renderer renderer, RendererProperties property, GameObject go) =>
+            EditService.GetRendererPropertyValue(data, renderer, property, go);
+        public override void SetRendererProperty(object data, Renderer renderer, RendererProperties property, string value, GameObject go) =>
+            EditService.SetRendererProperty(data, renderer, property, value, go);
+        public override void RemoveRendererProperty(object data, Renderer renderer, RendererProperties property, GameObject go) =>
+            EditService.RemoveRendererProperty(data, renderer, property, go);
 
-        public override float? GetProjectorPropertyValue(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetProjectorPropertyValue(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
-        }
+        public override float? GetProjectorPropertyValueOriginal(object data, Projector projector, ProjectorProperties property, GameObject gameObject) =>
+            EditService.GetProjectorPropertyValueOriginal(data, projector, property, gameObject);
+        public override float? GetProjectorPropertyValue(object data, Projector projector, ProjectorProperties property, GameObject gameObject) =>
+            EditService.GetProjectorPropertyValue(data, projector, property, gameObject);
+        public override void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject gameObject) =>
+            EditService.SetProjectorProperty(data, projector, property, value, gameObject);
+        public override void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject) =>
+            EditService.RemoveProjectorProperty(data, projector, property, gameObject);
+        public override IEnumerable<Projector> GetProjectorList(object data, GameObject gameObject) =>
+            EditService.GetProjectorList(data, gameObject);
 
-        public override void SetProjectorProperty(object data, Projector projector, ProjectorProperties property, float value, GameObject gameObject)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetProjectorProperty(objectData.Slot, objectData.ObjectType, projector, property, value, gameObject);
-        }
+        public override void MaterialCopyEdits(object data, Material material, GameObject go) =>
+            EditService.MaterialCopyEdits(data, material, go);
+        public override void MaterialPasteEdits(object data, Material material, GameObject go) =>
+            EditService.MaterialPasteEdits(data, material, go);
+        public override void MaterialCopyRemove(object data, Material material, GameObject go) =>
+            EditService.MaterialCopyRemove(data, material, go);
 
-        public override void RemoveProjectorProperty(object data, Projector projector, ProjectorProperties property, GameObject gameObject)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveProjectorProperty(objectData.Slot, objectData.ObjectType, projector, property, gameObject);
-        }
-        public override IEnumerable<Projector> GetProjectorList(object data, GameObject gameObject)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetProjectorList(objectData.ObjectType, gameObject);
-        }
+        public override string GetMaterialNameOriginal(object data, Renderer renderer, Material material, GameObject gameObject) =>
+            EditService.GetMaterialNameOriginal(data, renderer, material, gameObject);
+        public override void SetMaterialName(object data, Renderer renderer, Material material, string value, GameObject gameObject) =>
+            EditService.SetMaterialName(data, renderer, material, value, gameObject);
+        public override void RemoveMaterialName(object data, Renderer renderer, Material material, GameObject gameObject) =>
+            EditService.RemoveMaterialName(data, renderer, material, gameObject);
 
-        public override void MaterialCopyEdits(object data, Material material, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialCopyEdits(objectData.Slot, objectData.ObjectType, material, go);
-        }
-        public override void MaterialPasteEdits(object data, Material material, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialPasteEdits(objectData.Slot, objectData.ObjectType, material, go);
-        }
-        public override void MaterialCopyRemove(object data, Material material, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).MaterialCopyRemove(objectData.Slot, objectData.ObjectType, material, go);
-        }
+        public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go) =>
+            EditService.GetMaterialShaderNameOriginal(data, material, go);
+        public override void SetMaterialShaderName(object data, Material material, string value, GameObject go) =>
+            EditService.SetMaterialShaderName(data, material, value, go);
+        public override void RemoveMaterialShaderName(object data, Material material, GameObject go) =>
+            EditService.RemoveMaterialShaderName(data, material, go);
 
-        public override string GetMaterialNameOriginal(object data, Renderer renderer, Material material, GameObject gameObject)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialNamePropertyValueOriginal(objectData.Slot, objectData.ObjectType, renderer, material, gameObject);
-        }
-        public override void SetMaterialName(object data, Renderer renderer, Material material, string value, GameObject gameObject)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialNameProperty(objectData.Slot, objectData.ObjectType, renderer, material, value, gameObject);
-        }
-        public override void RemoveMaterialName(object data, Renderer renderer, Material material, GameObject gameObject)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialNameProperty(objectData.Slot, objectData.ObjectType, renderer, material, gameObject);
-        }
+        public override int? GetMaterialShaderRenderQueueOriginal(object data, Material material, GameObject go) =>
+            EditService.GetMaterialShaderRenderQueueOriginal(data, material, go);
+        public override void SetMaterialShaderRenderQueue(object data, Material material, int value, GameObject go) =>
+            EditService.SetMaterialShaderRenderQueue(data, material, value, go);
+        public override void RemoveMaterialShaderRenderQueue(object data, Material material, GameObject go) =>
+            EditService.RemoveMaterialShaderRenderQueue(data, material, go);
 
-        public override string GetMaterialShaderNameOriginal(object data, Material material, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialShaderOriginal(objectData.Slot, objectData.ObjectType, material, go);
-        }
-        public override void SetMaterialShaderName(object data, Material material, string value, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialShader(objectData.Slot, objectData.ObjectType, material, value, go);
-        }
-        public override void RemoveMaterialShaderName(object data, Material material, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialShader(objectData.Slot, objectData.ObjectType, material, go);
-        }
+        public override bool GetMaterialTextureValueOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialTextureValueOriginal(data, material, propertyName, go);
+        public override void SetMaterialTexture(object data, Material material, string propertyName, string filePath, GameObject go) =>
+            EditService.SetMaterialTexture(data, material, propertyName, filePath, go);
+        public override void RemoveMaterialTexture(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialTexture(data, material, propertyName, go);
 
-        public override int? GetMaterialShaderRenderQueueOriginal(object data, Material material, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialShaderRenderQueueOriginal(objectData.Slot, objectData.ObjectType, material, go);
-        }
-        public override void SetMaterialShaderRenderQueue(object data, Material material, int value, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, value, go);
-        }
-        public override void RemoveMaterialShaderRenderQueue(object data, Material material, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialShaderRenderQueue(objectData.Slot, objectData.ObjectType, material, go);
-        }
+        public override Vector2? GetMaterialTextureOffsetOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialTextureOffsetOriginal(data, material, propertyName, go);
+        public override void SetMaterialTextureOffset(object data, Material material, string propertyName, Vector2 value, GameObject go) =>
+            EditService.SetMaterialTextureOffset(data, material, propertyName, value, go);
+        public override void RemoveMaterialTextureOffset(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialTextureOffset(data, material, propertyName, go);
 
-        public override bool GetMaterialTextureValueOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
-        public override void SetMaterialTexture(object data, Material material, string propertyName, string filePath, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureFromFile(objectData.Slot, objectData.ObjectType, material, propertyName, filePath, go, true);
-        }
-        public override void RemoveMaterialTexture(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTexture(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
+        public override Vector2? GetMaterialTextureScaleOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialTextureScaleOriginal(data, material, propertyName, go);
+        public override void SetMaterialTextureScale(object data, Material material, string propertyName, Vector2 value, GameObject go) =>
+            EditService.SetMaterialTextureScale(data, material, propertyName, value, go);
+        public override void RemoveMaterialTextureScale(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialTextureScale(data, material, propertyName, go);
 
-        public override Vector2? GetMaterialTextureOffsetOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureOffsetOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
-        public override void SetMaterialTextureOffset(object data, Material material, string propertyName, Vector2 value, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-        }
-        public override void RemoveMaterialTextureOffset(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureOffset(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
+        public override Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialColorPropertyValueOriginal(data, material, propertyName, go);
+        public override void SetMaterialColorProperty(object data, Material material, string propertyName, Color value, GameObject go) =>
+            EditService.SetMaterialColorProperty(data, material, propertyName, value, go);
+        public override void RemoveMaterialColorProperty(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialColorProperty(data, material, propertyName, go);
 
-        public override Vector2? GetMaterialTextureScaleOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialTextureScaleOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
-        public override void SetMaterialTextureScale(object data, Material material, string propertyName, Vector2 value, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-        }
-        public override void RemoveMaterialTextureScale(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialTextureScale(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
+        public override float? GetMaterialFloatPropertyValueOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialFloatPropertyValueOriginal(data, material, propertyName, go);
+        public override void SetMaterialFloatProperty(object data, Material material, string propertyName, float value, GameObject go) =>
+            EditService.SetMaterialFloatProperty(data, material, propertyName, value, go);
+        public override void RemoveMaterialFloatProperty(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialFloatProperty(data, material, propertyName, go);
 
-        public override Color? GetMaterialColorPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialColorPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
-        public override void SetMaterialColorProperty(object data, Material material, string propertyName, Color value, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-        }
-        public override void RemoveMaterialColorProperty(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialColorProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
-
-        public override float? GetMaterialFloatPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialFloatPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
-        public override void SetMaterialFloatProperty(object data, Material material, string propertyName, float value, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-        }
-        public override void RemoveMaterialFloatProperty(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialFloatProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
-
-        public override bool? GetMaterialKeywordPropertyValueOriginal(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            return MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).GetMaterialKeywordPropertyValueOriginal(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
-        public override void SetMaterialKeywordProperty(object data, Material material, string propertyName, bool value, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).SetMaterialKeywordProperty(objectData.Slot, objectData.ObjectType, material, propertyName, value, go);
-        }
-        public override void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject go)
-        {
-            ObjectData objectData = (ObjectData)data;
-            MaterialEditorPlugin.GetCharaController(MakerAPI.GetCharacterControl()).RemoveMaterialKeywordProperty(objectData.Slot, objectData.ObjectType, material, propertyName, go);
-        }
+        public override bool? GetMaterialKeywordPropertyValueOriginal(object data, Material material, string propertyName, GameObject go) =>
+            EditService.GetMaterialKeywordPropertyValueOriginal(data, material, propertyName, go);
+        public override void SetMaterialKeywordProperty(object data, Material material, string propertyName, bool value, GameObject go) =>
+            EditService.SetMaterialKeywordProperty(data, material, propertyName, value, go);
+        public override void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject go) =>
+            EditService.RemoveMaterialKeywordProperty(data, material, propertyName, go);
     }
 }

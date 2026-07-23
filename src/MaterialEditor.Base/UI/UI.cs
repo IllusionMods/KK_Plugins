@@ -49,6 +49,8 @@ namespace MaterialEditorAPI
         private static List<Renderer> SelectedMaterialRenderers = new List<Renderer>();
         private static bool RenameListVisible = false;
 
+        private static readonly List<Action<MaterialEditorLabelClickEventArgs>> LabelClickHandlers = new List<Action<MaterialEditorLabelClickEventArgs>>();
+
         internal static FileSystemWatcher TexChangeWatcher;
         private VirtualList VirtualList;
 
@@ -110,12 +112,59 @@ namespace MaterialEditorAPI
 
         internal GameObject CurrentGameObject;
         internal object CurrentData;
+        private MaterialEditService _materialEditService;
         private static string CurrentFilter = "";
+        private readonly Dictionary<string, bool> _collapsedPropertyCategories = new Dictionary<string, bool>();
         private bool DoObjExport = false;
         private Renderer ObjRenderer;
 
         internal static SelectedInterpolable selectedInterpolable;
         internal static SelectedProjectorInterpolable selectedProjectorInterpolable;
+
+        private protected MaterialEditService EditService =>
+            _materialEditService ?? (_materialEditService = CreateMaterialEditService());
+
+        private protected virtual MaterialEditService CreateMaterialEditService() =>
+            new MaterialEditService(new LegacyMaterialEditRepository(this));
+
+        /// <summary>
+        /// Register a callback for clicks on renderer, material, shader, and property labels.
+        /// Registering the same callback more than once has no effect.
+        /// </summary>
+        /// <param name="handler">Callback invoked with the current Material Editor context.</param>
+        public static void RegisterLabelClickHandler(Action<MaterialEditorLabelClickEventArgs> handler)
+        {
+            if (handler == null)
+                throw new ArgumentNullException(nameof(handler));
+            if (!LabelClickHandlers.Contains(handler))
+                LabelClickHandlers.Add(handler);
+        }
+
+        /// <summary>
+        /// Unregister a callback previously registered with <see cref="RegisterLabelClickHandler"/>.
+        /// </summary>
+        /// <param name="handler">Callback to remove.</param>
+        public static void UnregisterLabelClickHandler(Action<MaterialEditorLabelClickEventArgs> handler)
+        {
+            if (handler == null)
+                return;
+            LabelClickHandlers.Remove(handler);
+        }
+
+        internal static void RaiseLabelClicked(MaterialEditorLabelClickEventArgs eventArgs)
+        {
+            foreach (var handler in LabelClickHandlers.ToArray())
+            {
+                try
+                {
+                    handler(eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    MaterialEditorPluginBase.Logger?.LogError($"Exception in Material Editor label click handler: {ex}");
+                }
+            }
+        }
 
         /// <summary>
         /// Initialize the MaterialEditor UI
@@ -216,7 +265,7 @@ namespace MaterialEditorAPI
             MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
             MaterialEditorScrollableUI.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
 
-            var template = ItemTemplate.CreateTemplate(MaterialEditorScrollableUI.content.transform);
+            var template = RowViewFactory.CreateTemplate(MaterialEditorScrollableUI.content.transform);
 
             VirtualList = MaterialEditorScrollableUI.gameObject.AddComponent<VirtualList>();
             VirtualList.ScrollRect = MaterialEditorScrollableUI;
@@ -387,7 +436,7 @@ namespace MaterialEditorAPI
             {
                 string safeNewName = MaterialEditorRenameField.text.Replace(MaterialCopyPostfix, "").Trim() + suffix;
                 foreach (var renderer in SelectedMaterialRenderers)
-                    SetMaterialName(data, renderer, material, safeNewName, go);
+                    EditService.SetMaterialName(data, renderer, material, safeNewName, go);
                 RefreshUI();
             });
 
@@ -437,10 +486,10 @@ namespace MaterialEditorAPI
             List<Renderer> rendList = new List<Renderer>();
             IEnumerable<Renderer> rendListFull = GetRendererList(go);
             List<Projector> projectorList = new List<Projector>();
-            IEnumerable<Projector> projectorListFull = GetProjectorList(data, go);
+            IEnumerable<Projector> projectorListFull = EditService.GetProjectorList(data, go);
             List<string> filterList = new List<string>();
             List<string> filterListProperties = new List<string>();
-            List<ItemInfo> items = new List<ItemInfo>();
+            List<RowModel> items = new List<RowModel>();
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
 
             PopulateRendererList(go, data, rendListFull);
@@ -495,8 +544,11 @@ namespace MaterialEditorAPI
                     foreach (var mat in SelectedMaterials.Count == 0 ? GetMaterials(go, rend) : GetMaterials(go, rend).Where(mat => SelectedMaterials.Contains(mat)))
                         matList[mat.NameFormatted()] = mat;
 
-                var rendererItem = new ItemInfo(ItemInfo.RowItemType.Renderer, "Renderer")
+                var rendererItem = new RowModel(RowModel.RowItemType.Renderer, "Renderer")
                 {
+                    GameObject = go,
+                    Data = data,
+                    Renderer = rend,
                     RendererName = rend.NameFormatted(),
                     ExportUVOnClick = () => Export.ExportUVMaps(rend),
                     ExportObjOnClick = () =>
@@ -504,49 +556,49 @@ namespace MaterialEditorAPI
                         ObjRenderer = rend;
                         DoObjExport = true;
                     },
-                    SelectInterpolableButtonRendererOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.Renderer, rendererName: rend.NameFormatted())
+                    SelectInterpolableButtonRendererOnClick = () => SelectInterpolableButtonOnClick(go, RowModel.RowItemType.Renderer, rendererName: rend.NameFormatted())
                 };
                 items.Add(rendererItem);
 
                 //Renderer Enabled
                 bool valueEnabledOriginal = rend.enabled;
-                var temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.Enabled, go);
+                var temp = EditService.GetRendererPropertyValueOriginal(data, rend, RendererProperties.Enabled, go);
                 if (!temp.IsNullOrEmpty())
                     valueEnabledOriginal = temp == "1";
-                var rendererEnabledItem = new ItemInfo(ItemInfo.RowItemType.RendererEnabled, "Enabled")
+                var rendererEnabledItem = new RowModel(RowModel.RowItemType.RendererEnabled, "Enabled")
                 {
                     RendererEnabled = rend.enabled,
                     RendererEnabledOriginal = valueEnabledOriginal,
-                    RendererEnabledOnChange = value => SetRendererProperty(data, rend, RendererProperties.Enabled, (value ? 1 : 0).ToString(), go),
-                    RendererEnabledOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.Enabled, go)
+                    RendererEnabledOnChange = value => EditService.SetRendererProperty(data, rend, RendererProperties.Enabled, (value ? 1 : 0).ToString(), go),
+                    RendererEnabledOnReset = () => EditService.RemoveRendererProperty(data, rend, RendererProperties.Enabled, go)
                 };
                 items.Add(rendererEnabledItem);
 
                 //Renderer ShadowCastingMode
                 var valueShadowCastingModeOriginal = rend.shadowCastingMode;
-                temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.ShadowCastingMode, go);
+                temp = EditService.GetRendererPropertyValueOriginal(data, rend, RendererProperties.ShadowCastingMode, go);
                 if (!temp.IsNullOrEmpty())
                     valueShadowCastingModeOriginal = (UnityEngine.Rendering.ShadowCastingMode)int.Parse(temp);
-                var rendererShadowCastingModeItem = new ItemInfo(ItemInfo.RowItemType.RendererShadowCastingMode, "Shadow Casting Mode")
+                var rendererShadowCastingModeItem = new RowModel(RowModel.RowItemType.RendererShadowCastingMode, "Shadow Casting Mode")
                 {
                     RendererShadowCastingMode = (int)rend.shadowCastingMode,
                     RendererShadowCastingModeOriginal = (int)valueShadowCastingModeOriginal,
-                    RendererShadowCastingModeOnChange = value => SetRendererProperty(data, rend, RendererProperties.ShadowCastingMode, value.ToString(), go),
-                    RendererShadowCastingModeOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.ShadowCastingMode, go)
+                    RendererShadowCastingModeOnChange = value => EditService.SetRendererProperty(data, rend, RendererProperties.ShadowCastingMode, value.ToString(), go),
+                    RendererShadowCastingModeOnReset = () => EditService.RemoveRendererProperty(data, rend, RendererProperties.ShadowCastingMode, go)
                 };
                 items.Add(rendererShadowCastingModeItem);
 
                 //Renderer ReceiveShadows
                 bool valueReceiveShadowsOriginal = rend.receiveShadows;
-                temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.ReceiveShadows, go);
+                temp = EditService.GetRendererPropertyValueOriginal(data, rend, RendererProperties.ReceiveShadows, go);
                 if (!temp.IsNullOrEmpty())
                     valueReceiveShadowsOriginal = temp == "1";
-                var rendererReceiveShadowsItem = new ItemInfo(ItemInfo.RowItemType.RendererReceiveShadows, "Receive Shadows")
+                var rendererReceiveShadowsItem = new RowModel(RowModel.RowItemType.RendererReceiveShadows, "Receive Shadows")
                 {
                     RendererReceiveShadows = rend.receiveShadows,
                     RendererReceiveShadowsOriginal = valueReceiveShadowsOriginal,
-                    RendererReceiveShadowsOnChange = value => SetRendererProperty(data, rend, RendererProperties.ReceiveShadows, (value ? 1 : 0).ToString(), go),
-                    RendererReceiveShadowsOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.ReceiveShadows, go)
+                    RendererReceiveShadowsOnChange = value => EditService.SetRendererProperty(data, rend, RendererProperties.ReceiveShadows, (value ? 1 : 0).ToString(), go),
+                    RendererReceiveShadowsOnReset = () => EditService.RemoveRendererProperty(data, rend, RendererProperties.ReceiveShadows, go)
                 };
                 items.Add(rendererReceiveShadowsItem);
 
@@ -555,34 +607,34 @@ namespace MaterialEditorAPI
                     //Renderer UpdateWhenOffscreen
 #if !KK
                     bool valueUpdateWhenOffscreenOriginal = meshRenderer.updateWhenOffscreen;
-                    temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.UpdateWhenOffscreen, go);
+                    temp = EditService.GetRendererPropertyValueOriginal(data, rend, RendererProperties.UpdateWhenOffscreen, go);
                     if (!temp.IsNullOrEmpty())
                         valueUpdateWhenOffscreenOriginal = temp == "1";
-                    var rendererUpdateWhenOffscreenItem = new ItemInfo(ItemInfo.RowItemType.RendererUpdateWhenOffscreen, "Update When Off-Screen")
+                    var rendererUpdateWhenOffscreenItem = new RowModel(RowModel.RowItemType.RendererUpdateWhenOffscreen, "Update When Off-Screen")
                     {
                         RendererUpdateWhenOffscreen = meshRenderer.updateWhenOffscreen,
                         RendererUpdateWhenOffscreenOriginal = valueUpdateWhenOffscreenOriginal,
-                        RendererUpdateWhenOffscreenOnChange = value => SetRendererProperty(data, rend, RendererProperties.UpdateWhenOffscreen, (value ? 1 : 0).ToString(), go),
-                        RendererUpdateWhenOffscreenOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.UpdateWhenOffscreen, go)
+                        RendererUpdateWhenOffscreenOnChange = value => EditService.SetRendererProperty(data, rend, RendererProperties.UpdateWhenOffscreen, (value ? 1 : 0).ToString(), go),
+                        RendererUpdateWhenOffscreenOnReset = () => EditService.RemoveRendererProperty(data, rend, RendererProperties.UpdateWhenOffscreen, go)
                     };
                     items.Add(rendererUpdateWhenOffscreenItem);
 #endif
 
                     //Renderer RecalculateNormals
                     bool valueRecalculateNormalsOriginal = false; // this is not a real renderproperty so I cannot be true by default
-                    temp = GetRendererPropertyValueOriginal(data, rend, RendererProperties.RecalculateNormals, go);
+                    temp = EditService.GetRendererPropertyValueOriginal(data, rend, RendererProperties.RecalculateNormals, go);
                     if (!temp.IsNullOrEmpty())
                         valueRecalculateNormalsOriginal = temp == "1";
                     bool valueRecalculateNormals = false; // actual value not storable in renderer, grab renderProperty stored by ME instead
-                    temp = GetRendererPropertyValue(data, rend, RendererProperties.RecalculateNormals, go);
+                    temp = EditService.GetRendererPropertyValue(data, rend, RendererProperties.RecalculateNormals, go);
                     if (!temp.IsNullOrEmpty())
                         valueRecalculateNormals = temp == "1";
-                    var rendererRecalculateNormalsItem = new ItemInfo(ItemInfo.RowItemType.RendererRecalculateNormals, "Recalculate Normals")
+                    var rendererRecalculateNormalsItem = new RowModel(RowModel.RowItemType.RendererRecalculateNormals, "Recalculate Normals")
                     {
                         RendererRecalculateNormals = valueRecalculateNormals,
                         RendererRecalculateNormalsOriginal = valueRecalculateNormalsOriginal,
-                        RendererRecalculateNormalsOnChange = value => SetRendererProperty(data, rend, RendererProperties.RecalculateNormals, (value ? 1 : 0).ToString(), go),
-                        RendererRecalculateNormalsOnReset = () => RemoveRendererProperty(data, rend, RendererProperties.RecalculateNormals, go)
+                        RendererRecalculateNormalsOnChange = value => EditService.SetRendererProperty(data, rend, RendererProperties.RecalculateNormals, (value ? 1 : 0).ToString(), go),
+                        RendererRecalculateNormalsOnReset = () => EditService.RemoveRendererProperty(data, rend, RendererProperties.RecalculateNormals, go)
                     };
                     items.Add(rendererRecalculateNormalsItem);
                 }
@@ -601,13 +653,17 @@ namespace MaterialEditorAPI
                 string materialName = mat.NameFormatted();
                 string shaderName = mat.shader.NameFormatted();
 
-                var materialItem = new ItemInfo(ItemInfo.RowItemType.Material, "Material")
+                var materialItem = new RowModel(RowModel.RowItemType.Material, "Material")
                 {
+                    GameObject = go,
+                    Data = data,
+                    Material = mat,
+                    Projector = projector,
                     MaterialName = materialName,
-                    MaterialOnCopy = () => MaterialCopyEdits(data, mat, go),
+                    MaterialOnCopy = () => EditService.MaterialCopyEdits(data, mat, go),
                     MaterialOnPaste = () =>
                     {
-                        MaterialPasteEdits(data, mat, go);
+                        EditService.MaterialPasteEdits(data, mat, go);
                         PopulateList(go, data, filter);
                     }
                 };
@@ -615,7 +671,7 @@ namespace MaterialEditorAPI
                 if (projector == null)
                     materialItem.MaterialOnCopyRemove = () =>
                     {
-                        MaterialCopyRemove(data, mat, go);
+                        EditService.MaterialCopyRemove(data, mat, go);
                         PopulateList(go, data, filter);
                         PopulateMaterialList(go, data, rendListFull);
                     };
@@ -639,37 +695,45 @@ namespace MaterialEditorAPI
 
                 //Shader
                 string shaderNameOriginal = shaderName;
-                var temp = GetMaterialShaderNameOriginal(data, mat, go);
+                var temp = EditService.GetMaterialShaderNameOriginal(data, mat, go);
                 if (!temp.IsNullOrEmpty())
                     shaderNameOriginal = temp;
-                var shaderItem = new ItemInfo(ItemInfo.RowItemType.Shader, "Shader")
+                var shaderItem = new RowModel(RowModel.RowItemType.Shader, "Shader")
                 {
+                    GameObject = go,
+                    Data = data,
+                    Material = mat,
+                    Projector = projector,
                     ShaderName = shaderName,
                     ShaderNameOriginal = shaderNameOriginal,
                     ShaderNameOnChange = value =>
                     {
-                        SetMaterialShaderName(data, mat, value, go);
+                        EditService.SetMaterialShaderName(data, mat, value, go);
                         StartCoroutine(PopulateListCoroutine(go, data, filter));
                     },
                     ShaderNameOnReset = () =>
                     {
-                        RemoveMaterialShaderName(data, mat, go);
+                        EditService.RemoveMaterialShaderName(data, mat, go);
                         StartCoroutine(PopulateListCoroutine(go, data, filter));
                     },
-                    SelectInterpolableButtonShaderOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.Shader, materialName)
+                    SelectInterpolableButtonShaderOnClick = () => SelectInterpolableButtonOnClick(go, RowModel.RowItemType.Shader, materialName)
                 };
                 items.Add(shaderItem);
 
                 //Shader RenderQueue
                 int renderQueueOriginal = mat.renderQueue;
-                int? renderQueueOriginalTemp = GetMaterialShaderRenderQueueOriginal(data, mat, go);
+                int? renderQueueOriginalTemp = EditService.GetMaterialShaderRenderQueueOriginal(data, mat, go);
                 renderQueueOriginal = renderQueueOriginalTemp ?? renderQueueOriginal;
-                var shaderRenderQueueItem = new ItemInfo(ItemInfo.RowItemType.ShaderRenderQueue, "Render Queue")
+                var shaderRenderQueueItem = new RowModel(RowModel.RowItemType.ShaderRenderQueue, "Render Queue")
                 {
+                    GameObject = go,
+                    Data = data,
+                    Material = mat,
+                    Projector = projector,
                     ShaderRenderQueue = mat.renderQueue,
                     ShaderRenderQueueOriginal = renderQueueOriginal,
-                    ShaderRenderQueueOnChange = value => SetMaterialShaderRenderQueue(data, mat, value, go),
-                    ShaderRenderQueueOnReset = () => RemoveMaterialShaderRenderQueue(data, mat, go)
+                    ShaderRenderQueueOnChange = value => EditService.SetMaterialShaderRenderQueue(data, mat, value, go),
+                    ShaderRenderQueueOnReset = () => EditService.RemoveMaterialShaderRenderQueue(data, mat, go)
                 };
                 items.Add(shaderRenderQueueItem);
 
@@ -680,17 +744,35 @@ namespace MaterialEditorAPI
                 {
                     // There is no API to determine whether the shader contains a certain keyword, we can't rely
                     // on a toggle property with the same name to determine whether the keyword is present either.
-                    var properties = category.Value.Where(x => x.Type == ShaderPropertyType.Keyword || mat.HasProperty($"_{x.Name}"));
-                    if (
+                    var properties = category.Value.Where(x => x.Type == ShaderPropertyType.Keyword || mat.HasProperty($"_{x.Name}")).ToList();
+                    var showCategory =
                         filterListProperties.Count == 0
                         && (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName)
-                        && properties.Any()
+                        && properties.Any();
+                    var categoryKey = $"{mat.GetInstanceID()}:{category.Key}";
+                    var categoryCollapsed = showCategory
+                        && _collapsedPropertyCategories.TryGetValue(categoryKey, out var collapsed)
+                        && collapsed;
 
-                    )
+                    if (showCategory)
                     {
-                        var categoryItem = new ItemInfo(ItemInfo.RowItemType.PropertyCategory, category.Key);
+                        var categoryItem = new RowModel(RowModel.RowItemType.PropertyCategory, category.Key)
+                        {
+                            CategoryCollapsed = categoryCollapsed,
+                            CategoryCollapsedOnChange = value =>
+                            {
+                                if (value)
+                                    _collapsedPropertyCategories[categoryKey] = true;
+                                else
+                                    _collapsedPropertyCategories.Remove(categoryKey);
+                                PopulateList(go, data, filter);
+                            }
+                        };
                         items.Add(categoryItem);
                     }
+
+                    if (categoryCollapsed)
+                        continue;
 
                     foreach (var property in properties)
                     {
@@ -702,12 +784,17 @@ namespace MaterialEditorAPI
 
                         if (property.Type == ShaderPropertyType.Texture)
                         {
-                            var textureItem = new ItemInfo(ItemInfo.RowItemType.TextureProperty, propertyName)
+                            var textureItem = new RowModel(RowModel.RowItemType.TextureProperty, propertyName)
                             {
-                                TextureChanged = !GetMaterialTextureValueOriginal(data, mat, propertyName, go),
+                                GameObject = go,
+                                Data = data,
+                                Material = mat,
+                                Projector = projector,
+                                PropertyName = propertyName,
+                                TextureChanged = !EditService.GetMaterialTextureValueOriginal(data, mat, propertyName, go),
                                 TextureExists = mat.GetTexture($"_{propertyName}") != null,
                                 TextureOnExport = () => ExportTexture(mat, propertyName),
-                                SelectInterpolableButtonTextureOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.TextureProperty, materialName, propertyName)
+                                SelectInterpolableButtonTextureOnClick = () => SelectInterpolableButtonOnClick(go, RowModel.RowItemType.TextureProperty, materialName, propertyName)
                             };
                             textureItem.TextureOnImport = () =>
                             {
@@ -722,13 +809,13 @@ namespace MaterialEditorAPI
                                 {
                                     if (strings == null || strings.Length == 0 || strings[0].IsNullOrEmpty())
                                     {
-                                        textureItem.TextureChanged = !GetMaterialTextureValueOriginal(data, mat, propertyName, go);
+                                        textureItem.TextureChanged = !EditService.GetMaterialTextureValueOriginal(data, mat, propertyName, go);
                                         textureItem.TextureExists = mat.GetTexture($"_{propertyName}") != null;
                                         return;
                                     }
                                     string filePath = strings[0];
 
-                                    SetMaterialTexture(data, mat, propertyName, filePath, go);
+                                    EditService.SetMaterialTexture(data, mat, propertyName, filePath, go);
 
                                     TexChangeWatcher?.Dispose();
                                     if (WatchTexChanges.Value)
@@ -740,7 +827,7 @@ namespace MaterialEditorAPI
                                             TexChangeWatcher.Changed += (sender, args) =>
                                             {
                                                 if (WatchTexChanges.Value && File.Exists(filePath))
-                                                    SetMaterialTexture(data, mat, propertyName, filePath, go);
+                                                    EditService.SetMaterialTexture(data, mat, propertyName, filePath, go);
                                             };
                                             TexChangeWatcher.Deleted += (sender, args) => TexChangeWatcher?.Dispose();
                                             TexChangeWatcher.Error += (sender, args) => TexChangeWatcher?.Dispose();
@@ -749,31 +836,36 @@ namespace MaterialEditorAPI
                                     }
                                 }
                             };
-                            textureItem.TextureOnReset = () => RemoveMaterialTexture(data, mat, propertyName, go);
+                            textureItem.TextureOnReset = () => EditService.RemoveMaterialTexture(data, mat, propertyName, go);
                             items.Add(textureItem);
 
                             Vector2 textureOffset = mat.GetTextureOffset($"_{propertyName}");
                             Vector2 textureOffsetOriginal = textureOffset;
-                            Vector2? textureOffsetOriginalTemp = GetMaterialTextureOffsetOriginal(data, mat, propertyName, go);
+                            Vector2? textureOffsetOriginalTemp = EditService.GetMaterialTextureOffsetOriginal(data, mat, propertyName, go);
                             if (textureOffsetOriginalTemp != null)
                                 textureOffsetOriginal = (Vector2)textureOffsetOriginalTemp;
 
                             Vector2 textureScale = mat.GetTextureScale($"_{propertyName}");
                             Vector2 textureScaleOriginal = textureScale;
-                            Vector2? textureScaleOriginalTemp = GetMaterialTextureScaleOriginal(data, mat, propertyName, go);
+                            Vector2? textureScaleOriginalTemp = EditService.GetMaterialTextureScaleOriginal(data, mat, propertyName, go);
                             if (textureScaleOriginalTemp != null)
                                 textureScaleOriginal = (Vector2)textureScaleOriginalTemp;
 
-                            var textureItemOffsetScale = new ItemInfo(ItemInfo.RowItemType.TextureOffsetScale)
+                            var textureItemOffsetScale = new RowModel(RowModel.RowItemType.TextureOffsetScale)
                             {
+                                GameObject = go,
+                                Data = data,
+                                Material = mat,
+                                Projector = projector,
+                                PropertyName = propertyName,
                                 Offset = textureOffset,
                                 OffsetOriginal = textureOffsetOriginal,
-                                OffsetOnChange = value => SetMaterialTextureOffset(data, mat, propertyName, value, go),
-                                OffsetOnReset = () => RemoveMaterialTextureOffset(data, mat, propertyName, go),
+                                OffsetOnChange = value => EditService.SetMaterialTextureOffset(data, mat, propertyName, value, go),
+                                OffsetOnReset = () => EditService.RemoveMaterialTextureOffset(data, mat, propertyName, go),
                                 Scale = textureScale,
                                 ScaleOriginal = textureScaleOriginal,
-                                ScaleOnChange = value => SetMaterialTextureScale(data, mat, propertyName, value, go),
-                                ScaleOnReset = () => RemoveMaterialTextureScale(data, mat, propertyName, go)
+                                ScaleOnChange = value => EditService.SetMaterialTextureScale(data, mat, propertyName, value, go),
+                                ScaleOnReset = () => EditService.RemoveMaterialTextureScale(data, mat, propertyName, go)
                             };
                             items.Add(textureItemOffsetScale);
                         }
@@ -781,25 +873,30 @@ namespace MaterialEditorAPI
                         {
                             Color valueColor = mat.GetColor($"_{propertyName}");
                             Color valueColorOriginal = valueColor;
-                            Color? c = GetMaterialColorPropertyValueOriginal(data, mat, propertyName, go);
+                            Color? c = EditService.GetMaterialColorPropertyValueOriginal(data, mat, propertyName, go);
                             if (c != null)
                                 valueColorOriginal = (Color)c;
-                            var contentItem = new ItemInfo(ItemInfo.RowItemType.ColorProperty, propertyName)
+                            var contentItem = new RowModel(RowModel.RowItemType.ColorProperty, propertyName)
                             {
+                                GameObject = go,
+                                Data = data,
+                                Material = mat,
+                                Projector = projector,
+                                PropertyName = propertyName,
                                 ColorValue = valueColor,
                                 ColorValueOriginal = valueColorOriginal,
-                                ColorValueOnChange = value => SetMaterialColorProperty(data, mat, propertyName, value, go),
-                                ColorValueOnReset = () => RemoveMaterialColorProperty(data, mat, propertyName, go),
+                                ColorValueOnChange = value => EditService.SetMaterialColorProperty(data, mat, propertyName, value, go),
+                                ColorValueOnReset = () => EditService.RemoveMaterialColorProperty(data, mat, propertyName, go),
                                 ColorValueOnEdit = (title, value, onChanged) => SetupColorPalette(data, mat, $"Material Editor - {title}", value, onChanged, true),
                                 ColorValueSetToPalette = (title, value) => SetColorToPalette(data, mat, $"Material Editor - {title}", value),
-                                SelectInterpolableButtonColorOnClick = () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.ColorProperty, materialName, propertyName)
+                                SelectInterpolableButtonColorOnClick = () => SelectInterpolableButtonOnClick(go, RowModel.RowItemType.ColorProperty, materialName, propertyName)
                             };
                             items.Add(contentItem);
                         }
                         else if (property.Type == ShaderPropertyType.Float)
                         {
                             float valueFloatOriginal = mat.GetFloat($"_{propertyName}");
-                            float? valueFloatOriginalTemp = GetMaterialFloatPropertyValueOriginal(data, mat, propertyName, go);
+                            float? valueFloatOriginalTemp = EditService.GetMaterialFloatPropertyValueOriginal(data, mat, propertyName, go);
                             if (valueFloatOriginalTemp != null)
                                 valueFloatOriginal = (float)valueFloatOriginalTemp;
 
@@ -807,12 +904,14 @@ namespace MaterialEditorAPI
                             (
                                 valueFloat: mat.GetFloat($"_{propertyName}"),
                                 propertyName: propertyName,
-                                onInteroperableClick: () => SelectInterpolableButtonOnClick(go, ItemInfo.RowItemType.FloatProperty, materialName, propertyName),
-                                changeValue: value => SetMaterialFloatProperty(data, mat, propertyName, value, go),
-                                resetValue: () => RemoveMaterialFloatProperty(data, mat, propertyName, go),
+                                onInteroperableClick: () => SelectInterpolableButtonOnClick(go, RowModel.RowItemType.FloatProperty, materialName, propertyName),
+                                changeValue: value => EditService.SetMaterialFloatProperty(data, mat, propertyName, value, go),
+                                resetValue: () => EditService.RemoveMaterialFloatProperty(data, mat, propertyName, go),
                                 valueFloatOriginal: valueFloatOriginal,
                                 minValue: property.MinValue,
-                                maxValue: property.MaxValue
+                                maxValue: property.MaxValue,
+                                material: mat,
+                                projector: projector
                             );
                         }
                         else if (property.Type == ShaderPropertyType.Keyword)
@@ -820,17 +919,22 @@ namespace MaterialEditorAPI
                             // Since there's no way to check if a Keyword exists, we'll have to trust the XML.
                             bool valueKeyword = mat.IsKeywordEnabled($"_{propertyName}");
                             bool valueKeywordOriginal = valueKeyword;
-                            bool? valueKeywordOriginalTemp = GetMaterialKeywordPropertyValueOriginal(data, mat, propertyName, go);
+                            bool? valueKeywordOriginalTemp = EditService.GetMaterialKeywordPropertyValueOriginal(data, mat, propertyName, go);
 
                             if (valueKeywordOriginalTemp != null)
                                 valueKeywordOriginal = (bool)valueKeywordOriginalTemp;
 
-                            var contentItem = new ItemInfo(ItemInfo.RowItemType.KeywordProperty, propertyName)
+                            var contentItem = new RowModel(RowModel.RowItemType.KeywordProperty, propertyName)
                             {
+                                GameObject = go,
+                                Data = data,
+                                Material = mat,
+                                Projector = projector,
+                                PropertyName = propertyName,
                                 KeywordValue = valueKeyword,
                                 KeywordValueOriginal = valueKeywordOriginal,
-                                KeywordValueOnChange = value => SetMaterialKeywordProperty(data, mat, propertyName, value, go),
-                                KeywordValueOnReset = () => RemoveMaterialKeywordProperty(data, mat, propertyName, go)
+                                KeywordValueOnChange = value => EditService.SetMaterialKeywordProperty(data, mat, propertyName, value, go),
+                                KeywordValueOnReset = () => EditService.RemoveMaterialKeywordProperty(data, mat, propertyName, go)
                             };
 
                             items.Add(contentItem);
@@ -846,7 +950,7 @@ namespace MaterialEditorAPI
                     float maxValue = 100f;
                     string name = "";
                     float valueFloat = 0f;
-                    float? originalValueTemp = GetProjectorPropertyValueOriginal(data, projector, property, go);
+                    float? originalValueTemp = EditService.GetProjectorPropertyValueOriginal(data, projector, property, go);
 
                     switch (property)
                     {
@@ -903,11 +1007,12 @@ namespace MaterialEditorAPI
                             valueFloat: valueFloat,
                             propertyName: name,
                             onInteroperableClick: () => SelectProjectorInterpolableButtonOnClick(go, property, projector.NameFormatted()),
-                            changeValue: value => SetProjectorProperty(data, projector, property, value, projector.gameObject),
-                            resetValue: () => RemoveProjectorProperty(data, projector, property, projector.gameObject),
+                            changeValue: value => EditService.SetProjectorProperty(data, projector, property, value, projector.gameObject),
+                            resetValue: () => EditService.RemoveProjectorProperty(data, projector, property, projector.gameObject),
                             valueFloatOriginal: originalValueTemp != null ? (float)originalValueTemp : valueFloat,
                             minValue: 0f,
-                            maxValue: maxValue
+                            maxValue: maxValue,
+                            projector: projector
                         );
                 }
             }
@@ -920,10 +1025,17 @@ namespace MaterialEditorAPI
                 Action resetValue,
                 float valueFloatOriginal,
                 float? minValue = null,
-                float? maxValue = null)
+                float? maxValue = null,
+                Material material = null,
+                Projector projector = null)
             {
-                var contentItem = new ItemInfo(ItemInfo.RowItemType.FloatProperty, propertyName)
+                var contentItem = new RowModel(RowModel.RowItemType.FloatProperty, propertyName)
                 {
+                    GameObject = go,
+                    Data = data,
+                    Material = material,
+                    Projector = projector,
+                    PropertyName = propertyName,
                     FloatValue = valueFloat, FloatValueOriginal = valueFloatOriginal, SelectInterpolableButtonFloatOnClick = () => onInteroperableClick()
                 };
                 if (minValue != null)
@@ -1363,7 +1475,7 @@ namespace MaterialEditorAPI
             }
         }
 
-        private void SelectInterpolableButtonOnClick(GameObject go, ItemInfo.RowItemType rowType, string materialName = "", string propertyName = "", string rendererName = "")
+        private void SelectInterpolableButtonOnClick(GameObject go, RowModel.RowItemType rowType, string materialName = "", string propertyName = "", string rendererName = "")
         {
             selectedInterpolable = new SelectedInterpolable(go, rowType, materialName, propertyName, rendererName);
             MaterialEditorPluginBase.Logger.LogMessage($"Activated interpolable(s), {selectedInterpolable}");
@@ -1387,9 +1499,9 @@ namespace MaterialEditorAPI
             public string PropertyName;
             public string RendererName;
             public GameObject GameObject;
-            public ItemInfo.RowItemType RowType;
+            public RowModel.RowItemType RowType;
 
-            public SelectedInterpolable(GameObject go, ItemInfo.RowItemType rowType, string materialName, string propertyName, string rendererName)
+            public SelectedInterpolable(GameObject go, RowModel.RowItemType rowType, string materialName, string propertyName, string rendererName)
             {
                 GameObject = go;
                 RowType = rowType;

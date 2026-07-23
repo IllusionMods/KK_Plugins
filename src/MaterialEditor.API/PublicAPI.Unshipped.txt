@@ -1,0 +1,24 @@
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.AltPressed.get -> bool
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.ControlPressed.get -> bool
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Data.get -> object
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.GameObject.get -> UnityEngine.GameObject
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.LabelType.get -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Material.get -> UnityEngine.Material
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Name.get -> string
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.PointerEventData.get -> UnityEngine.EventSystems.PointerEventData
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Projector.get -> UnityEngine.Projector
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Renderer.get -> UnityEngine.Renderer
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.ShiftPressed.get -> bool
+MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.ColorProperty = 6 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.FloatProperty = 7 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.KeywordProperty = 8 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.Material = 1 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.Renderer = 0 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.Shader = 2 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.ShaderRenderQueue = 3 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.TextureOffsetScale = 5 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.TextureProperty = 4 -> MaterialEditorAPI.MaterialEditorLabelType
+static MaterialEditorAPI.MaterialEditorUI.RegisterLabelClickHandler(System.Action<MaterialEditorAPI.MaterialEditorLabelClickEventArgs> handler) -> void
+static MaterialEditorAPI.MaterialEditorUI.UnregisterLabelClickHandler(System.Action<MaterialEditorAPI.MaterialEditorLabelClickEventArgs> handler) -> void
