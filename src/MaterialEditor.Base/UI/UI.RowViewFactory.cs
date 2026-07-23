@@ -23,6 +23,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("RendererLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -67,6 +68,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("RendererEnabledLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -100,6 +102,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("RendererShadowCastingModeLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -145,6 +148,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("RendererReceiveShadowsLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -178,6 +182,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("RendererUpdateWhenOffscreenLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -211,6 +216,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("RendererRecalculateNormalsLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -244,6 +250,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("MaterialLabel", itemPanel.transform, "");
                 label.alignment = TextAnchor.MiddleLeft;
@@ -300,6 +307,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("ShaderLabel", itemPanel.transform, "");
                 label.gameObject.AddComponent<LabelClickTrigger>();
@@ -342,6 +350,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("ShaderRenderQueueLabel", itemPanel.transform, "");
                 label.gameObject.AddComponent<LabelClickTrigger>();
@@ -376,6 +385,8 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
+                itemHLG.spacing = 2f;
 
                 var collapseButton = UIUtility.CreateButton("PropertyCategoryCollapseButton", itemPanel.transform, "-");
                 var collapseButtonLE = collapseButton.gameObject.AddComponent<LayoutElement>();
@@ -402,6 +413,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("TextureLabel", itemPanel.transform, "");
                 label.gameObject.AddComponent<LabelClickTrigger>();
@@ -442,6 +454,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("OffsetScaleLabel", itemPanel.transform, "");
                 label.gameObject.AddComponent<LabelClickTrigger>();
@@ -551,6 +564,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("ColorLabel", itemPanel.transform, "");
                 label.gameObject.AddComponent<LabelClickTrigger>();
@@ -655,6 +669,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("FloatLabel", itemPanel.transform, "");
                 label.gameObject.AddComponent<LabelClickTrigger>();
@@ -698,6 +713,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = UIUtility.CreateText("KeywordLabel", itemPanel.transform, "");
                 label.gameObject.AddComponent<LabelClickTrigger>();
