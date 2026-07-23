@@ -255,6 +255,8 @@ namespace MaterialEditorAPI
                 }
             });
 
+            RowStyle.ApplyTypography(DragPanel.gameObject);
+
             MaterialEditorScrollableUI = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
             MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
             MaterialEditorScrollableUI.gameObject.AddComponent<Mask>();

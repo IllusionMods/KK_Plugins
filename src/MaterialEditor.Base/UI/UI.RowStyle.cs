@@ -22,18 +22,23 @@ namespace MaterialEditorAPI
                 panelRect.offsetMin = Vector2.zero;
                 panelRect.offsetMax = Vector2.zero;
                 panelRect.localScale = Vector3.one;
+            }
 
-                foreach (var text in layout.GetComponentsInChildren<Text>(true))
-                {
-                    text.alignment = WithMiddleVerticalAlignment(text.alignment);
-                    text.fontSize = Mathf.Min(text.fontSize, UIUtility.defaultFontSize);
-                    if (text.resizeTextForBestFit)
-                        text.resizeTextMaxSize = Mathf.Min(text.resizeTextMaxSize, UIUtility.defaultFontSize);
+            ApplyTypography(rowTemplate);
+        }
 
-                    if (text.GetComponent<RowTextVisualCenter>() == null)
-                        text.gameObject.AddComponent<RowTextVisualCenter>();
-                    text.SetVerticesDirty();
-                }
+        internal static void ApplyTypography(GameObject root)
+        {
+            foreach (var text in root.GetComponentsInChildren<Text>(true))
+            {
+                text.alignment = WithMiddleVerticalAlignment(text.alignment);
+                text.fontSize = Mathf.Min(text.fontSize, UIUtility.defaultFontSize);
+                if (text.resizeTextForBestFit)
+                    text.resizeTextMaxSize = Mathf.Min(text.resizeTextMaxSize, UIUtility.defaultFontSize);
+
+                if (text.GetComponent<RowTextVisualCenter>() == null)
+                    text.gameObject.AddComponent<RowTextVisualCenter>();
+                text.SetVerticesDirty();
             }
         }
 
