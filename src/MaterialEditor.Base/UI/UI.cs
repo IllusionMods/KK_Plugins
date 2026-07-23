@@ -294,6 +294,7 @@ namespace MaterialEditorAPI
             MaterialEditorRenameMaterial = Instantiate(MaterialEditorRenameList.Panel.transform.GetChild(0), MaterialEditorRenameList.Panel.transform).GetComponent<Text>();
             MaterialEditorRenameMaterial.gameObject.name = nameof(MaterialEditorRenameMaterial);
             MaterialEditorRenameMaterial.transform.SetRect(0, 1, 1, 1, 5, -20, -2, -5);
+            RowStyle.ApplyTypography(MaterialEditorRenameList.Panel.gameObject);
         }
 
         /// <summary>

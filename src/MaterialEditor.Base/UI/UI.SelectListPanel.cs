@@ -44,6 +44,8 @@ namespace MaterialEditorAPI
             scrollRect.viewport.offsetMax = new Vector2(MaterialEditorUI.ScrollOffsetX, 0f);
             scrollRect.movementType = ScrollRect.MovementType.Clamped;
             scrollRect.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
+
+            RowStyle.ApplyTypography(Panel.gameObject);
         }
 
         public void AddEntry(string name, Action<bool> onValueChanged)
@@ -69,6 +71,7 @@ namespace MaterialEditorAPI
 
             itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggle.isOn = !toggle.isOn);
 
+            RowStyle.Apply(contentList.gameObject);
             listItems[name] = contentList;
             FilterList(filterInputField.text);
         }
