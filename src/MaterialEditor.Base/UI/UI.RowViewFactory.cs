@@ -745,6 +745,7 @@ namespace MaterialEditorAPI
                 TooltipManager.AddTooltip(reset.gameObject, "Reset the selected property to its original value");
             }
 
+            RowStyle.Apply(contentList.gameObject);
             return contentList.gameObject;
         }
 

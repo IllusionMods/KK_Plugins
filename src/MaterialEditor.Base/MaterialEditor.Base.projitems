@@ -25,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.FloatLabelDragTrigger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.DropdownFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowStyle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowViewFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.LabelClick.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowBinder.cs" />
