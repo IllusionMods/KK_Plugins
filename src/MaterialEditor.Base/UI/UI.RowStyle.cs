@@ -1,62 +1,20 @@
 using System.Collections.Generic;
-using UILib;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MaterialEditorAPI
 {
-    // Centralized layout and typography for virtualized Material Editor rows.
+    // Compatibility adapter retained for the existing row construction code.
     internal static class RowStyle
     {
         internal static void Apply(GameObject rowTemplate)
         {
-            foreach (var layout in rowTemplate.GetComponentsInChildren<HorizontalLayoutGroup>(true))
-            {
-                layout.childAlignment = TextAnchor.MiddleLeft;
-                layout.childControlHeight = true;
-                layout.childForceExpandHeight = true;
-
-                var panelRect = layout.GetComponent<RectTransform>();
-                panelRect.anchorMin = Vector2.zero;
-                panelRect.anchorMax = Vector2.one;
-                panelRect.offsetMin = Vector2.zero;
-                panelRect.offsetMax = Vector2.zero;
-                panelRect.localScale = Vector3.one;
-            }
-
-            ApplyTypography(rowTemplate);
+            MaterialEditorStyles.ApplyRow(rowTemplate);
         }
 
         internal static void ApplyTypography(GameObject root)
         {
-            foreach (var text in root.GetComponentsInChildren<Text>(true))
-            {
-                text.alignment = WithMiddleVerticalAlignment(text.alignment);
-                text.fontSize = Mathf.Min(text.fontSize, UIUtility.defaultFontSize);
-                if (text.resizeTextForBestFit)
-                    text.resizeTextMaxSize = Mathf.Min(text.resizeTextMaxSize, UIUtility.defaultFontSize);
-
-                if (text.GetComponent<RowTextVisualCenter>() == null)
-                    text.gameObject.AddComponent<RowTextVisualCenter>();
-                text.SetVerticesDirty();
-            }
-        }
-
-        private static TextAnchor WithMiddleVerticalAlignment(TextAnchor alignment)
-        {
-            switch (alignment)
-            {
-                case TextAnchor.UpperCenter:
-                case TextAnchor.MiddleCenter:
-                case TextAnchor.LowerCenter:
-                    return TextAnchor.MiddleCenter;
-                case TextAnchor.UpperRight:
-                case TextAnchor.MiddleRight:
-                case TextAnchor.LowerRight:
-                    return TextAnchor.MiddleRight;
-                default:
-                    return TextAnchor.MiddleLeft;
-            }
+            MaterialEditorStyles.ApplyTypography(root);
         }
     }
 

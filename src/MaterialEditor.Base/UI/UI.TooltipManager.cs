@@ -24,7 +24,7 @@ namespace MaterialEditorAPI
         {
             var tooltip = parent.gameObject.AddComponent<TooltipManager>();
 
-            var panel = UIUtility.CreatePanel($"TooltipPanel", parent);
+            var panel = MaterialEditorControlFactory.CreatePanel($"TooltipPanel", parent);
             var panelTransform = (RectTransform)panel.transform;
 
             panel.color = new Color(0.2f, 0.2f, 0.2f, 0.98f);
@@ -33,7 +33,7 @@ namespace MaterialEditorAPI
             panelTransform.anchorMin = Vector3.zero;
             panelTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 200);
 
-            var tooltipText = UIUtility.CreateText($"ToolTipText", panel.transform, "");
+            var tooltipText = MaterialEditorControlFactory.CreateText($"ToolTipText", panel.transform, "");
             tooltipText.alignment = TextAnchor.MiddleCenter;
             tooltipText.resizeTextForBestFit = false;
             tooltipText.fontSize = 11;

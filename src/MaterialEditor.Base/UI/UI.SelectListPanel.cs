@@ -10,32 +10,32 @@ namespace MaterialEditorAPI
     internal class SelectListPanel
     {
         public Image Panel { get; }
-        private string name;
-        private Transform parent;
-        private ScrollRect scrollRect;
+        private readonly string name;
+        private readonly ScrollRect scrollRect;
 
-        private InputField filterInputField;
-        private Dictionary<string, Image> listItems;
+        private readonly InputField filterInputField;
+        private readonly Dictionary<string, Image> listItems;
 
         public SelectListPanel(Transform parent, string name, string title)
         {
             listItems = new Dictionary<string, Image>();
-            this.parent = parent;
             this.name = name;
 
-            Panel = UIUtility.CreatePanel($"{name}Panel", parent);
-            Panel.color = new Color(0.42f, 0.42f, 0.42f);
+            Panel = MaterialEditorControlFactory.CreatePanel($"{name}Panel", parent, MaterialEditorPanelRole.SidePanel);
 
-            var nametext = UIUtility.CreateText($"{name}Title", Panel.transform, title);
+            var nametext = MaterialEditorControlFactory.CreateText(
+                $"{name}Title",
+                Panel.transform,
+                title,
+                MaterialEditorTextRole.Label);
             nametext.transform.SetRect(0f, 1f, 0.4f, 1f, 5f, -MaterialEditorUI.HeaderSize, -2f, -2f);
-            nametext.alignment = TextAnchor.UpperLeft;
 
-            filterInputField = UIUtility.CreateInputField($"{name}Filter", Panel.transform, "Filter");
+            filterInputField = MaterialEditorControlFactory.CreateInputField($"{name}Filter", Panel.transform, "Filter");
             filterInputField.text = "";
             filterInputField.transform.SetRect(0.4f, 1f, 1f, 1f, 2f, -MaterialEditorUI.HeaderSize, -2f, -2f);
             filterInputField.onValueChanged.AddListener(FilterList);
 
-            scrollRect = UIUtility.CreateScrollView(name, Panel.transform);
+            scrollRect = MaterialEditorControlFactory.CreateScrollView(name, Panel.transform);
             scrollRect.transform.SetRect(0f, 0f, 1f, 1f, 2f, 2f, -2f, -MaterialEditorUI.HeaderSize);
             scrollRect.gameObject.AddComponent<Mask>();
             scrollRect.content.gameObject.AddComponent<VerticalLayoutGroup>();
@@ -43,9 +43,9 @@ namespace MaterialEditorAPI
             scrollRect.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(MaterialEditorUI.ScrollOffsetX, 0f);
             scrollRect.viewport.offsetMax = new Vector2(MaterialEditorUI.ScrollOffsetX, 0f);
             scrollRect.movementType = ScrollRect.MovementType.Clamped;
-            scrollRect.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
+            MaterialEditorStyles.ApplyScrollView(scrollRect);
 
-            RowStyle.ApplyTypography(Panel.gameObject);
+            MaterialEditorStyles.ApplyTypography(Panel.gameObject);
         }
 
         public void AddEntry(string name, Action<bool> onValueChanged)
@@ -53,17 +53,21 @@ namespace MaterialEditorAPI
             if (listItems.ContainsKey(name))
                 return;
 
-            var contentList = UIUtility.CreatePanel($"{this.name}Entry", scrollRect.content.transform);
+            var contentList = MaterialEditorControlFactory.CreatePanel(
+                $"{this.name}Entry",
+                scrollRect.content.transform,
+                MaterialEditorPanelRole.Row);
             contentList.gameObject.AddComponent<LayoutElement>().preferredHeight = MaterialEditorUI.PanelHeight;
             contentList.gameObject.AddComponent<Mask>();
-            contentList.color = MaterialEditorUI.RowColor;
 
-            var itemPanel = UIUtility.CreatePanel($"{this.name}EntryPanel", contentList.transform);
+            var itemPanel = MaterialEditorControlFactory.CreatePanel(
+                $"{this.name}EntryPanel",
+                contentList.transform,
+                MaterialEditorPanelRole.TransparentRow);
             itemPanel.gameObject.AddComponent<CanvasGroup>();
             itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>().padding = MaterialEditorUI.Padding;
-            itemPanel.color = MaterialEditorUI.ItemColor;
 
-            Toggle toggle = UIUtility.CreateToggle($"{this.name}Toggle", itemPanel.transform, name);
+            Toggle toggle = MaterialEditorControlFactory.CreateToggle($"{this.name}Toggle", itemPanel.transform, name);
             var toggleLE = toggle.gameObject.AddComponent<LayoutElement>();
             toggle.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 1f, 1f, -18f, 18f, -1f);
             toggle.isOn = false;
@@ -71,7 +75,7 @@ namespace MaterialEditorAPI
 
             itemPanel.gameObject.AddComponent<Button>().onClick.AddListener(() => toggle.isOn = !toggle.isOn);
 
-            RowStyle.Apply(contentList.gameObject);
+            MaterialEditorStyles.ApplyRow(contentList.gameObject);
             listItems[name] = contentList;
             FilterList(filterInputField.text);
         }

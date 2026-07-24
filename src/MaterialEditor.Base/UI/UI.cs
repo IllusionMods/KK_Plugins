@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using UILib;
 using UnityEngine;
 using UnityEngine.UI;
 using static MaterialEditorAPI.MaterialAPI;
@@ -32,91 +31,93 @@ namespace MaterialEditorAPI
         /// Draggable header
         /// </summary>
         public static Image DragPanel;
-        private static ScrollRect MaterialEditorScrollableUI;
-        private static InputField FilterInputField;
+        private static readonly MaterialEditorSessionState Session = new MaterialEditorSessionState();
+        private static MaterialEditorWindowView ActiveView;
 
-        private static Button ViewListButton;
-        private static SelectListPanel MaterialEditorRendererList;
-        private static List<Renderer> SelectedRenderers = new List<Renderer>();
-        private static SelectListPanel MaterialEditorMaterialList;
-        private static List<Material> SelectedMaterials = new List<Material>();
-        private static bool ListsVisible = false;
-
-        private static SelectListPanel MaterialEditorRenameList;
-        private static InputField MaterialEditorRenameField;
-        private static Button MaterialEditorRenameButton;
-        private static Text MaterialEditorRenameMaterial;
-        private static List<Renderer> SelectedMaterialRenderers = new List<Renderer>();
-        private static bool RenameListVisible = false;
+        private MaterialEditorWindowView _windowView;
+        private MaterialEditorSelectionController _selectionController;
 
         private static readonly List<Action<MaterialEditorLabelClickEventArgs>> LabelClickHandlers = new List<Action<MaterialEditorLabelClickEventArgs>>();
 
         internal static FileSystemWatcher TexChangeWatcher;
         private VirtualList VirtualList;
 
-        internal const float MarginSize = 5f;
-        internal const float HeaderSize = 20f;
-        internal const float ScrollOffsetX = -15f;
-        internal const float PanelHeight = 22f;
+        internal const float MarginSize = MaterialEditorLayout.Margin;
+        internal const float HeaderSize = MaterialEditorLayout.HeaderHeight;
+        internal const float ScrollOffsetX = MaterialEditorLayout.ScrollbarOffset;
+        internal const float PanelHeight = MaterialEditorLayout.RowHeight;
 
         #region Entry Item Width
         // General
-        internal const float LabelWidth = 0f;
-        internal const float ButtonWidth = 100f;
-        internal const float SmallButtonWidth = 20f;
-        internal const float ResetButtonWidth = SmallButtonWidth * 2f;
-        internal const float InterpolableButtonWidth = SmallButtonWidth;
-        internal const float ContentFullWidth = 316f;
+        internal const float LabelWidth = MaterialEditorLayout.LabelWidth;
+        internal const float ButtonWidth = MaterialEditorLayout.ButtonWidth;
+        internal const float SmallButtonWidth = MaterialEditorLayout.SmallButtonWidth;
+        internal const float ResetButtonWidth = MaterialEditorLayout.ResetButtonWidth;
+        internal const float InterpolableButtonWidth = MaterialEditorLayout.InterpolableButtonWidth;
+        internal const float ContentFullWidth = MaterialEditorLayout.ContentWidth;
         // Renderer (Enbale/ShadowCastingMode/ReceiveShadows/RendererUpdateWhenOffscreen/RecalulateNormals)
-        internal const float RendererButtonWidth = ButtonWidth;
-        internal const float RendererToggleWidth = 20f;
-        internal const float RendererDropdownWidth = 94f;
+        internal const float RendererButtonWidth = MaterialEditorLayout.RendererButtonWidth;
+        internal const float RendererToggleWidth = MaterialEditorLayout.RendererToggleWidth;
+        internal const float RendererDropdownWidth = MaterialEditorLayout.RendererDropdownWidth;
         // Material
-        internal const float MaterialButtonWidth = ButtonWidth * 0.75f;
-        internal const float MaterialRenameButtonWidth = SmallButtonWidth;
+        internal const float MaterialButtonWidth = MaterialEditorLayout.MaterialButtonWidth;
+        internal const float MaterialRenameButtonWidth = MaterialEditorLayout.MaterialRenameButtonWidth;
         // Shader
-        internal const float ShaderDropdownWidth = ContentFullWidth;
+        internal const float ShaderDropdownWidth = MaterialEditorLayout.ShaderDropdownWidth;
         // RenderQueue
-        internal const float RenderQueueInputFieldWidth = 94f;
+        internal const float RenderQueueInputFieldWidth = MaterialEditorLayout.RenderQueueInputWidth;
         // Texture
         internal const float TextureButtonWidth = ContentFullWidth / 2f;
         // Texture Offset and Scale
-        internal const float OffsetScaleLabelXWidth = 48f;
-        internal const float OffsetScaleLabelYWidth = 10f;
-        internal const float OffsetScaleInputFieldWidth = 50f;
+        internal const float OffsetScaleLabelXWidth = MaterialEditorLayout.OffsetScaleLabelXWidth;
+        internal const float OffsetScaleLabelYWidth = MaterialEditorLayout.OffsetScaleLabelYWidth;
+        internal const float OffsetScaleInputFieldWidth = MaterialEditorLayout.OffsetScaleInputWidth;
         // Color
-        internal const float ColorLabelWidth = 10f;
-        internal const float ColorInputFieldWidth = 64f;
-        internal const float ColorEditButtonWidth = 20f;
+        internal const float ColorLabelWidth = MaterialEditorLayout.ColorLabelWidth;
+        internal const float ColorInputFieldWidth = MaterialEditorLayout.ColorInputWidth;
+        internal const float ColorEditButtonWidth = MaterialEditorLayout.ColorEditButtonWidth;
         // Float
-        internal const float FloatSliderWidth = ContentFullWidth - 94f;
-        internal const float FloatInputFieldWidth = 94f;
+        internal const float FloatSliderWidth = MaterialEditorLayout.FloatSliderWidth;
+        internal const float FloatInputFieldWidth = MaterialEditorLayout.FloatInputWidth;
         // Keyword
-        internal const float KeywordToggleWidth = ContentFullWidth;
+        internal const float KeywordToggleWidth = MaterialEditorLayout.KeywordToggleWidth;
         #endregion
 
-        internal static RectOffset Padding;
+        internal static RectOffset Padding => MaterialEditorLayout.RowPadding;
 
         #region Colors
-        internal static readonly Color RowColor = new Color(1f, 1f, 1f, 0.6f);
-        // https://simplified.com/blog/colors/triadic-colors
-        internal static readonly Color RendererColor = new Color(0.984f, 0.600f, 0.008f, 0.5f);
-        internal static readonly Color MaterialColor = new Color(0.400f, 0.690f, 0.196f, 0.5f);
-        internal static readonly Color CategoryColor = new Color(0.627f, 0.004f, 0.812f, 0.5f);
-
-        internal static readonly Color ItemColor = new Color(1f, 1f, 1f, 0f);
-        internal static readonly Color ItemColorChanged = new Color(0f, 0f, 0f, 0.3f);
+        internal static readonly Color RowColor = MaterialEditorStyles.RowColor;
+        internal static readonly Color RendererColor = MaterialEditorStyles.RendererColor;
+        internal static readonly Color MaterialColor = MaterialEditorStyles.MaterialColor;
+        internal static readonly Color CategoryColor = MaterialEditorStyles.CategoryColor;
+        internal static readonly Color ItemColor = MaterialEditorStyles.TransparentRowColor;
+        internal static readonly Color ItemColorChanged = MaterialEditorStyles.ChangedRowColor;
         #endregion
 
         private protected IMaterialEditorColorPalette ColorPalette;
 
-        internal GameObject CurrentGameObject;
-        internal object CurrentData;
+        internal GameObject CurrentGameObject
+        {
+            get => Session.CurrentGameObject;
+            set => Session.CurrentGameObject = value;
+        }
+
+        internal object CurrentData
+        {
+            get => Session.CurrentData;
+            set => Session.CurrentData = value;
+        }
+
         private MaterialEditService _materialEditService;
-        private static string CurrentFilter = "";
-        private readonly Dictionary<string, bool> _collapsedPropertyCategories = new Dictionary<string, bool>();
-        private bool DoObjExport = false;
-        private Renderer ObjRenderer;
+        private static string CurrentFilter
+        {
+            get => Session.Filter;
+            set => Session.Filter = value;
+        }
+
+        private List<Renderer> SelectedRenderers => Session.SelectedRenderers;
+        private List<Material> SelectedMaterials => Session.SelectedMaterials;
+        private Dictionary<string, bool> CollapsedPropertyCategories => Session.CollapsedPropertyCategories;
 
         internal static SelectedInterpolable selectedInterpolable;
         internal static SelectedProjectorInterpolable selectedProjectorInterpolable;
@@ -171,130 +172,24 @@ namespace MaterialEditorAPI
         /// </summary>
         protected void InitUI()
         {
-            Padding = new RectOffset(1, 1, 1, 1);
+            _windowView = new MaterialEditorWindowView(
+                transform,
+                CurrentFilter,
+                RefreshUI,
+                () => Visible = false,
+                () => _selectionController.ToggleSidePanels());
+            _selectionController = new MaterialEditorSelectionController(
+                Session,
+                _windowView,
+                EditService,
+                PopulateList);
 
-            MaterialEditorWindow = UIUtility.CreateNewUISystem("MaterialEditorCanvas");
-            MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
+            ActiveView = _windowView;
+            MaterialEditorWindow = _windowView.Window;
+            MaterialEditorMainPanel = _windowView.MainPanel;
+            DragPanel = _windowView.HeaderPanel;
+            VirtualList = _windowView.VirtualList;
             Visible = false;
-            MaterialEditorWindow.gameObject.transform.SetParent(transform);
-            MaterialEditorWindow.sortingOrder = 1000;
-
-            MaterialEditorMainPanel = UIUtility.CreatePanel("Panel", MaterialEditorWindow.transform);
-            MaterialEditorMainPanel.color = Color.white;
-            MaterialEditorMainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
-
-            TooltipManager.Init(MaterialEditorWindow.transform);
-
-            UIUtility.AddOutlineToObject(MaterialEditorMainPanel.transform, Color.black);
-
-            DragPanel = UIUtility.CreatePanel("Draggable", MaterialEditorMainPanel.transform);
-            DragPanel.transform.SetRect(0f, 1f, 1f, 1f, 0f, -HeaderSize);
-            DragPanel.color = Color.gray;
-            UIUtility.MakeObjectDraggable(DragPanel.rectTransform, MaterialEditorMainPanel.rectTransform, PreventDragout.Value);
-
-            var nametext = UIUtility.CreateText("Nametext", DragPanel.transform, "Material Editor");
-            nametext.transform.SetRect();
-            nametext.alignment = TextAnchor.MiddleCenter;
-
-            FilterInputField = UIUtility.CreateInputField("Filter", DragPanel.transform, "Filter");
-            FilterInputField.text = CurrentFilter;
-            FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 1f, 1f, 100f, -1f);
-            FilterInputField.onValueChanged.AddListener(RefreshUI);
-            TooltipManager.AddTooltip(FilterInputField.gameObject, @"Filter visible items in the window.
-
-- Searches for renderers, materials and projectors
-- Searches starting with '_' will search for material properties
-- Combine multiple statements using a comma (an entry just has to match any of the search terms)
-- Use a '*' as a wildcard for any amount of characters (e.g. ""_pattern*1"" will find the ""PatternMask1"" property)
-- Use a '?' as a wildcard for a single character");
-
-            var persistSearch = UIUtility.CreateToggle("PersistSearch", DragPanel.transform, "");
-            persistSearch.transform.SetRect(0f, 1f, 1f, 0.5f, 100f, 0f, 0, 10f);
-            persistSearch.Set(PersistFilter.Value);
-            persistSearch.gameObject.GetComponentInChildren<CanvasRenderer>(true).transform.SetRect(0f, 1f, 0f, 0f, 0f, -19f, 19f, -1f);
-            persistSearch.onValueChanged.AddListener((value) => PersistFilter.Value = value);
-            TooltipManager.AddTooltip(persistSearch.gameObject, "Keeps the filter between instances of this window instead of resetting them");
-
-            //Don't use text withing the toggle itself to prevent weird scaling issues
-            var persistSearchText = UIUtility.CreateText("PersistSearchText", DragPanel.transform, "Persist search");
-            persistSearchText.transform.SetRect(0f, 0.15f, 1f, 0.85f, 120f, 0f, 0, 0f);
-
-            var close = UIUtility.CreateButton("CloseButton", DragPanel.transform, "");
-            close.transform.SetRect(1f, 0f, 1f, 1f, -40f, 1f, -21f, -1f);
-            close.onClick.AddListener(() => Visible = false);
-
-            //X button
-            var x1 = UIUtility.CreatePanel("x1", close.transform);
-            x1.transform.SetRect(0f, 0f, 1f, 1f, 8f, 0f, -8f);
-            x1.rectTransform.eulerAngles = new Vector3(0f, 0f, 45f);
-            x1.color = Color.black;
-            var x2 = UIUtility.CreatePanel("x2", close.transform);
-            x2.transform.SetRect(0f, 0f, 1f, 1f, 8f, 0f, -8f);
-            x2.rectTransform.eulerAngles = new Vector3(0f, 0f, -45f);
-            x2.color = Color.black;
-
-            ViewListButton = UIUtility.CreateButton("ViewListButton", DragPanel.transform, ">");
-            ViewListButton.transform.SetRect(1f, 0f, 1f, 1f, -20f, 1f, -1f, -1f);
-            ViewListButton.onClick.AddListener(() =>
-            {
-                if (RenameListVisible)
-                {
-                    MaterialEditorRenameList.ToggleVisibility(false);
-                    ViewListButton.GetComponentInChildren<Text>().text = ">";
-                    RenameListVisible = false;
-                }
-                else
-                {
-                    MaterialEditorRendererList.ToggleVisibility(!ListsVisible);
-                    MaterialEditorMaterialList.ToggleVisibility(!ListsVisible);
-                    ListsVisible = !ListsVisible;
-                    if (ListsVisible)
-                        ViewListButton.GetComponentInChildren<Text>().text = "<";
-                    else
-                        ViewListButton.GetComponentInChildren<Text>().text = ">";
-                }
-            });
-
-            RowStyle.ApplyTypography(DragPanel.gameObject);
-
-            MaterialEditorScrollableUI = UIUtility.CreateScrollView("MaterialEditorWindow", MaterialEditorMainPanel.transform);
-            MaterialEditorScrollableUI.transform.SetRect(0f, 0f, 1f, 1f, MarginSize, MarginSize, -MarginSize, -HeaderSize - MarginSize / 2f);
-            MaterialEditorScrollableUI.gameObject.AddComponent<Mask>();
-            MaterialEditorScrollableUI.content.gameObject.AddComponent<VerticalLayoutGroup>();
-            MaterialEditorScrollableUI.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<RectTransform>().offsetMin = new Vector2(ScrollOffsetX, 0f);
-            MaterialEditorScrollableUI.viewport.offsetMax = new Vector2(ScrollOffsetX, 0f);
-            MaterialEditorScrollableUI.movementType = ScrollRect.MovementType.Clamped;
-            MaterialEditorScrollableUI.verticalScrollbar.GetComponent<Image>().color = new Color(1, 1, 1, 0.6f);
-
-            var template = RowViewFactory.CreateTemplate(MaterialEditorScrollableUI.content.transform);
-
-            VirtualList = MaterialEditorScrollableUI.gameObject.AddComponent<VirtualList>();
-            VirtualList.ScrollRect = MaterialEditorScrollableUI;
-            VirtualList.EntryTemplate = template;
-            VirtualList.Initialize();
-
-            MaterialEditorRendererList = new SelectListPanel(MaterialEditorMainPanel.transform, "RendererList", "Renderers");
-            MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + UIListWidth.Value);
-            MaterialEditorRendererList.ToggleVisibility(false);
-            MaterialEditorMaterialList = new SelectListPanel(MaterialEditorMainPanel.transform, "MaterialList", "Materials");
-            MaterialEditorMaterialList.Panel.transform.SetRect(1f, 0f, 1f, 0.5f, MarginSize, 0f, MarginSize + UIListWidth.Value, -MarginSize);
-            MaterialEditorMaterialList.ToggleVisibility(false);
-
-            MaterialEditorRenameList = new SelectListPanel(MaterialEditorMainPanel.transform, "MaterialRenameList", "Mat. Renderers");
-            MaterialEditorRenameList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + UIListWidth.Value);
-            MaterialEditorRenameList.ToggleVisibility(false);
-            MaterialEditorRenameField = UIUtility.CreateInputField("MaterialEditorRenameField", MaterialEditorRenameList.Panel.transform, "");
-            MaterialEditorRenameField.transform.SetRect(0, 0, 1, 0, 0, -(PanelHeight + MarginSize / 2), 0, -(MarginSize / 2));
-            MaterialEditorRenameButton = UIUtility.CreateButton("MaterialEditorRenameButton", MaterialEditorRenameList.Panel.transform, "Rename");
-            MaterialEditorRenameButton.transform.SetRect(0, 0, 1, 0, 0, -(2 * PanelHeight + MarginSize), 0, -(PanelHeight + MarginSize));
-            MaterialEditorRenameList.Panel.transform.GetChild(0).SetRect(0, 1, 0.4f, 1, 5, -40, -2, -27.5f);
-            MaterialEditorRenameList.Panel.transform.GetChild(1).SetRect(0.4f, 1, 1, 1, 2, -42.5f, -2, -25);
-            MaterialEditorRenameList.Panel.transform.GetChild(2).SetRect(0, 0, 1, 1, 2, 2, -2, -42.5f);
-            MaterialEditorRenameMaterial = Instantiate(MaterialEditorRenameList.Panel.transform.GetChild(0), MaterialEditorRenameList.Panel.transform).GetComponent<Text>();
-            MaterialEditorRenameMaterial.gameObject.name = nameof(MaterialEditorRenameMaterial);
-            MaterialEditorRenameMaterial.transform.SetRect(0, 1, 1, 1, 5, -20, -2, -5);
-            RowStyle.ApplyTypography(MaterialEditorRenameList.Panel.gameObject);
         }
 
         /// <summary>
@@ -305,14 +200,6 @@ namespace MaterialEditorAPI
         /// Refresh the MaterialEditor UI using the specified filter text
         /// </summary>
         public void RefreshUI(string filterText) => PopulateList(CurrentGameObject, CurrentData, filterText);
-
-        private static void SetMainRectWithMemory(float anchorLeft, float anchorBottom, float anchorRight, float anchorTop)
-        {
-            Vector3 positionMemory = MaterialEditorMainPanel.transform.position;
-            MaterialEditorMainPanel.transform.SetRect(anchorLeft, anchorBottom, anchorRight, anchorTop);
-            if (!Input.GetKey(KeyCode.LeftControl))
-                MaterialEditorMainPanel.transform.position = positionMemory;
-        }
 
         /// <summary>
         /// Get or set the MaterialEditor UI visibility
@@ -336,14 +223,7 @@ namespace MaterialEditorAPI
 
         internal static void UISettingChanged(object sender, EventArgs e)
         {
-            if (MaterialEditorWindow != null)
-                MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
-            if (MaterialEditorMainPanel != null)
-                SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
-            if (MaterialEditorRendererList != null)
-                MaterialEditorRendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MarginSize, MarginSize / 2f, MarginSize + UIListWidth.Value);
-            if (MaterialEditorMaterialList != null)
-                MaterialEditorMaterialList.Panel.transform.SetRect(1f, 0f, 1f, 0.5f, MarginSize, 0f, MarginSize + UIListWidth.Value, -MarginSize);
+            ActiveView?.ApplySettings();
         }
 
         /// <summary>
@@ -365,23 +245,7 @@ namespace MaterialEditorAPI
         /// <param name="rendListFull">List of all renderers to display</param>
         private void PopulateRendererList(GameObject go, object data, IEnumerable<Renderer> rendListFull)
         {
-            if (go != CurrentGameObject)
-            {
-                SelectedRenderers.Clear();
-                MaterialEditorRendererList.ClearList();
-
-                foreach (var rend in rendListFull)
-                    MaterialEditorRendererList.AddEntry(rend.NameFormatted(), value =>
-                    {
-                        if (value)
-                            SelectedRenderers.Add(rend);
-                        else
-                            SelectedRenderers.Remove(rend);
-                        PopulateList(go, data, CurrentFilter);
-                        PopulateMaterialList(go, data, rendListFull);
-                    });
-                PopulateMaterialList(go, data, rendListFull);
-            }
+            _selectionController.PopulateRendererList(go, data, rendListFull);
         }
 
 
@@ -393,19 +257,7 @@ namespace MaterialEditorAPI
         /// <param name="materials">List of all materials to display</param>
         private void PopulateMaterialList(GameObject go, object data, IEnumerable<Renderer> materials)
         {
-            SelectedMaterials.Clear();
-            MaterialEditorMaterialList.ClearList();
-
-            foreach (var rend in materials.Where(rend => SelectedRenderers.Count == 0 || SelectedRenderers.Contains(rend)))
-            foreach (var mat in GetMaterials(go, rend))
-                MaterialEditorMaterialList.AddEntry(mat.NameFormatted(), value =>
-                {
-                    if (value)
-                        SelectedMaterials.Add(mat);
-                    else
-                        SelectedMaterials.Remove(mat);
-                    PopulateList(go, data, CurrentFilter);
-                });
+            _selectionController.PopulateMaterialList(go, data, materials);
         }
 
         /// <summary>
@@ -416,46 +268,7 @@ namespace MaterialEditorAPI
         /// <param name="data">Object that will be passed through to the get/set/reset events</param>
         private void PopulateRenameList(GameObject go, Material material, object data)
         {
-            SelectedMaterialRenderers.Clear();
-            MaterialEditorRenameList.ClearList();
-
-            // Setup title
-            MaterialEditorRenameMaterial.text = material.NameFormatted();
-
-            // Setup text field
-            string formattedName = material.NameFormatted().Split(new[] { MaterialCopyPostfix }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-            if (string.IsNullOrEmpty(formattedName))
-            {
-                MaterialEditorPluginBase.Logger.LogWarning("Material name is empty or failed to be extracted from: " + material.name);
-                formattedName = "";
-            }
-            MaterialEditorRenameField.text = formattedName;
-
-            // Setup button
-            string suffix = material.NameFormatted().Replace(formattedName, "");
-            MaterialEditorRenameButton.interactable = false;
-            MaterialEditorRenameButton.onClick.RemoveAllListeners();
-            MaterialEditorRenameButton.onClick.AddListener(() =>
-            {
-                string safeNewName = MaterialEditorRenameField.text.Replace(MaterialCopyPostfix, "").Trim() + suffix;
-                foreach (var renderer in SelectedMaterialRenderers)
-                    EditService.SetMaterialName(data, renderer, material, safeNewName, go);
-                RefreshUI();
-            });
-
-            // Setup renderer list
-            foreach (var renderer in GetRendererList(go))
-            {
-                if (!renderer.materials.Any(mat => mat.NameFormatted() == material.NameFormatted())) continue;
-                MaterialEditorRenameList.AddEntry(renderer.NameFormatted(), value =>
-                {
-                    if (value)
-                        SelectedMaterialRenderers.Add(renderer);
-                    else
-                        SelectedMaterialRenderers.Remove(renderer);
-                    MaterialEditorRenameButton.interactable = SelectedMaterialRenderers.Count > 0;
-                });
-            }
+            _selectionController.ShowRenamePanel(go, material, data);
         }
 
         /// <summary>
@@ -466,12 +279,7 @@ namespace MaterialEditorAPI
         /// <param name="filter">Comma separated list of text to filter the results</param>
         protected void PopulateList(GameObject go, object data, string filter = null)
         {
-            if (RenameListVisible)
-            {
-                MaterialEditorRenameList.ToggleVisibility(false);
-                ViewListButton.GetComponentInChildren<Text>().text = ">";
-                RenameListVisible = false;
-            }
+            _selectionController.CloseRenamePanel();
 
             if (filter == null)
             {
@@ -479,10 +287,7 @@ namespace MaterialEditorAPI
                 else filter = "";
             }
 
-            MaterialEditorWindow.gameObject.SetActive(true);
-            MaterialEditorWindow.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
-            SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
-            FilterInputField.Set(filter);
+            _windowView.PrepareForDisplay(filter);
 
             if (go == null) return;
 
@@ -556,8 +361,7 @@ namespace MaterialEditorAPI
                     ExportUVOnClick = () => Export.ExportUVMaps(rend),
                     ExportObjOnClick = () =>
                     {
-                        ObjRenderer = rend;
-                        DoObjExport = true;
+                        Session.RequestObjExport(rend);
                     },
                     SelectInterpolableButtonRendererOnClick = () => SelectInterpolableButtonOnClick(go, RowModel.RowItemType.Renderer, rendererName: rend.NameFormatted())
                 };
@@ -680,16 +484,7 @@ namespace MaterialEditorAPI
                     };
                 materialItem.MaterialOnRename = () =>
                 {
-                    if (ListsVisible)
-                    {
-                        MaterialEditorRendererList.ToggleVisibility(false);
-                        MaterialEditorMaterialList.ToggleVisibility(false);
-                        ListsVisible = false;
-                    }
-                    ViewListButton.GetComponentInChildren<Text>().text = "<";
-                    MaterialEditorRenameList.ToggleVisibility(true);
                     PopulateRenameList(go, mat, data);
-                    RenameListVisible = true;
                 };
                 items.Add(materialItem);
 
@@ -754,7 +549,7 @@ namespace MaterialEditorAPI
                         && properties.Any();
                     var categoryKey = $"{mat.GetInstanceID()}:{category.Key}";
                     var categoryCollapsed = showCategory
-                        && _collapsedPropertyCategories.TryGetValue(categoryKey, out var collapsed)
+                        && CollapsedPropertyCategories.TryGetValue(categoryKey, out var collapsed)
                         && collapsed;
 
                     if (showCategory)
@@ -765,9 +560,9 @@ namespace MaterialEditorAPI
                             CategoryCollapsedOnChange = value =>
                             {
                                 if (value)
-                                    _collapsedPropertyCategories[categoryKey] = true;
+                                    CollapsedPropertyCategories[categoryKey] = true;
                                 else
-                                    _collapsedPropertyCategories.Remove(categoryKey);
+                                    CollapsedPropertyCategories.Remove(categoryKey);
                                 PopulateList(go, data, filter);
                             }
                         };
@@ -1056,12 +851,8 @@ namespace MaterialEditorAPI
         /// </summary>
         private void OnGUI()
         {
-            if (DoObjExport)
-            {
-                DoObjExport = false;
-                Export.ExportObj(ObjRenderer);
-                ObjRenderer = null;
-            }
+            if (Session.TryTakeObjExport(out var renderer))
+                Export.ExportObj(renderer);
         }
 
         /// <summary>

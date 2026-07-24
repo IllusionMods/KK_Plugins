@@ -41,7 +41,7 @@ namespace MaterialEditorAPI
             filter._parent = target;
             filter._persistentKeyword = persistentKeyword;
 
-            var filterField = UIUtility.CreateInputField("Filter", menuTemplate.transform, "Filter");
+            var filterField = MaterialEditorControlFactory.CreateInputField("Filter", menuTemplate.transform, "Filter");
             filter._filterField = filterField;
 
             float uiMargin = 2f;
@@ -59,7 +59,7 @@ namespace MaterialEditorAPI
             filterRect.offsetMax = new Vector2(0, 0);
             filterRect.sizeDelta = new Vector2(0, filterUIHeight);
 
-            var clearButton = UIUtility.CreateButton("ClearFilter", menuTemplate.transform, "Clear");
+            var clearButton = MaterialEditorControlFactory.CreateButton("ClearFilter", menuTemplate.transform, "Clear");
             var clearButtonRect = (RectTransform)clearButton.transform;
             filter._clearButtonRect = clearButtonRect;
             clearButtonRect.anchorMin = new Vector2(0f, 0);
