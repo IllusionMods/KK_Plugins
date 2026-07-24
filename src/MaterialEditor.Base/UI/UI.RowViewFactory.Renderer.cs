@@ -36,7 +36,7 @@ namespace MaterialEditorAPI
                 "RendererUpdateWhenOffscreenToggle",
                 "RendererUpdateWhenOffscreenResetButton",
                 false,
-                "When on, a renderer will always stay renderer, even when considered to be off-screen.\n\n This is handy for when the bounding box of an object is configured improperly and dissapears when it should still be visible",
+                "When on, a renderer will always stay renderer, even when considered to be off-screen.\n\n This is handy for when the bounding box of an object is configured improperly and disappears when it should still be visible",
                 "Reset this property to its original value");
             CreateBooleanRow(
                 parent,
