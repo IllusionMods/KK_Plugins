@@ -54,7 +54,6 @@ namespace MaterialEditorAPI
             var rowView = EntryTemplate.AddComponent<RowView>();
             var listEntry = EntryTemplate.AddComponent<RowBinder>();
             rowView.Initialize(listEntry);
-            listEntry.InitializeControls();
             rowView.Bind(null, true);
         }
 
@@ -76,9 +75,15 @@ namespace MaterialEditorAPI
                     copy.transform.parent = EntryTemplate.transform.parent;
                 }
                 var entry = copy.GetComponent<RowView>();
+                entry.Initialize(copy.GetComponent<RowBinder>());
                 _cachedViews.Add(entry);
                 entry.SetVisible(false);
             }
+
+            if (_cachedViews.Count > 0)
+                RowLayoutRuntimeAssertions.Validate(_cachedViews[0]);
+            if (_cachedViews.Count > 1)
+                RowLayoutRuntimeAssertions.ValidateClones(_cachedViews[0], _cachedViews[1]);
         }
 
         public void Clear()

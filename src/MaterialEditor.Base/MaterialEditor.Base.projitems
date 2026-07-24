@@ -24,6 +24,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SessionState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SelectionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.StyleSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.NumericInputView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.LayoutDiagnostics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.WindowView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.MaterialEditorPresenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.PropertyDescriptor.cs" />

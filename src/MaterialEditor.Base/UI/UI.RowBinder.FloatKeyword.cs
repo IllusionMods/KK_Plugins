@@ -1,4 +1,4 @@
-using static UILib.Extensions;
+﻿using static UILib.Extensions;
 
 namespace MaterialEditorAPI
 {
@@ -36,39 +36,37 @@ namespace MaterialEditorAPI
                     item.FloatValue != item.FloatValueOriginal,
                     controls.ResetButton,
                     controls.Panel);
+            System.Action<float> applyValue = value =>
+            {
+                item.FloatValue = value;
+                controls.Slider.Set(item.FloatValue, false);
+                controls.Input.SetValue(item.FloatValue);
+                if (item.FloatValue == item.FloatValueOriginal)
+                    item.FloatValueOnReset();
+                else
+                    item.FloatValueOnChange(item.FloatValue);
+                refresh();
+            };
 
             InputFieldBinding.BindFloat(
                 listeners,
                 controls.Input,
                 () => item.FloatValue,
-                value =>
-                {
-                    item.FloatValue = value;
-                    controls.Slider.Set(item.FloatValue, false);
-                    if (item.FloatValue == item.FloatValueOriginal)
-                        item.FloatValueOnReset();
-                    else
-                        item.FloatValueOnChange(item.FloatValue);
-                    refresh();
-                });
+                applyValue);
             SliderBinding.Bind(
                 listeners,
                 controls.Slider,
                 item.FloatValueSliderMin,
                 item.FloatValueSliderMax,
                 item.FloatValue,
-                value =>
-                {
-                    controls.Input.Set(value.ToString(), false);
-                    controls.Input.onEndEdit.Invoke(value.ToString());
-                });
+                applyValue);
             refresh();
 
             listeners.Listen(controls.ResetButton, () =>
             {
                 item.FloatValue = item.FloatValueOriginal;
                 controls.Slider.Set(item.FloatValue, false);
-                controls.Input.Set(item.FloatValue.ToString(), false);
+                controls.Input.SetValue(item.FloatValue);
                 item.FloatValueOnReset();
                 refresh();
             });

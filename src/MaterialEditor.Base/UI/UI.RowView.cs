@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MaterialEditorAPI
 {
@@ -13,7 +13,13 @@ namespace MaterialEditorAPI
 
         internal void Initialize(RowBinder binder)
         {
-            _binder = binder;
+            _binder = binder ?? GetComponent<RowBinder>();
+
+            RowLayoutCatalog.Restore(gameObject);
+            foreach (var input in GetComponentsInChildren<NumericInputView>(true))
+                input.RestoreConfiguration();
+
+            _binder.InitializeControls();
         }
 
         internal void Bind(RowModel model, bool force)

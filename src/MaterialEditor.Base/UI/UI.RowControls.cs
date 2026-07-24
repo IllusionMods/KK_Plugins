@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -188,20 +188,20 @@ namespace MaterialEditorAPI
             Label = owner.GetUIComponent<Text>("OffsetScaleLabel");
             LabelClickTrigger = owner.GetUIComponent<LabelClickTrigger>("OffsetScaleLabel");
             OffsetXLabelClickTrigger = owner.GetUIComponent<LabelClickTrigger>("OffsetXText");
-            OffsetXInput = owner.GetUIComponent<InputField>("OffsetXInput");
-            OffsetYInput = owner.GetUIComponent<InputField>("OffsetYInput");
-            ScaleXInput = owner.GetUIComponent<InputField>("ScaleXInput");
-            ScaleYInput = owner.GetUIComponent<InputField>("ScaleYInput");
+            OffsetXInput = owner.GetUIComponent<NumericInputView>("OffsetXInput");
+            OffsetYInput = owner.GetUIComponent<NumericInputView>("OffsetYInput");
+            ScaleXInput = owner.GetUIComponent<NumericInputView>("ScaleXInput");
+            ScaleYInput = owner.GetUIComponent<NumericInputView>("ScaleYInput");
             ResetButton = owner.GetUIComponent<Button>("OffsetScaleResetButton");
         }
 
         internal Text Label { get; }
         internal LabelClickTrigger LabelClickTrigger { get; }
         internal LabelClickTrigger OffsetXLabelClickTrigger { get; }
-        internal InputField OffsetXInput { get; }
-        internal InputField OffsetYInput { get; }
-        internal InputField ScaleXInput { get; }
-        internal InputField ScaleYInput { get; }
+        internal NumericInputView OffsetXInput { get; }
+        internal NumericInputView OffsetYInput { get; }
+        internal NumericInputView ScaleXInput { get; }
+        internal NumericInputView ScaleYInput { get; }
         internal Button ResetButton { get; }
     }
 
@@ -212,10 +212,10 @@ namespace MaterialEditorAPI
         {
             Label = owner.GetUIComponent<Text>("ColorLabel");
             LabelClickTrigger = owner.GetUIComponent<LabelClickTrigger>("ColorLabel");
-            RInput = owner.GetUIComponent<InputField>("ColorRInput");
-            GInput = owner.GetUIComponent<InputField>("ColorGInput");
-            BInput = owner.GetUIComponent<InputField>("ColorBInput");
-            AInput = owner.GetUIComponent<InputField>("ColorAInput");
+            RInput = owner.GetUIComponent<NumericInputView>("ColorRInput");
+            GInput = owner.GetUIComponent<NumericInputView>("ColorGInput");
+            BInput = owner.GetUIComponent<NumericInputView>("ColorBInput");
+            AInput = owner.GetUIComponent<NumericInputView>("ColorAInput");
             SelectInterpolableButton = owner.GetUIComponent<Button>("SelectInterpolableColorButton");
             ResetButton = owner.GetUIComponent<Button>("ColorResetButton");
             EditButton = owner.GetUIComponent<Button>("ColorEditButton");
@@ -223,10 +223,10 @@ namespace MaterialEditorAPI
 
         internal Text Label { get; }
         internal LabelClickTrigger LabelClickTrigger { get; }
-        internal InputField RInput { get; }
-        internal InputField GInput { get; }
-        internal InputField BInput { get; }
-        internal InputField AInput { get; }
+        internal NumericInputView RInput { get; }
+        internal NumericInputView GInput { get; }
+        internal NumericInputView BInput { get; }
+        internal NumericInputView AInput { get; }
         internal Button SelectInterpolableButton { get; }
         internal Button ResetButton { get; }
         internal Button EditButton { get; }
@@ -241,7 +241,7 @@ namespace MaterialEditorAPI
             LabelClickTrigger = owner.GetUIComponent<LabelClickTrigger>("FloatLabel");
             SelectInterpolableButton = owner.GetUIComponent<Button>("SelectInterpolableFloatButton");
             Slider = owner.GetUIComponent<Slider>("FloatSlider");
-            Input = owner.GetUIComponent<InputField>("FloatInputField");
+            Input = owner.GetUIComponent<NumericInputView>("FloatInputField");
             ResetButton = owner.GetUIComponent<Button>("FloatResetButton");
         }
 
@@ -249,7 +249,7 @@ namespace MaterialEditorAPI
         internal LabelClickTrigger LabelClickTrigger { get; }
         internal Button SelectInterpolableButton { get; }
         internal Slider Slider { get; }
-        internal InputField Input { get; }
+        internal NumericInputView Input { get; }
         internal Button ResetButton { get; }
     }
 

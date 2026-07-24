@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -152,22 +152,22 @@ namespace MaterialEditorAPI
     {
         internal static void BindFloat(
             ListenerScope listeners,
-            InputField input,
+            NumericInputView input,
             Func<float> getValue,
             Action<float> setValue)
         {
-            input.Set(getValue().ToString(), false);
-            listeners.Listen(input, value =>
+            input.SetValue(getValue());
+            listeners.Listen(input.InputField, value =>
             {
                 float parsed;
-                if (!float.TryParse(value, out parsed))
+                if (!input.TryParse(value, out parsed))
                 {
-                    input.Set(getValue().ToString(), false);
+                    input.CommitValue(getValue());
                     return;
                 }
 
                 setValue(parsed);
-                input.Set(getValue().ToString(), false);
+                input.CommitValue(getValue());
             });
         }
 

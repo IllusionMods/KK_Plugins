@@ -1,5 +1,4 @@
-using UnityEngine;
-using static UILib.Extensions;
+﻿using UnityEngine;
 
 namespace MaterialEditorAPI
 {
@@ -18,10 +17,10 @@ namespace MaterialEditorAPI
 
             System.Action refreshInputs = () =>
             {
-                _controls.RInput.Set(item.ColorValue.r.ToString(), false);
-                _controls.GInput.Set(item.ColorValue.g.ToString(), false);
-                _controls.BInput.Set(item.ColorValue.b.ToString(), false);
-                _controls.AInput.Set(item.ColorValue.a.ToString(), false);
+                _controls.RInput.SetValue(item.ColorValue.r);
+                _controls.GInput.SetValue(item.ColorValue.g);
+                _controls.BInput.SetValue(item.ColorValue.b);
+                _controls.AInput.SetValue(item.ColorValue.a);
                 _controls.EditButton.image.color = item.ColorValue;
             };
             System.Action refreshState = () =>

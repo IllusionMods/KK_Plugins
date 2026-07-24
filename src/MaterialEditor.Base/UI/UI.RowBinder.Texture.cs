@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using static UILib.Extensions;
 
@@ -162,10 +162,10 @@ namespace MaterialEditorAPI
             {
                 item.Offset = item.OffsetOriginal;
                 item.Scale = item.ScaleOriginal;
-                controls.OffsetXInput.Set(item.Offset.x.ToString(), false);
-                controls.OffsetYInput.Set(item.Offset.y.ToString(), false);
-                controls.ScaleXInput.Set(item.Scale.x.ToString(), false);
-                controls.ScaleYInput.Set(item.Scale.y.ToString(), false);
+                controls.OffsetXInput.SetValue(item.Offset.x);
+                controls.OffsetYInput.SetValue(item.Offset.y);
+                controls.ScaleXInput.SetValue(item.Scale.x);
+                controls.ScaleYInput.SetValue(item.Scale.y);
                 item.OffsetOnReset();
                 item.ScaleOnReset();
                 refresh();
