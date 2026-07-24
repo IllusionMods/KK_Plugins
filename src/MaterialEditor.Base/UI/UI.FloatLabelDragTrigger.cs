@@ -34,20 +34,39 @@ namespace MaterialEditorAPI
 
             float multiplier = 0f;
             float delta = eventData.delta.x / Screen.dpi * (Input.GetKey(KeyCode.LeftShift) ? 10f : 1f) / (Input.GetKey(KeyCode.LeftControl) ? 10f : 1f) * (MaterialEditorPluginBase.DragSensitivity.Value / 100f);
-            if (float.TryParse(InputField.text, out float input))
+            if (TryGetValue(InputField, out float input))
             {
                 multiplier = delta / input + 1;
-                InputField.onEndEdit.Invoke((input + delta).ToString());
+                InvokeValue(InputField, input + delta);
             }
             if (PairedInputFields?.Length > 0 && Input.GetKey(KeyCode.LeftAlt))
                 foreach (var pairedInputField in PairedInputFields)
-                    if (float.TryParse(pairedInputField.text, out float pairedInput))
+                    if (TryGetValue(pairedInputField, out float pairedInput))
                     {
                         if (Input.GetKey(KeyCode.Mouse1) && !float.IsInfinity(multiplier) && !float.IsNaN(multiplier))
-                            pairedInputField.onEndEdit.Invoke((pairedInput * multiplier).ToString());
+                            InvokeValue(pairedInputField, pairedInput * multiplier);
                         else
-                            pairedInputField.onEndEdit.Invoke((pairedInput + delta).ToString());
+                            InvokeValue(pairedInputField, pairedInput + delta);
                     }
+        }
+
+        private static bool TryGetValue(InputField inputField, out float value)
+        {
+            var numeric = inputField.GetComponent<NumericInputView>();
+            if (numeric != null && numeric.HasValue)
+            {
+                value = numeric.Value;
+                return true;
+            }
+
+            return float.TryParse(inputField.text, out value);
+        }
+
+        private static void InvokeValue(InputField inputField, float value)
+        {
+            var numeric = inputField.GetComponent<NumericInputView>();
+            inputField.onEndEdit.Invoke(
+                numeric != null ? numeric.FormatEdit(value) : value.ToString());
         }
     }
 }

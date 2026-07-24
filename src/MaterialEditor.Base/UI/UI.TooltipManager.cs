@@ -24,7 +24,7 @@ namespace MaterialEditorAPI
         {
             var tooltip = parent.gameObject.AddComponent<TooltipManager>();
 
-            var panel = UIUtility.CreatePanel($"TooltipPanel", parent);
+            var panel = MaterialEditorControlFactory.CreatePanel($"TooltipPanel", parent);
             var panelTransform = (RectTransform)panel.transform;
 
             panel.color = new Color(0.2f, 0.2f, 0.2f, 0.98f);
@@ -33,12 +33,23 @@ namespace MaterialEditorAPI
             panelTransform.anchorMin = Vector3.zero;
             panelTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 200);
 
-            var tooltipText = UIUtility.CreateText($"ToolTipText", panel.transform, "");
+            var tooltipText = MaterialEditorControlFactory.CreateText(
+                $"ToolTipText",
+                panel.transform,
+                "",
+                MaterialEditorTextRole.Tooltip);
             tooltipText.alignment = TextAnchor.MiddleCenter;
             tooltipText.resizeTextForBestFit = false;
             tooltipText.fontSize = 11;
+            tooltipText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            tooltipText.verticalOverflow = VerticalWrapMode.Overflow;
             var layout = panel.gameObject.AddComponent<HorizontalLayoutGroup>();
             layout.padding = new RectOffset(4, 4, 2, 2);
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = true;
+            layout.childForceExpandWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandHeight = false;
             var contentSizeFitter = panel.gameObject.AddComponent<ContentSizeFitter>();
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
             contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;

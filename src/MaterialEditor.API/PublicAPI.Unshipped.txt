@@ -1,0 +1,191 @@
+const MaterialEditorAPI.MaterialEditorPropertyEditorIds.Boolean = "materialeditor.boolean" -> string
+const MaterialEditorAPI.MaterialEditorPropertyEditorIds.Color = "materialeditor.color" -> string
+const MaterialEditorAPI.MaterialEditorPropertyEditorIds.Float = "materialeditor.float" -> string
+const MaterialEditorAPI.MaterialEditorPropertyEditorIds.Texture = "materialeditor.texture" -> string
+MaterialEditorAPI.MaterialEditorApiCapability
+MaterialEditorAPI.MaterialEditorApiCapability.EditServiceFacade = 16 -> MaterialEditorAPI.MaterialEditorApiCapability
+MaterialEditorAPI.MaterialEditorApiCapability.LabelClickEvents = 1 -> MaterialEditorAPI.MaterialEditorApiCapability
+MaterialEditorAPI.MaterialEditorApiCapability.None = 0 -> MaterialEditorAPI.MaterialEditorApiCapability
+MaterialEditorAPI.MaterialEditorApiCapability.PropertyDescriptorProviders = 4 -> MaterialEditorAPI.MaterialEditorApiCapability
+MaterialEditorAPI.MaterialEditorApiCapability.PropertyEditors = 8 -> MaterialEditorAPI.MaterialEditorApiCapability
+MaterialEditorAPI.MaterialEditorApiCapability.SelectionEvents = 2 -> MaterialEditorAPI.MaterialEditorApiCapability
+MaterialEditorAPI.MaterialEditorBooleanPropertyEditor
+MaterialEditorAPI.MaterialEditorBooleanPropertyEditor.MaterialEditorBooleanPropertyEditor(bool value, bool originalValue, System.Action<bool> valueChanged, System.Action reset) -> void
+MaterialEditorAPI.MaterialEditorBooleanPropertyEditor.OriginalValue.get -> bool
+MaterialEditorAPI.MaterialEditorBooleanPropertyEditor.Reset.get -> System.Action
+MaterialEditorAPI.MaterialEditorBooleanPropertyEditor.Value.get -> bool
+MaterialEditorAPI.MaterialEditorBooleanPropertyEditor.ValueChanged.get -> System.Action<bool>
+MaterialEditorAPI.MaterialEditorColorPropertyEditor
+MaterialEditorAPI.MaterialEditorColorPropertyEditor.MaterialEditorColorPropertyEditor(UnityEngine.Color value, UnityEngine.Color originalValue, System.Action<UnityEngine.Color> valueChanged, System.Action reset) -> void
+MaterialEditorAPI.MaterialEditorColorPropertyEditor.OriginalValue.get -> UnityEngine.Color
+MaterialEditorAPI.MaterialEditorColorPropertyEditor.Reset.get -> System.Action
+MaterialEditorAPI.MaterialEditorColorPropertyEditor.SelectInterpolable.get -> System.Action
+MaterialEditorAPI.MaterialEditorColorPropertyEditor.SelectInterpolable.set -> void
+MaterialEditorAPI.MaterialEditorColorPropertyEditor.Value.get -> UnityEngine.Color
+MaterialEditorAPI.MaterialEditorColorPropertyEditor.ValueChanged.get -> System.Action<UnityEngine.Color>
+MaterialEditorAPI.MaterialEditorEditService
+MaterialEditorAPI.MaterialEditorEditService.CopyMaterialEdits(UnityEngine.Material material) -> void
+MaterialEditorAPI.MaterialEditorEditService.CopyOrRemoveMaterial(UnityEngine.Material material) -> void
+MaterialEditorAPI.MaterialEditorEditService.Data.get -> object
+MaterialEditorAPI.MaterialEditorEditService.GameObject.get -> UnityEngine.GameObject
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalBoolean(UnityEngine.Material material, string propertyName) -> bool?
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalColor(UnityEngine.Material material, string propertyName) -> UnityEngine.Color?
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalFloat(UnityEngine.Material material, string propertyName) -> float?
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalMaterialName(UnityEngine.Renderer renderer, UnityEngine.Material material) -> string
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalProjectorProperty(UnityEngine.Projector projector, MaterialEditorAPI.MaterialAPI.ProjectorProperties property) -> float?
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalRendererProperty(UnityEngine.Renderer renderer, MaterialEditorAPI.MaterialAPI.RendererProperties property) -> string
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalRenderQueue(UnityEngine.Material material) -> int?
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalShader(UnityEngine.Material material) -> string
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalTextureOffset(UnityEngine.Material material, string propertyName) -> UnityEngine.Vector2?
+MaterialEditorAPI.MaterialEditorEditService.GetOriginalTextureScale(UnityEngine.Material material, string propertyName) -> UnityEngine.Vector2?
+MaterialEditorAPI.MaterialEditorEditService.GetProjectorProperty(UnityEngine.Projector projector, MaterialEditorAPI.MaterialAPI.ProjectorProperties property) -> float?
+MaterialEditorAPI.MaterialEditorEditService.GetProjectors() -> System.Collections.Generic.IEnumerable<UnityEngine.Projector>
+MaterialEditorAPI.MaterialEditorEditService.GetRendererProperty(UnityEngine.Renderer renderer, MaterialEditorAPI.MaterialAPI.RendererProperties property) -> string
+MaterialEditorAPI.MaterialEditorEditService.IsTextureOriginal(UnityEngine.Material material, string propertyName) -> bool
+MaterialEditorAPI.MaterialEditorEditService.PasteMaterialEdits(UnityEngine.Material material) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetBoolean(UnityEngine.Material material, string propertyName) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetColor(UnityEngine.Material material, string propertyName) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetFloat(UnityEngine.Material material, string propertyName) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetMaterialName(UnityEngine.Renderer renderer, UnityEngine.Material material) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetProjectorProperty(UnityEngine.Projector projector, MaterialEditorAPI.MaterialAPI.ProjectorProperties property) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetRendererProperty(UnityEngine.Renderer renderer, MaterialEditorAPI.MaterialAPI.RendererProperties property) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetRenderQueue(UnityEngine.Material material) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetShader(UnityEngine.Material material) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetTexture(UnityEngine.Material material, string propertyName) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetTextureOffset(UnityEngine.Material material, string propertyName) -> void
+MaterialEditorAPI.MaterialEditorEditService.ResetTextureScale(UnityEngine.Material material, string propertyName) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetBoolean(UnityEngine.Material material, string propertyName, bool value) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetColor(UnityEngine.Material material, string propertyName, UnityEngine.Color value) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetFloat(UnityEngine.Material material, string propertyName, float value) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetMaterialName(UnityEngine.Renderer renderer, UnityEngine.Material material, string value) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetProjectorProperty(UnityEngine.Projector projector, MaterialEditorAPI.MaterialAPI.ProjectorProperties property, float value) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetRendererProperty(UnityEngine.Renderer renderer, MaterialEditorAPI.MaterialAPI.RendererProperties property, string value) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetRenderQueue(UnityEngine.Material material, int value) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetShader(UnityEngine.Material material, string shaderName) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetTextureFromFile(UnityEngine.Material material, string propertyName, string filePath) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetTextureOffset(UnityEngine.Material material, string propertyName, UnityEngine.Vector2 value) -> void
+MaterialEditorAPI.MaterialEditorEditService.SetTextureScale(UnityEngine.Material material, string propertyName, UnityEngine.Vector2 value) -> void
+MaterialEditorAPI.MaterialEditorExtensionApi
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.MaterialEditorFloatPropertyEditor(float value, float originalValue, System.Action<float> valueChanged, System.Action reset) -> void
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.Maximum.get -> float
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.Maximum.set -> void
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.Minimum.get -> float
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.Minimum.set -> void
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.OriginalValue.get -> float
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.Reset.get -> System.Action
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.SelectInterpolable.get -> System.Action
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.SelectInterpolable.set -> void
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.Value.get -> float
+MaterialEditorAPI.MaterialEditorFloatPropertyEditor.ValueChanged.get -> System.Action<float>
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.AltPressed.get -> bool
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.ControlPressed.get -> bool
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Data.get -> object
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.GameObject.get -> UnityEngine.GameObject
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.LabelType.get -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Material.get -> UnityEngine.Material
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Name.get -> string
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.PointerEventData.get -> UnityEngine.EventSystems.PointerEventData
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Projector.get -> UnityEngine.Projector
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.Renderer.get -> UnityEngine.Renderer
+MaterialEditorAPI.MaterialEditorLabelClickEventArgs.ShiftPressed.get -> bool
+MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.ColorProperty = 6 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.FloatProperty = 7 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.KeywordProperty = 8 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.Material = 1 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.Renderer = 0 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.Shader = 2 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.ShaderRenderQueue = 3 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.TextureOffsetScale = 5 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorLabelType.TextureProperty = 4 -> MaterialEditorAPI.MaterialEditorLabelType
+MaterialEditorAPI.MaterialEditorPropertyContext
+MaterialEditorAPI.MaterialEditorPropertyContext.MaterialName.get -> string
+MaterialEditorAPI.MaterialEditorPropertyContext.ShaderName.get -> string
+MaterialEditorAPI.MaterialEditorPropertyContext.Target.get -> MaterialEditorAPI.MaterialEditorTargetContext
+MaterialEditorAPI.MaterialEditorPropertyDescriptor
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Category.get -> string
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Category.set -> void
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.DisplayName.get -> string
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.DisplayName.set -> void
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.EditorId.get -> string
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Id.get -> string
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.MaterialEditorPropertyDescriptor(string id, string displayName, string editorId) -> void
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Maximum.get -> float?
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Maximum.set -> void
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Minimum.get -> float?
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Minimum.set -> void
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Order.get -> int
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Order.set -> void
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.PropertyName.get -> string
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.PropertyName.set -> void
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Tag.get -> object
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.Tag.set -> void
+MaterialEditorAPI.MaterialEditorPropertyDescriptorProvider
+MaterialEditorAPI.MaterialEditorPropertyEditor
+MaterialEditorAPI.MaterialEditorPropertyEditor.MaterialEditorPropertyEditor() -> void
+MaterialEditorAPI.MaterialEditorPropertyEditorFactory
+MaterialEditorAPI.MaterialEditorPropertyEditorIds
+MaterialEditorAPI.MaterialEditorSelectionAction
+MaterialEditorAPI.MaterialEditorSelectionAction.Activated = 2 -> MaterialEditorAPI.MaterialEditorSelectionAction
+MaterialEditorAPI.MaterialEditorSelectionAction.Deselected = 1 -> MaterialEditorAPI.MaterialEditorSelectionAction
+MaterialEditorAPI.MaterialEditorSelectionAction.Selected = 0 -> MaterialEditorAPI.MaterialEditorSelectionAction
+MaterialEditorAPI.MaterialEditorSelectionEventArgs
+MaterialEditorAPI.MaterialEditorSelectionEventArgs.Action.get -> MaterialEditorAPI.MaterialEditorSelectionAction
+MaterialEditorAPI.MaterialEditorSelectionEventArgs.Context.get -> MaterialEditorAPI.MaterialEditorTargetContext
+MaterialEditorAPI.MaterialEditorSelectionEventArgs.Name.get -> string
+MaterialEditorAPI.MaterialEditorSelectionEventArgs.Property.get -> MaterialEditorAPI.MaterialEditorPropertyDescriptor
+MaterialEditorAPI.MaterialEditorSelectionEventArgs.SelectionType.get -> MaterialEditorAPI.MaterialEditorSelectionType
+MaterialEditorAPI.MaterialEditorSelectionType
+MaterialEditorAPI.MaterialEditorSelectionType.Material = 1 -> MaterialEditorAPI.MaterialEditorSelectionType
+MaterialEditorAPI.MaterialEditorSelectionType.Property = 3 -> MaterialEditorAPI.MaterialEditorSelectionType
+MaterialEditorAPI.MaterialEditorSelectionType.Renderer = 0 -> MaterialEditorAPI.MaterialEditorSelectionType
+MaterialEditorAPI.MaterialEditorSelectionType.Shader = 2 -> MaterialEditorAPI.MaterialEditorSelectionType
+MaterialEditorAPI.MaterialEditorTargetContext
+MaterialEditorAPI.MaterialEditorTargetContext.Data.get -> object
+MaterialEditorAPI.MaterialEditorTargetContext.EditService.get -> MaterialEditorAPI.MaterialEditorEditService
+MaterialEditorAPI.MaterialEditorTargetContext.GameObject.get -> UnityEngine.GameObject
+MaterialEditorAPI.MaterialEditorTargetContext.Material.get -> UnityEngine.Material
+MaterialEditorAPI.MaterialEditorTargetContext.Projector.get -> UnityEngine.Projector
+MaterialEditorAPI.MaterialEditorTargetContext.Renderer.get -> UnityEngine.Renderer
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Changed.get -> bool
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Changed.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Exists.get -> bool
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Exists.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Export.get -> System.Action
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Export.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Import.get -> System.Action
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Import.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.MaterialEditorTexturePropertyEditor() -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Offset.get -> UnityEngine.Vector2
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Offset.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.OffsetChanged.get -> System.Action<UnityEngine.Vector2>
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.OffsetChanged.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.OriginalOffset.get -> UnityEngine.Vector2
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.OriginalOffset.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.OriginalScale.get -> UnityEngine.Vector2
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.OriginalScale.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Reset.get -> System.Action
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Reset.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.ResetOffset.get -> System.Action
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.ResetOffset.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.ResetScale.get -> System.Action
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.ResetScale.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Scale.get -> UnityEngine.Vector2
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.Scale.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.ScaleChanged.get -> System.Action<UnityEngine.Vector2>
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.ScaleChanged.set -> void
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.SelectInterpolable.get -> System.Action
+MaterialEditorAPI.MaterialEditorTexturePropertyEditor.SelectInterpolable.set -> void
+static MaterialEditorAPI.MaterialEditorExtensionApi.ApiVersion.get -> System.Version
+static MaterialEditorAPI.MaterialEditorExtensionApi.Capabilities.get -> MaterialEditorAPI.MaterialEditorApiCapability
+static MaterialEditorAPI.MaterialEditorExtensionApi.GetEditService(UnityEngine.GameObject gameObject, object data) -> MaterialEditorAPI.MaterialEditorEditService
+static MaterialEditorAPI.MaterialEditorExtensionApi.RegisterPropertyDescriptorProvider(string ownerId, MaterialEditorAPI.MaterialEditorPropertyDescriptorProvider provider, int priority = 0) -> System.IDisposable
+static MaterialEditorAPI.MaterialEditorExtensionApi.RegisterPropertyEditor(string ownerId, string editorId, MaterialEditorAPI.MaterialEditorPropertyEditorFactory factory) -> System.IDisposable
+static MaterialEditorAPI.MaterialEditorExtensionApi.RegisterSelectionHandler(System.Action<MaterialEditorAPI.MaterialEditorSelectionEventArgs> handler) -> System.IDisposable
+static MaterialEditorAPI.MaterialEditorExtensionApi.Supports(MaterialEditorAPI.MaterialEditorApiCapability capabilities) -> bool
+static MaterialEditorAPI.MaterialEditorExtensionApi.UnregisterSelectionHandler(System.Action<MaterialEditorAPI.MaterialEditorSelectionEventArgs> handler) -> void
+static MaterialEditorAPI.MaterialEditorUI.RegisterLabelClickHandler(System.Action<MaterialEditorAPI.MaterialEditorLabelClickEventArgs> handler) -> void
+static MaterialEditorAPI.MaterialEditorUI.UnregisterLabelClickHandler(System.Action<MaterialEditorAPI.MaterialEditorLabelClickEventArgs> handler) -> void

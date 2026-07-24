@@ -4,6 +4,7 @@
     <RootNamespace>MaterialEditor</RootNamespace>
     <AssemblyName>MaterialEditor</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017;RS0024;RS0025;RS0048;RS0050</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />
@@ -13,6 +14,7 @@
     <PackageReference Include="IllusionLibs.Koikatu.UnityEngine" Version="*" />
     <PackageReference Include="IllusionLibs.Koikatu.UnityEngine.UI" Version="*" />
     <PackageReference Include="IllusionLibs.XUnity.ResourceRedirector" Version="4.18.*" />
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" PrivateAssets="all" />
   </ItemGroup>
   <Import Project="..\UIUtility\UIUtility.projitems" Label="Shared" />
   <Import Project="..\MaterialEditor.Base\MaterialEditor.Base.projitems" Label="Shared" />

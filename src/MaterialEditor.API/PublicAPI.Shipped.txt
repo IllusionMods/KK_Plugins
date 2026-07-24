@@ -1,0 +1,234 @@
+abstract MaterialEditorAPI.MaterialEditorUI.GetMaterialColorPropertyValueOriginal(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> UnityEngine.Color?
+abstract MaterialEditorAPI.MaterialEditorUI.GetMaterialFloatPropertyValueOriginal(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> float?
+abstract MaterialEditorAPI.MaterialEditorUI.GetMaterialKeywordPropertyValueOriginal(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> bool?
+abstract MaterialEditorAPI.MaterialEditorUI.GetMaterialNameOriginal(object data, UnityEngine.Renderer renderer, UnityEngine.Material material, UnityEngine.GameObject gameObject) -> string
+abstract MaterialEditorAPI.MaterialEditorUI.GetMaterialShaderNameOriginal(object data, UnityEngine.Material material, UnityEngine.GameObject gameObject) -> string
+abstract MaterialEditorAPI.MaterialEditorUI.GetMaterialShaderRenderQueueOriginal(object data, UnityEngine.Material material, UnityEngine.GameObject gameObject) -> int?
+abstract MaterialEditorAPI.MaterialEditorUI.GetMaterialTextureOffsetOriginal(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> UnityEngine.Vector2?
+abstract MaterialEditorAPI.MaterialEditorUI.GetMaterialTextureScaleOriginal(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> UnityEngine.Vector2?
+abstract MaterialEditorAPI.MaterialEditorUI.GetMaterialTextureValueOriginal(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> bool
+abstract MaterialEditorAPI.MaterialEditorUI.GetProjectorList(object data, UnityEngine.GameObject gameObject) -> System.Collections.Generic.IEnumerable<UnityEngine.Projector>
+abstract MaterialEditorAPI.MaterialEditorUI.GetProjectorPropertyValue(object data, UnityEngine.Projector renderer, MaterialEditorAPI.MaterialAPI.ProjectorProperties property, UnityEngine.GameObject gameObject) -> float?
+abstract MaterialEditorAPI.MaterialEditorUI.GetProjectorPropertyValueOriginal(object data, UnityEngine.Projector renderer, MaterialEditorAPI.MaterialAPI.ProjectorProperties property, UnityEngine.GameObject gameObject) -> float?
+abstract MaterialEditorAPI.MaterialEditorUI.GetRendererPropertyValue(object data, UnityEngine.Renderer renderer, MaterialEditorAPI.MaterialAPI.RendererProperties property, UnityEngine.GameObject gameObject) -> string
+abstract MaterialEditorAPI.MaterialEditorUI.GetRendererPropertyValueOriginal(object data, UnityEngine.Renderer renderer, MaterialEditorAPI.MaterialAPI.RendererProperties property, UnityEngine.GameObject gameObject) -> string
+abstract MaterialEditorAPI.MaterialEditorUI.MaterialCopyEdits(object data, UnityEngine.Material material, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.MaterialCopyRemove(object data, UnityEngine.Material material, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.MaterialPasteEdits(object data, UnityEngine.Material material, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveMaterialColorProperty(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveMaterialFloatProperty(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveMaterialKeywordProperty(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveMaterialName(object data, UnityEngine.Renderer renderer, UnityEngine.Material material, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveMaterialShaderName(object data, UnityEngine.Material material, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveMaterialShaderRenderQueue(object data, UnityEngine.Material material, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveMaterialTexture(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveMaterialTextureOffset(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveMaterialTextureScale(object data, UnityEngine.Material material, string propertyName, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveProjectorProperty(object data, UnityEngine.Projector projector, MaterialEditorAPI.MaterialAPI.ProjectorProperties property, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.RemoveRendererProperty(object data, UnityEngine.Renderer renderer, MaterialEditorAPI.MaterialAPI.RendererProperties property, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetMaterialColorProperty(object data, UnityEngine.Material material, string propertyName, UnityEngine.Color value, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetMaterialFloatProperty(object data, UnityEngine.Material material, string propertyName, float value, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetMaterialKeywordProperty(object data, UnityEngine.Material material, string propertyName, bool value, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetMaterialName(object data, UnityEngine.Renderer renderer, UnityEngine.Material material, string value, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetMaterialShaderName(object data, UnityEngine.Material material, string value, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetMaterialShaderRenderQueue(object data, UnityEngine.Material material, int value, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetMaterialTexture(object data, UnityEngine.Material material, string propertyName, string filePath, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetMaterialTextureOffset(object data, UnityEngine.Material material, string propertyName, UnityEngine.Vector2 value, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetMaterialTextureScale(object data, UnityEngine.Material material, string propertyName, UnityEngine.Vector2 value, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetProjectorProperty(object data, UnityEngine.Projector projector, MaterialEditorAPI.MaterialAPI.ProjectorProperties property, float value, UnityEngine.GameObject gameObject) -> void
+abstract MaterialEditorAPI.MaterialEditorUI.SetRendererProperty(object data, UnityEngine.Renderer renderer, MaterialEditorAPI.MaterialAPI.RendererProperties property, string value, UnityEngine.GameObject gameObject) -> void
+const MaterialEditorAPI.MaterialAPI.MaterialCopyPostfix = ".MECopy" -> string
+MaterialEditorAPI.CopyContainer
+MaterialEditorAPI.CopyContainer.ClearAll() -> void
+MaterialEditorAPI.CopyContainer.CopyContainer() -> void
+MaterialEditorAPI.CopyContainer.IsEmpty.get -> bool
+MaterialEditorAPI.CopyContainer.MaterialColorProperty
+MaterialEditorAPI.CopyContainer.MaterialColorProperty.MaterialColorProperty(string property, UnityEngine.Color value) -> void
+MaterialEditorAPI.CopyContainer.MaterialColorProperty.Property -> string
+MaterialEditorAPI.CopyContainer.MaterialColorProperty.Value -> UnityEngine.Color
+MaterialEditorAPI.CopyContainer.MaterialColorPropertyList -> System.Collections.Generic.List<MaterialEditorAPI.CopyContainer.MaterialColorProperty>
+MaterialEditorAPI.CopyContainer.MaterialFloatProperty
+MaterialEditorAPI.CopyContainer.MaterialFloatProperty.MaterialFloatProperty(string property, float value) -> void
+MaterialEditorAPI.CopyContainer.MaterialFloatProperty.Property -> string
+MaterialEditorAPI.CopyContainer.MaterialFloatProperty.Value -> float
+MaterialEditorAPI.CopyContainer.MaterialFloatPropertyList -> System.Collections.Generic.List<MaterialEditorAPI.CopyContainer.MaterialFloatProperty>
+MaterialEditorAPI.CopyContainer.MaterialKeywordProperty
+MaterialEditorAPI.CopyContainer.MaterialKeywordProperty.MaterialKeywordProperty(string property, bool value) -> void
+MaterialEditorAPI.CopyContainer.MaterialKeywordProperty.Property -> string
+MaterialEditorAPI.CopyContainer.MaterialKeywordProperty.Value -> bool
+MaterialEditorAPI.CopyContainer.MaterialKeywordPropertyList -> System.Collections.Generic.List<MaterialEditorAPI.CopyContainer.MaterialKeywordProperty>
+MaterialEditorAPI.CopyContainer.MaterialShader
+MaterialEditorAPI.CopyContainer.MaterialShader.MaterialShader(int? renderQueue) -> void
+MaterialEditorAPI.CopyContainer.MaterialShader.MaterialShader(string shaderName) -> void
+MaterialEditorAPI.CopyContainer.MaterialShader.MaterialShader(string shaderName, int? renderQueue) -> void
+MaterialEditorAPI.CopyContainer.MaterialShader.NullCheck() -> bool
+MaterialEditorAPI.CopyContainer.MaterialShader.RenderQueue -> int?
+MaterialEditorAPI.CopyContainer.MaterialShader.ShaderName -> string
+MaterialEditorAPI.CopyContainer.MaterialShaderList -> System.Collections.Generic.List<MaterialEditorAPI.CopyContainer.MaterialShader>
+MaterialEditorAPI.CopyContainer.MaterialTextureProperty
+MaterialEditorAPI.CopyContainer.MaterialTextureProperty.Data -> byte[]
+MaterialEditorAPI.CopyContainer.MaterialTextureProperty.MaterialTextureProperty(string property, byte[] data = null, UnityEngine.Vector2? offset = null, UnityEngine.Vector2? scale = null) -> void
+MaterialEditorAPI.CopyContainer.MaterialTextureProperty.Offset -> UnityEngine.Vector2?
+MaterialEditorAPI.CopyContainer.MaterialTextureProperty.Property -> string
+MaterialEditorAPI.CopyContainer.MaterialTextureProperty.Scale -> UnityEngine.Vector2?
+MaterialEditorAPI.CopyContainer.MaterialTexturePropertyList -> System.Collections.Generic.List<MaterialEditorAPI.CopyContainer.MaterialTextureProperty>
+MaterialEditorAPI.CopyContainer.ProjectorProperty
+MaterialEditorAPI.CopyContainer.ProjectorProperty.ProjectorProperty(MaterialEditorAPI.MaterialAPI.ProjectorProperties property, float value) -> void
+MaterialEditorAPI.CopyContainer.ProjectorProperty.Property -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.CopyContainer.ProjectorProperty.Value -> float
+MaterialEditorAPI.CopyContainer.ProjectorPropertyList -> System.Collections.Generic.List<MaterialEditorAPI.CopyContainer.ProjectorProperty>
+MaterialEditorAPI.Export
+MaterialEditorAPI.FloatLabelDragTrigger
+MaterialEditorAPI.FloatLabelDragTrigger.FloatLabelDragTrigger() -> void
+MaterialEditorAPI.FloatLabelDragTrigger.Initialize(UnityEngine.UI.InputField inputField, UnityEngine.UI.InputField[] pairedInputFields = null) -> void
+MaterialEditorAPI.FloatLabelDragTrigger.InputField -> UnityEngine.UI.InputField
+MaterialEditorAPI.FloatLabelDragTrigger.PairedInputFields -> UnityEngine.UI.InputField[]
+MaterialEditorAPI.MaterialAPI
+MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.ProjectorProperties.AspectRatio = 4 -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.ProjectorProperties.Enabled = 0 -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.ProjectorProperties.FarClipPlane = 2 -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.ProjectorProperties.FieldOfView = 3 -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.ProjectorProperties.IgnoreCharaLayer = 7 -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.ProjectorProperties.IgnoreMapLayer = 8 -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.ProjectorProperties.NearClipPlane = 1 -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.ProjectorProperties.Orthographic = 5 -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.ProjectorProperties.OrthographicSize = 6 -> MaterialEditorAPI.MaterialAPI.ProjectorProperties
+MaterialEditorAPI.MaterialAPI.RendererProperties
+MaterialEditorAPI.MaterialAPI.RendererProperties.Enabled = 0 -> MaterialEditorAPI.MaterialAPI.RendererProperties
+MaterialEditorAPI.MaterialAPI.RendererProperties.RecalculateNormals = 3 -> MaterialEditorAPI.MaterialAPI.RendererProperties
+MaterialEditorAPI.MaterialAPI.RendererProperties.ReceiveShadows = 2 -> MaterialEditorAPI.MaterialAPI.RendererProperties
+MaterialEditorAPI.MaterialAPI.RendererProperties.ShadowCastingMode = 1 -> MaterialEditorAPI.MaterialAPI.RendererProperties
+MaterialEditorAPI.MaterialAPI.RendererProperties.UpdateWhenOffscreen = 4 -> MaterialEditorAPI.MaterialAPI.RendererProperties
+MaterialEditorAPI.MaterialAPI.ShaderPropertyType
+MaterialEditorAPI.MaterialAPI.ShaderPropertyType.Color = 1 -> MaterialEditorAPI.MaterialAPI.ShaderPropertyType
+MaterialEditorAPI.MaterialAPI.ShaderPropertyType.Float = 2 -> MaterialEditorAPI.MaterialAPI.ShaderPropertyType
+MaterialEditorAPI.MaterialAPI.ShaderPropertyType.Keyword = 3 -> MaterialEditorAPI.MaterialAPI.ShaderPropertyType
+MaterialEditorAPI.MaterialAPI.ShaderPropertyType.Texture = 0 -> MaterialEditorAPI.MaterialAPI.ShaderPropertyType
+MaterialEditorAPI.MaterialEditorPluginBase
+MaterialEditorAPI.MaterialEditorPluginBase.ConvertNormalMap(ref UnityEngine.Texture tex, string propertyName) -> bool
+MaterialEditorAPI.MaterialEditorPluginBase.ConvertNormalMap(ref UnityEngine.Texture tex, string propertyName, bool unpack) -> bool
+MaterialEditorAPI.MaterialEditorPluginBase.MaterialEditorPluginBase() -> void
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderData
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderData.RenderQueue -> int?
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderData.Shader -> UnityEngine.Shader
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderData.ShaderData(UnityEngine.Shader shader, string shaderName, string renderQueue = "", string shaderOptimization = null) -> void
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderData.ShaderName -> string
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderData.ShaderOptimization -> bool
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.AnisoLevel -> int?
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.Category -> string
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.DefaultValue -> string
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.DefaultValueAssetBundle -> string
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.FilterMode -> UnityEngine.FilterMode?
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.Hidden -> bool
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.MaxValue -> float?
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.MinValue -> float?
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.Name -> string
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.ShaderPropertyData(string name, MaterialEditorAPI.MaterialAPI.ShaderPropertyType type, string defaultValue = null, string defaultValueAB = null, string anisoLevel = null, string filterMode = null, string wrapMode = null, string minValue = null, string maxValue = null, string hidden = null, string category = null) -> void
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.Type -> MaterialEditorAPI.MaterialAPI.ShaderPropertyType
+MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData.WrapMode -> UnityEngine.TextureWrapMode?
+MaterialEditorAPI.MaterialEditorUI
+MaterialEditorAPI.MaterialEditorUI.InitUI() -> void
+MaterialEditorAPI.MaterialEditorUI.MaterialEditorUI() -> void
+MaterialEditorAPI.MaterialEditorUI.PopulateList(UnityEngine.GameObject go, object data, string filter = null) -> void
+MaterialEditorAPI.MaterialEditorUI.PopulateListCoroutine(UnityEngine.GameObject go, object data, string filter = "") -> System.Collections.IEnumerator
+MaterialEditorAPI.MaterialEditorUI.RefreshUI() -> void
+MaterialEditorAPI.MaterialEditorUI.RefreshUI(string filterText) -> void
+static MaterialEditorAPI.Export.ExportObj(UnityEngine.Renderer rend) -> void
+static MaterialEditorAPI.Export.ExportUVMaps(UnityEngine.Renderer rend) -> void
+static MaterialEditorAPI.MaterialAPI.CopyMaterial(UnityEngine.GameObject gameObject, string materialName, string materialCopyName = "") -> string
+static MaterialEditorAPI.MaterialAPI.GetMaterials(UnityEngine.GameObject gameObject, UnityEngine.Renderer renderer) -> System.Collections.Generic.IEnumerable<UnityEngine.Material>
+static MaterialEditorAPI.MaterialAPI.GetProjectorList(UnityEngine.GameObject gameObject, bool inChildren = false) -> System.Collections.Generic.IEnumerable<UnityEngine.Projector>
+static MaterialEditorAPI.MaterialAPI.GetRendererList(UnityEngine.GameObject gameObject) -> System.Collections.Generic.IEnumerable<UnityEngine.Renderer>
+static MaterialEditorAPI.MaterialAPI.RemoveMaterial(UnityEngine.GameObject gameObject, UnityEngine.Material material) -> void
+static MaterialEditorAPI.MaterialAPI.RemoveMaterialCopies(UnityEngine.GameObject gameObject) -> void
+static MaterialEditorAPI.MaterialAPI.SetColor(UnityEngine.GameObject gameObject, string materialName, string propertyName, string value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetColor(UnityEngine.GameObject gameObject, string materialName, string propertyName, UnityEngine.Color value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetFloat(UnityEngine.GameObject gameObject, string materialName, string propertyName, float value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetKeyword(UnityEngine.GameObject gameObject, string materialName, string propertyName, bool value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetMaterials(UnityEngine.GameObject gameObject, UnityEngine.Renderer renderer, UnityEngine.Material[] materials) -> void
+static MaterialEditorAPI.MaterialAPI.SetName(UnityEngine.GameObject gameObject, string rendererName, string materialName, string value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetProjectorAspectRatio(UnityEngine.GameObject gameObject, string projectorName, float value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetProjectorEnabled(UnityEngine.GameObject gameObject, string projectorName, bool value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetProjectorFarClipPlane(UnityEngine.GameObject gameObject, string projectorName, float value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetProjectorFieldOfView(UnityEngine.GameObject gameObject, string projectorName, float value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetProjectorIgnoreLayers(UnityEngine.GameObject gameObject, string projectorName, bool ignore, int layer) -> bool
+static MaterialEditorAPI.MaterialAPI.SetProjectorNearClipPlane(UnityEngine.GameObject gameObject, string projectorName, float value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetProjectorOrthographic(UnityEngine.GameObject gameObject, string projectorName, bool value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetProjectorOrthographicSize(UnityEngine.GameObject gameObject, string projectorName, float value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetProjectorProperty(UnityEngine.GameObject gameObject, string projectorName, MaterialEditorAPI.MaterialAPI.ProjectorProperties propertyName, float value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetRendererEnabled(UnityEngine.GameObject gameObject, string rendererName, bool value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetRendererProperty(UnityEngine.GameObject gameObject, string rendererName, MaterialEditorAPI.MaterialAPI.RendererProperties propertyName, int value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetRendererProperty(UnityEngine.GameObject gameObject, string rendererName, MaterialEditorAPI.MaterialAPI.RendererProperties propertyName, string value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetRendererRecalculateNormals(UnityEngine.GameObject gameObject, string rendererName, bool value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetRendererReceiveShadows(UnityEngine.GameObject gameObject, string rendererName, bool value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetRendererShadowCastingMode(UnityEngine.GameObject gameObject, string rendererName, UnityEngine.Rendering.ShadowCastingMode value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetRendererUpdateWhenOffscreen(UnityEngine.GameObject gameObject, string rendererName, bool value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetRenderQueue(UnityEngine.GameObject gameObject, string materialName, int? value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetShader(UnityEngine.GameObject gameObject, string materialName, string shaderName, bool preserveRenderQueue = false) -> bool
+static MaterialEditorAPI.MaterialAPI.SetTexture(UnityEngine.GameObject gameObject, string materialName, string propertyName, UnityEngine.Texture value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetTextureOffset(UnityEngine.GameObject gameObject, string materialName, string propertyName, UnityEngine.Vector2? value) -> bool
+static MaterialEditorAPI.MaterialAPI.SetTextureScale(UnityEngine.GameObject gameObject, string materialName, string propertyName, UnityEngine.Vector2? value) -> bool
+static MaterialEditorAPI.MaterialEditorPluginBase.ConvertNormalmapsOnExport.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.ConvertNormalmapsOnExport.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.CopyData -> MaterialEditorAPI.CopyContainer
+static MaterialEditorAPI.MaterialEditorPluginBase.DragSensitivity.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.DragSensitivity.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.ExportBakedMesh.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.ExportBakedMesh.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.ExportBakedWorldPosition.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.ExportBakedWorldPosition.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.ExportPath -> string
+static MaterialEditorAPI.MaterialEditorPluginBase.ExportPathDefault -> string
+static MaterialEditorAPI.MaterialEditorPluginBase.Instance -> MaterialEditorAPI.MaterialEditorPluginBase
+static MaterialEditorAPI.MaterialEditorPluginBase.LoadedShaders -> System.Collections.Generic.Dictionary<string, MaterialEditorAPI.MaterialEditorPluginBase.ShaderData>
+static MaterialEditorAPI.MaterialEditorPluginBase.LocalTexturePath -> string
+static MaterialEditorAPI.MaterialEditorPluginBase.LocalTexturePathDefault -> string
+static MaterialEditorAPI.MaterialEditorPluginBase.Logger -> BepInEx.Logging.ManualLogSource
+static MaterialEditorAPI.MaterialEditorPluginBase.PersistFilter.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.PersistFilter.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.PreventDragout.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.PreventDragout.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorAspectRatioMax.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorAspectRatioMax.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorFarClipPlaneMax.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorFarClipPlaneMax.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorFieldOfViewMax.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorFieldOfViewMax.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorNearClipPlaneMax.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorNearClipPlaneMax.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorOrthographicSizeMax.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.ProjectorOrthographicSizeMax.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.RefreshPropertyOrganization() -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.ShaderOptimization.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.ShaderOptimization.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.Showtooltips.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.Showtooltips.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.SortPropertiesByCategory.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.SortPropertiesByCategory.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.SortPropertiesByName.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.SortPropertiesByName.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.SortPropertiesByType.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.SortPropertiesByType.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.UIHeight.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.UIHeight.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.UIListWidth.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.UIListWidth.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.UIScale.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.UIScale.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.UIWidth.get -> BepInEx.Configuration.ConfigEntry<float>
+static MaterialEditorAPI.MaterialEditorPluginBase.UIWidth.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.WatchTexChanges.get -> BepInEx.Configuration.ConfigEntry<bool>
+static MaterialEditorAPI.MaterialEditorPluginBase.WatchTexChanges.set -> void
+static MaterialEditorAPI.MaterialEditorPluginBase.XMLShaderProperties -> System.Collections.Generic.SortedDictionary<string, System.Collections.Generic.Dictionary<string, MaterialEditorAPI.MaterialEditorPluginBase.ShaderPropertyData>>
+static MaterialEditorAPI.MaterialEditorUI.DragPanel -> UnityEngine.UI.Image
+static MaterialEditorAPI.MaterialEditorUI.MaterialEditorMainPanel -> UnityEngine.UI.Image
+static MaterialEditorAPI.MaterialEditorUI.MaterialEditorWindow -> UnityEngine.Canvas
+static MaterialEditorAPI.MaterialEditorUI.Visible.get -> bool
+static MaterialEditorAPI.MaterialEditorUI.Visible.set -> void
+static readonly MaterialEditorAPI.MaterialEditorPluginBase.NormalMapProperties -> System.Collections.Generic.List<string>
+virtual MaterialEditorAPI.MaterialEditorPluginBase.AssetLoadedHook(XUnity.ResourceRedirector.AssetLoadedContext context) -> void
+virtual MaterialEditorAPI.MaterialEditorPluginBase.Awake() -> void
+virtual MaterialEditorAPI.MaterialEditorPluginBase.CheckBlacklist(string materialName, string propertyName) -> bool
+virtual MaterialEditorAPI.MaterialEditorPluginBase.ConvertNormalMap(UnityEngine.Texture src, bool unpack = false) -> UnityEngine.Texture
