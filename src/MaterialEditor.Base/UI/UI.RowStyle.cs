@@ -18,12 +18,27 @@ namespace MaterialEditorAPI
         }
     }
 
-    // Center the typographic body while allowing underscores and descenders to hang
-    // below the baseline instead of stretching the entire word to both row edges.
+    internal enum TextVisualCenterMode
+    {
+        TypographicBody,
+        VisibleBounds
+    }
+
+    // Row and input text is centered by its typographic body so underscores and
+    // descenders can hang naturally. Multiline tooltip text is centered by the
+    // bounds of the complete generated text block.
     internal sealed class RowTextVisualCenter : BaseMeshEffect
     {
+        [SerializeField] private TextVisualCenterMode _mode;
         private List<GlyphBounds> _glyphBounds;
         private List<float> _bodyBottoms;
+
+        internal void SetMode(TextVisualCenterMode mode)
+        {
+            _mode = mode;
+            if (graphic != null)
+                graphic.SetVerticesDirty();
+        }
 
         public override void ModifyMesh(VertexHelper vertexHelper)
         {
@@ -63,6 +78,20 @@ namespace MaterialEditorAPI
             if (glyphBounds.Count == 0)
                 return;
 
+            if (_mode == TextVisualCenterMode.VisibleBounds)
+            {
+                var blockBottom = float.PositiveInfinity;
+                var blockTop = float.NegativeInfinity;
+                for (var i = 0; i < glyphBounds.Count; i++)
+                {
+                    blockBottom = Mathf.Min(blockBottom, glyphBounds[i].Bottom);
+                    blockTop = Mathf.Max(blockTop, glyphBounds[i].Top);
+                }
+
+                CenterVertices(vertexHelper, blockBottom, blockTop);
+                return;
+            }
+
             var bodyBottoms = _bodyBottoms ?? (_bodyBottoms = new List<float>());
             bodyBottoms.Clear();
             var bodyTop = float.NegativeInfinity;
@@ -87,11 +116,20 @@ namespace MaterialEditorAPI
                 ? (bodyBottoms[middle - 1] + bodyBottoms[middle]) * 0.5f
                 : bodyBottoms[middle];
 
+            CenterVertices(vertexHelper, baseline, bodyTop);
+        }
+
+        private void CenterVertices(
+            VertexHelper vertexHelper,
+            float visualBottom,
+            float visualTop)
+        {
             var targetCenter = graphic.rectTransform.rect.center.y;
-            var offset = targetCenter - (baseline + bodyTop) * 0.5f;
+            var offset = targetCenter - (visualBottom + visualTop) * 0.5f;
             if (Mathf.Approximately(offset, 0f))
                 return;
 
+            var vertex = new UIVertex();
             for (var i = 0; i < vertexHelper.currentVertCount; i++)
             {
                 vertexHelper.PopulateUIVertex(ref vertex, i);

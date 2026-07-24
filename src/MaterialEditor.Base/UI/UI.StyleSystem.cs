@@ -45,7 +45,8 @@ namespace MaterialEditorAPI
         Label,
         CenteredLabel,
         Button,
-        Input
+        Input,
+        Tooltip
     }
 
     internal enum MaterialEditorPanelRole
@@ -118,8 +119,19 @@ namespace MaterialEditorAPI
             if (text.resizeTextForBestFit)
                 text.resizeTextMaxSize = Mathf.Min(text.resizeTextMaxSize, UIUtility.defaultFontSize);
 
-            if (text.GetComponent<RowTextVisualCenter>() == null)
-                text.gameObject.AddComponent<RowTextVisualCenter>();
+            var styleState = text.GetComponent<MaterialEditorTextStyleState>()
+                             ?? text.gameObject.AddComponent<MaterialEditorTextStyleState>();
+            styleState.SetRole(role);
+
+            var visualCenter = text.GetComponent<RowTextVisualCenter>();
+            if (visualCenter == null)
+                visualCenter = text.gameObject.AddComponent<RowTextVisualCenter>();
+            visualCenter.SetMode(
+                role == MaterialEditorTextRole.Tooltip
+                    ? TextVisualCenterMode.VisibleBounds
+                    : TextVisualCenterMode.TypographicBody);
+            visualCenter.enabled = true;
+
             text.SetVerticesDirty();
         }
 
@@ -129,7 +141,14 @@ namespace MaterialEditorAPI
                 return;
 
             foreach (var text in root.GetComponentsInChildren<Text>(true))
-                ApplyText(text);
+            {
+                var styleState = text.GetComponent<MaterialEditorTextStyleState>();
+                ApplyText(
+                    text,
+                    styleState != null
+                        ? styleState.Role
+                        : MaterialEditorTextRole.PreserveHorizontal);
+            }
         }
 
         internal static void ApplyButton(Button button)
@@ -146,16 +165,21 @@ namespace MaterialEditorAPI
             if (inputField == null)
                 return;
 
-            // Keep the complete value in InputField.text and let InputField move its
-            // visible draw range with the caret instead of shrinking or overflowing.
             inputField.lineType = InputField.LineType.SingleLine;
-            inputField.textComponent.resizeTextForBestFit = false;
-            inputField.textComponent.horizontalOverflow = HorizontalWrapMode.Overflow;
+            inputField.textComponent.resizeTextForBestFit = true;
+            inputField.textComponent.resizeTextMinSize = 2;
+            inputField.textComponent.resizeTextMaxSize = UIUtility.defaultFontSize;
+            inputField.textComponent.horizontalOverflow = HorizontalWrapMode.Wrap;
             inputField.textComponent.verticalOverflow = VerticalWrapMode.Truncate;
 
             ApplyText(inputField.textComponent, MaterialEditorTextRole.Input);
             if (inputField.placeholder is Text placeholder)
+            {
+                placeholder.resizeTextForBestFit = true;
+                placeholder.resizeTextMinSize = 2;
+                placeholder.resizeTextMaxSize = UIUtility.defaultFontSize;
                 ApplyText(placeholder, MaterialEditorTextRole.Input);
+            }
         }
 
         internal static void ApplyToggle(Toggle toggle)
@@ -244,6 +268,18 @@ namespace MaterialEditorAPI
                 default:
                     return TextAnchor.MiddleLeft;
             }
+        }
+    }
+
+    internal sealed class MaterialEditorTextStyleState : MonoBehaviour
+    {
+        [SerializeField] private MaterialEditorTextRole _role;
+
+        internal MaterialEditorTextRole Role => _role;
+
+        internal void SetRole(MaterialEditorTextRole role)
+        {
+            _role = role;
         }
     }
 

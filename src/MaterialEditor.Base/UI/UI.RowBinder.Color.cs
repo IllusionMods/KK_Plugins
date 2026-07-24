@@ -13,72 +13,73 @@ namespace MaterialEditorAPI
 
         public void Bind(RowModel item, ListenerScope listeners)
         {
+            var colorItem = (ColorPropertyRowModel)item;
             _controls.SetVisible(true);
 
             System.Action refreshInputs = () =>
             {
-                _controls.RInput.SetValue(item.ColorValue.r);
-                _controls.GInput.SetValue(item.ColorValue.g);
-                _controls.BInput.SetValue(item.ColorValue.b);
-                _controls.AInput.SetValue(item.ColorValue.a);
-                _controls.EditButton.image.color = item.ColorValue;
+                _controls.RInput.SetValue(colorItem.Value.r);
+                _controls.GInput.SetValue(colorItem.Value.g);
+                _controls.BInput.SetValue(colorItem.Value.b);
+                _controls.AInput.SetValue(colorItem.Value.a);
+                _controls.EditButton.image.color = colorItem.Value;
             };
             System.Action refreshState = () =>
                 ChangedStateBinding.Apply(
                     _controls.Label,
-                    item.LabelText,
-                    item.ColorValue != item.ColorValueOriginal,
+                    colorItem.LabelText,
+                    colorItem.Value != colorItem.OriginalValue,
                     _controls.ResetButton,
                     _controls.Panel);
             System.Action applyValue = () =>
             {
-                if (item.ColorValue == item.ColorValueOriginal)
-                    item.ColorValueOnReset();
+                if (colorItem.Value == colorItem.OriginalValue)
+                    colorItem.ValueOnReset();
                 else
-                    item.ColorValueOnChange(item.ColorValue);
-                _controls.EditButton.image.color = item.ColorValue;
-                item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
+                    colorItem.ValueOnChange(colorItem.Value);
+                _controls.EditButton.image.color = colorItem.Value;
+                colorItem.SetToPalette(colorItem.LabelText, colorItem.Value);
                 refreshState();
             };
 
             InputFieldBinding.BindFloat(
                 listeners,
                 _controls.RInput,
-                () => item.ColorValue.r,
+                () => colorItem.Value.r,
                 value =>
                 {
-                    item.ColorValue =
-                        new Color(value, item.ColorValue.g, item.ColorValue.b, item.ColorValue.a);
+                    colorItem.Value =
+                        new Color(value, colorItem.Value.g, colorItem.Value.b, colorItem.Value.a);
                     applyValue();
                 });
             InputFieldBinding.BindFloat(
                 listeners,
                 _controls.GInput,
-                () => item.ColorValue.g,
+                () => colorItem.Value.g,
                 value =>
                 {
-                    item.ColorValue =
-                        new Color(item.ColorValue.r, value, item.ColorValue.b, item.ColorValue.a);
+                    colorItem.Value =
+                        new Color(colorItem.Value.r, value, colorItem.Value.b, colorItem.Value.a);
                     applyValue();
                 });
             InputFieldBinding.BindFloat(
                 listeners,
                 _controls.BInput,
-                () => item.ColorValue.b,
+                () => colorItem.Value.b,
                 value =>
                 {
-                    item.ColorValue =
-                        new Color(item.ColorValue.r, item.ColorValue.g, value, item.ColorValue.a);
+                    colorItem.Value =
+                        new Color(colorItem.Value.r, colorItem.Value.g, value, colorItem.Value.a);
                     applyValue();
                 });
             InputFieldBinding.BindFloat(
                 listeners,
                 _controls.AInput,
-                () => item.ColorValue.a,
+                () => colorItem.Value.a,
                 value =>
                 {
-                    item.ColorValue =
-                        new Color(item.ColorValue.r, item.ColorValue.g, item.ColorValue.b, value);
+                    colorItem.Value =
+                        new Color(colorItem.Value.r, colorItem.Value.g, colorItem.Value.b, value);
                     applyValue();
                 });
             refreshInputs();
@@ -86,34 +87,34 @@ namespace MaterialEditorAPI
 
             listeners.Listen(_controls.ResetButton, () =>
             {
-                item.ColorValue = item.ColorValueOriginal;
+                colorItem.Value = colorItem.OriginalValue;
                 refreshInputs();
-                item.ColorValueSetToPalette(item.LabelText, item.ColorValue);
-                item.ColorValueOnReset();
+                colorItem.SetToPalette(colorItem.LabelText, colorItem.Value);
+                colorItem.ValueOnReset();
                 refreshState();
             });
             listeners.Listen(_controls.EditButton, () =>
             {
-                item.ColorValueOnEdit(item.LabelText, item.ColorValue, value =>
+                colorItem.Edit(colorItem.LabelText, colorItem.Value, value =>
                 {
-                    item.ColorValue = value;
+                    colorItem.Value = value;
                     refreshInputs();
-                    if (item.ColorValue == item.ColorValueOriginal)
-                        item.ColorValueOnReset();
+                    if (colorItem.Value == colorItem.OriginalValue)
+                        colorItem.ValueOnReset();
                     else
-                        item.ColorValueOnChange(item.ColorValue);
+                        colorItem.ValueOnChange(colorItem.Value);
                     refreshState();
                 });
             });
             listeners.Listen(
                 _controls.SelectInterpolableButton,
-                () => item.SelectInterpolableButtonColorOnClick());
+                () => colorItem.SelectInterpolable());
             LabelClickBinding.Bind(
                 listeners,
                 _controls.LabelClickTrigger,
-                item,
+                colorItem,
                 MaterialEditorLabelType.ColorProperty,
-                () => item.PropertyName);
+                () => colorItem.PropertyName);
         }
     }
 }

@@ -16,15 +16,15 @@ namespace MaterialEditorAPI
             switch (item.ItemType)
             {
                 case RowModel.RowItemType.FloatProperty:
-                    BindFloat(item, listeners);
+                    BindFloat((FloatPropertyRowModel)item, listeners);
                     break;
                 case RowModel.RowItemType.KeywordProperty:
-                    BindKeyword(item, listeners);
+                    BindKeyword((KeywordPropertyRowModel)item, listeners);
                     break;
             }
         }
 
-        private void BindFloat(RowModel item, ListenerScope listeners)
+        private void BindFloat(FloatPropertyRowModel item, ListenerScope listeners)
         {
             var controls = _controls.Float;
             controls.SetVisible(true);
@@ -33,46 +33,46 @@ namespace MaterialEditorAPI
                 ChangedStateBinding.Apply(
                     controls.Label,
                     item.LabelText,
-                    item.FloatValue != item.FloatValueOriginal,
+                    item.Value != item.OriginalValue,
                     controls.ResetButton,
                     controls.Panel);
             System.Action<float> applyValue = value =>
             {
-                item.FloatValue = value;
-                controls.Slider.Set(item.FloatValue, false);
-                controls.Input.SetValue(item.FloatValue);
-                if (item.FloatValue == item.FloatValueOriginal)
-                    item.FloatValueOnReset();
+                item.Value = value;
+                controls.Slider.Set(item.Value, false);
+                controls.Input.SetValue(item.Value);
+                if (item.Value == item.OriginalValue)
+                    item.ValueOnReset();
                 else
-                    item.FloatValueOnChange(item.FloatValue);
+                    item.ValueOnChange(item.Value);
                 refresh();
             };
 
             InputFieldBinding.BindFloat(
                 listeners,
                 controls.Input,
-                () => item.FloatValue,
+                () => item.Value,
                 applyValue);
             SliderBinding.Bind(
                 listeners,
                 controls.Slider,
-                item.FloatValueSliderMin,
-                item.FloatValueSliderMax,
-                item.FloatValue,
+                item.SliderMinimum,
+                item.SliderMaximum,
+                item.Value,
                 applyValue);
             refresh();
 
             listeners.Listen(controls.ResetButton, () =>
             {
-                item.FloatValue = item.FloatValueOriginal;
-                controls.Slider.Set(item.FloatValue, false);
-                controls.Input.SetValue(item.FloatValue);
-                item.FloatValueOnReset();
+                item.Value = item.OriginalValue;
+                controls.Slider.Set(item.Value, false);
+                controls.Input.SetValue(item.Value);
+                item.ValueOnReset();
                 refresh();
             });
             listeners.Listen(
                 controls.SelectInterpolableButton,
-                () => item.SelectInterpolableButtonFloatOnClick());
+                () => item.SelectInterpolable());
             LabelClickBinding.Bind(
                 listeners,
                 controls.LabelClickTrigger,
@@ -81,7 +81,7 @@ namespace MaterialEditorAPI
                 () => item.PropertyName);
         }
 
-        private void BindKeyword(RowModel item, ListenerScope listeners)
+        private void BindKeyword(KeywordPropertyRowModel item, ListenerScope listeners)
         {
             var controls = _controls.Keyword;
             controls.SetVisible(true);
@@ -89,11 +89,11 @@ namespace MaterialEditorAPI
                 listeners,
                 controls,
                 item,
-                () => item.KeywordValue,
-                () => item.KeywordValueOriginal,
-                value => item.KeywordValue = value,
-                item.KeywordValueOnChange,
-                item.KeywordValueOnReset);
+                () => item.Value,
+                () => item.OriginalValue,
+                value => item.Value = value,
+                item.ValueOnChange,
+                item.ValueOnReset);
             LabelClickBinding.Bind(
                 listeners,
                 controls.LabelClickTrigger,

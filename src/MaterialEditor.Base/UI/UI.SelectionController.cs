@@ -76,6 +76,18 @@ namespace MaterialEditorAPI
                 _view.RendererList.AddEntry(capturedRenderer.NameFormatted(), selected =>
                 {
                     UpdateSelection(_session.SelectedRenderers, capturedRenderer, selected);
+                    MaterialEditorExtensionRegistry.RaiseSelection(
+                        _editService,
+                        MaterialEditorSelectionType.Renderer,
+                        selected
+                            ? MaterialEditorSelectionAction.Selected
+                            : MaterialEditorSelectionAction.Deselected,
+                        capturedRenderer.NameFormatted(),
+                        gameObject,
+                        data,
+                        capturedRenderer,
+                        null,
+                        null);
                     _refresh(gameObject, data, _session.Filter);
                     PopulateMaterialList(gameObject, data, renderers);
                 });
@@ -99,6 +111,18 @@ namespace MaterialEditorAPI
                     _view.MaterialList.AddEntry(capturedMaterial.NameFormatted(), selected =>
                     {
                         UpdateSelection(_session.SelectedMaterials, capturedMaterial, selected);
+                        MaterialEditorExtensionRegistry.RaiseSelection(
+                            _editService,
+                            MaterialEditorSelectionType.Material,
+                            selected
+                                ? MaterialEditorSelectionAction.Selected
+                                : MaterialEditorSelectionAction.Deselected,
+                            capturedMaterial.NameFormatted(),
+                            gameObject,
+                            data,
+                            renderer,
+                            capturedMaterial,
+                            null);
                         _refresh(gameObject, data, _session.Filter);
                     });
                 }

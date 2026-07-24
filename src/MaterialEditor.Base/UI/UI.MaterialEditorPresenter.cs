@@ -9,7 +9,7 @@ using static MaterialEditorAPI.MaterialEditorPluginBase;
 namespace MaterialEditorAPI
 {
     internal delegate void ImportTextureAction(
-        RowModel row,
+        TexturePropertyRowModel row,
         GameObject gameObject,
         object data,
         Material material,
@@ -215,9 +215,9 @@ namespace MaterialEditorAPI
                 Data = data,
                 Renderer = renderer,
                 RendererName = rendererName,
-                ExportUVOnClick = () => _actions.ExportUv(renderer),
-                ExportObjOnClick = () => _actions.RequestObjExport(renderer),
-                SelectInterpolableButtonRendererOnClick = () =>
+                ExportUv = () => _actions.ExportUv(renderer),
+                ExportObj = () => _actions.RequestObjExport(renderer),
+                SelectInterpolable = () =>
                     _actions.SelectInterpolable(
                         gameObject,
                         RowModel.RowItemType.Renderer,
@@ -234,18 +234,18 @@ namespace MaterialEditorAPI
             var originalEnabled = originalValue.IsNullOrEmpty()
                 ? renderer.enabled
                 : originalValue == "1";
-            rows.Add(new RowModel(RowModel.RowItemType.RendererEnabled, "Enabled")
+            rows.Add(new RendererEnabledRowModel()
             {
-                RendererEnabled = renderer.enabled,
-                RendererEnabledOriginal = originalEnabled,
-                RendererEnabledOnChange = value =>
+                Value = renderer.enabled,
+                OriginalValue = originalEnabled,
+                ValueOnChange = value =>
                     _editService.SetRendererProperty(
                         data,
                         renderer,
                         RendererProperties.Enabled,
                         (value ? 1 : 0).ToString(),
                         gameObject),
-                RendererEnabledOnReset = () =>
+                ValueOnReset = () =>
                     _editService.RemoveRendererProperty(data, renderer, RendererProperties.Enabled, gameObject)
             });
 
@@ -257,18 +257,18 @@ namespace MaterialEditorAPI
             var originalShadowCastingMode = originalValue.IsNullOrEmpty()
                 ? renderer.shadowCastingMode
                 : (UnityEngine.Rendering.ShadowCastingMode)int.Parse(originalValue);
-            rows.Add(new RowModel(RowModel.RowItemType.RendererShadowCastingMode, "Shadow Casting Mode")
+            rows.Add(new RendererShadowCastingModeRowModel()
             {
-                RendererShadowCastingMode = (int)renderer.shadowCastingMode,
-                RendererShadowCastingModeOriginal = (int)originalShadowCastingMode,
-                RendererShadowCastingModeOnChange = value =>
+                Value = (int)renderer.shadowCastingMode,
+                OriginalValue = (int)originalShadowCastingMode,
+                ValueOnChange = value =>
                     _editService.SetRendererProperty(
                         data,
                         renderer,
                         RendererProperties.ShadowCastingMode,
                         value.ToString(),
                         gameObject),
-                RendererShadowCastingModeOnReset = () =>
+                ValueOnReset = () =>
                     _editService.RemoveRendererProperty(
                         data,
                         renderer,
@@ -284,18 +284,18 @@ namespace MaterialEditorAPI
             var originalReceiveShadows = originalValue.IsNullOrEmpty()
                 ? renderer.receiveShadows
                 : originalValue == "1";
-            rows.Add(new RowModel(RowModel.RowItemType.RendererReceiveShadows, "Receive Shadows")
+            rows.Add(new RendererReceiveShadowsRowModel()
             {
-                RendererReceiveShadows = renderer.receiveShadows,
-                RendererReceiveShadowsOriginal = originalReceiveShadows,
-                RendererReceiveShadowsOnChange = value =>
+                Value = renderer.receiveShadows,
+                OriginalValue = originalReceiveShadows,
+                ValueOnChange = value =>
                     _editService.SetRendererProperty(
                         data,
                         renderer,
                         RendererProperties.ReceiveShadows,
                         (value ? 1 : 0).ToString(),
                         gameObject),
-                RendererReceiveShadowsOnReset = () =>
+                ValueOnReset = () =>
                     _editService.RemoveRendererProperty(
                         data,
                         renderer,
@@ -316,18 +316,18 @@ namespace MaterialEditorAPI
             var originalUpdateWhenOffscreen = originalValue.IsNullOrEmpty()
                 ? meshRenderer.updateWhenOffscreen
                 : originalValue == "1";
-            rows.Add(new RowModel(RowModel.RowItemType.RendererUpdateWhenOffscreen, "Update When Off-Screen")
+            rows.Add(new RendererUpdateWhenOffscreenRowModel()
             {
-                RendererUpdateWhenOffscreen = meshRenderer.updateWhenOffscreen,
-                RendererUpdateWhenOffscreenOriginal = originalUpdateWhenOffscreen,
-                RendererUpdateWhenOffscreenOnChange = value =>
+                Value = meshRenderer.updateWhenOffscreen,
+                OriginalValue = originalUpdateWhenOffscreen,
+                ValueOnChange = value =>
                     _editService.SetRendererProperty(
                         data,
                         renderer,
                         RendererProperties.UpdateWhenOffscreen,
                         (value ? 1 : 0).ToString(),
                         gameObject),
-                RendererUpdateWhenOffscreenOnReset = () =>
+                ValueOnReset = () =>
                     _editService.RemoveRendererProperty(
                         data,
                         renderer,
@@ -348,18 +348,18 @@ namespace MaterialEditorAPI
                 RendererProperties.RecalculateNormals,
                 gameObject);
             var recalculateNormals = !currentValue.IsNullOrEmpty() && currentValue == "1";
-            rows.Add(new RowModel(RowModel.RowItemType.RendererRecalculateNormals, "Recalculate Normals")
+            rows.Add(new RendererRecalculateNormalsRowModel()
             {
-                RendererRecalculateNormals = recalculateNormals,
-                RendererRecalculateNormalsOriginal = originalRecalculateNormals,
-                RendererRecalculateNormalsOnChange = value =>
+                Value = recalculateNormals,
+                OriginalValue = originalRecalculateNormals,
+                ValueOnChange = value =>
                     _editService.SetRendererProperty(
                         data,
                         renderer,
                         RendererProperties.RecalculateNormals,
                         (value ? 1 : 0).ToString(),
                         gameObject),
-                RendererRecalculateNormalsOnReset = () =>
+                ValueOnReset = () =>
                     _editService.RemoveRendererProperty(
                         data,
                         renderer,
@@ -380,24 +380,24 @@ namespace MaterialEditorAPI
         {
             var materialName = material.NameFormatted();
             var shaderName = material.shader.NameFormatted();
-            var materialItem = new RowModel(RowModel.RowItemType.Material, "Material")
+            var materialItem = new MaterialRowModel()
             {
                 GameObject = gameObject,
                 Data = data,
                 Material = material,
                 Projector = projector,
                 MaterialName = materialName,
-                MaterialOnCopy = () => _editService.MaterialCopyEdits(data, material, gameObject),
-                MaterialOnPaste = () =>
+                Copy = () => _editService.MaterialCopyEdits(data, material, gameObject),
+                Paste = () =>
                 {
                     _editService.MaterialPasteEdits(data, material, gameObject);
                     _actions.Refresh(gameObject, data, filter);
                 },
-                MaterialOnRename = () => _actions.ShowRename(gameObject, material, data)
+                Rename = () => _actions.ShowRename(gameObject, material, data)
             };
             if (projector == null)
             {
-                materialItem.MaterialOnCopyRemove = () =>
+                materialItem.CopyOrRemove = () =>
                 {
                     _editService.MaterialCopyRemove(data, material, gameObject);
                     _actions.Refresh(gameObject, data, filter);
@@ -426,14 +426,14 @@ namespace MaterialEditorAPI
             var originalShaderName = _editService.GetMaterialShaderNameOriginal(data, material, gameObject);
             if (originalShaderName.IsNullOrEmpty())
                 originalShaderName = shaderName;
-            rows.Add(new RowModel(RowModel.RowItemType.Shader, "Shader")
+            rows.Add(new ShaderRowModel()
             {
                 GameObject = gameObject,
                 Data = data,
                 Material = material,
                 Projector = projector,
                 ShaderName = shaderName,
-                ShaderNameOriginal = originalShaderName,
+                OriginalShaderName = originalShaderName,
                 ShaderNameOnChange = value =>
                 {
                     _editService.SetMaterialShaderName(data, material, value, gameObject);
@@ -444,7 +444,7 @@ namespace MaterialEditorAPI
                     _editService.RemoveMaterialShaderName(data, material, gameObject);
                     _actions.RefreshDeferred(gameObject, data, filter);
                 },
-                SelectInterpolableButtonShaderOnClick = () =>
+                SelectInterpolable = () =>
                     _actions.SelectInterpolable(
                         gameObject,
                         RowModel.RowItemType.Shader,
@@ -456,17 +456,17 @@ namespace MaterialEditorAPI
             var originalRenderQueue =
                 _editService.GetMaterialShaderRenderQueueOriginal(data, material, gameObject)
                 ?? material.renderQueue;
-            rows.Add(new RowModel(RowModel.RowItemType.ShaderRenderQueue, "Render Queue")
+            rows.Add(new ShaderRenderQueueRowModel()
             {
                 GameObject = gameObject,
                 Data = data,
                 Material = material,
                 Projector = projector,
-                ShaderRenderQueue = material.renderQueue,
-                ShaderRenderQueueOriginal = originalRenderQueue,
-                ShaderRenderQueueOnChange = value =>
+                Value = material.renderQueue,
+                OriginalValue = originalRenderQueue,
+                ValueOnChange = value =>
                     _editService.SetMaterialShaderRenderQueue(data, material, value, gameObject),
-                ShaderRenderQueueOnReset = () =>
+                ValueOnReset = () =>
                     _editService.RemoveMaterialShaderRenderQueue(data, material, gameObject)
             });
         }
@@ -505,10 +505,10 @@ namespace MaterialEditorAPI
 
                 if (showCategory)
                 {
-                    rows.Add(new RowModel(RowModel.RowItemType.PropertyCategory, category.Key)
+                    rows.Add(new PropertyCategoryRowModel(category.Key)
                     {
-                        CategoryCollapsed = categoryCollapsed,
-                        CategoryCollapsedOnChange = value =>
+                        Collapsed = categoryCollapsed,
+                        CollapsedOnChange = value =>
                         {
                             if (value)
                                 _session.CollapsedPropertyCategories[categoryKey] = true;
@@ -537,11 +537,156 @@ namespace MaterialEditorAPI
                         material,
                         projector,
                         materialName,
-                        definition);
+                        definition,
+                        category.Key);
                     foreach (var row in _propertyRows.Create(descriptor))
                         rows.Add(row);
                 }
             }
+
+            AddExtensionPropertyRows(
+                rows,
+                gameObject,
+                data,
+                filter,
+                propertyFilter,
+                materialName,
+                material,
+                projector,
+                shaderName);
+        }
+
+        private void AddExtensionPropertyRows(
+            ICollection<RowModel> rows,
+            GameObject gameObject,
+            object data,
+            string filter,
+            IList<string> propertyFilter,
+            string materialName,
+            Material material,
+            Projector projector,
+            string shaderName)
+        {
+            var target = MaterialEditorExtensionRegistry.CreateTargetContext(
+                _editService,
+                gameObject,
+                data,
+                null,
+                material,
+                projector);
+            var context = new MaterialEditorPropertyContext(
+                target,
+                materialName,
+                shaderName);
+            var descriptors = MaterialEditorExtensionRegistry
+                .GetPropertyDescriptors(context)
+                .Where(descriptor =>
+                    descriptor != null
+                    && MaterialEditorExtensionRegistry.HasPropertyEditor(descriptor.EditorId)
+                    && !_actions.IsPropertyBlacklisted(
+                        materialName,
+                        string.IsNullOrEmpty(descriptor.PropertyName)
+                            ? descriptor.Id
+                            : descriptor.PropertyName))
+                .Where(descriptor =>
+                    propertyFilter.Count == 0
+                    || propertyFilter.Any(word =>
+                        MaterialEditorFilter.Matches(descriptor.DisplayName, word)
+                        || MaterialEditorFilter.Matches(descriptor.PropertyName, word)))
+                .ToList();
+
+            foreach (var category in descriptors.GroupBy(
+                         descriptor => descriptor.Category ?? string.Empty))
+            {
+                var categoryName = category.Key;
+                var categoryKey =
+                    $"{material.GetInstanceID()}:extension:{categoryName}";
+                bool collapsed;
+                var categoryCollapsed =
+                    !string.IsNullOrEmpty(categoryName)
+                    && _session.CollapsedPropertyCategories.TryGetValue(
+                        categoryKey,
+                        out collapsed)
+                    && collapsed;
+
+                if (!string.IsNullOrEmpty(categoryName))
+                {
+                    rows.Add(new PropertyCategoryRowModel(categoryName)
+                    {
+                        Collapsed = categoryCollapsed,
+                        CollapsedOnChange = value =>
+                        {
+                            if (value)
+                                _session.CollapsedPropertyCategories[categoryKey] = true;
+                            else
+                                _session.CollapsedPropertyCategories.Remove(categoryKey);
+                            _actions.Refresh(gameObject, data, filter);
+                        }
+                    });
+                }
+                if (categoryCollapsed)
+                    continue;
+
+                foreach (var descriptor in category
+                             .OrderBy(item => item.Order)
+                             .ThenBy(item => item.DisplayName))
+                {
+                    ShaderPropertyType builtInType;
+                    if (TryGetBuiltInPropertyType(descriptor.EditorId, out builtInType))
+                    {
+                        var propertyName = string.IsNullOrEmpty(descriptor.PropertyName)
+                            ? descriptor.Id
+                            : descriptor.PropertyName;
+                        if (builtInType != ShaderPropertyType.Keyword
+                            && !material.HasProperty($"_{propertyName}"))
+                            continue;
+
+                        var internalDescriptor = new PropertyDescriptor(
+                            gameObject,
+                            data,
+                            material,
+                            projector,
+                            materialName,
+                            descriptor,
+                            builtInType);
+                        foreach (var row in _propertyRows.Create(internalDescriptor))
+                            rows.Add(row);
+                        continue;
+                    }
+
+                    foreach (var row in _propertyRows.CreateExtension(context, descriptor))
+                        rows.Add(row);
+                }
+            }
+        }
+
+        private static bool TryGetBuiltInPropertyType(
+            string editorId,
+            out ShaderPropertyType type)
+        {
+            if (editorId == MaterialEditorPropertyEditorIds.Texture)
+            {
+                type = ShaderPropertyType.Texture;
+                return true;
+            }
+            if (editorId == MaterialEditorPropertyEditorIds.Color)
+            {
+                type = ShaderPropertyType.Color;
+                return true;
+            }
+            if (editorId == MaterialEditorPropertyEditorIds.Float)
+            {
+                type = ShaderPropertyType.Float;
+                return true;
+            }
+            if (editorId == MaterialEditorPropertyEditorIds.Boolean)
+            {
+                type = ShaderPropertyType.Keyword;
+                return true;
+            }
+
+            type = default(ShaderPropertyType);
+            return false;
         }
 
         private void AddProjectorRows(
@@ -595,7 +740,7 @@ namespace MaterialEditorAPI
             }
         }
 
-        private static RowModel CreateFloatRow(
+        private static FloatPropertyRowModel CreateFloatRow(
             GameObject gameObject,
             object data,
             Material material,
@@ -616,16 +761,16 @@ namespace MaterialEditorAPI
                 Material = material,
                 Projector = projector,
                 PropertyName = propertyName,
-                FloatValue = value,
-                FloatValueOriginal = original,
-                SelectInterpolableButtonFloatOnClick = selectInterpolable,
-                FloatValueOnChange = changeValue,
-                FloatValueOnReset = resetValue
+                Value = value,
+                OriginalValue = original,
+                SelectInterpolable = selectInterpolable,
+                ValueOnChange = changeValue,
+                ValueOnReset = resetValue
             };
             if (minValue != null)
-                item.FloatValueSliderMin = minValue.Value;
+                item.SliderMinimum = minValue.Value;
             if (maxValue != null)
-                item.FloatValueSliderMax = maxValue.Value;
+                item.SliderMaximum = maxValue.Value;
             return item;
         }
 

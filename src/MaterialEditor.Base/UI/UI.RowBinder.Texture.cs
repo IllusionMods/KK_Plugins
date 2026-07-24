@@ -18,32 +18,32 @@ namespace MaterialEditorAPI
             switch (item.ItemType)
             {
                 case RowModel.RowItemType.PropertyCategory:
-                    BindCategory(item, listeners);
+                    BindCategory((PropertyCategoryRowModel)item, listeners);
                     break;
                 case RowModel.RowItemType.TextureProperty:
-                    BindTexture(item, listeners);
+                    BindTexture((TexturePropertyRowModel)item, listeners);
                     break;
                 case RowModel.RowItemType.TextureOffsetScale:
-                    BindOffsetScale(item, listeners);
+                    BindOffsetScale((TextureOffsetScaleRowModel)item, listeners);
                     break;
             }
         }
 
-        private void BindCategory(RowModel item, ListenerScope listeners)
+        private void BindCategory(PropertyCategoryRowModel item, ListenerScope listeners)
         {
             var controls = _controls.PropertyCategory;
             controls.SetVisible(true);
             ChangedStateBinding.SetLabel(controls.Label, item.LabelText);
             controls.CollapseButton.GetComponentInChildren<Text>().text =
-                item.CategoryCollapsed ? "+" : "-";
+                item.Collapsed ? "+" : "-";
             listeners.Listen(controls.CollapseButton, () =>
             {
-                item.CategoryCollapsed = !item.CategoryCollapsed;
-                item.CategoryCollapsedOnChange?.Invoke(item.CategoryCollapsed);
+                item.Collapsed = !item.Collapsed;
+                item.CollapsedOnChange?.Invoke(item.Collapsed);
             });
         }
 
-        private void BindTexture(RowModel item, ListenerScope listeners)
+        private void BindTexture(TexturePropertyRowModel item, ListenerScope listeners)
         {
             var controls = _controls.Texture;
             controls.SetVisible(true);
@@ -52,37 +52,37 @@ namespace MaterialEditorAPI
                 ChangedStateBinding.Apply(
                     controls.Label,
                     item.LabelText,
-                    item.TextureChanged,
+                    item.Changed,
                     controls.ResetButton,
                     controls.Panel);
             System.Action refreshExport = () =>
             {
                 var text = controls.ExportButton.GetComponentInChildren<Text>();
-                controls.ExportButton.enabled = item.TextureExists;
-                text.text = item.TextureExists ? "Export Texture" : "No Texture";
-                text.color = item.TextureExists ? Color.black : Color.gray;
+                controls.ExportButton.enabled = item.Exists;
+                text.text = item.Exists ? "Export Texture" : "No Texture";
+                text.color = item.Exists ? Color.black : Color.gray;
             };
 
             refreshState();
             refreshExport();
-            listeners.Listen(controls.ExportButton, () => item.TextureOnExport());
+            listeners.Listen(controls.ExportButton, () => item.Export());
             listeners.Listen(controls.ImportButton, () =>
             {
-                item.TextureChanged = true;
-                item.TextureExists = true;
-                item.TextureOnImport();
+                item.Changed = true;
+                item.Exists = true;
+                item.Import();
                 refreshExport();
                 refreshState();
             });
             listeners.Listen(controls.ResetButton, () =>
             {
-                item.TextureChanged = false;
-                item.TextureOnReset();
+                item.Changed = false;
+                item.Reset();
                 refreshState();
             });
             listeners.Listen(
                 controls.SelectInterpolableButton,
-                () => item.SelectInterpolableButtonTextureOnClick());
+                () => item.SelectInterpolable());
             LabelClickBinding.Bind(
                 listeners,
                 controls.LabelClickTrigger,
@@ -91,7 +91,9 @@ namespace MaterialEditorAPI
                 () => item.PropertyName);
         }
 
-        private void BindOffsetScale(RowModel item, ListenerScope listeners)
+        private void BindOffsetScale(
+            TextureOffsetScaleRowModel item,
+            ListenerScope listeners)
         {
             var controls = _controls.OffsetScale;
             controls.SetVisible(true);
@@ -100,12 +102,12 @@ namespace MaterialEditorAPI
                 ChangedStateBinding.Apply(
                     controls.Label,
                     item.LabelText,
-                    item.Offset != item.OffsetOriginal || item.Scale != item.ScaleOriginal,
+                    item.Offset != item.OriginalOffset || item.Scale != item.OriginalScale,
                     controls.ResetButton,
                     controls.Panel);
             System.Action applyOffset = () =>
             {
-                if (item.Offset == item.OffsetOriginal)
+                if (item.Offset == item.OriginalOffset)
                     item.OffsetOnReset();
                 else
                     item.OffsetOnChange(item.Offset);
@@ -113,7 +115,7 @@ namespace MaterialEditorAPI
             };
             System.Action applyScale = () =>
             {
-                if (item.Scale == item.ScaleOriginal)
+                if (item.Scale == item.OriginalScale)
                     item.ScaleOnReset();
                 else
                     item.ScaleOnChange(item.Scale);
@@ -160,8 +162,8 @@ namespace MaterialEditorAPI
 
             listeners.Listen(controls.ResetButton, () =>
             {
-                item.Offset = item.OffsetOriginal;
-                item.Scale = item.ScaleOriginal;
+                item.Offset = item.OriginalOffset;
+                item.Scale = item.OriginalScale;
                 controls.OffsetXInput.SetValue(item.Offset.x);
                 controls.OffsetYInput.SetValue(item.Offset.y);
                 controls.ScaleXInput.SetValue(item.Scale.x);

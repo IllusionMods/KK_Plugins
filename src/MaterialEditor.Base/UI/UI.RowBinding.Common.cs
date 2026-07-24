@@ -86,16 +86,20 @@ namespace MaterialEditorAPI
             Func<string> getName)
         {
             Action<UnityEngine.EventSystems.PointerEventData> handler = pointerEventData =>
+            {
+                var name = getName();
                 MaterialEditorUI.RaiseLabelClicked(
                     new MaterialEditorLabelClickEventArgs(
                         labelType,
-                        getName(),
+                        name,
                         item.GameObject,
                         item.Data,
                         item.Renderer,
                         item.Material,
                         item.Projector,
                         pointerEventData));
+                MaterialEditorExtensionRegistry.RaiseLabelSelection(item, labelType, name);
+            };
             trigger.Clicked = handler;
             listeners.OnDispose(() =>
             {

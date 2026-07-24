@@ -3,137 +3,56 @@ using UnityEngine;
 
 namespace MaterialEditorAPI
 {
-    // UI-independent state and actions for one virtualized Material Editor row.
-    // Compatibility base for rows that have not yet moved to a dedicated model type.
-    internal class RowModel
+    // Common identity and click-event context shared by every virtualized row.
+    internal abstract class RowModel
     {
-        public RowItemType ItemType;
-        public string LabelText { get; set; }
-
-        public GameObject GameObject { get; set; }
-        public object Data { get; set; }
-        public Renderer Renderer { get; set; }
-        public Material Material { get; set; }
-        public Projector Projector { get; set; }
-        public string PropertyName { get; set; }
-        public string RendererName { get; set; }
-        public Action SelectInterpolableButtonRendererOnClick { get; set; }
-        public Action ExportUVOnClick { get; set; }
-        public Action ExportObjOnClick { get; set; }
-
-        public bool RendererEnabled { get; set; }
-        public bool RendererEnabledOriginal { get; set; }
-        public Action<bool> RendererEnabledOnChange { get; set; }
-        public Action RendererEnabledOnReset { get; set; }
-
-        public int RendererShadowCastingMode { get; set; }
-        public int RendererShadowCastingModeOriginal { get; set; }
-        public Action<int> RendererShadowCastingModeOnChange { get; set; }
-        public Action RendererShadowCastingModeOnReset { get; set; }
-
-        public bool RendererReceiveShadows { get; set; }
-        public bool RendererReceiveShadowsOriginal { get; set; }
-        public Action<bool> RendererReceiveShadowsOnChange { get; set; }
-        public Action RendererReceiveShadowsOnReset { get; set; }
-
-        public bool RendererUpdateWhenOffscreen { get; set; }
-        public bool RendererUpdateWhenOffscreenOriginal { get; set; }
-        public Action<bool> RendererUpdateWhenOffscreenOnChange { get; set; }
-        public Action RendererUpdateWhenOffscreenOnReset { get; set; }
-
-        public bool RendererRecalculateNormals { get; set; }
-        public bool RendererRecalculateNormalsOriginal { get; set; }
-        public Action<bool> RendererRecalculateNormalsOnChange { get; set; }
-        public Action RendererRecalculateNormalsOnReset { get; set; }
-
-        public string MaterialName { get; set; }
-        public Action MaterialOnCopy { get; set; }
-        public Action MaterialOnPaste { get; set; }
-        public Action MaterialOnCopyRemove { get; set; }
-        public Action MaterialOnRename { get; set; }
-
-        public string ShaderName { get; set; }
-        public string ShaderNameOriginal { get; set; }
-        public Action SelectInterpolableButtonShaderOnClick { get; set; }
-        public Action<string> ShaderNameOnChange { get; set; }
-        public Action ShaderNameOnReset { get; set; }
-
-        public int ShaderRenderQueue { get; set; }
-        public int ShaderRenderQueueOriginal { get; set; }
-        public Action<int> ShaderRenderQueueOnChange { get; set; }
-        public Action ShaderRenderQueueOnReset { get; set; }
-
-        public bool CategoryCollapsed { get; set; }
-        public Action<bool> CategoryCollapsedOnChange { get; set; }
-
-        public bool TextureChanged { get; set; }
-        public bool TextureExists { get; set; }
-        public Action SelectInterpolableButtonTextureOnClick { get; set; }
-        public Action TextureOnExport { get; set; }
-        public Action TextureOnImport { get; set; }
-        public Action TextureOnReset { get; set; }
-
-        public Vector2 Offset { get; set; }
-        public Vector2 OffsetOriginal { get; set; }
-        public Action<Vector2> OffsetOnChange { get; set; }
-        public Action OffsetOnReset { get; set; }
-
-        public Vector2 Scale { get; set; }
-        public Vector2 ScaleOriginal { get; set; }
-        public Action<Vector2> ScaleOnChange { get; set; }
-        public Action ScaleOnReset { get; set; }
-
-        public Color ColorValue { get; set; }
-        public Color ColorValueOriginal { get; set; }
-        public Action SelectInterpolableButtonColorOnClick { get; set; }
-        public Action<Color> ColorValueOnChange { get; set; }
-        public Action ColorValueOnReset { get; set; }
-        public Action<string, Color, Action<Color>> ColorValueOnEdit { get; set; }
-        public Action<string, Color> ColorValueSetToPalette { get; set; }
-
-        public float FloatValue { get; set; }
-        public float FloatValueOriginal { get; set; }
-        public float FloatValueSliderMin { get; set; } = 0;
-        public float FloatValueSliderMax { get; set; } = 1;
-        public Action SelectInterpolableButtonFloatOnClick { get; set; }
-        public Action<float> FloatValueOnChange { get; set; }
-        public Action FloatValueOnReset { get; set; }
-
-        public bool KeywordValue { get; set; }
-        public bool KeywordValueOriginal { get; set; }
-        public Action<bool> KeywordValueOnChange { get; set; }
-        public Action KeywordValueOnReset { get; set; }
-
-        public RowModel(RowItemType itemType, string labelText = "")
+        protected RowModel(RowItemType itemType, string labelText)
         {
             ItemType = itemType;
-            LabelText = labelText;
+            LabelText = labelText ?? string.Empty;
         }
 
-        public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, RendererUpdateWhenOffscreen, RendererRecalculateNormals, Material, Shader, ShaderRenderQueue, PropertyCategory, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
+        internal RowItemType ItemType { get; }
+        internal string LabelText { get; set; }
+        internal GameObject GameObject { get; set; }
+        internal object Data { get; set; }
+        internal Renderer Renderer { get; set; }
+        internal Material Material { get; set; }
+        internal Projector Projector { get; set; }
+        internal string PropertyName { get; set; }
+        internal MaterialEditorPropertyDescriptor PublicDescriptor { get; set; }
+
+        internal enum RowItemType
+        {
+            Renderer,
+            RendererEnabled,
+            RendererShadowCastingMode,
+            RendererReceiveShadows,
+            RendererUpdateWhenOffscreen,
+            RendererRecalculateNormals,
+            Material,
+            Shader,
+            ShaderRenderQueue,
+            PropertyCategory,
+            TextureProperty,
+            TextureOffsetScale,
+            ColorProperty,
+            FloatProperty,
+            KeywordProperty
+        }
     }
 
-    internal sealed class RendererRowModel : RowModel
+    internal abstract class BooleanValueRowModel : RowModel
     {
-        internal RendererRowModel(string labelText = "Renderer")
-            : base(RowItemType.Renderer, labelText)
+        protected BooleanValueRowModel(RowItemType itemType, string labelText)
+            : base(itemType, labelText)
         {
         }
+
+        internal bool Value { get; set; }
+        internal bool OriginalValue { get; set; }
+        internal Action<bool> ValueOnChange { get; set; }
+        internal Action ValueOnReset { get; set; }
     }
 
-    internal sealed class FloatPropertyRowModel : RowModel
-    {
-        internal FloatPropertyRowModel(string labelText)
-            : base(RowItemType.FloatProperty, labelText)
-        {
-        }
-    }
-
-    internal sealed class ColorPropertyRowModel : RowModel
-    {
-        internal ColorPropertyRowModel(string labelText)
-            : base(RowItemType.ColorProperty, labelText)
-        {
-        }
-    }
 }

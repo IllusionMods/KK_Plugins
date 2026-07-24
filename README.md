@@ -127,7 +127,7 @@ Access the Material Editor by pressing the "Open Material Editor" button on clot
 
 For makers of shaders, see the [template](https://github.com/IllusionMods/KK_Plugins/blob/master/Guides/Material%20Editor%20Guide/shader_manifest_template.xml) for how to configure your shader zipmod for MaterialEditor compatibility.
 
-For plugin developers, see the [Material Editor public API compatibility policy](Guides/Material%20Editor%20Guide/Public%20API%20Compatibility.md) and [label click API](Guides/Material%20Editor%20Guide/Label%20Click%20API.md).
+For plugin developers, see the [Material Editor public API compatibility policy](Guides/Material%20Editor%20Guide/Public%20API%20Compatibility.md), [extension API](Guides/Material%20Editor%20Guide/Extension%20API.md), and [label click API](Guides/Material%20Editor%20Guide/Label%20Click%20API.md).
 
 #### MaleJuice
 

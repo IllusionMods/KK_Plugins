@@ -17,69 +17,49 @@ namespace MaterialEditorAPI
             switch (item.ItemType)
             {
                 case RowModel.RowItemType.Renderer:
-                    BindRenderer(item, listeners);
+                    BindRenderer((RendererRowModel)item, listeners);
                     break;
                 case RowModel.RowItemType.RendererEnabled:
                     BindToggle(
-                        item,
+                        (RendererEnabledRowModel)item,
                         listeners,
-                        _controls.RendererEnabled,
-                        () => item.RendererEnabled,
-                        () => item.RendererEnabledOriginal,
-                        value => item.RendererEnabled = value,
-                        item.RendererEnabledOnChange,
-                        item.RendererEnabledOnReset);
+                        _controls.RendererEnabled);
                     break;
                 case RowModel.RowItemType.RendererShadowCastingMode:
-                    BindShadowCastingMode(item, listeners);
+                    BindShadowCastingMode((RendererShadowCastingModeRowModel)item, listeners);
                     break;
                 case RowModel.RowItemType.RendererReceiveShadows:
                     BindToggle(
-                        item,
+                        (RendererReceiveShadowsRowModel)item,
                         listeners,
-                        _controls.RendererReceiveShadows,
-                        () => item.RendererReceiveShadows,
-                        () => item.RendererReceiveShadowsOriginal,
-                        value => item.RendererReceiveShadows = value,
-                        item.RendererReceiveShadowsOnChange,
-                        item.RendererReceiveShadowsOnReset);
+                        _controls.RendererReceiveShadows);
                     break;
                 case RowModel.RowItemType.RendererUpdateWhenOffscreen:
                     BindToggle(
-                        item,
+                        (RendererUpdateWhenOffscreenRowModel)item,
                         listeners,
-                        _controls.RendererUpdateWhenOffscreen,
-                        () => item.RendererUpdateWhenOffscreen,
-                        () => item.RendererUpdateWhenOffscreenOriginal,
-                        value => item.RendererUpdateWhenOffscreen = value,
-                        item.RendererUpdateWhenOffscreenOnChange,
-                        item.RendererUpdateWhenOffscreenOnReset);
+                        _controls.RendererUpdateWhenOffscreen);
                     break;
                 case RowModel.RowItemType.RendererRecalculateNormals:
                     BindToggle(
-                        item,
+                        (RendererRecalculateNormalsRowModel)item,
                         listeners,
-                        _controls.RendererRecalculateNormals,
-                        () => item.RendererRecalculateNormals,
-                        () => item.RendererRecalculateNormalsOriginal,
-                        value => item.RendererRecalculateNormals = value,
-                        item.RendererRecalculateNormalsOnChange,
-                        item.RendererRecalculateNormalsOnReset);
+                        _controls.RendererRecalculateNormals);
                     break;
             }
         }
 
-        private void BindRenderer(RowModel item, ListenerScope listeners)
+        private void BindRenderer(RendererRowModel item, ListenerScope listeners)
         {
             var controls = _controls.Renderer;
             controls.SetVisible(true);
             ChangedStateBinding.SetLabel(controls.Label, item.LabelText);
             controls.Name.text = item.RendererName;
-            listeners.Listen(controls.ExportUvButton, () => item.ExportUVOnClick());
-            listeners.Listen(controls.ExportObjButton, () => item.ExportObjOnClick());
+            listeners.Listen(controls.ExportUvButton, () => item.ExportUv());
+            listeners.Listen(controls.ExportObjButton, () => item.ExportObj());
             listeners.Listen(
                 controls.SelectInterpolableButton,
-                () => item.SelectInterpolableButtonRendererOnClick());
+                () => item.SelectInterpolable());
             LabelClickBinding.Bind(
                 listeners,
                 controls.LabelClickTrigger,
@@ -89,28 +69,25 @@ namespace MaterialEditorAPI
         }
 
         private static void BindToggle(
-            RowModel item,
+            BooleanValueRowModel item,
             ListenerScope listeners,
-            ToggleRowControls controls,
-            System.Func<bool> getValue,
-            System.Func<bool> getOriginal,
-            System.Action<bool> setValue,
-            System.Action<bool> changeValue,
-            System.Action resetValue)
+            ToggleRowControls controls)
         {
             controls.SetVisible(true);
             ToggleBinding.Bind(
                 listeners,
                 controls,
                 item,
-                getValue,
-                getOriginal,
-                setValue,
-                changeValue,
-                resetValue);
+                () => item.Value,
+                () => item.OriginalValue,
+                value => item.Value = value,
+                item.ValueOnChange,
+                item.ValueOnReset);
         }
 
-        private void BindShadowCastingMode(RowModel item, ListenerScope listeners)
+        private void BindShadowCastingMode(
+            RendererShadowCastingModeRowModel item,
+            ListenerScope listeners)
         {
             var controls = _controls.RendererShadowCastingMode;
             controls.SetVisible(true);
@@ -119,24 +96,24 @@ namespace MaterialEditorAPI
                 ChangedStateBinding.Apply(
                     controls.Label,
                     item.LabelText,
-                    item.RendererShadowCastingMode != item.RendererShadowCastingModeOriginal,
+                    item.Value != item.OriginalValue,
                     controls.ResetButton,
                     controls.Panel);
 
-            controls.Dropdown.Set(item.RendererShadowCastingMode);
+            controls.Dropdown.Set(item.Value);
             refresh();
             listeners.Listen(controls.Dropdown, value =>
             {
-                item.RendererShadowCastingMode = value;
-                if (item.RendererShadowCastingMode == item.RendererShadowCastingModeOriginal)
-                    item.RendererShadowCastingModeOnReset();
+                item.Value = value;
+                if (item.Value == item.OriginalValue)
+                    item.ValueOnReset();
                 else
-                    item.RendererShadowCastingModeOnChange(value);
+                    item.ValueOnChange(value);
                 refresh();
             });
             listeners.Listen(
                 controls.ResetButton,
-                () => controls.Dropdown.value = item.RendererShadowCastingModeOriginal);
+                () => controls.Dropdown.value = item.OriginalValue);
         }
     }
 }

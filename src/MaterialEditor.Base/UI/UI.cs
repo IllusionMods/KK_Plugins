@@ -168,6 +168,7 @@ namespace MaterialEditorAPI
         /// </summary>
         protected void InitUI()
         {
+            MaterialEditorExtensionRegistry.SetActiveEditService(EditService);
             _windowView = new MaterialEditorWindowView(
                 transform,
                 CurrentFilter,
@@ -344,7 +345,7 @@ namespace MaterialEditorAPI
         }
 
         private void ImportTexture(
-            RowModel textureItem,
+            TexturePropertyRowModel textureItem,
             GameObject gameObject,
             object data,
             Material material,
@@ -361,13 +362,13 @@ namespace MaterialEditorAPI
             {
                 if (files == null || files.Length == 0 || files[0].IsNullOrEmpty())
                 {
-                    textureItem.TextureChanged =
+                    textureItem.Changed =
                         !EditService.GetMaterialTextureValueOriginal(
                             data,
                             material,
                             propertyName,
                             gameObject);
-                    textureItem.TextureExists = material.GetTexture($"_{propertyName}") != null;
+                    textureItem.Exists = material.GetTexture($"_{propertyName}") != null;
                     return;
                 }
 
