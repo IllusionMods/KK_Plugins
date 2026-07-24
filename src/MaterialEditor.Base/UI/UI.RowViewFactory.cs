@@ -564,6 +564,7 @@ namespace MaterialEditorAPI
                 var itemHLG = itemPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
                 itemHLG.padding = Padding;
                 itemHLG.childForceExpandWidth = false;
+                itemHLG.childControlWidth = true;
                 itemHLG.childAlignment = TextAnchor.MiddleLeft;
 
                 var label = MaterialEditorControlFactory.CreateText("ColorLabel", itemPanel.transform, "");
@@ -585,13 +586,13 @@ namespace MaterialEditorAPI
                 labelRLE.preferredWidth = ColorLabelWidth;
                 labelRLE.flexibleWidth = 0f;
 
-                InputField textBoxR = MaterialEditorControlFactory.CreateInputField("ColorRInput", itemPanel.transform);
+                InputField textBoxR = MaterialEditorControlFactory.CreateInputField(
+                    "ColorRInput",
+                    itemPanel.transform,
+                    "",
+                    MaterialEditorInputRole.ColorComponent);
                 textBoxR.text = "0";
                 textBoxR.characterLimit = 7;
-                var textBoxRLE = textBoxR.gameObject.AddComponent<LayoutElement>();
-                textBoxRLE.minWidth = ColorInputFieldWidth;
-                textBoxRLE.preferredWidth = ColorInputFieldWidth;
-                textBoxRLE.flexibleWidth = 0f;
 
 
                 Text labelG = MaterialEditorControlFactory.CreateText("ColorGText", itemPanel.transform, "G");
@@ -602,13 +603,13 @@ namespace MaterialEditorAPI
                 labelGLE.preferredWidth = ColorLabelWidth;
                 labelGLE.flexibleWidth = 0f;
 
-                InputField textBoxG = MaterialEditorControlFactory.CreateInputField("ColorGInput", itemPanel.transform);
+                InputField textBoxG = MaterialEditorControlFactory.CreateInputField(
+                    "ColorGInput",
+                    itemPanel.transform,
+                    "",
+                    MaterialEditorInputRole.ColorComponent);
                 textBoxG.text = "0";
                 textBoxG.characterLimit = 7;
-                var textBoxGLE = textBoxG.gameObject.AddComponent<LayoutElement>();
-                textBoxGLE.minWidth = ColorInputFieldWidth;
-                textBoxGLE.preferredWidth = ColorInputFieldWidth;
-                textBoxGLE.flexibleWidth = 0f;
 
                 Text labelB = MaterialEditorControlFactory.CreateText("ColorBText", itemPanel.transform, "B");
                 labelB.alignment = TextAnchor.MiddleLeft;
@@ -618,13 +619,13 @@ namespace MaterialEditorAPI
                 labelBLE.preferredWidth = ColorLabelWidth;
                 labelBLE.flexibleWidth = 0f;
 
-                InputField textBoxB = MaterialEditorControlFactory.CreateInputField("ColorBInput", itemPanel.transform);
+                InputField textBoxB = MaterialEditorControlFactory.CreateInputField(
+                    "ColorBInput",
+                    itemPanel.transform,
+                    "",
+                    MaterialEditorInputRole.ColorComponent);
                 textBoxB.text = "0";
                 textBoxB.characterLimit = 7;
-                var textBoxBLE = textBoxB.gameObject.AddComponent<LayoutElement>();
-                textBoxBLE.minWidth = ColorInputFieldWidth;
-                textBoxBLE.preferredWidth = ColorInputFieldWidth;
-                textBoxBLE.flexibleWidth = 0f;
 
                 Text labelA = MaterialEditorControlFactory.CreateText("ColorAText", itemPanel.transform, "A");
                 labelA.alignment = TextAnchor.MiddleLeft;
@@ -634,13 +635,13 @@ namespace MaterialEditorAPI
                 labelALE.preferredWidth = ColorLabelWidth;
                 labelALE.flexibleWidth = 0f;
 
-                InputField textBoxA = MaterialEditorControlFactory.CreateInputField("ColorAInput", itemPanel.transform);
+                InputField textBoxA = MaterialEditorControlFactory.CreateInputField(
+                    "ColorAInput",
+                    itemPanel.transform,
+                    "",
+                    MaterialEditorInputRole.ColorComponent);
                 textBoxA.text = "0";
                 textBoxA.characterLimit = 7;
-                var textBoxALE = textBoxA.gameObject.AddComponent<LayoutElement>();
-                textBoxALE.minWidth = ColorInputFieldWidth;
-                textBoxALE.preferredWidth = ColorInputFieldWidth;
-                textBoxALE.flexibleWidth = 0f;
 
                 var edit = MaterialEditorControlFactory.CreateButton("ColorEditButton", itemPanel.transform, "");
                 var editLE = edit.gameObject.AddComponent<LayoutElement>();

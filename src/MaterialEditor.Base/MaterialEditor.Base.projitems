@@ -25,6 +25,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SelectionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.StyleSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.WindowView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.MaterialEditorPresenter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.PropertyDescriptor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.AutoScrollToCenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.FloatLabelDragTrigger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.DropdownFilter.cs" />
@@ -32,7 +34,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowStyle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowViewFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.LabelClick.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowBinding.Common.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowControls.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowBinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowBinder.Renderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowBinder.MaterialShader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowBinder.Texture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowBinder.Color.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowBinder.FloatKeyword.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Tooltip.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SelectListPanel.cs" />

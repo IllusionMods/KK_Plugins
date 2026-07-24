@@ -4,7 +4,8 @@ using UnityEngine;
 namespace MaterialEditorAPI
 {
     // UI-independent state and actions for one virtualized Material Editor row.
-    internal sealed class RowModel
+    // Compatibility base for rows that have not yet moved to a dedicated model type.
+    internal class RowModel
     {
         public RowItemType ItemType;
         public string LabelText { get; set; }
@@ -110,5 +111,29 @@ namespace MaterialEditorAPI
         }
 
         public enum RowItemType { Renderer, RendererEnabled, RendererShadowCastingMode, RendererReceiveShadows, RendererUpdateWhenOffscreen, RendererRecalculateNormals, Material, Shader, ShaderRenderQueue, PropertyCategory, TextureProperty, TextureOffsetScale, ColorProperty, FloatProperty, KeywordProperty }
+    }
+
+    internal sealed class RendererRowModel : RowModel
+    {
+        internal RendererRowModel(string labelText = "Renderer")
+            : base(RowItemType.Renderer, labelText)
+        {
+        }
+    }
+
+    internal sealed class FloatPropertyRowModel : RowModel
+    {
+        internal FloatPropertyRowModel(string labelText)
+            : base(RowItemType.FloatProperty, labelText)
+        {
+        }
+    }
+
+    internal sealed class ColorPropertyRowModel : RowModel
+    {
+        internal ColorPropertyRowModel(string labelText)
+            : base(RowItemType.ColorProperty, labelText)
+        {
+        }
     }
 }

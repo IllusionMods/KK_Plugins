@@ -48,6 +48,12 @@ namespace MaterialEditorAPI
         Input
     }
 
+    internal enum MaterialEditorInputRole
+    {
+        Standard,
+        ColorComponent
+    }
+
     internal enum MaterialEditorPanelRole
     {
         Default,
@@ -59,6 +65,39 @@ namespace MaterialEditorAPI
         MaterialRow,
         CategoryRow,
         TransparentRow
+    }
+
+    // InputField is itself an ILayoutElement and reports a preferred width based
+    // on its current text. Use a higher-priority element so numeric content can
+    // never resize fixed-width columns.
+    internal sealed class FixedWidthLayoutOverride : MonoBehaviour, ILayoutElement
+    {
+        [SerializeField]
+        private float _width;
+
+        internal void SetWidth(float width)
+        {
+            _width = width;
+            var rect = transform as RectTransform;
+            if (rect != null)
+                LayoutRebuilder.MarkLayoutForRebuild(rect);
+        }
+
+        public void CalculateLayoutInputHorizontal()
+        {
+        }
+
+        public void CalculateLayoutInputVertical()
+        {
+        }
+
+        public float minWidth => _width;
+        public float preferredWidth => _width;
+        public float flexibleWidth => 0f;
+        public float minHeight => -1f;
+        public float preferredHeight => -1f;
+        public float flexibleHeight => -1f;
+        public int layoutPriority => 100;
     }
 
     internal static class MaterialEditorStyles
@@ -141,14 +180,84 @@ namespace MaterialEditorAPI
                 ApplyText(text, MaterialEditorTextRole.Button);
         }
 
-        internal static void ApplyInputField(InputField inputField)
+        internal static void ApplyInputField(
+            InputField inputField,
+            MaterialEditorInputRole role = MaterialEditorInputRole.Standard)
         {
             if (inputField == null)
                 return;
 
+            // Keep the complete value in InputField.text and let InputField move its
+            // visible draw range with the caret instead of shrinking or overflowing.
+            inputField.lineType = InputField.LineType.SingleLine;
+            inputField.textComponent.resizeTextForBestFit = false;
+            inputField.textComponent.horizontalOverflow = HorizontalWrapMode.Overflow;
+            inputField.textComponent.verticalOverflow = VerticalWrapMode.Truncate;
+
+            if (role == MaterialEditorInputRole.ColorComponent)
+            {
+                var textRect = inputField.textComponent.rectTransform;
+                var leftInset = Mathf.Max(0f, textRect.offsetMin.x);
+                var rightInset = Mathf.Max(0f, -textRect.offsetMax.x);
+                ApplyFixedWidth(
+                    inputField.gameObject,
+                    MaterialEditorLayout.ColorInputWidth);
+                ApplyInputViewport(inputField, leftInset, rightInset);
+            }
+
             ApplyText(inputField.textComponent, MaterialEditorTextRole.Input);
             if (inputField.placeholder is Text placeholder)
                 ApplyText(placeholder, MaterialEditorTextRole.Input);
+        }
+
+        private static void ApplyFixedWidth(GameObject control, float width)
+        {
+            var layout = control.GetComponent<FixedWidthLayoutOverride>()
+                         ?? control.AddComponent<FixedWidthLayoutOverride>();
+            layout.SetWidth(width);
+
+            var rect = control.GetComponent<RectTransform>();
+            if (rect != null)
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+        }
+
+        private static void ApplyInputViewport(
+            InputField inputField,
+            float leftInset,
+            float rightInset)
+        {
+            var textRect = inputField.textComponent.rectTransform;
+            var bottomInset = textRect.offsetMin.y;
+            var topInset = -textRect.offsetMax.y;
+
+            var viewportObject = new GameObject(
+                inputField.gameObject.name + "Viewport",
+                typeof(RectTransform),
+                typeof(RectMask2D));
+            var viewportRect = viewportObject.GetComponent<RectTransform>();
+            viewportRect.SetParent(inputField.transform, false);
+            viewportRect.anchorMin = Vector2.zero;
+            viewportRect.anchorMax = Vector2.one;
+            viewportRect.offsetMin = new Vector2(leftInset, bottomInset);
+            viewportRect.offsetMax = new Vector2(-rightInset, -topInset);
+
+            if (inputField.placeholder is Graphic placeholder)
+            {
+                var placeholderRect = placeholder.rectTransform;
+                placeholderRect.SetParent(viewportRect, false);
+                SetRectToFill(placeholderRect);
+            }
+
+            textRect.SetParent(viewportRect, false);
+            SetRectToFill(textRect);
+        }
+
+        private static void SetRectToFill(RectTransform rectTransform)
+        {
+            rectTransform.anchorMin = Vector2.zero;
+            rectTransform.anchorMax = Vector2.one;
+            rectTransform.offsetMin = Vector2.zero;
+            rectTransform.offsetMax = Vector2.zero;
         }
 
         internal static void ApplyToggle(Toggle toggle)
@@ -268,10 +377,14 @@ namespace MaterialEditorAPI
             return button;
         }
 
-        internal static InputField CreateInputField(string name, Transform parent, string placeholder = "")
+        internal static InputField CreateInputField(
+            string name,
+            Transform parent,
+            string placeholder = "",
+            MaterialEditorInputRole role = MaterialEditorInputRole.Standard)
         {
             var inputField = UIUtility.CreateInputField(name, parent, placeholder);
-            MaterialEditorStyles.ApplyInputField(inputField);
+            MaterialEditorStyles.ApplyInputField(inputField, role);
             return inputField;
         }
 
