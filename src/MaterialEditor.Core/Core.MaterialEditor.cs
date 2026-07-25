@@ -799,7 +799,7 @@ namespace KK_Plugins.MaterialEditor
                 {
                     var shaderElement = (XmlElement)shaderElementObj;
                     string shaderName = shaderElement.GetAttribute("Name");
-                    var shaderMetadata = tooltipCatalog.GetShader(shaderName);
+                    var shaderMetadata = tooltipCatalog.ResolveShader(shaderName);
                     ShaderUiMetadataRegistry.SetShader(shaderName, shaderMetadata);
 
                     if (LoadedShaders.ContainsKey(shaderName))

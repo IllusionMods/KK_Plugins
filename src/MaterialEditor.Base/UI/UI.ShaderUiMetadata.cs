@@ -40,6 +40,7 @@ namespace MaterialEditorAPI
     {
         private readonly Dictionary<string, ShaderUiMetadata> _shaders =
             new Dictionary<string, ShaderUiMetadata>(StringComparer.Ordinal);
+        private ShaderUiMetadata _manifestDefaults;
 
         internal IEnumerable<KeyValuePair<string, ShaderUiMetadata>> Shaders => _shaders;
 
@@ -49,6 +50,27 @@ namespace MaterialEditorAPI
             return shaderName != null && _shaders.TryGetValue(shaderName, out metadata)
                 ? metadata
                 : null;
+        }
+
+        internal ShaderUiMetadata ResolveShader(string shaderName)
+        {
+            var shader = GetShader(shaderName);
+            if (_manifestDefaults == null)
+                return shader;
+
+            var resolved = _manifestDefaults.Clone();
+            resolved.Merge(shader);
+            return resolved;
+        }
+
+        internal void SetManifestDefaults(ShaderUiMetadata metadata)
+        {
+            if (metadata == null)
+                return;
+            if (_manifestDefaults == null)
+                _manifestDefaults = metadata.Clone();
+            else
+                _manifestDefaults.Merge(metadata);
         }
 
         internal void SetShader(string shaderName, ShaderUiMetadata metadata)
@@ -61,6 +83,7 @@ namespace MaterialEditorAPI
         {
             if (other == null)
                 return;
+            SetManifestDefaults(other._manifestDefaults);
             foreach (var item in other.Shaders)
             {
                 ShaderUiMetadata current;
@@ -95,6 +118,10 @@ namespace MaterialEditorAPI
 
             var sets = ReadTooltipSets(root, warning);
             var catalog = new ShaderTooltipCatalog();
+            var manifestDefaults = new ShaderUiMetadata();
+            if (MergeReferencedSets(root, sets, manifestDefaults, warning))
+                catalog.SetManifestDefaults(manifestDefaults);
+
             foreach (var shaderElement in ChildElements(root, "Shader"))
             {
                 var shaderName = shaderElement.GetAttribute("Name");
@@ -102,15 +129,9 @@ namespace MaterialEditorAPI
                     continue;
 
                 var metadata = new ShaderUiMetadata();
-                foreach (var useElement in ChildElements(shaderElement, "UseTooltipSet"))
-                {
-                    var reference = useElement.GetAttribute("Ref");
-                    ShaderUiMetadata set;
-                    if (sets.TryGetValue(reference, out set))
-                        metadata.Merge(set);
-                    else if (!string.IsNullOrEmpty(reference))
-                        warning?.Invoke($"TooltipSet '{reference}' was not found.");
-                }
+                MergeReferencedSets(shaderElement, sets, metadata, warning);
+                var referenceMetadata = manifestDefaults.Clone();
+                referenceMetadata.Merge(metadata);
 
                 var shaderTooltip = FirstChild(shaderElement, "Tooltip");
                 if (shaderTooltip != null)
@@ -120,13 +141,13 @@ namespace MaterialEditorAPI
                     shaderElement,
                     "Category",
                     metadata.CategoryTooltips,
-                    metadata,
+                    referenceMetadata,
                     warning);
                 ReadNamedTooltips(
                     shaderElement,
                     "Property",
                     metadata.PropertyTooltips,
-                    metadata,
+                    referenceMetadata,
                     warning);
                 catalog.SetShader(shaderName, metadata);
             }
@@ -161,6 +182,30 @@ namespace MaterialEditorAPI
             return sets;
         }
 
+        private static bool MergeReferencedSets(
+            XmlElement parent,
+            IDictionary<string, ShaderUiMetadata> sets,
+            ShaderUiMetadata destination,
+            Action<string> warning)
+        {
+            var merged = false;
+            foreach (var useElement in ChildElements(parent, "UseTooltipSet"))
+            {
+                var reference = useElement.GetAttribute("Ref");
+                ShaderUiMetadata set;
+                if (sets.TryGetValue(reference, out set))
+                {
+                    destination.Merge(set);
+                    merged = true;
+                }
+                else if (!string.IsNullOrEmpty(reference))
+                {
+                    warning?.Invoke($"TooltipSet '{reference}' was not found.");
+                }
+            }
+            return merged;
+        }
+
         private static void ReadNamedTooltips(
             XmlElement parent,
             string elementName,
@@ -186,7 +231,13 @@ namespace MaterialEditorAPI
                             $"{elementName} tooltip reference '{reference}' was not found.");
                 }
                 if (!string.IsNullOrEmpty(text))
+                {
                     destination[name] = text;
+                    if (elementName == "Category")
+                        resolved.CategoryTooltips[name] = text;
+                    else
+                        resolved.PropertyTooltips[name] = text;
+                }
             }
         }
 
