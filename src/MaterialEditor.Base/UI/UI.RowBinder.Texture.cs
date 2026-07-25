@@ -34,6 +34,10 @@ namespace MaterialEditorAPI
             var controls = _controls.PropertyCategory;
             controls.SetVisible(true);
             ChangedStateBinding.SetLabel(controls.Label, item.LabelText);
+            TooltipBinding.Bind(
+                controls.Label.gameObject,
+                item.TooltipText,
+                "Category name");
             controls.CollapseButton.GetComponentInChildren<Text>().text =
                 item.Collapsed ? "+" : "-";
             listeners.Listen(controls.CollapseButton, () =>
@@ -47,6 +51,7 @@ namespace MaterialEditorAPI
         {
             var controls = _controls.Texture;
             controls.SetVisible(true);
+            TooltipBinding.Bind(controls.Label.gameObject, item.TooltipText);
 
             System.Action refreshState = () =>
                 ChangedStateBinding.Apply(
@@ -97,6 +102,7 @@ namespace MaterialEditorAPI
         {
             var controls = _controls.OffsetScale;
             controls.SetVisible(true);
+            TooltipBinding.Bind(controls.Label.gameObject, item.TooltipText);
 
             System.Action refresh = () =>
                 ChangedStateBinding.Apply(

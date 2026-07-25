@@ -51,6 +51,7 @@ Reviewed additions currently recorded in `PublicAPI.Unshipped.txt` include the s
 - `MaterialEditorTargetContext` and `MaterialEditorPropertyContext`
 - custom property descriptor providers and semantic property editor factories
 - `MaterialEditorEditService`, a stable facade over repository-backed edits
+- optional English property tooltip metadata and the `PropertyTooltips` capability
 
 These APIs deliberately do not expose the internal row model, row view, binder registry, or concrete Unity controls.
 

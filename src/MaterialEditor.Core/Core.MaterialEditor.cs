@@ -738,7 +738,7 @@ namespace KK_Plugins.MaterialEditor
                     {
                         XmlDocument doc = new XmlDocument();
                         doc.Load(reader);
-                        LoadXML(doc.DocumentElement);
+                        LoadXML(doc.DocumentElement, "MaterialEditor.default");
                     }
 
 #if PH
@@ -753,7 +753,7 @@ namespace KK_Plugins.MaterialEditor
                     {
                         XmlDocument doc = new XmlDocument();
                         doc.Load(fileName);
-                        LoadXML(doc.DocumentElement);
+                        LoadXML(doc.DocumentElement, fileName);
                     }
                     catch (Exception ex)
                     {
@@ -774,16 +774,24 @@ namespace KK_Plugins.MaterialEditor
                     //Convert XElement in to XmlElement
                     var doc = new XmlDocument();
                     doc.Load(element.CreateReader());
-                    LoadXML(doc.DocumentElement);
+                    var sourceId =
+                        manifest.ManifestDocument?.Root?.Element("guid")?.Value
+                        ?? "unknown manifest";
+                    LoadXML(doc.DocumentElement, sourceId);
                 }
             }
 #endif
             RefreshPropertyOrganization();
         }
 
-        private static void LoadXML(XmlElement materialEditorElement)
+        private static void LoadXML(
+            XmlElement materialEditorElement,
+            string sourceId)
         {
             if (materialEditorElement == null) return;
+            var tooltipCatalog = LoadTooltipCatalogs(
+                materialEditorElement,
+                sourceId ?? "unknown source");
             var shaderElements = materialEditorElement.GetElementsByTagName("Shader");
             foreach (var shaderElementObj in shaderElements)
             {
@@ -791,6 +799,8 @@ namespace KK_Plugins.MaterialEditor
                 {
                     var shaderElement = (XmlElement)shaderElementObj;
                     string shaderName = shaderElement.GetAttribute("Name");
+                    var shaderMetadata = tooltipCatalog.GetShader(shaderName);
+                    ShaderUiMetadataRegistry.SetShader(shaderName, shaderMetadata);
 
                     if (LoadedShaders.ContainsKey(shaderName))
                     {
@@ -802,7 +812,10 @@ namespace KK_Plugins.MaterialEditor
 
                     XMLShaderProperties[shaderName] = new Dictionary<string, ShaderPropertyData>();
                     if (shader != null && shader.name != shaderName)
+                    {
                         XMLShaderProperties[shader.name] = new Dictionary<string, ShaderPropertyData>();
+                        ShaderUiMetadataRegistry.SetShader(shader.name, shaderMetadata);
+                    }
 
                     var shaderPropertyElements = shaderElement.GetElementsByTagName("Property");
                     foreach (var shaderPropertyElementObj in shaderPropertyElements)

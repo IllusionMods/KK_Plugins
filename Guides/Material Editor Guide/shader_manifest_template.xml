@@ -18,6 +18,10 @@
   <!-- <game>Koikatsu</game> -->
 
   <MaterialEditor>
+    <!-- Optional English tooltip catalog stored as an XML TextAsset in an AssetBundle. -->
+    <!-- Example: <TooltipCatalog AssetBundle="my_shaders/shader_assets.unity3d" Asset="material_editor_tooltips"/> -->
+    <TooltipCatalog AssetBundle="{{tooltip_asset_bundle_path.unity3d}}" Asset="{{tooltip_asset_name}}"/>
+
     <!-- A shader is defined by the following xml structure. -->
     <!-- Example: <Shader Name="My/ShaderA" AssetBundle="my_shaders/shader_a.unity3d" Asset="asset_shader_a"> -->
     <Shader Name="{{ShaderName}}" AssetBundle="{{asset_bundle_path.unity3d}}" Asset="{{asset_name}}">

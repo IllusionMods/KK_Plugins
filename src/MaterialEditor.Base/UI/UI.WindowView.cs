@@ -21,6 +21,7 @@ namespace MaterialEditorAPI
         internal InputField RenameField { get; private set; }
         internal Button RenameButton { get; private set; }
         internal Text RenameMaterial { get; private set; }
+        internal CategoryNavigatorView CategoryNavigator { get; private set; }
         internal VirtualList VirtualList { get; private set; }
 
         internal MaterialEditorWindowView(
@@ -28,9 +29,13 @@ namespace MaterialEditorAPI
             string filter,
             Action<string> refresh,
             Action close,
-            Action toggleSidePanels)
+            Action toggleSidePanels,
+            Action<CategoryNavigationTarget> navigateToCategory,
+            Action<CategoryNavigationTarget> toggleCategory)
         {
-            Build(owner, filter, refresh, close, toggleSidePanels);
+            Build(
+                owner, filter, refresh, close, toggleSidePanels,
+                navigateToCategory, toggleCategory);
         }
 
         internal void PrepareForDisplay(string filter)
@@ -46,7 +51,11 @@ namespace MaterialEditorAPI
                 Window.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
 
             if (MainPanel != null)
-                SetMainRectWithMemory(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+                SetMainRectWithMemory(
+                    GetDefaultMainLeftAnchor(),
+                    0.05f,
+                    GetDefaultMainRightAnchor(),
+                    UIHeight.Value * UIScale.Value);
 
             if (RendererList != null)
                 RendererList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MaterialEditorLayout.Margin, MaterialEditorLayout.Margin / 2f, MaterialEditorLayout.Margin + UIListWidth.Value);
@@ -56,6 +65,8 @@ namespace MaterialEditorAPI
 
             if (RenameList != null)
                 RenameList.Panel.transform.SetRect(1f, 0.5f, 1f, 1f, MaterialEditorLayout.Margin, MaterialEditorLayout.Margin / 2f, MaterialEditorLayout.Margin + UIListWidth.Value);
+
+            CategoryNavigator?.ApplySettings();
         }
 
         internal void SetMainRectWithMemory(float anchorLeft, float anchorBottom, float anchorRight, float anchorTop)
@@ -90,7 +101,9 @@ namespace MaterialEditorAPI
             string filter,
             Action<string> refresh,
             Action close,
-            Action toggleSidePanels)
+            Action toggleSidePanels,
+            Action<CategoryNavigationTarget> navigateToCategory,
+            Action<CategoryNavigationTarget> toggleCategory)
         {
             Window = MaterialEditorControlFactory.CreateNewUISystem("MaterialEditorCanvas");
             Window.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f / UIScale.Value, 1080f / UIScale.Value);
@@ -98,7 +111,11 @@ namespace MaterialEditorAPI
             Window.sortingOrder = 1000;
 
             MainPanel = MaterialEditorControlFactory.CreatePanel("Panel", Window.transform, MaterialEditorPanelRole.Main);
-            MainPanel.transform.SetRect(0.05f, 0.05f, UIWidth.Value * UIScale.Value, UIHeight.Value * UIScale.Value);
+            MainPanel.transform.SetRect(
+                GetDefaultMainLeftAnchor(),
+                0.05f,
+                GetDefaultMainRightAnchor(),
+                UIHeight.Value * UIScale.Value);
             UIUtility.AddOutlineToObject(MainPanel.transform, Color.black);
 
             TooltipManager.Init(Window.transform);
@@ -175,9 +192,20 @@ namespace MaterialEditorAPI
             VirtualList.EntryTemplate = template;
             VirtualList.Initialize();
 
+            CategoryNavigator = new CategoryNavigatorView(
+                MainPanel.transform,
+                navigateToCategory,
+                toggleCategory);
+            VirtualList.ViewportAnchorIndexChanged += CategoryNavigator.SetViewportAnchor;
+
             BuildSelectionPanels();
             BuildRenamePanel();
             ApplySettings();
+        }
+
+        internal void SetPresentation(MaterialEditorPresentation presentation)
+        {
+            CategoryNavigator.SetPresentation(presentation);
         }
 
         private void BuildSelectionPanels()
@@ -222,6 +250,21 @@ namespace MaterialEditorAPI
             secondLine.transform.SetRect(0f, 0f, 1f, 1f, 8f, 0f, -8f);
             secondLine.rectTransform.eulerAngles = new Vector3(0f, 0f, -45f);
             secondLine.color = Color.black;
+        }
+
+        private static float GetDefaultMainLeftAnchor()
+        {
+            var canvasWidth = 1920f / UIScale.Value;
+            var navigatorSpace =
+                MaterialEditorLayout.CategoryNavigatorWidth
+                + MaterialEditorLayout.Margin * 2f;
+            return Mathf.Max(0.05f, navigatorSpace / canvasWidth);
+        }
+
+        private static float GetDefaultMainRightAnchor()
+        {
+            var left = GetDefaultMainLeftAnchor();
+            return UIWidth.Value * UIScale.Value + left - 0.05f;
         }
     }
 }

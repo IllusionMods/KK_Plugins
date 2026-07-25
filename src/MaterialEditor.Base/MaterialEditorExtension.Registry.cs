@@ -10,7 +10,7 @@ namespace MaterialEditorAPI
     /// </summary>
     public static class MaterialEditorExtensionApi
     {
-        private static readonly Version Version = new Version(1, 0, 0);
+        private static readonly Version Version = new Version(1, 1, 0);
 
         /// <summary>Current semantic extension API version.</summary>
         public static Version ApiVersion => Version;
@@ -21,7 +21,8 @@ namespace MaterialEditorAPI
             | MaterialEditorApiCapability.SelectionEvents
             | MaterialEditorApiCapability.PropertyDescriptorProviders
             | MaterialEditorApiCapability.PropertyEditors
-            | MaterialEditorApiCapability.EditServiceFacade;
+            | MaterialEditorApiCapability.EditServiceFacade
+            | MaterialEditorApiCapability.PropertyTooltips;
 
         /// <summary>Check whether every requested capability is available.</summary>
         public static bool Supports(MaterialEditorApiCapability capabilities) =>

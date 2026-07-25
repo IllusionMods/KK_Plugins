@@ -31,7 +31,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.NumericInputView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.LayoutDiagnostics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.WindowView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.CategoryNavigator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.MaterialEditorPresenter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.MaterialSectionPresenter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Presentation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ShaderUiMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.PropertyDescriptor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.AutoScrollToCenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.FloatLabelDragTrigger.cs" />

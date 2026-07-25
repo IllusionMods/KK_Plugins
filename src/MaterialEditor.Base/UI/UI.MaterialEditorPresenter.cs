@@ -58,12 +58,16 @@ namespace MaterialEditorAPI
         internal Func<string, string, bool> IsPropertyBlacklisted { get; set; }
     }
 
+    /// <summary>
+    /// Coordinates filtering and renderer presentation, then delegates each material
+    /// section to <see cref="MaterialSectionPresenter"/>.
+    /// </summary>
     internal sealed class MaterialEditorPresenter
     {
         private readonly MaterialEditService _editService;
         private readonly MaterialEditorSessionState _session;
         private readonly MaterialEditorPresentationActions _actions;
-        private readonly PropertyRowModelFactory _propertyRows;
+        private readonly MaterialSectionPresenter _materialSections;
 
         internal MaterialEditorPresenter(
             MaterialEditService editService,
@@ -73,10 +77,10 @@ namespace MaterialEditorAPI
             _editService = editService;
             _session = session;
             _actions = actions;
-            _propertyRows = new PropertyRowModelFactory(editService, actions);
+            _materialSections = new MaterialSectionPresenter(editService, session, actions);
         }
 
-        internal List<RowModel> BuildRows(
+        internal MaterialEditorPresentation BuildRows(
             GameObject gameObject,
             object data,
             string filter,
@@ -92,18 +96,39 @@ namespace MaterialEditorAPI
             var renderers = SelectRenderers(allRenderers, rendererFilter);
             var projectors = SelectProjectors(allProjectors, rendererFilter);
             var materials = SelectMaterials(gameObject, allRenderers, renderers, rendererFilter);
-            var rows = new List<RowModel>();
+            var presentation = new MaterialEditorPresentation();
+            var rows = presentation.Rows;
 
             foreach (var renderer in renderers)
                 AddRendererRows(rows, gameObject, data, renderer);
 
             foreach (var material in materials.Values)
-                AddMaterialRows(rows, gameObject, data, filter, allRenderers, propertyFilter, material, null);
+            {
+                _materialSections.AddRows(
+                    presentation,
+                    gameObject,
+                    data,
+                    filter,
+                    allRenderers,
+                    propertyFilter,
+                    material,
+                    null);
+            }
 
             foreach (var projector in rendererFilter.Count == 0 ? allProjectors : projectors)
-                AddMaterialRows(rows, gameObject, data, filter, allRenderers, propertyFilter, projector.material, projector);
+            {
+                _materialSections.AddRows(
+                    presentation,
+                    gameObject,
+                    data,
+                    filter,
+                    allRenderers,
+                    propertyFilter,
+                    projector.material,
+                    projector);
+            }
 
-            return rows;
+            return presentation;
         }
 
         private static void ParseFilter(
@@ -146,15 +171,15 @@ namespace MaterialEditorAPI
 
             var renderers = new List<Renderer>();
             foreach (var renderer in allRenderers)
-            foreach (var filterWord in filter)
-                if (MaterialEditorFilter.Matches(renderer.NameFormatted(), filterWord.Trim())
-                    && !renderers.Contains(renderer))
-                    renderers.Add(renderer);
+                foreach (var filterWord in filter)
+                    if (MaterialEditorFilter.Matches(renderer.NameFormatted(), filterWord.Trim())
+                        && !renderers.Contains(renderer))
+                        renderers.Add(renderer);
 
             return renderers;
         }
 
-        private List<Projector> SelectProjectors(
+        private static List<Projector> SelectProjectors(
             IEnumerable<Projector> allProjectors,
             IList<string> filter)
         {
@@ -163,9 +188,9 @@ namespace MaterialEditorAPI
                 return projectors;
 
             foreach (var projector in allProjectors)
-            foreach (var filterWord in filter)
-                if (MaterialEditorFilter.Matches(projector.NameFormatted(), filterWord.Trim()))
-                    projectors.Add(projector);
+                foreach (var filterWord in filter)
+                    if (MaterialEditorFilter.Matches(projector.NameFormatted(), filterWord.Trim()))
+                        projectors.Add(projector);
 
             return projectors;
         }
@@ -180,16 +205,16 @@ namespace MaterialEditorAPI
             if (filter.Count == 0)
             {
                 foreach (var renderer in selectedRenderers)
-                foreach (var material in GetSelectedMaterials(gameObject, renderer))
-                    materials[material.NameFormatted()] = material;
+                    foreach (var material in GetSelectedMaterials(gameObject, renderer))
+                        materials[material.NameFormatted()] = material;
                 return materials;
             }
 
             foreach (var renderer in allRenderers)
-            foreach (var material in GetSelectedMaterials(gameObject, renderer))
-            foreach (var filterWord in filter)
-                if (MaterialEditorFilter.Matches(material.NameFormatted(), filterWord.Trim()))
-                    materials[material.NameFormatted()] = material;
+                foreach (var material in GetSelectedMaterials(gameObject, renderer))
+                    foreach (var filterWord in filter)
+                        if (MaterialEditorFilter.Matches(material.NameFormatted(), filterWord.Trim()))
+                            materials[material.NameFormatted()] = material;
 
             return materials;
         }
@@ -366,474 +391,6 @@ namespace MaterialEditorAPI
                         RendererProperties.RecalculateNormals,
                         gameObject)
             });
-        }
-
-        private void AddMaterialRows(
-            ICollection<RowModel> rows,
-            GameObject gameObject,
-            object data,
-            string filter,
-            IEnumerable<Renderer> allRenderers,
-            IList<string> propertyFilter,
-            Material material,
-            Projector projector)
-        {
-            var materialName = material.NameFormatted();
-            var shaderName = material.shader.NameFormatted();
-            var materialItem = new MaterialRowModel()
-            {
-                GameObject = gameObject,
-                Data = data,
-                Material = material,
-                Projector = projector,
-                MaterialName = materialName,
-                Copy = () => _editService.MaterialCopyEdits(data, material, gameObject),
-                Paste = () =>
-                {
-                    _editService.MaterialPasteEdits(data, material, gameObject);
-                    _actions.Refresh(gameObject, data, filter);
-                },
-                Rename = () => _actions.ShowRename(gameObject, material, data)
-            };
-            if (projector == null)
-            {
-                materialItem.CopyOrRemove = () =>
-                {
-                    _editService.MaterialCopyRemove(data, material, gameObject);
-                    _actions.Refresh(gameObject, data, filter);
-                    _actions.RefreshMaterialSelection(gameObject, data, allRenderers);
-                };
-            }
-            rows.Add(materialItem);
-
-            if (projector != null)
-                AddProjectorRows(rows, gameObject, data, propertyFilter, projector);
-
-            AddShaderRows(rows, gameObject, data, filter, materialName, material, projector, shaderName);
-            AddPropertyRows(rows, gameObject, data, filter, propertyFilter, materialName, material, projector, shaderName);
-        }
-
-        private void AddShaderRows(
-            ICollection<RowModel> rows,
-            GameObject gameObject,
-            object data,
-            string filter,
-            string materialName,
-            Material material,
-            Projector projector,
-            string shaderName)
-        {
-            var originalShaderName = _editService.GetMaterialShaderNameOriginal(data, material, gameObject);
-            if (originalShaderName.IsNullOrEmpty())
-                originalShaderName = shaderName;
-            rows.Add(new ShaderRowModel()
-            {
-                GameObject = gameObject,
-                Data = data,
-                Material = material,
-                Projector = projector,
-                ShaderName = shaderName,
-                OriginalShaderName = originalShaderName,
-                ShaderNameOnChange = value =>
-                {
-                    _editService.SetMaterialShaderName(data, material, value, gameObject);
-                    _actions.RefreshDeferred(gameObject, data, filter);
-                },
-                ShaderNameOnReset = () =>
-                {
-                    _editService.RemoveMaterialShaderName(data, material, gameObject);
-                    _actions.RefreshDeferred(gameObject, data, filter);
-                },
-                SelectInterpolable = () =>
-                    _actions.SelectInterpolable(
-                        gameObject,
-                        RowModel.RowItemType.Shader,
-                        materialName,
-                        string.Empty,
-                        string.Empty)
-            });
-
-            var originalRenderQueue =
-                _editService.GetMaterialShaderRenderQueueOriginal(data, material, gameObject)
-                ?? material.renderQueue;
-            rows.Add(new ShaderRenderQueueRowModel()
-            {
-                GameObject = gameObject,
-                Data = data,
-                Material = material,
-                Projector = projector,
-                Value = material.renderQueue,
-                OriginalValue = originalRenderQueue,
-                ValueOnChange = value =>
-                    _editService.SetMaterialShaderRenderQueue(data, material, value, gameObject),
-                ValueOnReset = () =>
-                    _editService.RemoveMaterialShaderRenderQueue(data, material, gameObject)
-            });
-        }
-
-        private void AddPropertyRows(
-            ICollection<RowModel> rows,
-            GameObject gameObject,
-            object data,
-            string filter,
-            IList<string> propertyFilter,
-            string materialName,
-            Material material,
-            Projector projector,
-            string shaderName)
-        {
-            var categories = PropertyOrganizer.PropertyOrganization[
-                XMLShaderProperties.ContainsKey(shaderName) ? shaderName : "default"];
-
-            foreach (var category in categories)
-            {
-                var definitions = category.Value
-                    .Where(property =>
-                        property.Type == ShaderPropertyType.Keyword
-                        || material.HasProperty($"_{property.Name}"))
-                    .ToList();
-                var showCategory =
-                    propertyFilter.Count == 0
-                    && (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName)
-                    && definitions.Any();
-                var categoryKey = $"{material.GetInstanceID()}:{category.Key}";
-                bool collapsed;
-                var categoryCollapsed =
-                    showCategory
-                    && _session.CollapsedPropertyCategories.TryGetValue(categoryKey, out collapsed)
-                    && collapsed;
-
-                if (showCategory)
-                {
-                    rows.Add(new PropertyCategoryRowModel(category.Key)
-                    {
-                        Collapsed = categoryCollapsed,
-                        CollapsedOnChange = value =>
-                        {
-                            if (value)
-                                _session.CollapsedPropertyCategories[categoryKey] = true;
-                            else
-                                _session.CollapsedPropertyCategories.Remove(categoryKey);
-                            _actions.Refresh(gameObject, data, filter);
-                        }
-                    });
-                }
-
-                if (categoryCollapsed)
-                    continue;
-
-                foreach (var definition in definitions)
-                {
-                    var propertyName = definition.Name;
-                    if (_actions.IsPropertyBlacklisted(materialName, propertyName))
-                        continue;
-                    if (propertyFilter.Count > 0
-                        && !propertyFilter.Any(word => MaterialEditorFilter.Matches(propertyName, word)))
-                        continue;
-
-                    var descriptor = new PropertyDescriptor(
-                        gameObject,
-                        data,
-                        material,
-                        projector,
-                        materialName,
-                        definition,
-                        category.Key);
-                    foreach (var row in _propertyRows.Create(descriptor))
-                        rows.Add(row);
-                }
-            }
-
-            AddExtensionPropertyRows(
-                rows,
-                gameObject,
-                data,
-                filter,
-                propertyFilter,
-                materialName,
-                material,
-                projector,
-                shaderName);
-        }
-
-        private void AddExtensionPropertyRows(
-            ICollection<RowModel> rows,
-            GameObject gameObject,
-            object data,
-            string filter,
-            IList<string> propertyFilter,
-            string materialName,
-            Material material,
-            Projector projector,
-            string shaderName)
-        {
-            var target = MaterialEditorExtensionRegistry.CreateTargetContext(
-                _editService,
-                gameObject,
-                data,
-                null,
-                material,
-                projector);
-            var context = new MaterialEditorPropertyContext(
-                target,
-                materialName,
-                shaderName);
-            var descriptors = MaterialEditorExtensionRegistry
-                .GetPropertyDescriptors(context)
-                .Where(descriptor =>
-                    descriptor != null
-                    && MaterialEditorExtensionRegistry.HasPropertyEditor(descriptor.EditorId)
-                    && !_actions.IsPropertyBlacklisted(
-                        materialName,
-                        string.IsNullOrEmpty(descriptor.PropertyName)
-                            ? descriptor.Id
-                            : descriptor.PropertyName))
-                .Where(descriptor =>
-                    propertyFilter.Count == 0
-                    || propertyFilter.Any(word =>
-                        MaterialEditorFilter.Matches(descriptor.DisplayName, word)
-                        || MaterialEditorFilter.Matches(descriptor.PropertyName, word)))
-                .ToList();
-
-            foreach (var category in descriptors.GroupBy(
-                         descriptor => descriptor.Category ?? string.Empty))
-            {
-                var categoryName = category.Key;
-                var categoryKey =
-                    $"{material.GetInstanceID()}:extension:{categoryName}";
-                bool collapsed;
-                var categoryCollapsed =
-                    !string.IsNullOrEmpty(categoryName)
-                    && _session.CollapsedPropertyCategories.TryGetValue(
-                        categoryKey,
-                        out collapsed)
-                    && collapsed;
-
-                if (!string.IsNullOrEmpty(categoryName))
-                {
-                    rows.Add(new PropertyCategoryRowModel(categoryName)
-                    {
-                        Collapsed = categoryCollapsed,
-                        CollapsedOnChange = value =>
-                        {
-                            if (value)
-                                _session.CollapsedPropertyCategories[categoryKey] = true;
-                            else
-                                _session.CollapsedPropertyCategories.Remove(categoryKey);
-                            _actions.Refresh(gameObject, data, filter);
-                        }
-                    });
-                }
-                if (categoryCollapsed)
-                    continue;
-
-                foreach (var descriptor in category
-                             .OrderBy(item => item.Order)
-                             .ThenBy(item => item.DisplayName))
-                {
-                    ShaderPropertyType builtInType;
-                    if (TryGetBuiltInPropertyType(descriptor.EditorId, out builtInType))
-                    {
-                        var propertyName = string.IsNullOrEmpty(descriptor.PropertyName)
-                            ? descriptor.Id
-                            : descriptor.PropertyName;
-                        if (builtInType != ShaderPropertyType.Keyword
-                            && !material.HasProperty($"_{propertyName}"))
-                            continue;
-
-                        var internalDescriptor = new PropertyDescriptor(
-                            gameObject,
-                            data,
-                            material,
-                            projector,
-                            materialName,
-                            descriptor,
-                            builtInType);
-                        foreach (var row in _propertyRows.Create(internalDescriptor))
-                            rows.Add(row);
-                        continue;
-                    }
-
-                    foreach (var row in _propertyRows.CreateExtension(context, descriptor))
-                        rows.Add(row);
-                }
-            }
-        }
-
-        private static bool TryGetBuiltInPropertyType(
-            string editorId,
-            out ShaderPropertyType type)
-        {
-            if (editorId == MaterialEditorPropertyEditorIds.Texture)
-            {
-                type = ShaderPropertyType.Texture;
-                return true;
-            }
-            if (editorId == MaterialEditorPropertyEditorIds.Color)
-            {
-                type = ShaderPropertyType.Color;
-                return true;
-            }
-            if (editorId == MaterialEditorPropertyEditorIds.Float)
-            {
-                type = ShaderPropertyType.Float;
-                return true;
-            }
-            if (editorId == MaterialEditorPropertyEditorIds.Boolean)
-            {
-                type = ShaderPropertyType.Keyword;
-                return true;
-            }
-
-            type = default(ShaderPropertyType);
-            return false;
-        }
-
-        private void AddProjectorRows(
-            ICollection<RowModel> rows,
-            GameObject gameObject,
-            object data,
-            IList<string> propertyFilter,
-            Projector projector)
-        {
-            foreach (var property in Enum.GetValues(typeof(ProjectorProperties)).Cast<ProjectorProperties>())
-            {
-                string name;
-                float value;
-                float maxValue;
-                GetProjectorPresentation(projector, property, out name, out value, out maxValue);
-
-                if (propertyFilter.Count > 0
-                    && !propertyFilter.Any(filterWord => MaterialEditorFilter.Matches(name, filterWord)))
-                    continue;
-
-                var original =
-                    _editService.GetProjectorPropertyValueOriginal(data, projector, property, gameObject)
-                    ?? value;
-                rows.Add(CreateFloatRow(
-                    gameObject,
-                    data,
-                    null,
-                    projector,
-                    name,
-                    value,
-                    original,
-                    0f,
-                    maxValue,
-                    () => _actions.SelectProjectorInterpolable(
-                        gameObject,
-                        property,
-                        projector.NameFormatted()),
-                    newValue =>
-                        _editService.SetProjectorProperty(
-                            data,
-                            projector,
-                            property,
-                            newValue,
-                            projector.gameObject),
-                    () =>
-                        _editService.RemoveProjectorProperty(
-                            data,
-                            projector,
-                            property,
-                            projector.gameObject)));
-            }
-        }
-
-        private static FloatPropertyRowModel CreateFloatRow(
-            GameObject gameObject,
-            object data,
-            Material material,
-            Projector projector,
-            string propertyName,
-            float value,
-            float original,
-            float? minValue,
-            float? maxValue,
-            Action selectInterpolable,
-            Action<float> changeValue,
-            Action resetValue)
-        {
-            var item = new FloatPropertyRowModel(propertyName)
-            {
-                GameObject = gameObject,
-                Data = data,
-                Material = material,
-                Projector = projector,
-                PropertyName = propertyName,
-                Value = value,
-                OriginalValue = original,
-                SelectInterpolable = selectInterpolable,
-                ValueOnChange = changeValue,
-                ValueOnReset = resetValue
-            };
-            if (minValue != null)
-                item.SliderMinimum = minValue.Value;
-            if (maxValue != null)
-                item.SliderMaximum = maxValue.Value;
-            return item;
-        }
-
-        private static void GetProjectorPresentation(
-            Projector projector,
-            ProjectorProperties property,
-            out string name,
-            out float value,
-            out float maxValue)
-        {
-            name = string.Empty;
-            value = 0f;
-            maxValue = 100f;
-            switch (property)
-            {
-                case ProjectorProperties.Enabled:
-                    name = "Enabled";
-                    value = Convert.ToSingle(projector.enabled);
-                    maxValue = 1f;
-                    break;
-                case ProjectorProperties.NearClipPlane:
-                    name = "Near Clip Plane";
-                    value = projector.nearClipPlane;
-                    maxValue = ProjectorNearClipPlaneMax.Value;
-                    break;
-                case ProjectorProperties.FarClipPlane:
-                    name = "Far Clip Plane";
-                    value = projector.farClipPlane;
-                    maxValue = ProjectorFarClipPlaneMax.Value;
-                    break;
-                case ProjectorProperties.FieldOfView:
-                    name = "Field Of View";
-                    value = projector.fieldOfView;
-                    maxValue = ProjectorFieldOfViewMax.Value;
-                    break;
-                case ProjectorProperties.AspectRatio:
-                    name = "Aspect Ratio";
-                    value = projector.aspectRatio;
-                    maxValue = ProjectorAspectRatioMax.Value;
-                    break;
-                case ProjectorProperties.Orthographic:
-                    name = "Orthographic";
-                    value = Convert.ToSingle(projector.orthographic);
-                    maxValue = 1f;
-                    break;
-                case ProjectorProperties.OrthographicSize:
-                    name = "Orthographic Size";
-                    value = projector.orthographicSize;
-                    maxValue = ProjectorOrthographicSizeMax.Value;
-                    break;
-                case ProjectorProperties.IgnoreMapLayer:
-                    name = "Ignore Map layer";
-                    value = Convert.ToSingle(
-                        projector.ignoreLayers == (projector.ignoreLayers | (1 << 11)));
-                    maxValue = 1f;
-                    break;
-                case ProjectorProperties.IgnoreCharaLayer:
-                    name = "Ignore Chara Layer";
-                    value = Convert.ToSingle(
-                        projector.ignoreLayers == (projector.ignoreLayers | (1 << 10)));
-                    maxValue = 1f;
-                    break;
-            }
         }
     }
 }

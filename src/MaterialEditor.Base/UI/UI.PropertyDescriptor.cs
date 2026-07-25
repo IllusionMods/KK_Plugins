@@ -34,7 +34,10 @@ namespace MaterialEditorAPI
                 PropertyName = definition.Name,
                 Category = category ?? string.Empty,
                 Minimum = definition.MinValue,
-                Maximum = definition.MaxValue
+                Maximum = definition.MaxValue,
+                TooltipText = ShaderUiMetadataRegistry.GetPropertyTooltip(
+                    material.shader.NameFormatted(),
+                    definition.Name)
             };
         }
 
@@ -109,19 +112,26 @@ namespace MaterialEditorAPI
 
         internal IEnumerable<RowModel> Create(PropertyDescriptor descriptor)
         {
+            IEnumerable<RowModel> rows;
             switch (descriptor.Type)
             {
                 case ShaderPropertyType.Texture:
-                    return CreateTextureRows(descriptor);
+                    rows = CreateTextureRows(descriptor);
+                    break;
                 case ShaderPropertyType.Color:
-                    return new[] { CreateColorRow(descriptor) };
+                    rows = new[] { CreateColorRow(descriptor) };
+                    break;
                 case ShaderPropertyType.Float:
-                    return new[] { CreateFloatRow(descriptor) };
+                    rows = new[] { CreateFloatRow(descriptor) };
+                    break;
                 case ShaderPropertyType.Keyword:
-                    return new[] { CreateKeywordRow(descriptor) };
+                    rows = new[] { CreateKeywordRow(descriptor) };
+                    break;
                 default:
-                    return new RowModel[0];
+                    rows = new RowModel[0];
+                    break;
             }
+            return WithTooltip(rows, descriptor.PublicDescriptor?.TooltipText);
         }
 
         internal IEnumerable<RowModel> CreateExtension(
@@ -134,6 +144,16 @@ namespace MaterialEditorAPI
             if (editor == null)
                 return new RowModel[0];
 
+            return WithTooltip(
+                CreateExtensionRows(context, descriptor, editor),
+                descriptor.TooltipText);
+        }
+
+        private IEnumerable<RowModel> CreateExtensionRows(
+            MaterialEditorPropertyContext context,
+            MaterialEditorPropertyDescriptor descriptor,
+            MaterialEditorPropertyEditor editor)
+        {
             var floatEditor = editor as MaterialEditorFloatPropertyEditor;
             if (floatEditor != null)
                 return new[] { CreateExtensionFloatRow(context, descriptor, floatEditor) };
@@ -153,6 +173,17 @@ namespace MaterialEditorAPI
             MaterialEditorPluginBase.Logger?.LogWarning(
                 $"Property editor '{descriptor.EditorId}' returned an unsupported editor type.");
             return new RowModel[0];
+        }
+
+        private static IEnumerable<RowModel> WithTooltip(
+            IEnumerable<RowModel> rows,
+            string tooltipText)
+        {
+            foreach (var row in rows)
+            {
+                row.TooltipText = tooltipText;
+                yield return row;
+            }
         }
 
         private IEnumerable<RowModel> CreateTextureRows(PropertyDescriptor descriptor)

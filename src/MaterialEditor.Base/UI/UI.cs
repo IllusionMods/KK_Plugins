@@ -36,6 +36,7 @@ namespace MaterialEditorAPI
         private MaterialEditorWindowView _windowView;
         private MaterialEditorSelectionController _selectionController;
         private MaterialEditorPresenter _presenter;
+        private MaterialEditorPresentation _presentation;
 
         private static readonly List<Action<MaterialEditorLabelClickEventArgs>> LabelClickHandlers = new List<Action<MaterialEditorLabelClickEventArgs>>();
 
@@ -174,7 +175,9 @@ namespace MaterialEditorAPI
                 CurrentFilter,
                 RefreshUI,
                 () => Visible = false,
-                () => _selectionController.ToggleSidePanels());
+                () => _selectionController.ToggleSidePanels(),
+                NavigateToCategory,
+                ToggleCategory);
             _selectionController = new MaterialEditorSelectionController(
                 Session,
                 _windowView,
@@ -314,7 +317,34 @@ namespace MaterialEditorAPI
             CurrentData = data;
             CurrentFilter = filter;
 
-            VirtualList.SetList(_presenter.BuildRows(go, data, filter, renderers, projectors));
+            _presentation = _presenter.BuildRows(go, data, filter, renderers, projectors);
+            VirtualList.SetList(_presentation.Rows);
+            _windowView.SetPresentation(_presentation);
+        }
+
+        private void NavigateToCategory(CategoryNavigationTarget target)
+        {
+            if (target == null)
+                return;
+            target.EnsureParentsExpanded();
+            PopulateList(CurrentGameObject, CurrentData, CurrentFilter);
+            StartCoroutine(ScrollToCategory(target.SectionId, target.Id));
+        }
+
+        private void ToggleCategory(CategoryNavigationTarget target)
+        {
+            if (target == null)
+                return;
+            target.SetCollapsed(!target.Collapsed);
+            PopulateList(CurrentGameObject, CurrentData, CurrentFilter);
+        }
+
+        private IEnumerator ScrollToCategory(string sectionId, string categoryId)
+        {
+            yield return null;
+            var target = _presentation?.FindCategory(sectionId, categoryId);
+            if (target != null && target.RowIndex >= 0)
+                VirtualList.ScrollToIndex(target.RowIndex);
         }
 
         /// <summary>

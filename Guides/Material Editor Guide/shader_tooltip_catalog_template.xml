@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MaterialEditorTooltips SchemaVersion="1">
+  <TooltipSet Id="family.common">
+    <Property Name="MainTex">Base color texture.</Property>
+    <Property Name="Alpha">
+      Opacity: 0 is transparent and 1 is opaque.
+    </Property>
+    <Category Name="Surface">
+      Surface color, texture, and opacity controls.
+    </Category>
+  </TooltipSet>
+
+  <Shader Name="Family/Standard">
+    <UseTooltipSet Ref="family.common"/>
+    <Tooltip>Standard shader for the Family series.</Tooltip>
+  </Shader>
+
+  <Shader Name="Family/ReversedAlpha">
+    <UseTooltipSet Ref="family.common"/>
+    <Property Name="Alpha">
+      Reversed opacity: 0 is opaque and 1 is transparent.
+    </Property>
+  </Shader>
+
+  <Shader Name="Family/Alternative">
+    <UseTooltipSet Ref="family.common"/>
+    <Property Name="Opacity" Ref="Alpha"/>
+  </Shader>
+</MaterialEditorTooltips>

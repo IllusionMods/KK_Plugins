@@ -17,6 +17,14 @@ namespace MaterialEditorAPI
         private static void CreateMaterialRow(Transform parent)
         {
             var panel = RowViewFactorySupport.CreatePanel("MaterialPanel", parent, MaterialColor);
+            var collapse = MaterialEditorControlFactory.CreateButton(
+                "MaterialCollapseButton",
+                panel.transform,
+                "-");
+            RowViewFactorySupport.SetWidth(collapse, SmallButtonWidth);
+            TooltipManager.AddTooltip(
+                collapse.gameObject,
+                "Expand or collapse this material section");
             RowViewFactorySupport.CreateLabel(
                 "MaterialLabel",
                 panel.transform,
@@ -62,6 +70,14 @@ namespace MaterialEditorAPI
         private static void CreateShaderRow(Transform parent)
         {
             var panel = RowViewFactorySupport.CreatePanel("ShaderPanel", parent, ItemColor);
+            var collapse = MaterialEditorControlFactory.CreateButton(
+                "ShaderCollapseButton",
+                panel.transform,
+                "-");
+            RowViewFactorySupport.SetWidth(collapse, SmallButtonWidth);
+            TooltipManager.AddTooltip(
+                collapse.gameObject,
+                "Expand or collapse this shader section");
             var label = RowViewFactorySupport.CreateLabel(
                 "ShaderLabel",
                 panel.transform,
@@ -69,6 +85,15 @@ namespace MaterialEditorAPI
                 LabelWidth,
                 1f);
             label.gameObject.AddComponent<LabelClickTrigger>();
+
+            var categories = MaterialEditorControlFactory.CreateButton(
+                "ShaderCategoriesCollapseButton",
+                panel.transform,
+                "--");
+            RowViewFactorySupport.SetWidth(categories, SmallButtonWidth);
+            TooltipManager.AddTooltip(
+                categories.gameObject,
+                "Expand or collapse all property categories");
 
             RowViewFactorySupport.CreateInterpolableButton(
                 "SelectInterpolableShaderButton",

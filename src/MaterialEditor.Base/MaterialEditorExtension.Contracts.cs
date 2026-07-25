@@ -21,7 +21,9 @@ namespace MaterialEditorAPI
         /// <summary>Registration of semantic property editors.</summary>
         PropertyEditors = 8,
         /// <summary>Stable facade for Material Editor edit and storage operations.</summary>
-        EditServiceFacade = 16
+        EditServiceFacade = 16,
+        /// <summary>English property tooltip metadata supplied by descriptors and shader catalogs.</summary>
+        PropertyTooltips = 32
     }
 
     /// <summary>
@@ -153,6 +155,8 @@ namespace MaterialEditorAPI
         public float? Minimum { get; set; }
         /// <summary>Optional upper bound used by the built-in float editor.</summary>
         public float? Maximum { get; set; }
+        /// <summary>Optional English tooltip shown when hovering the property label.</summary>
+        public string TooltipText { get; set; }
 
     }
 
