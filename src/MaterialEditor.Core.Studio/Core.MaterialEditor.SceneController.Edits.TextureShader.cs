@@ -274,7 +274,7 @@ namespace KK_Plugins.MaterialEditor
             else
             {
                 if (value == textureProperty.ScaleOriginal)
-                    RemoveMaterialFloatProperty(id, material, propertyName, false);
+                    RemoveMaterialTextureScale(id, material, propertyName, false);
                 else
                 {
                     textureProperty.Scale = value;

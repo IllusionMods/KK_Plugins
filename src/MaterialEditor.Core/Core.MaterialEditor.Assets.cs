@@ -35,12 +35,20 @@ namespace KK_Plugins.MaterialEditor
         private void LoadNormalMapConverter()
         {
             AssetBundle bundle = AssetBundle.LoadFromMemory(UILib.Resource.LoadEmbeddedResource($"{nameof(KK_Plugins)}.Resources.normal_convert.unity3d"));
-            var shader = bundle.LoadAsset<Shader>("normal_convert");
-            var shader_opengl = bundle.LoadAsset<Shader>("normal_convert_opengl");
-            var unpack_shader = bundle.LoadAsset<Shader>("unpack_normal");
-            NormalMapConvertMaterial = new Material(shader);
-            NormalMapOpenGLConvertMaterial = new Material(shader_opengl);
-            NormalMapUnpackDXT5Material = new Material(unpack_shader);
+            try
+            {
+                var shader = bundle.LoadAsset<Shader>("normal_convert");
+                var shader_opengl = bundle.LoadAsset<Shader>("normal_convert_opengl");
+                var unpack_shader = bundle.LoadAsset<Shader>("unpack_normal");
+                NormalMapConvertMaterial = new Material(shader);
+                NormalMapOpenGLConvertMaterial = new Material(shader_opengl);
+                NormalMapUnpackDXT5Material = new Material(unpack_shader);
+            }
+            finally
+            {
+                if (bundle != null)
+                    bundle.Unload(false);
+            }
         }
 
 #if EC || KKS

@@ -287,7 +287,7 @@ namespace KK_Plugins.MaterialEditor
                 if (data.data.TryGetValue("MaterialCopyList", out var copyProperties) && copyProperties != null)
                 {
                     List<MaterialEditorCharaController.MaterialCopy> properties = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialCopy>>((byte[])copyProperties);
-                    List<MaterialEditorCharaController.MaterialCopy> propertiesNew = MessagePackSerializer.Deserialize<List<MaterialEditorCharaController.MaterialCopy>>((byte[])copyProperties);
+                    List<MaterialEditorCharaController.MaterialCopy> propertiesNew = new List<MaterialEditorCharaController.MaterialCopy>();
 
                     foreach (var property in properties)
                     {

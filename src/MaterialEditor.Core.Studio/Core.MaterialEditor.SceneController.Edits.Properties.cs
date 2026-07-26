@@ -55,7 +55,10 @@ namespace KK_Plugins.MaterialEditor
             var value = MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.Value;
             if (value.IsNullOrEmpty())
                 return null;
-            return float.Parse(value);
+            float parsedValue;
+            return float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out parsedValue)
+                ? parsedValue
+                : (float?)null;
         }
         /// <summary>
         /// Get the saved material property's original value or null if none is saved
@@ -69,7 +72,10 @@ namespace KK_Plugins.MaterialEditor
             var valueOriginal = MaterialFloatPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted())?.ValueOriginal;
             if (valueOriginal.IsNullOrEmpty())
                 return null;
-            return float.Parse(valueOriginal);
+            float parsedValue;
+            return float.TryParse(valueOriginal, NumberStyles.Float, CultureInfo.InvariantCulture, out parsedValue)
+                ? parsedValue
+                : (float?)null;
         }
         /// <summary>
         /// Remove the saved material property value if one is saved and optionally also update the materials
