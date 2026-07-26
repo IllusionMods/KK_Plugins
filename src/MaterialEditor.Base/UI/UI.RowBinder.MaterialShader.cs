@@ -79,13 +79,15 @@ namespace MaterialEditorAPI
                 item.TooltipText,
                 "Shader name");
             controls.CollapseButton.GetComponentInChildren<Text>().text =
-                item.Collapsed ? "+" : "-";
+                item.Collapsed ? FoldGlyphs.Collapsed : FoldGlyphs.Expanded;
             listeners.Listen(
                 controls.CollapseButton, () => item.CollapsedOnChange(!item.Collapsed));
 
             controls.CategoriesCollapseButton.gameObject.SetActive(item.HasCategories);
             controls.CategoriesCollapseButton.GetComponentInChildren<Text>().text =
-                item.AllCategoriesCollapsed ? "++" : "--";
+                item.AllCategoriesCollapsed
+                    ? FoldGlyphs.AllCollapsed
+                    : FoldGlyphs.AllExpanded;
             if (item.HasCategories)
                 listeners.Listen(
                     controls.CategoriesCollapseButton,

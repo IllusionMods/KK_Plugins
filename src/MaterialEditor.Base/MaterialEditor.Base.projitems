@@ -12,6 +12,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)NormalMapManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IMaterialEditorColorPalette.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MaterialAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IMaterialEditRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LegacyMaterialEditRepository.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MaterialEditService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MaterialEditorEditServiceFacade.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MaterialEditorExtension.Contracts.cs" />
@@ -24,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PluginBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.PropertyOrganizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RepositoryContract.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SessionState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SelectionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.StyleSystem.cs" />
@@ -33,6 +36,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.WindowView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.CategoryNavigator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.MaterialEditorPresenter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.MaterialSectionContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.MaterialSectionPresenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Presentation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ShaderUiMetadata.cs" />

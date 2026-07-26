@@ -73,7 +73,7 @@ namespace MaterialEditorAPI
             var collapse = MaterialEditorControlFactory.CreateButton(
                 "ShaderCollapseButton",
                 panel.transform,
-                "-");
+                FoldGlyphs.Expanded);
             RowViewFactorySupport.SetWidth(collapse, SmallButtonWidth);
             TooltipManager.AddTooltip(
                 collapse.gameObject,
@@ -89,7 +89,7 @@ namespace MaterialEditorAPI
             var categories = MaterialEditorControlFactory.CreateButton(
                 "ShaderCategoriesCollapseButton",
                 panel.transform,
-                "--");
+                FoldGlyphs.AllExpanded);
             RowViewFactorySupport.SetWidth(categories, SmallButtonWidth);
             TooltipManager.AddTooltip(
                 categories.gameObject,

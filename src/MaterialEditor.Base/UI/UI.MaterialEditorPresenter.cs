@@ -104,7 +104,8 @@ namespace MaterialEditorAPI
 
             foreach (var material in materials.Values)
             {
-                _materialSections.AddRows(
+                _materialSections.AddRows(new MaterialSectionContext(
+                    _editService,
                     presentation,
                     gameObject,
                     data,
@@ -112,12 +113,13 @@ namespace MaterialEditorAPI
                     allRenderers,
                     propertyFilter,
                     material,
-                    null);
+                    null));
             }
 
             foreach (var projector in rendererFilter.Count == 0 ? allProjectors : projectors)
             {
-                _materialSections.AddRows(
+                _materialSections.AddRows(new MaterialSectionContext(
+                    _editService,
                     presentation,
                     gameObject,
                     data,
@@ -125,7 +127,7 @@ namespace MaterialEditorAPI
                     allRenderers,
                     propertyFilter,
                     projector.material,
-                    projector);
+                    projector));
             }
 
             return presentation;
@@ -234,6 +236,10 @@ namespace MaterialEditorAPI
             Renderer renderer)
         {
             var rendererName = renderer.NameFormatted();
+            var edits = new MaterialEditorEditService(
+                _editService,
+                gameObject,
+                data);
             rows.Add(new RendererRowModel()
             {
                 GameObject = gameObject,
@@ -251,11 +257,9 @@ namespace MaterialEditorAPI
                         rendererName)
             });
 
-            var originalValue = _editService.GetRendererPropertyValueOriginal(
-                data,
+            var originalValue = edits.GetOriginalRendererProperty(
                 renderer,
-                RendererProperties.Enabled,
-                gameObject);
+                RendererProperties.Enabled);
             var originalEnabled = originalValue.IsNullOrEmpty()
                 ? renderer.enabled
                 : originalValue == "1";
@@ -264,21 +268,19 @@ namespace MaterialEditorAPI
                 Value = renderer.enabled,
                 OriginalValue = originalEnabled,
                 ValueOnChange = value =>
-                    _editService.SetRendererProperty(
-                        data,
+                    edits.SetRendererProperty(
                         renderer,
                         RendererProperties.Enabled,
-                        (value ? 1 : 0).ToString(),
-                        gameObject),
+                        (value ? 1 : 0).ToString()),
                 ValueOnReset = () =>
-                    _editService.RemoveRendererProperty(data, renderer, RendererProperties.Enabled, gameObject)
+                    edits.ResetRendererProperty(
+                        renderer,
+                        RendererProperties.Enabled)
             });
 
-            originalValue = _editService.GetRendererPropertyValueOriginal(
-                data,
+            originalValue = edits.GetOriginalRendererProperty(
                 renderer,
-                RendererProperties.ShadowCastingMode,
-                gameObject);
+                RendererProperties.ShadowCastingMode);
             var originalShadowCastingMode = originalValue.IsNullOrEmpty()
                 ? renderer.shadowCastingMode
                 : (UnityEngine.Rendering.ShadowCastingMode)int.Parse(originalValue);
@@ -287,25 +289,19 @@ namespace MaterialEditorAPI
                 Value = (int)renderer.shadowCastingMode,
                 OriginalValue = (int)originalShadowCastingMode,
                 ValueOnChange = value =>
-                    _editService.SetRendererProperty(
-                        data,
+                    edits.SetRendererProperty(
                         renderer,
                         RendererProperties.ShadowCastingMode,
-                        value.ToString(),
-                        gameObject),
+                        value.ToString()),
                 ValueOnReset = () =>
-                    _editService.RemoveRendererProperty(
-                        data,
+                    edits.ResetRendererProperty(
                         renderer,
-                        RendererProperties.ShadowCastingMode,
-                        gameObject)
+                        RendererProperties.ShadowCastingMode)
             });
 
-            originalValue = _editService.GetRendererPropertyValueOriginal(
-                data,
+            originalValue = edits.GetOriginalRendererProperty(
                 renderer,
-                RendererProperties.ReceiveShadows,
-                gameObject);
+                RendererProperties.ReceiveShadows);
             var originalReceiveShadows = originalValue.IsNullOrEmpty()
                 ? renderer.receiveShadows
                 : originalValue == "1";
@@ -314,18 +310,14 @@ namespace MaterialEditorAPI
                 Value = renderer.receiveShadows,
                 OriginalValue = originalReceiveShadows,
                 ValueOnChange = value =>
-                    _editService.SetRendererProperty(
-                        data,
+                    edits.SetRendererProperty(
                         renderer,
                         RendererProperties.ReceiveShadows,
-                        (value ? 1 : 0).ToString(),
-                        gameObject),
+                        (value ? 1 : 0).ToString()),
                 ValueOnReset = () =>
-                    _editService.RemoveRendererProperty(
-                        data,
+                    edits.ResetRendererProperty(
                         renderer,
-                        RendererProperties.ReceiveShadows,
-                        gameObject)
+                        RendererProperties.ReceiveShadows)
             });
 
             var meshRenderer = renderer as SkinnedMeshRenderer;
@@ -333,11 +325,9 @@ namespace MaterialEditorAPI
                 return;
 
 #if !KK
-            originalValue = _editService.GetRendererPropertyValueOriginal(
-                data,
+            originalValue = edits.GetOriginalRendererProperty(
                 renderer,
-                RendererProperties.UpdateWhenOffscreen,
-                gameObject);
+                RendererProperties.UpdateWhenOffscreen);
             var originalUpdateWhenOffscreen = originalValue.IsNullOrEmpty()
                 ? meshRenderer.updateWhenOffscreen
                 : originalValue == "1";
@@ -346,50 +336,38 @@ namespace MaterialEditorAPI
                 Value = meshRenderer.updateWhenOffscreen,
                 OriginalValue = originalUpdateWhenOffscreen,
                 ValueOnChange = value =>
-                    _editService.SetRendererProperty(
-                        data,
+                    edits.SetRendererProperty(
                         renderer,
                         RendererProperties.UpdateWhenOffscreen,
-                        (value ? 1 : 0).ToString(),
-                        gameObject),
+                        (value ? 1 : 0).ToString()),
                 ValueOnReset = () =>
-                    _editService.RemoveRendererProperty(
-                        data,
+                    edits.ResetRendererProperty(
                         renderer,
-                        RendererProperties.UpdateWhenOffscreen,
-                        gameObject)
+                        RendererProperties.UpdateWhenOffscreen)
             });
 #endif
 
-            originalValue = _editService.GetRendererPropertyValueOriginal(
-                data,
+            originalValue = edits.GetOriginalRendererProperty(
                 renderer,
-                RendererProperties.RecalculateNormals,
-                gameObject);
+                RendererProperties.RecalculateNormals);
             var originalRecalculateNormals = !originalValue.IsNullOrEmpty() && originalValue == "1";
-            var currentValue = _editService.GetRendererPropertyValue(
-                data,
+            var currentValue = edits.GetRendererProperty(
                 renderer,
-                RendererProperties.RecalculateNormals,
-                gameObject);
+                RendererProperties.RecalculateNormals);
             var recalculateNormals = !currentValue.IsNullOrEmpty() && currentValue == "1";
             rows.Add(new RendererRecalculateNormalsRowModel()
             {
                 Value = recalculateNormals,
                 OriginalValue = originalRecalculateNormals,
                 ValueOnChange = value =>
-                    _editService.SetRendererProperty(
-                        data,
+                    edits.SetRendererProperty(
                         renderer,
                         RendererProperties.RecalculateNormals,
-                        (value ? 1 : 0).ToString(),
-                        gameObject),
+                        (value ? 1 : 0).ToString()),
                 ValueOnReset = () =>
-                    _editService.RemoveRendererProperty(
-                        data,
+                    edits.ResetRendererProperty(
                         renderer,
-                        RendererProperties.RecalculateNormals,
-                        gameObject)
+                        RendererProperties.RecalculateNormals)
             });
         }
     }

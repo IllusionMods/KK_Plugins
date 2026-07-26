@@ -4,6 +4,14 @@ using UnityEngine.UI;
 
 namespace MaterialEditorAPI
 {
+    internal static class FoldGlyphs
+    {
+        internal const string Collapsed = "∨";
+        internal const string Expanded = "∧";
+        internal const string AllCollapsed = "∨∨";
+        internal const string AllExpanded = "∧∧";
+    }
+
     // Compatibility adapter retained for the existing row construction code.
     internal static class RowStyle
     {

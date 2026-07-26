@@ -13,6 +13,7 @@ namespace MaterialEditorAPI
         internal Image HeaderPanel { get; private set; }
         internal ScrollRect ScrollableUI { get; private set; }
         internal InputField FilterInputField { get; private set; }
+        internal Button CategoryNavigatorButton { get; private set; }
         internal Button ViewListButton { get; private set; }
 
         internal SelectListPanel RendererList { get; private set; }
@@ -131,9 +132,23 @@ namespace MaterialEditorAPI
                 MaterialEditorTextRole.Title);
             nameText.transform.SetRect();
 
+            CategoryNavigatorButton = MaterialEditorControlFactory.CreateButton(
+                "CategoryNavigatorButton",
+                HeaderPanel.transform,
+                ">");
+            CategoryNavigatorButton.transform.SetRect(
+                0f, 0f, 0f, 1f,
+                1f, 1f, 20f, -1f);
+            CategoryNavigatorButton.onClick.AddListener(ToggleCategoryNavigator);
+            TooltipManager.AddTooltip(
+                CategoryNavigatorButton.gameObject,
+                "Show or hide the category navigator");
+
             FilterInputField = MaterialEditorControlFactory.CreateInputField("Filter", HeaderPanel.transform, "Filter");
             FilterInputField.text = filter;
-            FilterInputField.transform.SetRect(0f, 0f, 0f, 1f, 1f, 1f, 100f, -1f);
+            FilterInputField.transform.SetRect(
+                0f, 0f, 0f, 1f,
+                21f, 1f, 100f, -1f);
             FilterInputField.onValueChanged.AddListener(value => refresh(value));
             TooltipManager.AddTooltip(FilterInputField.gameObject, @"Filter visible items in the window.
 
@@ -196,6 +211,7 @@ namespace MaterialEditorAPI
                 MainPanel.transform,
                 navigateToCategory,
                 toggleCategory);
+            SetCategoryNavigatorGlyph(CategoryNavigator.Expanded);
             VirtualList.ViewportAnchorIndexChanged += CategoryNavigator.SetViewportAnchor;
 
             BuildSelectionPanels();
@@ -206,6 +222,20 @@ namespace MaterialEditorAPI
         internal void SetPresentation(MaterialEditorPresentation presentation)
         {
             CategoryNavigator.SetPresentation(presentation);
+        }
+
+        private void ToggleCategoryNavigator()
+        {
+            if (CategoryNavigator == null)
+                return;
+
+            SetCategoryNavigatorGlyph(CategoryNavigator.ToggleExpanded());
+        }
+
+        private void SetCategoryNavigatorGlyph(bool expanded)
+        {
+            CategoryNavigatorButton.GetComponentInChildren<Text>().text =
+                expanded ? ">" : "<";
         }
 
         private void BuildSelectionPanels()

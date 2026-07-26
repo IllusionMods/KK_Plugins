@@ -39,7 +39,7 @@ namespace MaterialEditorAPI
                 item.TooltipText,
                 "Category name");
             controls.CollapseButton.GetComponentInChildren<Text>().text =
-                item.Collapsed ? "+" : "-";
+                item.Collapsed ? FoldGlyphs.Collapsed : FoldGlyphs.Expanded;
             listeners.Listen(controls.CollapseButton, () =>
             {
                 item.Collapsed = !item.Collapsed;

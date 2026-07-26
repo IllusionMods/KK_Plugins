@@ -17,6 +17,8 @@ namespace MaterialEditorAPI
         private MaterialEditorPresentation _presentation;
         private string _sectionId;
         private int _viewportAnchor = -1;
+        private bool _expanded = true;
+        private bool _hasCategories;
 
         internal CategoryNavigatorView(
             Transform parent,
@@ -93,6 +95,7 @@ namespace MaterialEditorAPI
         }
 
         internal Image Panel { get; }
+        internal bool Expanded => _expanded;
 
         internal void ApplySettings()
         {
@@ -115,6 +118,13 @@ namespace MaterialEditorAPI
             SetViewportAnchor(rowIndex, false);
         }
 
+        internal bool ToggleExpanded()
+        {
+            _expanded = !_expanded;
+            UpdateVisibility();
+            return _expanded;
+        }
+
         private void SetViewportAnchor(int rowIndex, bool forceRebuild)
         {
             _viewportAnchor = rowIndex;
@@ -122,14 +132,21 @@ namespace MaterialEditorAPI
             if (section == null || section.Categories.Count == 0)
             {
                 _sectionId = null;
-                Panel.gameObject.SetActive(false);
+                _hasCategories = false;
+                UpdateVisibility();
                 return;
             }
 
-            Panel.gameObject.SetActive(true);
+            _hasCategories = true;
+            UpdateVisibility();
             if (forceRebuild || section.Id != _sectionId)
                 Rebuild(section);
             UpdateHighlight(section.FindCategoryAtRow(rowIndex));
+        }
+
+        private void UpdateVisibility()
+        {
+            Panel.gameObject.SetActive(_expanded && _hasCategories);
         }
 
         private void Rebuild(MaterialSectionPresentation section)
@@ -172,7 +189,9 @@ namespace MaterialEditorAPI
             var collapse = MaterialEditorControlFactory.CreateButton(
                 "CategoryNavigationCollapse",
                 root.transform,
-                target.Collapsed ? "+" : "-");
+                target.Collapsed
+                    ? FoldGlyphs.Collapsed
+                    : FoldGlyphs.Expanded);
             var collapseLayout = collapse.gameObject.AddComponent<LayoutElement>();
             collapseLayout.minWidth = MaterialEditorLayout.SmallButtonWidth;
             collapseLayout.preferredWidth = MaterialEditorLayout.SmallButtonWidth;
