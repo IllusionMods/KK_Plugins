@@ -13,6 +13,8 @@ namespace MaterialEditorAPI
         internal readonly List<Material> SelectedMaterials = new List<Material>();
         internal readonly List<Renderer> SelectedMaterialRenderers = new List<Renderer>();
         internal readonly Dictionary<string, bool> CollapsedPropertyCategories = new Dictionary<string, bool>();
+        internal readonly Dictionary<string, bool> CollapsedMaterialSections = new Dictionary<string, bool>();
+        internal readonly Dictionary<string, bool> CollapsedShaderSections = new Dictionary<string, bool>();
 
         internal bool ListsVisible;
         internal bool RenameListVisible;
@@ -35,6 +37,25 @@ namespace MaterialEditorAPI
             _objExportPending = false;
             _objRenderer = null;
             return renderer != null;
+        }
+
+        internal static bool IsCollapsed(
+            IDictionary<string, bool> states,
+            string key)
+        {
+            bool collapsed;
+            return states.TryGetValue(key, out collapsed) && collapsed;
+        }
+
+        internal static void SetCollapsed(
+            IDictionary<string, bool> states,
+            string key,
+            bool collapsed)
+        {
+            if (collapsed)
+                states[key] = true;
+            else
+                states.Remove(key);
         }
     }
 }

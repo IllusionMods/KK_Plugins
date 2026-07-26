@@ -87,6 +87,7 @@ namespace MaterialEditorAPI
         internal MaterialRowControls(RowBinder owner)
             : base(owner.GetUIComponent<CanvasGroup>("MaterialPanel"))
         {
+            CollapseButton = owner.GetUIComponent<Button>("MaterialCollapseButton");
             Label = owner.GetUIComponent<Text>("MaterialLabel");
             Name = owner.GetUIComponent<Text>("MaterialText");
             LabelClickTrigger = owner.GetUIComponent<LabelClickTrigger>("MaterialText");
@@ -96,6 +97,7 @@ namespace MaterialEditorAPI
             RenameButton = owner.GetUIComponent<Button>("MaterialRename");
         }
 
+        internal Button CollapseButton { get; }
         internal Text Label { get; }
         internal Text Name { get; }
         internal LabelClickTrigger LabelClickTrigger { get; }
@@ -110,6 +112,8 @@ namespace MaterialEditorAPI
         internal ShaderRowControls(RowBinder owner)
             : base(owner.GetUIComponent<CanvasGroup>("ShaderPanel"))
         {
+            CollapseButton = owner.GetUIComponent<Button>("ShaderCollapseButton");
+            CategoriesCollapseButton = owner.GetUIComponent<Button>("ShaderCategoriesCollapseButton");
             Label = owner.GetUIComponent<Text>("ShaderLabel");
             LabelClickTrigger = owner.GetUIComponent<LabelClickTrigger>("ShaderLabel");
             Dropdown = owner.GetUIComponent<Dropdown>("ShaderDropdown");
@@ -117,6 +121,8 @@ namespace MaterialEditorAPI
             ResetButton = owner.GetUIComponent<Button>("ShaderResetButton");
         }
 
+        internal Button CollapseButton { get; }
+        internal Button CategoriesCollapseButton { get; }
         internal Text Label { get; }
         internal LabelClickTrigger LabelClickTrigger { get; }
         internal Dropdown Dropdown { get; }

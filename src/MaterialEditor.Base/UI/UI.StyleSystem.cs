@@ -10,6 +10,7 @@ namespace MaterialEditorAPI
         internal const float HeaderHeight = 20f;
         internal const float ScrollbarOffset = -15f;
         internal const float RowHeight = 22f;
+        internal const float CategoryNavigatorWidth = 150f;
 
         internal const float LabelWidth = 0f;
         internal const float ButtonWidth = 100f;
@@ -67,6 +68,7 @@ namespace MaterialEditorAPI
         internal static readonly Color MainPanelColor = Color.white;
         internal static readonly Color HeaderColor = Color.gray;
         internal static readonly Color SidePanelColor = new Color(0.42f, 0.42f, 0.42f);
+        internal static readonly Color NavigatorShaderHeaderColor = new Color(0.64f, 0.64f, 0.64f);
         internal static readonly Color RowColor = new Color(1f, 1f, 1f, 0.6f);
         internal static readonly Color RendererColor = new Color(0.984f, 0.600f, 0.008f, 0.5f);
         internal static readonly Color MaterialColor = new Color(0.400f, 0.690f, 0.196f, 0.5f);

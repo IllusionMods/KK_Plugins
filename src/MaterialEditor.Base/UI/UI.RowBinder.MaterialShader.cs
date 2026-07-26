@@ -33,8 +33,16 @@ namespace MaterialEditorAPI
         {
             var controls = _controls.Material;
             controls.SetVisible(true);
+            controls.CollapseButton.GetComponentInChildren<Text>().text =
+                item.Collapsed ? "+" : "-";
+            listeners.Listen(
+                controls.CollapseButton, () => item.CollapsedOnChange(!item.Collapsed));
             ChangedStateBinding.SetLabel(controls.Label, item.LabelText);
             controls.Name.text = item.MaterialName;
+            TooltipBinding.Bind(
+                controls.Name.gameObject,
+                item.TooltipText,
+                "Material name");
             LabelClickBinding.Bind(
                 listeners,
                 controls.LabelClickTrigger,
@@ -66,6 +74,24 @@ namespace MaterialEditorAPI
         {
             var controls = _controls.Shader;
             controls.SetVisible(true);
+            TooltipBinding.Bind(
+                controls.Label.gameObject,
+                item.TooltipText,
+                "Shader name");
+            controls.CollapseButton.GetComponentInChildren<Text>().text =
+                item.Collapsed ? FoldGlyphs.Collapsed : FoldGlyphs.Expanded;
+            listeners.Listen(
+                controls.CollapseButton, () => item.CollapsedOnChange(!item.Collapsed));
+
+            controls.CategoriesCollapseButton.gameObject.SetActive(item.HasCategories);
+            controls.CategoriesCollapseButton.GetComponentInChildren<Text>().text =
+                item.AllCategoriesCollapsed
+                    ? FoldGlyphs.AllCollapsed
+                    : FoldGlyphs.AllExpanded;
+            if (item.HasCategories)
+                listeners.Listen(
+                    controls.CategoriesCollapseButton,
+                    () => item.CategoriesCollapsedOnChange(!item.AllCategoriesCollapsed));
 
             System.Action refresh = () =>
                 ChangedStateBinding.Apply(

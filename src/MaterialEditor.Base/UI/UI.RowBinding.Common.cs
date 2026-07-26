@@ -109,6 +109,30 @@ namespace MaterialEditorAPI
         }
     }
 
+    internal static class TooltipBinding
+    {
+        internal static void Bind(
+            GameObject target,
+            string tooltipText,
+            string fallbackText = null)
+        {
+            if (target == null)
+                return;
+
+            var text = string.IsNullOrEmpty(tooltipText)
+                ? fallbackText
+                : tooltipText;
+            var tooltip = target.GetComponent<Tooltip>();
+            if (tooltip == null && !string.IsNullOrEmpty(text))
+                tooltip = TooltipManager.AddTooltip(target, text);
+            if (tooltip == null)
+                return;
+
+            tooltip.TooltipText = text ?? string.Empty;
+            tooltip.enabled = !string.IsNullOrEmpty(text);
+        }
+    }
+
     internal static class ToggleBinding
     {
         internal static void Bind(

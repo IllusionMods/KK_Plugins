@@ -11,7 +11,8 @@ using MaterialEditorAPI;
 
 if (!MaterialEditorExtensionApi.Supports(
         MaterialEditorApiCapability.SelectionEvents |
-        MaterialEditorApiCapability.EditServiceFacade))
+        MaterialEditorApiCapability.EditServiceFacade |
+        MaterialEditorApiCapability.PropertyTooltips))
 {
     return;
 }
@@ -122,7 +123,8 @@ private static IEnumerable<MaterialEditorPropertyDescriptor> GetProperties(
         PropertyName = "RimPower",
         Category = "Extension",
         Minimum = 0f,
-        Maximum = 8f
+        Maximum = 8f,
+        TooltipText = "Controls the width of the shader rim."
     };
 }
 ```
@@ -137,6 +139,8 @@ Built-in editor IDs are:
 Built-in editors use the descriptor's `PropertyName` and the Material Editor edit-service facade, so values are persisted through the normal repository. Non-keyword shader properties are shown only when the material reports that the backing property exists.
 
 Providers are evaluated when the Material Editor row list is rebuilt. They must be deterministic, avoid long-running work, and return new descriptors or treat returned descriptors as immutable after the call.
+
+Shader asset authors can provide equivalent built-in shader, category, and property metadata through XML `TextAsset` catalogs. See [Shader Tooltip Catalogs.md](Shader%20Tooltip%20Catalogs.md).
 
 ## Custom Property Editors
 

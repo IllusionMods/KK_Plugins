@@ -24,7 +24,7 @@ namespace MaterialEditorAPI
             var collapse = MaterialEditorControlFactory.CreateButton(
                 "PropertyCategoryCollapseButton",
                 panel.transform,
-                "-");
+                FoldGlyphs.Expanded);
             RowViewFactorySupport.SetWidth(collapse, SmallButtonWidth);
             TooltipManager.AddTooltip(
                 collapse.gameObject,

@@ -10,6 +10,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SceneController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SceneController.Edits.Core.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SceneController.Edits.Properties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SceneController.Edits.TextureShader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SceneController.Models.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SceneRepository.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Studio.ColorPalette.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Studio.cs" />

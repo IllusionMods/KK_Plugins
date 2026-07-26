@@ -8,6 +8,7 @@ MaterialEditorAPI.MaterialEditorApiCapability.LabelClickEvents = 1 -> MaterialEd
 MaterialEditorAPI.MaterialEditorApiCapability.None = 0 -> MaterialEditorAPI.MaterialEditorApiCapability
 MaterialEditorAPI.MaterialEditorApiCapability.PropertyDescriptorProviders = 4 -> MaterialEditorAPI.MaterialEditorApiCapability
 MaterialEditorAPI.MaterialEditorApiCapability.PropertyEditors = 8 -> MaterialEditorAPI.MaterialEditorApiCapability
+MaterialEditorAPI.MaterialEditorApiCapability.PropertyTooltips = 32 -> MaterialEditorAPI.MaterialEditorApiCapability
 MaterialEditorAPI.MaterialEditorApiCapability.SelectionEvents = 2 -> MaterialEditorAPI.MaterialEditorApiCapability
 MaterialEditorAPI.MaterialEditorBooleanPropertyEditor
 MaterialEditorAPI.MaterialEditorBooleanPropertyEditor.MaterialEditorBooleanPropertyEditor(bool value, bool originalValue, System.Action<bool> valueChanged, System.Action reset) -> void
@@ -122,6 +123,8 @@ MaterialEditorAPI.MaterialEditorPropertyDescriptor.PropertyName.get -> string
 MaterialEditorAPI.MaterialEditorPropertyDescriptor.PropertyName.set -> void
 MaterialEditorAPI.MaterialEditorPropertyDescriptor.Tag.get -> object
 MaterialEditorAPI.MaterialEditorPropertyDescriptor.Tag.set -> void
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.TooltipText.get -> string
+MaterialEditorAPI.MaterialEditorPropertyDescriptor.TooltipText.set -> void
 MaterialEditorAPI.MaterialEditorPropertyDescriptorProvider
 MaterialEditorAPI.MaterialEditorPropertyEditor
 MaterialEditorAPI.MaterialEditorPropertyEditor.MaterialEditorPropertyEditor() -> void

@@ -28,6 +28,7 @@ namespace MaterialEditorAPI
         {
             var controls = _controls.Float;
             controls.SetVisible(true);
+            TooltipBinding.Bind(controls.Label.gameObject, item.TooltipText);
 
             System.Action refresh = () =>
                 ChangedStateBinding.Apply(
@@ -85,6 +86,7 @@ namespace MaterialEditorAPI
         {
             var controls = _controls.Keyword;
             controls.SetVisible(true);
+            TooltipBinding.Bind(controls.Label.gameObject, item.TooltipText);
             ToggleBinding.Bind(
                 listeners,
                 controls,
