@@ -14,6 +14,7 @@ namespace MaterialEditorAPI
         internal ScrollRect ScrollableUI { get; private set; }
         internal InputField FilterInputField { get; private set; }
         internal Button CategoryNavigatorButton { get; private set; }
+        internal Button CollapseAllCategoriesButton { get; private set; }
         internal Button ViewListButton { get; private set; }
 
         internal SelectListPanel RendererList { get; private set; }
@@ -31,12 +32,13 @@ namespace MaterialEditorAPI
             Action<string> refresh,
             Action close,
             Action toggleSidePanels,
+            Action toggleAllCategories,
             Action<CategoryNavigationTarget> navigateToCategory,
             Action<CategoryNavigationTarget> toggleCategory)
         {
             Build(
                 owner, filter, refresh, close, toggleSidePanels,
-                navigateToCategory, toggleCategory);
+                toggleAllCategories, navigateToCategory, toggleCategory);
         }
 
         internal void PrepareForDisplay(string filter)
@@ -103,6 +105,7 @@ namespace MaterialEditorAPI
             Action<string> refresh,
             Action close,
             Action toggleSidePanels,
+            Action toggleAllCategories,
             Action<CategoryNavigationTarget> navigateToCategory,
             Action<CategoryNavigationTarget> toggleCategory)
         {
@@ -172,6 +175,19 @@ namespace MaterialEditorAPI
                 MaterialEditorTextRole.Label);
             persistSearchText.transform.SetRect(0f, 0.15f, 1f, 0.85f, 120f, 0f, 0f, 0f);
 
+            CollapseAllCategoriesButton = MaterialEditorControlFactory.CreateButton(
+                "CollapseAllCategoriesButton",
+                HeaderPanel.transform,
+                FoldGlyphs.AllCollapsed);
+            CollapseAllCategoriesButton.transform.SetRect(
+                1f, 0f, 1f, 1f,
+                -60f, 1f, -41f, -1f);
+            CollapseAllCategoriesButton.onClick.AddListener(
+                () => toggleAllCategories());
+            TooltipManager.AddTooltip(
+                CollapseAllCategoriesButton.gameObject,
+                "Expand or collapse all property categories for every shader in the current item");
+
             var closeButton = MaterialEditorControlFactory.CreateButton("CloseButton", HeaderPanel.transform, "");
             closeButton.transform.SetRect(1f, 0f, 1f, 1f, -40f, 1f, -21f, -1f);
             closeButton.onClick.AddListener(() => close());
@@ -222,6 +238,10 @@ namespace MaterialEditorAPI
         internal void SetPresentation(MaterialEditorPresentation presentation)
         {
             CategoryNavigator.SetPresentation(presentation);
+            CollapseAllCategoriesButton.GetComponentInChildren<Text>().text =
+                presentation != null && presentation.AllCategoriesCollapsed
+                    ? FoldGlyphs.AllExpanded
+                    : FoldGlyphs.AllCollapsed;
         }
 
         private void ToggleCategoryNavigator()

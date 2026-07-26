@@ -71,6 +71,29 @@ namespace MaterialEditorAPI
             }
             return null;
         }
+
+        internal bool AllCategoriesCollapsed
+        {
+            get
+            {
+                var hasCategories = false;
+                foreach (var section in MaterialSections)
+                {
+                    if (section.Categories.Count == 0)
+                        continue;
+                    hasCategories = true;
+                    if (!section.AllCategoriesCollapsed)
+                        return false;
+                }
+                return hasCategories;
+            }
+        }
+
+        internal void SetAllCategoriesCollapsed(bool collapsed)
+        {
+            foreach (var section in MaterialSections)
+                section.SetAllCategoriesCollapsed(collapsed);
+        }
     }
 
     internal sealed class MaterialSectionPresentation

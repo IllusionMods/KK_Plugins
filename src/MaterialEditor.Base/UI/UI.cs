@@ -176,6 +176,7 @@ namespace MaterialEditorAPI
                 RefreshUI,
                 () => Visible = false,
                 () => _selectionController.ToggleSidePanels(),
+                ToggleAllCategories,
                 NavigateToCategory,
                 ToggleCategory);
             _selectionController = new MaterialEditorSelectionController(
@@ -336,6 +337,16 @@ namespace MaterialEditorAPI
             if (target == null)
                 return;
             target.SetCollapsed(!target.Collapsed);
+            PopulateList(CurrentGameObject, CurrentData, CurrentFilter);
+        }
+
+        private void ToggleAllCategories()
+        {
+            if (_presentation == null)
+                return;
+
+            _presentation.SetAllCategoriesCollapsed(
+                !_presentation.AllCategoriesCollapsed);
             PopulateList(CurrentGameObject, CurrentData, CurrentFilter);
         }
 
