@@ -1,4 +1,5 @@
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using ExtensibleSaveFormat;
 using KKAPI;
 using KKAPI.Chara;
