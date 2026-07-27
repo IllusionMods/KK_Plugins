@@ -68,6 +68,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowBinder.FloatKeyword.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RowView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.Tooltip.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.TooltipPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\UI.ShaderHintUnderline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SelectListPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.TooltipManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.VirtualList.cs" />

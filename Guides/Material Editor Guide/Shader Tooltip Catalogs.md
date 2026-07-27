@@ -31,6 +31,22 @@ the shader still loads, but the catalog tooltips are not displayed.
 6. Check the BepInEx log after loading the mod. Catalog errors are reported as
    warnings and never block the shader itself.
 
+## In-Game Interaction
+
+Shader-authored hints use an intentional help mode so they do not obscure the
+editor during normal use:
+
+- Hold either Shift key to mark every visible Shader, category, and property
+  label that has authored hint text with a blue dashed underline.
+- While continuing to hold Shift, hover an underlined label to display its
+  hint.
+- Release Shift to hide the authored hint and all hint underlines.
+
+This behavior is independent of the existing `Show Tooltips` setting, which
+continues to control Material Editor's ordinary button and control tooltips.
+Users can disable the Shift help mode separately with `Enable Shader Hints`.
+Hints are suppressed while a property label is being dragged.
+
 ## Manifest Reference
 
 ```xml

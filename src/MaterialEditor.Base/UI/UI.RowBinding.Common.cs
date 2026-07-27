@@ -119,17 +119,20 @@ namespace MaterialEditorAPI
             if (target == null)
                 return;
 
-            var text = string.IsNullOrEmpty(tooltipText)
-                ? fallbackText
-                : tooltipText;
+            var text = tooltipText ?? string.Empty;
             var tooltip = target.GetComponent<Tooltip>();
-            if (tooltip == null && !string.IsNullOrEmpty(text))
-                tooltip = TooltipManager.AddTooltip(target, text);
+            if (tooltip == null
+                && (!string.IsNullOrEmpty(text)
+                    || !string.IsNullOrEmpty(fallbackText)))
+            {
+                tooltip = target.AddComponent<Tooltip>();
+            }
             if (tooltip == null)
                 return;
 
-            tooltip.TooltipText = text ?? string.Empty;
-            tooltip.enabled = !string.IsNullOrEmpty(text);
+            var label = target.GetComponent<Text>()
+                        ?? target.GetComponentInChildren<Text>(true);
+            tooltip.Configure(fallbackText, text, label);
         }
     }
 

@@ -1,31 +1,97 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace MaterialEditorAPI
 {
-    internal class Tooltip : UIBehaviour, IPointerEnterHandler, IPointerExitHandler
+    internal class Tooltip : UIBehaviour,
+        IPointerEnterHandler,
+        IPointerExitHandler,
+        IBeginDragHandler,
+        IEndDragHandler
     {
-        public Action<PointerEventData> onPointerEnter;
-        public Action<PointerEventData> onPointerExit;
+        private ShaderHintUnderline _hintUnderline;
 
-        public string TooltipText;
+        internal string StandardTooltipText { get; private set; }
+        internal string ShaderHintText { get; private set; }
+        internal bool IsHovered { get; private set; }
+        internal bool InteractionSuppressed { get; private set; }
+        internal bool HasStandardTooltip =>
+            !string.IsNullOrEmpty(StandardTooltipText);
+        internal bool HasShaderHint =>
+            !string.IsNullOrEmpty(ShaderHintText);
 
-        public override void Start()
+        internal void Configure(
+            string standardTooltipText,
+            string shaderHintText,
+            Text hintLabel)
         {
-            onPointerEnter = (e) => { TooltipManager.SetToolTipText(TooltipText, true); };
-            onPointerExit = (e) => { TooltipManager.SetActive(false); };
+            StandardTooltipText = standardTooltipText ?? string.Empty;
+            ShaderHintText = shaderHintText ?? string.Empty;
+
+            if (HasShaderHint && hintLabel != null)
+                _hintUnderline = ShaderHintUnderline.GetOrCreate(hintLabel);
+            if (_hintUnderline != null && !HasShaderHint)
+                _hintUnderline.SetVisible(false);
+
+            enabled = HasStandardTooltip || HasShaderHint;
+            TooltipManager.NotifyTooltipChanged(this);
+        }
+
+        internal void SetStandardTooltipText(string text)
+        {
+            Configure(text, ShaderHintText, null);
+        }
+
+        internal void SetHintIndicatorVisible(bool visible)
+        {
+            if (_hintUnderline != null)
+                _hintUnderline.SetVisible(visible && HasShaderHint);
+        }
+
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            TooltipManager.Register(this);
+        }
+
+        public override void OnDisable()
+        {
+            IsHovered = false;
+            InteractionSuppressed = false;
+            SetHintIndicatorVisible(false);
+            TooltipManager.Unregister(this);
+            base.OnDisable();
+        }
+
+        public override void OnDestroy()
+        {
+            TooltipManager.Unregister(this);
+            base.OnDestroy();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            onPointerEnter?.Invoke(eventData);
+            IsHovered = true;
+            TooltipManager.PointerStateChanged(this);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            onPointerExit?.Invoke(eventData);
+            IsHovered = false;
+            InteractionSuppressed = false;
+            TooltipManager.PointerStateChanged(this);
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            InteractionSuppressed = true;
+            TooltipManager.PointerStateChanged(this);
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            InteractionSuppressed = false;
+            TooltipManager.PointerStateChanged(this);
         }
     }
 }

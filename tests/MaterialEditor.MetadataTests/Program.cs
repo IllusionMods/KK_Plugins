@@ -9,6 +9,7 @@ internal static class Program
             SharedDefaultsAndShaderOverridesMerge();
             ReferencesAndWhitespaceAreResolved();
             InvalidCatalogsAreRejected();
+            ShaderHintDisplayPolicyIsIndependentOfStandardTooltips();
             Console.WriteLine("Material Editor metadata regression tests passed.");
             return 0;
         }
@@ -90,6 +91,85 @@ internal static class Program
         Throws<ArgumentException>(
             () => ShaderTooltipCatalogParser.Parse(" "),
             "empty catalog");
+    }
+
+    private static void ShaderHintDisplayPolicyIsIndependentOfStandardTooltips()
+    {
+        Equal(
+            TooltipDisplayKind.ShaderHint,
+            ResolveTooltip(
+                standardTooltipsEnabled: false,
+                shaderHintsEnabled: true,
+                shiftPressed: true,
+                hasStandardText: true,
+                hasShaderHintText: true),
+            "Shift hint with standard tooltips disabled");
+        Equal(
+            TooltipDisplayKind.Standard,
+            ResolveTooltip(
+                standardTooltipsEnabled: true,
+                shaderHintsEnabled: true,
+                shiftPressed: false,
+                hasStandardText: true,
+                hasShaderHintText: true),
+            "standard tooltip without Shift");
+        Equal(
+            TooltipDisplayKind.None,
+            ResolveTooltip(
+                standardTooltipsEnabled: false,
+                shaderHintsEnabled: true,
+                shiftPressed: false,
+                hasStandardText: true,
+                hasShaderHintText: true),
+            "disabled standard tooltip without Shift");
+        Equal(
+            TooltipDisplayKind.Standard,
+            ResolveTooltip(
+                standardTooltipsEnabled: true,
+                shaderHintsEnabled: false,
+                shiftPressed: true,
+                hasStandardText: true,
+                hasShaderHintText: true),
+            "disabled shader hints fall back to standard tooltip");
+        Equal(
+            TooltipDisplayKind.None,
+            TooltipDisplayPolicy.Resolve(
+                hovered: true,
+                interactionSuppressed: true,
+                standardTooltipsEnabled: true,
+                shaderHintsEnabled: true,
+                shiftPressed: true,
+                hasStandardText: true,
+                hasShaderHintText: true),
+            "dragging suppresses all tooltips");
+        Equal(
+            TooltipDisplayKind.None,
+            TooltipDisplayPolicy.Resolve(
+                hovered: false,
+                interactionSuppressed: false,
+                standardTooltipsEnabled: true,
+                shaderHintsEnabled: true,
+                shiftPressed: true,
+                hasStandardText: true,
+                hasShaderHintText: true),
+            "non-hovered target");
+    }
+
+    private static TooltipDisplayKind ResolveTooltip(
+        bool standardTooltipsEnabled,
+        bool shaderHintsEnabled,
+        bool shiftPressed,
+        bool hasStandardText,
+        bool hasShaderHintText)
+    {
+        return TooltipDisplayPolicy.Resolve(
+            hovered: true,
+            interactionSuppressed: false,
+            standardTooltipsEnabled,
+            shaderHintsEnabled,
+            shiftPressed,
+            hasStandardText,
+            hasShaderHintText);
     }
 
     private static void Equal<T>(T expected, T actual, string name)

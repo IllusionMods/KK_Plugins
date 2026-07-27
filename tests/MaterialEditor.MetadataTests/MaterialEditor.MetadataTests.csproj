@@ -8,5 +8,7 @@
   <ItemGroup>
     <Compile Include="..\..\src\MaterialEditor.Base\UI\UI.ShaderUiMetadata.cs"
              Link="UI.ShaderUiMetadata.cs" />
+    <Compile Include="..\..\src\MaterialEditor.Base\UI\UI.TooltipPolicy.cs"
+             Link="UI.TooltipPolicy.cs" />
   </ItemGroup>
 </Project>
