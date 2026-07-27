@@ -10,5 +10,7 @@
              Link="UI.ShaderUiMetadata.cs" />
     <Compile Include="..\..\src\MaterialEditor.Base\UI\UI.TooltipPolicy.cs"
              Link="UI.TooltipPolicy.cs" />
+    <Compile Include="..\..\src\MaterialEditor.Core\Core.MaterialEditor.SiruSyncPolicy.cs"
+             Link="Core.MaterialEditor.SiruSyncPolicy.cs" />
   </ItemGroup>
 </Project>

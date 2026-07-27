@@ -23,37 +23,33 @@ namespace KK_Plugins.MaterialEditor
 
         private static readonly int[] SiruClothingSlots = { 0, 1, 2, 3, 5 };
 
-        private readonly Dictionary<ChaFileDefine.SiruParts, byte> _pendingSiruWrites =
-            new Dictionary<ChaFileDefine.SiruParts, byte>();
+        private readonly SiruPendingWriteBuffer<ChaFileDefine.SiruParts> _pendingSiruWrites =
+            new SiruPendingWriteBuffer<ChaFileDefine.SiruParts>();
 
         internal void QueueSiruWrite(ChaFileDefine.SiruParts part, byte value)
         {
             if (GetSiruPropertyName(part) == null)
                 return;
 
-            _pendingSiruWrites[part] = value;
+            _pendingSiruWrites.Set(part, value);
 
             // Studio only queues the vanilla Siru level here. Apply the explicitly
             // requested channel immediately so copied layers react with the UI.
             // UpdateSiru will apply it again after preserving unaffected channels.
-            bool face = part == ChaFileDefine.SiruParts.SiruKao;
-            if (ChaControl.hiPoly
-                && (face ? ChaControl.customMatFace != null : ChaControl.customMatBody != null))
+            if (CanApplyPendingSiruWrite(part))
                 ApplySiruWrite(part, value);
         }
 
         internal SiruUpdateSnapshot BeginSiruUpdate()
         {
-            if (_pendingSiruWrites.Count == 0 || !ChaControl.hiPoly)
+            if (_pendingSiruWrites.Count == 0)
                 return null;
 
-            var writesReadyToApply = new Dictionary<ChaFileDefine.SiruParts, byte>();
-            foreach (KeyValuePair<ChaFileDefine.SiruParts, byte> pendingWrite in _pendingSiruWrites)
-            {
-                bool face = pendingWrite.Key == ChaFileDefine.SiruParts.SiruKao;
-                if (face ? ChaControl.customMatFace != null : ChaControl.customMatBody != null)
-                    writesReadyToApply.Add(pendingWrite.Key, pendingWrite.Value);
-            }
+            // A queued value belongs to the current SetSiruFlags/UpdateSiru cycle.
+            // Do not carry it into a later character or material lifecycle when its
+            // target is unavailable now.
+            Dictionary<ChaFileDefine.SiruParts, byte> writesReadyToApply =
+                _pendingSiruWrites.CollectReadyWrites(CanApplyPendingSiruWrite);
 
             if (writesReadyToApply.Count == 0)
                 return null;
@@ -108,12 +104,7 @@ namespace KK_Plugins.MaterialEditor
             }
             finally
             {
-                foreach (KeyValuePair<ChaFileDefine.SiruParts, byte> appliedWrite in snapshot.PendingWrites)
-                {
-                    if (_pendingSiruWrites.TryGetValue(appliedWrite.Key, out byte pendingValue)
-                        && pendingValue == appliedWrite.Value)
-                        _pendingSiruWrites.Remove(appliedWrite.Key);
-                }
+                _pendingSiruWrites.Complete(snapshot.PendingWrites);
             }
         }
 
@@ -243,7 +234,11 @@ namespace KK_Plugins.MaterialEditor
                 Material material = materials[i];
                 if (material == null
                     || !material.HasProperty("_" + propertyName)
-                    || allowedMaterialNames != null && !MaterialNameMatchesFamily(material.NameFormatted(), allowedMaterialNames)
+                    || allowedMaterialNames != null
+                       && !SiruSyncPolicy.MaterialNameMatchesFamily(
+                           material.NameFormatted(),
+                           allowedMaterialNames,
+                           MaterialCopyPostfix)
                     || !seenMaterials.Add(material))
                     continue;
 
@@ -251,13 +246,16 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        private static bool MaterialNameMatchesFamily(string materialName, HashSet<string> familyNames)
+        private bool CanApplyPendingSiruWrite(ChaFileDefine.SiruParts part)
         {
-            foreach (string familyName in familyNames)
-                if (materialName == familyName || materialName.StartsWith(familyName + MaterialCopyPostfix))
-                    return true;
-
-            return false;
+            bool face = part == ChaFileDefine.SiruParts.SiruKao;
+            bool primaryMaterialAvailable =
+                face
+                    ? ChaControl.customMatFace != null
+                    : ChaControl.customMatBody != null;
+            return SiruSyncPolicy.CanApplyPendingWrite(
+                ChaControl.hiPoly,
+                primaryMaterialAvailable);
         }
 
         private static void AddDirectMaterialTarget(

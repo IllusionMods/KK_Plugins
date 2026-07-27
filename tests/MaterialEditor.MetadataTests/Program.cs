@@ -10,6 +10,7 @@ internal static class Program
             ReferencesAndWhitespaceAreResolved();
             InvalidCatalogsAreRejected();
             ShaderHintDisplayPolicyIsIndependentOfStandardTooltips();
+            SiruSyncPolicyTests.Run();
             Console.WriteLine("Material Editor metadata regression tests passed.");
             return 0;
         }
