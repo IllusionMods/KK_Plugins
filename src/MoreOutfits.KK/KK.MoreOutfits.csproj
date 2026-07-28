@@ -2,6 +2,11 @@
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>KK_MoreOutfits</AssemblyName>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- NuGet packaging properties -->
+    <IsPackable>true</IsPackable>
+    <PackageId>MoreOutfits.Koikatu</PackageId>
+    <PackageDescription>Allows user to add more outfit slots to characters</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ListTemplate.png" />

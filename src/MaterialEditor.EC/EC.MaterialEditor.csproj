@@ -3,6 +3,10 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>EC_MaterialEditor</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- NuGet packaging properties -->
+    <IsPackable>true</IsPackable>
+    <PackageId>MaterialEditor.EmotionCreators</PackageId>
+    <PackageDescription>Provides APIs for editing character and studio item materials in a persistent way</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\default.xml" />
