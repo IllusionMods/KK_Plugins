@@ -6,14 +6,24 @@ namespace MaterialEditorAPI
 {
     internal static class RowViewFactorySupport
     {
-        internal static Image CreatePanel(string name, Transform parent, Color color)
+        internal static Image CreatePanel(
+            string name,
+            Transform parent,
+            Color color,
+            bool insetPropertyLabel = false)
         {
             var panel = MaterialEditorControlFactory.CreatePanel(name, parent);
             panel.gameObject.AddComponent<CanvasGroup>();
             panel.color = color;
 
             var layout = panel.gameObject.AddComponent<HorizontalLayoutGroup>();
-            layout.padding = Padding;
+            layout.padding = insetPropertyLabel
+                ? new RectOffset(
+                    Padding.left + MaterialEditorLayout.PropertyLabelInset,
+                    Padding.right,
+                    Padding.top,
+                    Padding.bottom)
+                : Padding;
             layout.childForceExpandWidth = false;
             layout.childAlignment = TextAnchor.MiddleLeft;
             return panel;

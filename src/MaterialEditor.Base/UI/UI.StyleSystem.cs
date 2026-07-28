@@ -11,6 +11,7 @@ namespace MaterialEditorAPI
         internal const float ScrollbarOffset = -15f;
         internal const float RowHeight = 22f;
         internal const float CategoryNavigatorWidth = 150f;
+        internal const int PropertyLabelInset = 3;
 
         internal const float LabelWidth = 0f;
         internal const float ButtonWidth = 100f;

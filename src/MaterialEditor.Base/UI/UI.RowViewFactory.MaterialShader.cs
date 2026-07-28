@@ -128,7 +128,8 @@ namespace MaterialEditorAPI
             var panel = RowViewFactorySupport.CreatePanel(
                 "ShaderRenderQueuePanel",
                 parent,
-                ItemColor);
+                ItemColor,
+                true);
             var label = MaterialEditorControlFactory.CreateText(
                 "ShaderRenderQueueLabel",
                 panel.transform,

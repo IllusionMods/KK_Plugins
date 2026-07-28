@@ -41,7 +41,11 @@ namespace MaterialEditorAPI
 
         private static void CreateTextureRow(Transform parent)
         {
-            var panel = RowViewFactorySupport.CreatePanel("TexturePanel", parent, ItemColor);
+            var panel = RowViewFactorySupport.CreatePanel(
+                "TexturePanel",
+                parent,
+                ItemColor,
+                true);
             var label = RowViewFactorySupport.CreateLabel(
                 "TextureLabel",
                 panel.transform,
@@ -82,7 +86,8 @@ namespace MaterialEditorAPI
             var panel = RowViewFactorySupport.CreatePanel(
                 "OffsetScalePanel",
                 parent,
-                ItemColor);
+                ItemColor,
+                true);
 
             var label = MaterialEditorControlFactory.CreateText(
                 "OffsetScaleLabel",

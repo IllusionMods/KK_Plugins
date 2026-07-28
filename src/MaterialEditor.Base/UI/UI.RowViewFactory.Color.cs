@@ -8,7 +8,11 @@ namespace MaterialEditorAPI
     {
         internal static void CreateRows(Transform parent)
         {
-            var panel = RowViewFactorySupport.CreatePanel("ColorPanel", parent, ItemColor);
+            var panel = RowViewFactorySupport.CreatePanel(
+                "ColorPanel",
+                parent,
+                ItemColor,
+                true);
             panel.GetComponent<HorizontalLayoutGroup>().childControlWidth = true;
 
             var label = RowViewFactorySupport.CreateLabel(
