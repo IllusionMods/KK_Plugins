@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>KK_MoreOutfits</AssemblyName>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- NuGet packaging properties -->
     <IsPackable>true</IsPackable>
     <PackageId>MoreOutfits.Koikatu</PackageId>
