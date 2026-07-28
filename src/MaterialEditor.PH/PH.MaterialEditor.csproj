@@ -4,6 +4,10 @@
     <AssemblyName>PH_MaterialEditor</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DefineConstants>$(DefineConstants);Studio</DefineConstants>
+    <!-- NuGet packaging properties -->
+    <IsPackable>true</IsPackable>
+    <PackageId>MaterialEditor.PlayHome</PackageId>
+    <PackageDescription>Provides APIs for editing character and studio item materials in a persistent way</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ph_shaders.unity3d" />

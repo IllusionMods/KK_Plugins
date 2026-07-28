@@ -2,6 +2,11 @@
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>KKS_MoreOutfits</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- NuGet packaging properties -->
+    <IsPackable>true</IsPackable>
+    <PackageId>MoreOutfits.KoikatsuSunshine</PackageId>
+    <PackageDescription>Allows user to add more outfit slots to characters</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="IllusionModdingAPI.KKSAPI" Version="1.45.1" />

@@ -1,0 +1,25 @@
+name: Push to nuget feed on release
+
+on:
+  release:
+    types: [published]
+    
+  workflow_dispatch:
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-dotnet@v4
+
+    - name: Nuget pack
+      run: dotnet pack KK_Plugins.sln --configuration Release
+
+    - name: Nuget push
+      env:
+        NUGET_URL: https://pkgs.dev.azure.com/IllusionMods/Nuget/_packaging/IllusionMods/nuget/v3/index.json
+        NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+      run: |
+        dotnet nuget update source "IllusionMods" --username "token" --password "$NUGET_TOKEN" --store-password-in-clear-text
+        dotnet nuget push bin/**/*.nupkg --api-key key --skip-duplicate --source "$NUGET_URL"

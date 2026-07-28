@@ -2,6 +2,14 @@
 	<PropertyGroup>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
+		<!-- TODO: for now these are only used for nuget packages since AssemblyInfo.cs is used for build instead -->
+		<!-- Sets the 'Company' field on the dll file -->
+		<Authors>https://github.com/IllusionMods/KK_Plugins</Authors>
+		<!-- Sets the 'Copyright' field on the dll file -->
+		<Copyright>Copyright GPL-3.0 © 2018</Copyright>
+		<!-- Sets the 'Product name' field on the dll file -->
+		<Product>$(MSBuildProjectName)</Product>
+
 		<RootNamespace>KK_Plugins</RootNamespace>
 
 		<OutputPath>..\..\bin\build\$(MSBuildProjectName)\</OutputPath>
@@ -14,6 +22,15 @@
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>embedded</DebugType>
 		<FileAlignment>512</FileAlignment>
+
+		<!-- Disable packing by default, individual projects can override with <IsPackable>true</IsPackable> -->
+		<IsPackable>false</IsPackable>
+		<PackageProjectUrl>$(Authors)</PackageProjectUrl>
+		<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+		<PackageCopyright>$(Copyright)</PackageCopyright>
+		<Company>IllusionMods</Company>
+		<RepositoryUrl>$(Authors)</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
@@ -93,17 +110,23 @@
 		</Task>
 	</UsingTask>
 
-	<!-- Create a release zip file (after successful Release build) -->
-	<Target Name="CreateReleaseZip" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+	<!-- HACK: Extract the file version from the built assembly to use it in the rest of the build process. This is only necessary because AssemblyInfo.cs is used instead of properties -->
+	<Target Name="SetVersion" AfterTargets="Build">
 		<GetFileVersion AssemblyPath="$(OutputPath)$(AssemblyName).dll">
-			<Output TaskParameter="FileVersion" PropertyName="FileVersionFromAssembly" />
+			<Output TaskParameter="FileVersion" PropertyName="Version" />
 		</GetFileVersion>
+		<PropertyGroup>
+			<PackageVersion>$(Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 
+	<!-- Create a release zip file (after successful Release build) -->
+	<Target Name="CreateReleaseZip" AfterTargets="Build;SetVersion" Condition="'$(Configuration)' == 'Release'">
 		<PropertyGroup>
 			<CopyDir>$(OutputPath)\..\TEMP_COPY_$(AssemblyName)</CopyDir>
 			<GameType>$([System.Text.RegularExpressions.Regex]::Match($(MSBuildProjectName), '^[^\.]*'))</GameType>
 			<ZipDir>$(OutputPath)\..\..\out</ZipDir>
-			<ZipPath>$(ZipDir)\$(AssemblyName)_v$(FileVersionFromAssembly).zip</ZipPath>
+			<ZipPath>$(ZipDir)\$(AssemblyName)_v$(Version).zip</ZipPath>
 		</PropertyGroup>
 
 		<ItemGroup>
