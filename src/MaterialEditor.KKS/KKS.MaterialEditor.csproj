@@ -4,6 +4,10 @@
     <AssemblyName>KKS_MaterialEditor</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DefineConstants>$(DefineConstants);Studio</DefineConstants>
+    <!-- NuGet packaging properties -->
+    <IsPackable>true</IsPackable>
+    <PackageId>MaterialEditor.KoikatsuSunshine</PackageId>
+    <PackageDescription>Provides APIs for editing character and studio item materials in a persistent way</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\KKS_Shaders.unity3d" />

@@ -2,6 +2,10 @@
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>HS2_UncensorSelector</AssemblyName>
+    <!-- NuGet packaging properties -->
+    <IsPackable>true</IsPackable>
+    <PackageId>UncensorSelector.HoneySelect2</PackageId>
+    <PackageDescription>Allows replacing of character bodies, usually to an uncensored version</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.ConfigurationManager" Version="18.2.0.1" />
