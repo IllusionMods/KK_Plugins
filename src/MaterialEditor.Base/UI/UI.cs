@@ -215,7 +215,7 @@ namespace MaterialEditorAPI
             Visible = false;
         }
 
-        protected void SetHeaderTitleHorizontalOffset(float offset)
+        private protected void SetHeaderTitleHorizontalOffset(float offset)
         {
             _windowView?.SetHeaderTitleHorizontalOffset(offset);
         }
