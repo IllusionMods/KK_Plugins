@@ -60,6 +60,7 @@ namespace KK_Plugins.MaterialEditor
         public static MEStudio Instance;
 
         internal static Dropdown ItemTypeDropDown;
+        private const float CharacterHeaderTitleOffset = -16f;
 
         private void Start()
         {
@@ -138,6 +139,7 @@ namespace KK_Plugins.MaterialEditor
                     {
                         PopulateList(ociItem.objectItem, GetObjectID(objectCtrlInfo));
                         ItemTypeDropDown.gameObject.SetActive(false);
+                        SetHeaderTitleHorizontalOffset(0f);
                     }
                     else if (objectCtrlInfo is OCIChar ociChar)
                     {
@@ -145,6 +147,8 @@ namespace KK_Plugins.MaterialEditor
                         var chaControl = ociChar.GetChaControl();
                         PopulateItemTypeDropdown(chaControl);
                         ItemTypeDropDown.gameObject.SetActive(true);
+                        SetHeaderTitleHorizontalOffset(
+                            CharacterHeaderTitleOffset);
                     }
         }
 
