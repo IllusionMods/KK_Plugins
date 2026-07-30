@@ -209,11 +209,10 @@ namespace MaterialEditorAPI
             navigateLayout.minWidth = 0f;
             navigateLayout.preferredWidth = 0f;
             navigateLayout.flexibleWidth = 1f;
-            TooltipManager.AddTooltip(
+            TooltipBinding.Bind(
                 navigate.gameObject,
-                string.IsNullOrEmpty(target.TooltipText)
-                    ? "Jump to this property category"
-                    : target.TooltipText);
+                target.TooltipText,
+                "Jump to this property category");
             navigate.onClick.AddListener(() => _navigate(target));
 
             return new Entry(root, target);

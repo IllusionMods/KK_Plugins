@@ -14,7 +14,11 @@ namespace MaterialEditorAPI
 
         private static void CreateFloatRow(Transform parent)
         {
-            var panel = RowViewFactorySupport.CreatePanel("FloatPanel", parent, ItemColor);
+            var panel = RowViewFactorySupport.CreatePanel(
+                "FloatPanel",
+                parent,
+                ItemColor,
+                true);
 
             var label = RowViewFactorySupport.CreateLabel(
                 "FloatLabel",
@@ -50,7 +54,11 @@ namespace MaterialEditorAPI
 
         private static void CreateKeywordRow(Transform parent)
         {
-            var panel = RowViewFactorySupport.CreatePanel("KeywordPanel", parent, ItemColor);
+            var panel = RowViewFactorySupport.CreatePanel(
+                "KeywordPanel",
+                parent,
+                ItemColor,
+                true);
 
             var label = RowViewFactorySupport.CreateLabel(
                 "KeywordLabel",

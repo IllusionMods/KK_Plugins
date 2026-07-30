@@ -11,6 +11,7 @@ namespace MaterialEditorAPI
         internal const float ScrollbarOffset = -15f;
         internal const float RowHeight = 22f;
         internal const float CategoryNavigatorWidth = 150f;
+        internal const int PropertyLabelInset = 3;
 
         internal const float LabelWidth = 0f;
         internal const float ButtonWidth = 100f;
@@ -76,6 +77,8 @@ namespace MaterialEditorAPI
         internal static readonly Color TransparentRowColor = new Color(1f, 1f, 1f, 0f);
         internal static readonly Color ChangedRowColor = new Color(0f, 0f, 0f, 0.3f);
         internal static readonly Color ScrollbarColor = new Color(1f, 1f, 1f, 0.6f);
+        internal static readonly Color ShaderHintUnderlineColor =
+            new Color(0.05f, 0.45f, 1f, 1f);
 
         internal static void ApplyPanel(Image panel, MaterialEditorPanelRole role)
         {

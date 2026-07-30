@@ -11,6 +11,7 @@ namespace MaterialEditorAPI
         internal Canvas Window { get; private set; }
         internal Image MainPanel { get; private set; }
         internal Image HeaderPanel { get; private set; }
+        internal Text HeaderTitle { get; private set; }
         internal ScrollRect ScrollableUI { get; private set; }
         internal InputField FilterInputField { get; private set; }
         internal Button CategoryNavigatorButton { get; private set; }
@@ -99,6 +100,16 @@ namespace MaterialEditorAPI
             ViewListButton.GetComponentInChildren<Text>().text = glyph;
         }
 
+        internal void SetHeaderTitleHorizontalOffset(float offset)
+        {
+            if (HeaderTitle == null)
+                return;
+
+            var rect = HeaderTitle.rectTransform;
+            rect.anchoredPosition =
+                new Vector2(offset, rect.anchoredPosition.y);
+        }
+
         private void Build(
             Transform owner,
             string filter,
@@ -128,12 +139,12 @@ namespace MaterialEditorAPI
             HeaderPanel.transform.SetRect(0f, 1f, 1f, 1f, 0f, -MaterialEditorLayout.HeaderHeight);
             UIUtility.MakeObjectDraggable(HeaderPanel.rectTransform, MainPanel.rectTransform, PreventDragout.Value);
 
-            var nameText = MaterialEditorControlFactory.CreateText(
+            HeaderTitle = MaterialEditorControlFactory.CreateText(
                 "Nametext",
                 HeaderPanel.transform,
                 "Material Editor",
                 MaterialEditorTextRole.Title);
-            nameText.transform.SetRect();
+            HeaderTitle.transform.SetRect();
 
             CategoryNavigatorButton = MaterialEditorControlFactory.CreateButton(
                 "CategoryNavigatorButton",

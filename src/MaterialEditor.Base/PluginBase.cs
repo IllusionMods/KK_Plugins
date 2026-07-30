@@ -111,6 +111,10 @@ namespace MaterialEditorAPI
         /// </summary>
         public static ConfigEntry<bool> Showtooltips { get; set; }
         /// <summary>
+        /// Whether Shift-activated shader-authored hints are available
+        /// </summary>
+        internal static ConfigEntry<bool> EnableShaderHints { get; private set; }
+        /// <summary>
         /// Whether to sort shader properties by their types
         /// </summary>
         public static ConfigEntry<bool> SortPropertiesByType { get; set; }
@@ -173,6 +177,11 @@ namespace MaterialEditorAPI
             ConfigExportPath = Config.Bind("Config", "Export Path Override", "", new ConfigDescription($"Textures and models will be exported to this folder. If empty, exports to {ExportPathDefault}", null, new ConfigurationManagerAttributes { Order = 1 }));
             PersistFilter = Config.Bind("Config", "Persist Filter", false, "Persist search filter across editor windows");
             Showtooltips = Config.Bind("Config", "Show Tooltips", true, "Whether to show tooltips or not");
+            EnableShaderHints = Config.Bind(
+                "Config",
+                "Enable Shader Hints",
+                true,
+                "Show shader-authored hints while holding Shift. This is independent of the Show Tooltips setting.");
             SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by their types.");
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
             SortPropertiesByCategory = Config.Bind("Config", "Sort Properties by Category", true, "Whether to sort shader properties by their category.");

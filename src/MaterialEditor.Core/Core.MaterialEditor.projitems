@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CharaController.Edits.Properties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CharaController.Edits.TextureShader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CharaController.Persistence.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CharaController.SiruSync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CharaController.Events.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.CharaController.Models.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.cs" />
@@ -24,6 +25,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Assets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Tooltips.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.Hooks.SiruSync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.SiruSyncPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.ObjectData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core.MaterialEditor.TextureSaveHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LibAPNG\APNG.cs" />

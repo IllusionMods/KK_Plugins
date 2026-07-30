@@ -486,6 +486,7 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+#if !KK && !KKS
         /// <summary>
         /// Apply juice to all material copies
         /// </summary>
@@ -513,6 +514,7 @@ namespace KK_Plugins.MaterialEditor
                 }
             }
         }
+#endif
 #endif
 #endif
 

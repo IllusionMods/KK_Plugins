@@ -142,6 +142,11 @@ Providers are evaluated when the Material Editor row list is rebuilt. They must 
 
 Shader asset authors can provide equivalent built-in shader, category, and property metadata through XML `TextAsset` catalogs. See [Shader Tooltip Catalogs.md](Shader%20Tooltip%20Catalogs.md).
 
+Descriptor `TooltipText` uses the same interaction as catalog metadata: hold
+Shift to reveal the blue dashed hint marker, then hover the label while
+continuing to hold Shift. These authored hints remain available when ordinary
+Material Editor tooltips are disabled.
+
 ## Custom Property Editors
 
 Plugins can register a reusable semantic editor without creating or locating Unity controls:
