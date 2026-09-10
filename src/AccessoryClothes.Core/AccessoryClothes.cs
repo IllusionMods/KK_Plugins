@@ -33,7 +33,7 @@ namespace KK_Plugins
         private void Awake()
         {
             //Move the armature outside of the character so these transforms are not found by certain methods that traverse the body hierarchy
-            if (ArmatureRoot) 
+            if (ArmatureRoot)
                 ArmatureRoot.SetParent(null);
             else
                 AccessoryClothes.Logger.LogWarning($"{nameof(ArmatureRoot)} is null for {gameObject.name}");
