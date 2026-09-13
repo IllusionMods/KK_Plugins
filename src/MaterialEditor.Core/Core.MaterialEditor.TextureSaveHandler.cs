@@ -9,7 +9,7 @@ namespace KK_Plugins.MaterialEditor
 {
     /// <summary>
     /// Reads local and deduplicated version-2 texture data.
-    /// Writes the bundled version-1 format supported by the installed runtime.
+    /// Writes bundled version-1 or local version-2 data according to the save mode.
     /// </summary>
     internal sealed class TextureSaveHandler
     {
@@ -20,7 +20,13 @@ namespace KK_Plugins.MaterialEditor
         internal readonly string DedupedTexSavePrefix;
         internal readonly string DedupedTexSavePostfix;
         internal readonly string LocalTexUnusedFolder;
+        // Older game-specific KKAPI builds do not expose local saving. Keep
+        // their bundled behavior without raising the minimum API dependency.
+        private static readonly System.Reflection.PropertyInfo CardSaveType =
+            typeof(KKAPI.Maker.MakerAPI).Assembly.GetType("KKAPI.Maker.CharaLocalTextures")?.GetProperty("SaveType");
 #if !EC
+        private static readonly System.Reflection.PropertyInfo SceneSaveType =
+            typeof(KKAPI.Maker.MakerAPI).Assembly.GetType("KKAPI.Studio.SceneLocalTextures")?.GetProperty("SaveType");
         private Dictionary<string, byte[]> DedupedTextureData = null;
 #endif
 
@@ -40,6 +46,11 @@ namespace KK_Plugins.MaterialEditor
             DedupedTexSavePostfix = dedupedTexSavePostfix;
             LocalTexUnusedFolder = localTexUnusedFolder;
             Instance = this;
+            // Reading the setting activates KKAPI's local-save controls.
+            CardSaveType?.GetValue(null, null);
+#if !EC
+            SceneSaveType?.GetValue(null, null);
+#endif
         }
 
         private static object DefaultData()
@@ -68,11 +79,64 @@ namespace KK_Plugins.MaterialEditor
         }
 
         /// <summary>
-        /// Writes textures in the bundled version-1 format.
+        /// Honors the local save mode without changing the existing bundled fallback
+        /// for other modes. Local write failures must not silently embed textures.
         /// </summary>
         public void Save(PluginData pluginData, string key, object data, bool isCharaController)
         {
-            SaveBundled(pluginData, key, data, isCharaController);
+            bool saveLocal;
+#if !EC
+            if (KKAPI.Studio.StudioAPI.InsideStudio)
+                saveLocal = SceneSaveType?.GetValue(null, null)?.ToString() == "Local";
+            else
+#endif
+                saveLocal = KKAPI.Maker.MakerAPI.InsideMaker
+                    && CardSaveType?.GetValue(null, null)?.ToString() == "Local";
+
+            if (saveLocal)
+                SaveLocal(pluginData, key, data);
+            else
+                SaveBundled(pluginData, key, data, isCharaController);
+        }
+
+        private void SaveLocal(PluginData pluginData, string key, object dictRaw)
+        {
+            if (!(dictRaw is Dictionary<int, TextureContainer> textures))
+                throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
+
+            Directory.CreateDirectory(LocalTexturePath);
+            var hashes = new Dictionary<int, string>();
+            foreach (var pair in textures)
+            {
+                var hash = pair.Value.Hash.ToString("X16");
+                var bytes = pair.Value.Data;
+                var path = Path.Combine(LocalTexturePath, LocalTexPrefix + hash + "." + IdentifyImageExtension(bytes));
+                if (!File.Exists(path))
+                {
+                    // Publish only complete files; a failed write must not leave a
+                    // truncated texture that a subsequent save would reuse.
+                    var temporaryPath = Path.Combine(LocalTexturePath, System.Guid.NewGuid().ToString("N") + ".tmp");
+                    try
+                    {
+                        File.WriteAllBytes(temporaryPath, bytes);
+                        File.Move(temporaryPath, path);
+                    }
+                    finally
+                    {
+                        if (File.Exists(temporaryPath))
+                            File.Delete(temporaryPath);
+                    }
+                }
+                hashes.Add(pair.Key, hash);
+            }
+
+            // Publish references only after every external texture has been saved.
+            var serialized = MessagePackSerializer.Serialize(hashes);
+            pluginData.data.Remove(key);
+            pluginData.data.Remove(DedupedTexSavePrefix + key);
+            pluginData.data.Remove(DedupedTexSavePrefix + key + DedupedTexSavePostfix);
+            pluginData.data[LocalTexSavePrefix + key] = serialized;
+            pluginData.version = 2;
         }
 
         /// <summary>
