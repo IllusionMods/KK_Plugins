@@ -87,7 +87,17 @@ namespace KK_Plugins.MaterialEditor
 #endif
             PurgeUnusedTextures();
 
-            if (RendererPropertyList.Count == 0 && MaterialFloatPropertyList.Count == 0 && MaterialKeywordPropertyList.Count == 0 && MaterialColorPropertyList.Count == 0 && MaterialVectorPropertyList.Count == 0 && MaterialTexturePropertyList.Count == 0 && MaterialCubemapPropertyList.Count == 0 && MaterialShaderList.Count == 0 && MaterialCopyList.Count == 0)
+            if (RendererPropertyList.Count == 0
+                && ProjectorPropertyList.Count == 0
+                && MaterialNamePropertyList.Count == 0
+                && MaterialFloatPropertyList.Count == 0
+                && MaterialKeywordPropertyList.Count == 0
+                && MaterialColorPropertyList.Count == 0
+                && MaterialVectorPropertyList.Count == 0
+                && MaterialTexturePropertyList.Count == 0
+                && MaterialCubemapPropertyList.Count == 0
+                && MaterialShaderList.Count == 0
+                && MaterialCopyList.Count == 0)
             {
                 SetExtendedData(null);
             }
