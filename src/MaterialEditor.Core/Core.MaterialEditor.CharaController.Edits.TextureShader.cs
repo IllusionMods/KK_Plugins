@@ -117,20 +117,20 @@ namespace KK_Plugins.MaterialEditor
             var result = MaterialTextureImportTransaction.Execute(
                 go, materialName, propertyName, () =>
                 {
-                var texID = SetAndGetTextureID(data);
-                var animationDefinition = MEAnimationUtil.LoadAnimationDefFromBytes(texID, data, SetAndGetTextureID);
-                return new MaterialTextureProperty(
-                    objectType,
-                    coordinateIndex,
-                    slot,
-                    materialName,
-                    propertyName,
-                    texID,
-                    existingProperty == null ? null : existingProperty.Offset,
-                    existingProperty == null ? null : existingProperty.OffsetOriginal,
-                    existingProperty == null ? null : existingProperty.Scale,
-                    existingProperty == null ? null : existingProperty.ScaleOriginal,
-                    animationDefinition);
+                    var texID = SetAndGetTextureID(data);
+                    var animationDefinition = MEAnimationUtil.LoadAnimationDefFromBytes(texID, data, SetAndGetTextureID);
+                    return new MaterialTextureProperty(
+                        objectType,
+                        coordinateIndex,
+                        slot,
+                        materialName,
+                        propertyName,
+                        texID,
+                        existingProperty == null ? null : existingProperty.Offset,
+                        existingProperty == null ? null : existingProperty.OffsetOriginal,
+                        existingProperty == null ? null : existingProperty.Scale,
+                        existingProperty == null ? null : existingProperty.ScaleOriginal,
+                        animationDefinition);
                 },
                 candidate => SetTextureWithProperty(go, candidate),
                 candidate => CommitTextureImport(existingProperty, candidate),
@@ -144,10 +144,20 @@ namespace KK_Plugins.MaterialEditor
             return result.Succeeded;
         }
 
-        private void CommitTextureImport(MaterialTextureProperty existingProperty, MaterialTextureProperty candidateProperty) =>
-            MaterialTextureImportTransaction.Commit(MaterialTexturePropertyList, AnimationControllerMap,
-                existingProperty, candidateProperty, x => x.TexID, (x, id) => x.TexID = id,
-                x => x.TexAnimationDef, (x, animation) => x.TexAnimationDef = animation);
+        private void CommitTextureImport(MaterialTextureProperty existingProperty, MaterialTextureProperty candidateProperty)
+        {
+            if (existingProperty == null)
+            {
+                MaterialTexturePropertyList.Add(candidateProperty);
+                return;
+            }
+
+            MaterialTextureImportTransaction.CommitAnimationBinding(
+                AnimationControllerMap, existingProperty, candidateProperty);
+            // These field assignments cannot fail; retain the existing record identity.
+            existingProperty.TexID = candidateProperty.TexID;
+            existingProperty.TexAnimationDef = candidateProperty.TexAnimationDef;
+        }
 
         /// <summary>
         /// Get the saved material property value or null if none is saved

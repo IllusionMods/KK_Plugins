@@ -42,34 +42,23 @@ namespace MaterialEditorAPI
             }
         }
 
-        // Keep the existing DTO identity: animation bindings may still reference it.
-        internal static void Commit<T, TController, TAnimation>(IList<T> records, IDictionary<T, TController> animations,
-            T existing, T candidate, Func<T, int?> getId, Action<T, int?> setId,
-            Func<T, TAnimation> getAnimation, Action<T, TAnimation> setAnimation) where T : class
+        // Move the binding before the caller assigns the two DTO fields. If the
+        // map update fails, the existing record and its binding remain unchanged.
+        internal static void CommitAnimationBinding<T, TController>(
+            IDictionary<T, TController> animations, T existing, T candidate) where T : class
         {
-            if (existing == null)
-            {
-                records.Add(candidate);
-                return;
-            }
-            var previousId = getId(existing);
-            var previousAnimation = getAnimation(existing);
             TController previousController;
             TController candidateController;
             var hadPrevious = animations.TryGetValue(existing, out previousController);
             var hasCandidate = animations.TryGetValue(candidate, out candidateController);
             try
             {
-                setId(existing, getId(candidate));
-                setAnimation(existing, getAnimation(candidate));
                 animations.Remove(candidate);
                 if (hasCandidate) animations[existing] = candidateController;
                 else animations.Remove(existing);
             }
             catch
             {
-                setId(existing, previousId);
-                setAnimation(existing, previousAnimation);
                 animations.Remove(candidate);
                 if (hadPrevious) animations[existing] = previousController;
                 else animations.Remove(existing);

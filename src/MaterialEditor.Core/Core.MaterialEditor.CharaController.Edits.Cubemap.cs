@@ -105,36 +105,42 @@ namespace KK_Plugins.MaterialEditor
             var existing = FindMaterialCubemapProperty(slot, objectType, material, propertyName);
             var result = MaterialCubemapImportTransaction.Execute(data, contentKey,
                 go, material.NameFormatted(), propertyName, logNormalizationWarning,
-                new MaterialCubemapImportStorage
-                {
-                    Count = () => TextureDictionary.Count,
-                    StoreData = SetAndGetTextureID,
-                    StoreLease = CubemapLeases.Store,
-                    RemoveCreated = RemoveFailedCubemapData,
-                    PurgeLeases = PurgeUnusedCubemapLeases
-                }, MaterialCubemapPropertyList, existing,
-                texId => new MaterialCubemapProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, texId),
-                CubemapRecordAccess, candidate => SetCubemapWithProperty(go, candidate));
+                TextureDictionary, CubemapLeases, ApplyAndCommit, PurgeUnusedCubemapLeases);
             if (!result.Succeeded)
                 MaterialEditorPluginBase.Logger?.LogWarning("Cubemap import: " + result.Stage + ": " + result.Diagnostic);
             return result.Succeeded;
-        }
 
-        private static readonly MaterialCubemapRecordAccess<MaterialCubemapProperty> CubemapRecordAccess =
-            new MaterialCubemapRecordAccess<MaterialCubemapProperty>
+            bool ApplyAndCommit(int texId)
             {
-                GetId = x => x.TexID,
-                SetId = (x, id) => x.TexID = id,
-                Original = x => x.CubemapOriginalState
-            };
+                var candidate = new MaterialCubemapProperty(objectType, GetCoordinateIndex(objectType), slot, material.NameFormatted(), propertyName, texId);
+                var committed = false;
+                try
+                {
+                    if (existing != null)
+                        candidate.CubemapOriginalState.RestoreCheckpoint(
+                            existing.CubemapOriginalState.CaptureCheckpoint(), false);
+                    if (!SetCubemapWithProperty(go, candidate))
+                        return false;
 
-        private void RemoveFailedCubemapData(int texId)
-        {
-            CubemapLeases.Release(texId);
-            TextureContainer container;
-            if (!TextureDictionary.TryGetValue(texId, out container)) return;
-            try { container?.Dispose(); }
-            finally { TextureDictionary.Remove(texId); }
+                    if (existing == null)
+                        MaterialCubemapPropertyList.Add(candidate);
+                    else
+                    {
+                        // Finish all potentially throwing preparation before updating the
+                        // existing record. Checkpoint restoration only assigns state fields.
+                        var state = candidate.CubemapOriginalState.CaptureCheckpoint();
+                        existing.CubemapOriginalState.RestoreCheckpoint(state, false);
+                        existing.TexID = texId;
+                    }
+                    committed = true;
+                    return true;
+                }
+                finally
+                {
+                    if (!committed)
+                        candidate.CubemapOriginalState.Clear();
+                }
+            }
         }
 
 
