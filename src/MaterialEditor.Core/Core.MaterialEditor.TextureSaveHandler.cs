@@ -4,6 +4,7 @@ using MaterialEditorAPI;
 using MessagePack;
 using System.Linq;
 using System.IO;
+using KKAPI.Utilities;
 
 namespace KK_Plugins.MaterialEditor
 {
@@ -11,22 +12,10 @@ namespace KK_Plugins.MaterialEditor
     /// Reads local and deduplicated version-2 texture data.
     /// Writes bundled version-1 or local/deduplicated version-2 data according to the save mode.
     /// </summary>
-    internal sealed class TextureSaveHandler
+    internal sealed class TextureSaveHandler : TextureSaveHandlerBase
     {
         internal static TextureSaveHandler Instance;
-        internal string LocalTexturePath { get; set; }
-        internal readonly string LocalTexPrefix;
-        internal readonly string LocalTexSavePrefix;
-        internal readonly string DedupedTexSavePrefix;
-        internal readonly string DedupedTexSavePostfix;
-        internal readonly string LocalTexUnusedFolder;
-        // Older game-specific KKAPI builds do not expose local saving. Keep
-        // their bundled behavior without raising the minimum API dependency.
-        private static readonly System.Reflection.PropertyInfo CardSaveType =
-            typeof(KKAPI.Maker.MakerAPI).Assembly.GetType("KKAPI.Maker.CharaLocalTextures")?.GetProperty("SaveType");
 #if !EC
-        private static readonly System.Reflection.PropertyInfo SceneSaveType =
-            typeof(KKAPI.Maker.MakerAPI).Assembly.GetType("KKAPI.Studio.SceneLocalTextures")?.GetProperty("SaveType");
         private Dictionary<string, byte[]> DedupedTextureData = null;
 #endif
 
@@ -37,26 +26,27 @@ namespace KK_Plugins.MaterialEditor
             string dedupedTexSavePrefix = "DEDUPED_",
             string dedupedTexSavePostfix = "_DATA",
             string localTexUnusedFolder = "_Unused"
-        )
+        ) : base(localTexturePath, localTexPrefix, localTexSavePrefix,
+            dedupedTexSavePrefix, dedupedTexSavePostfix, localTexUnusedFolder)
         {
-            LocalTexturePath = localTexturePath;
-            LocalTexPrefix = localTexPrefix;
-            LocalTexSavePrefix = localTexSavePrefix;
-            DedupedTexSavePrefix = dedupedTexSavePrefix;
-            DedupedTexSavePostfix = dedupedTexSavePostfix;
-            LocalTexUnusedFolder = localTexUnusedFolder;
             Instance = this;
-            // Reading the setting activates KKAPI's local-save controls.
-            CardSaveType?.GetValue(null, null);
-#if !EC
-            SceneSaveType?.GetValue(null, null);
-#endif
         }
 
-        private static object DefaultData()
+        protected override object DefaultData()
         {
             return new Dictionary<int, TextureContainer>();
         }
+
+        protected override bool IsBundled(PluginData data, string key, out object value) =>
+            data.data.TryGetValue(key, out value) && value != null;
+
+#if !EC
+        protected override bool IsDeduped(PluginData data, string key, out object value) =>
+            data.data.TryGetValue(DedupedTexSavePrefix + key, out value) && value != null;
+#endif
+
+        protected override bool IsLocal(PluginData data, string key, out object value) =>
+            data.data.TryGetValue(LocalTexSavePrefix + key, out value) && value != null;
 
         internal static void DisposeTextureContainers(
             IDictionary<int, TextureContainer> textures)
@@ -82,46 +72,26 @@ namespace KK_Plugins.MaterialEditor
         /// Honors the selected save mode. Failures are reported to the user and
         /// propagated; external texture failures must not silently embed textures.
         /// </summary>
-        public void Save(PluginData pluginData, string key, object data, bool isCharaController)
+        public override void Save(PluginData pluginData, string key, object data, bool isCharaController)
         {
-            string mode = "Bundled";
             try
             {
-#if !EC
-                if (KKAPI.Studio.StudioAPI.InsideStudio)
-                    mode = SceneSaveType?.GetValue(null, null)?.ToString() ?? mode;
-                else
-#endif
-                if (KKAPI.Maker.MakerAPI.InsideMaker)
-                    mode = CardSaveType?.GetValue(null, null)?.ToString() ?? mode;
-
-#if !EC
-                // Even a scene with no item textures must collect character payloads.
-                if (mode == "Deduped")
-                    SaveDeduped(pluginData, key, data, isCharaController);
-                else
-#endif
-                if (data is Dictionary<int, TextureContainer> textures && textures.Count == 0)
-                    pluginData.data[key] = null;
-                else if (mode == "Local")
-                    SaveLocal(pluginData, key, data);
-                else
-                    SaveBundled(pluginData, key, data, isCharaController);
+                base.Save(pluginData, key, data, isCharaController);
             }
             catch (System.Exception ex)
             {
                 MaterialEditorPluginBase.Logger.LogError(ex);
                 MaterialEditorPluginBase.Logger.Log(
                     BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message,
-                    $"[MaterialEditor] {mode} texture save failed. Material edits were NOT updated in this save. "
+                    "[MaterialEditor] Texture save failed. Material edits were NOT updated in this save. "
                     + "Keep the character/scene open, check the log and save again after fixing the error."
-                    + (mode == "Local" ? $" Local texture folder: {LocalTexturePath}" : ""));
+                    + $" Local texture folder (if using Local mode): {LocalTexturePath}");
                 throw;
             }
         }
 
 #if !EC
-        private void SaveDeduped(PluginData pluginData, string key, object dictRaw, bool isCharaController)
+        protected override void SaveDeduped(PluginData pluginData, string key, object dictRaw, bool isCharaController = false)
         {
             if (!(dictRaw is Dictionary<int, TextureContainer> textures))
                 throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
@@ -159,10 +129,16 @@ namespace KK_Plugins.MaterialEditor
         }
 #endif
 
-        private void SaveLocal(PluginData pluginData, string key, object dictRaw)
+        protected override void SaveLocal(PluginData pluginData, string key, object dictRaw, bool isCharaController = false)
         {
             if (!(dictRaw is Dictionary<int, TextureContainer> textures))
                 throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
+
+            if (textures.Count == 0)
+            {
+                pluginData.data[key] = null;
+                return;
+            }
 
             Directory.CreateDirectory(LocalTexturePath);
             var hashes = new Dictionary<int, string>();
@@ -203,7 +179,7 @@ namespace KK_Plugins.MaterialEditor
         /// Loads bundled data first, then the version-2 deduplicated or local formats.
         /// Malformed or incomplete external texture data degrades to an empty dictionary.
         /// </summary>
-        public T Load<T>(PluginData pluginData, string key, bool isCharaController)
+        public override T Load<T>(PluginData pluginData, string key, bool isCharaController)
         {
             object loaded = DefaultData();
             try
@@ -219,16 +195,7 @@ namespace KK_Plugins.MaterialEditor
                     return (T)loaded;
                 }
 
-                if (pluginData.data.TryGetValue(key, out var bundledData) && bundledData != null)
-                    loaded = LoadBundled(pluginData, key, bundledData, isCharaController);
-#if !EC
-                else if (pluginData.data.TryGetValue(DedupedTexSavePrefix + key, out var dedupedData)
-                         && dedupedData != null)
-                    loaded = LoadDeduped(pluginData, key, dedupedData, isCharaController);
-#endif
-                else if (pluginData.data.TryGetValue(LocalTexSavePrefix + key, out var localData)
-                         && localData != null)
-                    loaded = LoadLocal(pluginData, key, localData, isCharaController);
+                loaded = base.Load<object>(pluginData, key, isCharaController);
             }
             catch (System.Exception ex)
             {
@@ -246,16 +213,16 @@ namespace KK_Plugins.MaterialEditor
             return (T)DefaultData();
         }
 
-        private static void SaveBundled(PluginData pluginData, string key, object dictRaw, bool isCharaController = false)
+        protected override void SaveBundled(PluginData pluginData, string key, object dictRaw, bool isCharaController = false)
         {
             if (!(dictRaw is Dictionary<int, TextureContainer> dict && dict != null))
                 throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
             pluginData.version = 1;
-            pluginData.data[key] = MessagePackSerializer.Serialize(
+            pluginData.data[key] = dict.Count == 0 ? null : MessagePackSerializer.Serialize(
                 dict.ToDictionary(pair => pair.Key, pair => pair.Value.Data));
         }
 
-        private static object LoadBundled(PluginData data, string key, object dataBundled, bool isCharaController = false)
+        protected override object LoadBundled(PluginData data, string key, object dataBundled, bool isCharaController = false)
         {
             var serializedTextures =
                 MessagePackSerializer.Deserialize<Dictionary<int, byte[]>>((byte[])dataBundled);
@@ -274,7 +241,7 @@ namespace KK_Plugins.MaterialEditor
         }
 
 #if !EC
-        private object LoadDeduped(PluginData data, string key, object dataDeduped, bool isCharaController = false)
+        protected override object LoadDeduped(PluginData data, string key, object dataDeduped, bool isCharaController = false)
         {
             var textureReferences = MessagePackSerializer.Deserialize<Dictionary<int, string>>(
                 (byte[])dataDeduped);
@@ -341,7 +308,7 @@ namespace KK_Plugins.MaterialEditor
         }
 
 #endif
-        private object LoadLocal(PluginData data, string key, object dataLocal, bool isCharaController = false)
+        protected override object LoadLocal(PluginData data, string key, object dataLocal, bool isCharaController = false)
         {
             var hashDictionary = MessagePackSerializer.Deserialize<Dictionary<int, string>>(
                 (byte[])dataLocal);

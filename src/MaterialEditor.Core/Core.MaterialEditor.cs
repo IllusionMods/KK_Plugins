@@ -175,7 +175,12 @@ namespace KK_Plugins.MaterialEditor
             ConfigLocalTexturePath = Config.Bind("Textures", "Local Texture Path Override", "", new ConfigDescription("Local textures use this folder for import and export compatibility. If empty, defaults to UserData\\MaterialEditor\\_LocalTextures. If you change it, move any existing local texture files to the new path.", null, new ConfigurationManagerAttributes { Order = 10, IsAdvanced = true }));
             ConfigLocalTexturePath.SettingChanged += ConfigLocalTexturePath_SettingChanged;
             ConfigLocalTexturePath_SettingChanged(null, null);
-            new TextureSaveHandler(LocalTexturePath);
+            var handler = new TextureSaveHandler(LocalTexturePath);
+            handler.RegisterForAudit("Material Editor", handler.LocalTexSavePrefix + MaterialEditorCharaController.TexDicSaveKey);
+            CharaLocalTextures.Activate();
+#if !EC
+            KKAPI.Studio.SceneLocalTextures.Activate();
+#endif
         }
 
         internal void Main()
