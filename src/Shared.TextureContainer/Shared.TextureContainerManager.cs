@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using UnityEngine;
 
@@ -247,18 +248,14 @@ namespace KK_Plugins
         {
             size = Math.Min(data.Length, size ?? data.Length);
             sizeEnd = Math.Min(data.Length, sizeEnd ?? data.Length);
-            return CalculateCore(data, size.Value, sizeEnd.Value, hashLen);
+            byte[] crcCheckVal = CalculateCheckValue(data, size.Value, sizeEnd.Value, hashLen);
+            Array.Resize(ref crcCheckVal, 8);
+            return BitConverter.ToUInt64(crcCheckVal, 0);
         }
 
         public static byte[] CalculateCheckValue(byte[] data, int size, int sizeEnd, bool hashLen)
         {
             if (data == null) return null;
-
-            return BitConverter.GetBytes(CalculateCore(data, size, sizeEnd, hashLen));
-        }
-
-        private static ulong CalculateCore(byte[] data, int size, int sizeEnd, bool hashLen)
-        {
 
             ulong crc = initialValue;
 
@@ -282,27 +279,16 @@ namespace KK_Plugins
             // Hash the length
             if (hashLen)
             {
-                if (BitConverter.IsLittleEndian)
+                byte[] lengthBytes = BitConverter.GetBytes(length);
+                foreach (byte b in lengthBytes)
                 {
-                    for (var shift = 0; shift < 32; shift += 8)
-                    {
-                        var lengthByte = (byte)(length >> shift);
-                        crc = Crc64Table[((crc >> (width - 8)) ^ lengthByte) & 0xFF] ^ (crc << 8);
-                        crc &= UInt64.MaxValue >> (64 - width);
-                    }
-                }
-                else
-                {
-                    for (var shift = 24; shift >= 0; shift -= 8)
-                    {
-                        var lengthByte = (byte)(length >> shift);
-                        crc = Crc64Table[((crc >> (width - 8)) ^ lengthByte) & 0xFF] ^ (crc << 8);
-                        crc &= UInt64.MaxValue >> (64 - width);
-                    }
+                    crc = Crc64Table[((crc >> (width - 8)) ^ b) & 0xFF] ^ (crc << 8);
+                    crc &= UInt64.MaxValue >> (64 - width);
                 }
             }
 
-            return crc ^ xorOutValue;
+            ulong crcFinalValue = crc ^ xorOutValue;
+            return BitConverter.GetBytes(crcFinalValue).Take((width + 7) / 8).ToArray();
         }
 
         private static ulong[] GenerateCrc64Table()
