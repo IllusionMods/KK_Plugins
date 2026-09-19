@@ -9,7 +9,7 @@ namespace KK_Plugins.MaterialEditor
 {
     /// <summary>
     /// Reads local and deduplicated version-2 texture data.
-    /// Writes bundled version-1 or local version-2 data according to the save mode.
+    /// Writes bundled version-1 or local/deduplicated version-2 data according to the save mode.
     /// </summary>
     internal sealed class TextureSaveHandler
     {
@@ -79,25 +79,85 @@ namespace KK_Plugins.MaterialEditor
         }
 
         /// <summary>
-        /// Honors the local save mode without changing the existing bundled fallback
-        /// for other modes. Local write failures must not silently embed textures.
+        /// Honors the selected save mode. Failures are reported to the user and
+        /// propagated; external texture failures must not silently embed textures.
         /// </summary>
         public void Save(PluginData pluginData, string key, object data, bool isCharaController)
         {
-            bool saveLocal;
+            string mode = "Bundled";
+            try
+            {
 #if !EC
-            if (KKAPI.Studio.StudioAPI.InsideStudio)
-                saveLocal = SceneSaveType?.GetValue(null, null)?.ToString() == "Local";
-            else
+                if (KKAPI.Studio.StudioAPI.InsideStudio)
+                    mode = SceneSaveType?.GetValue(null, null)?.ToString() ?? mode;
+                else
 #endif
-                saveLocal = KKAPI.Maker.MakerAPI.InsideMaker
-                    && CardSaveType?.GetValue(null, null)?.ToString() == "Local";
+                if (KKAPI.Maker.MakerAPI.InsideMaker)
+                    mode = CardSaveType?.GetValue(null, null)?.ToString() ?? mode;
 
-            if (saveLocal)
-                SaveLocal(pluginData, key, data);
-            else
-                SaveBundled(pluginData, key, data, isCharaController);
+#if !EC
+                // Even a scene with no item textures must collect character payloads.
+                if (mode == "Deduped")
+                    SaveDeduped(pluginData, key, data, isCharaController);
+                else
+#endif
+                if (data is Dictionary<int, TextureContainer> textures && textures.Count == 0)
+                    pluginData.data[key] = null;
+                else if (mode == "Local")
+                    SaveLocal(pluginData, key, data);
+                else
+                    SaveBundled(pluginData, key, data, isCharaController);
+            }
+            catch (System.Exception ex)
+            {
+                MaterialEditorPluginBase.Logger.LogError(ex);
+                MaterialEditorPluginBase.Logger.Log(
+                    BepInEx.Logging.LogLevel.Error | BepInEx.Logging.LogLevel.Message,
+                    $"[MaterialEditor] {mode} texture save failed. Material edits were NOT updated in this save. "
+                    + "Keep the character/scene open, check the log and save again after fixing the error."
+                    + (mode == "Local" ? $" Local texture folder: {LocalTexturePath}" : ""));
+                throw;
+            }
         }
+
+#if !EC
+        private void SaveDeduped(PluginData pluginData, string key, object dictRaw, bool isCharaController)
+        {
+            if (!(dictRaw is Dictionary<int, TextureContainer> textures))
+                throw new System.ArgumentException("dictRaw must be Dictionary<int, TextureContainer> and not null!");
+
+            var references = MessagePackSerializer.Serialize(
+                textures.ToDictionary(pair => pair.Key, pair => pair.Value.Hash.ToString("X16")));
+            byte[] payload = null;
+            if (!isCharaController)
+            {
+                var sharedTextures = new Dictionary<string, byte[]>();
+                AddTextures(textures.Values);
+                foreach (var character in Studio.Studio.Instance.dicObjectCtrl.Values.OfType<Studio.OCIChar>())
+                {
+                    var controller = character.charInfo.gameObject.GetComponent<MaterialEditorCharaController>();
+                    if (controller != null)
+                        AddTextures(controller.TextureDictionary.Values);
+                }
+                payload = MessagePackSerializer.Serialize(sharedTextures);
+
+                void AddTextures(IEnumerable<TextureContainer> values)
+                {
+                    foreach (var texture in values)
+                    {
+                        var hash = texture.Hash.ToString("X16");
+                        if (!sharedTextures.ContainsKey(hash))
+                            sharedTextures.Add(hash, texture.Data);
+                    }
+                }
+            }
+
+            pluginData.data[DedupedTexSavePrefix + key] = references;
+            if (!isCharaController)
+                pluginData.data[DedupedTexSavePrefix + key + DedupedTexSavePostfix] = payload;
+            pluginData.version = 2;
+        }
+#endif
 
         private void SaveLocal(PluginData pluginData, string key, object dictRaw)
         {
