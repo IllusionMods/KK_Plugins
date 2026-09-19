@@ -87,7 +87,7 @@ namespace MaterialEditorAPI
             TimelineColumnBinding.Bind(
                 controls.SelectInterpolableButton,
                 listeners,
-                null);
+                item.SelectInterpolable);
             LabelClickBinding.Bind(
                 listeners,
                 controls.LabelClickTrigger,
