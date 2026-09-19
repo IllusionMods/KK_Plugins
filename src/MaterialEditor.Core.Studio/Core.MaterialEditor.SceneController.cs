@@ -71,10 +71,7 @@ namespace KK_Plugins.MaterialEditor
 
             PurgeUnusedTextures();
 
-            if (TextureDictionary.Count > 0)
-                TextureSaveHandler.Instance.Save(data, TexDicSaveKey, TextureDictionary, false);
-            else
-                data.data.Add(TexDicSaveKey, null);
+            TextureSaveHandler.Instance.Save(data, TexDicSaveKey, TextureDictionary, false);
 
             WriteRecords(nameof(RendererPropertyList), RendererPropertyList);
             WriteRecords(nameof(ProjectorPropertyList), ProjectorPropertyList);
