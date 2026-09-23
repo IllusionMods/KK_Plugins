@@ -501,18 +501,38 @@ namespace MaterialEditorAPI
         internal static Texture2D GetT2D(RenderTexture renderTexture)
         {
             var currentActiveRT = RenderTexture.active;
-            RenderTexture.active = renderTexture;
-            var tex = new Texture2D(renderTexture.width, renderTexture.height);
-            tex.ReadPixels(new Rect(0, 0, tex.width, tex.height), 0, 0);
-            RenderTexture.active = currentActiveRT;
-            return tex;
+            Texture2D tex = null;
+            try
+            {
+                RenderTexture.active = renderTexture;
+                tex = new Texture2D(renderTexture.width, renderTexture.height);
+                tex.ReadPixels(new Rect(0, 0, tex.width, tex.height), 0, 0);
+                return tex;
+            }
+            catch
+            {
+                // Ownership transfers to the caller only after a successful read.
+                if (tex != null)
+                    DestroyImmediate(tex);
+                throw;
+            }
+            finally
+            {
+                RenderTexture.active = currentActiveRT;
+            }
         }
 
         internal static void SaveTexR(RenderTexture renderTexture, string path)
         {
             var tex = GetT2D(renderTexture);
-            File.WriteAllBytes(path, EncodeTextureToPng(tex));
-            DestroyImmediate(tex);
+            try
+            {
+                File.WriteAllBytes(path, EncodeTextureToPng(tex));
+            }
+            finally
+            {
+                DestroyImmediate(tex);
+            }
         }
 
         internal static byte[] EncodeTextureToPng(Texture2D texture)
@@ -524,12 +544,18 @@ namespace MaterialEditorAPI
         {
             var tmp = RenderTexture.GetTemporary(tex.width, tex.height, 0, rtf, cs);
             var currentActiveRT = RenderTexture.active;
-            RenderTexture.active = tmp;
-            GL.Clear(false, true, new Color(0, 0, 0, 0));
-            Graphics.Blit(tex, tmp);
-            SaveTexR(tmp, path);
-            RenderTexture.active = currentActiveRT;
-            RenderTexture.ReleaseTemporary(tmp);
+            try
+            {
+                RenderTexture.active = tmp;
+                GL.Clear(false, true, new Color(0, 0, 0, 0));
+                Graphics.Blit(tex, tmp);
+                SaveTexR(tmp, path);
+            }
+            finally
+            {
+                RenderTexture.active = currentActiveRT;
+                RenderTexture.ReleaseTemporary(tmp);
+            }
         }
 
         /// <summary>
