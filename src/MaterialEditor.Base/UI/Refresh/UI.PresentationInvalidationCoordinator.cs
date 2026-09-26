@@ -36,18 +36,15 @@ namespace MaterialEditorAPI
     internal sealed class PresentationInvalidationBatch<TConditionSource>
     {
         private readonly int _generation;
-        private readonly long _version;
         private readonly PresentationInvalidationReason _reason;
         private readonly TConditionSource[] _conditionSources;
 
         internal PresentationInvalidationBatch(
             int generation,
-            long version,
             PresentationInvalidationReason reason,
             TConditionSource[] conditionSources)
         {
             _generation = generation;
-            _version = version;
             _reason = reason;
             _conditionSources = conditionSources;
         }
@@ -55,11 +52,6 @@ namespace MaterialEditorAPI
         internal int Generation
         {
             get { return _generation; }
-        }
-
-        internal long Version
-        {
-            get { return _version; }
         }
 
         internal PresentationInvalidationReason Reason
@@ -85,8 +77,6 @@ namespace MaterialEditorAPI
             new List<TConditionSource>();
 
         private int _generation = 1;
-        private long _version;
-        private long _pendingVersion;
         private long _nextLeaseId;
         private long _activeLeaseId;
         private bool _searchPending;
@@ -108,41 +98,13 @@ namespace MaterialEditorAPI
                 : new HashSet<TConditionSource>(conditionSourceComparer);
         }
 
-        internal int Generation
-        {
-            get { return _generation; }
-        }
-
-        internal long Version
-        {
-            get { return _version; }
-        }
-
         internal bool HasPending
         {
             get { return _searchPending || _pendingConditionSources.Count != 0; }
         }
 
-        internal bool HasActiveWorker
-        {
-            get { return _workerActive; }
-        }
-
-        internal bool IsFlushActive
-        {
-            get { return _flushActive; }
-        }
-
-        internal int PendingConditionCount
-        {
-            get { return _pendingConditionSources.Count; }
-        }
-
         internal bool RequestSearch()
         {
-            AdvanceVersion();
-            _pendingVersion = _version;
-
             var changed = !_searchPending || _pendingConditionSources.Count != 0;
             _searchPending = true;
             _pendingConditionSources.Clear();
@@ -152,9 +114,6 @@ namespace MaterialEditorAPI
 
         internal bool RequestCondition(TConditionSource source)
         {
-            AdvanceVersion();
-            _pendingVersion = _version;
-
             // A search rebuild observes all condition state, so retaining individual
             // condition sources in the same batch would only duplicate work.
             if (_searchPending || !_pendingConditionSet.Add(source))
@@ -207,26 +166,7 @@ namespace MaterialEditorAPI
                 (_hasLastFlushFrame && frameId == _lastFlushFrameId))
                 return false;
 
-            var reason = _searchPending
-                ? PresentationInvalidationReason.Search
-                : PresentationInvalidationReason.Conditions;
-            var sources = _searchPending
-                ? NoConditionSources
-                : _pendingConditionSources.ToArray();
-
-            batch = new PresentationInvalidationBatch<TConditionSource>(
-                _generation,
-                _pendingVersion,
-                reason,
-                sources);
-
-            // Clear the pending batch before returning it. Requests made by the
-            // flush callback therefore form a distinct batch for a later frame.
-            _searchPending = false;
-            _pendingConditionSources.Clear();
-            _pendingConditionSet.Clear();
-            _pendingVersion = 0;
-            _flushActive = true;
+            batch = BeginFlush();
             _hasLastFlushFrame = true;
             _lastFlushFrameId = frameId;
             return true;
@@ -245,23 +185,28 @@ namespace MaterialEditorAPI
                 || !HasPending)
                 return false;
 
-            var reason = _searchPending
-                ? PresentationInvalidationReason.Search
-                : PresentationInvalidationReason.Conditions;
-            var sources = _searchPending
-                ? NoConditionSources
-                : _pendingConditionSources.ToArray();
-            batch = new PresentationInvalidationBatch<TConditionSource>(
+            batch = BeginFlush();
+            return true;
+        }
+
+        private PresentationInvalidationBatch<TConditionSource> BeginFlush()
+        {
+            var batch = new PresentationInvalidationBatch<TConditionSource>(
                 _generation,
-                _pendingVersion,
-                reason,
-                sources);
+                _searchPending ? PresentationInvalidationReason.Search : PresentationInvalidationReason.Conditions,
+                _searchPending ? NoConditionSources : _pendingConditionSources.ToArray());
+
+            // Snapshot before clearing so requests from the callback form a new batch.
+            ClearPending();
+            _flushActive = true;
+            return batch;
+        }
+
+        private void ClearPending()
+        {
             _searchPending = false;
             _pendingConditionSources.Clear();
             _pendingConditionSet.Clear();
-            _pendingVersion = 0;
-            _flushActive = true;
-            return true;
         }
 
         // Returns true when the same worker lease must wait for another frame.
@@ -294,11 +239,7 @@ namespace MaterialEditorAPI
         internal void Cancel()
         {
             AdvanceGeneration();
-            AdvanceVersion();
-            _pendingVersion = 0;
-            _searchPending = false;
-            _pendingConditionSources.Clear();
-            _pendingConditionSet.Clear();
+            ClearPending();
             _flushActive = false;
             ReleaseWorkerLease();
 
@@ -330,16 +271,6 @@ namespace MaterialEditorAPI
                 _generation++;
                 if (_generation == 0)
                     _generation++;
-            }
-        }
-
-        private void AdvanceVersion()
-        {
-            unchecked
-            {
-                _version++;
-                if (_version == 0)
-                    _version++;
             }
         }
     }
@@ -376,11 +307,6 @@ namespace MaterialEditorAPI
             _filter = null;
             _workerRunning = false;
             _framesRemaining = 0;
-        }
-
-        internal int CurrentVersion
-        {
-            get { return _version; }
         }
 
         internal bool IsCurrent(int version)
