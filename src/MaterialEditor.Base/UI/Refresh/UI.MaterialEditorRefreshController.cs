@@ -57,11 +57,12 @@ namespace MaterialEditorAPI
                 {
                     _deferredRefreshCoroutine = _host.StartRefreshCoroutine(DeferredPopulateWorker());
                     if (_deferredRefreshCoroutine == null)
-                        _deferredRefresh.WorkerStopped();
+                        // No worker can finish this request or release its waiters.
+                        _deferredRefresh.Cancel();
                 }
                 catch
                 {
-                    _deferredRefresh.WorkerStopped();
+                    _deferredRefresh.Cancel();
                     throw;
                 }
             }
