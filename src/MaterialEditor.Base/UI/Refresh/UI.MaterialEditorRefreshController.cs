@@ -199,26 +199,7 @@ namespace MaterialEditorAPI
                             out batch))
                         continue;
 
-                    var waitForNextFrame = false;
-                    try
-                    {
-                        if (_presentationInvalidation.IsGenerationCurrent(
-                                batch.Generation))
-                            ApplyPresentationInvalidationBatch(batch);
-                    }
-                    catch (Exception ex)
-                    {
-                        MaterialEditorPluginBase.Logger?.LogError(
-                            "Exception while applying a coalesced Material Editor "
-                            + "presentation refresh: " + ex);
-                    }
-                    finally
-                    {
-                        waitForNextFrame =
-                            _presentationInvalidation.CompleteFlush(lease);
-                    }
-
-                    if (!waitForNextFrame)
+                    if (!ExecutePresentationInvalidationBatch(lease, batch, false))
                         yield break;
                 }
             }
@@ -255,25 +236,7 @@ namespace MaterialEditorAPI
                             out batch))
                         break;
 
-                    var waitForNextBatch = false;
-                    try
-                    {
-                        if (_presentationInvalidation.IsGenerationCurrent(
-                                batch.Generation))
-                            ApplyPresentationInvalidationBatch(batch);
-                    }
-                    catch (Exception ex)
-                    {
-                        MaterialEditorPluginBase.Logger?.LogError(
-                            "Exception while applying the synchronous Material "
-                            + "Editor presentation refresh fallback: " + ex);
-                    }
-                    finally
-                    {
-                        waitForNextBatch =
-                            _presentationInvalidation.CompleteFlush(lease);
-                    }
-
+                    var waitForNextBatch = ExecutePresentationInvalidationBatch(lease, batch, true);
                     flushCount++;
                     if (!waitForNextBatch)
                         break;
@@ -295,6 +258,31 @@ namespace MaterialEditorAPI
             {
                 ClearPresentationInvalidationCoroutine(lease);
             }
+        }
+
+        private bool ExecutePresentationInvalidationBatch(
+            PresentationInvalidationWorkerLease lease,
+            PresentationInvalidationBatch<MaterialConditionInvalidationHandle> batch,
+            bool synchronousRecovery)
+        {
+            var hasMore = false;
+            try
+            {
+                if (_presentationInvalidation.IsGenerationCurrent(batch.Generation))
+                    ApplyPresentationInvalidationBatch(batch);
+            }
+            catch (Exception ex)
+            {
+                MaterialEditorPluginBase.Logger?.LogError(
+                    (synchronousRecovery
+                        ? "Exception while applying the synchronous Material Editor presentation refresh fallback: "
+                        : "Exception while applying a coalesced Material Editor presentation refresh: ") + ex);
+            }
+            finally
+            {
+                hasMore = _presentationInvalidation.CompleteFlush(lease);
+            }
+            return hasMore;
         }
 
         private void ApplyPresentationInvalidationBatch(
