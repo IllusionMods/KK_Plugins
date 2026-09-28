@@ -236,9 +236,8 @@ namespace MaterialEditorAPI
                             out batch))
                         break;
 
-                    var waitForNextBatch = ExecutePresentationInvalidationBatch(lease, batch, true);
                     flushCount++;
-                    if (!waitForNextBatch)
+                    if (!ExecutePresentationInvalidationBatch(lease, batch, true))
                         break;
                 }
 
