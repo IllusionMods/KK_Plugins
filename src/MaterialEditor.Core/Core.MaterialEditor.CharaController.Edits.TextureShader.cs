@@ -62,13 +62,18 @@ namespace KK_Plugins.MaterialEditor
             // Track slot replacement without narrowing the caller's apply scope.
             var location = FindGameObject(objectType, slot);
             var target = new MaterialEditTarget(go, material, propertyName);
-            return _textureImports.Enqueue(target,
-                () => this != null && GetCoordinateIndex(objectType) == coordinate
+            var cancel = _textureImports.Enqueue(target,
+                () => this != null && isActiveAndEnabled && GetCoordinateIndex(objectType) == coordinate
                     && FindGameObject(objectType, slot) == location
                     && !CoordinateChanging && File.Exists(filePath),
                 done => { done(MaterialEditResult.FromApplied(
                     TrySetMaterialTextureFromFile(slot, objectType, material, propertyName, filePath, go))); return null; },
                 completed);
+            // A file-dialog callback can arrive after OnDisable stopped Update.
+            // Complete through the queue's normal cancellation path immediately.
+            if (!isActiveAndEnabled)
+                cancel?.Invoke();
+            return cancel;
         }
 
         private bool TrySetMaterialTextureFromFile(

@@ -160,6 +160,7 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         protected override void OnDestroy()
         {
+            CancelMainTexRefreshes();
             _textureImports.Dispose();
             ChaControl targetControl = null;
             GameObject targetRoot = null;
@@ -190,6 +191,12 @@ namespace KK_Plugins.MaterialEditor
             {
                 base.OnDestroy();
             }
+        }
+
+        private void OnDisable()
+        {
+            CancelMainTexRefreshes();
+            _textureImports.CancelAll();
         }
 
         private bool CurrentUiTargetBelongsToThisController()

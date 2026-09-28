@@ -677,36 +677,31 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
+        private Coroutine _clothesMainTexRefresh;
+        private Coroutine _bodyMainTexRefresh;
+        private int _mainTexRefreshGeneration;
+
         /// <summary>
         /// Refresh the clothes MainTex, typically called after editing colors in the character maker
         /// </summary>
-        private EndOfFrameRefreshGate _clothesMainTexRefreshGate;
-        private EndOfFrameRefreshGate _bodyMainTexRefreshGate;
-
         public void RefreshClothesMainTex()
         {
-            if (!_clothesMainTexRefreshGate.TryRequest())
-            {
+            if (!isActiveAndEnabled || _clothesMainTexRefresh != null)
                 return;
-            }
-            try
-            {
-                if (StartCoroutine(RefreshClothesMainTexCoroutine()) != null)
-                    return;
-            }
-            catch
-            {
-                _clothesMainTexRefreshGate.Complete();
-                throw;
-            }
-            _clothesMainTexRefreshGate.Complete();
+
+            // A failed start leaves the handle null, so a later request can retry.
+            _clothesMainTexRefresh = StartCoroutine(
+                RefreshClothesMainTexCoroutine(_mainTexRefreshGeneration));
         }
 
-        private IEnumerator RefreshClothesMainTexCoroutine()
+        private IEnumerator RefreshClothesMainTexCoroutine(int generation)
         {
-            yield return new WaitForEndOfFrame();
             try
             {
+                yield return new WaitForEndOfFrame();
+                if (!isActiveAndEnabled || generation != _mainTexRefreshGeneration)
+                    yield break;
+
                 for (var i = 0; i < MaterialTexturePropertyList.Count; i++)
                 {
                     var property = MaterialTexturePropertyList[i];
@@ -726,7 +721,8 @@ namespace KK_Plugins.MaterialEditor
             }
             finally
             {
-                _clothesMainTexRefreshGate.Complete();
+                if (generation == _mainTexRefreshGeneration)
+                    _clothesMainTexRefresh = null;
             }
         }
 
@@ -778,28 +774,21 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         public void RefreshBodyMainTex()
         {
-            if (!_bodyMainTexRefreshGate.TryRequest())
-            {
+            if (!isActiveAndEnabled || _bodyMainTexRefresh != null)
                 return;
-            }
-            try
-            {
-                if (StartCoroutine(RefreshBodyMainTexCoroutine()) != null)
-                    return;
-            }
-            catch
-            {
-                _bodyMainTexRefreshGate.Complete();
-                throw;
-            }
-            _bodyMainTexRefreshGate.Complete();
+
+            _bodyMainTexRefresh = StartCoroutine(
+                RefreshBodyMainTexCoroutine(_mainTexRefreshGeneration));
         }
 
-        private IEnumerator RefreshBodyMainTexCoroutine()
+        private IEnumerator RefreshBodyMainTexCoroutine(int generation)
         {
-            yield return new WaitForEndOfFrame();
             try
             {
+                yield return new WaitForEndOfFrame();
+                if (!isActiveAndEnabled || generation != _mainTexRefreshGeneration)
+                    yield break;
+
                 for (var i = 0; i < MaterialTexturePropertyList.Count; i++)
                 {
                     var property = MaterialTexturePropertyList[i];
@@ -812,9 +801,26 @@ namespace KK_Plugins.MaterialEditor
             }
             finally
             {
-                _bodyMainTexRefreshGate.Complete();
+                if (generation == _mainTexRefreshGeneration)
+                    _bodyMainTexRefresh = null;
             }
         }
+
+        private void CancelMainTexRefreshes()
+        {
+            // Invalidate before stopping: an old iterator's finally must not
+            // clear a refresh requested after this character is enabled again.
+            _mainTexRefreshGeneration++;
+            var clothesRefresh = _clothesMainTexRefresh;
+            var bodyRefresh = _bodyMainTexRefresh;
+            _clothesMainTexRefresh = null;
+            _bodyMainTexRefresh = null;
+            if (clothesRefresh != null)
+                StopCoroutine(clothesRefresh);
+            if (bodyRefresh != null)
+                StopCoroutine(bodyRefresh);
+        }
+
         /// <summary>
         /// Reapply all edits to the body and face
         /// </summary>
@@ -822,23 +828,6 @@ namespace KK_Plugins.MaterialEditor
         {
             if (CharacterLoading) return;
             StartCoroutine(LoadData(false, false, false));
-        }
-        private struct EndOfFrameRefreshGate
-        {
-            private bool _pending;
-
-            internal bool TryRequest()
-            {
-                if (_pending)
-                    return false;
-                _pending = true;
-                return true;
-            }
-
-            internal void Complete()
-            {
-                _pending = false;
-            }
         }
     }
 }
