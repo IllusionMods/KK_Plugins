@@ -22,52 +22,15 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="material">Material being modified. Also modifies all other materials of the same name.</param>
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="filePath">Path to the .png file on disk</param>
-        /// <param name="setTexInUpdate">Whether to wait for the next Update</param>
+        /// <param name="setTexInUpdate">Retained for compatibility; imports now always complete synchronously.</param>
+        /// <remarks>Call this method on Unity's main thread.</remarks>
         public void SetMaterialTextureFromFile(int id, Material material, string propertyName, string filePath, bool setTexInUpdate = false)
         {
-            if (setTexInUpdate)
-            {
-                QueueMaterialTextureFromFile(
-                    id,
-                    material,
-                    propertyName,
-                    filePath,
-                    null);
-            }
-            else
-            {
-                MaterialEditRequestQueue.CancelTarget(GetObjectByID(id), material == null ? null : material.NameFormatted(), propertyName);
-                TrySetMaterialTextureFromFile(id, material, propertyName, filePath);
-            }
-        }
-
-        internal Action QueueMaterialTextureFromFile(
-            int id,
-            Material material,
-            string propertyName,
-            string filePath,
-            Action<MaterialEditResult> completed)
-        {
-            var go = GetObjectByID(id);
-            var target = new MaterialEditTarget(go, material, propertyName);
-            return _textureImports.Enqueue(target,
-                () => this != null && GetObjectByID(id) == go && File.Exists(filePath),
-                done => { done(MaterialEditResult.FromApplied(
-                    TrySetMaterialTextureFromFile(id, material, propertyName, filePath))); return null; },
-                completed);
-        }
-
-        private bool TrySetMaterialTextureFromFile(
-            int id,
-            Material material,
-            string propertyName,
-            string filePath)
-        {
-            if (!File.Exists(filePath))
-                return false;
+            MaterialEditRequestQueue.CancelTarget(GetObjectByID(id), material == null ? null : material.NameFormatted(), propertyName);
+            if (!File.Exists(filePath)) return;
 
             var texBytes = File.ReadAllBytes(filePath);
-            return TrySetMaterialTexture(id, material, propertyName, texBytes);
+            TrySetMaterialTexture(id, material, propertyName, texBytes);
         }
 
         /// <summary>
