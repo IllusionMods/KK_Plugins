@@ -8,7 +8,6 @@ namespace KK_Plugins.MaterialEditor
 {
     internal sealed class SceneMaterialEditRepository :
         IMaterialEditRepository,
-        IMaterialTextureImportCompletionRepository,
         IMaterialCubemapDataImportRepository
     {
         private readonly Func<SceneController> _controllerResolver;
@@ -95,21 +94,7 @@ namespace KK_Plugins.MaterialEditor
             GetController().GetMaterialTextureOriginal(GetObjectId(data), material, propertyName);
 
         public void SetMaterialTexture(object data, Material material, string propertyName, string filePath, GameObject gameObject) =>
-            GetController().SetMaterialTextureFromFile(GetObjectId(data), material, propertyName, filePath, true);
-
-        public Action SetMaterialTexture(
-            object data,
-            Material material,
-            string propertyName,
-            string filePath,
-            GameObject gameObject,
-            Action<MaterialEditResult> completed) =>
-            GetController().QueueMaterialTextureFromFile(
-                GetObjectId(data),
-                material,
-                propertyName,
-                filePath,
-                completed);
+            GetController().SetMaterialTextureFromFile(GetObjectId(data), material, propertyName, filePath);
 
         public void RemoveMaterialTexture(object data, Material material, string propertyName, GameObject gameObject) =>
             GetController().RemoveMaterialTexture(GetObjectId(data), material, propertyName);

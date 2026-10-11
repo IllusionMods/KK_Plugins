@@ -8,7 +8,6 @@ namespace KK_Plugins.MaterialEditor
 {
     internal sealed class CharaMaterialEditRepository :
         IMaterialEditRepository,
-        IMaterialTextureImportCompletionRepository,
         IMaterialCubemapDataImportRepository
     {
         private readonly Func<GameObject, MaterialEditorCharaController> _controllerResolver;
@@ -163,26 +162,7 @@ namespace KK_Plugins.MaterialEditor
         public void SetMaterialTexture(object data, Material material, string propertyName, string filePath, GameObject gameObject)
         {
             var objectData = GetObjectData(data);
-            GetController(gameObject).SetMaterialTextureFromFile(objectData.Slot, objectData.ObjectType, material, propertyName, filePath, gameObject, true);
-        }
-
-        public Action SetMaterialTexture(
-            object data,
-            Material material,
-            string propertyName,
-            string filePath,
-            GameObject gameObject,
-            Action<MaterialEditResult> completed)
-        {
-            var objectData = GetObjectData(data);
-            return GetController(gameObject).QueueMaterialTextureFromFile(
-                objectData.Slot,
-                objectData.ObjectType,
-                material,
-                propertyName,
-                filePath,
-                gameObject,
-                completed);
+            GetController(gameObject).SetMaterialTextureFromFile(objectData.Slot, objectData.ObjectType, material, propertyName, filePath, gameObject);
         }
 
         public void RemoveMaterialTexture(object data, Material material, string propertyName, GameObject gameObject)

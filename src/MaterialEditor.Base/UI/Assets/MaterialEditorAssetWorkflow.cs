@@ -59,26 +59,25 @@ namespace MaterialEditorAPI
                 {
                     if (!IsHostAlive() || !target.IsAlive || files == null
                         || files.Length == 0 || string.IsNullOrEmpty(files[0])) return;
-                    QueueTexture(target, data, files[0], result =>
-                    {
-                        if (!IsHostAlive() || !target.IsAlive) return;
-                        row.Changed = !_editService.GetMaterialTextureValueOriginal(data, material, propertyName, root);
-                        row.Exists = MaterialPropertyAccess.GetTexture(material, MaterialPropertyIdCache.Get(propertyName)) != null;
-                        row.RefreshState?.Invoke();
-                        ReportImportResult(result, propertyName);
-                    });
+                    ImportTexture(target, data, files[0]);
+                    if (!IsHostAlive() || !target.IsAlive) return;
+                    row.Changed = !_editService.GetMaterialTextureValueOriginal(data, material, propertyName, root);
+                    row.Exists = MaterialPropertyAccess.GetTexture(material, MaterialPropertyIdCache.Get(propertyName)) != null;
+                    row.RefreshState?.Invoke();
                     WatchTexture(target, data, files[0]);
                 }), "Open image", ExportPath, filter, ".png");
         }
 
-        private void QueueTexture(MaterialEditTarget target, object data, string path,
-            Action<MaterialEditResult> completed, bool watching = false)
+        private void ImportTexture(MaterialEditTarget target, object data, string path)
         {
-            _imports.Enqueue(target, IsHostAlive, done =>
+            try
             {
-                // Cancel only this repository request, not another UI owner's work.
-                return _editService.SetMaterialTexture(data, target.Material, target.Property, path, target.Root, done);
-            }, completed, watching ? path : null);
+                _editService.SetMaterialTexture(data, target.Material, target.Property, path, target.Root);
+            }
+            catch (Exception ex)
+            {
+                MaterialEditorPluginBase.Logger?.LogWarning("Texture import " + target.Property + ": " + ex);
+            }
         }
 
         internal void ImportCubemap(CubemapPropertyRowModel row, GameObject root,
@@ -155,7 +154,7 @@ namespace MaterialEditorAPI
                     System.Threading.Interlocked.Exchange(ref notificationPending, 0);
                     if (IsHostAlive() && ReferenceEquals(_textureWatcher, watcher)
                         && target.IsAlive && WatchTexChanges.Value && File.Exists(path))
-                        QueueTexture(target, data, path, result => ReportImportResult(result, target.Property), true);
+                        ImportTexture(target, data, path);
                 });
             };
             Action close = () => ThreadingHelper.Instance.StartSyncInvoke(() =>

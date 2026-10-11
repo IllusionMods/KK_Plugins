@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialAPI;
@@ -65,22 +64,6 @@ namespace MaterialEditorAPI
         bool? GetMaterialKeywordPropertyValueOriginal(object data, Material material, string propertyName, GameObject gameObject);
         void SetMaterialKeywordProperty(object data, Material material, string propertyName, bool value, GameObject gameObject);
         void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject gameObject);
-    }
-
-    /// <summary>
-    /// Optional repository capability for texture imports that are applied on a later Update.
-    /// The completion result lets the UI refresh from the material's real state instead of
-    /// optimistically assuming that decoding and assignment succeeded.
-    /// </summary>
-    internal interface IMaterialTextureImportCompletionRepository
-    {
-        Action SetMaterialTexture(
-            object data,
-            Material material,
-            string propertyName,
-            string filePath,
-            GameObject gameObject,
-            Action<MaterialEditResult> completed);
     }
 
     /// <summary>

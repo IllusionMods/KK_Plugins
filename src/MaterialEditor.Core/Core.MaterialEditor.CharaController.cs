@@ -71,7 +71,6 @@ namespace KK_Plugins.MaterialEditor
 #else
         public int CurrentCoordinateIndex => 0;
 #endif
-        private readonly MaterialEditRequestQueue _textureImports = new MaterialEditRequestQueue();
         internal int? DuplicatingFrom = null;
 
         /// <summary>
@@ -140,7 +139,6 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="maintainState"></param>
         protected override void OnReload(GameMode currentGameMode, bool maintainState)
         {
-            _textureImports.CancelAll();
             if (!maintainState)
             {
                 if (MakerAPI.InsideAndLoaded)
@@ -161,7 +159,6 @@ namespace KK_Plugins.MaterialEditor
         protected override void OnDestroy()
         {
             CancelMainTexRefreshes();
-            _textureImports.Dispose();
             ChaControl targetControl = null;
             GameObject targetRoot = null;
             try
@@ -193,11 +190,7 @@ namespace KK_Plugins.MaterialEditor
             }
         }
 
-        private void OnDisable()
-        {
-            CancelMainTexRefreshes();
-            _textureImports.CancelAll();
-        }
+        private void OnDisable() => CancelMainTexRefreshes();
 
         private bool CurrentUiTargetBelongsToThisController()
         {
@@ -222,7 +215,6 @@ namespace KK_Plugins.MaterialEditor
 
         internal new void Update()
         {
-            SetMaterialTextureFromFileByUpdate();
             MEAnimationController.UpdateAnimations(AnimationControllerMap);
             base.Update();
             if (MaterialEditorPlugin.PurgeOrphanedPropertiesHotkey.Value.IsDown())
@@ -333,11 +325,6 @@ namespace KK_Plugins.MaterialEditor
         }
 
         /// <summary>
-        /// Used by SetMaterialTextureFromFile if setTexInUpdate is true, needed for loading files via file dialogue
-        /// </summary>
-        private void SetMaterialTextureFromFileByUpdate() => _textureImports.Pump();
-
-        /// <summary>
         /// Get the coordinate index based on object type, hair and character return 0, clothes and accessories return CurrentCoordinateIndex
         /// </summary>
         internal int GetCoordinateIndex(ObjectType objectType)
@@ -358,7 +345,6 @@ namespace KK_Plugins.MaterialEditor
             get => coordinateChanging;
             set
             {
-                if (value) _textureImports.CancelAll();
                 coordinateChanging = value;
                 ChaControl.StartCoroutine(Reset());
                 IEnumerator Reset()

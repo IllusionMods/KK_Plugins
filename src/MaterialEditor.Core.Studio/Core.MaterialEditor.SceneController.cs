@@ -51,15 +51,10 @@ namespace KK_Plugins.MaterialEditor
         private static readonly MaterialEditorCubemapLeaseStore CubemapLeases =
             new MaterialEditorCubemapLeaseStore();
 
-        private readonly MaterialEditRequestQueue _textureImports = new MaterialEditRequestQueue();
-
-
         static SceneController()
         {
             InitAnimationController();
         }
-
-        private void OnDisable() => _textureImports.CancelAll();
 
         /// <summary>
         /// Saves data
@@ -189,7 +184,6 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="loadedItems"></param>
         protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
         {
-            _textureImports.CancelAll();
             if (operation == SceneOperationKind.Clear
                 || operation == SceneOperationKind.Load)
             {
@@ -433,8 +427,6 @@ namespace KK_Plugins.MaterialEditor
                 if (count > 0)
                     MaterialEditorPlugin.Logger.LogMessage($"Reset ReceiveShadows for {count} items");
             }
-            _textureImports.Pump();
-
             MEAnimationController.UpdateAnimations(AnimationControllerMap);
         }
 

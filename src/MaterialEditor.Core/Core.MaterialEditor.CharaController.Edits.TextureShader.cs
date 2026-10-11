@@ -21,80 +21,15 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="propertyName">Property of the material without the leading underscore</param>
         /// <param name="filePath">Path to the .png file on disk</param>
         /// <param name="go">GameObject the material belongs to</param>
-        /// <param name="setTexInUpdate">Whether to wait for the next Update</param>
+        /// <param name="setTexInUpdate">Retained for compatibility; imports now always complete synchronously.</param>
+        /// <remarks>Call this method on Unity's main thread.</remarks>
         public void SetMaterialTextureFromFile(int slot, ObjectType objectType, Material material, string propertyName, string filePath, GameObject go, bool setTexInUpdate = false)
         {
-            if (setTexInUpdate)
-            {
-                QueueMaterialTextureFromFile(
-                    slot,
-                    objectType,
-                    material,
-                    propertyName,
-                    filePath,
-                    go,
-                    null);
-            }
-            else
-            {
-                MaterialEditRequestQueue.CancelTarget(go, material == null ? null : material.NameFormatted(), propertyName);
-                TrySetMaterialTextureFromFile(
-                    slot,
-                    objectType,
-                    material,
-                    propertyName,
-                    filePath,
-                    go);
-            }
-        }
-
-        internal Action QueueMaterialTextureFromFile(
-            int slot,
-            ObjectType objectType,
-            Material material,
-            string propertyName,
-            string filePath,
-            GameObject go,
-            Action<MaterialEditResult> completed)
-        {
-            var coordinate = GetCoordinateIndex(objectType);
-            // Public callers may intentionally pass a subtree rather than the slot root.
-            // Track slot replacement without narrowing the caller's apply scope.
-            var location = FindGameObject(objectType, slot);
-            var target = new MaterialEditTarget(go, material, propertyName);
-            var cancel = _textureImports.Enqueue(target,
-                () => this != null && isActiveAndEnabled && GetCoordinateIndex(objectType) == coordinate
-                    && FindGameObject(objectType, slot) == location
-                    && !CoordinateChanging && File.Exists(filePath),
-                done => { done(MaterialEditResult.FromApplied(
-                    TrySetMaterialTextureFromFile(slot, objectType, material, propertyName, filePath, go))); return null; },
-                completed);
-            // A file-dialog callback can arrive after OnDisable stopped Update.
-            // Complete through the queue's normal cancellation path immediately.
-            if (!isActiveAndEnabled)
-                cancel?.Invoke();
-            return cancel;
-        }
-
-        private bool TrySetMaterialTextureFromFile(
-            int slot,
-            ObjectType objectType,
-            Material material,
-            string propertyName,
-            string filePath,
-            GameObject go)
-        {
-            if (!File.Exists(filePath))
-                return false;
+            MaterialEditRequestQueue.CancelTarget(go, material == null ? null : material.NameFormatted(), propertyName);
+            if (!File.Exists(filePath)) return;
 
             var texBytes = File.ReadAllBytes(filePath);
-            return TrySetMaterialTexture(
-                slot,
-                objectType,
-                material,
-                propertyName,
-                texBytes,
-                go);
+            TrySetMaterialTexture(slot, objectType, material, propertyName, texBytes, go);
         }
 
         /// <summary>

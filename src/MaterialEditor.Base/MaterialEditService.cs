@@ -177,41 +177,6 @@ namespace MaterialEditorAPI
         internal void SetMaterialTexture(object data, Material material, string propertyName, string filePath, GameObject gameObject) =>
             GetRepository(data).SetMaterialTexture(data, material, propertyName, filePath, gameObject);
 
-        internal Action SetMaterialTexture(
-            object data,
-            Material material,
-            string propertyName,
-            string filePath,
-            GameObject gameObject,
-            Action<MaterialEditResult> completed)
-        {
-            var repository = GetRepository(data);
-            var completionRepository = repository as IMaterialTextureImportCompletionRepository;
-            if (completionRepository != null)
-            {
-                return completionRepository.SetMaterialTexture(
-                    data,
-                    material,
-                    propertyName,
-                    filePath,
-                    gameObject,
-                    completed);
-            }
-
-            try
-            {
-                repository.SetMaterialTexture(data, material, propertyName, filePath, gameObject);
-            }
-            catch
-            {
-                completed?.Invoke(new MaterialEditResult(MaterialEditStatus.Failed, "Legacy import"));
-                throw;
-            }
-
-            completed?.Invoke(new MaterialEditResult(MaterialEditStatus.Unverified, "Legacy void API"));
-            return null;
-        }
-
         internal void RemoveMaterialTexture(object data, Material material, string propertyName, GameObject gameObject) =>
             GetRepository(data).RemoveMaterialTexture(data, material, propertyName, gameObject);
 
