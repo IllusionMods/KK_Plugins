@@ -66,22 +66,4 @@ namespace MaterialEditorAPI
         void RemoveMaterialKeywordProperty(object data, Material material, string propertyName, GameObject gameObject);
     }
 
-    /// <summary>
-    /// Optional repository capability used by the incremental Cubemap import
-    /// coordinator. Passing the already-read bytes prevents character and
-    /// Studio controllers from performing a second disk read on the main thread.
-    /// The opaque content key lets the controller acquire its own cache lease
-    /// without repeating SHA-256 after the coordinator warmed the cache.
-    /// </summary>
-    internal interface IMaterialCubemapDataImportRepository
-    {
-        bool SetMaterialCubemap(
-            object data,
-            Material material,
-            string propertyName,
-            byte[] encodedData,
-            MaterialEditorCubemapContentKey contentKey,
-            GameObject gameObject);
-    }
-
 }

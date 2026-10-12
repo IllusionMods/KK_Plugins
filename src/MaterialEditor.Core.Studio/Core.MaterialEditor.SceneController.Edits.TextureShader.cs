@@ -26,7 +26,6 @@ namespace KK_Plugins.MaterialEditor
         /// <remarks>Call this method on Unity's main thread.</remarks>
         public void SetMaterialTextureFromFile(int id, Material material, string propertyName, string filePath, bool setTexInUpdate = false)
         {
-            MaterialEditRequestQueue.CancelTarget(GetObjectByID(id), material == null ? null : material.NameFormatted(), propertyName);
             if (!File.Exists(filePath)) return;
 
             var texBytes = File.ReadAllBytes(filePath);
@@ -84,7 +83,6 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="data">Byte array containing the texture data</param>
         public void SetMaterialTexture(int id, Material material, string propertyName, byte[] data)
         {
-            MaterialEditRequestQueue.CancelTarget(GetObjectByID(id), material == null ? null : material.NameFormatted(), propertyName);
             TrySetMaterialTexture(id, material, propertyName, data);
         }
 
@@ -172,7 +170,6 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="displayMessage">Whether to display a message on screen telling the user to save and reload to refresh textures</param>
         public void RemoveMaterialTexture(int id, Material material, string propertyName, bool displayMessage = true)
         {
-            MaterialEditRequestQueue.CancelTarget(GetObjectByID(id), material == null ? null : material.NameFormatted(), propertyName);
             var textureProperty = MaterialTexturePropertyList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted() && x.Property == propertyName);
             if (textureProperty != null)
             {
@@ -358,7 +355,6 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void SetMaterialShader(int id, Material material, string shaderName, bool setProperty = true)
         {
-            MaterialEditRequestQueue.CancelTarget(GetObjectByID(id), material == null ? null : material.NameFormatted());
             GameObject gameObject = GetObjectByID(id);
             var materialProperty = MaterialShaderList.FirstOrDefault(x => x.ID == id && x.MaterialName == material.NameFormatted());
             if (materialProperty == null)
@@ -408,7 +404,6 @@ namespace KK_Plugins.MaterialEditor
         /// <param name="setProperty">Whether to also apply the value to the materials</param>
         public void RemoveMaterialShader(int id, Material material, bool setProperty = true)
         {
-            MaterialEditRequestQueue.CancelTarget(GetObjectByID(id), material == null ? null : material.NameFormatted());
             GameObject gameObject = GetObjectByID(id);
             if (setProperty)
             {

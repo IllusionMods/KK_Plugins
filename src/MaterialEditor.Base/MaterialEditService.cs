@@ -186,31 +186,6 @@ namespace MaterialEditorAPI
         internal void SetMaterialCubemap(object data, Material material, string propertyName, string filePath, GameObject gameObject) =>
             GetRepository(data).SetMaterialCubemap(data, material, propertyName, filePath, gameObject);
 
-        internal bool SupportsMaterialCubemapDataImport(object data) =>
-            GetRepository(data) is IMaterialCubemapDataImportRepository;
-
-        internal bool SetMaterialCubemap(
-            object data,
-            Material material,
-            string propertyName,
-            byte[] encodedData,
-            MaterialEditorCubemapContentKey contentKey,
-            GameObject gameObject)
-        {
-            var repository = GetRepository(data);
-            var dataRepository = repository as IMaterialCubemapDataImportRepository;
-            if (dataRepository == null)
-                return false;
-
-            return dataRepository.SetMaterialCubemap(
-                data,
-                material,
-                propertyName,
-                encodedData,
-                contentKey,
-                gameObject);
-        }
-
         internal void RemoveMaterialCubemap(object data, Material material, string propertyName, GameObject gameObject) =>
             GetRepository(data).RemoveMaterialCubemap(data, material, propertyName, gameObject);
 

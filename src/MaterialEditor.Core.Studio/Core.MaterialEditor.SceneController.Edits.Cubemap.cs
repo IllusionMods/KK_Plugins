@@ -13,6 +13,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Import and persist a native Cubemap from an equirectangular PNG or Radiance HDR file.
         /// </summary>
+        /// <remarks>Completes synchronously and must be called on Unity's main thread.</remarks>
         public void SetMaterialCubemapFromFile(
             int id,
             Material material,
@@ -36,56 +37,37 @@ namespace KK_Plugins.MaterialEditor
                 material,
                 propertyName,
                 File.ReadAllBytes(filePath),
-                null,
                 true);
         }
 
         /// <summary>
         /// Import and persist a native Cubemap from encoded equirectangular PNG or Radiance HDR data.
         /// </summary>
+        /// <remarks>Completes synchronously and must be called on Unity's main thread.</remarks>
         public void SetMaterialCubemap(
             int id,
             Material material,
             string propertyName,
             byte[] data)
         {
-            MaterialEditRequestQueue.CancelTarget(GetObjectByID(id), material == null ? null : material.NameFormatted(), propertyName);
-            SetMaterialCubemap(id, material, propertyName, data, null, false);
+            SetMaterialCubemap(id, material, propertyName, data, false);
         }
 
-        internal bool SetMaterialCubemap(
+        private void SetMaterialCubemap(
             int id,
             Material material,
             string propertyName,
             byte[] data,
-            MaterialEditorCubemapContentKey contentKey)
-        {
-            return SetMaterialCubemap(
-                id,
-                material,
-                propertyName,
-                data,
-                contentKey,
-                false);
-        }
-
-        private bool SetMaterialCubemap(
-            int id,
-            Material material,
-            string propertyName,
-            byte[] data,
-            MaterialEditorCubemapContentKey contentKey,
             bool logNormalizationWarning)
         {
-            if (material == null) return false;
+            if (material == null) return;
             var go = GetObjectByID(id);
             var existing = MaterialCubemapPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
-            var result = MaterialCubemapImportTransaction.Execute(data, contentKey,
+            var result = MaterialCubemapImportTransaction.Execute(data,
                 go, material.NameFormatted(), propertyName, logNormalizationWarning,
                 TextureDictionary, CubemapLeases, ApplyAndCommit, PurgeUnusedCubemapLeases);
             if (!result.Succeeded)
                 MaterialEditorPluginBase.Logger?.LogWarning("Cubemap import: " + result.Stage + ": " + result.Diagnostic);
-            return result.Succeeded;
 
             bool ApplyAndCommit(int texId)
             {
@@ -176,7 +158,6 @@ namespace KK_Plugins.MaterialEditor
             Material material,
             string propertyName)
         {
-            MaterialEditRequestQueue.CancelTarget(GetObjectByID(id), material == null ? null : material.NameFormatted(), propertyName);
             var cubemapProperty = MaterialCubemapPropertyList.FirstOrDefault(x => x.ID == id && x.Property == propertyName && x.MaterialName == material.NameFormatted());
             if (cubemapProperty == null)
                 return;

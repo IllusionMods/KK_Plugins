@@ -1,6 +1,5 @@
 using BepInEx;
 using System;
-using System.Collections;
 using System.IO;
 using UnityEngine;
 using static MaterialEditorAPI.MaterialEditorPluginBase;
@@ -8,8 +7,7 @@ using static MaterialEditorAPI.MaterialEditorPluginBase;
 namespace MaterialEditorAPI
 {
     /// <summary>
-    /// Owns Material Editor asset selection, import, export, file watching, and
-    /// Cubemap import coordination. Unity work remains hosted by the owning UI.
+    /// Owns Material Editor asset selection, synchronous import, export, and file watching.
     /// </summary>
     internal sealed class MaterialEditorAssetWorkflow : IDisposable
     {
@@ -18,7 +16,6 @@ namespace MaterialEditorAPI
         // Texture watching is process-wide so all UI hosts share one active watcher.
         private static FileSystemWatcher _textureWatcher;
         private static MaterialEditorAssetWorkflow _watcherOwner;
-        private readonly MaterialEditRequestQueue _imports = new MaterialEditRequestQueue();
         private FileSystemWatcher _ownedWatcher;
         private bool _disposed;
 
@@ -32,17 +29,6 @@ namespace MaterialEditorAPI
                 throw new ArgumentNullException("editService");
             _host = host;
             _editService = editService;
-            _host.StartCoroutine(PumpImports());
-        }
-
-        private IEnumerator PumpImports()
-        {
-            while (!_disposed && _host != null)
-            {
-                _imports.Pump();
-                yield return null;
-            }
-            Dispose();
         }
 
         internal void ImportTexture(TexturePropertyRowModel row, GameObject root,
@@ -90,49 +76,24 @@ namespace MaterialEditorAPI
                 {
                     if (!IsHostAlive() || !target.IsAlive || files == null
                         || files.Length == 0 || string.IsNullOrEmpty(files[0])) return;
-                    var path = files[0];
-                    _imports.Enqueue(target, IsHostAlive, done =>
+                    try
                     {
-                        var runner = _host.gameObject.AddComponent<MaterialEditorCubemapImportRunner>();
-                        try
+                        if (!File.Exists(files[0]))
                         {
-                            runner.Begin(path, () => IsHostAlive() && target.IsAlive,
-                                (bytes, key, lease) =>
-                                {
-                                    if (lease == null) return MaterialEditResult.FromApplied(false);
-                                    if (_editService.SupportsMaterialCubemapDataImport(data))
-                                        return MaterialEditResult.FromApplied(_editService.SetMaterialCubemap(
-                                            data, material, propertyName, bytes, key, root));
-                                    _editService.SetMaterialCubemap(data, material, propertyName, path, root);
-                                    return new MaterialEditResult(MaterialEditStatus.Unverified, "Legacy void API");
-                                },
-                                message => MaterialEditorPluginBase.Logger?.LogInfo(message),
-                                message => MaterialEditorPluginBase.Logger?.LogWarning(message),
-                                message => MaterialEditorPluginBase.Logger?.LogError(message),
-                                done);
+                            MaterialEditorPluginBase.Logger?.LogWarning("Cubemap source not found or inaccessible: " + files[0]);
+                            return;
                         }
-                        catch
-                        {
-                            UnityEngine.Object.Destroy(runner);
-                            throw;
-                        }
-                        return runner.Cancel;
-                    }, result =>
+                        _editService.SetMaterialCubemap(data, material, propertyName, files[0], root);
+                    }
+                    catch (Exception ex)
                     {
-                        if (!IsHostAlive() || !target.IsAlive) return;
-                        row.Changed = !_editService.GetMaterialCubemapValueOriginal(data, material, propertyName, root);
-                        row.Exists = MaterialPropertyAccess.GetTexture(material, MaterialPropertyIdCache.Get(propertyName)) is Cubemap;
-                        row.RefreshState?.Invoke();
-                        ReportImportResult(result, propertyName);
-                    });
+                        MaterialEditorPluginBase.Logger?.LogWarning("Cubemap import " + propertyName + ": " + ex);
+                    }
+                    if (!IsHostAlive() || !target.IsAlive) return;
+                    row.Changed = !_editService.GetMaterialCubemapValueOriginal(data, material, propertyName, root);
+                    row.Exists = MaterialPropertyAccess.GetTexture(material, MaterialPropertyIdCache.Get(propertyName)) is Cubemap;
+                    row.RefreshState?.Invoke();
                 }), "Open Cubemap source", ExportPath, filter, ".png");
-        }
-
-        private static void ReportImportResult(MaterialEditResult result, string property)
-        {
-            if (result.Status == MaterialEditStatus.Failed || result.Status == MaterialEditStatus.Unverified)
-                MaterialEditorPluginBase.Logger?.LogWarning("Import " + property + ": "
-                    + result.Status + " (" + result.Stage + ") " + result.Diagnostic);
         }
 
         private void WatchTexture(MaterialEditTarget target, object data, string path)
@@ -243,12 +204,33 @@ namespace MaterialEditorAPI
         {
             if (_disposed) return;
             _disposed = true;
-            _imports.Dispose();
             if (_ownedWatcher != null && ReferenceEquals(_textureWatcher, _ownedWatcher))
                 DisposeTextureWatcher();
         }
 
         private bool IsHostAlive() => !_disposed && _host != null;
+
+        // File dialogs and watcher notifications can outlive their original target.
+        private sealed class MaterialEditTarget
+        {
+            internal readonly GameObject Root;
+            internal readonly Material Material;
+            internal readonly string Property;
+            private readonly string _materialName;
+            private readonly Shader _shader;
+
+            internal MaterialEditTarget(GameObject root, Material material, string property)
+            {
+                Root = root;
+                Material = material;
+                Property = property;
+                _materialName = material == null ? null : material.NameFormatted();
+                _shader = material == null ? null : material.shader;
+            }
+
+            internal bool IsAlive => Root != null && Material != null
+                && Material.shader == _shader && Material.NameFormatted() == _materialName;
+        }
 
         private static string SanitizeMaterialName(Material material)
         {
