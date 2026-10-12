@@ -12,7 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Sections\Properties\PropertyRowBuilders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Operations\MaterialTextureImportTransaction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Operations\MaterialEditResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Operations\MaterialEditRequestQueue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NormalMapManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IMaterialEditorColorPalette.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MaterialAPI.cs" />
@@ -33,7 +32,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConfigurationManagerAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CopyContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CubemapContentKey.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CubemapBackgroundRead.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Cubemap\OriginalState\CubemapOriginalSnapshot.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Cubemap\OriginalState\CubemapOriginalState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CubemapProjection.cs" />
@@ -52,7 +50,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)PluginBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.PropertyOrganizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Assets\UI.CubemapImportCoordinator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Assets\MaterialEditorAssetWorkflow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.RepositoryContract.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\UI.SessionState.cs" />

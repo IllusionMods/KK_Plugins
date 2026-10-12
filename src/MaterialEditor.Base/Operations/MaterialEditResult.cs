@@ -1,10 +1,8 @@
-using System;
-
 namespace MaterialEditorAPI
 {
-    internal enum MaterialEditStatus { Succeeded, Failed, Cancelled, Superseded, Unverified }
+    internal enum MaterialEditStatus { Succeeded, Failed }
 
-    /// <summary>Internal completion contract; legacy public void APIs remain unchanged.</summary>
+    /// <summary>Internal transaction result; legacy public void APIs remain unchanged.</summary>
     internal sealed class MaterialEditResult
     {
         internal readonly MaterialEditStatus Status;
@@ -18,8 +16,5 @@ namespace MaterialEditorAPI
             Stage = stage;
             Diagnostic = diagnostic;
         }
-
-        internal static MaterialEditResult FromApplied(bool applied) =>
-            new MaterialEditResult(applied ? MaterialEditStatus.Succeeded : MaterialEditStatus.Failed, "Apply/commit");
     }
 }

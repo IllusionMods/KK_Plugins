@@ -8,7 +8,7 @@ namespace KK_Plugins.MaterialEditor
     /// <summary>Shared resource transaction; controller-specific records stay with their controller.</summary>
     internal static class MaterialCubemapImportTransaction
     {
-        internal static MaterialEditResult Execute(byte[] data, MaterialEditorCubemapContentKey key,
+        internal static MaterialEditResult Execute(byte[] data,
             GameObject root, string materialName, string property, bool logNormalization,
             Dictionary<int, TextureContainer> textures, MaterialEditorCubemapLeaseStore leases,
             Func<int, bool> applyAndCommit, Action purgeLeases)
@@ -26,10 +26,8 @@ namespace KK_Plugins.MaterialEditor
             {
                 string warning;
                 string error;
-                var acquired = key == null
-                    ? MaterialEditorCubemapCache.TryAcquire(data, out lease, out warning, out error)
-                    : MaterialEditorCubemapCache.TryAcquire(data, key, out lease, out warning, out error);
-                if (!acquired) return new MaterialEditResult(MaterialEditStatus.Failed, stage, error);
+                if (!MaterialEditorCubemapCache.TryAcquire(data, out lease, out warning, out error))
+                    return new MaterialEditResult(MaterialEditStatus.Failed, stage, error);
                 if (logNormalization && !string.IsNullOrEmpty(warning))
                     MaterialEditorPluginBase.Logger?.LogWarning(warning);
 

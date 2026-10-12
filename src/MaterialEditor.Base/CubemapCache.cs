@@ -271,30 +271,6 @@ namespace MaterialEditorAPI
             return CompleteAcquire(lease, operation, out lease, out error);
         }
 
-        /// <summary>
-        /// Synchronous acquisition using a worker-computed key.
-        /// This avoids hashing the same byte array again when an incremental UI
-        /// import has already warmed the cache. Unity work remains main-thread.
-        /// </summary>
-        internal static bool TryAcquire(
-            byte[] pngData,
-            MaterialEditorCubemapContentKey contentKey,
-            out MaterialEditorCubemapLease lease,
-            out string warning,
-            out string error)
-        {
-            MaterialEditorCubemapAcquireOperation operation;
-            if (!TryBeginAcquire(
-                    pngData,
-                    contentKey,
-                    out lease,
-                    out operation,
-                    out warning,
-                    out error))
-                return false;
-            return CompleteAcquire(lease, operation, out lease, out error);
-        }
-
         private static bool CompleteAcquire(
             MaterialEditorCubemapLease immediateLease,
             MaterialEditorCubemapAcquireOperation operation,
@@ -324,12 +300,9 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
-        /// Begins a cache acquisition without running the projection loop to
-        /// completion. On a hit, lease is returned and operation is null. On a
-        /// miss, a main-thread coroutine should call operation.ProcessRows with
-        /// a bounded row count and yield between calls.
+        /// Prepares a cache acquisition. CompleteAcquire finishes any conversion synchronously.
         /// </summary>
-        internal static bool TryBeginAcquire(
+        private static bool TryBeginAcquire(
             byte[] pngData,
             out MaterialEditorCubemapLease lease,
             out MaterialEditorCubemapAcquireOperation operation,
@@ -364,11 +337,9 @@ namespace MaterialEditorAPI
         }
 
         /// <summary>
-        /// Begins acquisition using an opaque key previously computed for the
-        /// exact byte-array instance. Computing the key is worker-safe; this
-        /// method and the returned operation remain main-thread-only.
+        /// Begins acquisition using the key computed for the exact byte-array instance.
         /// </summary>
-        internal static bool TryBeginAcquire(
+        private static bool TryBeginAcquire(
             byte[] pngData,
             MaterialEditorCubemapContentKey contentKey,
             out MaterialEditorCubemapLease lease,

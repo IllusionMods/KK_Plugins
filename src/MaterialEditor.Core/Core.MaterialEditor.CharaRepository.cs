@@ -6,9 +6,7 @@ using static MaterialEditorAPI.MaterialAPI;
 
 namespace KK_Plugins.MaterialEditor
 {
-    internal sealed class CharaMaterialEditRepository :
-        IMaterialEditRepository,
-        IMaterialCubemapDataImportRepository
+    internal sealed class CharaMaterialEditRepository : IMaterialEditRepository
     {
         private readonly Func<GameObject, MaterialEditorCharaController> _controllerResolver;
 
@@ -191,25 +189,6 @@ namespace KK_Plugins.MaterialEditor
                 material,
                 propertyName,
                 filePath,
-                gameObject);
-        }
-
-        public bool SetMaterialCubemap(
-            object data,
-            Material material,
-            string propertyName,
-            byte[] encodedData,
-            MaterialEditorCubemapContentKey contentKey,
-            GameObject gameObject)
-        {
-            var objectData = GetObjectData(data);
-            return GetController(gameObject).SetMaterialCubemap(
-                objectData.Slot,
-                objectData.ObjectType,
-                material,
-                propertyName,
-                encodedData,
-                contentKey,
                 gameObject);
         }
 

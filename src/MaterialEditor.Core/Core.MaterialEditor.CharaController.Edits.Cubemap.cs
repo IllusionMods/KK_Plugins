@@ -13,6 +13,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Import and persist a native Cubemap from an equirectangular PNG or Radiance HDR file.
         /// </summary>
+        /// <remarks>Completes synchronously and must be called on Unity's main thread.</remarks>
         public void SetMaterialCubemapFromFile(
             int slot,
             ObjectType objectType,
@@ -39,7 +40,6 @@ namespace KK_Plugins.MaterialEditor
                 material,
                 propertyName,
                 File.ReadAllBytes(filePath),
-                null,
                 go,
                 true);
         }
@@ -47,6 +47,7 @@ namespace KK_Plugins.MaterialEditor
         /// <summary>
         /// Import and persist a native Cubemap from encoded equirectangular PNG or Radiance HDR data.
         /// </summary>
+        /// <remarks>Completes synchronously and must be called on Unity's main thread.</remarks>
         public void SetMaterialCubemap(
             int slot,
             ObjectType objectType,
@@ -55,60 +56,32 @@ namespace KK_Plugins.MaterialEditor
             byte[] data,
             GameObject go)
         {
-            MaterialEditRequestQueue.CancelTarget(go, material == null ? null : material.NameFormatted(), propertyName);
             SetMaterialCubemap(
                 slot,
                 objectType,
                 material,
                 propertyName,
                 data,
-                null,
                 go,
                 false);
         }
 
-        /// <summary>
-        /// Internal warm-cache persistence path. The opaque key belongs to the
-        /// exact byte array and avoids a second main-thread SHA-256 pass.
-        /// </summary>
-        internal bool SetMaterialCubemap(
+        private void SetMaterialCubemap(
             int slot,
             ObjectType objectType,
             Material material,
             string propertyName,
             byte[] data,
-            MaterialEditorCubemapContentKey contentKey,
-            GameObject go)
-        {
-            return SetMaterialCubemap(
-                slot,
-                objectType,
-                material,
-                propertyName,
-                data,
-                contentKey,
-                go,
-                false);
-        }
-
-        private bool SetMaterialCubemap(
-            int slot,
-            ObjectType objectType,
-            Material material,
-            string propertyName,
-            byte[] data,
-            MaterialEditorCubemapContentKey contentKey,
             GameObject go,
             bool logNormalizationWarning)
         {
-            if (material == null) return false;
+            if (material == null) return;
             var existing = FindMaterialCubemapProperty(slot, objectType, material, propertyName);
-            var result = MaterialCubemapImportTransaction.Execute(data, contentKey,
+            var result = MaterialCubemapImportTransaction.Execute(data,
                 go, material.NameFormatted(), propertyName, logNormalizationWarning,
                 TextureDictionary, CubemapLeases, ApplyAndCommit, PurgeUnusedCubemapLeases);
             if (!result.Succeeded)
                 MaterialEditorPluginBase.Logger?.LogWarning("Cubemap import: " + result.Stage + ": " + result.Diagnostic);
-            return result.Succeeded;
 
             bool ApplyAndCommit(int texId)
             {
@@ -193,7 +166,6 @@ namespace KK_Plugins.MaterialEditor
             GameObject go,
             bool setProperty = true)
         {
-            MaterialEditRequestQueue.CancelTarget(go, material == null ? null : material.NameFormatted(), propertyName);
             var cubemapProperty = FindMaterialCubemapProperty(
                 slot,
                 objectType,
