@@ -260,6 +260,8 @@ namespace MaterialEditorAPI
         private const string Ellipsis = "...";
 
         [SerializeField] private Dropdown _dropdown;
+        // Runtime listeners are not copied with the serialized dropdown reference.
+        private bool _listenerBound;
         private Text _caption;
         private string _lastFullText;
         private string _lastDisplayText;
@@ -274,7 +276,8 @@ namespace MaterialEditorAPI
                 dropdown.GetComponent<MaterialEditorDropdownCaptionFitter>()
                 ?? dropdown.gameObject
                     .AddComponent<MaterialEditorDropdownCaptionFitter>();
-            fitter.ConfigureInternal(dropdown);
+            fitter.Bind(dropdown);
+            fitter.RefreshText(true);
         }
 
         internal static void Refresh(Dropdown dropdown)
@@ -296,23 +299,28 @@ namespace MaterialEditorAPI
                 dropdown.GetComponent<MaterialEditorDropdownCaptionFitter>()
                 ?? dropdown.gameObject
                     .AddComponent<MaterialEditorDropdownCaptionFitter>();
-            fitter.ConfigureInternal(dropdown);
+            fitter.Bind(dropdown);
             fitter.RefreshText(true, fullText ?? string.Empty);
         }
 
-        private void ConfigureInternal(Dropdown dropdown)
+        private void Bind(Dropdown dropdown)
         {
-            if (_dropdown != null)
-                _dropdown.onValueChanged.RemoveListener(HandleValueChanged);
+            if (!_listenerBound || _dropdown != dropdown)
+            {
+                if (_listenerBound && _dropdown != null)
+                    _dropdown.onValueChanged.RemoveListener(HandleValueChanged);
 
-            _dropdown = dropdown;
+                _dropdown = dropdown;
+                _dropdown.onValueChanged.AddListener(HandleValueChanged);
+                _listenerBound = true;
+            }
             _caption = dropdown.captionText;
-            _dropdown.onValueChanged.AddListener(HandleValueChanged);
-            RefreshText(true);
         }
 
         private void OnEnable()
         {
+            if (_dropdown != null)
+                Bind(_dropdown);
             RefreshText(true);
         }
 
@@ -324,7 +332,7 @@ namespace MaterialEditorAPI
 
         private void OnDestroy()
         {
-            if (_dropdown != null)
+            if (_listenerBound && _dropdown != null)
                 _dropdown.onValueChanged.RemoveListener(HandleValueChanged);
         }
 
