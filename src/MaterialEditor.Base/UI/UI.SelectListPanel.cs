@@ -283,7 +283,7 @@ namespace MaterialEditorAPI
         private void ConfigureSelectionChrome()
         {
             _titleText.alignment = TextAnchor.MiddleLeft;
-            _titleText.fontStyle = FontStyle.Bold;
+            _titleText.fontStyle = FontStyle.Normal;
             MaterialEditorTextFitting.ApplyAdaptiveSingleLine(
                 _titleText,
                 MaterialEditorTheme.Typography.PrimaryFontSize);

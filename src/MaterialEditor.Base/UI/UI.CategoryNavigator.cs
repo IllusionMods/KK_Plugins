@@ -43,41 +43,19 @@ namespace MaterialEditorAPI
                 Panel,
                 MaterialEditorThemeColorRole.Outline);
 
-            var header = MaterialEditorControlFactory.CreatePanel(
-                "CategoryNavigatorHeader",
+            var title = MaterialEditorControlFactory.CreateText(
+                "CategoryNavigatorTitle",
                 Panel.transform,
-                MaterialEditorPanelRole.Header);
-            header.transform.SetRect(
+                "Categories",
+                MaterialEditorTextRole.Chrome);
+            title.fontStyle = FontStyle.Normal;
+            title.alignment = TextAnchor.MiddleCenter;
+            title.transform.SetRect(
                 0f, 1f, 1f, 1f,
                 MaterialEditorLayout.Margin,
                 -MaterialEditorLayout.HeaderHeight,
                 -MaterialEditorLayout.Margin,
                 0f);
-
-            var headerLayout = header.gameObject.AddComponent<HorizontalLayoutGroup>();
-            headerLayout.padding = new RectOffset(
-                MaterialEditorTheme.Spacing.NavigatorHeaderHorizontalInset,
-                MaterialEditorTheme.Spacing.NavigatorHeaderHorizontalInset,
-                0,
-                0);
-            headerLayout.spacing = MaterialEditorTheme.Spacing.Control;
-            headerLayout.childAlignment = TextAnchor.MiddleCenter;
-            headerLayout.childControlWidth = true;
-            headerLayout.childForceExpandWidth = false;
-            headerLayout.childControlHeight = true;
-            headerLayout.childForceExpandHeight = true;
-
-            var title = MaterialEditorControlFactory.CreateText(
-                "CategoryNavigatorTitle",
-                header.transform,
-                "Categories",
-                MaterialEditorTextRole.Chrome);
-            title.fontStyle = FontStyle.Bold;
-            title.alignment = TextAnchor.MiddleCenter;
-            var titleLayout = title.gameObject.AddComponent<LayoutElement>();
-            titleLayout.minWidth = 0f;
-            titleLayout.preferredWidth = 0f;
-            titleLayout.flexibleWidth = 1f;
 
             _materialText = MaterialEditorControlFactory.CreateText(
                 "CategoryNavigatorMaterial",
@@ -85,6 +63,7 @@ namespace MaterialEditorAPI
                 string.Empty,
                 MaterialEditorTextRole.SecondaryChrome);
             ConfigureSingleLineText(_materialText);
+            _materialText.alignment = TextAnchor.MiddleCenter;
             _materialText.transform.SetRect(
                 0f, 1f, 1f, 1f,
                 MaterialEditorLayout.Margin,
@@ -109,8 +88,9 @@ namespace MaterialEditorAPI
                 "CategoryNavigatorShader",
                 _shaderHeader.transform,
                 string.Empty,
-                MaterialEditorTextRole.Label);
+                MaterialEditorTextRole.CenteredLabel);
             ConfigureSingleLineText(_shaderText);
+            _shaderText.alignment = TextAnchor.MiddleCenter;
             _shaderText.transform.SetRect();
 
             _scrollRect = MaterialEditorControlFactory.CreateScrollView(
