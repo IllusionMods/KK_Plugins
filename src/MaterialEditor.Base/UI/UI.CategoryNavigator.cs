@@ -151,7 +151,8 @@ namespace MaterialEditorAPI
 
         internal Image Panel { get; }
 
-        internal bool Visible => _visible && HasCategories();
+        // Empty sections temporarily hide the panel without changing the user's preference.
+        internal bool Visible => _visible && _sectionId != null;
         internal void ApplySettings(float width)
         {
             ApplyPanelRect(width);
@@ -224,9 +225,9 @@ namespace MaterialEditorAPI
                 return;
             }
 
-            UpdateVisibility();
             if (forceRebuild || section.Id != _sectionId)
                 Rebuild(section);
+            UpdateVisibility();
             UpdateHighlight(section.FindCategoryAtRow(rowIndex));
         }
 
@@ -245,18 +246,6 @@ namespace MaterialEditorAPI
                 0f,
                 -MaterialEditorLayout.Margin,
                 0f);
-        }
-
-        private bool HasCategories()
-        {
-            if (_presentation == null)
-                return false;
-
-            foreach (var section in _presentation.MaterialSections)
-                if (section.Categories.Count > 0)
-                    return true;
-
-            return false;
         }
 
         private void Rebuild(MaterialSectionPresentation section)
