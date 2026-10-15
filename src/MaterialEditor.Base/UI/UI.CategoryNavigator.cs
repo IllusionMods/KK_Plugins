@@ -116,6 +116,8 @@ namespace MaterialEditorAPI
             _scrollRect = MaterialEditorControlFactory.CreateScrollView(
                 "CategoryNavigatorScrollView",
                 Panel.transform);
+            MaterialEditorScrollStyleState.Assign(_scrollRect, false).SideList = true;
+            MaterialEditorStyles.ApplyScrollView(_scrollRect);
             _scrollRect.transform.SetRect(
                 0f, 0f, 1f, 1f,
                 MaterialEditorLayout.Margin,

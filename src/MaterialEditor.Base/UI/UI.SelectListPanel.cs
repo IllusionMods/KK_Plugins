@@ -84,6 +84,7 @@ namespace MaterialEditorAPI
             _scrollRect.horizontal = false;
             _scrollRect.vertical = true;
             _scrollRect.movementType = ScrollRect.MovementType.Clamped;
+            MaterialEditorScrollStyleState.Assign(_scrollRect, false).SideList = true;
             MaterialEditorStyles.ApplyScrollView(_scrollRect);
 
             if (selectionChrome)

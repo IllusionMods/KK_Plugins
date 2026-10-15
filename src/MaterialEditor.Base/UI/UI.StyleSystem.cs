@@ -586,6 +586,7 @@ namespace MaterialEditorAPI
         [SerializeField] private bool _popup;
 
         internal bool Popup => _popup;
+        internal bool SideList { get; set; }
 
         internal static MaterialEditorScrollStyleState Assign(
             ScrollRect scrollRect,

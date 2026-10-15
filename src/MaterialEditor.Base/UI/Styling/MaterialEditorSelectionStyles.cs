@@ -132,7 +132,7 @@ namespace MaterialEditorAPI
                 MaterialEditorControlStyleRole.CategoryNavigation);
             MaterialEditorScrollSelectableStyles.ApplySelectable(
                 button,
-                MaterialEditorTheme.Colors.TransparentRow,
+                MaterialEditorTheme.Colors.SideListRow,
                 MaterialEditorTheme.Colors.ControlHover,
                 MaterialEditorTheme.Colors.ControlPressed,
                 MaterialEditorTheme.Colors.ControlDisabled);
@@ -153,7 +153,7 @@ namespace MaterialEditorAPI
                 MaterialEditorControlStyleRole.SelectionListRow);
             MaterialEditorScrollSelectableStyles.ApplySelectable(
                 button,
-                MaterialEditorTheme.Colors.TransparentRow,
+                MaterialEditorTheme.Colors.SideListRow,
                 MaterialEditorTheme.Colors.ControlHover,
                 MaterialEditorTheme.Colors.ControlPressed,
                 MaterialEditorTheme.Colors.ControlDisabled);
@@ -173,7 +173,7 @@ namespace MaterialEditorAPI
             var colors = button.colors;
             colors.normalColor = selected
                 ? MaterialEditorTheme.Colors.Selected
-                : MaterialEditorTheme.Colors.TransparentRow;
+                : MaterialEditorTheme.Colors.SideListRow;
             colors.highlightedColor = selected
                 ? MaterialEditorTheme.Colors.Selected
                 : MaterialEditorTheme.Colors.ControlHover;
@@ -199,7 +199,7 @@ namespace MaterialEditorAPI
             var colors = button.colors;
             colors.normalColor = selected
                 ? MaterialEditorTheme.States.SelectedSurface
-                : MaterialEditorTheme.Colors.TransparentRow;
+                : MaterialEditorTheme.Colors.SideListRow;
             colors.highlightedColor = selected
                 ? MaterialEditorTheme.States.SelectedSurface
                 : MaterialEditorTheme.Colors.ControlHover;
@@ -394,15 +394,18 @@ namespace MaterialEditorAPI
             if (scrollRect == null)
                 return;
 
-            MaterialEditorScrollStyleState.Assign(scrollRect, false);
+            var state = MaterialEditorScrollStyleState.Assign(scrollRect, false);
+            var background = state.SideList
+                ? MaterialEditorTheme.Colors.SideListSurface
+                : MaterialEditorTheme.Colors.ScrollSurface;
             var surface = scrollRect.GetComponent<Image>();
             if (surface != null)
-                surface.color = MaterialEditorTheme.Colors.ScrollSurface;
+                surface.color = background;
             if (scrollRect.viewport != null)
             {
                 var viewportSurface = scrollRect.viewport.GetComponent<Image>();
                 if (viewportSurface != null)
-                    viewportSurface.color = MaterialEditorTheme.Colors.ScrollSurface;
+                    viewportSurface.color = background;
             }
 
             ApplyScrollbar(scrollRect.horizontalScrollbar);

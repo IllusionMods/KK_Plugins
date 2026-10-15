@@ -116,6 +116,8 @@ namespace MaterialEditorAPI
             internal static Color SliderHandle => Select(Color.white, Primary);
             internal static Color SliderHandlePressed => HandlePressed;
             internal static Color ScrollSurface => CenterPanel;
+            internal static Color SideListSurface => Select(Gray(0.6f), RightPanel);
+            internal static Color SideListRow => Select(Row, PropertyRow);
             internal static Color ScrollbarTrack => RightPanel;
             internal static Color Scrollbar => Select(new Color(1f, 1f, 1f, 0.6f), StrongBorder);
             internal static Color ScrollbarHandle => Select(new Color(1f, 1f, 1f, 0.6f), Secondary);
