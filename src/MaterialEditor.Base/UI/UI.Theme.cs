@@ -48,9 +48,9 @@ namespace MaterialEditorAPI
         internal static class Colors
         {
             internal static Color Window => Select(Color.white, Rgb(0x1E, 0x23, 0x2B));
-            internal static Color LeftPanel => Select(Gray(0.42f), Rgb(0x20, 0x26, 0x2F));
+            internal static Color LeftPanel => NeutralHeader;
             internal static Color CenterPanel => Select(Color.white, Rgb(0x24, 0x2B, 0x34));
-            internal static Color RightPanel => Select(Gray(0.42f), Rgb(0x22, 0x28, 0x32));
+            internal static Color RightPanel => NeutralHeader;
             internal static Color NeutralHeader => Select(Color.gray, Rgb(0x2A, 0x31, 0x3B));
             internal static Color PropertyRow => Select(new Color(1f, 1f, 1f, 0f), Rgb(0x2A, 0x31, 0x3B));
             internal static Color PropertyRowAlternate => Select(new Color(0f, 0f, 0f, 0.08f), Rgb(0x2D, 0x35, 0x40));
@@ -61,7 +61,7 @@ namespace MaterialEditorAPI
             internal static Color RendererHeader => Select(new Color(0.984f, 0.600f, 0.008f, 0.5f), Rgb(0x2F, 0x4F, 0x74));
             internal static Color MaterialHeader => Select(new Color(0.400f, 0.690f, 0.196f, 0.5f), Rgb(0x3F, 0x5A, 0x48));
             internal static Color ShaderHeader => Select(new Color(1f, 1f, 1f, 0f), Rgb(0x36, 0x5C, 0x73));
-            internal static Color NavigatorShaderHeader => Select(Gray(0.64f), Rgb(0x36, 0x5C, 0x73));
+            internal static Color NavigatorShaderHeader => DropdownSurface;
             internal static Color CategoryHeader => Select(new Color(0.627f, 0.004f, 0.812f, 0.5f), Rgb(0x6F, 0x5A, 0x8E));
             internal static Color CategoryHeaderHover => Select(new Color(0.627f, 0.004f, 0.812f, 0.5f), Rgb(0x76, 0x5F, 0x97));
             internal static Color CategoryHeaderExpanded => Select(new Color(0.627f, 0.004f, 0.812f, 0.5f), Rgb(0x5F, 0x4C, 0x7D));
@@ -116,9 +116,9 @@ namespace MaterialEditorAPI
             internal static Color SliderHandle => Select(Color.white, Primary);
             internal static Color SliderHandlePressed => HandlePressed;
             internal static Color ScrollSurface => CenterPanel;
-            internal static Color SideListSurface => Select(Gray(0.6f), RightPanel);
+            internal static Color SideListSurface => Select(Gray(0.6f), Rgb(0x22, 0x28, 0x32));
             internal static Color SideListRow => Select(Row, PropertyRow);
-            internal static Color ScrollbarTrack => RightPanel;
+            internal static Color ScrollbarTrack => Select(Gray(0.42f), SideListSurface);
             internal static Color Scrollbar => Select(new Color(1f, 1f, 1f, 0.6f), StrongBorder);
             internal static Color ScrollbarHandle => Select(new Color(1f, 1f, 1f, 0.6f), Secondary);
             internal static Color ScrollbarHandlePressed => HandlePressed;
