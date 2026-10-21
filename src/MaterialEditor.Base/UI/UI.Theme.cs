@@ -265,8 +265,6 @@ namespace MaterialEditorAPI
             internal const float KeywordToggleWidth = ContentWidth;
 
             internal const float DropdownTemplateWidth = 100f;
-            internal const float DropdownPopupMaximumWidth = 360f;
-            internal const float DropdownPopupHorizontalPadding = 52f;
             internal const float DropdownPopupScreenMargin = 4f;
             internal const float TooltipWidth = 280f;
             internal const float TooltipMaximumHeight = 360f;
