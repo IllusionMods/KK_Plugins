@@ -171,6 +171,7 @@ namespace MaterialEditorAPI
                 MaterialEditorTheme.Colors.ControlHover,
                 MaterialEditorTheme.Colors.ControlPressed,
                 MaterialEditorTheme.Colors.ControlDisabled);
+            ApplySelectionText(button, false);
         }
 
         internal static void SetCategoryNavigationSelected(
@@ -197,32 +198,6 @@ namespace MaterialEditorAPI
                 ? MaterialEditorTheme.Colors.CategoryNavigationHighlight
                 : MaterialEditorTheme.Colors.ControlPressed;
             PreserveHeaderFocusColor(ref colors);
-            button.colors = colors;
-            MaterialEditorScrollSelectableStyles.SynchronizeCurrentState(button);
-            ApplySelectionText(button, selected);
-        }
-
-        internal static void SetSelectionListSelected(
-            Button button,
-            bool selected)
-        {
-            if (button == null)
-                return;
-
-            var state = MaterialEditorControlStyleState.Assign(
-                button,
-                MaterialEditorControlStyleRole.SelectionListRow);
-            state.SetLogicalState(selected);
-            var colors = button.colors;
-            colors.normalColor = selected
-                ? MaterialEditorTheme.States.SelectedSurface
-                : MaterialEditorTheme.Colors.SideListRow;
-            colors.highlightedColor = selected
-                ? MaterialEditorTheme.States.SelectedSurface
-                : MaterialEditorTheme.Colors.ControlHover;
-            colors.pressedColor = selected
-                ? MaterialEditorTheme.States.SelectedSurface
-                : MaterialEditorTheme.Colors.ControlPressed;
             button.colors = colors;
             MaterialEditorScrollSelectableStyles.SynchronizeCurrentState(button);
             ApplySelectionText(button, selected);
@@ -313,9 +288,6 @@ namespace MaterialEditorAPI
                     break;
                 case MaterialEditorControlStyleRole.SelectionListRow:
                     ApplySelectionListRowButton(selectable as Button);
-                    SetSelectionListSelected(
-                        selectable as Button,
-                        state.LogicalState);
                     break;
                 case MaterialEditorControlStyleRole.Swatch:
                     if (selectable != null)

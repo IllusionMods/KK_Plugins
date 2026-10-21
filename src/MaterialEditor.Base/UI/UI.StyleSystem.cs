@@ -226,15 +226,6 @@ namespace MaterialEditorAPI
                 selected);
         }
 
-        internal static void SetSelectionListSelected(
-            Button button,
-            bool selected)
-        {
-            MaterialEditorSelectionStyles.SetSelectionListSelected(
-                button,
-                selected);
-        }
-
         internal static void ApplySwatchButton(Button button)
         {
             MaterialEditorSelectionStyles.ApplySwatchButton(button);
