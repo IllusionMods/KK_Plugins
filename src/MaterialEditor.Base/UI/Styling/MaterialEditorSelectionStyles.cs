@@ -184,16 +184,19 @@ namespace MaterialEditorAPI
                 button,
                 MaterialEditorControlStyleRole.CategoryNavigation);
             state.SetLogicalState(selected);
+            if (button.targetGraphic is Image image)
+                image.sprite = selected ? UIUtility.backgroundSprite : UIUtility.standardSprite;
             var colors = button.colors;
             colors.normalColor = selected
-                ? MaterialEditorTheme.Colors.Selected
+                ? MaterialEditorTheme.Colors.CategoryNavigationHighlight
                 : MaterialEditorTheme.Colors.SideListRow;
             colors.highlightedColor = selected
-                ? MaterialEditorTheme.Colors.Selected
+                ? MaterialEditorTheme.Colors.CategoryNavigationHighlight
                 : MaterialEditorTheme.Colors.ControlHover;
             colors.pressedColor = selected
-                ? MaterialEditorTheme.Colors.Selected
+                ? MaterialEditorTheme.Colors.CategoryNavigationHighlight
                 : MaterialEditorTheme.Colors.ControlPressed;
+            PreserveHeaderFocusColor(ref colors);
             button.colors = colors;
             MaterialEditorScrollSelectableStyles.SynchronizeCurrentState(button);
             ApplySelectionText(button, selected);

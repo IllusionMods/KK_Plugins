@@ -19,7 +19,8 @@ namespace MaterialEditorAPI
         NavigatorShaderHeader,
         InputBorder,
         StrongBorder,
-        Outline
+        Outline,
+        CategoryNavigationHighlight
     }
 
 
@@ -103,6 +104,7 @@ namespace MaterialEditorAPI
             internal static Color MaterialRow => MaterialHeader;
             internal static Color ShaderRow => ShaderHeader;
             internal static Color CategoryRow => CategoryHeader;
+            internal static Color CategoryNavigationHighlight => CategoryRow;
             internal static Color SubcategoryRow => SubcategoryHeader;
             internal static Color TransparentRow => new Color(1f, 1f, 1f, 0f);
             internal static Color ChangedRow => ModifiedSurface;
@@ -146,6 +148,8 @@ namespace MaterialEditorAPI
                         return DisabledText;
                     case MaterialEditorThemeColorRole.Accent:
                         return Accent;
+                    case MaterialEditorThemeColorRole.CategoryNavigationHighlight:
+                        return CategoryNavigationHighlight;
                     case MaterialEditorThemeColorRole.TooltipSurface:
                         return TooltipSurface;
                     case MaterialEditorThemeColorRole.NavigatorShaderHeader:

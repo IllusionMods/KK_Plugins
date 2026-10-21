@@ -309,7 +309,7 @@ namespace MaterialEditorAPI
                 MaterialEditorPanelRole.Default);
             MaterialEditorStyles.ApplyGraphicColor(
                 activeMarker,
-                MaterialEditorThemeColorRole.Accent);
+                MaterialEditorThemeColorRole.CategoryNavigationHighlight);
             activeMarker.raycastTarget = false;
             var activeMarkerLayout = activeMarker.gameObject.AddComponent<LayoutElement>();
             activeMarkerLayout.minWidth = MaterialEditorTheme.Metrics.CategoryActiveMarkerWidth;
@@ -433,6 +433,10 @@ namespace MaterialEditorAPI
             if (entry == null)
                 return;
 
+            // Match the main list's backing beneath the translucent category tint.
+            MaterialEditorStyles.ApplyPanel(
+                entry.Root,
+                active ? MaterialEditorPanelRole.CenterPanel : MaterialEditorPanelRole.TransparentRow);
             entry.ActiveMarker.enabled = active;
             MaterialEditorStyles.SetCategoryNavigationSelected(
                 entry.NavigateButton,
