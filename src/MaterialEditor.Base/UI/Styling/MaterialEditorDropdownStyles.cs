@@ -193,10 +193,7 @@ namespace MaterialEditorAPI
                 MaterialEditorTheme.Colors.Hover,
                 MaterialEditorTheme.Colors.Pressed,
                 MaterialEditorTheme.Colors.DisabledSurface);
-            if (toggle.graphic != null)
-            {
-                toggle.graphic.color = MaterialEditorTheme.Colors.SelectedText;
-            }
+            MaterialEditorInputStyles.ApplyToggleMark(toggle);
             ApplyDropdownItemText(text, null);
 
             var state = toggle.GetComponent<MaterialEditorDropdownItemStyle>()
