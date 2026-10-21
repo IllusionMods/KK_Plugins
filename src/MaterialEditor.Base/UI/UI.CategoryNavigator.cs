@@ -30,6 +30,7 @@ namespace MaterialEditorAPI
         {
             _navigate = navigate;
             _toggle = toggle;
+            const float contentInset = MaterialEditorTheme.Spacing.SelectionPanelContentInset;
 
             Panel = MaterialEditorControlFactory.CreatePanel(
                 "CategoryNavigatorPanel",
@@ -52,9 +53,9 @@ namespace MaterialEditorAPI
             title.alignment = TextAnchor.MiddleCenter;
             title.transform.SetRect(
                 0f, 1f, 1f, 1f,
-                MaterialEditorLayout.Margin,
+                contentInset,
                 -MaterialEditorLayout.HeaderHeight,
-                -MaterialEditorLayout.Margin,
+                -contentInset,
                 0f);
 
             // Match the center list's backing beneath the translucent Light material tint.
@@ -65,9 +66,9 @@ namespace MaterialEditorAPI
             materialBackdrop.raycastTarget = false;
             materialBackdrop.transform.SetRect(
                 0f, 1f, 1f, 1f,
-                MaterialEditorLayout.Margin,
+                contentInset,
                 -MaterialEditorLayout.HeaderHeight * 2f,
-                -MaterialEditorLayout.Margin,
+                -contentInset,
                 -MaterialEditorLayout.HeaderHeight);
 
             var materialHeader = MaterialEditorControlFactory.CreatePanel(
@@ -93,9 +94,9 @@ namespace MaterialEditorAPI
                 MaterialEditorThemeColorRole.NavigatorShaderHeader);
             _shaderHeader.transform.SetRect(
                 0f, 1f, 1f, 1f,
-                MaterialEditorLayout.Margin,
+                contentInset,
                 -MaterialEditorLayout.HeaderHeight * 3f,
-                -MaterialEditorLayout.Margin,
+                -contentInset,
                 -MaterialEditorLayout.HeaderHeight * 2f);
 
             _shaderText = MaterialEditorControlFactory.CreateText(
@@ -114,9 +115,9 @@ namespace MaterialEditorAPI
             MaterialEditorStyles.ApplyScrollView(_scrollRect);
             _scrollRect.transform.SetRect(
                 0f, 0f, 1f, 1f,
-                MaterialEditorLayout.Margin,
-                MaterialEditorLayout.Margin,
-                -MaterialEditorLayout.Margin,
+                contentInset,
+                contentInset,
+                -contentInset,
                 -MaterialEditorLayout.HeaderHeight * 3f);
             _scrollRect.gameObject.AddComponent<Mask>();
             _scrollRect.verticalScrollbar.GetComponent<RectTransform>().offsetMin =
