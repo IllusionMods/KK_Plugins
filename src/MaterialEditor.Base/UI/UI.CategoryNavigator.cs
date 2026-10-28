@@ -30,6 +30,7 @@ namespace MaterialEditorAPI
         {
             _navigate = navigate;
             _toggle = toggle;
+            const float contentInset = MaterialEditorTheme.Spacing.SelectionPanelContentInset;
 
             Panel = MaterialEditorControlFactory.CreatePanel(
                 "CategoryNavigatorPanel",
@@ -43,54 +44,47 @@ namespace MaterialEditorAPI
                 Panel,
                 MaterialEditorThemeColorRole.Outline);
 
-            var header = MaterialEditorControlFactory.CreatePanel(
-                "CategoryNavigatorHeader",
-                Panel.transform,
-                MaterialEditorPanelRole.Header);
-            header.transform.SetRect(
-                0f, 1f, 1f, 1f,
-                MaterialEditorLayout.Margin,
-                -MaterialEditorLayout.HeaderHeight,
-                -MaterialEditorLayout.Margin,
-                0f);
-
-            var headerLayout = header.gameObject.AddComponent<HorizontalLayoutGroup>();
-            headerLayout.padding = new RectOffset(
-                MaterialEditorTheme.Spacing.NavigatorHeaderHorizontalInset,
-                MaterialEditorTheme.Spacing.NavigatorHeaderHorizontalInset,
-                0,
-                0);
-            headerLayout.spacing = MaterialEditorTheme.Spacing.Control;
-            headerLayout.childAlignment = TextAnchor.MiddleCenter;
-            headerLayout.childControlWidth = true;
-            headerLayout.childForceExpandWidth = false;
-            headerLayout.childControlHeight = true;
-            headerLayout.childForceExpandHeight = true;
-
             var title = MaterialEditorControlFactory.CreateText(
                 "CategoryNavigatorTitle",
-                header.transform,
+                Panel.transform,
                 "Categories",
                 MaterialEditorTextRole.Chrome);
-            title.fontStyle = FontStyle.Bold;
+            title.fontStyle = FontStyle.Normal;
             title.alignment = TextAnchor.MiddleCenter;
-            var titleLayout = title.gameObject.AddComponent<LayoutElement>();
-            titleLayout.minWidth = 0f;
-            titleLayout.preferredWidth = 0f;
-            titleLayout.flexibleWidth = 1f;
+            title.transform.SetRect(
+                0f, 1f, 1f, 1f,
+                contentInset,
+                -MaterialEditorLayout.HeaderHeight,
+                -contentInset,
+                0f);
+
+            // Match the center list's backing beneath the translucent Light material tint.
+            var materialBackdrop = MaterialEditorControlFactory.CreatePanel(
+                "CategoryNavigatorMaterialBackdrop",
+                Panel.transform,
+                MaterialEditorPanelRole.CenterPanel);
+            materialBackdrop.raycastTarget = false;
+            materialBackdrop.transform.SetRect(
+                0f, 1f, 1f, 1f,
+                contentInset,
+                -MaterialEditorLayout.HeaderHeight * 2f,
+                -contentInset,
+                -MaterialEditorLayout.HeaderHeight);
+
+            var materialHeader = MaterialEditorControlFactory.CreatePanel(
+                "CategoryNavigatorMaterialHeader",
+                materialBackdrop.transform,
+                MaterialEditorPanelRole.MaterialRow);
+            materialHeader.transform.SetRect();
 
             _materialText = MaterialEditorControlFactory.CreateText(
                 "CategoryNavigatorMaterial",
-                Panel.transform,
+                materialHeader.transform,
                 string.Empty,
-                MaterialEditorTextRole.SecondaryChrome);
+                MaterialEditorTextRole.CenteredLabel);
             ConfigureSingleLineText(_materialText);
-            _materialText.transform.SetRect(
-                0f, 1f, 1f, 1f,
-                MaterialEditorLayout.Margin,
-                -MaterialEditorLayout.HeaderHeight * 2f,
-                -MaterialEditorLayout.Margin,
-                -MaterialEditorLayout.HeaderHeight);
+            _materialText.alignment = TextAnchor.MiddleCenter;
+            _materialText.transform.SetRect();
 
             _shaderHeader = MaterialEditorControlFactory.CreatePanel(
                 "CategoryNavigatorShaderHeader",
@@ -100,27 +94,30 @@ namespace MaterialEditorAPI
                 MaterialEditorThemeColorRole.NavigatorShaderHeader);
             _shaderHeader.transform.SetRect(
                 0f, 1f, 1f, 1f,
-                MaterialEditorLayout.Margin,
+                contentInset,
                 -MaterialEditorLayout.HeaderHeight * 3f,
-                -MaterialEditorLayout.Margin,
+                -contentInset,
                 -MaterialEditorLayout.HeaderHeight * 2f);
 
             _shaderText = MaterialEditorControlFactory.CreateText(
                 "CategoryNavigatorShader",
                 _shaderHeader.transform,
                 string.Empty,
-                MaterialEditorTextRole.Label);
+                MaterialEditorTextRole.CenteredLabel);
             ConfigureSingleLineText(_shaderText);
+            _shaderText.alignment = TextAnchor.MiddleCenter;
             _shaderText.transform.SetRect();
 
             _scrollRect = MaterialEditorControlFactory.CreateScrollView(
                 "CategoryNavigatorScrollView",
                 Panel.transform);
+            MaterialEditorScrollStyleState.Assign(_scrollRect, false).SideList = true;
+            MaterialEditorStyles.ApplyScrollView(_scrollRect);
             _scrollRect.transform.SetRect(
                 0f, 0f, 1f, 1f,
-                MaterialEditorLayout.Margin,
-                MaterialEditorLayout.Margin,
-                -MaterialEditorLayout.Margin,
+                contentInset,
+                contentInset,
+                -contentInset,
                 -MaterialEditorLayout.HeaderHeight * 3f);
             _scrollRect.gameObject.AddComponent<Mask>();
             _scrollRect.verticalScrollbar.GetComponent<RectTransform>().offsetMin =
@@ -149,7 +146,8 @@ namespace MaterialEditorAPI
 
         internal Image Panel { get; }
 
-        internal bool Visible => _visible && HasCategories();
+        // Empty sections temporarily hide the panel without changing the user's preference.
+        internal bool Visible => _visible && _sectionId != null;
         internal void ApplySettings(float width)
         {
             ApplyPanelRect(width);
@@ -222,9 +220,9 @@ namespace MaterialEditorAPI
                 return;
             }
 
-            UpdateVisibility();
             if (forceRebuild || section.Id != _sectionId)
                 Rebuild(section);
+            UpdateVisibility();
             UpdateHighlight(section.FindCategoryAtRow(rowIndex));
         }
 
@@ -243,18 +241,6 @@ namespace MaterialEditorAPI
                 0f,
                 -MaterialEditorLayout.Margin,
                 0f);
-        }
-
-        private bool HasCategories()
-        {
-            if (_presentation == null)
-                return false;
-
-            foreach (var section in _presentation.MaterialSections)
-                if (section.Categories.Count > 0)
-                    return true;
-
-            return false;
         }
 
         private void Rebuild(MaterialSectionPresentation section)
@@ -323,7 +309,7 @@ namespace MaterialEditorAPI
                 MaterialEditorPanelRole.Default);
             MaterialEditorStyles.ApplyGraphicColor(
                 activeMarker,
-                MaterialEditorThemeColorRole.Accent);
+                MaterialEditorThemeColorRole.CategoryNavigationHighlight);
             activeMarker.raycastTarget = false;
             var activeMarkerLayout = activeMarker.gameObject.AddComponent<LayoutElement>();
             activeMarkerLayout.minWidth = MaterialEditorTheme.Metrics.CategoryActiveMarkerWidth;
@@ -447,6 +433,10 @@ namespace MaterialEditorAPI
             if (entry == null)
                 return;
 
+            // Match the main list's backing beneath the translucent category tint.
+            MaterialEditorStyles.ApplyPanel(
+                entry.Root,
+                active ? MaterialEditorPanelRole.CenterPanel : MaterialEditorPanelRole.TransparentRow);
             entry.ActiveMarker.enabled = active;
             MaterialEditorStyles.SetCategoryNavigationSelected(
                 entry.NavigateButton,

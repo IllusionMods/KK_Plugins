@@ -44,7 +44,7 @@ namespace MaterialEditorAPI
                     templateImage.maskable = true;
                     MaterialEditorScrollSelectableStyles.ApplyControlOutline(
                         templateImage,
-                        MaterialEditorThemeColorRole.StrongBorder);
+                        MaterialEditorThemeColorRole.InputBorder);
                 }
 
                 var templateScroll = dropdown.template.GetComponentInChildren<ScrollRect>(true);
@@ -97,7 +97,7 @@ namespace MaterialEditorAPI
                 popupImage.maskable = true;
                 MaterialEditorScrollSelectableStyles.ApplyControlOutline(
                     popupImage,
-                    MaterialEditorThemeColorRole.StrongBorder);
+                    MaterialEditorThemeColorRole.InputBorder);
             }
 
             var scroll = popupRoot.GetComponentInChildren<ScrollRect>(true);
@@ -193,10 +193,7 @@ namespace MaterialEditorAPI
                 MaterialEditorTheme.Colors.Hover,
                 MaterialEditorTheme.Colors.Pressed,
                 MaterialEditorTheme.Colors.DisabledSurface);
-            if (toggle.graphic != null)
-            {
-                toggle.graphic.color = MaterialEditorTheme.Colors.SelectedText;
-            }
+            MaterialEditorInputStyles.ApplyToggleMark(toggle);
             ApplyDropdownItemText(text, null);
 
             var state = toggle.GetComponent<MaterialEditorDropdownItemStyle>()
@@ -532,38 +529,15 @@ namespace MaterialEditorAPI
 
             var popupRect = transform as RectTransform;
             var dropdownRect = _dropdown.transform as RectTransform;
-            var measurementText = _dropdown.itemText ?? _dropdown.captionText;
-            if (popupRect == null || measurementText == null)
+            if (popupRect == null)
                 return;
 
             Canvas.ForceUpdateCanvases();
 
-            var preferredTextWidth = 0f;
-            var options = _dropdown.options;
-            for (var i = 0; i < options.Count; i++)
-            {
-                var option = options[i];
-                if (option == null)
-                    continue;
-                preferredTextWidth = Mathf.Max(
-                    preferredTextWidth,
-                    MaterialEditorTextFitting.MeasurePreferredWidth(
-                        measurementText,
-                        option.text,
-                        MaterialEditorLayout.DropdownFontSize));
-            }
-
-            var currentWidth = dropdownRect != null
+            var desiredWidth = dropdownRect != null
                                && dropdownRect.rect.width > 0f
                 ? dropdownRect.rect.width
                 : popupRect.rect.width;
-            var desiredWidth = Mathf.Max(
-                currentWidth,
-                preferredTextWidth
-                + MaterialEditorTheme.Metrics.DropdownPopupHorizontalPadding);
-            desiredWidth = Mathf.Min(
-                desiredWidth,
-                MaterialEditorTheme.Metrics.DropdownPopupMaximumWidth);
 
             var canvas = GetComponentInParent<Canvas>();
             var canvasRect = canvas != null

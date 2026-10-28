@@ -349,7 +349,12 @@ namespace MaterialEditorAPI
                 navigateToCategory,
                 toggleCategory);
             VirtualList.ViewportAnchorIndexChanged += rowIndex =>
+            {
+                var wasVisible = CategoryNavigator.Visible;
                 CategoryNavigator.SetViewportAnchor(rowIndex);
+                if (wasVisible != CategoryNavigator.Visible)
+                    ApplySettings();
+            };
 
             BuildSelectionPanels();
             BuildRenamePanel();

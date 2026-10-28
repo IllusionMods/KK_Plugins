@@ -6,9 +6,7 @@ namespace MaterialEditorAPI
 {
     internal static class MaterialEditorInputStyles
     {
-        private const int ToggleMarkTextureSize = 16;
-        private const int ToggleMarkStrokeWidth = 2;
-        private static Sprite _toggleMarkSprite;
+        private static Sprite _darkToggleMarkSprite;
 
         internal static void ApplyInputField(InputField inputField)
         {
@@ -88,7 +86,7 @@ namespace MaterialEditorAPI
             }
         }
 
-        private static void ApplyToggleMark(Toggle toggle)
+        internal static void ApplyToggleMark(Toggle toggle)
         {
             var graphic = toggle.graphic;
             if (graphic == null)
@@ -97,15 +95,14 @@ namespace MaterialEditorAPI
             var image = graphic as Image;
             if (image != null)
             {
-                // The bundled DefaultControls checkmark has dark source pixels.
-                // A white tint only multiplies those pixels, so use a white mask
-                // whose visible color is owned entirely by the theme.
                 image.sprite = GetToggleMarkSprite();
                 image.type = Image.Type.Simple;
-                image.preserveAspect = true;
+                image.preserveAspect = false;
             }
 
-            graphic.color = MaterialEditorTheme.Colors.ToggleMark;
+            graphic.color = MaterialEditorTheme.Mode == MaterialEditorThemeMode.Legacy
+                ? MaterialEditorTheme.Colors.TintIdentity
+                : MaterialEditorTheme.Colors.ToggleMark;
             graphic.canvasRenderer.SetColor(MaterialEditorTheme.Colors.TintIdentity);
             graphic.canvasRenderer.SetAlpha(
                 toggle.isOn
@@ -116,63 +113,61 @@ namespace MaterialEditorAPI
 
         private static Sprite GetToggleMarkSprite()
         {
-            if (_toggleMarkSprite != null)
-                return _toggleMarkSprite;
+            var source = UIUtility.checkMark;
+            if (MaterialEditorTheme.Mode == MaterialEditorThemeMode.Legacy || source == null)
+                return source;
+            if (_darkToggleMarkSprite != null)
+                return _darkToggleMarkSprite;
 
-            var pixels = new Color32[ToggleMarkTextureSize * ToggleMarkTextureSize];
-            for (var i = 0; i < pixels.Length; i++)
-                pixels[i] = new Color32(0xFF, 0xFF, 0xFF, 0x00);
-            DrawToggleMarkStroke(pixels, 2, 8, 6, 4);
-            DrawToggleMarkStroke(pixels, 6, 4, 14, 12);
-
+            // Keep the native mark's resolution, padding and alpha; only whiten its dark pixels.
+            // The bundled texture is not CPU-readable, so read it back once for the Dark theme.
+            var sourceTexture = source.texture;
             var texture = new Texture2D(
-                ToggleMarkTextureSize,
-                ToggleMarkTextureSize,
+                sourceTexture.width,
+                sourceTexture.height,
                 TextureFormat.ARGB32,
-                false)
+                sourceTexture.mipmapCount > 1)
             {
-                name = "MaterialEditorToggleMarkTexture",
-                filterMode = FilterMode.Bilinear,
-                wrapMode = TextureWrapMode.Clamp,
+                name = "MaterialEditorDarkToggleMarkTexture",
+                filterMode = sourceTexture.filterMode,
+                wrapMode = sourceTexture.wrapMode,
+                anisoLevel = sourceTexture.anisoLevel,
                 hideFlags = HideFlags.HideAndDontSave
             };
-            texture.SetPixels32(pixels);
-            texture.Apply();
-
-            _toggleMarkSprite = Sprite.Create(
-                texture,
-                new Rect(0f, 0f, ToggleMarkTextureSize, ToggleMarkTextureSize),
-                new Vector2(0.5f, 0.5f),
-                ToggleMarkTextureSize);
-            _toggleMarkSprite.name = "MaterialEditorToggleMark";
-            _toggleMarkSprite.hideFlags = HideFlags.HideAndDontSave;
-            return _toggleMarkSprite;
-        }
-
-        private static void DrawToggleMarkStroke(
-            Color32[] pixels,
-            int startX,
-            int startY,
-            int endX,
-            int endY)
-        {
-            var steps = Mathf.Max(
-                Mathf.Abs(endX - startX),
-                Mathf.Abs(endY - startY));
-            for (var step = 0; step <= steps; step++)
+            var previous = RenderTexture.active;
+            RenderTexture temporary = null;
+            try
             {
-                var amount = steps == 0 ? 0f : (float)step / steps;
-                var x = Mathf.RoundToInt(Mathf.Lerp(startX, endX, amount));
-                var y = Mathf.RoundToInt(Mathf.Lerp(startY, endY, amount));
-                for (var offsetY = 0; offsetY < ToggleMarkStrokeWidth; offsetY++)
-                {
-                    var pixelY = y + offsetY;
-                    if (x < 0 || x >= ToggleMarkTextureSize
-                        || pixelY < 0 || pixelY >= ToggleMarkTextureSize)
-                        continue;
-                    pixels[pixelY * ToggleMarkTextureSize + x] =
-                        new Color32(0xFF, 0xFF, 0xFF, 0xFF);
-                }
+                temporary = RenderTexture.GetTemporary(
+                    sourceTexture.width, sourceTexture.height, 0, RenderTextureFormat.ARGB32);
+                Graphics.Blit(sourceTexture, temporary);
+                RenderTexture.active = temporary;
+                texture.ReadPixels(new Rect(0f, 0f, texture.width, texture.height), 0, 0, false);
+                var pixels = texture.GetPixels32();
+                for (var i = 0; i < pixels.Length; i++)
+                    pixels[i] = new Color32(0xFF, 0xFF, 0xFF, pixels[i].a);
+                texture.SetPixels32(pixels);
+                texture.Apply(true, true);
+
+                var sprite = Sprite.Create(
+                    texture, source.rect,
+                    new Vector2(source.pivot.x / source.rect.width, source.pivot.y / source.rect.height),
+                    source.pixelsPerUnit, 0, SpriteMeshType.FullRect, source.border);
+                sprite.name = "MaterialEditorDarkToggleMark";
+                sprite.hideFlags = HideFlags.HideAndDontSave;
+                _darkToggleMarkSprite = sprite;
+                return sprite;
+            }
+            catch
+            {
+                Object.Destroy(texture);
+                throw;
+            }
+            finally
+            {
+                RenderTexture.active = previous;
+                if (temporary != null)
+                    RenderTexture.ReleaseTemporary(temporary);
             }
         }
 

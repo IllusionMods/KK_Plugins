@@ -6,6 +6,18 @@ namespace MaterialEditorAPI
 {
     internal static class MaterialEditorSelectionStyles
     {
+        // Older Unity versions do not expose a separate selected tint.
+        private static readonly System.Reflection.PropertyInfo SelectedColorProperty =
+            typeof(ColorBlock).GetProperty("selectedColor");
+
+        private static void PreserveHeaderFocusColor(ref ColorBlock colors)
+        {
+            if (SelectedColorProperty == null || !SelectedColorProperty.CanWrite) return;
+            object boxed = colors;
+            SelectedColorProperty.SetValue(boxed, colors.normalColor, null);
+            colors = (ColorBlock)boxed;
+        }
+
         internal static void ApplyButton(Button button)
         {
             if (button == null)
@@ -82,6 +94,7 @@ namespace MaterialEditorAPI
             colors.normalColor = expanded
                 ? MaterialEditorTheme.Colors.CategoryHeaderExpanded
                 : MaterialEditorTheme.Colors.CategoryRow;
+            PreserveHeaderFocusColor(ref colors);
             button.colors = colors;
             ApplyPropertyCategoryTypography(button);
             MaterialEditorScrollSelectableStyles.SynchronizeCurrentState(button);
@@ -118,6 +131,7 @@ namespace MaterialEditorAPI
             colors.normalColor = expanded
                 ? MaterialEditorTheme.Colors.SubcategoryHeaderExpanded
                 : MaterialEditorTheme.Colors.SubcategoryRow;
+            PreserveHeaderFocusColor(ref colors);
             button.colors = colors;
             MaterialEditorScrollSelectableStyles.SynchronizeCurrentState(button);
         }
@@ -132,7 +146,7 @@ namespace MaterialEditorAPI
                 MaterialEditorControlStyleRole.CategoryNavigation);
             MaterialEditorScrollSelectableStyles.ApplySelectable(
                 button,
-                MaterialEditorTheme.Colors.TransparentRow,
+                MaterialEditorTheme.Colors.SideListRow,
                 MaterialEditorTheme.Colors.ControlHover,
                 MaterialEditorTheme.Colors.ControlPressed,
                 MaterialEditorTheme.Colors.ControlDisabled);
@@ -153,10 +167,11 @@ namespace MaterialEditorAPI
                 MaterialEditorControlStyleRole.SelectionListRow);
             MaterialEditorScrollSelectableStyles.ApplySelectable(
                 button,
-                MaterialEditorTheme.Colors.TransparentRow,
+                MaterialEditorTheme.Colors.SideListRow,
                 MaterialEditorTheme.Colors.ControlHover,
                 MaterialEditorTheme.Colors.ControlPressed,
                 MaterialEditorTheme.Colors.ControlDisabled);
+            ApplySelectionText(button, false);
         }
 
         internal static void SetCategoryNavigationSelected(
@@ -170,42 +185,19 @@ namespace MaterialEditorAPI
                 button,
                 MaterialEditorControlStyleRole.CategoryNavigation);
             state.SetLogicalState(selected);
+            if (button.targetGraphic is Image image)
+                image.sprite = selected ? UIUtility.backgroundSprite : UIUtility.standardSprite;
             var colors = button.colors;
             colors.normalColor = selected
-                ? MaterialEditorTheme.Colors.Selected
-                : MaterialEditorTheme.Colors.TransparentRow;
+                ? MaterialEditorTheme.Colors.CategoryNavigationHighlight
+                : MaterialEditorTheme.Colors.SideListRow;
             colors.highlightedColor = selected
-                ? MaterialEditorTheme.Colors.Selected
+                ? MaterialEditorTheme.Colors.CategoryNavigationHighlight
                 : MaterialEditorTheme.Colors.ControlHover;
             colors.pressedColor = selected
-                ? MaterialEditorTheme.Colors.Selected
+                ? MaterialEditorTheme.Colors.CategoryNavigationHighlight
                 : MaterialEditorTheme.Colors.ControlPressed;
-            button.colors = colors;
-            MaterialEditorScrollSelectableStyles.SynchronizeCurrentState(button);
-            ApplySelectionText(button, selected);
-        }
-
-        internal static void SetSelectionListSelected(
-            Button button,
-            bool selected)
-        {
-            if (button == null)
-                return;
-
-            var state = MaterialEditorControlStyleState.Assign(
-                button,
-                MaterialEditorControlStyleRole.SelectionListRow);
-            state.SetLogicalState(selected);
-            var colors = button.colors;
-            colors.normalColor = selected
-                ? MaterialEditorTheme.States.SelectedSurface
-                : MaterialEditorTheme.Colors.TransparentRow;
-            colors.highlightedColor = selected
-                ? MaterialEditorTheme.States.SelectedSurface
-                : MaterialEditorTheme.Colors.ControlHover;
-            colors.pressedColor = selected
-                ? MaterialEditorTheme.States.SelectedSurface
-                : MaterialEditorTheme.Colors.ControlPressed;
+            PreserveHeaderFocusColor(ref colors);
             button.colors = colors;
             MaterialEditorScrollSelectableStyles.SynchronizeCurrentState(button);
             ApplySelectionText(button, selected);
@@ -296,9 +288,6 @@ namespace MaterialEditorAPI
                     break;
                 case MaterialEditorControlStyleRole.SelectionListRow:
                     ApplySelectionListRowButton(selectable as Button);
-                    SetSelectionListSelected(
-                        selectable as Button,
-                        state.LogicalState);
                     break;
                 case MaterialEditorControlStyleRole.Swatch:
                     if (selectable != null)
@@ -394,15 +383,18 @@ namespace MaterialEditorAPI
             if (scrollRect == null)
                 return;
 
-            MaterialEditorScrollStyleState.Assign(scrollRect, false);
+            var state = MaterialEditorScrollStyleState.Assign(scrollRect, false);
+            var background = state.SideList
+                ? MaterialEditorTheme.Colors.SideListSurface
+                : MaterialEditorTheme.Colors.ScrollSurface;
             var surface = scrollRect.GetComponent<Image>();
             if (surface != null)
-                surface.color = MaterialEditorTheme.Colors.ScrollSurface;
+                surface.color = background;
             if (scrollRect.viewport != null)
             {
                 var viewportSurface = scrollRect.viewport.GetComponent<Image>();
                 if (viewportSurface != null)
-                    viewportSurface.color = MaterialEditorTheme.Colors.ScrollSurface;
+                    viewportSurface.color = background;
             }
 
             ApplyScrollbar(scrollRect.horizontalScrollbar);
@@ -529,6 +521,8 @@ namespace MaterialEditorAPI
                 : colors.disabledColor;
             var graphic = selectable.targetGraphic;
             graphic.color = MaterialEditorTheme.Colors.TintIdentity;
+            // Stop any earlier Selectable tween before applying the current row tint.
+            graphic.CrossFadeColor(effectiveColor, 0f, true, true);
             // SetColor already carries the complete RGBA value. Calling
             // SetAlpha afterwards destroys semantic alpha (notably the
             // half-alpha Light category and transparent navigation rows).

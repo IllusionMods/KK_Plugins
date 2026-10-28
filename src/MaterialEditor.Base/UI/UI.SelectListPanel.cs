@@ -84,6 +84,7 @@ namespace MaterialEditorAPI
             _scrollRect.horizontal = false;
             _scrollRect.vertical = true;
             _scrollRect.movementType = ScrollRect.MovementType.Clamped;
+            MaterialEditorScrollStyleState.Assign(_scrollRect, false).SideList = true;
             MaterialEditorStyles.ApplyScrollView(_scrollRect);
 
             if (selectionChrome)
@@ -207,17 +208,11 @@ namespace MaterialEditorAPI
                 name,
                 contentList,
                 toggle,
-                label,
                 rowButton);
             MaterialEditorStyles.ApplyRow(contentList.gameObject);
             toggle.Set(selected, false);
-            ApplySelectedState(entry, selected);
             toggle.onValueChanged.AddListener(
-                value =>
-                {
-                    ApplySelectedState(entry, value);
-                    onValueChanged(value);
-                });
+                value => onValueChanged(value));
             rowButton.onClick.AddListener(
                 () => toggle.isOn = !toggle.isOn);
             TooltipBinding.Bind(rowButton.gameObject, null, name);
@@ -275,14 +270,14 @@ namespace MaterialEditorAPI
         internal void ApplyTheme()
         {
             foreach (var entry in _listItems.Values)
-                ApplySelectedState(entry, entry.Toggle.isOn);
+                MaterialEditorStyles.ApplySelectionListRowButton(entry.RowButton);
         }
 
 
         private void ConfigureSelectionChrome()
         {
             _titleText.alignment = TextAnchor.MiddleLeft;
-            _titleText.fontStyle = FontStyle.Bold;
+            _titleText.fontStyle = FontStyle.Normal;
             MaterialEditorTextFitting.ApplyAdaptiveSingleLine(
                 _titleText,
                 MaterialEditorTheme.Typography.PrimaryFontSize);
@@ -417,46 +412,30 @@ namespace MaterialEditorAPI
                 return;
 
             MaterialEditorStyles.ApplyText(label, MaterialEditorTextRole.Input);
+            label.fontStyle = FontStyle.Normal;
             MaterialEditorTextFitting.ApplyAdaptiveSingleLine(
                 label,
                 MaterialEditorTheme.Typography.PrimaryFontSize);
             label.alignment = TextAnchor.MiddleLeft;
         }
 
-        private static void ApplySelectedState(Entry entry, bool selected)
-        {
-            MaterialEditorStyles.SetSelectionListSelected(
-                entry.RowButton,
-                selected);
-
-            if (entry.Label != null)
-            {
-                entry.Label.fontStyle = selected
-                    ? FontStyle.Bold
-                    : FontStyle.Normal;
-                entry.Label.SetVerticesDirty();
-            }
-        }
         private sealed class Entry
         {
             internal Entry(
                 string name,
                 Image root,
                 Toggle toggle,
-                Text label,
                 Button rowButton)
             {
                 Name = name;
                 Root = root;
                 Toggle = toggle;
-                Label = label;
                 RowButton = rowButton;
             }
 
             internal string Name { get; }
             internal Image Root { get; }
             internal Toggle Toggle { get; }
-            internal Text Label { get; }
             internal Button RowButton { get; }
         }
     }
