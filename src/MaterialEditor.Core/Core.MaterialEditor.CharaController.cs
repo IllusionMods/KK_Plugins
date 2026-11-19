@@ -1147,6 +1147,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialNamePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
                 MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
                 MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
+                MaterialKeywordPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
                 MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
                 MaterialCopyList.RemoveAll(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copyDestination && x.Slot == slot);
 
@@ -1155,6 +1156,7 @@ namespace KK_Plugins.MaterialEditor
                 List<MaterialNameProperty> newAccessoryMaterialNamePropertyList = new List<MaterialNameProperty>();
                 List<MaterialFloatProperty> newAccessoryMaterialFloatPropertyList = new List<MaterialFloatProperty>();
                 List<MaterialColorProperty> newAccessoryMaterialColorPropertyList = new List<MaterialColorProperty>();
+                List<MaterialKeywordProperty> newAccessoryMaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
                 List<MaterialTextureProperty> newAccessoryMaterialTexturePropertyList = new List<MaterialTextureProperty>();
                 List<MaterialCopy> newMaterialCopyList = new List<MaterialCopy>();
 
@@ -1168,6 +1170,8 @@ namespace KK_Plugins.MaterialEditor
                     newAccessoryMaterialFloatPropertyList.Add(new MaterialFloatProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialColorPropertyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
                     newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
+                foreach (var property in MaterialKeywordPropertyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
+                    newAccessoryMaterialKeywordPropertyList.Add(new MaterialKeywordProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialTexturePropertyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
                     newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, copyDestination, slot, property.MaterialName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal, property.TexAnimationDef));
                 foreach (var property in MaterialCopyList.Where(x => x.ObjectType == ObjectType.Clothing && x.CoordinateIndex == copySource && x.Slot == slot))
@@ -1178,6 +1182,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialNamePropertyList.AddRange(newAccessoryMaterialNamePropertyList);
                 MaterialFloatPropertyList.AddRange(newAccessoryMaterialFloatPropertyList);
                 MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
+                MaterialKeywordPropertyList.AddRange(newAccessoryMaterialKeywordPropertyList);
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
                 MaterialCopyList.AddRange(newMaterialCopyList);
 
@@ -1304,6 +1309,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialNamePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopyDestination && x.Slot == slot);
                 MaterialFloatPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopyDestination && x.Slot == slot);
                 MaterialColorPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopyDestination && x.Slot == slot);
+                MaterialKeywordPropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopyDestination && x.Slot == slot);
                 MaterialTexturePropertyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopyDestination && x.Slot == slot);
                 MaterialCopyList.RemoveAll(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopyDestination && x.Slot == slot);
 
@@ -1312,6 +1318,7 @@ namespace KK_Plugins.MaterialEditor
                 List<MaterialNameProperty> newAccessoryMaterialNamePropertyList = new List<MaterialNameProperty>();
                 List<MaterialFloatProperty> newAccessoryMaterialFloatPropertyList = new List<MaterialFloatProperty>();
                 List<MaterialColorProperty> newAccessoryMaterialColorPropertyList = new List<MaterialColorProperty>();
+                List<MaterialKeywordProperty> newAccessoryMaterialKeywordPropertyList = new List<MaterialKeywordProperty>();
                 List<MaterialTextureProperty> newAccessoryMaterialTexturePropertyList = new List<MaterialTextureProperty>();
                 List<MaterialCopy> newAccessoryMaterialCopyList = new List<MaterialCopy>();
 
@@ -1325,6 +1332,8 @@ namespace KK_Plugins.MaterialEditor
                     newAccessoryMaterialFloatPropertyList.Add(new MaterialFloatProperty(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialColorPropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
                     newAccessoryMaterialColorPropertyList.Add(new MaterialColorProperty(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
+                foreach (var property in MaterialKeywordPropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
+                    newAccessoryMaterialKeywordPropertyList.Add(new MaterialKeywordProperty(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.Property, property.Value, property.ValueOriginal));
                 foreach (var property in MaterialTexturePropertyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
                     newAccessoryMaterialTexturePropertyList.Add(new MaterialTextureProperty(property.ObjectType, (int)e.CopyDestination, slot, property.MaterialName, property.Property, property.TexID, property.Offset, property.OffsetOriginal, property.Scale, property.ScaleOriginal, property.TexAnimationDef));
                 foreach (var property in MaterialCopyList.Where(x => x.ObjectType == ObjectType.Accessory && x.CoordinateIndex == (int)e.CopySource && x.Slot == slot))
@@ -1335,6 +1344,7 @@ namespace KK_Plugins.MaterialEditor
                 MaterialNamePropertyList.AddRange(newAccessoryMaterialNamePropertyList);
                 MaterialFloatPropertyList.AddRange(newAccessoryMaterialFloatPropertyList);
                 MaterialColorPropertyList.AddRange(newAccessoryMaterialColorPropertyList);
+                MaterialKeywordPropertyList.AddRange(newAccessoryMaterialKeywordPropertyList);
                 MaterialTexturePropertyList.AddRange(newAccessoryMaterialTexturePropertyList);
                 MaterialCopyList.AddRange(newAccessoryMaterialCopyList);
 

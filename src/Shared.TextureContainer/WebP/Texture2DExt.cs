@@ -242,13 +242,18 @@ namespace WebP
             {
                 int lLength;
 
+                // WebP export inverts Y coord, so we gotta feed in the data in reverse order
+                // This means negative stride and pointing at the end first
+                int lStride = 4 * lWidth;
+                IntPtr tmpRawDataPtr = (IntPtr)(lRawDataPtr.ToInt64() + (lHeight - 1) * lStride);
+
                 if (lQuality == -1)
                 {
-                    lLength = (int)NativeBindings.WebPEncodeLosslessRGBA(lRawDataPtr, lWidth, lHeight, 4 * lWidth, ref lResult);
+                    lLength = (int)NativeBindings.WebPEncodeLosslessRGBA(tmpRawDataPtr, lWidth, lHeight, -lStride, ref lResult);
                 }
                 else
                 {
-                    lLength = (int)NativeBindings.WebPEncodeRGBA(lRawDataPtr, lWidth, lHeight, 4 * lWidth, lQuality, ref lResult);
+                    lLength = (int)NativeBindings.WebPEncodeRGBA(tmpRawDataPtr, lWidth, lHeight, -lStride, lQuality, ref lResult);
                 }
 
                 if (lLength == 0)
