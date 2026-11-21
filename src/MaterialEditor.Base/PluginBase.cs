@@ -123,6 +123,10 @@ namespace MaterialEditorAPI
         /// </summary>
         public static ConfigEntry<bool> SortPropertiesByCategory { get; set; }
         /// <summary>
+        /// Whether to still show category headers when filtering for shader properties or not
+        /// </summary>
+        public static ConfigEntry<bool> ShowCategoryHeadersWhenFiltering { get; set; }
+        /// <summary>
         /// Controls the max value of the slider for this projector property
         /// </summary>
         public static ConfigEntry<float> ProjectorNearClipPlaneMax { get; set; }
@@ -176,6 +180,7 @@ namespace MaterialEditorAPI
             SortPropertiesByType = Config.Bind("Config", "Sort Properties by Type", true, "Whether to sort shader properties by their types.");
             SortPropertiesByName = Config.Bind("Config", "Sort Properties by Name", true, "Whether to sort shader properties by their names.");
             SortPropertiesByCategory = Config.Bind("Config", "Sort Properties by Category", true, "Whether to sort shader properties by their category.");
+            ShowCategoryHeadersWhenFiltering = Config.Bind("Config", "Show Category Headers When Filtering", true, "Whether to still show category headers when filtering for shader properties or not");
             ConvertNormalmapsOnExport = Config.Bind("Config", "Convert Normalmaps On Export", true, new ConfigDescription("When enabled, normalmaps get converted from DXT5 compressed (red) normals back to normal OpenGL (blue/purple) normals"));
 
             // Everything in these games is 10x the size of KK/KKS
