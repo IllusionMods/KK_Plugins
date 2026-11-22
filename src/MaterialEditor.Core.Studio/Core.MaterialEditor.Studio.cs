@@ -153,6 +153,8 @@ namespace KK_Plugins.MaterialEditor
         /// </summary>
         protected void PopulateItemTypeDropdown(ChaControl chaControl)
         {
+            string selectedOption = ItemTypeDropDown.OptionText(ItemTypeDropDown.value);
+
             ItemTypeDropDown.onValueChanged.RemoveAllListeners();
             ItemTypeDropDown.onValueChanged.AddListener(value => ChangeItemType(value, chaControl));
             ItemTypeDropDown.options.Clear();
@@ -189,6 +191,13 @@ namespace KK_Plugins.MaterialEditor
 #endif
                     ItemTypeDropDown.options.Add(new Dropdown.OptionData(optionName));
                 }
+            
+            if (MaterialEditorPluginBase.PersistFilter.Value)
+            {
+                int newIndex = ItemTypeDropDown.options.FindIndex(x => x.text == selectedOption);
+                ItemTypeDropDown.Set(newIndex >= 0 ? newIndex : 0);
+            }
+
         }
 
         private void ChangeItemType(int selectedItem, ChaControl chaControl)
