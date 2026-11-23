@@ -440,6 +440,7 @@ namespace MaterialEditorAPI
             IEnumerable<Projector> projectorListFull = GetProjectorList(data, go);
             List<string> filterList = new List<string>();
             List<string> filterListProperties = new List<string>();
+            List<string> filterListCategories = new List<string>();
             List<ItemInfo> items = new List<ItemInfo>();
             Dictionary<string, Material> matList = new Dictionary<string, Material>();
 
@@ -460,7 +461,15 @@ namespace MaterialEditorAPI
                     .Select(x => x.Trim('_'))
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
-                filterList = filterList.Where(x => !x.StartsWith("_")).ToList();
+
+                filterListCategories = new List<string>(filterList);
+                filterListCategories = filterListCategories
+                    .Where(x => x.StartsWith("#"))
+                    .Select(x => x.Trim('#'))
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
+
+                filterList = filterList.Where(x => !x.StartsWith("_") && !x.StartsWith("#")).ToList();
             }
 
             //Get all renderers and materials matching the filter
@@ -680,12 +689,22 @@ namespace MaterialEditorAPI
                 {
                     // There is no API to determine whether the shader contains a certain keyword, we can't rely
                     // on a toggle property with the same name to determine whether the keyword is present either.
-                    var properties = category.Value.Where(x => x.Type == ShaderPropertyType.Keyword || mat.HasProperty($"_{x.Name}"));
+                    var properties = category.Value
+                        .Where(x => 
+                            (x.Type == ShaderPropertyType.Keyword || mat.HasProperty($"_{x.Name}"))
+                            // Blacklist
+                            && !Instance.CheckBlacklist(materialName, x.Name)
+                            // Filter
+                            && (
+                                (filterListProperties.Count > 0 && filterListProperties.Any(fw => WildCardSearch(x.Name, fw)))
+                                || (filterListCategories.Count > 0 && filterListCategories.Any(fw => WildCardSearch(category.Key, fw)))
+                                || (filterListProperties.Count == 0 && filterListCategories.Count == 0)
+                            )
+                        );
                     if (
-                        filterListProperties.Count == 0
+                        (filterListProperties.Count == 0 || (ShowCategoryHeadersWhenFiltering.Value && properties.Count() > 0))
                         && (categories.Count > 1 || category.Key != PropertyOrganizer.UncategorizedName)
                         && properties.Any()
-
                     )
                     {
                         var categoryItem = new ItemInfo(ItemInfo.RowItemType.PropertyCategory, category.Key);
@@ -695,10 +714,6 @@ namespace MaterialEditorAPI
                     foreach (var property in properties)
                     {
                         string propertyName = property.Name;
-                        // Blacklist
-                        if (Instance.CheckBlacklist(materialName, propertyName)) continue;
-                        // Filter
-                        if (!(filterListProperties.Count == 0 || filterListProperties.Any(fw => WildCardSearch(propertyName, fw)))) continue;
 
                         if (property.Type == ShaderPropertyType.Texture)
                         {
